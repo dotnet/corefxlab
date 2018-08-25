@@ -1,7 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Collections.Generic
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace Microsoft.Collections.Extensions
 {
     /// <summary>
     /// A MultiValueDictionary can be viewed as a <see cref="IDictionary" /> that allows multiple 
@@ -30,7 +34,7 @@ namespace System.Collections.Generic
         /// <summary>
         /// The private dictionary that this class effectively wraps around
         /// </summary>
-        private Dictionary<TKey, InnerCollectionView> dictionary;
+        private readonly Dictionary<TKey, InnerCollectionView> _dictionary;
 
         /// <summary>
         /// The function to construct a new <see cref="ICollection{TValue}"/>
@@ -42,7 +46,7 @@ namespace System.Collections.Generic
         /// The current version of this MultiValueDictionary used to determine MultiValueDictionary modification
         /// during enumeration
         /// </summary>
-        private int version;
+        private int _version;
 
         #endregion
 
@@ -58,7 +62,7 @@ namespace System.Collections.Generic
         /// </summary>
         public MultiValueDictionary()
         {
-            dictionary = new Dictionary<TKey, InnerCollectionView>();
+            _dictionary = new Dictionary<TKey, InnerCollectionView>();
         }
 
         /// <summary>
@@ -71,8 +75,8 @@ namespace System.Collections.Generic
         public MultiValueDictionary(int capacity)
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
-            dictionary = new Dictionary<TKey, InnerCollectionView>(capacity);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
+            _dictionary = new Dictionary<TKey, InnerCollectionView>(capacity);
         }
 
         /// <summary>
@@ -84,7 +88,7 @@ namespace System.Collections.Generic
         /// <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
         public MultiValueDictionary(IEqualityComparer<TKey> comparer)
         {
-            dictionary = new Dictionary<TKey, InnerCollectionView>(comparer);
+            _dictionary = new Dictionary<TKey, InnerCollectionView>(comparer);
         }
 
         /// <summary>
@@ -99,8 +103,8 @@ namespace System.Collections.Generic
         public MultiValueDictionary(int capacity, IEqualityComparer<TKey> comparer)
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
-            dictionary = new Dictionary<TKey, InnerCollectionView>(capacity, comparer);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
+            _dictionary = new Dictionary<TKey, InnerCollectionView>(capacity, comparer);
         }
 
         /// <summary>
@@ -126,9 +130,9 @@ namespace System.Collections.Generic
         public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, IReadOnlyCollection<TValue>>> enumerable, IEqualityComparer<TKey> comparer)
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
 
-            dictionary = new Dictionary<TKey, InnerCollectionView>(comparer);
+            _dictionary = new Dictionary<TKey, InnerCollectionView>(comparer);
             foreach (var pair in enumerable)
                 AddRange(pair.Key, pair.Value);
         }
@@ -164,11 +168,12 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
         }
 
         /// <summary>
@@ -197,13 +202,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity);
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(capacity)
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
         }
 
         /// <summary>
@@ -232,11 +238,12 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
         }
 
         /// <summary>
@@ -267,13 +274,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer);
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(capacity, comparer)
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
         }
 
         /// <summary>
@@ -302,12 +310,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -341,12 +351,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>, new()
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             if (new TValueCollection().IsReadOnly)
-                throw new InvalidOperationException(Properties.Resources.Create_TValueCollectionReadOnly);
+                throw new InvalidOperationException(Strings.Create_TValueCollectionReadOnly);
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary.NewCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                NewCollectionFactory = () => new TValueCollection()
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -385,11 +397,12 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
         }
 
         /// <summary>
@@ -420,13 +433,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity);
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(capacity)
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
         }
 
         /// <summary>
@@ -457,11 +471,12 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
         }
 
         /// <summary>
@@ -494,13 +509,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException("capacity", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(capacity), Strings.ArgumentOutOfRange_NeedNonNegNum);
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer);
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
-            return multiValueDictionary;
+            return new MultiValueDictionary<TKey, TValue>(capacity, comparer)
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
         }
 
         /// <summary>
@@ -531,12 +547,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -572,12 +590,14 @@ namespace System.Collections.Generic
             where TValueCollection : ICollection<TValue>
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             if (collectionFactory().IsReadOnly)
-                throw new InvalidOperationException((Properties.Resources.Create_TValueCollectionReadOnly));
+                throw new InvalidOperationException((Strings.Create_TValueCollectionReadOnly));
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary.NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                NewCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -608,14 +628,14 @@ namespace System.Collections.Generic
         public void Add(TKey key, TValue value)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
-            if (!dictionary.TryGetValue(key, out InnerCollectionView collection))
+                throw new ArgumentNullException(nameof(key));
+            if (!_dictionary.TryGetValue(key, out InnerCollectionView collection))
             {
                 collection = new InnerCollectionView(key, NewCollectionFactory());
-                dictionary.Add(key, collection);
+                _dictionary.Add(key, collection);
             }
             collection.AddValue(value);
-            version++;
+            _version++;
         }
 
         /// <summary>
@@ -633,20 +653,20 @@ namespace System.Collections.Generic
         public void AddRange(TKey key, IEnumerable<TValue> values)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             if (values == null)
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
 
-            if (!dictionary.TryGetValue(key, out InnerCollectionView collection))
+            if (!_dictionary.TryGetValue(key, out InnerCollectionView collection))
             {
                 collection = new InnerCollectionView(key, NewCollectionFactory());
-                dictionary.Add(key, collection);
+                _dictionary.Add(key, collection);
             }
             foreach (TValue value in values)
             {
                 collection.AddValue(value);
             }
-            version++;
+            _version++;
         }
 
         /// <summary>
@@ -659,11 +679,11 @@ namespace System.Collections.Generic
         public bool Remove(TKey key)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
-            if (dictionary.TryGetValue(key, out InnerCollectionView collection) && dictionary.Remove(key))
+            if (_dictionary.TryGetValue(key, out InnerCollectionView _) && _dictionary.Remove(key))
             {
-                version++;
+                _version++;
                 return true;
             }
             return false;
@@ -686,13 +706,13 @@ namespace System.Collections.Generic
         public bool Remove(TKey key, TValue value)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
-            if (dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.RemoveValue(value))
+            if (_dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.RemoveValue(value))
             {
                 if (collection.Count == 0)
-                    dictionary.Remove(key);
-                version++;
+                    _dictionary.Remove(key);
+                _version++;
                 return true;
             }
             return false;
@@ -709,9 +729,9 @@ namespace System.Collections.Generic
         public bool Contains(TKey key, TValue value)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
-            return (dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.Contains(value));
+            return (_dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.Contains(value));
         }
 
         /// <summary>
@@ -721,7 +741,7 @@ namespace System.Collections.Generic
         /// <returns><c>true</c> if the <see cref="MultiValueDictionary{TKey,TValue}"/> contains the <paramref name="value"/>; otherwise <c>false</c></returns>      
         public bool ContainsValue(TValue value)
         {
-            foreach (InnerCollectionView sublist in dictionary.Values)
+            foreach (InnerCollectionView sublist in _dictionary.Values)
                 if (sublist.Contains(value))
                     return true;
             return false;
@@ -733,8 +753,8 @@ namespace System.Collections.Generic
         /// </summary>
         public void Clear()
         {
-            dictionary.Clear();
-            version++;
+            _dictionary.Clear();
+            _version++;
         }
 
         #endregion
@@ -755,11 +775,11 @@ namespace System.Collections.Generic
         public bool ContainsKey(TKey key)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             // Since modification to the MultiValueDictionary is only allowed through its own API, we
             // can ensure that if a collection is in the internal dictionary then it must have at least one
             // associated TValue, or else it would have been removed whenever its final TValue was removed.
-            return dictionary.ContainsKey(key);
+            return _dictionary.ContainsKey(key);
         }
 
         /// <summary>
@@ -771,13 +791,7 @@ namespace System.Collections.Generic
         /// in this <see cref="MultiValueDictionary{TKey,TValue}"/> that has one or more associated 
         /// <typeparamref name="TValue"/>.
         /// </value>
-        public IEnumerable<TKey> Keys
-        {
-            get
-            {
-                return dictionary.Keys;
-            }
-        }
+        public IEnumerable<TKey> Keys => _dictionary.Keys;
 
         /// <summary>
         /// Attempts to get the <typeparamref name="TValue"/> associated with the given
@@ -796,9 +810,9 @@ namespace System.Collections.Generic
         public bool TryGetValue(TKey key, out IReadOnlyCollection<TValue> value)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
-            var success = dictionary.TryGetValue(key, out InnerCollectionView collection);
+            var success = _dictionary.TryGetValue(key, out InnerCollectionView collection);
             value = collection;
             return success;
         }
@@ -810,13 +824,7 @@ namespace System.Collections.Generic
         /// </summary>
         /// <value>An IEnumerable of each <see cref="IReadOnlyCollection{TValue}"/> in this 
         /// <see cref="MultiValueDictionary{TKey,TValue}"/></value>
-        public IEnumerable<IReadOnlyCollection<TValue>> Values
-        {
-            get
-            {
-                return dictionary.Values;
-            }
-        }
+        public IEnumerable<IReadOnlyCollection<TValue>> Values => _dictionary.Values;
 
         /// <summary>
         /// Get every <typeparamref name="TValue"/> associated with the given <typeparamref name="TKey"/>. If 
@@ -840,12 +848,12 @@ namespace System.Collections.Generic
             get
             {
                 if (key == null)
-                    throw new ArgumentNullException("key");
+                    throw new ArgumentNullException(nameof(key));
 
-                if (dictionary.TryGetValue(key, out InnerCollectionView collection))
+                if (_dictionary.TryGetValue(key, out InnerCollectionView collection))
                     return collection;
-                else
-                    throw new KeyNotFoundException();
+
+                throw new KeyNotFoundException();
             }
         }
 
@@ -854,13 +862,7 @@ namespace System.Collections.Generic
         /// in this <see cref="MultiValueDictionary{TKey,TValue}"/>.
         /// </summary>
         /// <value>The number of <typeparamref name="TKey"/>s in this <see cref="MultiValueDictionary{TKey,TValue}"/>.</value>
-        public int Count
-        {
-            get
-            {
-                return dictionary.Count;
-            }
-        }
+        public int Count => _dictionary.Count;
 
         /// <summary>
         /// Get an Enumerator over the <typeparamref name="TKey"/>-<see cref="IReadOnlyCollection{TValue}"/>
@@ -868,15 +870,9 @@ namespace System.Collections.Generic
         /// </summary>
         /// <returns>an Enumerator over the <typeparamref name="TKey"/>-<see cref="IReadOnlyCollection{TValue}"/>
         /// pairs in this <see cref="MultiValueDictionary{TKey,TValue}"/>.</returns>
-        public IEnumerator<KeyValuePair<TKey, IReadOnlyCollection<TValue>>> GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        public IEnumerator<KeyValuePair<TKey, IReadOnlyCollection<TValue>>> GetEnumerator() => new Enumerator(this);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         #endregion
 
@@ -888,12 +884,10 @@ namespace System.Collections.Generic
         private class Enumerator :
             IEnumerator<KeyValuePair<TKey, IReadOnlyCollection<TValue>>>
         {
-            private MultiValueDictionary<TKey, TValue> multiValueDictionary;
-            private int version;
-            private KeyValuePair<TKey, IReadOnlyCollection<TValue>> current;
-            private Dictionary<TKey, InnerCollectionView>.Enumerator enumerator;
-            private enum EnumerationState { BeforeFirst, During, AfterLast };
-            private EnumerationState state;
+            private readonly MultiValueDictionary<TKey, TValue> _multiValueDictionary;
+            private readonly int _version;
+            private Dictionary<TKey, InnerCollectionView>.Enumerator _enumerator;
+            private EnumerationState _state;
 
             /// <summary>
             /// Constructor for the enumerator
@@ -901,30 +895,27 @@ namespace System.Collections.Generic
             /// <param name="multiValueDictionary">A MultiValueDictionary to iterate over</param>
             internal Enumerator(MultiValueDictionary<TKey, TValue> multiValueDictionary)
             {
-                this.multiValueDictionary = multiValueDictionary;
-                this.version = multiValueDictionary.version;
-                this.current = default;
-                this.enumerator = multiValueDictionary.dictionary.GetEnumerator();
-                this.state = EnumerationState.BeforeFirst; ;
+                _multiValueDictionary = multiValueDictionary;
+                _version = multiValueDictionary._version;
+                _enumerator = multiValueDictionary._dictionary.GetEnumerator();
+                _state = EnumerationState.BeforeFirst;
+                Current = default;
             }
 
-            public KeyValuePair<TKey, IReadOnlyCollection<TValue>> Current
-            {
-                get { return current; }
-            }
+            public KeyValuePair<TKey, IReadOnlyCollection<TValue>> Current { get; private set; }
 
             object IEnumerator.Current
             {
                 get
                 {
-                    switch (state)
+                    switch (_state)
                     {
                         case EnumerationState.BeforeFirst:
-                            throw new InvalidOperationException((Properties.Resources.InvalidOperation_EnumNotStarted));
+                            throw new InvalidOperationException((Strings.InvalidOperation_EnumNotStarted));
                         case EnumerationState.AfterLast:
-                            throw new InvalidOperationException((Properties.Resources.InvalidOperation_EnumEnded));
+                            throw new InvalidOperationException((Strings.InvalidOperation_EnumEnded));
                         default:
-                            return current;
+                            return Current;
                     }
                 }
             }
@@ -938,22 +929,19 @@ namespace System.Collections.Generic
             /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
             public bool MoveNext()
             {
-                if (version != multiValueDictionary.version)
+                if (_version != _multiValueDictionary._version)
+                    throw new InvalidOperationException(Strings.InvalidOperation_EnumFailedVersion);
+
+                if (_enumerator.MoveNext())
                 {
-                    throw new InvalidOperationException(Properties.Resources.InvalidOperation_EnumFailedVersion);
-                }
-                else if (enumerator.MoveNext())
-                {
-                    current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(enumerator.Current.Key, enumerator.Current.Value);
-                    state = EnumerationState.During;
+                    Current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(_enumerator.Current.Key, _enumerator.Current.Value);
+                    _state = EnumerationState.During;
                     return true;
                 }
-                else
-                {
-                    current = default;
-                    state = EnumerationState.AfterLast;
-                    return false;
-                }
+
+                Current = default;
+                _state = EnumerationState.AfterLast;
+                return false;
             }
 
             /// <summary>
@@ -962,20 +950,24 @@ namespace System.Collections.Generic
             /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
             public void Reset()
             {
-                if (version != multiValueDictionary.version)
-                    throw new InvalidOperationException(Properties.Resources.InvalidOperation_EnumFailedVersion);
-                enumerator.Dispose();
-                enumerator = multiValueDictionary.dictionary.GetEnumerator();
-                current = default;
-                state = EnumerationState.BeforeFirst;
+                if (_version != _multiValueDictionary._version)
+                    throw new InvalidOperationException(Strings.InvalidOperation_EnumFailedVersion);
+                _enumerator.Dispose();
+                _enumerator = _multiValueDictionary._dictionary.GetEnumerator();
+                Current = default;
+                _state = EnumerationState.BeforeFirst;
             }
 
             /// <summary>
             /// Frees resources associated with this Enumerator
             /// </summary>
-            public void Dispose()
+            public void Dispose() => _enumerator.Dispose();
+
+            private enum EnumerationState
             {
-                enumerator.Dispose();
+                BeforeFirst,
+                During,
+                AfterLast
             }
         }
 
@@ -986,8 +978,7 @@ namespace System.Collections.Generic
             ICollection<TValue>,
             IReadOnlyCollection<TValue>
         {
-            private TKey key;
-            private ICollection<TValue> collection;
+            private readonly ICollection<TValue> _collection;
 
             #region Private Concrete API
             /*======================================================================
@@ -996,19 +987,13 @@ namespace System.Collections.Generic
 
             public InnerCollectionView(TKey key, ICollection<TValue> collection)
             {
-                this.key = key;
-                this.collection = collection;
+                Key = key;
+                _collection = collection;
             }
 
-            public void AddValue(TValue item)
-            {
-                collection.Add(item);
-            }
+            public void AddValue(TValue item) => _collection.Add(item);
 
-            public bool RemoveValue(TValue item)
-            {
-                return collection.Remove(item);
-            }
+            public bool RemoveValue(TValue item) => _collection.Remove(item);
 
             #endregion
 
@@ -1017,55 +1002,31 @@ namespace System.Collections.Generic
             ** Shared API
             ======================================================================*/
 
-            public bool Contains(TValue item)
-            {
-                return collection.Contains(item);
-            }
+            public bool Contains(TValue item) => _collection.Contains(item);
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
                 if (array == null)
-                    throw new ArgumentNullException("array");
+                    throw new ArgumentNullException(nameof(array));
                 if (arrayIndex < 0)
-                    throw new ArgumentOutOfRangeException("arrayIndex", Properties.Resources.ArgumentOutOfRange_NeedNonNegNum);
+                    throw new ArgumentOutOfRangeException(nameof(arrayIndex), Strings.ArgumentOutOfRange_NeedNonNegNum);
                 if (arrayIndex > array.Length)
-                    throw new ArgumentOutOfRangeException("arrayIndex", Properties.Resources.ArgumentOutOfRange_Index);
-                if (array.Length - arrayIndex < collection.Count)
-                    throw new ArgumentException(Properties.Resources.CopyTo_ArgumentsTooSmall, "arrayIndex");
+                    throw new ArgumentOutOfRangeException(nameof(arrayIndex), Strings.ArgumentOutOfRange_Index);
+                if (array.Length - arrayIndex < _collection.Count)
+                    throw new ArgumentException(Strings.CopyTo_ArgumentsTooSmall, nameof(arrayIndex));
 
-                collection.CopyTo(array, arrayIndex);
+                _collection.CopyTo(array, arrayIndex);
             }
 
-            public int Count
-            {
-                get
-                {
-                    return collection.Count;
-                }
-            }
+            public int Count => _collection.Count;
 
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public bool IsReadOnly => true;
 
-            public IEnumerator<TValue> GetEnumerator()
-            {
-                return collection.GetEnumerator();
-            }
+            public IEnumerator<TValue> GetEnumerator() => _collection.GetEnumerator();
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-            public TKey Key
-            {
-                get { return key; }
-            }
+            public TKey Key { get; }
 
             #endregion
 
@@ -1074,20 +1035,12 @@ namespace System.Collections.Generic
             ** Public-Facing API
             ======================================================================*/
 
-            void ICollection<TValue>.Add(TValue item)
-            {
-                throw new NotSupportedException(Properties.Resources.ReadOnly_Modification);
-            }
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            
 
-            void ICollection<TValue>.Clear()
-            {
-                throw new NotSupportedException(Properties.Resources.ReadOnly_Modification);
-            }
+            void ICollection<TValue>.Clear() => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
-            bool ICollection<TValue>.Remove(TValue item)
-            {
-                throw new NotSupportedException(Properties.Resources.ReadOnly_Modification);
-            }
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
             #endregion
         }
