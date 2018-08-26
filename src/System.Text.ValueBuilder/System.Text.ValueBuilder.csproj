@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>Low allocation string building.</Description>
+    <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET formatting parsing encoding UTF8</PackageTags>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
+  </ItemGroup>
+</Project>
