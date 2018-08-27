@@ -1,36 +1,46 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
+using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
     internal ref struct CustomStack
     {
+        private static byte[] _initStack = new byte[Utf8JsonReader.MaxDepth * StackRow.Size];
+        private byte[] _rentedBuffer;
         private Span<byte> _stackSpace;
         private int _topOfStack;
 
-        public CustomStack(Span<byte> stackSpace)
+        public CustomStack(int initialSize)
         {
-            _stackSpace = stackSpace;
-            _topOfStack = stackSpace.Length;
+            _rentedBuffer = initialSize <= Utf8JsonReader.MaxDepth * StackRow.Size
+                ? _initStack
+                : ArrayPool<byte>.Shared.Rent(initialSize);
+            _stackSpace = _rentedBuffer;
+            _topOfStack = _stackSpace.Length;
         }
 
-        public bool TryPush(StackRow row)
+        public void Dispose()
         {
-            if (_topOfStack >= StackRow.Size)
-            {
-                MemoryMarshal.Write(_stackSpace.Slice(_topOfStack - StackRow.Size), ref row);
-                bool hasChildren = true;
-                if (_topOfStack < _stackSpace.Length)
-                    MemoryMarshal.Write(_stackSpace.Slice(_topOfStack + 5), ref hasChildren);
-                _topOfStack -= StackRow.Size;
-                return true;
-            }
-            return false;
+            if (_rentedBuffer.Length > Utf8JsonReader.MaxDepth * StackRow.Size)
+                ArrayPool<byte>.Shared.Return(_rentedBuffer);
+            _stackSpace = Span<byte>.Empty;
+            _topOfStack = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Push(StackRow row)
+        {
+            if (_topOfStack < StackRow.Size)
+                Enlarge();
+            _topOfStack -= StackRow.Size;
+            MemoryMarshal.Write(_stackSpace.Slice(_topOfStack), ref row);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public StackRow Pop()
         {
             StackRow row = Peek();
@@ -38,6 +48,7 @@ namespace System.Text.JsonLab
             return row;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public StackRow Peek()
         {
             if (_topOfStack > _stackSpace.Length - StackRow.Size)
@@ -48,37 +59,29 @@ namespace System.Text.JsonLab
             return MemoryMarshal.Read<StackRow>(_stackSpace.Slice(_topOfStack));
         }
 
-        public bool IsTopArray()
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void Enlarge()
         {
-            if (_topOfStack > _stackSpace.Length - StackRow.Size)
-            {
-                return false;
-            }
-            return _stackSpace[_topOfStack] == 1;
+            int size = _rentedBuffer.Length * 2;
+            byte[] newArray = ArrayPool<byte>.Shared.Rent(size);
+
+            Span<byte> newStackSpace = newArray;
+            _stackSpace.CopyTo(newStackSpace.Slice(_rentedBuffer.Length));
+            _topOfStack += _rentedBuffer.Length;
+
+            ArrayPool<byte>.Shared.Return(_rentedBuffer);
+            _rentedBuffer = newArray;
+            _stackSpace = _rentedBuffer;
         }
 
-        private void Reset()
-        {
-            _stackSpace.Slice(_topOfStack - StackRow.Size, StackRow.Size).Fill(255);
-        }
-
-        public void Resize(Span<byte> newStackMemory)
-        {
-            Debug.Assert(newStackMemory.Length > _stackSpace.Length);
-            int stackGrowth = newStackMemory.Length - _stackSpace.Length;
-            _stackSpace.CopyTo(newStackMemory.Slice(stackGrowth));
-            _topOfStack += stackGrowth;
-            _stackSpace = newStackMemory;
-        }
-
-        public string PrintStacks()
+        public string PrintStack()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("IsArray" + "\t" + "Length" + "\r\n");
+            sb.Append(nameof(StackRow.SizeOrLength) + "\t" + nameof(StackRow.NumberOfRows) + "\r\n");
             for (int i = _stackSpace.Length - StackRow.Size; i >= StackRow.Size; i -= StackRow.Size)
             {
                 StackRow row = MemoryMarshal.Read<StackRow>(_stackSpace.Slice(i));
-                sb.Append(row.IsArray + "\t" + row.Length + "\r\n");
+                sb.Append(row.SizeOrLength + "\t" + row.NumberOfRows + "\r\n");
             }
             return sb.ToString();
         }

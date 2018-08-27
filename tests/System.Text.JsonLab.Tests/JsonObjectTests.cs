@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -66,9 +67,23 @@ namespace System.Text.JsonLab.Tests
         [MemberData(nameof(TestCases))]
         public void ParseJson(TestCaseType type, string jsonString)
         {
+            // Remove all formatting/indendation
+            /*if (true)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                {
+                    JToken jtoken = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        jtoken.WriteTo(jsonWriter);
+                        jsonString = stringWriter.ToString();
+                    }
+                }
+            }*/
+
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var parser = new JsonParser(dataUtf8);
-            JsonObject obj = parser.Parse();
+            JsonObject obj = JsonObject.Parse(dataUtf8);
 
             string actual = obj.PrintJson();
             string database1 = obj.PrintDatabase();
@@ -83,10 +98,87 @@ namespace System.Text.JsonLab.Tests
 
             if (type == TestCaseType.Json400KB)
             {
+
+                {
+                    var lookup1a = new Utf8Span("about");
+                    var lookup4a = new Utf8Span("greeting");
+                    var lookup2a = new Utf8Span("friends");
+                    var lookup3a = new Utf8Span("name");
+                    var lookup5a = new Utf8Span("age");
+
+                    string greeting = "";
+                    string about = "";
+                    string name = "";
+                    int age = 0;
+
+                    for (int i = 0; i < obj.ArrayLength; i += 10)
+                    {
+                        greeting = (string)obj[i][lookup4a];
+                        about = (string)obj[i][lookup1a];
+                        name = (string)obj[i][lookup2a][1][lookup3a];
+                        age = (int)obj[i][lookup5a];
+                    }
+
+                    for (int k = 0; k < 2; k++)
+                    {
+                        for (int i = 0; i < obj.ArrayLength; i += 10)
+                        {
+                            for (int j = 0; j < 300; j++)
+                            {
+                                greeting = (string)obj[5][lookup4a];
+                            }
+                            about = (string)obj[i][lookup1a];
+                            name = (string)obj[i][lookup2a][1][lookup3a];
+                            age = (int)obj[i][lookup5a];
+                        }
+                    }
+
+                    Assert.Equal(31, age);
+                    Assert.Equal("Lawrence Hewitt", name);
+                    Assert.Equal("Nulla qui enim dolor nisi enim occaecat sit ullamco commodo eiusmod proident ipsum eiusmod. Ad incididunt nulla proident ea aute commodo consequat sit esse voluptate nulla laborum ea in. Ipsum laborum dolor consectetur exercitation adipisicing occaecat consectetur excepteur.", about);
+                    Assert.Equal("Hello, Paul Cruz! You have 1 unread messages.", greeting);
+                }
+
+
+                var lookup1 = new Utf8Span("tags");
+                var lookup2 = new Utf8Span("friends");
+                var lookup3 = new Utf8Span("name");
+                var lookup4 = new Utf8Span("name1");
+                var lookup5 = new Utf8Span("greeting");
+
+                string t1 = (string)obj[1][lookup1][6];
+                string t2 = (string)obj[1][lookup2][2][lookup3];
+                
+                Assert.Equal("consequat", t1);
+                Assert.Equal("Burns Giles", t2);
+                string database3 = obj.PrintDatabase();
+                try
+                {
+                    int id = (int)obj[1][lookup4];
+                    Assert.True(false);
+                }
+                catch (KeyNotFoundException)
+                {
+
+                }
+
+                string t3 = (string)obj[1][lookup5];
+                Assert.Equal("Hello, Faith Cantrell! You have 8 unread messages.", t3);
+
+                /*string t1 = (string)obj[0]["tags"][6];
+                string t2 = (string)obj[0]["friends"][2]["name"];
+                int id = (int)obj[0]["id"];*/
+
+                for (int i = 0; i < obj.ArrayLength; i++)
+                {
+                    JsonObject temp = obj[i];
+                }
+
                 string database = obj.PrintDatabase();
                 var lookup = new Utf8Span("email");
                 JsonObject withinArray = obj[5];
                 database = withinArray.PrintDatabase();
+                database = obj.PrintDatabase();
                 JsonObject withinObject = withinArray[lookup];
                 database = withinObject.PrintDatabase();
                 Utf8Span email = (Utf8Span)withinObject;
@@ -104,10 +196,10 @@ namespace System.Text.JsonLab.Tests
         public void CustomParseJson(string jsonString)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var parser = new JsonParser(dataUtf8);
-            JsonObject obj = parser.Parse();
+            JsonObject obj = JsonObject.Parse(dataUtf8);
 
             string actual = obj.PrintJson();
+            string database1 = obj.PrintDatabase();
 
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
@@ -123,8 +215,9 @@ namespace System.Text.JsonLab.Tests
         {
             string depsJson = TestJson.DepsJsonSignalR;
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(depsJson);
-            var parser = new JsonParser(dataUtf8);
-            JsonObject obj = parser.Parse();
+            JsonObject obj = JsonObject.Parse(dataUtf8);
+
+            string temp = obj.PrintDatabase();
 
             var targetsString = new Utf8Span("targets");
             var librariesString = new Utf8Span("libraries");
@@ -153,8 +246,7 @@ namespace System.Text.JsonLab.Tests
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
 
-            var parser = new JsonParser(buffer);
-            JsonObject parsedObject = parser.Parse();
+            JsonObject parsedObject = JsonObject.Parse(buffer);
             try
             {
                 Assert.Equal(2, parsedObject.ArrayLength);
@@ -175,8 +267,7 @@ namespace System.Text.JsonLab.Tests
         public void ParseSimpleObject()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleObjectJson);
-            var parser = new JsonParser(buffer);
-            JsonObject parsedObject = parser.Parse();
+            JsonObject parsedObject = JsonObject.Parse(buffer);
             try
             {
                 var age = (int)parsedObject["age"];
@@ -210,8 +301,7 @@ namespace System.Text.JsonLab.Tests
         public void ParseNestedJson()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
-            var parser = new JsonParser(buffer);
-            JsonObject parsedObject = parser.Parse();
+            JsonObject parsedObject = JsonObject.Parse(buffer);
             try
             {
                 Assert.Equal(1, parsedObject.ArrayLength);
@@ -277,8 +367,8 @@ namespace System.Text.JsonLab.Tests
         public void ParseBoolean()
         {
             var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
-            var parser = new JsonParser(buffer);
-            JsonObject parsedObject = parser.Parse();
+            JsonObject parsedObject = JsonObject.Parse(buffer);
+            string temp = parsedObject.PrintDatabase();
             try
             {
                 var first = (bool)parsedObject[0];

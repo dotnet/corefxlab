@@ -20,7 +20,7 @@ namespace System.Text.JsonLab.Benchmarks
         public enum TestCaseType
         {
             HelloWorld,
-            BasicJson,
+            //BasicJson,
             //BasicLargeNum,
             //SpecialNumForm,
             //ProjectLockJson,
@@ -46,7 +46,7 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool IsDataCompact;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));

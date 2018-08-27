@@ -1,56 +1,47 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
     // Location - offset - 0 - size - 4
-    // Length - offset - 4 - size - 4
-    // Type - offset - 8 - size - 1
-    // HasChildren - offset - 9 - size - 1
-    // ArrayLength - offset - 10 - size - 4
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    // SizeOrLength - offset - 4 - size - 4
+    // _union - HasChildren | JsonType | NumberOfRows - offset - 8 - size - 4
+    [StructLayout(LayoutKind.Sequential)]
     internal struct DbRow
     {
-        public static int Size;
+        public const int Size = 12;
 
         public int Location;                // index in JSON payload
-        public int Length;      // length of text in JSON payload
-        public JsonType Type; // type of JSON construct (e.g. Object, Array, Number)
-        public bool HasChildren;
-        public int ArrayLength;
+        public int SizeOrLength;      // length of text in JSON payload (or number of elements if its a JSON array)
+        
+        // The highest order bit indicates if the JSON element has children
+        // The next 3 bits indicate the json type (there are 2^3 = 8 such types)
+        // The last 28 bits indicate the number of rows.
+        // Since each row of the database is 12 bytes long, we can't exceed 2^31/12 = 178956971 total number of rows.
+        // Hence, we only need 28 bits (maximum value of 268435455).
+        private readonly int _union;
 
-        public const int UnknownNumberOfRows = -1;
+        public bool HasChildren => _union < 0;  // True only if there are nested objects or arrays within the current JSON element
+        public JsonValueType JsonType => (JsonValueType)((_union & 0x70000000) >> 28); // type of JSON construct (e.g. Object, Array, Number)
+        public int NumberOfRows => _union & 0x0FFFFFFF; // Number of rows that the current JSON element occupies within the database
 
-        public DbRow(JsonType type, int valueIndex, int lengthOrNumberOfRows = UnknownNumberOfRows, int arrayNumberOfRows = UnknownNumberOfRows, bool hasChildren = false)
+        internal const int UnknownSize = -1;
+
+        public DbRow(JsonValueType jsonType, int location, int sizeOrLength = UnknownSize, int numberOfRows = 1)
         {
-            Location = valueIndex;
-            Length = lengthOrNumberOfRows;
-            Type = type;
-            ArrayLength = arrayNumberOfRows;
-            HasChildren = hasChildren;
+            Debug.Assert(jsonType >= JsonValueType.Object && jsonType <= JsonValueType.Unknown);
+            Debug.Assert(location >= 0);
+            Debug.Assert(sizeOrLength >= UnknownSize);
+            Debug.Assert(numberOfRows >= 1 && numberOfRows <= 0x0FFFFFFF);
+
+            Location = location;
+            SizeOrLength = sizeOrLength;
+            _union = numberOfRows | (int)jsonType << 28; // HasChildren is set to false by default
         }
 
-        public bool IsSimpleValue => Type > JsonType.Array; // Type >= 0b0010_00000...<28 times>
-
-        unsafe static DbRow()
-        {
-            Size = sizeof(DbRow);
-        }
-    }
-
-    // Do not change the order of the enum values, since IsSimpleValue relies on it.
-    public enum JsonType : byte
-    {
-        Object = 0,
-        Array = 1,
-        String = 2,
-        Number = 3,
-        True = 4,
-        False = 5,
-        Null = 6,
-        Unknown = 7,
-        PropertyName = 8
+        public bool IsSimpleValue => JsonType > JsonValueType.Array;
     }
 }

@@ -69,8 +69,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ChangeEntryPointLibraryNameJsonLab()
         {
-            var parser = new JsonParser(_dataUtf8);
-            JsonObject obj = parser.Parse();
+            JsonObject obj = JsonObject.Parse(_dataUtf8);
 
             JsonObject targets = obj["targets"];
             if (targets.TryGetChild(out JsonObject child))

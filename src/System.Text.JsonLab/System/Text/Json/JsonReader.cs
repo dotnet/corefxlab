@@ -9,7 +9,7 @@ namespace System.Text.JsonLab
     public ref struct Utf8JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
-        private const int MaxDepth = sizeof(ulong) * 8;
+        internal const int MaxDepth = sizeof(ulong) * 8;
 
         private ReadOnlySpan<byte> _buffer;
 
@@ -29,8 +29,8 @@ namespace System.Text.JsonLab
         private ulong _containerMask;
 
         // These properties are helpers for determining the current state of the reader
-        private bool InArray => !InObject;
-        private bool InObject => (_containerMask & 1) != 0;
+        internal bool InArray => !InObject;
+        internal bool InObject => (_containerMask & 1) != 0;
 
         /// <summary>
         /// Gets the token type of the last processed token in the JSON stream.
@@ -190,6 +190,8 @@ namespace System.Text.JsonLab
             }
             return true;
         }
+
+        internal bool NoMoreData => (0 >= (uint)_buffer.Length);
 
         private bool ReadSingleSegment(ref ReadOnlySpan<byte> buffer)
         {

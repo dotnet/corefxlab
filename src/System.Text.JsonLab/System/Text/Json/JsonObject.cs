@@ -1,7 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Buffers.Text;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
@@ -9,38 +12,34 @@ namespace System.Text.JsonLab
 {
     public ref struct JsonObject
     {
-        private Span<byte> _database;
+        private CustomDb _database;
         private ReadOnlySpan<byte> _jsonData;
 
-        public string PrintDatabase()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(nameof(DbRow.Location) + "\t" + nameof(DbRow.Length) + "\t" + nameof(DbRow.Type) + "\t" + nameof(DbRow.HasChildren) + "\t" + nameof(DbRow.ArrayLength) + "\r\n");
-            for (int i = 0; i < _database.Length; i += DbRow.Size)
-            {
-                DbRow record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
-                sb.Append(record.Location + "\t" + record.Length + "\t" + record.Type + "\t" + record.HasChildren + "\t" + record.ArrayLength + "\r\n");
-            }
-            return sb.ToString();
-        }
+        public string PrintDatabase() => _database.PrintDatabase();
 
         public string PrintJson()
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < _database.Length; i += DbRow.Size)
             {
-                DbRow record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
+                DbRow record = _database.Get(i);
                 // Special casing Null so that it matches what JSON.NET does
-                if (record.IsSimpleValue && record.Type != JsonType.Null)
+                if (record.IsSimpleValue && record.JsonType != JsonValueType.Null)
                 {
-                    ReadOnlySpan<byte> value = _jsonData.Slice(record.Location, record.Length);
+                    ReadOnlySpan<byte> value = _jsonData.Slice(record.Location, record.SizeOrLength);
                     sb.Append(Encoding.UTF8.GetString(value.ToArray())).Append(", ");
                 }
             }
             return sb.ToString();
         }
 
-        internal JsonObject(ReadOnlySpan<byte> jsonData, Span<byte> database)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, ArrayPool<byte> pool = null)
+        {
+            var parser = new JsonParser(utf8Json, pool);
+            return parser.Parse();
+        }
+
+        internal JsonObject(ReadOnlySpan<byte> jsonData, CustomDb database)
         {
             _database = database;
             _jsonData = jsonData;
@@ -48,43 +47,45 @@ namespace System.Text.JsonLab
 
         public bool TryGetChild(out JsonObject value)
         {
-            DbRow record = GetRecord(0);
+            DbRow record = _database.Get();
 
-            if (record.Length == 0)
+            if (record.SizeOrLength == 0)
             {
                 value = default;
                 return false;
             }
-            if (record.Type != JsonType.Object)
+            if (record.JsonType != JsonValueType.Object)
             {
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
-            record = MemoryMarshal.Read<DbRow>(_database.Slice(DbRow.Size));
+            record = _database.Get(DbRow.Size);
 
             int newStart = DbRow.Size + DbRow.Size;
             int newEnd = newStart + DbRow.Size;
 
-            record = MemoryMarshal.Read<DbRow>(_database.Slice(newStart));
+            record = _database.Get(newStart);
 
             if (!record.IsSimpleValue)
             {
-                newEnd = newEnd + DbRow.Size * record.Length;
+                newEnd = newEnd + DbRow.Size * record.SizeOrLength;
             }
 
-            value = new JsonObject(_jsonData, _database.Slice(newStart, newEnd - newStart));
+            CustomDb copy = _database;
+            copy.Span = _database.Slice(newStart, newEnd - newStart);
+            value = new JsonObject(_jsonData, copy);
             return true;
         }
 
         public void Remove(JsonObject obj)
         {
             ReadOnlySpan<byte> values = obj._jsonData;
-            Span<byte> db = obj._database;
+            CustomDb db = obj._database;
 
-            DbRow objRecord = MemoryMarshal.Read<DbRow>(db);
-            int reduce = objRecord.Length;
+            DbRow objRecord = db.Get();
+            int reduce = objRecord.SizeOrLength;
 
-            int idx = _database.IndexOf(db);
+            int idx = _database.Span.IndexOf(db.Span);
 
             int sliceVal = idx + db.Length;
 
@@ -102,62 +103,77 @@ namespace System.Text.JsonLab
                 DbRow record = MemoryMarshal.Read<DbRow>(temp.Slice(i));
                 if (!record.IsSimpleValue)
                 {
-                    DbRow myObj = MemoryMarshal.Read<DbRow>(_database.Slice(i + record.Length * DbRow.Size));
+                    DbRow myObj = _database.Get(i + record.SizeOrLength * DbRow.Size);
                     if (myObj.Location > objRecord.Location)
                     {
-                        DbRow fixup = new DbRow(record.Type, record.Location, record.Length - reduce);
+                        DbRow fixup = new DbRow(record.JsonType, record.Location, record.SizeOrLength - reduce);
                         MemoryMarshal.Write(temp.Slice(i), ref fixup);
                     }
                 }
             }
 
             _database.Slice(sliceVal).CopyTo(_database.Slice(idx));
-            _database = _database.Slice(0, _database.Length - db.Length - DbRow.Size);
+            _database.Span = _database.Slice(0, _database.Length - db.Length - DbRow.Size);
         }
 
         public bool TryGetValue(Utf8Span propertyName, out JsonObject value)
         {
-            DbRow record = GetRecord(0);
+            DbRow record = _database.Get();
 
-            if (record.Type != JsonType.Object)
-            {
+            if (record.JsonType != JsonValueType.Object)
                 JsonThrowHelper.ThrowInvalidOperationException();
-            }
-            if (record.Length == 0)
-            {
+
+            if (record.SizeOrLength == 0)
                 JsonThrowHelper.ThrowKeyNotFoundException();
-            }
 
             for (int i = DbRow.Size; i < _database.Length; i += DbRow.Size)
             {
-                record = GetRecord(i);
+                record = _database.Get(i);
 
-                if (!record.IsSimpleValue)
+                /*if (!record.IsSimpleValue)
                 {
-                    i += DbRow.Size * (record.Type == JsonType.Object ? record.Length : record.ArrayLength);
+                    if (record.SizeOrLength != 0)
+                        i += DbRow.Size * record.NumberOfRows;
+                    continue;
+                }*/
+
+                if (record.JsonType == JsonValueType.Object || 
+                    (record.JsonType == JsonValueType.Array &&
+                    (!record.HasChildren || record.NumberOfRows > record.SizeOrLength)))
+                {
+                    if (record.SizeOrLength != 0)
+                        i += DbRow.Size * record.NumberOfRows;
                     continue;
                 }
 
-                if (_jsonData.Slice(record.Location, record.Length).SequenceEqual(propertyName.Bytes))
+                if (record.JsonType == JsonValueType.Array)
                 {
-                    int newStart = i + DbRow.Size;
+                    int amountToSkip = record.NumberOfRows;
+                    record = _database.Get(i + DbRow.Size);
+                    amountToSkip += record.SizeOrLength * amountToSkip;
+                    if (amountToSkip != 0)
+                        i += DbRow.Size * amountToSkip;
+                    continue;
+                }
 
-                    record = GetRecord(newStart);
+                Debug.Assert(record.JsonType == JsonValueType.String);
 
+                int startIndex = i + DbRow.Size;
+                DbRow nextRecord = _database.Get(startIndex);
+
+                if (_jsonData.Slice(record.Location, record.SizeOrLength).SequenceEqual(propertyName.Bytes))
+                {
                     int length = DbRow.Size;
+                    if (!nextRecord.IsSimpleValue)
+                        length += DbRow.Size * nextRecord.NumberOfRows;
 
-                    if (!record.IsSimpleValue)
-                    {
-                        length += DbRow.Size * (record.Type == JsonType.Object ? record.Length : record.ArrayLength);
-                    }
-
-                    value = new JsonObject(_jsonData, _database.Slice(newStart, length));
+                    value = CreateJsonObject(startIndex, length);
                     return true;
                 }
 
-                JsonValueType valueType = GetType(i + DbRow.Size);
-                if (valueType > JsonValueType.Array)
+                if (nextRecord.IsSimpleValue)
                 {
+                    // Skip primitive value since we are looking for keys
                     i += DbRow.Size;
                 }
             }
@@ -168,45 +184,47 @@ namespace System.Text.JsonLab
 
         public bool TryGetValue(string propertyName, out JsonObject value)
         {
-            var record = GetRecord(0);
+            DbRow record = _database.Get();
 
-            if (record.Length == 0)
+            if (record.SizeOrLength == 0)
             {
                 JsonThrowHelper.ThrowKeyNotFoundException();
             }
 
-            if (record.Type != JsonType.Object)
+            if (record.JsonType != JsonValueType.Object)
             {
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
             for (int i = DbRow.Size; i < _database.Length; i += DbRow.Size)
             {
-                record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
+                record = _database.Get(i);
 
                 if (!record.IsSimpleValue)
                 {
-                    i += record.Length * DbRow.Size;
+                    i += record.SizeOrLength * DbRow.Size;
                     continue;
                 }
 
-                if (new Utf8Span(_jsonData.Slice(record.Location, record.Length)) == propertyName)
+                if (new Utf8Span(_jsonData.Slice(record.Location, record.SizeOrLength)) == propertyName)
                 {
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = MemoryMarshal.Read<DbRow>(_database.Slice(newStart));
+                    record = _database.Get(newStart);
 
                     if (!record.IsSimpleValue)
                     {
-                        newEnd = newEnd + DbRow.Size * record.Length;
+                        newEnd = newEnd + DbRow.Size * record.SizeOrLength;
                     }
 
-                    value = new JsonObject(_jsonData, _database.Slice(newStart, newEnd - newStart));
+                    CustomDb copy = _database;
+                    copy.Span = _database.Slice(newStart, newEnd - newStart);
+                    value = new JsonObject(_jsonData, copy);
                     return true;
                 }
 
-                var valueType = MemoryMarshal.Read<JsonValueType>(_database.Slice(i + DbRow.Size + 8));
+                var valueType = _database.GetJsonType(i + DbRow.Size);
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array)
                 {
                     i += DbRow.Size;
@@ -216,7 +234,7 @@ namespace System.Text.JsonLab
             value = default;
             return false;
         }
-
+        
         public JsonObject this[Utf8Span name]
         {
             get
@@ -243,77 +261,168 @@ namespace System.Text.JsonLab
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private JsonObject CreateJsonObject(int startIndex, int length)
+        {
+            CustomDb copy = _database;
+            copy.Span = _database.Slice(startIndex, length);
+            return new JsonObject(_jsonData, copy);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private JsonObject SequentialSearch(int startIndex, int length, int index, int uniformCount, int uniformValue, DbRow record)
+        {
+            bool uniqueFound = false;
+            int counter = 0;
+            for (int i = startIndex; i <= _database.Length; i += DbRow.Size)
+            {
+                DbRow nextRecord = _database.Get(i);
+
+                if (!uniqueFound && uniformValue == nextRecord.NumberOfRows)
+                    uniformCount++;
+                else
+                    uniqueFound = true;
+
+                if (index == counter)
+                {
+                    if (!nextRecord.IsSimpleValue)
+                    {
+                        length += DbRow.Size * nextRecord.NumberOfRows;
+                    }
+                    /*if (uniformCount > record.SizeOrLength)
+                        uniformCount = record.SizeOrLength;*/
+                    _database.SetNumberOfRows(0, uniformCount);
+                    return CreateJsonObject(i, length);
+                }
+
+                if (!nextRecord.IsSimpleValue)
+                {
+                    i += nextRecord.NumberOfRows * DbRow.Size;
+                }
+                counter++;
+            }
+            JsonThrowHelper.ThrowIndexOutOfRangeException();
+            return default;
+        }
+
         public JsonObject this[int index]
         {
             get
             {
-                DbRow record = GetRecord(0);
+                DbRow record = _database.Get();
 
-                if (record.Type != JsonType.Array)
-                {
+                string temp = _database.PrintDatabase();
+
+                if (record.JsonType != JsonValueType.Array)
                     JsonThrowHelper.ThrowInvalidOperationException();
-                    return default;
-                }
 
-                if ((uint)index >= (uint)record.Length)
-                {
+                if ((uint)index >= (uint)record.SizeOrLength)
                     JsonThrowHelper.ThrowIndexOutOfRangeException();
-                    return default;
-                }
 
-                if (record.ArrayLength == record.Length)
+                if (!record.HasChildren)
+                    return CreateJsonObject(DbRow.Size * (index + 1), DbRow.Size);
+
+                int length = DbRow.Size;
+                DbRow nextRecord = _database.Get(DbRow.Size);
+
+                if (index == 0)
                 {
-                    return new JsonObject(_jsonData, _database.Slice(DbRow.Size * (index + 1), DbRow.Size));
+                    if (!nextRecord.IsSimpleValue)
+                    {
+                        length += DbRow.Size * nextRecord.NumberOfRows;
+                    }
+                    return CreateJsonObject(DbRow.Size, length);
                 }
 
-                int counter = 0;
-                for (int i = DbRow.Size; i <= _database.Length; i += DbRow.Size)
+                int uniformCount = 0;
+                int uniformValue = nextRecord.SizeOrLength;
+                int startIndex = DbRow.Size;
+
+                if (record.NumberOfRows <= record.SizeOrLength)
                 {
-                    record = GetRecord(i);
-
-                    if (index == counter)
+                    if (index < record.NumberOfRows)
                     {
-                        int length = DbRow.Size;
-
-                        if (record.Type == JsonType.Object)
-                        {
-                            length = length + DbRow.Size * record.Length;
-                        }
-                        else if (record.Type == JsonType.Array)
-                        {
-                            length = length + DbRow.Size * record.ArrayLength;
-                        }
-
-                        return new JsonObject(_jsonData, _database.Slice(i, length));
+                        length = DbRow.Size * (1 + uniformValue);
+                        // startIndex is equivalent to DbRow.Size * (index + 1) + (index * DbRow.Size * homogenousValue);
+                        return CreateJsonObject(index * length + DbRow.Size, length);
                     }
 
-                    if (record.Type == JsonType.Object)
-                    {
-                        i += record.Length * DbRow.Size;
-                    }
-                    else if (record.Type == JsonType.Array)
-                    {
-                        i += record.ArrayLength * DbRow.Size;
-                    }
-
-                    counter++;
+                    startIndex = DbRow.Size * (record.NumberOfRows + record.NumberOfRows * uniformValue + 1);
+                    index -= record.NumberOfRows;
+                    uniformCount = record.NumberOfRows;
                 }
-
-                JsonThrowHelper.ThrowIndexOutOfRangeException();
-                return default;
+                return SequentialSearch(startIndex, length, index, uniformCount, uniformValue, record);
             }
         }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private JsonObject SequentialSearch(int index)
+        {
+            int counter = 0;
+            for (int i = DbRow.Size; i <= _database.Length; i += DbRow.Size)
+            {
+                DbRow nextRecord = _database.Get(i);
+
+                if (index == counter)
+                {
+                    int length = DbRow.Size;
+                    if (!nextRecord.IsSimpleValue)
+                    {
+                        length += DbRow.Size * nextRecord.NumberOfRows;
+                    }
+                    return CreateJsonObject(i, length);
+                }
+
+                if (!nextRecord.IsSimpleValue)
+                {
+                    i += nextRecord.NumberOfRows * DbRow.Size;
+                }
+                counter++;
+            }
+            JsonThrowHelper.ThrowIndexOutOfRangeException();
+            return default;
+        }
+
+        /*public JsonObject this[int index]
+        {
+            get
+            {
+                DbRow record = _database.Get();
+
+                if (record.JsonType != JsonValueType.Array)
+                    JsonThrowHelper.ThrowInvalidOperationException();
+
+                if ((uint)index >= (uint)record.SizeOrLength)
+                    JsonThrowHelper.ThrowIndexOutOfRangeException();
+
+                if (!record.HasChildren)
+                    return CreateJsonObject(DbRow.Size * (index + 1), DbRow.Size);
+
+                int length = DbRow.Size;
+                DbRow nextRecord = _database.Get(DbRow.Size);
+
+                if (index == 0)
+                {
+                    if (!nextRecord.IsSimpleValue)
+                    {
+                        length += DbRow.Size * nextRecord.NumberOfRows;
+                    }
+                    return CreateJsonObject(DbRow.Size, length);
+                }
+                return SequentialSearch(index);
+            }
+        }*/
 
         public int ArrayLength
         {
             get
             {
-                DbRow record = GetRecord(0);
-                if (record.Type != JsonType.Array)
+                DbRow record = _database.Get();
+                if (record.JsonType != JsonValueType.Array)
                 {
                     JsonThrowHelper.ThrowInvalidOperationException();
                 }
-                return record.Length;
+                return record.SizeOrLength;
             }
         }
 
@@ -324,35 +433,35 @@ namespace System.Text.JsonLab
 
         public static explicit operator Utf8Span(JsonObject json)
         {
-            DbRow record = json.GetRecord(0);
+            DbRow record = json._database.Get();
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
-            return new Utf8Span(json._jsonData.Slice(record.Location, record.Length));
+            return new Utf8Span(json._jsonData.Slice(record.Location, record.SizeOrLength));
         }
 
         public static explicit operator Utf8String(JsonObject json)
         {
-            DbRow record = json.GetRecord(0);
+            DbRow record = json._database.Get();
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
-            return new Utf8String(json._jsonData.Slice(record.Location, record.Length));
+            return new Utf8String(json._jsonData.Slice(record.Location, record.SizeOrLength));
         }
 
         public static explicit operator bool(JsonObject json)
         {
-            var record = json.GetRecord(0);
+            DbRow record = json._database.Get();
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
-            if (record.Length < 4 || record.Length > 5)
+            if (record.SizeOrLength < 4 || record.SizeOrLength > 5)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
@@ -368,7 +477,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator int(JsonObject json)
         {
-            var record = json.GetRecord(0);
+            DbRow record = json._database.Get();
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -385,7 +494,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator double(JsonObject json)
         {
-            var record = json.GetRecord(0);
+            DbRow record = json._database.Get();
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -401,13 +510,13 @@ namespace System.Text.JsonLab
                 nextByte = json._jsonData[count];
             }
 
-            if (nextByte < '0' || nextByte > '9' || count - record.Location >= record.Length)
+            if (nextByte < '0' || nextByte > '9' || count - record.Location >= record.SizeOrLength)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
             int integerPart = 0;
-            while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length)
+            while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.SizeOrLength)
             {
                 int digit = nextByte - '0';
                 integerPart = integerPart * 10 + digit;
@@ -423,7 +532,7 @@ namespace System.Text.JsonLab
                 count++;
                 int numberOfDigits = count;
                 nextByte = json._jsonData[count];
-                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length)
+                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.SizeOrLength)
                 {
                     int digit = nextByte - '0';
                     decimalPart = decimalPart * 10 + digit;
@@ -461,7 +570,7 @@ namespace System.Text.JsonLab
                 result *= (Math.Pow(10, isExpNegative ? exponentPart * -1 : exponentPart));
             }
 
-            if (count - record.Location > record.Length)
+            if (count - record.Location > record.SizeOrLength)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
@@ -470,31 +579,15 @@ namespace System.Text.JsonLab
 
         }
 
-        private DbRow GetRecord(int index) => index == 0
-            ? MemoryMarshal.Read<DbRow>(_database)
-            : MemoryMarshal.Read<DbRow>(_database.Slice(index));
-
-        private int GetLocation(int index) => index == 0
-            ? MemoryMarshal.Read<int>(_database)
-            : MemoryMarshal.Read<int>(_database.Slice(index));
-
-        private int GetLength(int index) => index == 0
-            ? MemoryMarshal.Read<int>(_database.Slice(4))
-            : MemoryMarshal.Read<int>(_database.Slice(index + 4));
-
-        private JsonValueType GetType(int index) => index == 0
-            ? MemoryMarshal.Read<JsonValueType>(_database.Slice(8))
-            : MemoryMarshal.Read<JsonValueType>(_database.Slice(index + 8));
-
-        public JsonValueType Type => GetType(0);
+        public JsonValueType Type => _database.GetJsonType();
 
         public bool HasValue()
         {
-            DbRow record = GetRecord(0);
+            DbRow record = _database.Get();
 
             if (!record.IsSimpleValue)
             {
-                return record.Length != 0;
+                return record.SizeOrLength != 0;
             }
             else
             {
@@ -508,8 +601,7 @@ namespace System.Text.JsonLab
 
         public void Dispose()
         {
-            //if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
-            _database = Span<byte>.Empty;
+            _database.Dispose();
             _jsonData = ReadOnlySpan<byte>.Empty;
         }
     }
