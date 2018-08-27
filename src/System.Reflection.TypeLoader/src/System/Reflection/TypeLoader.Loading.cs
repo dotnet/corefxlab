@@ -20,7 +20,7 @@ namespace System.Reflection
         // once in the list and its appearance prevents further assemblies with the same identity from loading unless the MVID's match.
         // Null entries do *not* appear here.
         //
-        private readonly ConcurrentDictionary<RoAssemblyName, LoadedAssemblyEntry> _loadedAssemblies = new ConcurrentDictionary<RoAssemblyName, LoadedAssemblyEntry>();
+        private readonly ConcurrentDictionary<RoAssemblyName, RoAssembly> _loadedAssemblies = new ConcurrentDictionary<RoAssemblyName, RoAssembly>();
 
         private RoAssembly LoadFromStreamCore(Stream peStream)
         {
@@ -33,24 +33,22 @@ namespace System.Reflection
 
                 string location = (peStream is FileStream fs) ? (fs.Name ?? string.Empty) : string.Empty;
                 MetadataReader reader  = peReader.GetMetadataReader();
-                RoAssembly newAssembly = new EcmaAssembly(this, peReader, reader, location);
-                AssemblyNameData defNameData = newAssembly.GetAssemblyNameDataNoCopy();
+                RoAssembly candidate = new EcmaAssembly(this, peReader, reader, location);
+                AssemblyNameData defNameData = candidate.GetAssemblyNameDataNoCopy();
                 byte[] pkt = defNameData.PublicKeyToken ?? Array.Empty<byte>();
                 if (pkt.Length == 0 && defNameData.PublicKey != null && defNameData.PublicKey.Length != 0)
                 {
                     pkt = defNameData.PublicKey.ComputePublicKeyToken();
                 }
                 RoAssemblyName defName = new RoAssemblyName(defNameData.Name, defNameData.Version, defNameData.CultureName, pkt);
-                Guid mvid = newAssembly.ManifestModule.ModuleVersionId;
 
-                LoadedAssemblyEntry candidate = new LoadedAssemblyEntry(newAssembly, mvid);
-                LoadedAssemblyEntry winner = _loadedAssemblies.GetOrAdd(defName, candidate);
-                if (winner.Assembly == newAssembly)
+                RoAssembly winner = _loadedAssemblies.GetOrAdd(defName, candidate);
+                if (winner == candidate)
                 {
                     // We won the race.
                     RegisterForDisposal(peReader);
                     peReaderToDispose = null;
-                    return _binds.GetOrAdd(defName, winner.Assembly);
+                    return _binds.GetOrAdd(defName, winner);
 
                     // What if we lost the race to bind the defName in the _binds list? Should we ignore it and return the newly created assembly
                     // (like Assembly.LoadModule()) does or return the prior assembly (like we do if we lose the race to commit into _loadedAssemblies?)
@@ -63,11 +61,11 @@ namespace System.Reflection
                 else
                 {
                     // We lost the race but check for a MVID mismatch.
-                    if (mvid != winner.Mvid)
+                    if (candidate.ManifestModule.ModuleVersionId != winner.ManifestModule.ModuleVersionId)
                         throw new FileLoadException(SR.Format(SR.FileLoadDuplicateAssemblies, defName));
                 }
 
-                return winner.Assembly;
+                return winner;
             }
             finally
             {

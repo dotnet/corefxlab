@@ -282,11 +282,17 @@ namespace System.Reflection
         {
             get
             {
+                if (IsDisposed)
+                    throw new ObjectDisposedException(nameof(TypeLoader));
+
                 return _userSuppliedCoreAssemblyName;
             }
 
             set
             {
+                if (IsDisposed)
+                    throw new ObjectDisposedException(nameof(TypeLoader));
+
                 if (_lazyCommitedCoreAssemblyName != s_committedCoreAssemblyNameSentinel)
                     throw new InvalidOperationException(SR.TooLateToSetCoreAssemblyName);
 
@@ -301,6 +307,17 @@ namespace System.Reflection
         }
 
         private volatile string _userSuppliedCoreAssemblyName;
+
+        /// <summary>
+        /// Return an atomic snapshot of the assemblies that have been loaded into the TypeLoader.
+        /// </summary>
+        public IEnumerable<Assembly> GetAssemblies()
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(TypeLoader));
+
+            return _loadedAssemblies.Values;
+        }
 
         /// <summary>
         /// Releases any native resources (such as file locks on assembly files.) After disposal, it is not safe to use
