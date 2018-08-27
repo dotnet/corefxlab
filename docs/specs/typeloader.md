@@ -42,6 +42,8 @@ namespace System.Reflection
 
         public string CoreAssemblyName { get; set; }
 
+        public IEnumerable<Assembly> GetAssemblies();
+
         public void Dispose();
     }
 }
@@ -149,10 +151,10 @@ called again for the same name) and TypeLoader will surface the FileNotFoundExce
 If the assembly is found but has a problem (such a bad image format or an IO error), event handlers
 should throw (or more likely, allow the BadImageException thrown by the Load api to go unhandled.)
 
-Following these rules will ensure that the "throwOnError: false" version of Assembly.GetType() filter errors as intended.
 TypeLoaders do not catch exceptions thrown out of handlers. They will propagate out to the application
 and no binding will occur.
 
+Following these rules will ensure that the "throwOnError: false" version of Assembly.GetType() filter errors as intended.
 ### More about Resolving event handlers
 
 Once an assembly has been bound, no assembly with the same assembly name identity
