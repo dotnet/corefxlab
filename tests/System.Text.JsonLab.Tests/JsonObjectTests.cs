@@ -62,6 +62,104 @@ namespace System.Text.JsonLab.Tests
             Json400KB,
         }
 
+        private string ReadHelloWorld(JToken obj)
+        {
+            string message = (string)obj["message"];
+            return message;
+        }
+
+        private string ReadJson400KB(JToken obj)
+        {
+            var sb = new StringBuilder();
+            foreach (JToken token in obj)
+            {
+                sb.Append((string)token["_id"]);
+                sb.Append((int)token["index"]);
+                sb.Append((string)token["guid"]);
+                sb.Append((bool)token["isActive"]);
+                sb.Append((string)token["balance"]);
+                sb.Append((string)token["picture"]);
+                sb.Append((int)token["age"]);
+                sb.Append((string)token["eyeColor"]);
+                sb.Append((string)token["name"]);
+                sb.Append((string)token["gender"]);
+                sb.Append((string)token["company"]);
+                sb.Append((string)token["email"]);
+                sb.Append((string)token["phone"]);
+                sb.Append((string)token["address"]);
+                sb.Append((string)token["about"]);
+                sb.Append((string)token["registered"]);
+                sb.Append((double)token["latitude"]);
+                sb.Append((double)token["longitude"]);
+
+                JToken tags = token["tags"];
+                foreach (JToken tag in tags)
+                {
+                    sb.Append((string)tag);
+                }
+                JToken friends = token["friends"];
+                foreach (JToken friend in friends)
+                {
+                    sb.Append((int)friend["id"]);
+                    sb.Append((string)friend["name"]);
+                }
+                sb.Append((string)token["greeting"]);
+                sb.Append((string)token["favoriteFruit"]);
+
+            }
+            return sb.ToString();
+        }
+
+        private string ReadHelloWorld(JsonObject obj)
+        {
+            string message = (string)obj["message"];
+            return message;
+        }
+
+        private string ReadJson400KB(JsonObject obj)
+        {
+            string db = obj.PrintDatabase();
+            var sb = new StringBuilder();
+            for (int i = 0; i < obj.ArrayLength; i++)
+            {
+                sb.Append((string)obj[i]["_id"]);
+                sb.Append((int)obj[i]["index"]);
+                sb.Append((string)obj[i]["guid"]);
+                sb.Append((bool)obj[i]["isActive"]);
+                sb.Append((string)obj[i]["balance"]);
+                sb.Append((string)obj[i]["picture"]);
+                sb.Append((int)obj[i]["age"]);
+                sb.Append((string)obj[i]["eyeColor"]);
+                sb.Append((string)obj[i]["name"]);
+                sb.Append((string)obj[i]["gender"]);
+                sb.Append((string)obj[i]["company"]);
+                sb.Append((string)obj[i]["email"]);
+                sb.Append((string)obj[i]["phone"]);
+                sb.Append((string)obj[i]["address"]);
+                sb.Append((string)obj[i]["about"]);
+                sb.Append((string)obj[i]["registered"]);
+                sb.Append((double)obj[i]["latitude"]);
+                sb.Append((double)obj[i]["longitude"]);
+
+                JsonObject tags = obj[i]["tags"];
+                for (int j = 0; j < tags.ArrayLength; j++)
+                {
+                    sb.Append((string)tags[j]);
+                }
+                JsonObject friends = obj[i]["friends"];
+                for (int j = 0; j < friends.ArrayLength; j++)
+                {
+                    sb.Append((int)friends[j]["id"]);
+                    sb.Append((string)friends[j]["name"]);
+                }
+                sb.Append((string)obj[i]["greeting"]);
+                sb.Append((string)obj[i]["favoriteFruit"]);
+
+            }
+            return sb.ToString();
+        }
+
+
         // TestCaseType is only used to give the json strings a descriptive name.
         [Theory]
         [MemberData(nameof(TestCases))]
@@ -83,7 +181,32 @@ namespace System.Text.JsonLab.Tests
             }*/
 
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
             JsonObject obj = JsonObject.Parse(dataUtf8);
+
+            var _stream = new MemoryStream(dataUtf8);
+            var _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
+
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            {
+                JToken jtoken = JToken.ReadFrom(jsonReader);
+
+                string expectedString = "";
+                string actualString = "";
+
+                if (type == TestCaseType.Json400KB)
+                {
+                    expectedString = ReadJson400KB(jtoken);
+                    actualString = ReadJson400KB(obj);
+                }
+                else if (type == TestCaseType.HelloWorld)
+                {
+                    expectedString = ReadHelloWorld(jtoken);
+                    actualString = ReadHelloWorld(obj);
+                }
+                Assert.Equal(expectedString, actualString);
+            }
 
             string actual = obj.PrintJson();
             string database1 = obj.PrintDatabase();
@@ -136,7 +259,7 @@ namespace System.Text.JsonLab.Tests
                     Assert.Equal(31, age);
                     Assert.Equal("Lawrence Hewitt", name);
                     Assert.Equal("Nulla qui enim dolor nisi enim occaecat sit ullamco commodo eiusmod proident ipsum eiusmod. Ad incididunt nulla proident ea aute commodo consequat sit esse voluptate nulla laborum ea in. Ipsum laborum dolor consectetur exercitation adipisicing occaecat consectetur excepteur.", about);
-                    Assert.Equal("Hello, Paul Cruz! You have 1 unread messages.", greeting);
+                    //Assert.Equal("Hello, Paul Cruz! You have 1 unread messages.", greeting);
                 }
 
 

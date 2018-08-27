@@ -19,7 +19,7 @@ namespace System.Text.JsonLab.Benchmarks
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
-            //HelloWorld,
+            HelloWorld,
             //BasicJson,
             //BasicLargeNum,
             //SpecialNumForm,
@@ -43,7 +43,7 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool IsDataCompact;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
@@ -74,7 +74,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ParseNewtonsoft()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -82,7 +82,7 @@ namespace System.Text.JsonLab.Benchmarks
             {
                 JToken obj = JToken.ReadFrom(jsonReader);
 
-                if (TestCase == TestCaseType.Json400KB)
+                /*if (TestCase == TestCaseType.Json400KB)
                 {
                     var lookup = "email";
 
@@ -91,7 +91,7 @@ namespace System.Text.JsonLab.Benchmarks
                         string email = (string)obj[5][lookup];
                     }
                 }
-                /*else if (TestCase == TestCaseType.HelloWorld)
+                else if (TestCase == TestCaseType.HelloWorld)
                 {
                     var lookup = "message";
 
@@ -100,10 +100,130 @@ namespace System.Text.JsonLab.Benchmarks
                         string message = (string)obj[lookup];
                     }
                 }*/
+
+                if (TestCase == TestCaseType.Json400KB)
+                {
+                    ReadJson400KB(obj);
+                }
+                else if (TestCase == TestCaseType.HelloWorld)
+                {
+                    ReadHelloWorld(obj);
+                }
             }
         }
 
+        private string ReadHelloWorld(JToken obj)
+        {
+            string message = (string)obj["message"];
+            return message;
+        }
+
+        private string ReadJson400KB(JToken obj)
+        {
+            var sb = new StringBuilder();
+            foreach (JToken token in obj)
+            {
+                sb.Append((string)token["_id"]);
+                sb.Append((int)token["index"]);
+                sb.Append((string)token["guid"]);
+                sb.Append((bool)token["isActive"]);
+                sb.Append((string)token["balance"]);
+                sb.Append((string)token["picture"]);
+                sb.Append((int)token["age"]);
+                sb.Append((string)token["eyeColor"]);
+                sb.Append((string)token["name"]);
+                sb.Append((string)token["gender"]);
+                sb.Append((string)token["company"]);
+                sb.Append((string)token["email"]);
+                sb.Append((string)token["phone"]);
+                sb.Append((string)token["address"]);
+                sb.Append((string)token["about"]);
+                sb.Append((string)token["registered"]);
+                sb.Append((double)token["latitude"]);
+                sb.Append((double)token["longitude"]);
+
+                JToken tags = token["tags"];
+                foreach (JToken tag in tags)
+                {
+                    sb.Append((string)tag);
+                }
+                JToken friends = token["friends"];
+                foreach (JToken friend in friends)
+                {
+                    sb.Append((int)friend["id"]);
+                    sb.Append((string)friend["name"]);
+                }
+                sb.Append((string)token["greeting"]);
+                sb.Append((string)token["favoriteFruit"]);
+
+            }
+            return sb.ToString();
+        }
+
+        private string ReadHelloWorld(JsonObject obj)
+        {
+            string message = (string)obj["message"];
+            return message;
+        }
+
+        private string ReadJson400KB(JsonObject obj)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < obj.ArrayLength; i++)
+            {
+                sb.Append((string)obj[i]["_id"]);
+                sb.Append((int)obj[i]["index"]);
+                sb.Append((string)obj[i]["guid"]);
+                sb.Append((bool)obj[i]["isActive"]);
+                sb.Append((string)obj[i]["balance"]);
+                sb.Append((string)obj[i]["picture"]);
+                sb.Append((int)obj[i]["age"]);
+                sb.Append((string)obj[i]["eyeColor"]);
+                sb.Append((string)obj[i]["name"]);
+                sb.Append((string)obj[i]["gender"]);
+                sb.Append((string)obj[i]["company"]);
+                sb.Append((string)obj[i]["email"]);
+                sb.Append((string)obj[i]["phone"]);
+                sb.Append((string)obj[i]["address"]);
+                sb.Append((string)obj[i]["about"]);
+                sb.Append((string)obj[i]["registered"]);
+                sb.Append((double)obj[i]["latitude"]);
+                sb.Append((double)obj[i]["longitude"]);
+
+                JsonObject tags = obj[i]["tags"];
+                for (int j = 0; j < tags.ArrayLength; j++)
+                {
+                    sb.Append((string)tags[j]);
+                }
+                JsonObject friends = obj[i]["friends"];
+                for (int j = 0; j < friends.ArrayLength; j++)
+                {
+                    sb.Append((int)friends[j]["id"]);
+                    sb.Append((string)friends[j]["name"]);
+                }
+                sb.Append((string)obj[i]["greeting"]);
+                sb.Append((string)obj[i]["favoriteFruit"]);
+
+            }
+            return sb.ToString();
+        }
+
         [Benchmark]
+        public void ParseSystemTextJsonLab()
+        {
+            JsonObject obj = JsonObject.Parse(_dataUtf8);
+            if (TestCase == TestCaseType.Json400KB)
+            {
+                ReadJson400KB(obj);
+            }
+            else if (TestCase == TestCaseType.HelloWorld)
+            {
+                ReadHelloWorld(obj);
+            }
+            obj.Dispose();
+        }
+
+        //[Benchmark]
         public void ParseSystemTextJsonLabScanSeveralProperties()
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);

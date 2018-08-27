@@ -130,14 +130,14 @@ namespace System.Text.JsonLab
             {
                 record = _database.Get(i);
 
-                /*if (!record.IsSimpleValue)
+                if (!record.IsSimpleValue)
                 {
                     if (record.SizeOrLength != 0)
                         i += DbRow.Size * record.NumberOfRows;
                     continue;
-                }*/
+                }
 
-                if (record.JsonType == JsonValueType.Object || 
+                /*if (record.JsonType == JsonValueType.Object || 
                     (record.JsonType == JsonValueType.Array &&
                     (!record.HasChildren || record.NumberOfRows > record.SizeOrLength)))
                 {
@@ -154,7 +154,7 @@ namespace System.Text.JsonLab
                     if (amountToSkip != 0)
                         i += DbRow.Size * amountToSkip;
                     continue;
-                }
+                }*/
 
                 Debug.Assert(record.JsonType == JsonValueType.String);
 
@@ -184,7 +184,8 @@ namespace System.Text.JsonLab
 
         public bool TryGetValue(string propertyName, out JsonObject value)
         {
-            DbRow record = _database.Get();
+            return TryGetValue((Utf8Span)propertyName, out value);
+            /*DbRow record = _database.Get();
 
             if (record.SizeOrLength == 0)
             {
@@ -232,7 +233,7 @@ namespace System.Text.JsonLab
             }
 
             value = default;
-            return false;
+            return false;*/
         }
         
         public JsonObject this[Utf8Span name]
@@ -305,7 +306,7 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        public JsonObject this[int index]
+        /*public JsonObject this[int index]
         {
             get
             {
@@ -353,7 +354,7 @@ namespace System.Text.JsonLab
                 }
                 return SequentialSearch(startIndex, length, index, uniformCount, uniformValue, record);
             }
-        }
+        }*/
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private JsonObject SequentialSearch(int index)
@@ -383,7 +384,7 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        /*public JsonObject this[int index]
+        public JsonObject this[int index]
         {
             get
             {
@@ -411,7 +412,7 @@ namespace System.Text.JsonLab
                 }
                 return SequentialSearch(index);
             }
-        }*/
+        }
 
         public int ArrayLength
         {
