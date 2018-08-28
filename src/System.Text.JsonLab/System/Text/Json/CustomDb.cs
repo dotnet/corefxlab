@@ -25,8 +25,9 @@ namespace System.Text.JsonLab
 
         public void Dispose()
         {
-            if (_pool != null)
-                _pool.Return(_rentedBuffer);
+            if (_pool == null)
+                JsonThrowHelper.ThrowInvalidOperationException("Only root object can (and should) be disposed.");
+            _pool.Return(_rentedBuffer);
             Span = Span<byte>.Empty;
             Index = 0;
         }
@@ -139,20 +140,20 @@ namespace System.Text.JsonLab
             return -1;
         }
 
-        public DbRow Get(int index = 0)
+        public DbRow Get() => MemoryMarshal.Read<DbRow>(Span);
+
+        public DbRow Get(int index)
         {
             Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
-            return index == 0
-            ? MemoryMarshal.Read<DbRow>(Span)
-            : MemoryMarshal.Read<DbRow>(Span.Slice(index));
+            return MemoryMarshal.Read<DbRow>(Span.Slice(index));
         }
 
-        public int GetLocation(int index = 0)
+        public int GetLocation() => MemoryMarshal.Read<int>(Span);
+
+        public int GetLocation(int index)
         {
             Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
-            return index == 0
-            ? MemoryMarshal.Read<int>(Span)
-            : MemoryMarshal.Read<int>(Span.Slice(index));
+            return MemoryMarshal.Read<int>(Span.Slice(index));
         }
 
         public int GetSizeOrLength(int index)

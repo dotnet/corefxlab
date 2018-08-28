@@ -118,11 +118,35 @@ namespace System.Text.JsonLab.Tests
 
         private string ReadJson400KB(JsonObject obj)
         {
-            string db = obj.PrintDatabase();
+            Utf8Span _id = (Utf8Span)"_id";
+            Utf8Span index = (Utf8Span)"index";
+            Utf8Span guid = (Utf8Span)"guid";
+            Utf8Span isActive = (Utf8Span)"isActive";
+            Utf8Span balance = (Utf8Span)"balance";
+            Utf8Span picture = (Utf8Span)"picture";
+            Utf8Span age = (Utf8Span)"age";
+            Utf8Span eyeColor = (Utf8Span)"eyeColor";
+            Utf8Span name = (Utf8Span)"name";
+            Utf8Span gender = (Utf8Span)"gender";
+            Utf8Span company = (Utf8Span)"company";
+            Utf8Span email = (Utf8Span)"email";
+            Utf8Span phone = (Utf8Span)"phone";
+            Utf8Span address = (Utf8Span)"address";
+            Utf8Span about = (Utf8Span)"about";
+            Utf8Span registered = (Utf8Span)"registered";
+            Utf8Span latitude = (Utf8Span)"latitude";
+            Utf8Span longitude = (Utf8Span)"longitude";
+            Utf8Span tags = (Utf8Span)"tags";
+            Utf8Span friends = (Utf8Span)"friends";
+            Utf8Span id = (Utf8Span)"id";
+            Utf8Span greeting = (Utf8Span)"greeting";
+            Utf8Span favoriteFruit = (Utf8Span)"favoriteFruit";
+
+
             var sb = new StringBuilder();
             for (int i = 0; i < obj.ArrayLength; i++)
             {
-                sb.Append((string)obj[i]["_id"]);
+                /*sb.Append((string)obj[i]["_id"]);
                 sb.Append((int)obj[i]["index"]);
                 sb.Append((string)obj[i]["guid"]);
                 sb.Append((bool)obj[i]["isActive"]);
@@ -153,12 +177,44 @@ namespace System.Text.JsonLab.Tests
                     sb.Append((string)friends[j]["name"]);
                 }
                 sb.Append((string)obj[i]["greeting"]);
-                sb.Append((string)obj[i]["favoriteFruit"]);
+                sb.Append((string)obj[i]["favoriteFruit"]);*/
+
+                sb.Append((string)obj[i][_id]);
+                sb.Append((int)obj[i][index]);
+                sb.Append((string)obj[i][guid]);
+                sb.Append((bool)obj[i][isActive]);
+                sb.Append((string)obj[i][balance]);
+                sb.Append((string)obj[i][picture]);
+                sb.Append((int)obj[i][age]);
+                sb.Append((string)obj[i][eyeColor]);
+                sb.Append((string)obj[i][name]);
+                sb.Append((string)obj[i][gender]);
+                sb.Append((string)obj[i][company]);
+                sb.Append((string)obj[i][email]);
+                sb.Append((string)obj[i][phone]);
+                sb.Append((string)obj[i][address]);
+                sb.Append((string)obj[i][about]);
+                sb.Append((string)obj[i][registered]);
+                sb.Append((double)obj[i][latitude]);
+                sb.Append((double)obj[i][longitude]);
+
+                JsonObject tagsObject = obj[i][tags];
+                for (int j = 0; j < tagsObject.ArrayLength; j++)
+                {
+                    sb.Append((string)tagsObject[j]);
+                }
+                JsonObject friendsObject = obj[i][friends];
+                for (int j = 0; j < friendsObject.ArrayLength; j++)
+                {
+                    sb.Append((int)friendsObject[j][id]);
+                    sb.Append((string)friendsObject[j][name]);
+                }
+                sb.Append((string)obj[i][greeting]);
+                sb.Append((string)obj[i][favoriteFruit]);
 
             }
             return sb.ToString();
         }
-
 
         // TestCaseType is only used to give the json strings a descriptive name.
         [Theory]

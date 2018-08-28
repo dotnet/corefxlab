@@ -97,6 +97,17 @@ namespace System.Text.JsonLab
             return new KeyNotFoundException();
         }
 
+        public static void ThrowInvalidOperationException(string message)
+        {
+            throw GetInvalidOperationException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static InvalidOperationException GetInvalidOperationException(string message)
+        {
+            return new InvalidOperationException(message);
+        }
+
         public static void ThrowInvalidOperationException()
         {
             throw GetInvalidOperationException();
