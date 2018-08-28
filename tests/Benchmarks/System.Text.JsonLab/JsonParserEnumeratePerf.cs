@@ -46,8 +46,65 @@ namespace System.Text.JsonLab.Benchmarks
             {
                 JToken obj = JToken.ReadFrom(jsonReader);
 
-                foreach (JToken token in obj)
+                for (int j = 0; j < 100; j++)
                 {
+                    foreach (JToken token in obj)
+                    {
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        public void ParseNewtonsoftEnumerateReverse()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            {
+                JToken obj = JToken.ReadFrom(jsonReader);
+
+                for (int j = 0; j < 100; j++)
+                {
+                    for (int i = 299; i >= 0; i--)
+                    {
+                        JToken token = obj[i];
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        public void ParseNewtonsoftFirst()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            {
+                JToken obj = JToken.ReadFrom(jsonReader);
+
+                for (int j = 0; j < 100; j++)
+                {
+                    for (int i = 0; i < 300; i++)
+                    {
+                        JToken token = obj[0];
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        public void ParseNewtonsoftMiddle()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            {
+                JToken obj = JToken.ReadFrom(jsonReader);
+
+                for (int j = 0; j < 100; j++)
+                {
+                    for (int i = 0; i < 300; i++)
+                    {
+                        JToken token = obj[150];
+                    }
                 }
             }
         }
@@ -57,9 +114,12 @@ namespace System.Text.JsonLab.Benchmarks
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);
 
-            for (int i = 0; i < obj.ArrayLength; i++)
+            for (int j = 0; j < 100; j++)
             {
-                JsonObject withinArray = obj[i];
+                for (int i = 0; i < obj.ArrayLength; i++)
+                {
+                    JsonObject withinArray = obj[i];
+                }
             }
 
             obj.Dispose();
@@ -70,9 +130,12 @@ namespace System.Text.JsonLab.Benchmarks
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);
 
-            for (int i = obj.ArrayLength - 1; i >= 0; i--)
+            for (int j = 0; j < 100; j++)
             {
-                JsonObject withinArray = obj[i];
+                for (int i = obj.ArrayLength - 1; i >= 0; i--)
+                {
+                    JsonObject withinArray = obj[i];
+                }
             }
 
             obj.Dispose();
@@ -83,9 +146,28 @@ namespace System.Text.JsonLab.Benchmarks
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);
 
-            for (int i = 0; i < obj.ArrayLength; i++)
+            for (int j = 0; j < 100; j++)
             {
-                JsonObject withinArray = obj[0];
+                for (int i = 0; i < obj.ArrayLength; i++)
+                {
+                    JsonObject withinArray = obj[0];
+                }
+            }
+
+            obj.Dispose();
+        }
+
+        [Benchmark]
+        public void ParseSystemTextJsonLabMiddle()
+        {
+            JsonObject obj = JsonObject.Parse(_dataUtf8);
+
+            for (int j = 0; j < 100; j++)
+            {
+                for (int i = 0; i < obj.ArrayLength; i++)
+                {
+                    JsonObject withinArray = obj[150];
+                }
             }
 
             obj.Dispose();
