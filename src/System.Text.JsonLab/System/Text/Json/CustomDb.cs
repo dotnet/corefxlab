@@ -83,6 +83,7 @@ namespace System.Text.JsonLab
         {
             Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
             Debug.Assert(numberOfRows >= 1 && numberOfRows <= 0x0FFFFFFF);
+            // We need to avoid overwriting the most significant byte
             byte previous = (byte)(Span[index + 11] >> 4);
             int value = (previous << 28) | numberOfRows;
             MemoryMarshal.Write(Span.Slice(index + 8), ref value);
@@ -93,18 +94,10 @@ namespace System.Text.JsonLab
         public void SetHasChildren(int index)
         {
             Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
+            // The HasChildren bit is part of the most significant byte
             index += 11;
             byte previous = Span[index];
             Span[index] = (byte)(1 << 7 | previous);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //TODO: Resolve little endian/big endian issue
-        public void SetArrayUniformLength(int index, int uniformLength)
-        {
-            Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
-            Debug.Assert(uniformLength >= 1 && uniformLength <= 0x0FFFFFFF);
-            MemoryMarshal.Write(Span.Slice(index + 12), ref uniformLength);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -195,11 +188,11 @@ namespace System.Text.JsonLab
         public string PrintDatabase()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(nameof(DbRow.Location) + "\t" + nameof(DbRow.SizeOrLength) + "\t" + nameof(DbRow.JsonType) + "\t" + nameof(DbRow.HasChildren) + "\t" + nameof(DbRow.NumberOfRows) + "\t" + nameof(DbRow.ArrayUniformLength) + "\r\n");
+            sb.Append(nameof(DbRow.Location) + "\t" + nameof(DbRow.SizeOrLength) + "\t" + nameof(DbRow.JsonType) + "\t" + nameof(DbRow.HasChildren) + "\t" + nameof(DbRow.NumberOfRows) + "\r\n");
             for (int i = 0; i < Span.Length; i += DbRow.Size)
             {
                 DbRow record = MemoryMarshal.Read<DbRow>(Span.Slice(i));
-                sb.Append(record.Location + "\t" + record.SizeOrLength + "\t" + record.JsonType + "\t" + record.HasChildren + "\t" + record.NumberOfRows + "\t" + record.ArrayUniformLength + "\r\n");
+                sb.Append(record.Location + "\t" + record.SizeOrLength + "\t" + record.JsonType + "\t" + record.HasChildren + "\t" + record.NumberOfRows + "\r\n");
             }
             return sb.ToString();
         }

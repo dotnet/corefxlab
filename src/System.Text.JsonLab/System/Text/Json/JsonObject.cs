@@ -208,7 +208,7 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        /*public JsonObject this[int index]
+        public JsonObject this[int index]
         {
             get
             {
@@ -225,92 +225,6 @@ namespace System.Text.JsonLab
 
                 return SequentialSearch(index);
             }
-        }*/
-
-        public JsonObject this[int index]
-        {
-            get
-            {
-                DbRow record = _database.Get();
-
-                if (record.JsonType != JsonValueType.Array)
-                    JsonThrowHelper.ThrowInvalidOperationException();
-
-                if ((uint)index >= (uint)record.SizeOrLength)
-                    JsonThrowHelper.ThrowIndexOutOfRangeException();
-
-                if (!record.HasChildren)
-                    return CreateJsonObject(DbRow.Size * (index + 1), DbRow.Size);
-
-                DbRow nextRecord = _database.Get(DbRow.Size);
-                int uniformValue = nextRecord.SizeOrLength;
-
-                if (index < record.ArrayUniformLength)
-                {
-                    int length = DbRow.Size * (1 + uniformValue);
-                    // startIndex is equivalent to DbRow.Size * (index + 1) + (index * DbRow.Size * uniformValue);
-                    return CreateJsonObject(index * length + DbRow.Size, length);
-                }
-                return SequentialSearch(index, uniformValue, record.ArrayUniformLength);
-            }
-        }
-
-        private JsonObject SequentialSearch(int index, int uniformValue, int uniformCount)
-        {
-            int startIndex = DbRow.Size * (uniformCount + uniformCount * uniformValue + 1);
-            int counter = uniformCount;
-            Debug.Assert(index >= counter);
-
-            int i = startIndex;
-            for (; i <= _database.Length; i += DbRow.Size)
-            {
-                DbRow nextRecord = _database.Get(i);
-
-                if (uniformValue == nextRecord.NumberOfRows)
-                {
-                    uniformCount++;
-                }
-                else
-                {
-                    _database.SetArrayUniformLength(0, uniformCount);
-                    break;
-                }
-
-                if (index == counter)
-                {
-                    int length = DbRow.Size;
-                    if (!nextRecord.IsSimpleValue)
-                        length += DbRow.Size * nextRecord.NumberOfRows;
-                    _database.SetArrayUniformLength(0, uniformCount);
-                    return CreateJsonObject(i, length);
-                }
-
-                if (!nextRecord.IsSimpleValue)
-                    i += nextRecord.NumberOfRows * DbRow.Size;
-
-                counter++;
-            }
-
-            for (; i <= _database.Length; i += DbRow.Size)
-            {
-                DbRow nextRecord = _database.Get(i);
-
-                if (index == counter)
-                {
-                    int length = DbRow.Size;
-                    if (!nextRecord.IsSimpleValue)
-                        length += DbRow.Size * nextRecord.NumberOfRows;
-                    return CreateJsonObject(i, length);
-                }
-
-                if (!nextRecord.IsSimpleValue)
-                    i += nextRecord.NumberOfRows * DbRow.Size;
-
-                counter++;
-            }
-
-            JsonThrowHelper.ThrowIndexOutOfRangeException();
-            return default;
         }
 
         public int ArrayLength

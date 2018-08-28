@@ -184,6 +184,7 @@ namespace System.Text.JsonLab.Tests
             {
                 using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
                 {
+                    jsonReader.FloatParseHandling = FloatParseHandling.Decimal;
                     JToken jtoken = JToken.ReadFrom(jsonReader);
                     var stringWriter = new StringWriter();
                     using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))

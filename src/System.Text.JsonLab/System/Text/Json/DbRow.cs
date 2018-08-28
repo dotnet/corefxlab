@@ -12,7 +12,7 @@ namespace System.Text.JsonLab
     [StructLayout(LayoutKind.Sequential)]
     internal struct DbRow
     {
-        public const int Size = 16;
+        public const int Size = 12;
 
         public int Location;                // index in JSON payload
         public int SizeOrLength;      // length of text in JSON payload (or number of elements if its a JSON array)
@@ -23,8 +23,6 @@ namespace System.Text.JsonLab
         // Since each row of the database is 12 bytes long, we can't exceed 2^31/12 = 178956971 total number of rows.
         // Hence, we only need 28 bits (maximum value of 268435455).
         private readonly int _union;
-
-        public int ArrayUniformLength;
 
         public bool HasChildren => _union < 0;  // True only if there are nested objects or arrays within the current JSON element
         public JsonValueType JsonType => (JsonValueType)((_union & 0x70000000) >> 28); // type of JSON construct (e.g. Object, Array, Number)
@@ -42,7 +40,6 @@ namespace System.Text.JsonLab
             Location = location;
             SizeOrLength = sizeOrLength;
             _union = numberOfRows | (int)jsonType << 28; // HasChildren is set to false by default
-            ArrayUniformLength = 1;
         }
 
         public bool IsSimpleValue => JsonType > JsonValueType.Array;
