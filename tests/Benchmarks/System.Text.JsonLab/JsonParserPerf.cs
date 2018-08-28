@@ -107,7 +107,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public void ParseSystemTextJsonLab()
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);
