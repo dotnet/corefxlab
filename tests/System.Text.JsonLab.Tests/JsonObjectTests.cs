@@ -21,22 +21,39 @@ namespace System.Text.JsonLab.Tests
             {
                 return new List<object[]>
                 {
-                    new object[] { TestCaseType.Basic, TestJson.BasicJson},
-                    new object[] { TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
-                    new object[] { TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.DeepTree, TestJson.DeepTree},
-                    new object[] { TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
-                    //new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.HelloWorld, TestJson.HelloWorld},
-                    new object[] { TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
-                    new object[] { TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
-                    new object[] { TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
-                    //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
-                    //new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.Json400B, TestJson.Json400B},
-                    new object[] { TestCaseType.Json4KB, TestJson.Json4KB},
-                    new object[] { TestCaseType.Json40KB, TestJson.Json40KB},
-                    new object[] { TestCaseType.Json400KB, TestJson.Json400KB}
+                    new object[] { true, TestCaseType.Basic, TestJson.BasicJson},
+                    new object[] { true, TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
+                    new object[] { true, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.DeepTree, TestJson.DeepTree},
+                    new object[] { true, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { true, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.HelloWorld, TestJson.HelloWorld},
+                    new object[] { true, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
+                    new object[] { true, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
+                    new object[] { true, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
+                    //new object[] { true, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
+                    //new object[] { true, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { true, TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { true, TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { true, TestCaseType.Json400KB, TestJson.Json400KB},
+
+                    new object[] { false, TestCaseType.Basic, TestJson.BasicJson},
+                    new object[] { false, TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
+                    new object[] { false, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.DeepTree, TestJson.DeepTree},
+                    new object[] { false, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { false, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.HelloWorld, TestJson.HelloWorld},
+                    new object[] { false, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
+                    new object[] { false, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
+                    new object[] { false, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
+                    //new object[] { false, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
+                    //new object[] { false, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { false, TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { false, TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { false, TestCaseType.Json400KB, TestJson.Json400KB}
                 };
             }
         }
@@ -118,35 +135,10 @@ namespace System.Text.JsonLab.Tests
 
         private string ReadJson400KB(JsonObject obj)
         {
-            Utf8Span _id = (Utf8Span)"_id";
-            Utf8Span index = (Utf8Span)"index";
-            Utf8Span guid = (Utf8Span)"guid";
-            Utf8Span isActive = (Utf8Span)"isActive";
-            Utf8Span balance = (Utf8Span)"balance";
-            Utf8Span picture = (Utf8Span)"picture";
-            Utf8Span age = (Utf8Span)"age";
-            Utf8Span eyeColor = (Utf8Span)"eyeColor";
-            Utf8Span name = (Utf8Span)"name";
-            Utf8Span gender = (Utf8Span)"gender";
-            Utf8Span company = (Utf8Span)"company";
-            Utf8Span email = (Utf8Span)"email";
-            Utf8Span phone = (Utf8Span)"phone";
-            Utf8Span address = (Utf8Span)"address";
-            Utf8Span about = (Utf8Span)"about";
-            Utf8Span registered = (Utf8Span)"registered";
-            Utf8Span latitude = (Utf8Span)"latitude";
-            Utf8Span longitude = (Utf8Span)"longitude";
-            Utf8Span tags = (Utf8Span)"tags";
-            Utf8Span friends = (Utf8Span)"friends";
-            Utf8Span id = (Utf8Span)"id";
-            Utf8Span greeting = (Utf8Span)"greeting";
-            Utf8Span favoriteFruit = (Utf8Span)"favoriteFruit";
-
-
             var sb = new StringBuilder();
             for (int i = 0; i < obj.ArrayLength; i++)
             {
-                /*sb.Append((string)obj[i]["_id"]);
+                sb.Append((string)obj[i]["_id"]);
                 sb.Append((int)obj[i]["index"]);
                 sb.Append((string)obj[i]["guid"]);
                 sb.Append((bool)obj[i]["isActive"]);
@@ -177,41 +169,7 @@ namespace System.Text.JsonLab.Tests
                     sb.Append((string)friends[j]["name"]);
                 }
                 sb.Append((string)obj[i]["greeting"]);
-                sb.Append((string)obj[i]["favoriteFruit"]);*/
-
-                sb.Append((string)obj[i][_id]);
-                sb.Append((int)obj[i][index]);
-                sb.Append((string)obj[i][guid]);
-                sb.Append((bool)obj[i][isActive]);
-                sb.Append((string)obj[i][balance]);
-                sb.Append((string)obj[i][picture]);
-                sb.Append((int)obj[i][age]);
-                sb.Append((string)obj[i][eyeColor]);
-                sb.Append((string)obj[i][name]);
-                sb.Append((string)obj[i][gender]);
-                sb.Append((string)obj[i][company]);
-                sb.Append((string)obj[i][email]);
-                sb.Append((string)obj[i][phone]);
-                sb.Append((string)obj[i][address]);
-                sb.Append((string)obj[i][about]);
-                sb.Append((string)obj[i][registered]);
-                sb.Append((double)obj[i][latitude]);
-                sb.Append((double)obj[i][longitude]);
-
-                JsonObject tagsObject = obj[i][tags];
-                for (int j = 0; j < tagsObject.ArrayLength; j++)
-                {
-                    sb.Append((string)tagsObject[j]);
-                }
-                JsonObject friendsObject = obj[i][friends];
-                for (int j = 0; j < friendsObject.ArrayLength; j++)
-                {
-                    sb.Append((int)friendsObject[j][id]);
-                    sb.Append((string)friendsObject[j][name]);
-                }
-                sb.Append((string)obj[i][greeting]);
-                sb.Append((string)obj[i][favoriteFruit]);
-
+                sb.Append((string)obj[i]["favoriteFruit"]);
             }
             return sb.ToString();
         }
@@ -219,10 +177,10 @@ namespace System.Text.JsonLab.Tests
         // TestCaseType is only used to give the json strings a descriptive name.
         [Theory]
         [MemberData(nameof(TestCases))]
-        public void ParseJson(TestCaseType type, string jsonString)
+        public void ParseJson(bool compactData, TestCaseType type, string jsonString)
         {
             // Remove all formatting/indendation
-            /*if (true)
+            if (compactData)
             {
                 using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
                 {
@@ -234,17 +192,15 @@ namespace System.Text.JsonLab.Tests
                         jsonString = stringWriter.ToString();
                     }
                 }
-            }*/
+            }
 
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
             JsonObject obj = JsonObject.Parse(dataUtf8);
 
-            var _stream = new MemoryStream(dataUtf8);
-            var _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
-
-            _stream.Seek(0, SeekOrigin.Begin);
-            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            var stream = new MemoryStream(dataUtf8);
+            var streamReader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            using (JsonTextReader jsonReader = new JsonTextReader(streamReader))
             {
                 JToken jtoken = JToken.ReadFrom(jsonReader);
 
@@ -265,7 +221,6 @@ namespace System.Text.JsonLab.Tests
             }
 
             string actual = obj.PrintJson();
-            string database1 = obj.PrintDatabase();
 
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
@@ -274,95 +229,6 @@ namespace System.Text.JsonLab.Tests
             string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(expected, actual);
-
-            if (type == TestCaseType.Json400KB)
-            {
-
-                {
-                    var lookup1a = new Utf8Span("about");
-                    var lookup4a = new Utf8Span("greeting");
-                    var lookup2a = new Utf8Span("friends");
-                    var lookup3a = new Utf8Span("name");
-                    var lookup5a = new Utf8Span("age");
-
-                    string greeting = "";
-                    string about = "";
-                    string name = "";
-                    int age = 0;
-
-                    for (int i = 0; i < obj.ArrayLength; i += 10)
-                    {
-                        greeting = (string)obj[i][lookup4a];
-                        about = (string)obj[i][lookup1a];
-                        name = (string)obj[i][lookup2a][1][lookup3a];
-                        age = (int)obj[i][lookup5a];
-                    }
-
-                    for (int k = 0; k < 2; k++)
-                    {
-                        for (int i = 0; i < obj.ArrayLength; i += 10)
-                        {
-                            for (int j = 0; j < 300; j++)
-                            {
-                                greeting = (string)obj[5][lookup4a];
-                            }
-                            about = (string)obj[i][lookup1a];
-                            name = (string)obj[i][lookup2a][1][lookup3a];
-                            age = (int)obj[i][lookup5a];
-                        }
-                    }
-
-                    Assert.Equal(31, age);
-                    Assert.Equal("Lawrence Hewitt", name);
-                    Assert.Equal("Nulla qui enim dolor nisi enim occaecat sit ullamco commodo eiusmod proident ipsum eiusmod. Ad incididunt nulla proident ea aute commodo consequat sit esse voluptate nulla laborum ea in. Ipsum laborum dolor consectetur exercitation adipisicing occaecat consectetur excepteur.", about);
-                    //Assert.Equal("Hello, Paul Cruz! You have 1 unread messages.", greeting);
-                }
-
-
-                var lookup1 = new Utf8Span("tags");
-                var lookup2 = new Utf8Span("friends");
-                var lookup3 = new Utf8Span("name");
-                var lookup4 = new Utf8Span("name1");
-                var lookup5 = new Utf8Span("greeting");
-
-                string t1 = (string)obj[1][lookup1][6];
-                string t2 = (string)obj[1][lookup2][2][lookup3];
-                
-                Assert.Equal("consequat", t1);
-                Assert.Equal("Burns Giles", t2);
-                string database3 = obj.PrintDatabase();
-                try
-                {
-                    int id = (int)obj[1][lookup4];
-                    Assert.True(false);
-                }
-                catch (KeyNotFoundException)
-                {
-
-                }
-
-                string t3 = (string)obj[1][lookup5];
-                Assert.Equal("Hello, Faith Cantrell! You have 8 unread messages.", t3);
-
-                /*string t1 = (string)obj[0]["tags"][6];
-                string t2 = (string)obj[0]["friends"][2]["name"];
-                int id = (int)obj[0]["id"];*/
-
-                for (int i = 0; i < obj.ArrayLength; i++)
-                {
-                    JsonObject temp = obj[i];
-                }
-
-                string database = obj.PrintDatabase();
-                var lookup = new Utf8Span("email");
-                JsonObject withinArray = obj[5];
-                database = withinArray.PrintDatabase();
-                database = obj.PrintDatabase();
-                JsonObject withinObject = withinArray[lookup];
-                database = withinObject.PrintDatabase();
-                Utf8Span email = (Utf8Span)withinObject;
-                Assert.Equal("kentlester@solgan.com", email.ToString());
-            }
         }
 
         [Theory]
@@ -378,7 +244,6 @@ namespace System.Text.JsonLab.Tests
             JsonObject obj = JsonObject.Parse(dataUtf8);
 
             string actual = obj.PrintJson();
-            string database1 = obj.PrintDatabase();
 
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
@@ -395,8 +260,6 @@ namespace System.Text.JsonLab.Tests
             string depsJson = TestJson.DepsJsonSignalR;
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(depsJson);
             JsonObject obj = JsonObject.Parse(dataUtf8);
-
-            string temp = obj.PrintDatabase();
 
             var targetsString = new Utf8Span("targets");
             var librariesString = new Utf8Span("libraries");
@@ -547,7 +410,6 @@ namespace System.Text.JsonLab.Tests
         {
             var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
             JsonObject parsedObject = JsonObject.Parse(buffer);
-            string temp = parsedObject.PrintDatabase();
             try
             {
                 var first = (bool)parsedObject[0];

@@ -4,7 +4,6 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
@@ -160,7 +159,7 @@ namespace System.Text.JsonLab
 
         public bool TryGetValue(string propertyName, out JsonObject value)
             => TryGetValue((Utf8Span)propertyName, out value);
-        
+
         public JsonObject this[Utf8Span name]
         {
             get
@@ -176,7 +175,6 @@ namespace System.Text.JsonLab
 
         public JsonObject this[string name] => this[(Utf8Span)name];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private JsonObject CreateJsonObject(int startIndex, int length)
         {
             CustomDb copy = _database;
@@ -184,93 +182,6 @@ namespace System.Text.JsonLab
             return new JsonObject(_jsonData, copy);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private JsonObject SequentialSearch(int startIndex, int length, int index, int uniformCount, int uniformValue, DbRow record)
-        {
-            bool uniqueFound = false;
-            int counter = 0;
-            for (int i = startIndex; i <= _database.Length; i += DbRow.Size)
-            {
-                DbRow nextRecord = _database.Get(i);
-
-                if (!uniqueFound && uniformValue == nextRecord.NumberOfRows)
-                    uniformCount++;
-                else
-                    uniqueFound = true;
-
-                if (index == counter)
-                {
-                    if (!nextRecord.IsSimpleValue)
-                    {
-                        length += DbRow.Size * nextRecord.NumberOfRows;
-                    }
-                    /*if (uniformCount > record.SizeOrLength)
-                        uniformCount = record.SizeOrLength;*/
-                    _database.SetNumberOfRows(0, uniformCount);
-                    return CreateJsonObject(i, length);
-                }
-
-                if (!nextRecord.IsSimpleValue)
-                {
-                    i += nextRecord.NumberOfRows * DbRow.Size;
-                }
-                counter++;
-            }
-            JsonThrowHelper.ThrowIndexOutOfRangeException();
-            return default;
-        }
-
-        /*public JsonObject this[int index]
-        {
-            get
-            {
-                DbRow record = _database.Get();
-
-                string temp = _database.PrintDatabase();
-
-                if (record.JsonType != JsonValueType.Array)
-                    JsonThrowHelper.ThrowInvalidOperationException();
-
-                if ((uint)index >= (uint)record.SizeOrLength)
-                    JsonThrowHelper.ThrowIndexOutOfRangeException();
-
-                if (!record.HasChildren)
-                    return CreateJsonObject(DbRow.Size * (index + 1), DbRow.Size);
-
-                int length = DbRow.Size;
-                DbRow nextRecord = _database.Get(DbRow.Size);
-
-                if (index == 0)
-                {
-                    if (!nextRecord.IsSimpleValue)
-                    {
-                        length += DbRow.Size * nextRecord.NumberOfRows;
-                    }
-                    return CreateJsonObject(DbRow.Size, length);
-                }
-
-                int uniformCount = 0;
-                int uniformValue = nextRecord.SizeOrLength;
-                int startIndex = DbRow.Size;
-
-                if (record.NumberOfRows <= record.SizeOrLength)
-                {
-                    if (index < record.NumberOfRows)
-                    {
-                        length = DbRow.Size * (1 + uniformValue);
-                        // startIndex is equivalent to DbRow.Size * (index + 1) + (index * DbRow.Size * homogenousValue);
-                        return CreateJsonObject(index * length + DbRow.Size, length);
-                    }
-
-                    startIndex = DbRow.Size * (record.NumberOfRows + record.NumberOfRows * uniformValue + 1);
-                    index -= record.NumberOfRows;
-                    uniformCount = record.NumberOfRows;
-                }
-                return SequentialSearch(startIndex, length, index, uniformCount, uniformValue, record);
-            }
-        }*/
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private JsonObject SequentialSearch(int index)
         {
             int counter = 0;

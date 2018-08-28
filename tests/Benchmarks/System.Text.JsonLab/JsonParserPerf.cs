@@ -12,27 +12,27 @@ using System.Text.Utf8;
 namespace System.Text.JsonLab.Benchmarks
 {
     // Since there are 120 tests here (8 * 15), setting low values for the warmupCount and targetCount
-    //[SimpleJob(-1, 3, 5)]
-    //[MemoryDiagnoser]
+    [SimpleJob(-1, 3, 5)]
+    [MemoryDiagnoser]
     public class JsonParserPerf
     {
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
             HelloWorld,
-            //BasicJson,
-            //BasicLargeNum,
-            //SpecialNumForm,
-            //ProjectLockJson,
-            //FullSchema1,
-            //FullSchema2,
-            //DeepTree,
-            //BroadTree,
-            //LotsOfNumbers,
-            //LotsOfStrings,
-            //Json400B,
-            //Json4KB,
-            //Json40KB,
+            BasicJson,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
             Json400KB
         }
 
@@ -43,10 +43,10 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
-        [Params(true/*, false*/)]
+        [Params(true, false)]
         public bool IsDataCompact;
 
-        [Params(/*true,*/ false)]
+        [Params(true, false)]
         public bool OnlyParse;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
@@ -77,7 +77,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ParseNewtonsoft()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -91,15 +91,15 @@ namespace System.Text.JsonLab.Benchmarks
                     {
                         ReadHelloWorld(obj);
                     }
-                    /*else if (TestCase == TestCaseType.Json400B)
+                    else if (TestCase == TestCaseType.Json400B)
                     {
                         ReadJson400B(obj);
                     }
                     else if (TestCase == TestCaseType.BasicJson)
                     {
                         ReadJsonBasic(obj);
-                    }*/
-                    else if (TestCase == TestCaseType.Json400KB/* || TestCase == TestCaseType.Json40KB || TestCase == TestCaseType.Json4KB*/)
+                    }
+                    else if (TestCase == TestCaseType.Json400KB || TestCase == TestCaseType.Json40KB || TestCase == TestCaseType.Json4KB)
                     {
                         ReadJson400KB(obj);
                     }
@@ -117,15 +117,15 @@ namespace System.Text.JsonLab.Benchmarks
                 {
                     ReadHelloWorld(obj);
                 }
-                /*else if (TestCase == TestCaseType.Json400B)
+                else if (TestCase == TestCaseType.Json400B)
                 {
                     ReadJson400B(obj);
                 }
                 else if (TestCase == TestCaseType.BasicJson)
                 {
                     ReadJsonBasic(obj);
-                }*/
-                else if (TestCase == TestCaseType.Json400KB/* || TestCase == TestCaseType.Json40KB || TestCase == TestCaseType.Json4KB*/)
+                }
+                else if (TestCase == TestCaseType.Json400KB || TestCase == TestCaseType.Json40KB || TestCase == TestCaseType.Json4KB)
                 {
                     ReadJson400KB(obj);
                 }
@@ -255,39 +255,6 @@ namespace System.Text.JsonLab.Benchmarks
             var sb = new StringBuilder();
             for (int i = 0; i < obj.ArrayLength; i++)
             {
-                /*sb.Append((string)obj[i]["_id"]);
-                sb.Append((int)obj[i]["index"]);
-                sb.Append((string)obj[i]["guid"]);
-                sb.Append((bool)obj[i]["isActive"]);
-                sb.Append((string)obj[i]["balance"]);
-                sb.Append((string)obj[i]["picture"]);
-                sb.Append((int)obj[i]["age"]);
-                sb.Append((string)obj[i]["eyeColor"]);
-                sb.Append((string)obj[i]["name"]);
-                sb.Append((string)obj[i]["gender"]);
-                sb.Append((string)obj[i]["company"]);
-                sb.Append((string)obj[i]["email"]);
-                sb.Append((string)obj[i]["phone"]);
-                sb.Append((string)obj[i]["address"]);
-                sb.Append((string)obj[i]["about"]);
-                sb.Append((string)obj[i]["registered"]);
-                sb.Append((double)obj[i]["latitude"]);
-                sb.Append((double)obj[i]["longitude"]);
-
-                JsonObject tags = obj[i]["tags"];
-                for (int j = 0; j < tags.ArrayLength; j++)
-                {
-                    sb.Append((string)tags[j]);
-                }
-                JsonObject friends = obj[i]["friends"];
-                for (int j = 0; j < friends.ArrayLength; j++)
-                {
-                    sb.Append((int)friends[j]["id"]);
-                    sb.Append((string)friends[j]["name"]);
-                }
-                sb.Append((string)obj[i]["greeting"]);
-                sb.Append((string)obj[i]["favoriteFruit"]);*/
-
                 sb.Append((string)obj[i][_id]);
                 sb.Append((int)obj[i][index]);
                 sb.Append((string)obj[i][guid]);
@@ -374,112 +341,6 @@ namespace System.Text.JsonLab.Benchmarks
             sb.Append((string)address["city"]);
             sb.Append((string)address["zip"]);
             return sb.ToString();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabScanSeveralProperties()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            var lookup1 = new Utf8Span("about");
-            var lookup4 = new Utf8Span("greeting");
-            var lookup2 = new Utf8Span("friends");
-            var lookup3 = new Utf8Span("name");
-            var lookup5 = new Utf8Span("age");
-
-            for (int k = 0; k < 2; k++)
-            {
-                for (int i = 0; i < obj.ArrayLength; i += 10)
-                {
-                    for (int j = 0; j < 300; j++)
-                    {
-                        string greeting = (string)obj[5][lookup4];
-                    }
-                    string about = (string)obj[i][lookup1];
-                    string temp = (string)obj[i][lookup2][1][lookup3];
-                    int age = (int)obj[i][lookup5];
-                }
-            }
-
-            obj.Dispose();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabScanProperties()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            var lookup4 = new Utf8Span("greeting");
-            for (int i = 0; i < 20_000; i++)
-            {
-                string id = (string)obj[10][lookup4];
-            }
-
-            obj.Dispose();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabEnumerate()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            for (int i = 0; i < obj.ArrayLength; i++)
-            {
-                JsonObject withinArray = obj[i];
-            }
-
-            obj.Dispose();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabEnumerateReverse()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            for (int i = obj.ArrayLength - 1; i >= 0; i--)
-            {
-                JsonObject withinArray = obj[i];
-            }
-
-            obj.Dispose();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabFirst()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            for (int i = 0; i < obj.ArrayLength; i++)
-            {
-                JsonObject withinArray = obj[0];
-            }
-
-            obj.Dispose();
-        }
-
-        //[Benchmark]
-        public void ParseSystemTextJsonLabConstantAccess()
-        {
-            JsonObject obj = JsonObject.Parse(_dataUtf8);
-
-            if (TestCase == TestCaseType.Json400KB)
-            {
-                var lookup = new Utf8Span("email");
-
-                for (int i = 0; i < 10_000; i++)
-                {
-                    Utf8Span message = (Utf8Span)obj[5][lookup];
-                }
-            }
-            else if (TestCase == TestCaseType.HelloWorld)
-            {
-                var lookup = new Utf8Span("message");
-
-                for (int i = 0; i < 10; i++)
-                {
-                    Utf8Span message = (Utf8Span)obj[lookup];
-                }
-            }
         }
     }
 }

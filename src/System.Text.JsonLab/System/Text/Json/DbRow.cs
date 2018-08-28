@@ -16,7 +16,7 @@ namespace System.Text.JsonLab
 
         public int Location;                // index in JSON payload
         public int SizeOrLength;      // length of text in JSON payload (or number of elements if its a JSON array)
-        
+
         // The highest order bit indicates if the JSON element has children
         // The next 3 bits indicate the json type (there are 2^3 = 8 such types)
         // The last 28 bits indicate the number of rows.
