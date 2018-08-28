@@ -274,12 +274,24 @@ namespace System.Buffers.Reader
         /// Skip consecutive instances of the given <paramref name="value"/>.
         /// </summary>
         /// <returns>True if any Ts were skipped.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SkipPast(T value)
         {
             int start = Consumed;
-            while (!End && CurrentSpan[CurrentSpanIndex].Equals(value))
+            ReadOnlySpan<T> unread = UnreadSpan;
+            int i = 0;
+            for (; i < unread.Length; i++)
             {
-                Advance(1);
+                T val = unread[i];
+                if (!val.Equals(value))
+                {
+                    break;
+                }
+            }
+            Advance(i);
+            if (i == unread.Length)
+            {
+                SkipPastSlow(value);
             }
 
             return start != Consumed;
@@ -292,12 +304,162 @@ namespace System.Buffers.Reader
         public bool SkipPastAny(ReadOnlySpan<T> values)
         {
             int start = Consumed;
-            while (!End && values.IndexOf(CurrentSpan[CurrentSpanIndex]) != -1)
+            ReadOnlySpan<T> unread = UnreadSpan;
+            int i = 0;
+            for (; i < unread.Length; i++)
             {
-                Advance(1);
+                T val = unread[i];
+                if (values.IndexOf(val) == -1)
+                {
+                    break;
+                }
+            }
+            Advance(i);
+            if (i == unread.Length)
+            {
+                SkipPastAnySlow(values);
             }
 
             return start != Consumed;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SkipPastAny(T value0, T value1, T value2, T value3)
+        {
+            int start = Consumed;
+            ReadOnlySpan<T> unread = UnreadSpan;
+            int i = 0;
+            for (; i < unread.Length; i++)
+            {
+                T val = unread[i];
+                if (!val.Equals(value0) && !val.Equals(value1) && !val.Equals(value2) && !val.Equals(value3))
+                {
+                    break;
+                }
+            }
+            Advance(i);
+            if (i == unread.Length)
+            {
+                SkipPastAnySlow(value0, value1, value2, value3);
+            }
+
+            return start != Consumed;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SkipPastAny(T value0, T value1, T value2)
+        {
+            int start = Consumed;
+            ReadOnlySpan<T> unread = UnreadSpan;
+            int i = 0;
+            for (; i < unread.Length; i++)
+            {
+                T val = unread[i];
+                if (!val.Equals(value0) && !val.Equals(value1) && !val.Equals(value2))
+                {
+                    break;
+                }
+            }
+            Advance(i);
+            if (i == unread.Length)
+            {
+                SkipPastAnySlow(value0, value1, value2);
+            }
+
+            return start != Consumed;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SkipPastAny(T value0, T value1)
+        {
+            int start = Consumed;
+            ReadOnlySpan<T> unread = UnreadSpan;
+            int i = 0;
+            for (; i < unread.Length; i++)
+            {
+                T val = unread[i];
+                if (!val.Equals(value0) && !val.Equals(value1))
+                {
+                    break;
+                }
+            }
+            Advance(i);
+            if (i == unread.Length)
+            {
+                SkipPastAnySlow(value0, value1);
+            }
+
+            return start != Consumed;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void SkipPastSlow(T value)
+        {
+            while (!End)
+            {
+                T val = CurrentSpan[CurrentSpanIndex];
+                if (!val.Equals(value))
+                {
+                    break;
+                }
+                Advance(1);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void SkipPastAnySlow(T value0, T value1)
+        {
+            while (!End)
+            {
+                T val = CurrentSpan[CurrentSpanIndex];
+                if (!val.Equals(value0) && !val.Equals(value1))
+                {
+                    break;
+                }
+                Advance(1);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void SkipPastAnySlow(T value0, T value1, T value2)
+        {
+            while (!End)
+            {
+                T val = CurrentSpan[CurrentSpanIndex];
+                if (!val.Equals(value0) && !val.Equals(value1) && !val.Equals(value2))
+                {
+                    break;
+                }
+                Advance(1);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void SkipPastAnySlow(T value0, T value1, T value2, T value3)
+        {
+            while (!End)
+            {
+                T val = CurrentSpan[CurrentSpanIndex];
+                if (!val.Equals(value0) && !val.Equals(value1) && !val.Equals(value2) && !val.Equals(value3))
+                {
+                    break;
+                }
+                Advance(1);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void SkipPastAnySlow(ReadOnlySpan<T> values)
+        {
+            while (!End)
+            {
+                T val = CurrentSpan[CurrentSpanIndex];
+                if (values.IndexOf(val) == -1)
+                {
+                    break;
+                }
+                Advance(1);
+            }
         }
 
         /// <summary>

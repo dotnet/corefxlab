@@ -61,7 +61,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static NotImplementedException GetNotImplementedException()
         {
-            return new NotImplementedException();
+            return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
         public static void ThrowJsonReaderException()
@@ -95,6 +95,17 @@ namespace System.Text.JsonLab
         private static KeyNotFoundException GetKeyNotFoundException()
         {
             return new KeyNotFoundException();
+        }
+
+        public static void ThrowInvalidOperationException(string message)
+        {
+            throw GetInvalidOperationException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static InvalidOperationException GetInvalidOperationException(string message)
+        {
+            return new InvalidOperationException(message);
         }
 
         public static void ThrowInvalidOperationException()

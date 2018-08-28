@@ -19,8 +19,7 @@ namespace System.Text.JsonLab
 
         public static JsonLazyDynamicObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            var parser = new JsonParser(utf8Json);
-            JsonObject dom = parser.Parse();
+            JsonObject dom = JsonObject.Parse(utf8Json);
             var result = new JsonLazyDynamicObject(dom);
             return result;
         }

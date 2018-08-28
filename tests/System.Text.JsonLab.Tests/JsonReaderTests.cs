@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -20,22 +22,39 @@ namespace System.Text.JsonLab.Tests
             {
                 return new List<object[]>
                 {
-                    new object[] { TestCaseType.Basic, TestJson.BasicJson},
-                    new object[] { TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
-                    new object[] { TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.DeepTree, TestJson.DeepTree},
-                    new object[] { TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
-                    //new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.HelloWorld, TestJson.HelloWorld},
-                    new object[] { TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
-                    new object[] { TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
-                    new object[] { TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
-                    //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
-                    //new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.Json400B, TestJson.Json400B},
-                    new object[] { TestCaseType.Json4KB, TestJson.Json4KB},
-                    new object[] { TestCaseType.Json40KB, TestJson.Json40KB},
-                    new object[] { TestCaseType.Json400KB, TestJson.Json400KB}
+                    new object[] { true, TestCaseType.Basic, TestJson.BasicJson},
+                    new object[] { true, TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
+                    new object[] { true, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.DeepTree, TestJson.DeepTree},
+                    new object[] { true, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { true, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.HelloWorld, TestJson.HelloWorld},
+                    new object[] { true, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
+                    new object[] { true, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
+                    new object[] { true, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
+                    //new object[] { true, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
+                    //new object[] { true, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { true, TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { true, TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { true, TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { true, TestCaseType.Json400KB, TestJson.Json400KB},
+
+                    new object[] { false, TestCaseType.Basic, TestJson.BasicJson},
+                    new object[] { false, TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
+                    new object[] { false, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.DeepTree, TestJson.DeepTree},
+                    new object[] { false, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { false, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.HelloWorld, TestJson.HelloWorld},
+                    new object[] { false, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
+                    new object[] { false, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
+                    new object[] { false, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
+                    //new object[] { false, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
+                    //new object[] { false, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { false, TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { false, TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { false, TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { false, TestCaseType.Json400KB, TestJson.Json400KB}
                 };
             }
         }
@@ -63,8 +82,24 @@ namespace System.Text.JsonLab.Tests
         // TestCaseType is only used to give the json strings a descriptive name.
         [Theory]
         [MemberData(nameof(TestCases))]
-        public static void TestJsonReaderUtf8(TestCaseType type, string jsonString)
+        public static void TestJsonReaderUtf8(bool compactData, TestCaseType type, string jsonString)
         {
+            // Remove all formatting/indendation
+            if (compactData)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                {
+                    jsonReader.FloatParseHandling = FloatParseHandling.Decimal;
+                    JToken jtoken = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        jtoken.WriteTo(jsonWriter);
+                        jsonString = stringWriter.ToString();
+                    }
+                }
+            }
+
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));

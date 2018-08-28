@@ -3,6 +3,8 @@
 
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
@@ -44,12 +46,31 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
+        [Params(true, false)]
+        public bool IsDataCompact;
+
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
 
         [GlobalSetup]
         public void Setup()
         {
             _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
+
+            // Remove all formatting/indendation
+            if (IsDataCompact)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(_jsonString)))
+                {
+                    JToken obj = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        obj.WriteTo(jsonWriter);
+                        _jsonString = stringWriter.ToString();
+                    }
+                }
+            }
+
             _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
 
             ReadOnlyMemory<byte> dataMemory = _dataUtf8;
@@ -68,7 +89,7 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _stream.Seek(0, SeekOrigin.Begin);
             TextReader reader = _reader;
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            var json = new JsonTextReader(reader);
             while (json.Read()) ;
         }
 
@@ -79,7 +100,7 @@ namespace System.Text.JsonLab.Benchmarks
             TextReader reader = _reader;
 
             StringBuilder sb = new StringBuilder();
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            var json = new JsonTextReader(reader);
             while (json.Read())
             {
                 if (json.Value != null)
