@@ -61,11 +61,47 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hashtable&apos;s capacity overflowed and went negative. Check load factor, capacity and the current size of the table..
+        ///   Looks up a localized string similar to Destination array is not long enough to copy all the items in the collection. Check array index and length..
+        /// </summary>
+        internal static string Arg_ArrayPlusOffTooSmall {
+            get {
+                return ResourceManager.GetString("Arg_ArrayPlusOffTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capacity has overflowed..
         /// </summary>
         internal static string Arg_HTCapacityOverflow {
             get {
                 return ResourceManager.GetString("Arg_HTCapacityOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
+        /// </summary>
+        internal static string Arg_KeyNotFoundWithKey {
+            get {
+                return ResourceManager.GetString("Arg_KeyNotFoundWithKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An item with the same key has already been added. Key: {0}.
+        /// </summary>
+        internal static string Argument_AddingDuplicateWithKey {
+            get {
+                return ResourceManager.GetString("Argument_AddingDuplicateWithKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection..
+        /// </summary>
+        internal static string Argument_InvalidOffLen {
+            get {
+                return ResourceManager.GetString("Argument_InvalidOffLen", resourceCulture);
             }
         }
         
@@ -165,6 +201,24 @@ namespace System {
         internal static string InvalidOperation_EnumOpCantHappen {
             get {
                 return ResourceManager.GetString("InvalidOperation_EnumOpCantHappen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mutating a key collection derived from a dictionary is not allowed..
+        /// </summary>
+        internal static string NotSupported_KeyCollectionSet {
+            get {
+                return ResourceManager.GetString("NotSupported_KeyCollectionSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mutating a value collection derived from a dictionary is not allowed..
+        /// </summary>
+        internal static string NotSupported_ValueCollectionSet {
+            get {
+                return ResourceManager.GetString("NotSupported_ValueCollectionSet", resourceCulture);
             }
         }
         
