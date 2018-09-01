@@ -45,6 +45,88 @@ namespace System.Text.JsonLab
 
         public void Flush() => _bufferWriter.Flush();
 
+        public void Write(JsonObject jsonObject)
+        {
+            JsonValueType type = jsonObject.Type;
+            switch (type)
+            {
+                case JsonValueType.Object:
+                    WriteObjectStart();
+                    WriteObject(jsonObject);
+                    break;
+                case JsonValueType.Array:
+                    WriteArrayStart();
+                    WriteArray(jsonObject);
+                    break;
+                case JsonValueType.String:
+                    while (!TryWriteValueStringAlreadyUtf8(jsonObject.GetSpan(0)))
+                        EnsureBuffer();
+                    break;
+                default:
+                    Debug.Assert(type >= JsonValueType.Number && type <= JsonValueType.Null);
+                    while (!TryWriteValueAlreadyUtf8(jsonObject.GetSpan(0)))
+                        EnsureBuffer();
+                    break;
+            }
+        }
+
+        private void Write(JsonObject jsonObject, ReadOnlySpan<byte> name)
+        {
+            JsonValueType type = jsonObject.Type;
+            switch (type)
+            {
+                case JsonValueType.Object:
+                    WriteObjectStart(name);
+                    WriteObject(jsonObject);
+                    break;
+                case JsonValueType.Array:
+                    WriteArrayStart(name);
+                    WriteArray(jsonObject);
+                    break;
+            }
+        }
+
+        private void WriteArray(JsonObject jsonObject)
+        {
+            for (int i = 0; i < jsonObject.ArrayLength; i++)
+            {
+                Write(jsonObject[i]);
+            }
+            WriteArrayEnd();
+        }
+
+        private void WriteObject(JsonObject jsonObject)
+        {
+            // i starts at 1 to skip the Object row
+            for (int i = 1; i < jsonObject.Size; i++)
+            {
+                ReadOnlySpan<byte> name = jsonObject.GetSpan(i);
+                DbRow valueRow = jsonObject.GetRow(i + 1);
+                int increment = 1;
+                if (valueRow.IsSimpleValue)
+                {
+                    ReadOnlySpan<byte> value = jsonObject.GetSpan(i + 1);
+                    WriteAttribute(name, value, valueRow.JsonType == JsonValueType.String);
+                }
+                else
+                {
+                    JsonObject obj = jsonObject[name];
+                    Write(obj, name);
+                    increment += obj.Size; 
+                }
+                i += increment;
+            }
+            WriteObjectEnd();
+        }
+
+        private void WriteAttribute(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value, bool isString)
+        {
+            if (isString)
+                WriteAttributeUtf8(name, value);
+            else
+                WriteAttributeValueUtf8(name, value);
+        }
+
         /// <summary>
         /// Write the starting tag of an object. This is used for adding an object to an
         /// array of other items. If this is used while inside a nested object, the property
@@ -333,6 +415,9 @@ namespace System.Text.JsonLab
 
                 idx += nameSpanByte.Length;
 
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+
                 byteBuffer[idx++] = JsonConstants.Quote;
 
                 byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
@@ -567,6 +652,175 @@ namespace System.Text.JsonLab
         public void WriteAttribute(ReadOnlySpan<byte> name, string value)
         {
             throw new NotImplementedException();
+        }
+
+        public void WriteAttributeUtf8(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
+        {
+            if (_prettyPrint)
+            {
+                //TODO: Add implementation that doesn't encode.
+                WriteAttributeUtf8Pretty(name, value);
+            }
+            else
+            {
+                while (!TryWriteAttributeAlreadyUtf8(name, value))
+                    EnsureBuffer();
+            }
+        }
+
+        public void WriteAttributeValueUtf8(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
+        {
+            if (_prettyPrint)
+            {
+                //TODO
+            }
+            else
+            {
+                while (!TryWriteAttributeValueAlreadyUtf8(name, value))
+                    EnsureBuffer();
+            }
+        }
+
+        private bool TryWriteAttributeValueAlreadyUtf8(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte)
+        {
+            int idx = 0;
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                bool status = nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+
+                idx += nameSpanByte.Length;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                status = valueSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+                idx += valueSpanByte.Length;
+
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
+        }
+
+        private bool TryWriteValueStringAlreadyUtf8(ReadOnlySpan<byte> valueSpanByte)
+        {
+            int idx = 0;
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                bool status = valueSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+                idx += valueSpanByte.Length;
+                byteBuffer[idx++] = JsonConstants.Quote;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
+        }
+
+        private bool TryWriteValueAlreadyUtf8(ReadOnlySpan<byte> valueSpanByte)
+        {
+            int idx = 0;
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                bool status = valueSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+                idx += valueSpanByte.Length;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
+        }
+
+        private bool TryWriteAttributeAlreadyUtf8(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte)
+        {
+            int idx = 0;
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                bool status = nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+
+                /*Span<byte> outputSlice = byteBuffer.Slice(idx);
+                if (outputSlice.Length < nameSpanByte.Length) return false;
+                nameSpanByte.CopyTo(outputSlice);*/
+                idx += nameSpanByte.Length;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                status = valueSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+
+                /*outputSlice = byteBuffer.Slice(idx);
+                if (outputSlice.Length < valueSpanByte.Length) return false;
+                valueSpanByte.CopyTo(outputSlice);*/
+                idx += valueSpanByte.Length;
+
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
         }
 
         public void WriteAttribute(ReadOnlySpan<byte> name, ulong value)
@@ -1148,6 +1402,54 @@ namespace System.Text.JsonLab
             {
                 while (!TryWriteValueUtf8(value))
                     EnsureBuffer();
+            }
+        }
+
+        public void WriteArrayUtf8(ReadOnlySpan<byte> name, ReadOnlySpan<int> values)
+        {
+            if (_prettyPrint)
+            {
+                WriteArrayStart(name);
+                for (int i = 0; i < values.Length; i++)
+                    WriteValueUtf8Pretty(values[i]);
+                WriteArrayEnd();
+            }
+            else
+            {
+                _bufferWriter.Ensure(values.Length * 12 + 5 + name.Length);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                int idx = 0;
+
+                if (_indent < 0)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+                name.CopyTo(byteBuffer.Slice(idx));
+                idx += name.Length;
+
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+                byteBuffer[idx++] = JsonConstants.OpenBracket;
+
+                if (values.Length != 0)
+                {
+                    JsonWriterHelper.TryFormatInt64Default(values[0], byteBuffer.Slice(idx), out int bytesWritten);
+                    idx += bytesWritten;
+                }
+
+                for (int i = 1; i < values.Length; i++)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                    JsonWriterHelper.TryFormatInt64Default(values[i], byteBuffer.Slice(idx), out int bytesWritten);
+                    idx += bytesWritten;
+                }
+
+                _indent |= 1 << 31;
+                byteBuffer[idx++] = JsonConstants.CloseBracket;
+                _bufferWriter.Advance(idx);
             }
         }
 
