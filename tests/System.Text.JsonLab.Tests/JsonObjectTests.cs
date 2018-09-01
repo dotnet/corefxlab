@@ -285,12 +285,14 @@ namespace System.Text.JsonLab.Tests
 
             JsonObject targets = obj[targetsString];
 
-            Assert.True(targets.TryGetChild(out JsonObject child));
-            Assert.True(child.TryGetChild(out child));
-            obj.Remove(child);
+            foreach (JsonObject target in targets)
+            {
+                Assert.True(target.TryGetChild(out JsonObject firstChild));
+                obj.Remove(firstChild);
+            }
 
             JsonObject libraries = obj[librariesString];
-            Assert.True(libraries.TryGetChild(out child));
+            Assert.True(libraries.TryGetChild(out JsonObject child));
             obj.Remove(child);
 
             string expected = ChangeEntryPointLibraryNameExpected();
