@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -7,43 +8,43 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Collections.Extensions
 {
-    public sealed class RefDictionary<K, V> : IEnumerable<(K Key, V Value)>
+    public sealed class RefDictionary<TKey, TValue> : IEnumerable<(TKey Key, TValue Value)> where TValue : new()
     {
-        private int[] buckets;
-        private Entry[] entries;
-        private int count;
-        private int hashBits = 18;
-        private int hashMask;
+        int[] _buckets;
+        Entry[] _entries;
+        int _count;
+        int _hashBits = 18;
+        int _hashMask;
 
         private struct Entry
         {
-            public K key;
-            public V value;
+            public TKey key;
+            public TValue value;
             public int next;
         }
 
         public RefDictionary()
         {
-            buckets = new int[1 << hashBits];
-            entries = new Entry[1 << hashBits];
-            hashMask = (1 << hashBits) - 1;
+            _buckets = new int[1 << _hashBits];
+            _entries = new Entry[1 << _hashBits];
+            _hashMask = (1 << _hashBits) - 1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(K key)
+        private int GetBucketIndex(TKey key)
         {
-            return key.GetHashCode() & hashMask;
+            return key.GetHashCode() & _hashMask;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetEntryIndex(K key)
+        private int GetEntryIndex(TKey key)
         {
-            return buckets[GetBucketIndex(key)] - 1;
+            return _buckets[GetBucketIndex(key)] - 1;
         }
 
-        public bool TryGetValue(K key, out V value)
+        public bool TryGetValue(TKey key, out TValue value)
         {
-            Entry[] entries = this.entries;
+            Entry[] entries = _entries;
             int entryIndex = GetEntryIndex(key);
 
             while (true)
@@ -66,62 +67,65 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
-        public ref V GetRef(K key)
+        public ref TValue this[TKey key]
         {
-            Entry[] entries = this.entries;
-            int entryIndex = GetEntryIndex(key);
-
-            while (true)
+            get
             {
-                if ((uint)entryIndex >= (uint)entries.Length)
+                Entry[] entries = _entries;
+                int entryIndex = GetEntryIndex(key);
+
+                while (true)
                 {
-                    break;
+                    if ((uint)entryIndex >= (uint)entries.Length)
+                    {
+                        break;
+                    }
+
+                    if (entries[entryIndex].key.Equals(key))
+                    {
+                        return ref entries[entryIndex].value;
+                    }
+
+                    entryIndex = entries[entryIndex].next;
                 }
 
-                if (entries[entryIndex].key.Equals(key))
-                {
-                    return ref entries[entryIndex].value;
-                }
-
-                entryIndex = entries[entryIndex].next;
+                return ref Create(key);
             }
-
-            return ref Create(key);
         }
 
-        private ref V Create(K key)
+        private ref TValue Create(TKey key)
         {
-            if (count == entries.Length)
+            if (_count == _entries.Length)
             {
                 Resize();
             }
 
-            int entryIndex = count++;
-            entries[entryIndex].key = key;
-            entries[entryIndex].value = default;
+            int entryIndex = _count++;
+            _entries[entryIndex].key = key;
+            _entries[entryIndex].value = new TValue();
             int bucket = GetBucketIndex(key);
-            entries[entryIndex].next = buckets[bucket] - 1;
-            buckets[bucket] = entryIndex + 1;
-            return ref entries[entryIndex].value;
+            _entries[entryIndex].next = _buckets[bucket] - 1;
+            _buckets[bucket] = entryIndex + 1;
+            return ref _entries[entryIndex].value;
         }
 
         private void Resize()
         {
-            Entry[] oldEntries = entries;
-            int[] oldBuckets = buckets;
+            Entry[] oldEntries = _entries;
+            int[] oldBuckets = _buckets;
 
-            hashBits++;
-            hashMask = (1 << hashBits) - 1;
+            _hashBits++;
+            _hashMask = (1 << _hashBits) - 1;
 
-            Entry[] newEntries = new Entry[1 << hashBits];
-            int[] newBuckets = new int[1 << hashBits];
+            Entry[] newEntries = new Entry[1 << _hashBits];
+            int[] newBuckets = new int[1 << _hashBits];
 
-            buckets = newBuckets;
-            entries = newEntries;
+            _buckets = newBuckets;
+            _entries = newEntries;
 
-            Array.Copy(oldEntries, 0, newEntries, 0, count);
+            Array.Copy(oldEntries, 0, newEntries, 0, _count);
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < _count; i++)
             {
                 int bucket = GetBucketIndex(newEntries[i].key);
                 newEntries[i].next = newBuckets[bucket] - 1;
@@ -131,27 +135,26 @@ namespace Microsoft.Collections.Extensions
 
         public Enumerator GetEnumerator() => new Enumerator(this);
 
-        IEnumerator<(K Key, V Value)> IEnumerable<(K Key, V Value)>.GetEnumerator() => new Enumerator(this);
+        IEnumerator<(TKey Key, TValue Value)> IEnumerable<(TKey Key, TValue Value)>.GetEnumerator() => new Enumerator(this);
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => new Enumerator(this);
 
-        public struct Enumerator : IEnumerator<(K Key, V Value)>
+        public struct Enumerator : IEnumerator<(TKey Key, TValue Value)>
         {
-            private readonly RefDictionary<K, V> dictionary;
-            private int index;
-            private (K, V) current;
+            readonly RefDictionary<TKey, TValue> _dictionary;
+            int index;
+            (TKey, TValue) current;
 
-            internal Enumerator(RefDictionary<K, V> dictionary)
+            internal Enumerator(RefDictionary<TKey, TValue> dictionary)
             {
-                this.dictionary = dictionary;
-
+                _dictionary = dictionary;
                 index = 0;
-                current = new ValueTuple<K, V>();
+                current = new ValueTuple<TKey, TValue>();
             }
 
             public bool MoveNext()
             {
-                Entry[] entries = dictionary.entries;
-                int count = dictionary.count;
+                Entry[] entries = _dictionary._entries;
+                int count = _dictionary._count;
                 int index = this.index;
 
                 while (index < count)
@@ -171,7 +174,7 @@ namespace Microsoft.Collections.Extensions
                 return false;
             }
 
-            public (K Key, V Value) Current => current;
+            public (TKey Key, TValue Value) Current => current;
 
             object System.Collections.IEnumerator.Current => current;
             void System.Collections.IEnumerator.Reset() => throw new NotImplementedException();
