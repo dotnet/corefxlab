@@ -788,10 +788,6 @@ namespace System.Text.JsonLab
 
                 bool status = nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
                 if (!status) return false;
-
-                /*Span<byte> outputSlice = byteBuffer.Slice(idx);
-                if (outputSlice.Length < nameSpanByte.Length) return false;
-                nameSpanByte.CopyTo(outputSlice);*/
                 idx += nameSpanByte.Length;
 
                 byteBuffer[idx++] = JsonConstants.Quote;
@@ -802,10 +798,6 @@ namespace System.Text.JsonLab
 
                 status = valueSpanByte.TryCopyTo(byteBuffer.Slice(idx));
                 if (!status) return false;
-
-                /*outputSlice = byteBuffer.Slice(idx);
-                if (outputSlice.Length < valueSpanByte.Length) return false;
-                valueSpanByte.CopyTo(outputSlice);*/
                 idx += valueSpanByte.Length;
 
                 if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
