@@ -92,22 +92,21 @@ namespace System.Text.JsonLab.Benchmarks
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);
 
-            JsonObject targets = obj["targets"];
-            if (targets.TryGetChild(out JsonObject child))
+            foreach (JsonObject target in obj["targets"])
             {
-                if (child.TryGetChild(out child))
-                    obj.Remove(child);
+                if (target.TryGetChild(out JsonObject firstChild))
+                    obj.Remove(firstChild);
             }
 
             JsonObject libraries = obj["libraries"];
-            if (libraries.TryGetChild(out child))
+            if (libraries.TryGetChild(out JsonObject child))
                 obj.Remove(child);
 
             _arrayOutput.Clear();
             var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(_arrayOutput);
             jsonUtf8.Write(obj);
             jsonUtf8.Flush();
-            
+
             obj.Dispose();
         }
     }

@@ -59,12 +59,12 @@ namespace System.Text.JsonLab
                     WriteArray(jsonObject);
                     break;
                 case JsonValueType.String:
-                    while (!TryWriteValueStringAlreadyUtf8(jsonObject.GetSpan(0)))
+                    while (!TryWriteValueStringAlreadyUtf8(jsonObject.GetSpan()))
                         EnsureBuffer();
                     break;
                 default:
                     Debug.Assert(type >= JsonValueType.Number && type <= JsonValueType.Null);
-                    while (!TryWriteValueAlreadyUtf8(jsonObject.GetSpan(0)))
+                    while (!TryWriteValueAlreadyUtf8(jsonObject.GetSpan()))
                         EnsureBuffer();
                     break;
             }
@@ -97,24 +97,18 @@ namespace System.Text.JsonLab
 
         private void WriteObject(JsonObject jsonObject)
         {
-            // i starts at 1 to skip the Object row
-            for (int i = 1; i < jsonObject.Size; i++)
+            foreach (JsonObject child in jsonObject)
             {
-                ReadOnlySpan<byte> name = jsonObject.GetSpan(i);
-                DbRow valueRow = jsonObject.GetRow(i + 1);
-                int increment = 1;
+                DbRow valueRow = child.GetRow();
                 if (valueRow.IsSimpleValue)
                 {
-                    ReadOnlySpan<byte> value = jsonObject.GetSpan(i + 1);
-                    WriteAttribute(name, value, valueRow.JsonType == JsonValueType.String);
+                    ReadOnlySpan<byte> value = child.GetSpan(valueRow);
+                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonValueType.String);
                 }
                 else
                 {
-                    JsonObject obj = jsonObject[name];
-                    Write(obj, name);
-                    increment += obj.Size; 
+                    Write(child, child.PropertyName);
                 }
-                i += increment;
             }
             WriteObjectEnd();
         }
