@@ -55,7 +55,7 @@ namespace System.Text.JsonLab.Benchmarks
             _arrayOutput = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ChangeEntryPointLibraryNameNewtonsoft()
         {
             _stream.Seek(0, SeekOrigin.Begin);
