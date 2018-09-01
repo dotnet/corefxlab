@@ -37,6 +37,8 @@ namespace System.Text.JsonLab.Tests
 
         static void Write(ref Utf8JsonWriter<ArrayFormatterWrapper> json)
         {
+            int[] values = { 425121, -425122, 425123 };
+            byte[] valueString = Encoding.UTF8.GetBytes("values");
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
             json.WriteAttribute("first", "John");
@@ -51,11 +53,7 @@ namespace System.Text.JsonLab.Tests
             json.WriteAttribute("city", "Redmond");
             json.WriteAttribute("zip", 98052);
             json.WriteObjectEnd();
-            json.WriteArrayStart("values");
-            json.WriteValue(425121);
-            json.WriteValue(-425122);
-            json.WriteValue(425123);
-            json.WriteArrayEnd();
+            json.WriteArrayUtf8(valueString, values);
             json.WriteObjectEnd();
             json.Flush();
         }
@@ -87,7 +85,7 @@ namespace System.Text.JsonLab.Tests
         public void WriteBasicJsonUtf8(bool prettyPrint)
         {
             int[] data = GetData(ExtraArraySize, 42, -10000, 10000);
-
+            byte[] ExtraArray = Encoding.UTF8.GetBytes("ExtraArray");
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: true, data);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
@@ -108,12 +106,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteObjectEnd();
 
             // Add a large array of values
-            jsonUtf8.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < ExtraArraySize; i++)
-            {
-                jsonUtf8.WriteValue(data[i]);
-            }
-            jsonUtf8.WriteArrayEnd();
+            jsonUtf8.WriteArrayUtf8(ExtraArray, data);
 
             jsonUtf8.WriteObjectEnd();
             jsonUtf8.Flush();

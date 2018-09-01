@@ -4,9 +4,11 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Formatting;
 using System.Text.JsonLab.Tests.Resources;
 using System.Text.Utf8;
 using Xunit;
@@ -230,6 +232,22 @@ namespace System.Text.JsonLab.Tests
             string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(expected, actual);
+
+            if (compactData)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output);
+
+                jsonUtf8.Write(obj);
+                jsonUtf8.Flush();
+
+                ArraySegment<byte> formatted = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
+
+                Assert.Equal(jsonString, actualStr);
+            }
+
+            obj.Dispose();
         }
 
         [Theory]
@@ -275,13 +293,18 @@ namespace System.Text.JsonLab.Tests
             Assert.True(libraries.TryGetChild(out child));
             obj.Remove(child);
 
-            string actual = obj.PrintJson();
-
-            // Change casing to match what JSON.NET does.
-            actual = actual.Replace("true", "True").Replace("false", "False");
-
             string expected = ChangeEntryPointLibraryNameExpected();
-            Assert.Equal(expected, actual);
+
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output);
+
+            jsonUtf8.Write(obj);
+            jsonUtf8.Flush();
+
+            ArraySegment<byte> formatted = output.Formatted;
+            string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
+
+            Assert.Equal(expected, actualStr);
         }
 
         [Fact]
@@ -449,11 +472,12 @@ namespace System.Text.JsonLab.Tests
             JProperty library = deps["libraries"].Children<JProperty>().First();
             library.Remove();
 
-            string json = deps.ToString(Newtonsoft.Json.Formatting.None);
-
-            TextReader reader = new StringReader(json);
-
-            return JsonTestHelper.NewtonsoftReturnStringHelper(reader);
+            using (var textWriter = new StringWriter())
+            using (var writer = new JsonTextWriter(textWriter))
+            {
+                deps.WriteTo(writer);
+                return textWriter.ToString();
+            }
         }
     }
 }

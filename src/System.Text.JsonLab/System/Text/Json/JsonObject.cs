@@ -105,7 +105,10 @@ namespace System.Text.JsonLab
                     DbRow myObj = _database.Get(i + record.SizeOrLength * DbRow.Size);
                     if (myObj.Location > objRecord.Location)
                     {
-                        DbRow fixup = new DbRow(record.JsonType, record.Location, record.SizeOrLength - reduce);
+                        int sizeOrlength = record.SizeOrLength - reduce;
+                        int numberOfRows = sizeOrlength == 0 ? 1 : sizeOrlength; //TODO: fix up for arrays
+                        bool hasChildren = record.HasChildren; //TODO: Re-calculate HasChildren since it can become false
+                        DbRow fixup = new DbRow(record.JsonType, record.Location, hasChildren, sizeOrlength, numberOfRows);
                         MemoryMarshal.Write(temp.Slice(i), ref fixup);
                     }
                 }
@@ -142,7 +145,8 @@ namespace System.Text.JsonLab
                 {
                     int length = DbRow.Size;
                     if (!nextRecord.IsSimpleValue)
-                        length += DbRow.Size * nextRecord.NumberOfRows;
+                        if (nextRecord.SizeOrLength != 0)
+                            length += DbRow.Size * nextRecord.NumberOfRows;
 
                     value = CreateJsonObject(startIndex, length);
                     return true;
@@ -175,6 +179,8 @@ namespace System.Text.JsonLab
 
         public JsonObject this[string name] => this[(Utf8Span)name];
 
+        public JsonObject this[ReadOnlySpan<byte> name] => this[new Utf8Span(name)];
+
         private JsonObject CreateJsonObject(int startIndex, int length)
         {
             CustomDb copy = _database;
@@ -193,14 +199,14 @@ namespace System.Text.JsonLab
                 {
                     int length = DbRow.Size;
                     if (!nextRecord.IsSimpleValue)
-                    {
-                        length += DbRow.Size * nextRecord.NumberOfRows;
-                    }
+                        if (nextRecord.SizeOrLength != 0)
+                            length += DbRow.Size * nextRecord.NumberOfRows;
                     return CreateJsonObject(i, length);
                 }
 
                 if (!nextRecord.IsSimpleValue)
-                    i += nextRecord.NumberOfRows * DbRow.Size;
+                    if (nextRecord.SizeOrLength != 0)
+                        i += nextRecord.NumberOfRows * DbRow.Size;
 
                 counter++;
             }
@@ -408,6 +414,32 @@ namespace System.Text.JsonLab
                 if (record.SizeOrLength != 4)
                     return true;
                 return (_jsonData[record.Location] != 'n' || _jsonData[record.Location + 1] != 'u' || _jsonData[record.Location + 2] != 'l' || _jsonData[record.Location + 3] != 'l');
+            }
+        }
+
+        internal DbRow GetRow(int index)
+        {
+            return _database.Get(index * DbRow.Size);
+        }
+
+        internal ReadOnlySpan<byte> GetSpan(int index)
+        {
+            DbRow row = GetRow(index);
+            if (row.IsSimpleValue)
+                return _jsonData.Slice(row.Location, row.SizeOrLength);
+            return default; // Throw instead?
+        }
+
+        internal int Size
+        {
+            get
+            {
+                DbRow record = _database.Get();
+                if (record.IsSimpleValue)
+                {
+                    JsonThrowHelper.ThrowInvalidOperationException();
+                }
+                return record.SizeOrLength == 0 ? 0 : record.NumberOfRows;
             }
         }
 
