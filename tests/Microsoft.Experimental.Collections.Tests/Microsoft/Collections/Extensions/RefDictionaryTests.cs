@@ -3,10 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Xunit;
 
 namespace Microsoft.Collections.Extensions.Tests
@@ -14,12 +12,37 @@ namespace Microsoft.Collections.Extensions.Tests
     public class RefDictionaryTests
     {
         [Fact]
-        public void FirstTest()
+        public void SingleEntry()
         {
             var d = new RefDictionary<ulong, int>();
             d[7]++;
-            d[7]++;
-            Assert.Equal(2, d[7]);
+            d[7] += 3;
+            Assert.Equal(4, d[7]);
+        }
+
+        [Fact]
+        public void RandomVsDictionary()
+        {
+            var rand = new Random(1123);
+            var rd = new RefDictionary<ulong, int>();
+            var d = new Dictionary<ulong, int>();
+            var size = 1000;
+
+            for (int i = 0; i < size; i++)
+            {
+                var k = (ulong)rand.Next(100) + 23;
+                var v = rand.Next();
+
+                rd[k] += v;
+
+                if (d.TryGetValue(k, out int t))
+                    d[k] = t + v;
+                else
+                    d[k] = v;
+            }
+
+            Assert.True(d.Select(i => (i.Key, i.Value)).OrderBy(i => i.Key)
+                        .SequenceEqual(rd.OrderBy(i => i.Key)));
         }
     }
 }
