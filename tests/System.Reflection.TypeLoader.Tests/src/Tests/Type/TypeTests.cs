@@ -571,5 +571,25 @@ namespace System.Reflection.Tests
             MemberInfo[] mems = t.GetDefaultMembers();
             Assert.Equal(0, mems.Length);
         }
+
+        [Fact]
+        public static void TypesWithStrangeCharacters()
+        {
+            // Make sure types with strange characters are escaped.
+            using (TypeLoader tl = new TypeLoader())
+            {
+                Assembly a = tl.LoadFromByteArray(TestData.s_TypeWithStrangeCharacters);
+                Type[] types = a.GetTypes();
+                Assert.Equal(1, types.Length);
+                Type t = types[0];
+                string name = t.Name;
+                Assert.Equal(TestData.s_NameOfTypeWithStrangeCharacters, name);
+                string fullName = t.FullName;
+                Assert.Equal(TestData.s_NameOfTypeWithStrangeCharacters, fullName);
+
+                Type tRetrieved = a.GetType(fullName, throwOnError: true, ignoreCase: false);
+                Assert.Equal(t, tRetrieved);
+            }
+        }
     }
 }
