@@ -126,4 +126,16 @@ namespace System.Reflection.TypeLoading
         public abstract bool HasSameMetadataDefinitionAs(MemberInfo other);
 #endif // netstandard
     }
+
+    internal abstract class LeveledCustomAttributeData : CustomAttributeData
+    {
+#if netstandard
+        // On NetStandard, AttributeType is declared non-virtually so apps are stuck calling the slow version that builds a constructor.
+        public new abstract Type AttributeType { get; }
+#else
+        // @todo: https://github.com/dotnet/corefxlab/issues/2460 Once the netcore build is building against a contract that declares AttributeType virtually,
+        // delete this line. We want RoCustomAttributeData to override the real AttributeType property.
+        public new abstract Type AttributeType { get; }
+#endif // netstandard
+    }
 }

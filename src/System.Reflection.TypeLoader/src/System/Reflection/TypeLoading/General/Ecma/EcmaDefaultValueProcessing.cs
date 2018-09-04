@@ -81,28 +81,7 @@ namespace System.Reflection.TypeLoading.Ecma
             foreach (CustomAttributeHandle handle in handles)
             {
                 CustomAttribute ca = handle.GetCustomAttribute(reader);
-                EntityHandle ctorHandle = ca.Constructor;
-                EntityHandle declaringTypeHandle = default;
-                switch (ctorHandle.Kind)
-                {
-                    case HandleKind.MethodDefinition:
-                        {
-                            MethodDefinitionHandle mh = (MethodDefinitionHandle)ctorHandle;
-                            declaringTypeHandle = mh.GetMethodDefinition(reader).GetDeclaringType();
-                            break;
-                        }
-
-                    case HandleKind.MemberReference:
-                        {
-                            MemberReference mr = ((MemberReferenceHandle)ctorHandle).GetMemberReference(reader);
-                            declaringTypeHandle = mr.Parent;
-                            break;
-                        }
-
-                    default:
-                        break;
-                }
-
+                EntityHandle declaringTypeHandle = ca.TryGetDeclaringTypeHandle(reader);
                 if (declaringTypeHandle.IsNil)
                     continue;
 

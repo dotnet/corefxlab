@@ -47,6 +47,15 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        protected sealed override Type ComputeAttributeType()
+        {
+            EntityHandle declaringTypeHandle = CustomAttribute.TryGetDeclaringTypeHandle(Reader);
+            if (declaringTypeHandle.IsNil)
+                throw new BadImageFormatException();
+
+            return declaringTypeHandle.ResolveTypeDefRefOrSpec(_module, default(TypeContext));
+        }
+
         protected sealed override ConstructorInfo ComputeConstructor()
         {
             EntityHandle ctorHandle = CustomAttribute.Constructor;

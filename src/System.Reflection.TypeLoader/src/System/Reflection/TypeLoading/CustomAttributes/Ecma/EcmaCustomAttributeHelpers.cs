@@ -45,31 +45,12 @@ namespace System.Reflection.TypeLoading.Ecma
             MetadataReader reader = module.Reader;
             foreach (CustomAttributeHandle handle in handles)
             {
-                CustomAttribute ca = handle.GetCustomAttribute(module.Reader);
-                EntityHandle ctorHandle = ca.Constructor;
-                switch (ctorHandle.Kind)
-                {
-                    case HandleKind.MethodDefinition:
-                        {
-                            MethodDefinitionHandle mh = (MethodDefinitionHandle)ctorHandle;
-                            EntityHandle declaringTypeHandle = mh.GetMethodDefinition(reader).GetDeclaringType();
-                            if (declaringTypeHandle.TypeMatchesNameAndNamespace(ns, name, reader))
-                                return handle;
-                            break;
-                        }
-
-                    case HandleKind.MemberReference:
-                        {
-                            MemberReference mr = ((MemberReferenceHandle)ctorHandle).GetMemberReference(reader);
-                            EntityHandle declaringTypeHandle = mr.Parent;
-                            if (declaringTypeHandle.TypeMatchesNameAndNamespace(ns, name, reader))
-                                return handle;
-                            break;
-                        }
-
-                    default:
-                        break;
-                }
+                CustomAttribute ca = handle.GetCustomAttribute(reader);
+                EntityHandle declaringTypeHandle = ca.TryGetDeclaringTypeHandle(reader);
+                if (declaringTypeHandle.IsNil)
+                    continue;
+                if (declaringTypeHandle.TypeMatchesNameAndNamespace(ns, name, reader))
+                    return handle;
             }
 
             return default;
@@ -93,6 +74,28 @@ namespace System.Reflection.TypeLoading.Ecma
 
                 default:
                     return false;
+            }
+        }
+
+        public static EntityHandle TryGetDeclaringTypeHandle(this in CustomAttribute ca, MetadataReader reader)
+        {
+            EntityHandle ctorHandle = ca.Constructor;
+            switch (ctorHandle.Kind)
+            {
+                case HandleKind.MethodDefinition:
+                    {
+                        MethodDefinitionHandle mh = (MethodDefinitionHandle)ctorHandle;
+                        return mh.GetMethodDefinition(reader).GetDeclaringType();
+                    }
+
+                case HandleKind.MemberReference:
+                    {
+                        MemberReferenceHandle mh = (MemberReferenceHandle)ctorHandle;
+                        return mh.GetMemberReference(reader).Parent;
+                    }
+
+                default:
+                    return default;
             }
         }
 
