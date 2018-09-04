@@ -99,6 +99,26 @@ namespace System.Reflection.TypeLoading
             return Array.IndexOf(s_charsToEscape, c) >= 0;
         }
 
+        public static string UnescapeTypeNameIdentifier(this string identifier)
+        {
+            if (identifier.IndexOf('\\') != -1)
+            {
+                StringBuilder sbUnescapedName = new StringBuilder(identifier.Length);
+                for (int i = 0; i < identifier.Length; i++)
+                {
+                    if (identifier[i] == '\\')
+                    {
+                        // If we have a trailing '\\', the framework somehow messed up escaping the original identifier. Since that's
+                        // unlikely to happen and unactionable, we'll just let the next line IndexOutOfRange if that happens.
+                        i++;
+                    }
+                    sbUnescapedName.Append(identifier[i]);
+                }
+                identifier = sbUnescapedName.ToString();
+            }
+            return identifier;
+        }
+
         private static readonly char[] s_charsToEscape = new char[] { '\\', '[', ']', '+', '*', '&', ',' };
 
         /// <summary>
@@ -254,6 +274,7 @@ namespace System.Reflection.TypeLoading
                     Debug.Assert(assembly is RoAssembly);
                     RoAssembly roAssembly = (RoAssembly)assembly;
 
+                    fullName = fullName.UnescapeTypeNameIdentifier();
                     fullName.SplitTypeName(out string ns, out string simpleName);
                     Type type = roAssembly.GetTypeCore(ns, simpleName, ignoreCase: ignoreCase2, out Exception e);
                     if (type != null)
