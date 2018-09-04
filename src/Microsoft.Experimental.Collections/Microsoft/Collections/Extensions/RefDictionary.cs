@@ -34,16 +34,10 @@ namespace Microsoft.Collections.Extensions
         public RefDictionary() : this(null) { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(TKey key)
-        {
-            return key.GetHashCode() & 0x7FFFFFFF % _buckets.Length;
-        }
+        private int GetBucketIndex(TKey key) => key.GetHashCode() & 0x7FFFFFFF % _buckets.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetEntryIndex(TKey key)
-        {
-            return _buckets[GetBucketIndex(key)] - 1;
-        }
+        private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
 
         public bool TryGetValue(TKey key, out TValue value)
         {

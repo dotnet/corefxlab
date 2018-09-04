@@ -11,14 +11,13 @@ namespace Microsoft.Collections.Extensions.Tests
     [MemoryDiagnoser]
     public class RefDictionaryPerformanceTests
     {
-        [Params(100000)]
+        [Params(100_000, 1_000_000, 10_000_000)]
         public int Size { get; set; }
 
-        ulong[] _keys;
-        int[] _values;
-
-        RefDictionary<ulong, int> _refDict;
-        Dictionary<ulong, int> _dict;
+        private ulong[] _keys;
+        private int[] _values;
+        private RefDictionary<ulong, int> _refDict;
+        private Dictionary<ulong, int> _dict;
 
         [GlobalSetup(Targets = new[] { nameof(LoadRefDictionary), nameof(LoadDictionary) })]
         public void CreateValuesList()

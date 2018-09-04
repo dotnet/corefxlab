@@ -21,7 +21,7 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void RandomVsDictionary()
+        public void RefDictionaryVersusDictionary()
         {
             var rand = new Random(1123);
             var rd = new RefDictionary<ulong, int>();
