@@ -10,9 +10,13 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all CustomAttributeData objects created by a TypeLoader.
     /// </summary>
-    internal abstract partial class RoCustomAttributeData : CustomAttributeData
+    internal abstract partial class RoCustomAttributeData : LeveledCustomAttributeData
     {
         protected RoCustomAttributeData() { }
+
+        public sealed override Type AttributeType => _lazyAttributeType ?? (_lazyAttributeType = ComputeAttributeType());
+        protected abstract Type ComputeAttributeType();
+        private volatile Type _lazyAttributeType;
 
         public sealed override ConstructorInfo Constructor => _lazyConstructorInfo ?? (_lazyConstructorInfo = ComputeConstructor());
         protected abstract ConstructorInfo ComputeConstructor();

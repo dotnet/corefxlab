@@ -193,6 +193,38 @@ namespace System.Reflection.Tests
                 cats1[i].ValidateEqualButFreshlyAllocated(cats2[i]);
             }
         }
+
+        // @todo: https://github.com/dotnet/corefxlab/issues/2460
+        // This test only exists to provide code coverage for the fast-path AttributeType implementation while we're stuck in a netstandard-only build
+        // configuration. It should be removed once both of these conditions are true:
+        //
+        //  -  We have an official on-going build and CI of a netcore configuration of System.Reflection.TypeLoader.
+        //  -  That build is consuming corefx contracts where CustomAttributeData.AttributeType is virtual (see https://github.com/dotnet/corefx/issues/31614)
+        //
+        // Once these conditions are satisfied, it is no longer necessary to resort to Reflection to invoke the fast-path AttributeType code.
+        // Invoking CustomAttributeData.AttributeType the normal way will do the trick.
+        // 
+        [Fact]
+        public static void TestVirtualAttributeTypeProperty()
+        {
+            {
+                Type t = typeof(AttributeHolder1.N1).Project();
+                CustomAttributeData[] cads = t.CustomAttributes.ToArray();
+                Assert.Equal(1, cads.Length);
+                CustomAttributeData cad = cads[0];
+                Type attributeType = cad.CallUsingReflection<Type>("get_AttributeType");
+                Assert.Equal(typeof(SampleCustomAttribute).Project(), attributeType);
+            }
+
+            {
+                Type t = typeof(HoldsAttributeDefinedInAnotherAssembly).Project();
+                CustomAttributeData[] cads = t.CustomAttributes.ToArray();
+                Assert.Equal(1, cads.Length);
+                CustomAttributeData cad = cads[0];
+                Type attributeType = cad.CallUsingReflection<Type>("get_AttributeType");
+                Assert.Equal(typeof(GuidAttribute).Project(), attributeType);
+            }
+        }
     }
 }
 
