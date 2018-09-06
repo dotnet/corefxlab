@@ -60,11 +60,11 @@ namespace System.Text.JsonLab.Benchmarks
             // Remove all formatting/indendation
             if (IsDataCompact)
             {
-                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(_jsonString)))
+                using (var jsonReader = new JsonTextReader(new StringReader(_jsonString)))
                 {
                     JToken obj = JToken.ReadFrom(jsonReader);
                     var stringWriter = new StringWriter();
-                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    using (var jsonWriter = new JsonTextWriter(stringWriter))
                     {
                         obj.WriteTo(jsonWriter);
                         _jsonString = stringWriter.ToString();
@@ -100,7 +100,7 @@ namespace System.Text.JsonLab.Benchmarks
             _stream.Seek(0, SeekOrigin.Begin);
             TextReader reader = _reader;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             var json = new JsonTextReader(reader);
             while (json.Read())
             {
@@ -137,7 +137,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
-            byte[] outputArray = new byte[_dataUtf8.Length * 2];
+            var outputArray = new byte[_dataUtf8.Length * 2];
 
             Span<byte> destination = outputArray;
             var json = new Utf8JsonReader(_dataUtf8);
@@ -199,7 +199,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
-            Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new Utf8Json.JsonReader(_dataUtf8);
 
             while (json.GetCurrentJsonToken() != Utf8Json.JsonToken.None)
             {
@@ -210,9 +210,9 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
-            Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new Utf8Json.JsonReader(_dataUtf8);
 
-            byte[] outputArray = new byte[_dataUtf8.Length * 2];
+            var outputArray = new byte[_dataUtf8.Length * 2];
             Span<byte> destination = outputArray;
 
             Utf8Json.JsonToken token = json.GetCurrentJsonToken();

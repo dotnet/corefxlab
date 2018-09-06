@@ -505,25 +505,26 @@ namespace System.Text.JsonLab
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-                int index = _index + 1;
-                if (index < _obj.Size)
+                if (_index < _obj.Size - 1)
                 {
-                    DbRow row = _obj.GetRow(index);
+                    _index++;
+                    DbRow row = _obj.GetRow(_index);
                     if (row.JsonType != JsonValueType.String)
                         JsonThrowHelper.ThrowInvalidOperationException();
 
-                    index++;
-                    int length = DbRow.Size;
+                    _index++;
 
-                    DbRow nextRow = _obj.GetRow(index);
+                    DbRow nextRow = _obj.GetRow(_index);
 
                     if (!nextRow.IsSimpleValue && nextRow.SizeOrLength != 0)
                     {
+                        Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size * (nextRow.NumberOfRows + 1));
                         _index += nextRow.NumberOfRows;
-                        length = DbRow.Size * (nextRow.NumberOfRows + 1);
                     }
-                    Current = _obj.CreateJsonObject(index * DbRow.Size, length);
-                    _index += 2;
+                    else
+                    {
+                        Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size);
+                    }
                     return true;
                 }
                 return false;

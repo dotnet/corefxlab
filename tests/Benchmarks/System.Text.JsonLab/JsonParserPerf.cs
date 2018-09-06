@@ -60,11 +60,11 @@ namespace System.Text.JsonLab.Benchmarks
             // Remove all formatting/indendation
             if (IsDataCompact)
             {
-                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                using (var jsonReader = new JsonTextReader(new StringReader(jsonString)))
                 {
                     JToken obj = JToken.ReadFrom(jsonReader);
                     var stringWriter = new StringWriter();
-                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    using (var jsonWriter = new JsonTextWriter(stringWriter))
                     {
                         obj.WriteTo(jsonWriter);
                         jsonString = stringWriter.ToString();
@@ -82,7 +82,7 @@ namespace System.Text.JsonLab.Benchmarks
         public void ParseNewtonsoft()
         {
             _stream.Seek(0, SeekOrigin.Begin);
-            using (JsonTextReader jsonReader = new JsonTextReader(_reader))
+            using (var jsonReader = new JsonTextReader(_reader))
             {
                 JToken obj = JToken.ReadFrom(jsonReader);
 

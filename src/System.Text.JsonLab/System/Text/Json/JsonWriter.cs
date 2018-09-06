@@ -1780,7 +1780,14 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> EnsureBuffer(int needed = 256)
+        private Span<byte> EnsureBuffer()
+        {
+            _bufferWriter.Ensure(_bufferWriter.Buffer.Length + 1);
+            return _bufferWriter.Buffer;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Span<byte> EnsureBuffer(int needed)
         {
             _bufferWriter.Ensure(needed);
             Span<byte> buffer = _bufferWriter.Buffer;
