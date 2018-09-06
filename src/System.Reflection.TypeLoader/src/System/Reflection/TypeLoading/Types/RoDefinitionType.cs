@@ -104,14 +104,18 @@ namespace System.Reflection.TypeLoading
                 if (typeArgument == null)
                     throw new ArgumentNullException();
                 if (typeArgument.IsSignatureType())
+                {
                     foundSigType = true;
-                if (!(typeArgument is RoType roTypeArgument && roTypeArgument.Loader == Loader))
-                    throw new ArgumentException(SR.Format(SR.MakeGenericType_NotLoadedByTypeLoader, typeArgument));
-                runtimeTypeArguments[i] = roTypeArgument;
+                }
+                else
+                {
+                    if (!(typeArgument is RoType roTypeArgument && roTypeArgument.Loader == Loader))
+                        throw new ArgumentException(SR.Format(SR.MakeGenericType_NotLoadedByTypeLoader, typeArgument));
+                    runtimeTypeArguments[i] = roTypeArgument;
+                }
             }
-
             if (foundSigType)
-                return this.MakeSignatureGenericType(runtimeTypeArguments);
+                return this.MakeSignatureGenericType(typeArguments);
 
             // We are intentionally not validating constraints as constraint validation is an execution-time issue that does not block our 
             // library and should not block a metadata inspection tool.
