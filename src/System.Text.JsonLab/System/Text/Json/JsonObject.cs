@@ -493,10 +493,6 @@ namespace System.Text.JsonLab
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal Enumerator(JsonObject obj)
             {
-                if (obj.Type != JsonValueType.Object)
-                {
-                    JsonThrowHelper.ThrowInvalidOperationException();
-                }
                 _obj = obj;
                 Current = default;
                 _index = 0;
@@ -505,26 +501,51 @@ namespace System.Text.JsonLab
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-                int index = _index + 1;
-                if (index < _obj.Size)
+                DbRow row = _obj.GetRow();
+                if (row.JsonType == JsonValueType.Object)
                 {
-                    DbRow row = _obj.GetRow(index);
-                    if (row.JsonType != JsonValueType.String)
-                        JsonThrowHelper.ThrowInvalidOperationException();
-
-                    index++;
-                    int length = DbRow.Size;
-
-                    DbRow nextRow = _obj.GetRow(index);
-
-                    if (!nextRow.IsSimpleValue && nextRow.SizeOrLength != 0)
+                    if (_index < _obj.Size - 1)
                     {
-                        _index += nextRow.NumberOfRows;
-                        length = DbRow.Size * (nextRow.NumberOfRows + 1);
+                        _index++;
+                        row = _obj.GetRow(_index);
+                        if (row.JsonType != JsonValueType.String)
+                            JsonThrowHelper.ThrowInvalidOperationException();
+
+                        _index++;
+
+                        DbRow nextRow = _obj.GetRow(_index);
+
+                        if (!nextRow.IsSimpleValue && nextRow.SizeOrLength != 0)
+                        {
+                            Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size * (nextRow.NumberOfRows + 1));
+                            _index += nextRow.NumberOfRows;
+                        }
+                        else
+                        {
+                            Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size);
+                        }
+                        return true;
                     }
-                    Current = _obj.CreateJsonObject(index * DbRow.Size, length);
-                    _index += 2;
-                    return true;
+                }
+                else if (row.JsonType == JsonValueType.Array)
+                {
+                    if (_index < _obj.Size)
+                    {
+                        _index++;
+
+                        DbRow nextRow = _obj.GetRow(_index);
+
+                        if (!nextRow.IsSimpleValue && nextRow.SizeOrLength != 0)
+                        {
+                            Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size * (nextRow.NumberOfRows + 1));
+                            _index += nextRow.NumberOfRows;
+                        }
+                        else
+                        {
+                            Current = _obj.CreateJsonObject(_index * DbRow.Size, DbRow.Size);
+                        }
+                        return true;
+                    }
                 }
                 return false;
             }
