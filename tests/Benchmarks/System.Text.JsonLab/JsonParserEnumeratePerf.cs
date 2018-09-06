@@ -148,6 +148,21 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        public void ParseSystemTextJsonLabEnumerateForeachArray()
+        {
+            JsonObject obj = JsonObject.Parse(_dataUtf8);
+
+            for (int j = 0; j < IterationCount; j++)
+            {
+                foreach(JsonObject withinArray in obj)
+                {
+                }
+            }
+
+            obj.Dispose();
+        }
+
+        [Benchmark]
         public void ParseSystemTextJsonLabEnumerateArrayReverse()
         {
             JsonObject obj = JsonObject.Parse(_dataUtf8);

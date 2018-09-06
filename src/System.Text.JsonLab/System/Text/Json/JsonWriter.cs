@@ -42,9 +42,12 @@ namespace System.Text.JsonLab
             _bufferWriter = BufferWriter.Create(bufferWriter);
             _prettyPrint = prettyPrint;
             _indent = 0;
+            _resizeBufferBy = -1;
         }
 
         public void Flush() => _bufferWriter.Flush();
+
+        private int _resizeBufferBy;
 
         public void Write(JsonObject jsonObject)
         {
@@ -60,13 +63,15 @@ namespace System.Text.JsonLab
                     WriteArray(jsonObject);
                     break;
                 case JsonValueType.String:
-                    while (!TryWriteValueStringAlreadyUtf8(jsonObject.GetSpan()))
-                        EnsureBuffer();
+                    ReadOnlySpan<byte> span = jsonObject.GetSpan();
+                    while (!TryWriteValueStringAlreadyUtf8(span))
+                        EnsureBufferConstant();
                     break;
                 default:
                     Debug.Assert(type >= JsonValueType.Number && type <= JsonValueType.Null);
-                    while (!TryWriteValueAlreadyUtf8(jsonObject.GetSpan()))
-                        EnsureBuffer();
+                    span = jsonObject.GetSpan();
+                    while (!TryWriteValueAlreadyUtf8(span))
+                        EnsureBufferConstant();
                     break;
             }
         }
@@ -89,15 +94,17 @@ namespace System.Text.JsonLab
 
         private void WriteArray(JsonObject jsonObject)
         {
-            for (int i = 0; i < jsonObject.ArrayLength; i++)
+            if (_resizeBufferBy == -1) _resizeBufferBy = jsonObject.Size;
+            foreach (JsonObject child in jsonObject)
             {
-                Write(jsonObject[i]);
+                Write(child);
             }
             WriteArrayEnd();
         }
 
         private void WriteObject(JsonObject jsonObject)
         {
+            if (_resizeBufferBy == -1) _resizeBufferBy = jsonObject.Size;
             foreach (JsonObject child in jsonObject)
             {
                 DbRow valueRow = child.GetRow();
@@ -217,7 +224,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteStartUtf16(nameSpan, JsonConstants.OpenBrace))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
 
             _indent &= RemoveFlagsBitMask;
@@ -578,7 +585,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteStartUtf16(nameSpan, JsonConstants.OpenBracket))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
 
             _indent &= RemoveFlagsBitMask;
@@ -594,7 +601,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteStartUtf8(name, JsonConstants.OpenBracket))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
 
             _indent &= RemoveFlagsBitMask;
@@ -610,7 +617,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteStartUtf8(name, JsonConstants.OpenBrace))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
 
             _indent &= RemoveFlagsBitMask;
@@ -659,7 +666,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteAttributeAlreadyUtf8(name, value))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
         }
 
@@ -672,7 +679,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteAttributeValueAlreadyUtf8(name, value))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
         }
 
@@ -869,7 +876,7 @@ namespace System.Text.JsonLab
                 else
                 {
                     while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
-                        EnsureBuffer();
+                        EnsureBufferConstant();
                 }
             }
         }
@@ -1020,7 +1027,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteAttributeUtf8(nameSpan, value))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
         }
 
@@ -1274,7 +1281,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteValueUtf8(valueSpan))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
         }
 
@@ -1388,7 +1395,7 @@ namespace System.Text.JsonLab
             else
             {
                 while (!TryWriteValueUtf8(value))
-                    EnsureBuffer();
+                    EnsureBufferConstant();
             }
         }
 
@@ -1780,14 +1787,13 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> EnsureBuffer()
+        private void EnsureBufferConstant()
         {
-            _bufferWriter.Ensure(_bufferWriter.Buffer.Length + 1);
-            return _bufferWriter.Buffer;
+            _bufferWriter.Ensure(_resizeBufferBy == -1 ? 4096 : _resizeBufferBy);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> EnsureBuffer(int needed)
+        private Span<byte> EnsureBuffer(int needed = 4096)
         {
             _bufferWriter.Ensure(needed);
             Span<byte> buffer = _bufferWriter.Buffer;
