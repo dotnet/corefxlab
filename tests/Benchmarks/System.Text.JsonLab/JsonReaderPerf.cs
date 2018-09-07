@@ -13,7 +13,7 @@ using System.IO;
 namespace System.Text.JsonLab.Benchmarks
 {
     // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    [SimpleJob(-1, 3, 5, 1024)]
+    [SimpleJob(-1, 3, 5)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {

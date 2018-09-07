@@ -73,7 +73,7 @@ namespace System.Buffers.Reader
         public ReadOnlySpan<T> UnreadSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => CurrentSpanIndex == 0 ? CurrentSpan : CurrentSpan.Slice(CurrentSpanIndex);
+            get => CurrentSpan.Slice(CurrentSpanIndex);
         }
 
         /// <summary>
@@ -89,15 +89,15 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryPeek(out T value)
         {
-            if (End)
-            {
-                value = default;
-                return false;
-            }
-            else
+            if (_moreData)
             {
                 value = CurrentSpan[CurrentSpanIndex];
                 return true;
+            }
+            else
+            {
+                value = default;
+                return false;
             }
         }
 
@@ -156,12 +156,7 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(int count)
         {
-            if (count == 0)
-            {
-                return;
-            }
-
-            if (count < 0 || End)
+            if (count < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
@@ -199,7 +194,7 @@ namespace System.Buffers.Reader
                 GetNextSpan();
             }
 
-            if (count > 0)
+            if (count != 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
