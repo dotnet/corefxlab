@@ -325,9 +325,8 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SkipPastAny(T value0, T value1, T value2, T value3)
+        public int SkipPastAny(T value0, T value1, T value2, T value3)
         {
-            int start = Consumed;
             ReadOnlySpan<T> unread = UnreadSpan;
             int i = 0;
             for (; i < unread.Length; i++)
@@ -341,10 +340,10 @@ namespace System.Buffers.Reader
             Advance(i);
             if (i == unread.Length)
             {
-                SkipPastAnySlow(value0, value1, value2, value3);
+                i += SkipPastAnySlow(value0, value1, value2, value3);
             }
 
-            return start != Consumed;
+            return i;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -436,8 +435,9 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void SkipPastAnySlow(T value0, T value1, T value2, T value3)
+        private int SkipPastAnySlow(T value0, T value1, T value2, T value3)
         {
+            int i = 0;
             while (!End)
             {
                 T val = CurrentSpan[CurrentSpanIndex];
@@ -446,7 +446,9 @@ namespace System.Buffers.Reader
                     break;
                 }
                 Advance(1);
+                i++;
             }
+            return i;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -471,19 +473,15 @@ namespace System.Buffers.Reader
         public bool IsNext(ReadOnlySpan<T> next, bool advancePast)
         {
             ReadOnlySpan<T> unread = UnreadSpan;
-            if (unread.Length >= next.Length)
+            if (unread.StartsWith(next))
             {
-                if (unread.StartsWith(next))
+                if (advancePast)
                 {
-                    if (advancePast)
-                    {
-                        Advance(next.Length);
-                    }
-                    return true;
+                    Advance(next.Length);
                 }
-                return false;
+                return true;
             }
-            return IsNextSlow(next, advancePast);
+            return unread.Length < next.Length && IsNextSlow(next, advancePast);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
