@@ -99,11 +99,6 @@ namespace System.Text.JsonLab
             return _isSingleSegment ? ReadSingleSegment(ref _buffer) : ReadMultiSegment(ref _reader);
         }
 
-        public bool Read2()
-        {
-            return !_isSingleSegment ? ReadSingleSegment(ref _buffer) : ReadMultiSegment(ref _reader);
-        }
-
         private void SkipWhiteSpace(ref BufferReader<byte> reader)
         {
             Index += reader.SkipPastAny(JsonConstants.Space, JsonConstants.CarriageReturn, JsonConstants.LineFeed, JsonConstants.Tab);

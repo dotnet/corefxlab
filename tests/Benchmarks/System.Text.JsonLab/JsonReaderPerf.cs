@@ -13,27 +13,27 @@ using System.IO;
 namespace System.Text.JsonLab.Benchmarks
 {
     // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    //[SimpleJob(-1, 3, 5)]
+    [SimpleJob(-1, 3, 5)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
-            //HelloWorld,
-            //BasicJson,
-            //BasicLargeNum,
-            //SpecialNumForm,
-            //ProjectLockJson,
-            //FullSchema1,
-            //FullSchema2,
-            //DeepTree,
-            //BroadTree,
-            //LotsOfNumbers,
-            //LotsOfStrings,
-            //Json400B,
-            //Json4KB,
-            //Json40KB,
+            HelloWorld,
+            BasicJson,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
             Json400KB
         }
 
@@ -47,7 +47,7 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool IsDataCompact;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
@@ -85,7 +85,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -94,7 +94,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -113,14 +113,14 @@ namespace System.Text.JsonLab.Benchmarks
             return sb.ToString();
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark]
         public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
             var json = new Utf8JsonReader(_dataUtf8);
             while (json.Read()) ;
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequenceSingle);
@@ -128,20 +128,13 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        public void ReaderSystemTextJsonLabSingleSpanSequence2EmptyLoop()
-        {
-            var json = new Utf8JsonReader(_sequenceSingle);
-            while (json.Read2()) ;
-        }
-
-        //[Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
             var outputArray = new byte[_dataUtf8.Length * 2];
@@ -203,7 +196,7 @@ namespace System.Text.JsonLab.Benchmarks
             return outputArray;
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);
@@ -214,7 +207,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);

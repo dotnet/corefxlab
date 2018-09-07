@@ -27,7 +27,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -58,7 +58,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
@@ -77,7 +77,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
