@@ -41,8 +41,7 @@ namespace Microsoft.Collections.Extensions.Tests
                     d[k] = v;
             }
 
-            Assert.True(d.Select(i => (i.Key, i.Value)).OrderBy(i => i.Key)
-                        .SequenceEqual(rd.OrderBy(i => i.Key)));
+            Assert.True(d.OrderBy(i => i.Key).SequenceEqual(rd.OrderBy(i => i.Key)));
         }
     }
 }

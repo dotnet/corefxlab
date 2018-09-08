@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Collections.Extensions
 {
-    public sealed class RefDictionary<TKey, TValue> : IEnumerable<(TKey Key, TValue Value)> where TValue : new()
+    public sealed class RefDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         private int _count;
         private int[] _buckets;
@@ -34,7 +34,7 @@ namespace Microsoft.Collections.Extensions
         public RefDictionary() : this(null) { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(TKey key) => key.GetHashCode() & 0x7FFFFFFF % _buckets.Length;
+        private int GetBucketIndex(TKey key) => _comparer.GetHashCode(key) & 0x7FFFFFFF % _buckets.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
@@ -102,20 +102,19 @@ namespace Microsoft.Collections.Extensions
 
         public Enumerator GetEnumerator() => new Enumerator(this);
 
-        IEnumerator<(TKey Key, TValue Value)> IEnumerable<(TKey Key, TValue Value)>.GetEnumerator() => new Enumerator(this);
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => new Enumerator(this);
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => new Enumerator(this);
 
-        public struct Enumerator : IEnumerator<(TKey Key, TValue Value)>
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly RefDictionary<TKey, TValue> _dictionary;
             private int _index;
-            private (TKey, TValue) _current;
 
             internal Enumerator(RefDictionary<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
                 _index = 0;
-                _current = default;
+                Current = default;
             }
 
             public bool MoveNext()
@@ -124,22 +123,22 @@ namespace Microsoft.Collections.Extensions
                 int count = _dictionary._count;
                 if(_index < count)
                 {
-                    _current = (entries[_index].key, entries[_index].value);
+                    Current = new KeyValuePair<TKey, TValue>(entries[_index].key, entries[_index].value);
                     _index++;
                     return true;
                 }
                 else
                 {
-                    _current = default;
+                    Current = default;
                     _index++;
                     return false;
                 }
             }
 
-            public (TKey Key, TValue Value) Current => _current;
+            public KeyValuePair<TKey, TValue> Current { get; private set; }
 
-            object System.Collections.IEnumerator.Current => _current;
-            void System.Collections.IEnumerator.Reset() => throw new NotImplementedException();
+            object System.Collections.IEnumerator.Current => Current;
+            void System.Collections.IEnumerator.Reset() => _index = 0;
 
             public void Dispose() { }
         }
