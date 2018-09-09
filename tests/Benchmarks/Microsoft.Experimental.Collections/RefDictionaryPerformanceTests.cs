@@ -11,39 +11,41 @@ namespace Microsoft.Collections.Extensions.Tests
     [MemoryDiagnoser]
     public class RefDictionaryPerformanceTests
     {
-        [Params(100_000, 1_000_000, 10_000_000)]
+        [Params(10_000_000, 20_000_000, 30_000_000)]
         public int Size { get; set; }
+        private const int AggCount = 250;
 
         private ulong[] _keys;
-        private int[] _values;
         private RefDictionary<ulong, int> _refDict;
         private Dictionary<ulong, int> _dict;
 
-        [GlobalSetup(Targets = new[] { nameof(LoadRefDictionary), nameof(LoadDictionary) })]
+        [GlobalSetup]
         public void CreateValuesList()
         {
             var rand = new Random(11231992);
 
             _keys = new ulong[Size];
-            _values = new int[Size];
 
             for (int i = 0; i < Size; i++)
             {
-                _keys[i] = (ulong)rand.Next(Size/100);
-                _values[i] = rand.Next();
+                _keys[i] = (ulong)rand.Next(Size/AggCount);
             }
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadRefDictionary) })]
         public void CreateRefDictionary()
         {
-            _refDict = new RefDictionary<ulong, int>(1024);
+            var capacity = 16;
+            while (capacity < Size / AggCount) capacity *= 2;
+            _refDict = new RefDictionary<ulong, int>(capacity);
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadDictionary) })]
         public void CreateDictionary()
         {
-            _dict = new Dictionary<ulong, int>(1024);
+            var capacity = 16;
+            while (capacity < Size / AggCount) capacity *= 2;
+            _dict = new Dictionary<ulong, int>(capacity);
         }
 
         [Benchmark]
@@ -51,20 +53,21 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             for (int i = 0; i < Size; i++)
             {
-                _refDict[_keys[i]] += _values[i];
+                var k = _keys[i];
+                _refDict[k] += (int)k;
             }
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public void LoadDictionary()
         {
             for (int i = 0; i < Size; i++)
             {
                 var k = _keys[i];
                 if (_dict.TryGetValue(k, out int t))
-                    _dict[k] = t + _values[i];
+                    _dict[k] = t + (int)k;
                 else
-                    _dict[k] = _values[i];
+                    _dict[k] = (int)k;
             }
         }
     }
