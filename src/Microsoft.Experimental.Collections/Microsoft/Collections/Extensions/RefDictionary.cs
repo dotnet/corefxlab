@@ -10,16 +10,16 @@ namespace Microsoft.Collections.Extensions
 {
     public sealed class RefDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        private int _count;
+        private IEqualityComparer<TKey> _comparer;
         private int[] _buckets;
         private Entry[] _entries;
-        private IEqualityComparer<TKey> _comparer;
+        private int _count;
 
         private struct Entry
         {
-            public int next;
             public TKey key;
             public TValue value;
+            public int next;
         }
 
         public RefDictionary(int capacity, IEqualityComparer<TKey> comparer)
