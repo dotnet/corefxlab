@@ -35,23 +35,19 @@ namespace Microsoft.Collections.Extensions.Tests
         [IterationSetup(Targets = new[] { nameof(LoadRefDictionary) })]
         public void CreateRefDictionary()
         {
-            var capacity = 16;
-            while (capacity < Size / AggCount) capacity *= 2;
-            _refDict = new RefDictionary<ulong, int>(capacity);
+            _refDict = new RefDictionary<ulong, int>(Size / AggCount);
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadDictionary) })]
         public void CreateDictionary()
         {
-            var capacity = 16;
-            while (capacity < Size / AggCount) capacity *= 2;
-            _dict = new Dictionary<ulong, int>(capacity);
+            _dict = new Dictionary<ulong, int>(Size / AggCount);
         }
 
         [Benchmark]
         public void LoadRefDictionary()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < _keys.Length; i++)
             {
                 var k = _keys[i];
                 _refDict[k] += (int)k;
@@ -61,7 +57,7 @@ namespace Microsoft.Collections.Extensions.Tests
         [Benchmark(Baseline = true)]
         public void LoadDictionary()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < _keys.Length; i++)
             {
                 var k = _keys[i];
                 if (_dict.TryGetValue(k, out int t))

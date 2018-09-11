@@ -34,7 +34,7 @@ namespace Microsoft.Collections.Extensions
         public RefDictionary() : this(null) { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(TKey key) => _comparer.GetHashCode(key) & 0x7FFFFFFF % _buckets.Length;
+        private int GetBucketIndex(TKey key) => (_comparer.GetHashCode(key) & 0x7FFFFFFF) % _buckets.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
