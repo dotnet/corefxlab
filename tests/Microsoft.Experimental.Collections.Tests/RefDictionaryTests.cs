@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Microsoft.Collections.Extensions.Tests
+namespace Microsoft.Experimental.Collections.Tests
 {
     public class RefDictionaryTests
     {

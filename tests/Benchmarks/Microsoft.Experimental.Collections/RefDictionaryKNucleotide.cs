@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -9,9 +13,9 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 
-namespace Microsoft.Collections.Extensions.Tests
+namespace Microsoft.Experimental.Collections.Benchmarks
 {
-    public class KNucleotidePerformanceTests
+    public class RefDictionaryKNucleotide
     {
         [Params(250_000,2_500_000)]
         public int Size { get; set; }
@@ -144,7 +148,7 @@ namespace Microsoft.Collections.Extensions.Tests
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.SampleKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 
@@ -346,7 +350,7 @@ namespace Microsoft.Collections.Extensions.Tests
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.SampleKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 
@@ -549,7 +553,7 @@ namespace Microsoft.Collections.Extensions.Tests
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.SampleKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 

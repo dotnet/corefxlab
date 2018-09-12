@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 
-namespace Microsoft.Collections.Extensions.Tests
+namespace Microsoft.Experimental.Collections.Benchmarks
 {
     [MemoryDiagnoser]
-    public class RefDictionaryPerformanceTests
+    public class RefDictionaryGeneral
     {
         [Params(10_000_000, 20_000_000, 30_000_000)]
         public int Size { get; set; }
@@ -26,7 +26,7 @@ namespace Microsoft.Collections.Extensions.Tests
 
             _keys = new ulong[Size];
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < _keys.Length; i++)
             {
                 _keys[i] = (ulong)rand.Next(Size/AggCount);
             }

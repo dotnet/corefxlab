@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.Collections.Extensions
+namespace Microsoft.Experimental.Collections
 {
     public sealed class RefDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
