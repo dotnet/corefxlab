@@ -8,12 +8,11 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Experimental.Collections
 {
-    public sealed class RefDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public sealed class RefDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> // almost IReadOnlyDictionary<TKey, TValue>
     {
         private IEqualityComparer<TKey> _comparer;
         private int[] _buckets;
         private Entry[] _entries;
-        private int _count;
 
         private struct Entry
         {
@@ -38,6 +37,25 @@ namespace Microsoft.Experimental.Collections
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
+
+        public int Count { get; private set; }
+
+        public bool ContainsKey(TKey key)
+        {
+            Entry[] entries = _entries;
+            int entryIndex = GetEntryIndex(key);
+
+            while (entryIndex != -1)
+            {
+                if (_comparer.Equals(entries[entryIndex].key, key))
+                {
+                    return true;
+                }
+                entryIndex = entries[entryIndex].next;
+            }
+
+            return false;
+        }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
@@ -74,15 +92,15 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = entries[entryIndex].next;
                 }
 
-                if (_count == entries.Length)
+                if (Count == entries.Length)
                 {
-                    entries = new Entry[_count * 2];
-                    Array.Copy(_entries, 0, entries, 0, _count);
+                    entries = new Entry[Count * 2];
+                    Array.Copy(_entries, 0, entries, 0, Count);
                     _entries = entries;
 
-                    int[] newBuckets = new int[_count * 2];
+                    int[] newBuckets = new int[Count * 2];
                     _buckets = newBuckets;
-                    for (int i = 0; i < _count; i++)
+                    for (int i = 0; i < Count; i++)
                     {
                         int bucketIndex = GetBucketIndex(entries[i].key);
                         entries[i].next = newBuckets[bucketIndex] - 1;
@@ -90,13 +108,39 @@ namespace Microsoft.Experimental.Collections
                     }
                 }
 
-                entryIndex = _count++;
+                entryIndex = Count++;
                 int bucket = GetBucketIndex(key);
                 _entries[entryIndex].next = _buckets[bucket] - 1;
                 _buckets[bucket] = entryIndex + 1;
                 entries[entryIndex].key = key;
                 entries[entryIndex].value = default;
                 return ref entries[entryIndex].value;
+            }
+        }
+
+        public IEnumerable<TKey> Keys
+        {
+            get
+            {
+                Entry[] entries = _entries;
+                int count = Count;
+                for (int i = 0; i < Count; i++)
+                {
+                    yield return entries[i].key;
+                }
+            }
+        }
+
+        public IEnumerable<TValue> Values
+        {
+            get
+            {
+                Entry[] entries = _entries;
+                int count = Count;
+                for (int i = 0; i < Count; i++)
+                {
+                    yield return entries[i].value;
+                }
             }
         }
 
@@ -120,7 +164,7 @@ namespace Microsoft.Experimental.Collections
             public bool MoveNext()
             {
                 Entry[] entries = _dictionary._entries;
-                int count = _dictionary._count;
+                int count = _dictionary.Count;
                 if(_index < count)
                 {
                     Current = new KeyValuePair<TKey, TValue>(entries[_index].key, entries[_index].value);

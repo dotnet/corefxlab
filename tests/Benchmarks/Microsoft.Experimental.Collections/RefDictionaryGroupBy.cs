@@ -45,36 +45,26 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
     public static class Enumerable2
     {
-        public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+        public class Grouping<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>
         {
-            KeyValuePair<TKey, List<TElement>> _kv;
-            public Grouping(KeyValuePair<TKey, List<TElement>> kv)
+            public Grouping(TKey k)
             {
-                _kv = kv;
+                Key = k;
             }
-            public TKey Key => _kv.Key;
-
-            public IEnumerator<TElement> GetEnumerator()
-            {
-                return _kv.Value.GetEnumerator();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return _kv.Value.GetEnumerator();
-            }
+            public TKey Key { get; }
         }
 
         public static IEnumerable<IGrouping<TKey, TSource>> GroupByRef<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            var dict = new RefDictionary<TKey, List<TSource>>();
+            var dict = new RefDictionary<TKey, Grouping<TKey, TSource>>();
             foreach (var t in source)
             {
-                ref var l = ref dict[keySelector(t)];
-                if (l == null) l = new List<TSource>();
-                l.Add(t);
+                var k = keySelector(t);
+                ref var g = ref dict[k];
+                if (g == null) g = new Grouping<TKey, TSource>(k);
+                g.Add(t);
             }
-            return dict.Select(kv => (IGrouping<TKey, TSource>)new Grouping<TKey, TSource>(kv));
+            return dict.Values;
         }
     }
 }
