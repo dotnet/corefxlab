@@ -591,5 +591,30 @@ namespace System.Reflection.Tests
                 Assert.Equal(t, tRetrieved);
             }
         }
+
+#if !netstandard
+        [Fact]
+        public static void SignatureTypeSupport()
+        {
+            Type t = typeof(GenericClassWithGenericMethods1<,>).Project();
+            Type theT = t.GetTypeInfo().GenericTypeParameters[0];
+            Type theU = t.GetTypeInfo().GenericTypeParameters[1];
+            Type theM = Type.MakeGenericMethodParameter(0);
+            Type theN = Type.MakeGenericMethodParameter(1);
+
+            Type[] parameterTypes =
+            {
+                typeof(GenericClass5<,,,,>).Project().MakeGenericType(
+                    theN,
+                    theM.MakeArrayType(),
+                    typeof(IEnumerable<>).Project().MakeGenericType(theU),
+                    theT.MakeArrayType(2),
+                    typeof(int).Project()),
+            };
+
+            MethodInfo m = t.GetMethod("GenericMethod1", 2, parameterTypes);
+            Assert.NotNull(m);
+        }
+#endif // !netstandard
     }
 }

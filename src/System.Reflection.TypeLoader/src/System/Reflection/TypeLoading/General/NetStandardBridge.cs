@@ -36,9 +36,8 @@ namespace System.Reflection.TypeLoading
         public static bool IsVariableBoundArray(this Type type) => type.IsVariableBoundArray;
         public static bool IsGenericMethodParameter(this Type type) => type.IsGenericMethodParameter;
 
-        // @TODO - https://github.com/dotnet/corefxlab/issues/2443: This should be fixed assuming https://github.com/dotnet/corefx/issues/31798 gets approved.
-        public static Type MakeSignatureGenericType(this Type genericTypeDefinition, Type[] typeArguments) => throw new NotSupportedException(SR.NotSupported_MakeGenericType_SignatureTypes);
-#endif
+        public static Type MakeSignatureGenericType(this Type genericTypeDefinition, Type[] typeArguments) => Type.MakeGenericSignatureType(genericTypeDefinition, typeArguments);
+#endif // netstandard
     }
 
     //
@@ -59,7 +58,7 @@ namespace System.Reflection.TypeLoading
         TypeDelegator
 #else
         TypeInfo
-#endif
+#endif // netstandard
     {
         protected LeveledTypeInfo() : base() { }
 
@@ -131,10 +130,6 @@ namespace System.Reflection.TypeLoading
     {
 #if netstandard
         // On NetStandard, AttributeType is declared non-virtually so apps are stuck calling the slow version that builds a constructor.
-        public new abstract Type AttributeType { get; }
-#else
-        // @todo: https://github.com/dotnet/corefxlab/issues/2460 Once the netcore build is building against a contract that declares AttributeType virtually,
-        // delete this line. We want RoCustomAttributeData to override the real AttributeType property.
         public new abstract Type AttributeType { get; }
 #endif // netstandard
     }
