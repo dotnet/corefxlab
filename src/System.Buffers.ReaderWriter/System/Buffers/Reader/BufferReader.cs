@@ -79,7 +79,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The total number of {T}s processed by the reader.
         /// </summary>
-        public int Consumed { get; private set; }
+        public long Consumed { get; private set; }
 
         /// <summary>
         /// Peeks at the next value without advancing the reader.

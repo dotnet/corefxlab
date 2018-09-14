@@ -47,13 +47,13 @@ namespace System.Buffers.Tests
             Assert.True(skipReader.TrySkipToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(7, value);
-            Assert.True(skipReader.SkipPast(8));
+            Assert.Equal(1, skipReader.SkipPast(8));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(9, value);
 
             skipReader = new BufferReader<byte>(bytes);
-            Assert.False(skipReader.SkipPast(2));
-            Assert.True(skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
+            Assert.Equal(0, skipReader.SkipPast(2));
+            Assert.Equal(3, skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(4, value);
         }

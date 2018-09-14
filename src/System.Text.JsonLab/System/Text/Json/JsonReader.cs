@@ -101,7 +101,7 @@ namespace System.Text.JsonLab
 
         private void SkipWhiteSpace(ref BufferReader<byte> reader)
         {
-            Index += reader.SkipPastAny(JsonConstants.Space, JsonConstants.CarriageReturn, JsonConstants.LineFeed, JsonConstants.Tab);
+            Index += (int)reader.SkipPastAny(JsonConstants.Space, JsonConstants.CarriageReturn, JsonConstants.LineFeed, JsonConstants.Tab);
         }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)

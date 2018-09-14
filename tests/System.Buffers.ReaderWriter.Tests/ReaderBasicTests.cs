@@ -91,9 +91,9 @@ namespace System.Buffers.Tests
             Assert.Equal(0, reader.UnreadSpan.Length);
             Assert.Equal(0, reader.Consumed);
             Assert.Equal(0, reader.CurrentSpanIndex);
-            Assert.False(reader.SkipPast(default));
-            Assert.False(reader.SkipPastAny(array));
-            Assert.False(reader.SkipPastAny(default));
+            Assert.Equal(0, reader.SkipPast(default));
+            Assert.Equal(0, reader.SkipPastAny(array));
+            Assert.Equal(0, reader.SkipPastAny(default));
             Assert.False(reader.TryReadTo(out ReadOnlySequence<T> sequence, default(T)));
             Assert.True(sequence.IsEmpty);
             Assert.False(reader.TryReadTo(out sequence, array));
