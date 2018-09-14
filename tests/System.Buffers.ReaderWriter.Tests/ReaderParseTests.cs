@@ -37,5 +37,109 @@ namespace System.Buffers.Tests
                 Assert.Equal(1234, value);
             }
         }
+
+        [Fact]
+        public void TryParseInt_MultiSegment()
+        {
+            var bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("-123"),
+                Encoding.UTF8.GetBytes("45")
+            });
+
+            var reader = new BufferReader<byte>(bytes);
+
+            Assert.True(reader.TryParse(out int value));
+            Assert.Equal(-12345, value);
+
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("-1,2,3"),
+                Encoding.UTF8.GetBytes("4,5.0000000000NewData")
+            });
+
+            reader = new BufferReader<byte>(bytes);
+
+            Assert.True(reader.TryParse(out value));
+            Assert.Equal(-1, value);
+
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryParse(out value, 'N'));
+            Assert.Equal(-12345, value);
+
+            reader = new BufferReader<byte>(bytes);
+            Assert.False(reader.TryParse(out value, 'X'));
+            reader.Advance(1);
+            Assert.True(reader.TryParse(out value, 'X'));
+            Assert.Equal(1, value);
+
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("FEE"),
+                Encoding.UTF8.GetBytes("D")
+            });
+
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryParse(out value, 'X'));
+            Assert.Equal(0xFEED, value);
+
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("FE"),
+                Encoding.UTF8.GetBytes("ED"),
+                Encoding.UTF8.GetBytes("BEEFBEE")
+            });
+
+            // Overflow
+            reader = new BufferReader<byte>(bytes);
+            Assert.False(reader.TryParse(out value, 'X'));
+
+            reader.Advance(3);
+            Assert.True(reader.TryParse(out value, 'X'));
+            Assert.Equal(unchecked((int)0xDBEEFBEE), value);
+
+            // Heap read
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("-0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("123"),
+                Encoding.UTF8.GetBytes("45")
+            });
+
+            reader = new BufferReader<byte>(bytes);
+
+            Assert.True(reader.TryParse(out value));
+            Assert.Equal(-12345, value);
+
+            // Heap overflow
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("-0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("0000000000"),
+                Encoding.UTF8.GetBytes("1234567891"),
+                Encoding.UTF8.GetBytes("2345678901")
+            });
+
+            Assert.False(reader.TryParse(out value));
+        }
     }
 }

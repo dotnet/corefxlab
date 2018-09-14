@@ -201,31 +201,34 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Peek forward the number of positions specified by <paramref name="count"/>.
+        /// Peek forward up to the number of positions specified by <paramref name="maxCount"/>.
         /// </summary>
         /// <returns>Span over the peeked data.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<T> Peek(int count)
+        public ReadOnlySpan<T> Peek(int maxCount)
         {
             ReadOnlySpan<T> firstSpan = UnreadSpan;
-            if (firstSpan.Length >= count)
+            if (firstSpan.Length >= maxCount)
             {
-                return firstSpan.Slice(0, count);
+                return firstSpan.Slice(0, maxCount);
             }
 
             // Not enough contiguous Ts, allocate and copy what we can get
-            return PeekSlow(new T[count]);
+            return PeekSlow(new T[maxCount]);
         }
 
         /// <summary>
-        /// Peek forward the number of positions in <paramref name="copyBuffer"/>, copying into
+        /// Peek forward the number of positions in <paramref name="copyBuffer"/> (at most), copying into
         /// <paramref name="copyBuffer"/> if needed.
         /// </summary>
         /// <param name="copyBuffer">
         /// Temporary buffer to copy into if there isn't a contiguous span within the existing data to return.
-        /// Also describes the count of positions to peek.
+        /// Also describes the maximum count of positions to peek.
         /// </param>
-        /// <returns>Span over the peeked data.</returns>
+        /// <returns>
+        /// Span over the peeked data. The length may be shorter than <paramref name="copyBuffer"/> if there
+        /// is not enough data left to fill the requested length.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Peek(Span<T> copyBuffer)
         {

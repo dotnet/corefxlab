@@ -364,6 +364,9 @@ namespace System.Buffers.Reader
                 }
 
                 Advance(advanced);
+
+                // If we're at postion 0 after advancing and not at the End,
+                // we're in a new span and should continue the loop.
             } while (CurrentSpanIndex == 0 && !End);
 
             return Consumed - start;
