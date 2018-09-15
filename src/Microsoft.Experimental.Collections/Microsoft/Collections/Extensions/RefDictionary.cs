@@ -88,17 +88,18 @@ namespace Microsoft.Experimental.Collections
 
                 if (Count == entries.Length)
                 {
-                    entries = new Entry[Count * 2];
-                    Array.Copy(_entries, 0, entries, 0, Count);
+                    var count = Count;
+                    entries = new Entry[count * 2];
+                    Array.Copy(_entries, 0, entries, 0, count);
                     _entries = entries;
 
-                    int[] newBuckets = new int[Count * 2];
+                    int[] newBuckets = new int[count * 2];
                     _buckets = newBuckets;
-                    for (int i = 0; i < Count; i++)
+                    for (int i = 0; i < count;)
                     {
                         int bucketIndex = GetBucketIndex(entries[i].key);
                         entries[i].next = newBuckets[bucketIndex] - 1;
-                        newBuckets[bucketIndex] = i + 1;
+                        newBuckets[bucketIndex] = ++i;
                     }
                 }
 
@@ -116,8 +117,7 @@ namespace Microsoft.Experimental.Collections
         {
             get
             {
-                Entry[] entries = _entries;
-                int count = Count;
+                var entries = _entries;
                 for (int i = 0; i < Count; i++)
                 {
                     yield return entries[i].key;
@@ -129,8 +129,7 @@ namespace Microsoft.Experimental.Collections
         {
             get
             {
-                Entry[] entries = _entries;
-                int count = Count;
+                var entries = _entries;
                 for (int i = 0; i < Count; i++)
                 {
                     yield return entries[i].value;
