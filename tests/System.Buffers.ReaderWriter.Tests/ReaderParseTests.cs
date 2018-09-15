@@ -41,7 +41,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void TryParseInt_MultiSegment()
         {
-            var bytes = BufferFactory.Create(new byte[][] {
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {
                 Encoding.UTF8.GetBytes("-123"),
                 Encoding.UTF8.GetBytes("45")
             });
@@ -140,6 +140,43 @@ namespace System.Buffers.Tests
             });
 
             Assert.False(reader.TryParse(out value));
+        }
+
+        [Fact]
+        public void TryParseInt_SingleNonDigit()
+        {
+            // Testing single segments that aren't valid on their own, but are with additional segments
+
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("-"),
+                Encoding.UTF8.GetBytes("123")
+            });
+
+            var reader = new BufferReader<byte>(bytes);
+
+            Assert.True(reader.TryParse(out int value));
+            Assert.Equal(-123, value);
+
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("+"),
+                Encoding.UTF8.GetBytes("123")
+            });
+
+            reader = new BufferReader<byte>(bytes);
+
+            Assert.True(reader.TryParse(out value));
+            Assert.Equal(123, value);
+
+            bytes = BufferFactory.Create(new byte[][] {
+                Encoding.UTF8.GetBytes("."),
+                Encoding.UTF8.GetBytes("0")
+            });
+
+            reader = new BufferReader<byte>(bytes);
+
+            Assert.False(reader.TryParse(out value, 'd'));
+            Assert.True(reader.TryParse(out value, 'n'));
+            Assert.Equal(0, value);
         }
     }
 }

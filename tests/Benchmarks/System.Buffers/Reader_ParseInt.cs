@@ -14,13 +14,11 @@ namespace System.Buffers.Benchmarks
         private static byte[] s_array;
         private static ReadOnlySequence<byte> s_ros;
         private static ReadOnlySequence<byte> s_rosSplit;
-        private static byte[] s_buffer;
 
         [GlobalSetup]
         public void Setup()
         {
             s_array = new byte[10_000_000];
-            s_buffer = new byte[4096];
 
             Random r = new Random(42);
 
@@ -35,7 +33,7 @@ namespace System.Buffers.Benchmarks
             }
 
             s_ros = new ReadOnlySequence<byte>(s_array);
-            s_rosSplit = BufferUtilities.CreateSplitBuffer(s_buffer, 100, 1000);
+            s_rosSplit = BufferUtilities.CreateSplitBuffer(s_array, 100, 1000);
         }
 
         [Benchmark]

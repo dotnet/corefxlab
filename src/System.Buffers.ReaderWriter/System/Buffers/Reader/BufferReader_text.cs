@@ -3,13 +3,50 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Text;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
 {
     public static partial class ReaderExtensions
     {
+        // .NET parsers will typically read as many leading zeroes as are given. In our case this can be prohibitively expensive.
+        private const int MaxParseBuffer = 1024;
+
+        private delegate bool ParseDelegate<T>(ReadOnlySpan<byte> source, out T value, out int consumed, char standardFormat);
+        private static ParseDelegate<short> s_shortParse;
+        private static ParseDelegate<int> s_intParse;
+        private static ParseDelegate<long> s_longParse;
+
+        private static ParseDelegate<short> ShortParser
+        {
+            get
+            {
+                if (s_shortParse == null)
+                    s_shortParse = Utf8Parser.TryParse;
+                return s_shortParse;
+            }
+        }
+
+        private static ParseDelegate<int> IntParser
+        {
+            get
+            {
+                if (s_intParse == null)
+                    s_intParse = Utf8Parser.TryParse;
+                return s_intParse;
+            }
+        }
+
+        private static ParseDelegate<long> LongParser
+        {
+            get
+            {
+                if (s_longParse == null)
+                    s_longParse = Utf8Parser.TryParse;
+                return s_longParse;
+            }
+        }
+
         /// <summary>
         /// Try to parse a bool out of the reader (as UTF-8).
         /// </summary>
@@ -60,43 +97,13 @@ namespace System.Buffers.Reader
             return false;
         }
 
-        /// <summary>
-        /// Try to parse an int out of the reader (as UTF-8).
-        /// </summary>
-        /// <param name="value">The parsed int value or default if failed.</param>
-        /// <param name="standardFormat">Expected format.</param>
-        /// <remarks>
-        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out int, out int, char)"/> for supported formats.
-        /// </remarks>
-        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
-        /// <returns>True if successfully parsed.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out int value, char standardFormat = '\0')
+        private static unsafe bool TryParseSlow<T>(
+            ref BufferReader<byte> reader,
+            out T value,
+            char standardFormat,
+            int bufferSize,
+            ParseDelegate<T> parseDelegate) where T: unmanaged
         {
-            ReadOnlySpan<byte> unread = reader.UnreadSpan;
-            if (!Utf8Parser.TryParse(unread, out value, out int consumed, standardFormat))
-            {
-                return false;
-            }
-
-            if (consumed < unread.Length)
-            {
-                // The parser found a digit it wouldn't consume so we have all valid data.
-                reader.Advance(consumed);
-                return true;
-            }
-
-            // If we ate all of our unread there may be more valid digits
-            return TryParseSlow(ref reader, out value, standardFormat);
-        }
-
-        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out int value, char standardFormat)
-        {
-            // Note that ints can have leading zeros ("-00000000000000127") which makes predicting the max
-            // length difficult. Typically the int will be less than 15 characters ("-2,147,483,648") so we'll
-            // work in those increments.
-            int bufferSize = 15;
-
             // Try using the stack for scratch space.
             do
             {
@@ -105,7 +112,7 @@ namespace System.Buffers.Reader
                 Span<byte> buffer = new Span<byte>(stackBuffer, bufferSize);
                 ReadOnlySpan<byte> peekSpan = reader.PeekSlow(buffer);
 
-                if (!Utf8Parser.TryParse(peekSpan, out value, out int consumed, standardFormat))
+                if (!parseDelegate(peekSpan, out value, out int consumed, standardFormat))
                 {
                     // Overflow
                     return false;
@@ -113,7 +120,7 @@ namespace System.Buffers.Reader
 
                 if (consumed < peekSpan.Length || peekSpan.Length < buffer.Length)
                 {
-                    // The parser found a digit it wouldn't consume or we hit the end of the reader
+                    // The parser found a value it wouldn't consume or we hit the end of the reader
                     // (peekSpan was smaller than requested)so we have all valid data.
                     reader.Advance(consumed);
                     return true;
@@ -129,7 +136,7 @@ namespace System.Buffers.Reader
                 byte[] buffer = new byte[bufferSize];
                 ReadOnlySpan<byte> peekSpan = reader.PeekSlow(buffer);
 
-                if (!Utf8Parser.TryParse(peekSpan, out value, out int consumed, standardFormat))
+                if (!parseDelegate(peekSpan, out value, out int consumed, standardFormat))
                 {
                     // Overflow
                     return false;
@@ -137,7 +144,7 @@ namespace System.Buffers.Reader
 
                 if (consumed < peekSpan.Length || peekSpan.Length < buffer.Length)
                 {
-                    // The parser found a digit it wouldn't consume or we hit the end of the reader
+                    // The parser found a value it wouldn't consume or we hit the end of the reader
                     // (peekSpan was smaller than requested)so we have all valid data.
                     reader.Advance(consumed);
                     return true;
@@ -149,44 +156,110 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Try to parse a long out of the reader (as UTF-8).
+        /// Try to parse a <see cref="short"/> out of the reader (as UTF-8).
         /// </summary>
-        /// <param name="value">The parsed long value or default if failed.</param>
+        /// <param name="value">The parsed <see cref="short"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out short, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>True if successfully parsed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out long value)
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out short value, char standardFormat = '\0')
         {
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
-            if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
+            if (!Utf8Parser.TryParse(unread, out value, out int consumed, standardFormat))
             {
+                // If there is only one byte in our current span, it might be '+', '-', or '.'.
+                // These are all valid starts to an int, but not by themselves.
+                if (unread.Length != 1 || unread[0] > '.')
+                {
+                    return false;
+                }
+            }
+
+            if (consumed < unread.Length)
+            {
+                // The parser found a value it wouldn't consume so we have all valid data.
                 reader.Advance(consumed);
                 return true;
             }
 
-            return TryParseSlow(ref reader, out value);
+            // If we ate all of our unread there may be more valid digits.
+            // The typical max size for a short will be less than 8 bytes ("-32,768").
+            return TryParseSlow(ref reader, out value, standardFormat, 8, ShortParser);
         }
 
-        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out long value)
+        /// <summary>
+        /// Try to parse an <see cref="int"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="int"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out int, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out int value, char standardFormat = '\0')
         {
-            const int MaxLength = 30;
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
-
-            if (unread.Length > MaxLength)
+            if (!Utf8Parser.TryParse(unread, out value, out int consumed, standardFormat))
             {
-                // Fast path had enough space but couldn't find valid data
-                value = default;
-                return false;
+                // If there is only one byte in our current span, it might be '+', '-', or '.'.
+                // These are all valid starts to an int, but not by themselves.
+                if (unread.Length != 1 || unread[0] > '.')
+                {
+                    return false;
+                }
             }
-
-            byte* buffer = stackalloc byte[MaxLength];
-            Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
-            if (Utf8Parser.TryParse(reader.PeekSlow(tempSpan), out value, out int consumed))
+            else if (consumed < unread.Length)
             {
+                // The parser found a value it wouldn't consume so we have all valid data.
                 reader.Advance(consumed);
                 return true;
             }
 
-            return false;
+            // If we ate all of our unread there may be more valid digits
+            // The typical max size for an int will be less than 15 bytes ("-2,147,483,648").
+            return TryParseSlow(ref reader, out value, standardFormat, 15, IntParser);
+        }
+
+        /// <summary>
+        /// Try to parse an <see cref="long"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="long"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out long, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out long value, char standardFormat = '\0')
+        {
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
+            if (!Utf8Parser.TryParse(unread, out value, out int consumed, standardFormat))
+            {
+                // If there is only one byte in our current span, it might be '+', '-', or '.'.
+                // These are all valid starts to an int, but not by themselves.
+                if (unread.Length != 1 || unread[0] > '.')
+                {
+                    return false;
+                }
+            }
+
+            if (consumed < unread.Length)
+            {
+                // The parser found a value it wouldn't consume so we have all valid data.
+                reader.Advance(consumed);
+                return true;
+            }
+
+            // If we ate all of our unread there may be more valid digits.
+            // The typical max size for a long will be less than 27 bytes ("-9,223,372,036,854,775,808").
+            return TryParseSlow(ref reader, out value, standardFormat, 27, LongParser);
         }
     }
 }
