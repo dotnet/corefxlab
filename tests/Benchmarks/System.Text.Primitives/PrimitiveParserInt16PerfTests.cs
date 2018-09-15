@@ -22,7 +22,7 @@ namespace System.Text.Primitives.Benchmarks
             yield return new Utf8ByteArrayArgument("2147abcdefghijklmnop");		
         }
 
-        public IEnumerable<object> ByteSpanToInt16_Arguments()
+        public IEnumerable<object> ByteSpanToInt16_Thai_Arguments()
         {
             yield return new Utf8ByteArrayArgument("๑๐๗๓๗");
             yield return new Utf8ByteArrayArgument("๒๑๔๗๔");
@@ -37,7 +37,7 @@ namespace System.Text.Primitives.Benchmarks
             => Utf8Parser.TryParse(text.CreateSpan(), out short value, out int consumed);
         
         [Benchmark]
-        [ArgumentsSource(nameof(ByteSpanToInt16_Arguments))]
+        [ArgumentsSource(nameof(ByteSpanToInt16_Thai_Arguments))]
         public bool ByteSpanToInt16_Thai(Utf8ByteArrayArgument text) 
             => CustomParser.TryParseInt16(text.CreateSpan(), out short value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
     }
