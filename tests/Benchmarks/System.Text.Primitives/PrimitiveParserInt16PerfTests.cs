@@ -13,7 +13,16 @@ namespace System.Text.Primitives.Benchmarks
 {
     public partial class PrimitiveParserPerfTests
     {
-        public IEnumerable<object> ParseInt16Thai_Arguments()
+        public IEnumerable<object> ByteSpanToInt16_Arguments()		
+        {		
+            yield return new Utf8ByteArrayArgument("10737");		
+            yield return new Utf8ByteArrayArgument("21474");	
+            yield return new Utf8ByteArrayArgument("0"); 		
+            yield return new Utf8ByteArrayArgument("000000000000000000001235abcdfg");		
+            yield return new Utf8ByteArrayArgument("2147abcdefghijklmnop");		
+        }
+
+        public IEnumerable<object> ByteSpanToInt16_Arguments()
         {
             yield return new Utf8ByteArrayArgument("๑๐๗๓๗");
             yield return new Utf8ByteArrayArgument("๒๑๔๗๔");
@@ -22,9 +31,14 @@ namespace System.Text.Primitives.Benchmarks
             yield return new Utf8ByteArrayArgument("๒๑๔๗๔abcdefghijklmnop");
         }
 
+        [Benchmark(Baseline = true)]		
+        [ArgumentsSource(nameof(ByteSpanToInt16_Arguments))]		
+        public bool ByteSpanToInt16(Utf8ByteArrayArgument text) 
+            => Utf8Parser.TryParse(text.CreateSpan(), out short value, out int consumed);
+        
         [Benchmark]
-        [ArgumentsSource(nameof(ParseInt16Thai_Arguments))]
-        public bool ParseInt16Thai(Utf8ByteArrayArgument text) 
+        [ArgumentsSource(nameof(ByteSpanToInt16_Arguments))]
+        public bool ByteSpanToInt16_Thai(Utf8ByteArrayArgument text) 
             => CustomParser.TryParseInt16(text.CreateSpan(), out short value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
     }
 }
