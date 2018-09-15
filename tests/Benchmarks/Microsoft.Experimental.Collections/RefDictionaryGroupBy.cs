@@ -54,7 +54,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             public TKey Key { get; }
         }
 
-        public static IEnumerable<IGrouping<TKey, TSource>> GroupByRef<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        public static IEnumerable<IGrouping<TKey, TSource>> GroupByRef<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) where TKey : IEquatable<TKey>
         {
             var dict = new RefDictionary<TKey, Grouping<TKey, TSource>>();
             foreach (var t in source)

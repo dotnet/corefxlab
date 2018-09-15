@@ -8,9 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Experimental.Collections
 {
-    public sealed class RefDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> // almost IReadOnlyDictionary<TKey, TValue>
+    public sealed class RefDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey> // almost IReadOnlyDictionary<TKey, TValue>
     {
-        private IEqualityComparer<TKey> _comparer;
         private int[] _buckets;
         private Entry[] _entries;
 
@@ -21,19 +20,14 @@ namespace Microsoft.Experimental.Collections
             public int next;
         }
 
-        public RefDictionary(int capacity, IEqualityComparer<TKey> comparer)
+        public RefDictionary(int capacity = 16)
         {
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
-            _comparer = comparer ?? EqualityComparer<TKey>.Default;
         }
 
-        public RefDictionary(IEqualityComparer<TKey> comparer) : this(16, comparer) { }
-        public RefDictionary(int capacity) : this(capacity, null) { }
-        public RefDictionary() : this(null) { }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(TKey key) => (_comparer.GetHashCode(key) & 0x7FFFFFFF) % _buckets.Length;
+        private int GetBucketIndex(TKey key) => (key.GetHashCode() & 0x7FFFFFFF) % _buckets.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
@@ -47,7 +41,7 @@ namespace Microsoft.Experimental.Collections
 
             while (entryIndex != -1)
             {
-                if (_comparer.Equals(entries[entryIndex].key, key))
+                if (entries[entryIndex].key.Equals(key))
                 {
                     return true;
                 }
@@ -64,7 +58,7 @@ namespace Microsoft.Experimental.Collections
 
             while (entryIndex != -1)
             {
-                if (_comparer.Equals(entries[entryIndex].key, key))
+                if (entries[entryIndex].key.Equals(key))
                 {
                     value = entries[entryIndex].value;
                     return true;
@@ -85,7 +79,7 @@ namespace Microsoft.Experimental.Collections
 
                 while (entryIndex != -1)
                 {
-                    if (_comparer.Equals(entries[entryIndex].key, key))
+                    if (entries[entryIndex].key.Equals(key))
                     {
                         return ref entries[entryIndex].value;
                     }
@@ -165,7 +159,7 @@ namespace Microsoft.Experimental.Collections
             {
                 Entry[] entries = _dictionary._entries;
                 int count = _dictionary.Count;
-                if(_index < count)
+                if (_index < count)
                 {
                     Current = new KeyValuePair<TKey, TValue>(entries[_index].key, entries[_index].value);
                     _index++;
