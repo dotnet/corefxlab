@@ -28,8 +28,7 @@ namespace System.Text.Primitives.Benchmarks
             yield return new Utf8ByteArrayArgument("111");	
             yield return new Utf8ByteArrayArgument("124");		
             yield return new Utf8ByteArrayArgument("2"); 		
-            yield return new Utf8ByteArrayArgument("-128");		
-            yield return new Utf8ByteArrayArgument("000000000000000000001235abcdefg");		
+            yield return new Utf8ByteArrayArgument("000000000000000000003535abcdfg");		
             yield return new Utf8ByteArrayArgument("21474abcdefghijklmnop");		
         }
 
