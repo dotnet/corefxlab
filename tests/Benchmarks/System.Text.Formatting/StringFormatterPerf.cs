@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using System.Text.Formatting;
 
-namespace Benchmarks
+namespace System.Text.Formatting.Benchmarks
 {
     public class StringFormatterPerf
     {
