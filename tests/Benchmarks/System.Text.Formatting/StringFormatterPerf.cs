@@ -19,9 +19,13 @@ namespace System.Text.Formatting.Benchmarks
         [Params(10, 1000)]
         public int NumbersToWrite { get; set; }
         private static ArrayPool<byte> pool = ArrayPool<byte>.Shared;
+        private SymbolTable _symbolTable;
+
+        [GlobalSetup(Target = nameof(CustomCultureFormat))]
+        public void SetupCustomCultureFormat() => _symbolTable = CreateCustomCulture();
 
         [Benchmark]
-        public void InvariantFormatIntDec()
+        public string InvariantFormatIntDec()
         {
             var sb = new StringFormatter(NumbersToWrite, pool);
             for (int i = 0; i < NumbersToWrite; i++)
@@ -29,11 +33,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(((int)(i % 10)));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void InvariantFormatIntDecClr()
+        public string InvariantFormatIntDecClr()
         {
             var sb = new StringBuilder(NumbersToWrite);
             for (int i = 0; i < NumbersToWrite; i++)
@@ -41,11 +45,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(((int)(i % 10)));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void InvariantFormatIntHex()
+        public string InvariantFormatIntHex()
         {
             var sb = new StringFormatter(NumbersToWrite, pool);
             var format = new StandardFormat('X', StandardFormat.NoPrecision);
@@ -55,11 +59,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(((int)(i % 10)), format);
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void InvariantFormatIntHexClr()
+        public string InvariantFormatIntHexClr()
         {
             var sb = new StringBuilder(NumbersToWrite);
             for (int i = 0; i < NumbersToWrite; i++)
@@ -67,11 +71,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(((int)(i % 10)).ToString("X"));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void InvariantFormatStruct()
+        public string InvariantFormatStruct()
         {
             var sb = new StringFormatter(NumbersToWrite * 2, pool);
             for (int i = 0; i < NumbersToWrite; i++)
@@ -79,11 +83,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(new Age(i % 10));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void FormatGuid()
+        public string FormatGuid()
         {
             var guid = Guid.NewGuid();
             var guidsToWrite = NumbersToWrite / 10;
@@ -94,11 +98,11 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(guid);
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void InvariantFormatStructClr()
+        public string InvariantFormatStructClr()
         {
             var sb = new StringBuilder(NumbersToWrite * 2);
             for (int i = 0; i < NumbersToWrite; i++)
@@ -106,14 +110,14 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(new Age(i % 10));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void CustomCultureFormat()
+        public string CustomCultureFormat()
         {
             var sb = new StringFormatter(NumbersToWrite * 3, pool);
-            sb.SymbolTable = CreateCustomCulture();
+            sb.SymbolTable = _symbolTable;
 
             sb.Clear();
             for (int i = 0; i < NumbersToWrite; i++)
@@ -122,33 +126,31 @@ namespace System.Text.Formatting.Benchmarks
                 sb.Append(next);
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
-        public void CustomCultureFormatClr()
+        public string CustomCultureFormatClr()
         {
             var sb = new StringBuilder(NumbersToWrite * 3);
             var culture = new CultureInfo("th");
 
-            sb.Clear();
             for (int i = 0; i < NumbersToWrite; i++)
             {
                 sb.Append(((i % 128) + 100).ToString(culture));
             }
 
-            var text = sb.ToString();
+            return sb.ToString();
         }
 
         [Benchmark]
         public void EncodeStringToUtf8()
         {
-            string text = "Hello World!";
+            const string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
             var formatter = new ArrayFormatter(size, SymbolTable.InvariantUtf8, pool);
 
-            formatter.Clear();
             for (int i = 0; i < stringsToWrite; i++)
             {
                 formatter.Append(text);
@@ -159,7 +161,7 @@ namespace System.Text.Formatting.Benchmarks
         [Benchmark]
         public void EncodeStringToUtf8Clr()
         {
-            string text = "Hello World!";
+            const string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
             var formatter = new StringBuilder(size);
