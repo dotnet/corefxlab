@@ -3,12 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Experimental.Collections
 {
-    public sealed class RefDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey> // almost IReadOnlyDictionary<TKey, TValue>
+    public class RefDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey> // almost IReadOnlyDictionary<TKey, TValue>
     {
         private int[] _buckets;
         private Entry[] _entries;
@@ -137,10 +138,8 @@ namespace Microsoft.Experimental.Collections
             }
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(this);
-
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => new Enumerator(this);
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => new Enumerator(this);
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
@@ -156,27 +155,23 @@ namespace Microsoft.Experimental.Collections
 
             public bool MoveNext()
             {
-                Entry[] entries = _dictionary._entries;
-                int count = _dictionary.Count;
-                if (_index < count)
+                if (_index < _dictionary.Count)
                 {
-                    Current = new KeyValuePair<TKey, TValue>(entries[_index].key, entries[_index].value);
-                    _index++;
+                    Current = new KeyValuePair<TKey, TValue>(
+                        _dictionary._entries[_index].key,
+                        _dictionary._entries[_index++].value);
                     return true;
                 }
                 else
                 {
                     Current = default;
-                    _index++;
                     return false;
                 }
             }
 
             public KeyValuePair<TKey, TValue> Current { get; private set; }
-
-            object System.Collections.IEnumerator.Current => Current;
-            void System.Collections.IEnumerator.Reset() => _index = 0;
-
+            object IEnumerator.Current => Current;
+            void IEnumerator.Reset() => _index = 0;
             public void Dispose() { }
         }
     }
