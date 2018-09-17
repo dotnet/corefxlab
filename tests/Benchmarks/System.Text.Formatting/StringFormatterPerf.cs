@@ -119,7 +119,6 @@ namespace System.Text.Formatting.Benchmarks
             var sb = new StringFormatter(NumbersToWrite * 3, pool);
             sb.SymbolTable = _symbolTable;
 
-            sb.Clear();
             for (int i = 0; i < NumbersToWrite; i++)
             {
                 var next = (i % 128) + 101;
@@ -166,7 +165,6 @@ namespace System.Text.Formatting.Benchmarks
             int size = stringsToWrite * text.Length + stringsToWrite;
             var formatter = new StringBuilder(size);
 
-            formatter.Clear();
             for (int i = 0; i < stringsToWrite; i++)
             {
                 formatter.Append(text);
