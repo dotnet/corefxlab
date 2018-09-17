@@ -9,6 +9,7 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Formatting;
 using System.Text.JsonLab.Tests.Resources;
 using Xunit;
 
@@ -117,6 +118,37 @@ namespace System.Text.JsonLab.Tests
             JsonLabEmptyLoopHelper(dataUtf8);
             long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
             Assert.Equal(0, memoryAfter - memoryBefore);
+        }
+
+        [Fact]
+        public static void TestDepth()
+        {
+            string expectedStr = "";
+
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output);
+
+            WriteDepth(ref jsonUtf8, 63);
+
+            ArraySegment<byte> formatted = output.Formatted;
+            string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
+            Assert.Equal(expectedStr, actualStr);
+        }
+
+        public static void WriteDepth(ref Utf8JsonWriter<ArrayFormatterWrapper> jsonUtf8, int depth)
+        {
+            if (depth == 0)
+            {
+                jsonUtf8.WriteObjectStart();
+                jsonUtf8.WriteAttribute("message" + depth, "Hello, World!");
+                jsonUtf8.WriteObjectEnd();
+                jsonUtf8.Flush();
+                return;
+            }
+            jsonUtf8.WriteObjectStart();
+            jsonUtf8.WriteAttribute("message" + depth, "Hello, World!");
+            WriteDepth(ref jsonUtf8, depth--);
+            jsonUtf8.WriteObjectEnd();
         }
 
         [Theory]
