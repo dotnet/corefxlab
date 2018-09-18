@@ -7,5 +7,7 @@ namespace System.Text.JsonLab
     public class JsonReaderException : Exception
     {
         public JsonReaderException() : base() { }
+
+        public JsonReaderException(string message) : base(message) { }
     }
 }

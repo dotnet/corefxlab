@@ -9,9 +9,9 @@ namespace System.Text.JsonLab
 {
     internal static class JsonThrowHelper
     {
-        public static void ThrowArgumentException(string message)
+        public static void ThrowArgumentException(ref Utf8JsonReader json, string message)
         {
-            throw GetArgumentException(message);
+            throw GetArgumentException(json._lineNumber + " : " + json._position + " : " + message);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -64,15 +64,18 @@ namespace System.Text.JsonLab
             return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
-        public static void ThrowJsonReaderException()
+        public static void ThrowJsonReaderException(ref Utf8JsonReader json)
         {
-            throw GetJsonReaderException();
+            var sb = new StringBuilder();
+            foreach (string path in json._path)
+                sb.Append(path).Append(".");
+            throw GetJsonReaderException(sb.ToString() + " : " + json._lineNumber + " : " + json._position);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static JsonReaderException GetJsonReaderException()
+        private static JsonReaderException GetJsonReaderException(string message)
         {
-            return new JsonReaderException();
+            return new JsonReaderException(message);
         }
 
         public static void ThrowInvalidCastException()

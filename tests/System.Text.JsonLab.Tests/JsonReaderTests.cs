@@ -163,7 +163,6 @@ namespace System.Text.JsonLab.Tests
                 Stream stream = new MemoryStream(data.ToArray());
                 TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
                 int expectedDepth = 0;
-                var sb = new StringBuilder();
                 var newtonJson = new JsonTextReader(reader)
                 {
                     MaxDepth = depth
@@ -179,6 +178,28 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expectedDepth, actualDepth);
                 Assert.Equal(i + 1, actualDepth);
             }
+        }
+
+        [Fact]
+        public static void Testing()
+        {
+            string json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]}]]]]}]]]]";
+            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]";
+            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]";
+
+            TextReader reader = new StringReader(json);
+            var textReader = new JsonTextReader(reader)
+            {
+                MaxDepth = 5
+            };
+            while (textReader.Read()) ;
+
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(json);
+            var jsonReader = new Utf8JsonReader(dataUtf8)
+            {
+                MaxDepth = 5
+            };
+            while (jsonReader.Read()) ;
         }
 
         [Theory]
