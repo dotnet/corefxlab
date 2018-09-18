@@ -120,35 +120,141 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(0, memoryAfter - memoryBefore);
         }
 
-        [Fact]
-        public static void TestDepth()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(8)]
+        [InlineData(16)]
+        [InlineData(32)]
+        [InlineData(62)]
+        [InlineData(63)]
+        [InlineData(64)]
+        [InlineData(65)]
+        [InlineData(66)]
+        [InlineData(128)]
+        [InlineData(256)]
+        [InlineData(512)]
+        public static void TestDepth(int depth)
         {
-            string expectedStr = "";
+            for (int i = 0; i < depth; i++)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output);
 
+                WriteDepth(ref jsonUtf8, i);
+
+                ArraySegment<byte> formatted = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
+
+                Span<byte> data = formatted.Array.AsSpan(formatted.Offset, formatted.Count);
+                var json = new Utf8JsonReader(data)
+                {
+                    MaxDepth = depth
+                };
+
+                int actualDepth = 0;
+                while (json.Read())
+                {
+                    if (json.TokenType == JsonTokenType.Value)
+                        actualDepth = json.Depth;
+                }
+
+                Stream stream = new MemoryStream(data.ToArray());
+                TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+                int expectedDepth = 0;
+                var sb = new StringBuilder();
+                var newtonJson = new JsonTextReader(reader)
+                {
+                    MaxDepth = depth
+                };
+                while (newtonJson.Read())
+                {
+                    if (newtonJson.TokenType == JsonToken.String)
+                    {
+                        expectedDepth = newtonJson.Depth;
+                    }
+                }
+
+                Assert.Equal(expectedDepth, actualDepth);
+                Assert.Equal(i + 1, actualDepth);
+            }
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(8)]
+        [InlineData(16)]
+        [InlineData(32)]
+        [InlineData(62)]
+        [InlineData(63)]
+        [InlineData(64)]
+        [InlineData(65)]
+        [InlineData(66)]
+        [InlineData(128)]
+        [InlineData(256)]
+        [InlineData(512)]
+        public static void TestDepthBeyondLimit(int depth)
+        {
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
             var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output);
 
-            WriteDepth(ref jsonUtf8, 63);
+            WriteDepth(ref jsonUtf8, depth - 1);
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expectedStr, actualStr);
+
+            Span<byte> data = formatted.Array.AsSpan(formatted.Offset, formatted.Count);
+            var json = new Utf8JsonReader(data)
+            {
+                MaxDepth = depth - 1
+            };
+
+            try
+            {
+                int maxDepth = 0;
+                while (json.Read())
+                {
+                    if (maxDepth < json.Depth)
+                        maxDepth = json.Depth;
+                }
+                Assert.True(false, $"Expected JsonReaderException was not thrown. Max depth allowed = {json.MaxDepth} | Max depth reached = {maxDepth}");
+            }
+            catch (JsonReaderException)
+            { }
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public static void TestDepthInvalid(int depth)
+        {
+            Span<byte> data = Span<byte>.Empty;
+            var json = new Utf8JsonReader(data);
+            try
+            {
+                json.MaxDepth = depth;
+                Assert.True(false, $"Expected ArgumentException was not thrown. Max Depth must be set to greater than 0.");
+            }
+            catch (ArgumentException)
+            { }
         }
 
         public static void WriteDepth(ref Utf8JsonWriter<ArrayFormatterWrapper> jsonUtf8, int depth)
         {
-            if (depth == 0)
-            {
-                jsonUtf8.WriteObjectStart();
-                jsonUtf8.WriteAttribute("message" + depth, "Hello, World!");
-                jsonUtf8.WriteObjectEnd();
-                jsonUtf8.Flush();
-                return;
-            }
             jsonUtf8.WriteObjectStart();
+            for (int i = 0; i < depth; i++)
+            {
+                jsonUtf8.WriteObjectStart("message" + i);
+            }
             jsonUtf8.WriteAttribute("message" + depth, "Hello, World!");
-            WriteDepth(ref jsonUtf8, depth--);
+            for (int i = 0; i < depth; i++)
+            {
+                jsonUtf8.WriteObjectEnd();
+            }
             jsonUtf8.WriteObjectEnd();
+            jsonUtf8.Flush();
         }
 
         [Theory]

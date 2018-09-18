@@ -326,7 +326,7 @@ namespace System.Text.JsonLab
 
         private void StartObject()
         {
-            if (Depth > MaxDepth)
+            if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;
@@ -362,7 +362,7 @@ namespace System.Text.JsonLab
 
         private void StartArray()
         {
-            if (Depth > MaxDepth)
+            if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;

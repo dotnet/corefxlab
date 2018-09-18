@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using Benchmarks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,8 +12,8 @@ using System.IO;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    // Since there are 240 tests here (8 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    //[SimpleJob(warmupCount: 3, targetCount: 5)]
+    // Since there are 240 tests here (8 * 2 * 15), setting low values for the warmupCount and targetCount
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
@@ -23,19 +22,19 @@ namespace System.Text.JsonLab.Benchmarks
         {
             HelloWorld,
             BasicJson,
-            //BasicLargeNum,
-            //SpecialNumForm,
-            //ProjectLockJson,
-            //FullSchema1,
-            //FullSchema2,
-            //DeepTree,
-            //BroadTree,
-            //LotsOfNumbers,
-            //LotsOfStrings,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
             Json400B,
             Json4KB,
-            //Json40KB,
-            //Json400KB
+            Json40KB,
+            Json400KB
         }
 
         private string _jsonString;
@@ -86,7 +85,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -95,7 +94,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -121,21 +120,21 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequenceSingle);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
             var outputArray = new byte[_dataUtf8.Length * 2];
@@ -197,7 +196,7 @@ namespace System.Text.JsonLab.Benchmarks
             return outputArray;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);
@@ -208,7 +207,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);
