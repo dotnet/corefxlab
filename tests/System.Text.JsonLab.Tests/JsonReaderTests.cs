@@ -241,7 +241,7 @@ namespace System.Text.JsonLab.Tests
             { }
         }
 
-        public static void WriteDepth(ref Utf8JsonWriter<ArrayFormatterWrapper> jsonUtf8, int depth)
+        private static void WriteDepth(ref Utf8JsonWriter<ArrayFormatterWrapper> jsonUtf8, int depth)
         {
             jsonUtf8.WriteObjectStart();
             for (int i = 0; i < depth; i++)
