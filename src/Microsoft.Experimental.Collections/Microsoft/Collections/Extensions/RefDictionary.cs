@@ -105,11 +105,10 @@ namespace Microsoft.Experimental.Collections
                 }
 
                 entryIndex = Count++;
-                int bucket = GetBucketIndex(key);
-                _entries[entryIndex].next = _buckets[bucket] - 1;
-                _buckets[bucket] = entryIndex + 1;
                 entries[entryIndex].key = key;
-                entries[entryIndex].value = default;
+                int bucket = GetBucketIndex(key);
+                entries[entryIndex].next = _buckets[bucket] - 1;
+                _buckets[bucket] = entryIndex + 1;
                 return ref entries[entryIndex].value;
             }
         }
