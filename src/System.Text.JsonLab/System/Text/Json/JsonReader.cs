@@ -45,6 +45,7 @@ namespace System.Text.JsonLab
         private Stack<int> _stack;
 
         internal Stack<string> _path;
+        private Stack<int> _arrayStack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -81,6 +82,8 @@ namespace System.Text.JsonLab
 
         private readonly bool _isSingleSegment;
 
+        private int _index;
+
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
         /// </summary>
@@ -105,6 +108,8 @@ namespace System.Text.JsonLab
             _position = 0;
 
             _path = new Stack<string>();
+            _arrayStack = new Stack<int>();
+            _index = 0;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
@@ -126,6 +131,8 @@ namespace System.Text.JsonLab
             _position = 0;
 
             _path = new Stack<string>();
+            _arrayStack = new Stack<int>();
+            _index = 0;
         }
 
         /// <summary>
@@ -305,9 +312,13 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    var str = "[Z]";
+                    var str = $"[{_index}]";
                     _path.Push(str);
                     ConsumeValueUtf8(ref buffer, first);
+                    _index++;
+                    _path.Pop();
+                    str = $"[{_index}]";
+                    _path.Push(str);
                 }
             }
             else if (TokenType == JsonTokenType.PropertyName)
@@ -350,6 +361,9 @@ namespace System.Text.JsonLab
             //var str = Encoding.UTF8.GetString(Value.ToArray());
             //_path.Push(str);
 
+            if (InArray)
+                _index++;
+
             if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
 
@@ -377,7 +391,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_stack.Peek() == 0 || Depth <= 0)
+                if (_stack.Peek() == 0)
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
                 _stack.Pop();
             }
@@ -390,6 +404,12 @@ namespace System.Text.JsonLab
         {
             //var str = Encoding.UTF8.GetString(Value.ToArray());
             //_path.Push(str);
+
+            if (InArray)
+                _index++;
+
+            _arrayStack.Push(_index);
+            _index = 0;
 
             if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -410,6 +430,8 @@ namespace System.Text.JsonLab
         {
             if (_path.Count > 0)
                 _path.Pop();
+
+            _index = _arrayStack.Pop();
             if (Depth <= StackFreeMaxDepth)
             {
                 if ((_containerMask & 1) != 0 || Depth <= 0)
@@ -418,7 +440,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_stack.Peek() != 0 || Depth <= 0)
+                if (_stack.Peek() != 0)
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
                 _stack.Pop();
             }
@@ -513,9 +535,13 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    var str = "[Z]";
+                    var str = $"[{_index}]";
                     _path.Push(str);
                     ConsumeValueUtf8(ref buffer, first);
+                    _index++;
+                    _path.Pop();
+                    str = $"[{_index}]";
+                    _path.Push(str);
                 }
             }
             else if (marker == JsonConstants.CloseBrace)

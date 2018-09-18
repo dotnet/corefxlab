@@ -186,18 +186,19 @@ namespace System.Text.JsonLab.Tests
             string json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]}]]]]}]]]]";
             json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]";
             json = "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]";
+            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]";
 
             TextReader reader = new StringReader(json);
             var textReader = new JsonTextReader(reader)
             {
-                MaxDepth = 5
+                MaxDepth = 15
             };
-            while (textReader.Read()) ;
+            //while (textReader.Read()) ;
 
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(json);
             var jsonReader = new Utf8JsonReader(dataUtf8)
             {
-                MaxDepth = 5
+                MaxDepth = 15
             };
             while (jsonReader.Read()) ;
         }
@@ -256,7 +257,7 @@ namespace System.Text.JsonLab.Tests
             try
             {
                 json.MaxDepth = depth;
-                Assert.True(false, $"Expected ArgumentException was not thrown. Max Depth must be set to greater than 0.");
+                Assert.True(false, "Expected ArgumentException was not thrown. Max depth must be set to greater than 0.");
             }
             catch (ArgumentException)
             { }
