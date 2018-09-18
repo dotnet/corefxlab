@@ -143,7 +143,7 @@ namespace System.Text.Formatting.Benchmarks
         }
 
         [Benchmark]
-        public void EncodeStringToUtf8()
+        public ArraySegment<byte> EncodeStringToUtf8()
         {
             const string text = "Hello World!";
             int stringsToWrite = 2000;
@@ -155,10 +155,12 @@ namespace System.Text.Formatting.Benchmarks
                 formatter.Append(text);
                 formatter.Append(1);
             }
+
+            return formatter.Formatted;
         }
 
         [Benchmark]
-        public void EncodeStringToUtf8Clr()
+        public byte[] EncodeStringToUtf8Clr()
         {
             const string text = "Hello World!";
             int stringsToWrite = 2000;
@@ -171,7 +173,7 @@ namespace System.Text.Formatting.Benchmarks
                 formatter.Append(1);
             }
 
-            var bytes = Encoding.UTF8.GetBytes(formatter.ToString());
+            return Encoding.UTF8.GetBytes(formatter.ToString());
         }
 
         public static SymbolTable CreateCustomCulture()
