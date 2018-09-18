@@ -4,13 +4,14 @@
 
 using System.Buffers;
 using System.Buffers.Reader;
+using System.Collections.Generic;
 
 namespace System.Text.JsonLab
 {
     public ref struct Utf8JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
-        internal const int MaxDepth = sizeof(ulong) * 8;
+        internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
         private ReadOnlySpan<byte> _buffer;
 
@@ -18,7 +19,27 @@ namespace System.Text.JsonLab
 
         public int StartLocation { get; private set; }
 
+        public int MaxDepth
+        {
+            get
+            {
+                return _maxDepth;
+            }
+            set
+            {
+                if (value <= 0)
+                    JsonThrowHelper.ThrowArgumentException("Max depth must be positive.");
+                _maxDepth = value;
+                if (_maxDepth > StackFreeMaxDepth)
+                    _stack = new Stack<int>();
+            }
+        }
+
+        private int _maxDepth;
+
         private BufferReader<byte> _reader;
+
+        private Stack<int> _stack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -31,7 +52,7 @@ namespace System.Text.JsonLab
 
         // These properties are helpers for determining the current state of the reader
         internal bool InArray => !InObject;
-        internal bool InObject => (_containerMask & 1) != 0;
+        internal bool InObject => Depth <= StackFreeMaxDepth ? (_containerMask & 1) != 0 : _stack.Peek() != 0;
 
         /// <summary>
         /// Gets the token type of the last processed token in the JSON stream.
@@ -69,6 +90,8 @@ namespace System.Text.JsonLab
             _containerMask = 0;
             Index = 0;
             StartLocation = Index;
+            _stack = null;
+            _maxDepth = StackFreeMaxDepth;
 
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
@@ -84,6 +107,8 @@ namespace System.Text.JsonLab
             _containerMask = 0;
             Index = 0;
             StartLocation = Index;
+            _stack = null;
+            _maxDepth = StackFreeMaxDepth;
 
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
@@ -301,41 +326,73 @@ namespace System.Text.JsonLab
 
         private void StartObject()
         {
-            if (Depth > MaxDepth)
+            if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;
-            _containerMask = (_containerMask << 1) | 1;
+            if (Depth <= StackFreeMaxDepth)
+            {
+                _containerMask = (_containerMask << 1) | 1;
+            }
+            else
+            {
+                _stack.Push(1);
+            }
             TokenType = JsonTokenType.StartObject;
         }
 
         private void EndObject()
         {
-            if (!InObject || Depth <= 0)
-                JsonThrowHelper.ThrowJsonReaderException();
+            if (Depth <= StackFreeMaxDepth)
+            {
+                if ((_containerMask & 1) == 0 || Depth <= 0)
+                    JsonThrowHelper.ThrowJsonReaderException();
+                _containerMask >>= 1;
+            }
+            else
+            {
+                if (_stack.Peek() == 0 || Depth <= 0)
+                    JsonThrowHelper.ThrowJsonReaderException();
+                _stack.Pop();
+            }
 
             Depth--;
-            _containerMask >>= 1;
             TokenType = JsonTokenType.EndObject;
         }
 
         private void StartArray()
         {
-            if (Depth > MaxDepth)
+            if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;
-            _containerMask = (_containerMask << 1);
+            if (Depth <= StackFreeMaxDepth)
+            {
+                _containerMask = (_containerMask << 1);
+            }
+            else
+            {
+                _stack.Push(0);
+            }
             TokenType = JsonTokenType.StartArray;
         }
 
         private void EndArray()
         {
-            if (!InArray || Depth <= 0)
-                JsonThrowHelper.ThrowJsonReaderException();
+            if (Depth <= StackFreeMaxDepth)
+            {
+                if ((_containerMask & 1) != 0 || Depth <= 0)
+                    JsonThrowHelper.ThrowJsonReaderException();
+                _containerMask >>= 1;
+            }
+            else
+            {
+                if (_stack.Peek() != 0 || Depth <= 0)
+                    JsonThrowHelper.ThrowJsonReaderException();
+                _stack.Pop();
+            }
 
             Depth--;
-            _containerMask >>= 1;
             TokenType = JsonTokenType.EndArray;
         }
 
