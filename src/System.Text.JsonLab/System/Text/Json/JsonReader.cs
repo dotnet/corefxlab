@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Buffers.Reader;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.Text.JsonLab
 {
@@ -31,7 +32,7 @@ namespace System.Text.JsonLab
                     JsonThrowHelper.ThrowArgumentException("Max depth must be positive.");
                 _maxDepth = value;
                 if (_maxDepth > StackFreeMaxDepth)
-                    _stack = new Stack<int>();
+                    _stack = new Stack<bool>();
             }
         }
 
@@ -39,7 +40,7 @@ namespace System.Text.JsonLab
 
         private BufferReader<byte> _reader;
 
-        private Stack<int> _stack;
+        private Stack<bool> _stack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -51,8 +52,8 @@ namespace System.Text.JsonLab
         private ulong _containerMask;
 
         // These properties are helpers for determining the current state of the reader
-        internal bool InArray => !InObject;
-        internal bool InObject => Depth <= StackFreeMaxDepth ? (_containerMask & 1) != 0 : _stack.Peek() != 0;
+        internal bool InArray => !_inObject;
+        private bool _inObject;
 
         /// <summary>
         /// Gets the token type of the last processed token in the JSON stream.
@@ -96,6 +97,7 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
+            _inObject = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
@@ -113,6 +115,7 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
+            _inObject = false;
         }
 
         /// <summary>
@@ -138,6 +141,7 @@ namespace System.Text.JsonLab
                 TokenType = JsonTokenType.StartObject;
                 reader.Advance(1);
                 Index++;
+                _inObject = true;
             }
             else if (first == JsonConstants.OpenBracket)
             {
@@ -223,6 +227,7 @@ namespace System.Text.JsonLab
                 _containerMask = 1;
                 TokenType = JsonTokenType.StartObject;
                 Index++;
+                _inObject = true;
             }
             else if (first == JsonConstants.OpenBracket)
             {
@@ -326,30 +331,29 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;
+
             if (Depth <= StackFreeMaxDepth)
-            {
                 _containerMask = (_containerMask << 1) | 1;
-            }
             else
-            {
-                _stack.Push(1);
-            }
+                _stack.Push(true);
+
             TokenType = JsonTokenType.StartObject;
+            _inObject = true;
         }
 
         private void EndObject()
         {
+            if (!_inObject || Depth <= 0)
+                JsonThrowHelper.ThrowJsonReaderException();
+
             if (Depth <= StackFreeMaxDepth)
             {
-                if ((_containerMask & 1) == 0 || Depth <= 0)
-                    JsonThrowHelper.ThrowJsonReaderException();
                 _containerMask >>= 1;
+                _inObject = (_containerMask & 1) != 0;
             }
             else
             {
-                if (_stack.Peek() == 0)
-                    JsonThrowHelper.ThrowJsonReaderException();
-                _stack.Pop();
+                _inObject = _stack.Pop();
             }
 
             Depth--;
@@ -362,30 +366,29 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException();
 
             Depth++;
+
             if (Depth <= StackFreeMaxDepth)
-            {
-                _containerMask = (_containerMask << 1);
-            }
+                _containerMask = _containerMask << 1;
             else
-            {
-                _stack.Push(0);
-            }
+                _stack.Push(false);
+
             TokenType = JsonTokenType.StartArray;
+            _inObject = false;
         }
 
         private void EndArray()
         {
+            if (_inObject || Depth <= 0)
+                JsonThrowHelper.ThrowJsonReaderException();
+
             if (Depth <= StackFreeMaxDepth)
             {
-                if ((_containerMask & 1) != 0 || Depth <= 0)
-                    JsonThrowHelper.ThrowJsonReaderException();
                 _containerMask >>= 1;
+                _inObject = (_containerMask & 1) != 0;
             }
             else
             {
-                if (_stack.Peek() != 0)
-                    JsonThrowHelper.ThrowJsonReaderException();
-                _stack.Pop();
+                _inObject = _stack.Pop();
             }
 
             Depth--;
@@ -410,7 +413,7 @@ namespace System.Text.JsonLab
                 }
 
                 StartLocation = Index;
-                if (InObject)
+                if (_inObject)
                 {
                     if (first != JsonConstants.Quote)
                         JsonThrowHelper.ThrowJsonReaderException();
@@ -463,7 +466,7 @@ namespace System.Text.JsonLab
                 }
 
                 StartLocation = Index;
-                if (InObject)
+                if (_inObject)
                 {
                     if (first != JsonConstants.Quote)
                         JsonThrowHelper.ThrowJsonReaderException();
@@ -1063,19 +1066,23 @@ namespace System.Text.JsonLab
         {
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
+
             int idx = localCopy.Slice(Index).IndexOf(JsonConstants.Quote);
             if (idx < 0)
                 JsonThrowHelper.ThrowJsonReaderException();
-            if (idx == 0 || localCopy[idx + Index - 1] != JsonConstants.ReverseSolidus)
+
+            Debug.Assert(Index >= 1);
+
+            if (localCopy[idx + Index - 1] != JsonConstants.ReverseSolidus)
             {
                 Value = localCopy.Slice(Index, idx);
                 ValueType = JsonValueType.String;
-
-                idx++;
-                Index += idx;
-                return;
+                Index += idx + 1;
             }
-            ConsumeStringWithNestedQuotes();
+            else
+            {
+                ConsumeStringWithNestedQuotes();
+            }
         }
 
         private void ConsumeStringWithNestedQuotes()
