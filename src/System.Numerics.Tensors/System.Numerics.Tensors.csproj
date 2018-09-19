@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Tensor class which represents and extends multi-dimensional arrays</Description>
@@ -50,7 +50,8 @@
     <None Update="System\Numerics\TensorTemplate.ttinclude" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <!-- explictly pin the System.Memory version to a shipped version so consumers can easily use Tensors -->
+    <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
   <ItemGroup>
     <!-- enable the TextTemplating extension -->
