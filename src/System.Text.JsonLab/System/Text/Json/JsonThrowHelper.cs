@@ -67,8 +67,8 @@ namespace System.Text.JsonLab
         public static void ThrowJsonReaderException(ref Utf8JsonReader json)
         {
             var sb = new StringBuilder();
-            foreach (string path in json._path)
-                sb.Append(path).Append(".");
+            /*foreach (string path in json._path)
+                sb.Append(path).Append(".");*/
             throw GetJsonReaderException(sb.ToString() + " : " + json._lineNumber + " : " + json._position);
         }
 

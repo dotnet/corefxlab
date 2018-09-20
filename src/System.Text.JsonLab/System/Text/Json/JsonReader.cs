@@ -45,8 +45,8 @@ namespace System.Text.JsonLab
 
         private Stack<bool> _stack;
 
-        internal Stack<string> _path;
-        private Stack<int> _arrayStack;
+        //internal Stack<string> _path;
+        //private Stack<int> _arrayStack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -83,7 +83,7 @@ namespace System.Text.JsonLab
 
         private readonly bool _isSingleSegment;
 
-        private int _index;
+        //private int _index;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -109,9 +109,9 @@ namespace System.Text.JsonLab
             _lineNumber = 1;
             _position = 0;
 
-            _path = new Stack<string>();
-            _arrayStack = new Stack<int>();
-            _index = 0;
+            //_path = new Stack<string>();
+            //_arrayStack = new Stack<int>();
+            //_index = 0;
             _inObject = false;
         }
 
@@ -134,9 +134,9 @@ namespace System.Text.JsonLab
             _lineNumber = 1;
             _position = 0;
 
-            _path = new Stack<string>();
-            _arrayStack = new Stack<int>();
-            _index = 0;
+            //_path = new Stack<string>();
+            //_arrayStack = new Stack<int>();
+            //_index = 0;
             _inObject = false;
         }
 
@@ -315,13 +315,13 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    var str = $"[{_index}]";
-                    _path.Push(str);
+                    //var str = $"[{_index}]";
+                    //_path.Push(str);
                     ConsumeValueUtf8(first);
-                    _index++;
-                    _path.Pop();
-                    str = $"[{_index}]";
-                    _path.Push(str);
+                    //_index++;
+                    //_path.Pop();
+                    //str = $"[{_index}]";
+                    //_path.Push(str);
                 }
             }
             else if (TokenType == JsonTokenType.PropertyName)
@@ -364,8 +364,8 @@ namespace System.Text.JsonLab
             //var str = Encoding.UTF8.GetString(Value.ToArray());
             //_path.Push(str);
 
-            if (InArray)
-                _index++;
+            /*if (InArray)
+                _index++;*/
 
             if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -383,8 +383,8 @@ namespace System.Text.JsonLab
 
         private void EndObject()
         {
-            if (_path.Count > 0)
-                _path.Pop();
+            /*if (_path.Count > 0)
+                _path.Pop();*/
 
             if (!_inObject || Depth <= 0)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -408,11 +408,11 @@ namespace System.Text.JsonLab
             //var str = Encoding.UTF8.GetString(Value.ToArray());
             //_path.Push(str);
 
-            if (InArray)
+            /*if (InArray)
                 _index++;
 
             _arrayStack.Push(_index);
-            _index = 0;
+            _index = 0;*/
 
             if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -430,10 +430,10 @@ namespace System.Text.JsonLab
 
         private void EndArray()
         {
-            if (_path.Count > 0)
+            /*if (_path.Count > 0)
                 _path.Pop();
 
-            _index = _arrayStack.Pop();
+            _index = _arrayStack.Pop();*/
 
             if (_inObject || Depth <= 0)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -536,13 +536,13 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    var str = $"[{_index}]";
-                    _path.Push(str);
+                    //var str = $"[{_index}]";
+                    //_path.Push(str);
                     ConsumeValueUtf8(first);
-                    _index++;
-                    _path.Pop();
-                    str = $"[{_index}]";
-                    _path.Push(str);
+                    //_index++;
+                    //_path.Pop();
+                    //str = $"[{_index}]";
+                    //_path.Push(str);
                 }
             }
             else if (marker == JsonConstants.CloseBrace)
@@ -914,8 +914,8 @@ namespace System.Text.JsonLab
         {
             ConsumeStringUtf8();
 
-            var str = Encoding.UTF8.GetString(Value.ToArray());
-            _path.Push(str);
+            /*var str = Encoding.UTF8.GetString(Value.ToArray());
+            _path.Push(str);*/
 
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
