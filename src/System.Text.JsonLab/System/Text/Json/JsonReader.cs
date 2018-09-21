@@ -14,7 +14,7 @@ namespace System.Text.JsonLab
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
-        private readonly ReadOnlySpan<byte> _buffer;
+        internal readonly ReadOnlySpan<byte> _buffer;
 
         public int Index { get; private set; }
 
@@ -29,7 +29,7 @@ namespace System.Text.JsonLab
             set
             {
                 if (value <= 0)
-                    JsonThrowHelper.ThrowArgumentException(ref this, "Max depth must be positive.");
+                    JsonThrowHelper.ThrowArgumentException("Max depth must be positive.");
                 _maxDepth = value;
                 if (_maxDepth > StackFreeMaxDepth)
                     _stack = new Stack<bool>();
@@ -37,9 +37,6 @@ namespace System.Text.JsonLab
         }
 
         private int _maxDepth;
-
-        internal int _lineNumber;
-        internal int _position;
 
         private BufferReader<byte> _reader;
 
@@ -105,13 +102,6 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-
-            _lineNumber = 1;
-            _position = 0;
-
-            //_path = new Stack<string>();
-            //_arrayStack = new Stack<int>();
-            //_index = 0;
             _inObject = false;
         }
 
@@ -130,13 +120,6 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-
-            _lineNumber = 1;
-            _position = 0;
-
-            //_path = new Stack<string>();
-            //_arrayStack = new Stack<int>();
-            //_index = 0;
             _inObject = false;
         }
 
@@ -249,7 +232,6 @@ namespace System.Text.JsonLab
                 _containerMask = 1;
                 TokenType = JsonTokenType.StartObject;
                 Index++;
-                _position++;
                 _inObject = true;
             }
             else if (first == JsonConstants.OpenBracket)
@@ -257,7 +239,6 @@ namespace System.Text.JsonLab
                 Depth++;
                 TokenType = JsonTokenType.StartArray;
                 Index++;
-                _position++;
             }
             else
             {
@@ -295,7 +276,6 @@ namespace System.Text.JsonLab
             if (TokenType == JsonTokenType.StartObject)
             {
                 Index++;
-                _position++;
                 if (first == JsonConstants.CloseBrace)
                     EndObject();
                 else
@@ -310,18 +290,11 @@ namespace System.Text.JsonLab
                 if (first == JsonConstants.CloseBracket)
                 {
                     Index++;
-                    _position++;
                     EndArray();
                 }
                 else
                 {
-                    //var str = $"[{_index}]";
-                    //_path.Push(str);
                     ConsumeValueUtf8(first);
-                    //_index++;
-                    //_path.Pop();
-                    //str = $"[{_index}]";
-                    //_path.Push(str);
                 }
             }
             else if (TokenType == JsonTokenType.PropertyName)
@@ -361,12 +334,6 @@ namespace System.Text.JsonLab
 
         private void StartObject()
         {
-            //var str = Encoding.UTF8.GetString(Value.ToArray());
-            //_path.Push(str);
-
-            /*if (InArray)
-                _index++;*/
-
             if (Depth >= MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
 
@@ -506,7 +473,6 @@ namespace System.Text.JsonLab
         private void ConsumeNextUtf8(byte marker)
         {
             Index++;
-            _position++;
             if (marker == JsonConstants.ListSeperator)
             {
                 if (Index >= (uint)_buffer.Length)
@@ -530,19 +496,12 @@ namespace System.Text.JsonLab
                         JsonThrowHelper.ThrowJsonReaderException(ref this);
 
                     Index++;
-                    _position++;
                     StartLocation++;
                     ConsumePropertyNameUtf8();
                 }
                 else
                 {
-                    //var str = $"[{_index}]";
-                    //_path.Push(str);
                     ConsumeValueUtf8(first);
-                    //_index++;
-                    //_path.Pop();
-                    //str = $"[{_index}]";
-                    //_path.Push(str);
                 }
             }
             else if (marker == JsonConstants.CloseBrace)
@@ -628,21 +587,18 @@ namespace System.Text.JsonLab
             if (marker == JsonConstants.Quote)
             {
                 Index++;
-                _position++;
                 StartLocation++;
                 ConsumeStringUtf8();
             }
             else if (marker == JsonConstants.OpenBrace)
             {
                 Index++;
-                _position++;
                 StartObject();
                 ValueType = JsonValueType.Object;
             }
             else if (marker == JsonConstants.OpenBracket)
             {
                 Index++;
-                _position++;
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
@@ -686,7 +642,6 @@ namespace System.Text.JsonLab
             {
                 reader.Advance(1);
                 Index++;
-                _position++;
                 StartLocation++;
                 ConsumeStringUtf8MultiSegment(ref reader);
             }
@@ -699,7 +654,6 @@ namespace System.Text.JsonLab
                 int length = reader.UnreadSpan.Length;
                 reader.Advance(length);
                 Index += length;
-                _position += length;
             }
             else if (marker == '-')
             {
@@ -711,7 +665,6 @@ namespace System.Text.JsonLab
                 int length = reader.UnreadSpan.Length;
                 reader.Advance(length);
                 Index += length;
-                _position += length;
             }
             else if (marker == 'f')
             {
@@ -743,7 +696,6 @@ namespace System.Text.JsonLab
             if (marker == JsonConstants.Quote)
             {
                 Index++;
-                _position++;
                 StartLocation++;
                 ConsumeStringUtf8();
             }
@@ -753,7 +705,6 @@ namespace System.Text.JsonLab
                 Value = _buffer;
                 ValueType = JsonValueType.Number;
                 Index += _buffer.Length;
-                _position += _buffer.Length;
             }
             else if (marker == '-')
             {
@@ -761,7 +712,6 @@ namespace System.Text.JsonLab
                 Value = _buffer;
                 ValueType = JsonValueType.Number;
                 Index += _buffer.Length;
-                _position += _buffer.Length;
             }
             else if (marker == 'f')
             {
@@ -805,11 +755,11 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
             }
+            //TODO: Validate number format
 
             Value = _buffer.Slice(Index, idx);
             ValueType = JsonValueType.Number;
             Index += idx;
-            _position += idx;
         }
 
         private void ConsumeNullUtf8MultiSegment(ref BufferReader<byte> reader)
@@ -834,7 +784,6 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
             }
             Index += 4;
-            _position += 4;
         }
 
         private void ConsumeFalseUtf8MultiSegment(ref BufferReader<byte> reader)
@@ -859,7 +808,6 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
             }
             Index += 5;
-            _position += 5;
         }
 
         private void ConsumeTrueUtf8MultiSegment(ref BufferReader<byte> reader)
@@ -884,7 +832,6 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
             }
             Index += 4;
-            _position += 4;
         }
 
         private void ConsumePropertyNameUtf8MultiSegment(ref BufferReader<byte> reader)
@@ -914,9 +861,6 @@ namespace System.Text.JsonLab
         {
             ConsumeStringUtf8();
 
-            /*var str = Encoding.UTF8.GetString(Value.ToArray());
-            _path.Push(str);*/
-
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
             if (Index >= (uint)localCopy.Length)
@@ -940,7 +884,6 @@ namespace System.Text.JsonLab
 
             TokenType = JsonTokenType.PropertyName;
             Index++;
-            _position++;
         }
 
         public bool TryReadUntil(out ReadOnlySpan<byte> span, byte delimiter)
@@ -1160,7 +1103,6 @@ namespace System.Text.JsonLab
                 Value = localCopy.Slice(Index, idx);
                 ValueType = JsonValueType.String;
                 Index += idx + 1;
-                _position += idx + 1;   // TODO: update line number for multi-line strings
             }
             else
             {
@@ -1203,7 +1145,6 @@ namespace System.Text.JsonLab
             ValueType = JsonValueType.String;
 
             i++;
-            _position += i - Index;
             Index = i;
         }
 
@@ -1220,16 +1161,6 @@ namespace System.Text.JsonLab
                     val != JsonConstants.Tab)
                 {
                     break;
-                }
-
-                if (val == JsonConstants.LineFeed)
-                {
-                    _lineNumber++;
-                    _position = 0;
-                }
-                else
-                {
-                    _position++;
                 }
             }
         }

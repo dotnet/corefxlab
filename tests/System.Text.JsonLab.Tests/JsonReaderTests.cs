@@ -180,29 +180,6 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        [Fact]
-        public static void Testing()
-        {
-            string json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]}]]]]}]]]]";
-            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]";
-            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]";
-            json = "[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]";
-
-            TextReader reader = new StringReader(json);
-            var textReader = new JsonTextReader(reader)
-            {
-                MaxDepth = 15
-            };
-            //while (textReader.Read()) ;
-
-            byte[] dataUtf8 = Encoding.UTF8.GetBytes(json);
-            var jsonReader = new Utf8JsonReader(dataUtf8)
-            {
-                MaxDepth = 15
-            };
-            while (jsonReader.Read()) ;
-        }
-
         [Theory]
         [InlineData(2)]
         [InlineData(4)]
@@ -295,6 +272,49 @@ namespace System.Text.JsonLab.Tests
             actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
 
             Assert.Equal(expectedStr, actualStr);
+        }
+
+        [Theory]
+        [InlineData("\"", 1, 1)]
+        [InlineData("{]", 1, 1)]
+        [InlineData("[}", 1, 1)]
+        [InlineData("nul", 1, 0)]
+        [InlineData("tru", 1, 0)]
+        [InlineData("fals", 1, 0)]
+        [InlineData("\"age\":", 1, 6)]
+        //[InlineData("12345.1.", 1, 7)] TODO: Validate number values
+        //[InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 38)] TODO: Validate number values
+        [InlineData("{{}}", 1, 1)]
+        [InlineData("[[{{}}]]", 1, 3)]
+        [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 1, 19)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 14)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
+        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8)
+            {
+                MaxDepth = maxDepth
+            };
+
+            try
+            {
+                while (json.Read()) ;
+                Assert.True(false, "Expected JsonReaderException was not thrown.");
+            }
+            catch (JsonReaderException ex)
+            {
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
+            }
+
+            
         }
 
         [Theory]

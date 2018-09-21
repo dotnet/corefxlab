@@ -9,9 +9,9 @@ namespace System.Text.JsonLab
 {
     internal static class JsonThrowHelper
     {
-        public static void ThrowArgumentException(ref Utf8JsonReader json, string message)
+        public static void ThrowArgumentException(string message)
         {
-            throw GetArgumentException(json._lineNumber + " : " + json._position + " : " + message);
+            throw GetArgumentException(message);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -66,16 +66,13 @@ namespace System.Text.JsonLab
 
         public static void ThrowJsonReaderException(ref Utf8JsonReader json)
         {
-            var sb = new StringBuilder();
-            /*foreach (string path in json._path)
-                sb.Append(path).Append(".");*/
-            throw GetJsonReaderException(sb.ToString() + " : " + json._lineNumber + " : " + json._position);
+            throw GetJsonReaderException(ref json);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static JsonReaderException GetJsonReaderException(string message)
+        private static JsonReaderException GetJsonReaderException(ref Utf8JsonReader json)
         {
-            return new JsonReaderException(message);
+            return JsonReaderException.Create(json._buffer, json.MaxDepth);
         }
 
         public static void ThrowInvalidCastException()
