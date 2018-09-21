@@ -399,19 +399,10 @@ namespace System.Text.JsonLab
                 _position++;
                 return ConsumeStringUtf8();
             }
-            else if (marker - '0' <= '9' - '0')
+            else if (marker - '0' <= '9' - '0' || marker == '-')
             {
-                //TODO: Validate number
-                _index += _buffer.Length;
-                _position += _buffer.Length;
-            }
-            else if (marker == '-')
-            {
-                if (_buffer.Length < 2)
-                {
-                    Exception = new JsonReaderException($"Expected a digit following '{(char)marker}', but reached end of data instead.", _lineNumber, _position);
+                if (!ValidateNumber(_buffer))
                     return false;
-                }
                 _index += _buffer.Length;
                 _position += _buffer.Length;
             }
@@ -444,7 +435,9 @@ namespace System.Text.JsonLab
                 Exception = new JsonReaderException($"Expected a delimiter that indicates end of number, but didn't find one.", _lineNumber, _position);
                 return false;
             }
-            //TODO: Validate number format
+
+            if (!ValidateNumber(_buffer.Slice(_index, idx)))
+                return false;
 
             _index += idx;
             _position += idx;
@@ -662,6 +655,118 @@ namespace System.Text.JsonLab
                     _position++;
                 }
             }
+        }
+
+        private bool ValidateNumber(ReadOnlySpan<byte> data)
+        {
+            Debug.Assert(data.Length > 0);
+
+            int i = 0;
+            byte nextByte = data[i++];
+
+            if (nextByte == '-')
+            {
+                if (i >= data.Length)
+                {
+                    Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+                    return false;
+                }
+                nextByte = data[i++];
+            }
+
+            Debug.Assert(nextByte >= '0' && nextByte <= '9');
+
+            if (nextByte == '0')
+            {
+                if (i < data.Length)
+                {
+                    nextByte = data[i];
+                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                    {
+                        Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.", _lineNumber, _position);
+                        return false;
+                    }
+                    i++;
+                }
+                else
+                    return true;
+            }
+            else
+            {
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if (nextByte < '0' || nextByte > '9')
+                        break;
+                }
+                if (i >= data.Length)
+                    return true;
+                if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                {
+                    Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.", _lineNumber, _position);
+                    return false;
+                }
+                i++;
+            }
+
+            Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
+
+            if (nextByte == '.')
+            {
+                if (i >= data.Length)
+                {
+                    Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+                    return false;
+                }
+
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if (nextByte < '0' || nextByte > '9')
+                        break;
+                }
+                if (i >= data.Length)
+                    return true;
+                if (nextByte != 'E' && nextByte != 'e')
+                {
+                    Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected 'E' or 'e'.", _lineNumber, _position);
+                    return false;
+                }
+                i++;
+            }
+
+            Debug.Assert(nextByte == 'E' || nextByte == 'e');
+
+            if (i >= data.Length)
+            {
+                Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+                return false;
+            }
+            nextByte = data[i];
+            if (nextByte == '+' || nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+                    return false;
+                }
+            }
+
+            for (; i < data.Length; i++)
+            {
+                nextByte = data[i];
+                if (nextByte < '0' || nextByte > '9')
+                    break;
+            }
+
+            if (i < data.Length)
+            {
+                Exception = new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+                return false;
+            }
+
+            return true;
         }
     }
 }

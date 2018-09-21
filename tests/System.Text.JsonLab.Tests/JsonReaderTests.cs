@@ -28,13 +28,11 @@ namespace System.Text.JsonLab.Tests
                     new object[] { true, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
                     new object[] { true, TestCaseType.DeepTree, TestJson.DeepTree},
                     new object[] { true, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
-                    //new object[] { true, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { true, TestCaseType.HelloWorld, TestJson.HelloWorld},
                     new object[] { true, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
                     new object[] { true, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
                     new object[] { true, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
                     //new object[] { true, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
-                    //new object[] { true, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { true, TestCaseType.Json400B, TestJson.Json400B},
                     new object[] { true, TestCaseType.Json4KB, TestJson.Json4KB},
                     new object[] { true, TestCaseType.Json40KB, TestJson.Json40KB},
@@ -45,17 +43,27 @@ namespace System.Text.JsonLab.Tests
                     new object[] { false, TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
                     new object[] { false, TestCaseType.DeepTree, TestJson.DeepTree},
                     new object[] { false, TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
-                    //new object[] { false, TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { false, TestCaseType.HelloWorld, TestJson.HelloWorld},
                     new object[] { false, TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
                     new object[] { false, TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
                     new object[] { false, TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
                     //new object[] { false, TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
-                    //new object[] { false, TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { false, TestCaseType.Json400B, TestJson.Json400B},
                     new object[] { false, TestCaseType.Json4KB, TestJson.Json4KB},
                     new object[] { false, TestCaseType.Json40KB, TestJson.Json40KB},
                     new object[] { false, TestCaseType.Json400KB, TestJson.Json400KB}
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> SpecialNumTestCases
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},
+                    new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},
                 };
             }
         }
@@ -113,6 +121,32 @@ namespace System.Text.JsonLab.Tests
 
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
+
+            long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
+            JsonLabEmptyLoopHelper(dataUtf8);
+            long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
+            Assert.Equal(0, memoryAfter - memoryBefore);
+        }
+
+        [Theory]
+        [MemberData(nameof(SpecialNumTestCases))]
+        public static void TestJsonReaderUtf8SpecialNumbers(TestCaseType type, string jsonString)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
+            string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+            byte[] resultSequence = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
+            string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
+
+            Stream stream = new MemoryStream(dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            string expectedStr = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
+
+            // Behavior of E-notation is different between Json.NET and JsonLab
+            // Behavior of reading/writing really large number is different as well.
+            // TODO: Adjust test accordingly
+            //Assert.Equal(expectedStr, actualStr);
+            Assert.Equal(actualStr, actualStrSequence);
 
             long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
             JsonLabEmptyLoopHelper(dataUtf8);
@@ -282,8 +316,16 @@ namespace System.Text.JsonLab.Tests
         [InlineData("tru", 1, 0)]
         [InlineData("fals", 1, 0)]
         [InlineData("\"age\":", 1, 6)]
-        //[InlineData("12345.1.", 1, 7)] TODO: Validate number values
-        //[InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 38)] TODO: Validate number values
+        [InlineData("12345.1.", 1, 0)]
+        [InlineData("-", 1, 0)]
+        [InlineData("0.", 1, 0)]
+        [InlineData("01", 1, 0)]
+        [InlineData("-01", 1, 0)]
+        [InlineData("10.5e", 1, 0)]
+        [InlineData("10.5e-", 1, 0)]
+        [InlineData("10.5e-0.2", 1, 0)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31)]
+        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7)]
         [InlineData("{{}}", 1, 1)]
         [InlineData("[[{{}}]]", 1, 3)]
         [InlineData("[1, 2, 3, ]", 1, 10)]
@@ -297,6 +339,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
+            //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8)
             {

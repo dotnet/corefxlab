@@ -580,13 +580,8 @@ namespace System.Text.JsonLab
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
-            else if (marker - '0' <= '9' - '0')
+            else if (marker - '0' <= '9' - '0' || marker == '-')
             {
-                ConsumeNumberUtf8();
-            }
-            else if (marker == '-')
-            {
-                if (_buffer.Length - 2 > Index) JsonThrowHelper.ThrowJsonReaderException(ref this);
                 ConsumeNumberUtf8();
             }
             else if (marker == 'f')
@@ -625,10 +620,10 @@ namespace System.Text.JsonLab
             }
             else if (marker - '0' <= '9' - '0')
             {
-                //TODO: Validate number
                 ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                 Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
                 ValueType = JsonValueType.Number;
+                ValidateNumber(Value);
                 int length = reader.UnreadSpan.Length;
                 reader.Advance(length);
                 Index += length;
@@ -638,8 +633,9 @@ namespace System.Text.JsonLab
                 //TODO: Is this a valid check?
                 if (reader.End) JsonThrowHelper.ThrowJsonReaderException(ref this);
                 ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
-                Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+                Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(); //TODO: any way to avoid the allocation?
                 ValueType = JsonValueType.Number;
+                ValidateNumber(Value);
                 int length = reader.UnreadSpan.Length;
                 reader.Advance(length);
                 Index += length;
@@ -677,18 +673,11 @@ namespace System.Text.JsonLab
                 StartLocation++;
                 ConsumeStringUtf8();
             }
-            else if (marker - '0' <= '9' - '0')
+            else if (marker - '0' <= '9' - '0' || marker == '-')
             {
-                //TODO: Validate number
                 Value = _buffer;
                 ValueType = JsonValueType.Number;
-                Index += _buffer.Length;
-            }
-            else if (marker == '-')
-            {
-                if (_buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException(ref this);
-                Value = _buffer;
-                ValueType = JsonValueType.Number;
+                ValidateNumber(Value);
                 Index += _buffer.Length;
             }
             else if (marker == 'f')
@@ -724,6 +713,93 @@ namespace System.Text.JsonLab
 
             Value = span;
             ValueType = JsonValueType.Number;
+            ValidateNumber(Value);
+        }
+
+        private void ValidateNumber(ReadOnlySpan<byte> data)
+        {
+            Debug.Assert(data.Length > 0);
+
+            int i = 0;
+            byte nextByte = data[i++];
+
+            if (nextByte == '-')
+            {
+                if (i >= data.Length)
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+                nextByte = data[i++];
+            }
+
+            Debug.Assert(nextByte >= '0' && nextByte <= '9');
+
+            if (nextByte == '0')
+            {
+                if (i < data.Length)
+                {
+                    nextByte = data[i];
+                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+                    i++;
+                }
+                else
+                    return;
+            }
+            else
+            {
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if (nextByte < '0' || nextByte > '9')
+                        break;
+                }
+                if (i >= data.Length)
+                    return;
+                if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+                i++;
+            }
+
+            Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
+
+            if (nextByte == '.')
+            {
+                if (i >= data.Length)
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if (nextByte < '0' || nextByte > '9')
+                        break;
+                }
+                if (i >= data.Length)
+                    return;
+                if (nextByte != 'E' && nextByte != 'e')
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+                i++;
+            }
+
+            Debug.Assert(nextByte == 'E' || nextByte == 'e');
+
+            if (i >= data.Length)
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+            nextByte = data[i];
+            if (nextByte == '+' || nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+            }
+
+            for (; i < data.Length; i++)
+            {
+                nextByte = data[i];
+                if (nextByte < '0' || nextByte > '9')
+                    break;
+            }
+
+            if (i < data.Length)
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
         }
 
         private void ConsumeNumberUtf8()
@@ -733,10 +809,10 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
             }
-            //TODO: Validate number format
 
             Value = _buffer.Slice(Index, idx);
             ValueType = JsonValueType.Number;
+            ValidateNumber(Value);
             Index += idx;
         }
 
