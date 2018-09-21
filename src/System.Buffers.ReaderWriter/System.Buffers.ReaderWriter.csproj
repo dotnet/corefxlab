@@ -12,7 +12,6 @@
     <ProjectReference Include="..\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Buffers" Version="4.5.0" />
     <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
 </Project>
