@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
-using System.Text;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -128,60 +127,23 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryParse(out long l64) != 0);
+            Assert.True(reader.TryParse(out long l64, out _));
             Assert.Equal(123, l64);
 
-            Assert.True(reader.TryParse(out bool b) != 0);
+            Assert.True(reader.TryParse(out bool b, out _));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64) != 0);
+            Assert.True(reader.TryParse(out l64, out _));
             Assert.Equal(456, l64);
 
-            Assert.True(reader.TryParse(out b) != 0);
+            Assert.True(reader.TryParse(out b, out _));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64) != 0);
+            Assert.True(reader.TryParse(out l64, out _));
             Assert.Equal(789, l64);
 
-            Assert.True(reader.TryParse(out b) != 0);
+            Assert.True(reader.TryParse(out b, out _));
             Assert.Equal(false, b);
-        }
-
-        private static byte[] s_eol = new byte[] { (byte)'\r', (byte)'\n' };
-
-        [Fact(Skip = "this needs to be redone; given we are unifying ROBs and readers")]
-        private static void BytesReaderBenchmarkBaseline()
-        {
-            int sections = 10;
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < sections; i++)
-            {
-                sb.Append("1234 ");
-            }
-            var data = Encoding.UTF8.GetBytes(sb.ToString());
-
-            var readOnlyBytes = new ReadOnlySequence<byte>(data);
-            var bytesRange = new ReadOnlySequence<byte>(data);
-
-            var robReader = new BufferReader<byte>(readOnlyBytes);
-
-            long robSum = 0;
-            while (robReader.TryParse(out int value) != 0)
-            {
-                robSum += value;
-                robReader.Advance(1);
-            }
-
-            var brReader = new BufferReader<byte>(bytesRange);
-            long brSum = 0;
-            while (brReader.TryParse(out int value) != 0)
-            {
-                brSum += value;
-                brReader.Advance(1);
-            }
-
-            Assert.Equal(robSum, brSum);
-            Assert.NotEqual(brSum, 0);
         }
     }
 }
