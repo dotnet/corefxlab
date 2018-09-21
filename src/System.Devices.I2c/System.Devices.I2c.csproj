@@ -5,5 +5,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Provider\**" />
+    <EmbeddedResource Remove="Provider\**" />
+    <None Remove="Provider\**" />
+  </ItemGroup>
 
 </Project>
