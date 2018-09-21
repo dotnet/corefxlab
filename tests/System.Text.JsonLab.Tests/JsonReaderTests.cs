@@ -313,8 +313,6 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
                 Assert.Equal(expectedPosition, ex.Position);
             }
-
-            
         }
 
         [Theory]
