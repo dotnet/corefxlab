@@ -4,7 +4,7 @@
 
 namespace System.Devices.I2c
 {
-    public sealed class I2cConnectionSettings : II2cConnectionSettings
+    public sealed class I2cConnectionSettings
     {
         /// <summary>
         /// Creates and initializes a new instance of the I2cConnectionSettings class for
