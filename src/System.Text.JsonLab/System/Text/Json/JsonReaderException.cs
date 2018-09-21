@@ -20,15 +20,5 @@ namespace System.Text.JsonLab
         public int Position { get; }
 
         //TODO: Should we add a path string (allocating a stack/etc)?
-
-        internal static JsonReaderException Create(ReadOnlySpan<byte> data, int maxDepth)
-        {
-            var json = new Utf8JsonReaderInstrumented(data, maxDepth);
-            while (json.Read()) ;
-
-            JsonReaderException exception = json.Exception;
-            Debug.Assert(exception != null);
-            return json.Exception;
-        }
     }
 }
