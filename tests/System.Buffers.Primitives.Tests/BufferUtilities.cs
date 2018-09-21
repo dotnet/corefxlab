@@ -2,9 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers.Text;
 using System.Text;
 
-namespace System.Buffers.Testing
+namespace System.Buffers.Tests
 {
     public class BufferUtilities
     {
@@ -113,6 +114,21 @@ namespace System.Buffers.Testing
                 }
             }
             return CreateBuffer<T>(buffers);
+        }
+
+        public static void FillIntegerUtf8Array(byte[] array, int minValue, int maxValue, int seed = 42)
+        {
+            Random r = new Random(42);
+
+            Span<byte> span = new Span<byte>(array);
+
+            // Generate ints across the entire range
+            int next = r.Next(minValue + 1, maxValue) + r.Next(-1, 2);
+            while (Utf8Formatter.TryFormat(next, span, out int written) && span.Length > written)
+            {
+                next = r.Next(minValue + 1, maxValue) + r.Next(-1, 2);
+                span = span.Slice(written + 1);
+            }
         }
     }
 }

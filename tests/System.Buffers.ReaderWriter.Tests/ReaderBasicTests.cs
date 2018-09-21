@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
-using System.Buffers.Testing;
 using System.IO.Pipelines.Tests;
 using Xunit;
 

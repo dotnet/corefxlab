@@ -53,6 +53,14 @@ namespace System.Buffers.Tests
             return Create(list.ToArray());
         }
 
+        public static ReadOnlySequence<byte> CreateUtf8(params string[] buffers)
+        {
+            if (buffers.Length == 1) return new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(buffers[0]));
+            var list = new List<Memory<byte>>();
+            foreach (var b in buffers) list.Add(Encoding.UTF8.GetBytes(b));
+            return Create(list.ToArray());
+        }
+
         public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
         {
             return ReadOnlyBufferSegment.Create(buffers);

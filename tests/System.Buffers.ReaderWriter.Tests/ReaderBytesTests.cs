@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
-using System.Buffers.Testing;
 using System.Text;
 using Xunit;
 
@@ -129,22 +128,22 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryParse(out long l64));
+            Assert.True(reader.TryParse(out long l64) != 0);
             Assert.Equal(123, l64);
 
-            Assert.True(reader.TryParse(out bool b));
+            Assert.True(reader.TryParse(out bool b) != 0);
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64));
+            Assert.True(reader.TryParse(out l64) != 0);
             Assert.Equal(456, l64);
 
-            Assert.True(reader.TryParse(out b));
+            Assert.True(reader.TryParse(out b) != 0);
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64));
+            Assert.True(reader.TryParse(out l64) != 0);
             Assert.Equal(789, l64);
 
-            Assert.True(reader.TryParse(out b));
+            Assert.True(reader.TryParse(out b) != 0);
             Assert.Equal(false, b);
         }
 
@@ -167,7 +166,7 @@ namespace System.Buffers.Tests
             var robReader = new BufferReader<byte>(readOnlyBytes);
 
             long robSum = 0;
-            while (robReader.TryParse(out int value))
+            while (robReader.TryParse(out int value) != 0)
             {
                 robSum += value;
                 robReader.Advance(1);
@@ -175,7 +174,7 @@ namespace System.Buffers.Tests
 
             var brReader = new BufferReader<byte>(bytesRange);
             long brSum = 0;
-            while (brReader.TryParse(out int value))
+            while (brReader.TryParse(out int value) != 0)
             {
                 brSum += value;
                 brReader.Advance(1);
