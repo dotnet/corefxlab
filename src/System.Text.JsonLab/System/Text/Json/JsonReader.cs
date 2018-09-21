@@ -521,7 +521,7 @@ namespace System.Text.JsonLab
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
-            else if (marker - '0' <= '9' - '0')
+            else if ((uint)(marker - '0') <= '9' - '0')
             {
                 ConsumeNumberUtf8MultiSegment(ref reader);
             }
@@ -580,7 +580,7 @@ namespace System.Text.JsonLab
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
-            else if (marker - '0' <= '9' - '0' || marker == '-')
+            else if ((uint)(marker - '0') <= '9' - '0' || marker == '-')
             {
                 ConsumeNumberUtf8();
             }
@@ -618,7 +618,7 @@ namespace System.Text.JsonLab
                 StartLocation++;
                 ConsumeStringUtf8MultiSegment(ref reader);
             }
-            else if (marker - '0' <= '9' - '0')
+            else if ((uint)(marker - '0') <= '9' - '0')
             {
                 ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                 Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
@@ -673,7 +673,7 @@ namespace System.Text.JsonLab
                 StartLocation++;
                 ConsumeStringUtf8();
             }
-            else if (marker - '0' <= '9' - '0' || marker == '-')
+            else if ((uint)(marker - '0') <= '9' - '0' || marker == '-')
             {
                 Value = _buffer;
                 ValueType = JsonValueType.Number;
@@ -716,6 +716,8 @@ namespace System.Text.JsonLab
             ValidateNumber(Value);
         }
 
+        // https://tools.ietf.org/html/rfc7159#section-6
+        //TODO: Investigate optimizations
         private void ValidateNumber(ReadOnlySpan<byte> data)
         {
             Debug.Assert(data.Length > 0);
@@ -749,7 +751,7 @@ namespace System.Text.JsonLab
                 for (; i < data.Length; i++)
                 {
                     nextByte = data[i];
-                    if (nextByte < '0' || nextByte > '9')
+                    if ((uint)(nextByte - '0') > '9' - '0')
                         break;
                 }
                 if (i >= data.Length)
@@ -769,7 +771,7 @@ namespace System.Text.JsonLab
                 for (; i < data.Length; i++)
                 {
                     nextByte = data[i];
-                    if (nextByte < '0' || nextByte > '9')
+                    if ((uint)(nextByte - '0') > '9' - '0')
                         break;
                 }
                 if (i >= data.Length)
@@ -794,7 +796,7 @@ namespace System.Text.JsonLab
             for (; i < data.Length; i++)
             {
                 nextByte = data[i];
-                if (nextByte < '0' || nextByte > '9')
+                if ((uint)(nextByte - '0') > '9' - '0')
                     break;
             }
 
