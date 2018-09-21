@@ -118,7 +118,7 @@ namespace System.Buffers.Tests
 
         public static void FillIntegerUtf8Array(byte[] array, int minValue, int maxValue, int seed = 42)
         {
-            Random r = new Random(42);
+            Random r = new Random(seed);
 
             Span<byte> span = new Span<byte>(array);
 

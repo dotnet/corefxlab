@@ -161,7 +161,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(ref this BufferReader<byte> reader, out bool value, char standardFormat = '\0')
+        public static int TryParse(ref this BufferReader<byte> reader, out bool value, char standardFormat = '\0')
         {
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
@@ -252,7 +252,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out byte value,
             char standardFormat = '\0')
@@ -288,7 +288,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out sbyte value,
             char standardFormat = '\0')
@@ -330,7 +330,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out short value,
             char standardFormat = '\0')
@@ -372,7 +372,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out ushort value,
             char standardFormat = '\0')
@@ -408,12 +408,11 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out int value,
             char standardFormat = '\0')
         {
-            //return TryParseFast(ref reader, out value, standardFormat, 15, IntParser);
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (!Utf8Parser.TryParse(unread, out value, out int consumed, standardFormat)
@@ -451,7 +450,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out uint value,
             char standardFormat = '\0')
@@ -487,7 +486,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out long value,
             char standardFormat = '\0')
@@ -529,7 +528,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out ulong value,
             char standardFormat = '\0')
@@ -565,7 +564,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out float value,
             char standardFormat = '\0')
@@ -613,7 +612,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out double value,
             char standardFormat = '\0')
@@ -662,7 +661,7 @@ namespace System.Buffers.Reader
         /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
         /// <returns>Number of consumed bytes if successful, otherwise 0.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int TryParse(
+        public static int TryParse(
             ref this BufferReader<byte> reader,
             out decimal value,
             char standardFormat = '\0')

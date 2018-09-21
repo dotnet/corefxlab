@@ -4,15 +4,12 @@
 
 using System.Buffers.Reader;
 using System.Globalization;
-using System.Text;
 using Xunit;
 
 namespace System.Buffers.Tests
 {
     public class Reader_ParseFloatingPoint
     {
-
-
         private delegate int ParseDelegate<T>(ref BufferReader<byte> reader, out T value, char standardFormat = '\0');
 
         [Fact]
