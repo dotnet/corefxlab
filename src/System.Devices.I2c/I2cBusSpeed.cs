@@ -17,7 +17,7 @@ namespace System.Devices.I2c
         StandardMode = 0,
 
         /// <summary>
-        /// A fast speed of 400 kHz.
+        /// A fast speed of 400 kilohertz (kHz).
         /// </summary>
         FastMode = 1
     }

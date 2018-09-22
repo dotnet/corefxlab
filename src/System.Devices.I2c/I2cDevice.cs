@@ -17,18 +17,18 @@ namespace System.Devices.I2c
         I2cConnectionSettings ConnectionSettings { get; }
 
         /// <summary>
-        /// Gets the plug and play device identifier of the inter-integrated circuit
-        /// (I²C) bus controller for the device.
+        /// Gets the unique ID associated with the inter-integrated circuit (I²C)
+        /// bus controller for the device.
         /// </summary>
         string DeviceId { get; }
 
         /// <summary>
         /// Writes data to the inter-integrated circuit (I²C) bus on which the
         /// device is connected, based on the bus address specified in the
-        /// I2cConnectionSettings object that you used to create the I2cDevice object.
+        /// I2cConnectionSettings object used to create the I2cDevice object.
         /// </summary>
         /// <param name="buffer">
-        /// A buffer that contains the data that you want to write to the I²C device.
+        /// A buffer that contains the data to write to the I²C device.
         /// This data should not include the bus address.
         /// </param>
         public abstract void Write(Span<byte> buffer);
@@ -36,11 +36,11 @@ namespace System.Devices.I2c
         /// <summary>
         /// Writes data to the inter-integrated circuit (I²C) bus on which the
         /// device is connected, and returns information about the success of
-        /// the operation that you can use for error handling.
+        /// the operation that can be used for error handling.
         /// </summary>
         /// <param name="buffer">
-        /// A buffer that contains the data that you want to write to the I²C
-        /// device. This data should not include the bus address.
+        /// A buffer that contains the data to write to the I²C device.
+        /// This data should not include the bus address.
         /// </param>
         /// <returns>
         /// Information about the success of the write operation and the actual
@@ -53,7 +53,7 @@ namespace System.Devices.I2c
         /// device is connected into the specified buffer.
         /// </summary>
         /// <param name="buffer">
-        /// The buffer to which you want to read the data from the I²C bus. The
+        /// The buffer to read the data from the I²C bus. The
         /// length of the buffer determines how much data to request from the device.
         /// </param>
         public abstract void Read(Span<byte> buffer);
@@ -61,11 +61,11 @@ namespace System.Devices.I2c
         /// <summary>
         /// Reads data from the inter-integrated circuit (I²C) bus on which the
         /// device is connected into the specified buffer, and returns information about
-        /// the success of the operation that you can use for error handling.
+        /// the success of the operation that can be used for error handling.
         /// </summary>
         /// <param name="buffer">
-        /// The buffer to which you want to read the data from the I²C bus. The
-        /// length of the buffer determines how much data to request from the device.
+        /// The buffer to read the data from the I²C bus. The length of the
+        /// buffer determines how much data to request from the device.
         /// </param>
         /// <returns>
         /// Information about the success of the read operation and the actual number
@@ -79,11 +79,11 @@ namespace System.Devices.I2c
         /// sends a restart condition between the write and read operations.
         /// </summary>
         /// <param name="writeBuffer">
-        /// A buffer that contains the data that you want to write to the I²C device.
+        /// A buffer that contains the data to write to the I²C device.
         /// This data should not include the bus address.
         /// </param>
         /// <param name="readBuffer">
-        /// The buffer to which you want to read the data from the I²C bus.
+        /// The buffer to read the data from the I²C bus.
         /// The length of the buffer determines how much data to request from the device.
         /// </param>
         public abstract void WriteRead(Span<byte> writeBuffer, Span<byte> readBuffer);
@@ -91,14 +91,14 @@ namespace System.Devices.I2c
         /// <summary>
         /// Performs an atomic operation to write data to and then read data from the
         /// inter-integrated circuit (I²C) bus on which the device is connected, and returns
-        /// information about the success of the operation that you can use for error handling.
+        /// information about the success of the operation that can be used for error handling.
         /// </summary>
         /// <param name="writeBuffer">
-        /// A buffer that contains the data that you want to write to the I²C device.
+        /// A buffer that contains the data to write to the I²C device.
         /// This data should not include the bus address.
         /// </param>
         /// <param name="readBuffer">
-        /// The buffer to which you want to read the data from the I²C bus.
+        /// The buffer to read the data from the I²C bus.
         /// The length of the buffer determines how much data to request from the device.
         /// </param>
         /// <returns>

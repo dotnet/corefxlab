@@ -39,9 +39,8 @@ namespace System.Devices.I2c
 
         /// <summary>
         /// Gets or sets the sharing mode to use to connect to the inter-integrated circuit
-        /// (I²C) bus address. This mode determines whether other connections
-        /// to the I²C bus address can be opened while you are connect to the
-        /// I²C bus address.
+        /// (I²C) bus address. This mode determines whether other connections to
+        /// the I²C bus address can be opened while connected to the I²C bus address.
         /// </summary>
         public I2cSharingMode SharingMode { get; set; }
 
