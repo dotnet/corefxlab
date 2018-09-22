@@ -25,7 +25,7 @@ namespace System.Devices.I2c
         /// <summary>
         /// Writes data to the inter-integrated circuit (I²C) bus on which the
         /// device is connected, based on the bus address specified in the
-        /// I2cConnectionSettings object used to create the I2cDevice object.
+        /// <see cref="I2cConnectionSettings"/> object used to create the <see cref="I2cDevice"/> object.
         /// </summary>
         /// <param name="buffer">
         /// A buffer that contains the data to write to the I²C device.

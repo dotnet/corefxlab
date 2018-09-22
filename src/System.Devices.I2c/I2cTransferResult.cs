@@ -20,8 +20,7 @@ namespace System.Devices.I2c
         public I2cTransferStatus Status;
 
         /// <summary>
-        /// The actual number of bytes that the operation actually transferred. The following
-        /// table describes what this value represents for each method.
+        /// The actual number of bytes that the operation actually transferred.
         /// </summary>
         public uint BytesTransferred;
     }

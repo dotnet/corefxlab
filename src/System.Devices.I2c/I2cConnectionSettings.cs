@@ -7,13 +7,13 @@ namespace System.Devices.I2c
     public sealed class I2cConnectionSettings
     {
         /// <summary>
-        /// Creates and initializes a new instance of the I2cConnectionSettings class for
+        /// Creates and initializes a new instance of the <see cref="I2cConnectionSettings"/> class for
         /// inter-integrated circuit (I²C) device with specified bus address, using the
         /// default settings of the standard mode for the bus speed and exclusive sharing mode.
         /// </summary>
         /// <param name="slaveAddress">
         /// The bus address of the inter-integrated circuit (I²C) device to which
-        /// the settings of the I2cConnectionSettings should apply. Only 7-bit addressing
+        /// the settings of the <see cref="I2cConnectionSettings"/> should apply. Only 7-bit addressing
         /// is supported, so the range of values that are valid is from 8 to 119.
         /// </param>
         /// <param name="sharingMode">
