@@ -31,7 +31,7 @@ namespace System.Devices.I2c
         /// A buffer that contains the data that you want to write to the I²C device.
         /// This data should not include the bus address.
         /// </param>
-        public abstract void Write(byte[] buffer);
+        public abstract void Write(Span<byte> buffer);
 
         /// <summary>
         /// Writes data to the inter-integrated circuit (I²C) bus on which the
@@ -46,7 +46,7 @@ namespace System.Devices.I2c
         /// Information about the success of the write operation and the actual
         /// number of bytes that the operation wrote into the buffer.
         /// </returns>
-        public abstract I2cTransferResult WritePartial(byte[] buffer);
+        public abstract I2cTransferResult WritePartial(Span<byte> buffer);
 
         /// <summary>
         /// Reads data from the inter-integrated circuit (I²C) bus on which the
@@ -56,7 +56,7 @@ namespace System.Devices.I2c
         /// The buffer to which you want to read the data from the I²C bus. The
         /// length of the buffer determines how much data to request from the device.
         /// </param>
-        public abstract void Read(byte[] buffer);
+        public abstract void Read(Span<byte> buffer);
 
         /// <summary>
         /// Reads data from the inter-integrated circuit (I²C) bus on which the
@@ -71,7 +71,7 @@ namespace System.Devices.I2c
         /// Information about the success of the read operation and the actual number
         /// of bytes that the operation read into the buffer.
         /// </returns>
-        public abstract I2cTransferResult ReadPartial(byte[] buffer);
+        public abstract I2cTransferResult ReadPartial(Span<byte> buffer);
 
         /// <summary>
         /// Performs an atomic operation to write data to and then read data from the
@@ -86,7 +86,7 @@ namespace System.Devices.I2c
         /// The buffer to which you want to read the data from the I²C bus.
         /// The length of the buffer determines how much data to request from the device.
         /// </param>
-        public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
+        public abstract void WriteRead(Span<byte> writeBuffer, Span<byte> readBuffer);
 
         /// <summary>
         /// Performs an atomic operation to write data to and then read data from the
@@ -106,7 +106,7 @@ namespace System.Devices.I2c
         /// succeeded and the sum of the actual number of bytes that the operation
         /// wrote and the actual number of bytes that the operation read.
         /// </returns>
-        public abstract I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);
+        public abstract I2cTransferResult WriteReadPartial(Span<byte> writeBuffer, Span<byte> readBuffer);
 
         public abstract void Dispose();
         public abstract void Dispose(bool disposing);
