@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Testing;
+using System.Buffers.Tests;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;

@@ -364,6 +364,9 @@ namespace System.Buffers.Reader
                 }
 
                 Advance(advanced);
+
+                // If we're at postion 0 after advancing and not at the End,
+                // we're in a new span and should continue the loop.
             } while (CurrentSpanIndex == 0 && !End);
 
             return Consumed - start;
@@ -444,11 +447,33 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
+        /// Check to see if the given <paramref name="next"/> value is next.
+        /// </summary>
+        /// <param name="advancePast">Move past the <paramref name="next"/> value if found.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNext(T next, bool advancePast = false)
+        {
+            if (End)
+                return false;
+
+            ReadOnlySpan<T> unread = UnreadSpan;
+            if (unread[0].Equals(next))
+            {
+                if (advancePast)
+                {
+                    Advance(1);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Check to see if the given <paramref name="next"/> values are next.
         /// </summary>
         /// <param name="advancePast">Move past the <paramref name="next"/> values if found.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsNext(ReadOnlySpan<T> next, bool advancePast)
+        public bool IsNext(ReadOnlySpan<T> next, bool advancePast = false)
         {
             ReadOnlySpan<T> unread = UnreadSpan;
             if (unread.StartsWith(next))
