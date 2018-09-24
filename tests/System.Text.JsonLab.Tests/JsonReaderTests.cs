@@ -318,6 +318,8 @@ namespace System.Text.JsonLab.Tests
         [InlineData("\"age\":", 1, 6)]
         [InlineData("12345.1.", 1, 0)]
         [InlineData("-", 1, 0)]
+        [InlineData("-f", 1, 0)]
+        [InlineData("1.f", 1, 0)]
         [InlineData("0.", 1, 0)]
         [InlineData("0.1f", 1, 0)]
         [InlineData("0.1e1f", 1, 0)]
