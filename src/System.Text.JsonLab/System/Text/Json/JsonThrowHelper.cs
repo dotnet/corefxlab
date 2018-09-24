@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
@@ -64,15 +65,20 @@ namespace System.Text.JsonLab
             return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
-        public static void ThrowJsonReaderException()
+        public static void ThrowJsonReaderException(ref Utf8JsonReader json)
         {
-            throw GetJsonReaderException();
+            GetJsonReaderException(ref json);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static JsonReaderException GetJsonReaderException()
+        private static void GetJsonReaderException(ref Utf8JsonReader json)
         {
-            return new JsonReaderException();
+            var jsonInstrumented = new Utf8JsonReaderInstrumented(json._buffer)
+            {
+                MaxDepth = json.MaxDepth
+            };
+            while (jsonInstrumented.Read()) ;
+            Debug.Assert(false, "We should never reach this point since we should have thrown JsonReaderException already.");
         }
 
         public static void ThrowInvalidCastException()

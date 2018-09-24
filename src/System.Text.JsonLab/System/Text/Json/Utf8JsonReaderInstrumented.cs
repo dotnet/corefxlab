@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+//TODO: Add multi-segment support
+#define UseInstrumented
+
 using System.Buffers;
 using System.Buffers.Reader;
 using System.Collections.Generic;
