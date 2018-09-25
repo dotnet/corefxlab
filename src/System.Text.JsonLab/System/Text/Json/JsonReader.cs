@@ -1375,10 +1375,11 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
 
             int i = 0;
-            byte nextByte = data[i++];
+            byte nextByte = data[i];
 
             if (nextByte == '-')
             {
+                i++;
                 if (i >= data.Length)
 #if UseInstrumented
                     throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
@@ -1386,7 +1387,7 @@ namespace System.Text.JsonLab
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
 
-                nextByte = data[i++];
+                nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
 #if UseInstrumented
                     throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
@@ -1399,6 +1400,7 @@ namespace System.Text.JsonLab
 
             if (nextByte == '0')
             {
+                i++;
                 if (i < data.Length)
                 {
                     nextByte = data[i];
@@ -1411,13 +1413,13 @@ namespace System.Text.JsonLab
 #else
                         JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-                    i++;
                 }
                 else
                     goto Done;
             }
             else
             {
+                i++;
                 for (; i < data.Length; i++)
                 {
                     nextByte = data[i];
@@ -1432,36 +1434,34 @@ namespace System.Text.JsonLab
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-                i++;
             }
 
             Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
 
             if (nextByte == '.')
             {
+                i++;
                 if (i >= data.Length)
 #if UseInstrumented
                     throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-
-                nextByte = data[i++];
-
+                nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
 #if UseInstrumented
                     throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-
+                i++;
                 for (; i < data.Length; i++)
                 {
                     nextByte = data[i];
                     if ((uint)(nextByte - '0') > '9' - '0')
                         break;
                 }
-                if (i >= data.Length || delimiters.IndexOf(data[i]) != -1)
+                if (i >= data.Length || delimiters.IndexOf(nextByte) != -1)
                     goto Done;
                 if (nextByte != 'E' && nextByte != 'e')
 #if UseInstrumented
@@ -1469,10 +1469,10 @@ namespace System.Text.JsonLab
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-                i++;
             }
 
             Debug.Assert(nextByte == 'E' || nextByte == 'e');
+            i++;
 
             if (i >= data.Length)
 #if UseInstrumented
@@ -1491,7 +1491,7 @@ namespace System.Text.JsonLab
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-                nextByte = data[i++];
+                nextByte = data[i];
             }
 
             if ((uint)(nextByte - '0') > '9' - '0')
@@ -1500,7 +1500,7 @@ namespace System.Text.JsonLab
 #else
                 JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-
+            i++;
             for (; i < data.Length; i++)
             {
                 nextByte = data[i];
@@ -1508,7 +1508,7 @@ namespace System.Text.JsonLab
                     break;
             }
 
-            if (i < data.Length && delimiters.IndexOf(data[i]) == -1)
+            if (i < data.Length && delimiters.IndexOf(nextByte) == -1)
 #if UseInstrumented
                 throw new JsonReaderException($"Invalid end of number. Last character read: '{(char)nextByte}'. Expected a delimiter.", _lineNumber, _position);
 #else
