@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -18,6 +18,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+    <PackageReference Include="Expecto" Version="8.4.1" />
+    <PackageReference Include="FSharp.Core" Version="4.5.2" />
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>

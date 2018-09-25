@@ -5,12 +5,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Expecto.CSharp;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Experimental.Collections.Tests
 {
     public class RefDictionaryTests
     {
+        ITestOutputHelper _output;
+        public RefDictionaryTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         [Fact]
         public void SingleEntry()
         {
@@ -32,16 +39,13 @@ namespace Microsoft.Experimental.Collections.Tests
         }
 
         [Fact]
-        public void TryGetValue()
+        public void GetValueOrDefault()
         {
             var d = new RefDictionary<ulong, int>();
             d[7] = 9;
-            d[10] = 10;
-            Assert.True(d.TryGetValue(7, out var v7));
-            Assert.Equal(9, v7);
-            Assert.True(d.TryGetValue(10, out var v10));
-            Assert.Equal(10, v10);
-            Assert.False(d.TryGetValue(3, out var v3));
+            d[10] = 11;
+            Assert.Equal(9, d.GetValueOrDefault(7));
+            Assert.Equal(11, d.GetValueOrDefault(10));
         }
 
         [Fact]
@@ -84,6 +88,44 @@ namespace Microsoft.Experimental.Collections.Tests
             }
 
             Assert.True(d.OrderBy(i => i.Key).SequenceEqual(rd.OrderBy(i => i.Key)));
+        }
+
+        //[Fact]
+        public void PopulatesFaster()
+        {
+            var size = 10_000_000; 
+            const int AggCount = 250;
+            var rand = new Random(11231992);
+            var keys = new ulong[size];
+            for (int i = 0; i < keys.Length; i++)
+            {
+                keys[i] = (ulong)rand.Next(size / AggCount);
+            }
+
+            int PopulateNew(RefDictionary<ulong, int> d)
+            {
+                foreach (var k in keys) d[k] += (int)k;
+                return d.Count;
+            }
+
+            int PopulateOld(RefDictionaryOld<ulong, int> d)
+            {
+                foreach (var k in keys) d[k] += (int)k;
+                return d.Count;
+            }
+
+            var result =
+                Function.IsFasterThan(
+                    () => new RefDictionary<ulong, int>(),
+                    PopulateNew,
+                    () => new RefDictionaryOld<ulong, int>(),
+                    PopulateOld,
+                    "new RefDictionary populates faster",
+                    out string statsMessage
+                );
+
+            Assert.True(result, statsMessage);
+            _output.WriteLine(statsMessage);
         }
     }
 }

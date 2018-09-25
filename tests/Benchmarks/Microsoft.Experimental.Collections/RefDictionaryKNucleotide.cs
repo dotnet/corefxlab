@@ -17,7 +17,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 {
     public class RefDictionaryKNucleotide
     {
-        [Params(250_000,2_500_000)]
+        [Params(250_000, 2_500_000)]
         public int Size { get; set; }
         [Benchmark]
         public void Hack()
@@ -673,7 +673,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             long key = 0;
             for (int i = 0; i < fragment.Length; ++i)
                 key = (key << 2) | tonum[fragment[i]];
-            dictionary.TryGetValue(key, out var v);
+            var v = dictionary.GetValueOrDefault(key);
             return string.Concat(v.ToString(), "\t", fragment);
         }
 
