@@ -84,14 +84,18 @@ namespace System.Text.JsonLab
             TokenStartIndex = CurrentIndex;
 
             if (TokenType == JsonTokenType.None)
+            {
                 goto ReadFirstToken;
+            }
 
             if (TokenType == JsonTokenType.StartObject)
             {
                 reader.Advance(1);
                 CurrentIndex++;
                 if (first == JsonConstants.CloseBrace)
+                {
                     EndObject();
+                }
                 else
                 {
                     if (first != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -108,7 +112,9 @@ namespace System.Text.JsonLab
                     EndArray();
                 }
                 else
+                {
                     ConsumeValue(ref reader, first);
+                }
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
