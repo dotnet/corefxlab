@@ -8,6 +8,11 @@
     <PackageTags>.NET Core GPIO Pins BCM2835 Raspberry Pi IoT</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="winmd\**" />
+    <EmbeddedResource Remove="winmd\**" />
+    <None Remove="winmd\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Documentation\GPIORef.cs" />
     <Compile Remove="Documentation\GPIOSamples.cs" />
   </ItemGroup>
@@ -17,5 +22,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.1.0\ref\netcoreapp2.1\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Windows.Devices">
+      <HintPath>winmd\Windows.Devices.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+    <Reference Include="Windows.Foundation">
+      <HintPath>winmd\Windows.Foundation.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
   </ItemGroup>
 </Project>
