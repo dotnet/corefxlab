@@ -19,7 +19,7 @@ namespace System.Buffers.Reader
         public bool TryReadTo(out ReadOnlySpan<T> span, T delimiter, bool advancePastDelimiter = true)
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
-            int index = MemoryExtensions.IndexOf(remaining, delimiter);
+            int index = remaining.IndexOf(delimiter);
             if (index != -1)
             {
                 span = index == 0 ? default : remaining.Slice(0, index);
@@ -33,6 +33,47 @@ namespace System.Buffers.Reader
         private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, int skip, bool advancePastDelimiter)
         {
             if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, advancePastDelimiter, skip))
+            {
+                span = default;
+                return false;
+            }
+
+            span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            return true;
+        }
+
+        /// <summary>
+        /// Try to read everything up to the given <paramref name="delimiter"/>, ignoring delimiters that are
+        /// preceeded by <paramref name="skipDelimiter"/>.
+        /// </summary>
+        /// <param name="span">The read data, if any.</param>
+        /// <param name="delimiter">The delimiter to look for.</param>
+        /// <param name="skipDelimiter">If found prior to <paramref name="delimiter"/> it will skip that occurence.</param>
+        /// <param name="advancePastDelimiter">True to move past the <paramref name="delimiter"/> if found.</param>
+        /// <returns>True if the <paramref name="delimiter"/> was found.</returns>
+        public bool TryReadTo(out ReadOnlySpan<T> span, T delimiter, T skipDelimiter, bool advancePastDelimiter = true)
+        {
+            ReadOnlySpan<T> remaining = UnreadSpan;
+            int index = remaining.IndexOf(delimiter);
+
+            if (index != -1)
+            {
+                if (index > 0 && remaining[index - 1].Equals(skipDelimiter))
+                {
+                    // This delimiter should be skipped, go down the slow path
+                    return TryReadToSlow(out span, delimiter, skipDelimiter, index, advancePastDelimiter);
+                }
+                span = index == 0 ? default : remaining.Slice(0, index);
+                Advance(index + (advancePastDelimiter ? 1 : 0));
+                return true;
+            }
+
+            return TryReadToSlow(out span, delimiter, skipDelimiter, remaining.Length, advancePastDelimiter);
+        }
+
+        private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, T skipDelimiter, int skip, bool advancePastDelimiter)
+        {
+            if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, skipDelimiter, advancePastDelimiter, skip))
             {
                 span = default;
                 return false;
@@ -81,6 +122,76 @@ namespace System.Buffers.Reader
                 }
 
                 Advance(remaining.Length);
+                remaining = CurrentSpan;
+            }
+
+            // Didn't find anything, reset our original state.
+            this = copy;
+            sequence = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Try to read everything up to the given <paramref name="delimiter"/>, ignoring delimiters that are
+        /// preceeded by <paramref name="skipDelimiter"/>.
+        /// </summary>
+        /// <param name="sequence">The read data, if any.</param>
+        /// <param name="delimiter">The delimiter to look for.</param>
+        /// <param name="skipDelimiter">If found prior to <paramref name="delimiter"/> it will skip that occurence.</param>
+        /// <param name="advancePastDelimiter">True to move past the <paramref name="delimiter"/> if found.</param>
+        /// <returns>True if the <paramref name="delimiter"/> was found.</returns>
+        public bool TryReadTo(out ReadOnlySequence<T> sequence, T delimiter, T skipDelimiter, bool advancePastDelimiter = true)
+        {
+            return TryReadToInternal(out sequence, delimiter, skipDelimiter, advancePastDelimiter);
+        }
+
+        public bool TryReadToInternal(out ReadOnlySequence<T> sequence, T delimiter, T skipDelimiter, bool advancePastDelimiter, int skip = 0)
+        {
+            BufferReader<T> copy = this;
+            if (skip > 0)
+            {
+                if (skip > 1)
+                {
+                    Advance(skip - 1);
+                }
+
+                TryRead(out T prior);
+                if (prior.Equals(skipDelimiter) && !End)
+                {
+                    Advance(1);
+                }
+            }
+
+            ReadOnlySpan<T> remaining = UnreadSpan;
+            bool shouldSkipDelimiter = false;
+
+            while (!End)
+            {
+                int index = remaining.IndexOf(delimiter);
+                if (index != -1)
+                {
+                    if ((shouldSkipDelimiter && index == 0) || (index > 0 && remaining[index - 1].Equals(skipDelimiter)))
+                    {
+                        // This delimiter should be skipped, move past it.
+                        shouldSkipDelimiter = false;
+                        Advance(index + 1);
+                        remaining = UnreadSpan;
+                        continue;
+                    }
+
+                    // Found the delimiter. Move to it, slice, then move past it.
+                    sequence = Sequence.Slice(copy.Position, Position);
+                    if (advancePastDelimiter)
+                    {
+                        Advance(1);
+                    }
+                    return true;
+                }
+
+                // Nothing in the current span, move to the end, checking for the skip delimiter
+                Advance(remaining.Length - 1);
+                TryRead(out T prior);
+                shouldSkipDelimiter = prior.Equals(skipDelimiter);
                 remaining = CurrentSpan;
             }
 
