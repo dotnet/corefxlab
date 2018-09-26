@@ -674,6 +674,8 @@ namespace System.Text.JsonLab
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
 
+            Debug.Assert(localCopy.Length >= CurrentIndex + 1);
+
             int idx = localCopy.Slice(CurrentIndex + 1).IndexOf(JsonConstants.Quote);
             if (idx < 0)
             {
