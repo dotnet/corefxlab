@@ -2,10 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// KEEP THIS FILE IN-SYNC WITH Utf8JsonReader.cs, except for the define directive
-//TODO: Add multi-segment support
-#define UseInstrumented
-
 using System.Buffers.Reader;
 using System.Collections.Generic;
 using System.Diagnostics;

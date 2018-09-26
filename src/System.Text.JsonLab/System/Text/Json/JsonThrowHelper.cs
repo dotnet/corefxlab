@@ -73,7 +73,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonReaderException(ref Utf8JsonReader json)
         {
-            var jsonInstrumented = new Utf8JsonReaderInstrumented(json._buffer)
+            var jsonInstrumented = new Instrumented.Utf8JsonReader(json._buffer)
             {
                 MaxDepth = json.MaxDepth
             };
