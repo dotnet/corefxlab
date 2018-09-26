@@ -9,19 +9,15 @@
 using System.Buffers;
 using System.Buffers.Reader;
 
+#if UseInstrumented
+namespace System.Text.JsonLab.Instrumented
+#else
 namespace System.Text.JsonLab
+#endif
 {
-#if UseInstrumented
-    internal ref partial struct Utf8JsonReaderInstrumented
-#else
     public ref partial struct Utf8JsonReader
-#endif
     {
-#if UseInstrumented
-        public Utf8JsonReaderInstrumented(in ReadOnlySequence<byte> data)
-#else
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
-#endif
         {
             _reader = new BufferReader<byte>(data);
             _isSingleSegment = data.IsSingleSegment; //true;

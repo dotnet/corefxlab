@@ -6,13 +6,13 @@ using System.Buffers.Reader;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.JsonLab
-{
 #if UseInstrumented
-    internal ref partial struct Utf8JsonReaderInstrumented
+namespace System.Text.JsonLab.Instrumented
 #else
-    public ref partial struct Utf8JsonReader
+namespace System.Text.JsonLab
 #endif
+{
+    public ref partial struct Utf8JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
@@ -92,11 +92,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-#if UseInstrumented
-        public Utf8JsonReaderInstrumented(ReadOnlySpan<byte> data)
-#else
         public Utf8JsonReader(ReadOnlySpan<byte> data)
-#endif
         {
             _reader = default;
             _isSingleSegment = true;
