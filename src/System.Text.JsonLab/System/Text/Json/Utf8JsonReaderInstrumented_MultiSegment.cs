@@ -67,7 +67,29 @@ namespace System.Text.JsonLab
             }
             else
             {
-                ConsumeValue(ref reader, first);
+                // Cannot call ConsumeNumber since it looks for the delimiter and we won't find it.
+                if ((uint)(first - '0') <= '9' - '0')
+                {
+                    ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+                    Value = GetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray());
+                    ValueType = JsonValueType.Number;
+                    reader.Advance(Value.Length);
+                    CurrentIndex += Value.Length;
+                }
+                else if (first == '-')
+                {
+                    //TODO: Is this a valid check?
+                    if (reader.End) JsonThrowHelper.ThrowJsonReaderException(ref this);
+                    ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+                    Value = GetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray());
+                    ValueType = JsonValueType.Number;
+                    reader.Advance(Value.Length);
+                    CurrentIndex += Value.Length;
+                }
+                else
+                {
+                    ConsumeValue(ref reader, first);
+                }
             }
         }
 
@@ -88,14 +110,18 @@ namespace System.Text.JsonLab
             TokenStartIndex = CurrentIndex;
 
             if (TokenType == JsonTokenType.None)
+            {
                 goto ReadFirstToken;
+            }
 
             if (TokenType == JsonTokenType.StartObject)
             {
                 reader.Advance(1);
                 CurrentIndex++;
                 if (first == JsonConstants.CloseBrace)
+                {
                     EndObject();
+                }
                 else
                 {
                     if (first != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException(ref this);
@@ -112,7 +138,9 @@ namespace System.Text.JsonLab
                     EndArray();
                 }
                 else
+                {
                     ConsumeValue(ref reader, first);
+                }
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
