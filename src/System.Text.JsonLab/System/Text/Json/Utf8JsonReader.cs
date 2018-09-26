@@ -268,24 +268,17 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if ((uint)(first - '0') <= '9' - '0' || first == '-')
+                if (ConsumeValue(first))
                 {
-                    if (ConsumeNumber())
-                    {
-                        if (CurrentIndex >= (uint)_buffer.Length)
-                            return true;
+                    if (CurrentIndex >= (uint)_buffer.Length)
+                        return true;
 #if UseInstrumented
-                        throw new JsonReaderException($"Invalid end of number. Last character read: '{(char)_buffer[CurrentIndex]}'. Expected a single number only.", _lineNumber, _position);
+                        throw new JsonReaderException($"Expected end of json after a single value but there is extra data within the payload. Last character read: '{(char)_buffer[CurrentIndex]}'.", _lineNumber, _position);
 #else
-                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-                    }
-                    return false;
                 }
-                else
-                {
-                    return ConsumeValue(first);
-                }
+                return false;
             }
             return true;
         }
