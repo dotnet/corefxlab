@@ -47,7 +47,7 @@ namespace System.Text.JsonLab.Benchmarks
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool IsDataCompact;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
@@ -85,7 +85,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        //[Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -94,7 +94,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -120,21 +120,21 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequenceSingle);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
             var outputArray = new byte[_dataUtf8.Length * 2];
@@ -196,7 +196,7 @@ namespace System.Text.JsonLab.Benchmarks
             return outputArray;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);
@@ -207,7 +207,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
             var json = new Utf8Json.JsonReader(_dataUtf8);

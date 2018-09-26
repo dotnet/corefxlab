@@ -30,6 +30,7 @@ namespace System.Text.JsonLab
             ValueType = JsonValueType.Unknown;
             _inObject = false;
             _isFinalBlock = isFinalBlock;
+            _isSingleValue = false;
 
 #if UseInstrumented
             _lineNumber = 1;

@@ -308,22 +308,61 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expectedStr, actualStr);
         }
 
-        //TODO: Add test using async to get more data
+
+        // TODO: Need a mechanism to pass state appropriately
         [Theory]
-        [InlineData("\"", 1)]
+        [InlineData("\"hello\"", 1, 0)] // "\""
+        [InlineData("12345", 3, 0)]   // "123"
+        [InlineData("null", 3, 0)]   // "nul"
+        [InlineData("true", 3, 0)]   // "tru"
+        [InlineData("false", 4, 0)]  // "fals"
+        //[InlineData("{\"age\":30}", 7, 7)] // "{\"age\":"
+        //[InlineData("{\"name\":\"Ahson\"", 9, 8)]  // "{\"name\":\"Ahso"
+        [InlineData("-123456789", 1, 0)] // "-"
+        [InlineData("0.5", 2, 0)]    // "0."
+        [InlineData("10.5e+3", 5, 0)] // "10.5e"
+        [InlineData("10.5e-1", 6, 0)]    // "10.5e-"
+        //[InlineData("{\"ints\":[1, 2, 3, 4, 5]}", 21, 21)]    // "{\"ints\":[1, 2, 3, 4, 5"
+        //[InlineData("{\"strings\":[\"abc\", \"def\"], \"ints\":[1, 2, 3, 4, 5]}", 24, 24)]  // "{\"strings\":[\"abc\", \"def\""
+        //[InlineData("{\"age\":30, \"name\":\"test}:[]\", \"another string\" : \"tests\"}", 19, 18)]   // "{\"age\":30, \"name\":\"test}"
+        public static void SplitJsonAsync(string jsonString, int splitLocation, int consumed)
+        {
+            var buffer = new char[jsonString.Length];
+            var reader = new StringReader(jsonString);
+
+            reader.ReadAsync(buffer, 0, splitLocation);
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(buffer, 0, splitLocation);
+            var json = new Utf8JsonReader(dataUtf8, false);
+            while (json.Read()) ;
+
+            Assert.Equal(consumed, json.CurrentIndex);
+
+            reader.ReadAsync(buffer, splitLocation, jsonString.Length - splitLocation);
+
+            int start = splitLocation - (dataUtf8.Length - json.CurrentIndex);
+            dataUtf8 = Encoding.UTF8.GetBytes(buffer, start, jsonString.Length - start);
+            json = new Utf8JsonReader(dataUtf8, true, json.TokenType);
+            while (json.Read()) ;
+
+            Assert.Equal(dataUtf8.Length, json.CurrentIndex);
+        }
+
+        [Theory]
+        [InlineData("\"", 0)]
         [InlineData("123", 0)]
         [InlineData("nul", 0)]
         [InlineData("tru", 0)]
         [InlineData("fals", 0)]
         [InlineData("{\"age\":", 7)]
-        [InlineData("{\"name\":\"Ahso", 9)]
+        [InlineData("{\"name\":\"Ahso", 8)]
         [InlineData("-", 0)]
         [InlineData("0.", 0)]
         [InlineData("10.5e", 0)]
         [InlineData("10.5e-", 0)]
         [InlineData("{\"ints\":[1, 2, 3, 4, 5", 21)]
         [InlineData("{\"strings\":[\"abc\", \"def\"", 24)]
-        [InlineData("{\"age\":30, \"name\":\"test}", 19)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 18)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 20)]
         public static void PartialJson(string jsonString, int consumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
@@ -358,7 +397,6 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
         [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
-        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 14)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
@@ -384,7 +422,7 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("\"", 1, 1)]
+        [InlineData("\"", 1, 0)]
         [InlineData("{]", 1, 1)]
         [InlineData("[}", 1, 1)]
         [InlineData("nul", 1, 0)]
@@ -392,7 +430,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("fals", 1, 0)]
         [InlineData("\"age\":", 1, 5)]
         [InlineData("{\"age\":", 1, 7)]
-        [InlineData("{\"name\":\"Ahso", 1, 9)]
+        [InlineData("{\"name\":\"Ahso", 1, 8)]
         [InlineData("12345.1.", 1, 0)]
         [InlineData("-", 1, 0)]
         [InlineData("-f", 1, 0)]
@@ -418,10 +456,10 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 22)]
         [InlineData("{\"strings\":[\"abc\", \"def\"", 1, 24)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
-        [InlineData("{\"age\":30, \"name\":\"test}", 1, 19)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
         [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
-        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 14)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 13)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
