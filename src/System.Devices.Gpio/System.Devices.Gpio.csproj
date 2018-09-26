@@ -20,10 +20,7 @@
     <None Include="Documentation\GPIORef.cs" />
     <None Include="Documentation\GPIOSamples.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.1" />
-  </ItemGroup>
-  <ItemGroup>
+  <ItemGroup> <!--<ItemGroup Condition=" '$(TargetsWindows)' == 'true' ">-->
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.1.0\ref\netcoreapp2.1\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
     </Reference>
@@ -36,4 +33,9 @@
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
   </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="echo TargetsUnix   = '$(TargetsUnix)'" />
+    <Exec Command="echo TargetsWindows= '$(TargetsWindows)'" />
+    <Exec Command="echo OSGroup       = '$(OSGroup)'" />
+  </Target>
 </Project>
