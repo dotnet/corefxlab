@@ -24,7 +24,7 @@ namespace System.Reflection.Metadata.Cil.Tests
             return parts[parts.Length - 2] + "." + parts[parts.Length - 1];
         }
 
-        [Fact(Skip = "System.Reflection.Metadata needs to be updated to 1.3.0")]
+        [Fact]
         public void TestMethod1()
         {
             var watch = new Stopwatch();

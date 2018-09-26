@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Reflection.Metadata.Cil.Instructions;
-using System.Reflection.Metadata.Decoding;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
@@ -345,7 +344,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
 
         internal static CilType DecodeType(EntityHandle type, CilTypeProvider provider)
         {
-            return SignatureDecoder.DecodeType(type, provider, null);
+            return SignatureDecoder.DecodeType(type, provider, 0);
         }
 
         private static string GetSignature(MetadataReader metadataReader, int intOperand, CilTypeProvider provider)
@@ -392,15 +391,15 @@ namespace System.Reflection.Metadata.Cil.Decoder
             if (IsTypeReference(intOperand))
             {
                 var refHandle = MetadataTokens.TypeReferenceHandle(intOperand);
-                return SignatureDecoder.DecodeType(refHandle, provider, null).ToString();
+                return SignatureDecoder.DecodeType(refHandle, provider, 0).ToString();
             }
             if (IsTypeSpecification(intOperand))
             {
                 var typeHandle = MetadataTokens.TypeSpecificationHandle(intOperand);
-                return SignatureDecoder.DecodeType(typeHandle, provider, null).ToString();
+                return SignatureDecoder.DecodeType(typeHandle, provider, 0).ToString();
             }
             var defHandle = MetadataTokens.TypeDefinitionHandle(intOperand);
-            return SignatureDecoder.DecodeType(defHandle, provider, null).ToString();
+            return SignatureDecoder.DecodeType(defHandle, provider, 0).ToString();
         }
 
         private static CilInstruction CreateSwitchInstruction(ref BlobReader ilReader, int expectedSize, int ilOffset, OpCode opCode)
@@ -460,12 +459,12 @@ namespace System.Reflection.Metadata.Cil.Decoder
             if (IsTypeSpecification(parentToken))
             {
                 var typeSpecificationHandle = MetadataTokens.TypeSpecificationHandle(parentToken);
-                type = SignatureDecoder.DecodeType(typeSpecificationHandle, provider, null).ToString();
+                type = SignatureDecoder.DecodeType(typeSpecificationHandle, provider, 0).ToString();
             }
             else
             {
                 var parentHandle = MetadataTokens.TypeReferenceHandle(parentToken);
-                type = SignatureDecoder.DecodeType(parentHandle, provider, null).ToString(false);
+                type = SignatureDecoder.DecodeType(parentHandle, provider, 0).ToString(false);
             }
             string signatureValue;
             string parameters = string.Empty;
@@ -500,8 +499,8 @@ namespace System.Reflection.Metadata.Cil.Decoder
             MethodSignature<CilType> signature = SignatureDecoder.DecodeMethodSignature(definition.Signature, provider);
             var returnType = GetMethodReturnType(signature);
             var parameters = provider.GetParameterList(signature);
-            var parentType = SignatureDecoder.DecodeType(parent, provider, null);
-            return string.Format("{0} {1}::{2}{3}{4}",returnType, parentType.ToString(false), GetString(metadataReader, definition.Name), genericParameters, parameters);
+            var parentType = SignatureDecoder.DecodeType(parent, provider, 0);
+            return string.Format("{0} {1}::{2}{3}{4}", returnType, parentType.ToString(false), GetString(metadataReader, definition.Name), genericParameters, parameters);
         }
 
         private static string GetGenericParametersSignature(MethodSpecification methodSpec, CilTypeProvider provider)
@@ -535,7 +534,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             var handle = MetadataTokens.FieldDefinitionHandle(intOperand);
             var definition = metadataReader.GetFieldDefinition(handle);
             var typeHandle = definition.GetDeclaringType();
-            var typeSignature = SignatureDecoder.DecodeType(typeHandle, provider, null);
+            var typeSignature = SignatureDecoder.DecodeType(typeHandle, provider, 0);
             var signature = SignatureDecoder.DecodeFieldSignature(definition.Signature, provider);
             return String.Format("{0} {1}::{2}", signature.ToString(), typeSignature.ToString(false), GetString(metadataReader, definition.Name));
         }
@@ -560,7 +559,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             var handle = MetadataTokens.MethodDefinitionHandle(token);
             var definition = metadataReader.GetMethodDefinition(handle);
             var parent = definition.GetDeclaringType();
-            var parentType = SignatureDecoder.DecodeType(parent, provider, null);
+            var parentType = SignatureDecoder.DecodeType(parent, provider, 0);
             return string.Format("{0}::{1}", parentType.ToString(false), GetString(metadataReader, definition.Name));
         }
 

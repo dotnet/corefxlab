@@ -1,3 +1,0 @@
-cd ./Desktop
-put publish.zip
-quit

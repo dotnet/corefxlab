@@ -130,7 +130,7 @@ namespace System.Buffers.Benchmarks
         public void BufferWriterCopyPlaintext()
         {
             s_sink.Reset();
-            var writer = new SystemBuffers.BufferWriter<Sink>(s_sink);
+            var writer = new BufferWriterInternal<Sink>(s_sink);
 
             // HTTP 1.1 OK
             writer.Write(s_http11OK);
@@ -377,15 +377,15 @@ namespace PlatfromBenchmark
 }
 
 // copy from System.Buffers.ReaderWriter to isolate cross-dll calls.
-namespace SystemBuffers
+namespace System.Buffers
 {
-    public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
+    public ref partial struct BufferWriterInternal<T> where T : IBufferWriter<byte>
     {
         private T _output;
         private Span<byte> _span;
         private int _buffered;
 
-        public BufferWriter(T output)
+        public BufferWriterInternal(T output)
         {
             _buffered = 0;
             _output = output;

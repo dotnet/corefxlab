@@ -7,6 +7,8 @@ using System.Buffers;
 
 namespace System.Text.Http.Parser.Benchmarks
 {
+    [GenericTypeArguments(typeof(Request))]
+    [GenericTypeArguments(typeof(RequestStruct))]
     public class HttpParser<T> where T : IHttpHeadersHandler, IHttpRequestLineHandler, new()
     {
         private const string _plaintextTechEmpowerRequest =

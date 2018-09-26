@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
 using System.Buffers.Reader;
@@ -242,30 +243,32 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = BufferReader.Create(buffer);
-            var start = default(BufferReader);
+            var reader = new BufferReader<byte>(buffer);
+            var start = default(BufferReader<byte>);
             var done = false;
 
             try
             {
                 while (!reader.End)
                 {
-                    var span = reader.CurrentSegment;
-                    var remaining = span.Length - reader.CurrentSegmentIndex;
+                    var span = reader.CurrentSpan;
+                    var remaining = span.Length - reader.CurrentSpanIndex;
 
                     fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))
                     {
                         while (remaining > 0)
                         {
-                            var index = reader.CurrentSegmentIndex;
-                            int ch1;
-                            int ch2;
+                            var index = reader.CurrentSpanIndex;
+                            byte ch1;
+                            byte ch2;
+                            bool readSecond;
 
                             // Fast path, we're still looking at the same span
                             if (remaining >= 2)
                             {
                                 ch1 = pBuffer[index];
                                 ch2 = pBuffer[index + 1];
+                                readSecond = true;
                             }
                             else
                             {
@@ -274,14 +277,14 @@ namespace System.Text.Http.Parser
                                 start = reader;
 
                                 // Possibly split across spans
-                                ch1 = reader.Read();
-                                ch2 = reader.Read();
+                                reader.TryRead(out ch1);
+                                readSecond = reader.TryRead(out ch2);
                             }
 
                             if (ch1 == ByteCR)
                             {
                                 // Check for final CRLF.
-                                if (ch2 == -1)
+                                if (!readSecond)
                                 {
                                     // Reset the reader so we don't consume anything
                                     reader = start;
@@ -291,7 +294,7 @@ namespace System.Text.Http.Parser
                                 {
                                     // If we got 2 bytes from the span directly so skip ahead 2 so that
                                     // the reader's state matches what we expect
-                                    if (index == reader.CurrentSegmentIndex)
+                                    if (index == reader.CurrentSpanIndex)
                                     {
                                         reader.Advance(2);
                                     }
@@ -306,10 +309,10 @@ namespace System.Text.Http.Parser
 
                             // We moved the reader so look ahead 2 bytes so reset both the reader
                             // and the index
-                            if (index != reader.CurrentSegmentIndex)
+                            if (index != reader.CurrentSpanIndex)
                             {
                                 reader = start;
-                                index = reader.CurrentSegmentIndex;
+                                index = reader.CurrentSpanIndex;
                             }
 
                             var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
@@ -362,7 +365,7 @@ namespace System.Text.Http.Parser
             finally
             {
                 consumed = reader.Position;
-                consumedBytes = reader.ConsumedBytes;
+                consumedBytes = (int)reader.Consumed;
 
                 if (done)
                 {

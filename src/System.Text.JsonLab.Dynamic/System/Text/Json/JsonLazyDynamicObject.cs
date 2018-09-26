@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Dynamic;
 using System.Text.Utf8;
@@ -19,7 +20,7 @@ namespace System.Text.JsonLab
 
         public static JsonLazyDynamicObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            var dom = JsonObject.Parse(utf8Json);
+            JsonObject dom = JsonObject.Parse(utf8Json);
             var result = new JsonLazyDynamicObject(dom);
             return result;
         }
@@ -31,7 +32,7 @@ namespace System.Text.JsonLab
                 value = default;
                 return false;
             }
-            if (jsonObject.Type != JsonObject.JsonValueType.Number)
+            if (jsonObject.Type != JsonValueType.Number)
             {
                 throw new InvalidOperationException();
             }
@@ -46,7 +47,7 @@ namespace System.Text.JsonLab
                 value = default;
                 return false;
             }
-            if (jsonObject.Type != JsonObject.JsonValueType.String) {
+            if (jsonObject.Type != JsonValueType.String) {
                 throw new InvalidOperationException();
             }
             value = (Utf8Span)jsonObject;
@@ -62,25 +63,25 @@ namespace System.Text.JsonLab
             }
 
             switch (jsonObject.Type) {
-                case JsonObject.JsonValueType.Number:
+                case JsonValueType.Number:
                     result = (object)(int)jsonObject;
                     break;
-                case JsonObject.JsonValueType.True:
+                case JsonValueType.True:
                     result = (object)true;
                     break;
-                case JsonObject.JsonValueType.False:
+                case JsonValueType.False:
                     result = (object)false;
                     break;
-                case JsonObject.JsonValueType.Null:
+                case JsonValueType.Null:
                     result = null;
                     break;
-                case JsonObject.JsonValueType.String:
+                case JsonValueType.String:
                     result = (string)jsonObject;
                     break;
-                case JsonObject.JsonValueType.Object:
+                case JsonValueType.Object:
                     result = new JsonLazyDynamicObject(jsonObject);
                     break;
-                case JsonObject.JsonValueType.Array:
+                case JsonValueType.Array:
                     result = new JsonLazyDynamicObject(jsonObject);
                     break;
                 default:
@@ -104,29 +105,29 @@ namespace System.Text.JsonLab
 
             var index = (int)indexes[0];
 
-            if (_dom.Type == JsonObject.JsonValueType.Array) {
+            if (_dom.Type == JsonValueType.Array) {
                 var resultObject = _dom[index];
 
                 switch (resultObject.Type) {
-                    case JsonObject.JsonValueType.Number:
+                    case JsonValueType.Number:
                         result = (object)(int)resultObject;
                         break;
-                    case JsonObject.JsonValueType.True:
+                    case JsonValueType.True:
                         result = (object)true;
                         break;
-                    case JsonObject.JsonValueType.False:
+                    case JsonValueType.False:
                         result = (object)false;
                         break;
-                    case JsonObject.JsonValueType.Null:
+                    case JsonValueType.Null:
                         result = null;
                         break;
-                    case JsonObject.JsonValueType.String:
+                    case JsonValueType.String:
                         result = (string)resultObject;
                         break;
-                    case JsonObject.JsonValueType.Object:
+                    case JsonValueType.Object:
                         result = new JsonLazyDynamicObject(resultObject);
                         break;
-                    case JsonObject.JsonValueType.Array:
+                    case JsonValueType.Array:
                         result = new JsonLazyDynamicObject(resultObject);
                         break;
                     default:

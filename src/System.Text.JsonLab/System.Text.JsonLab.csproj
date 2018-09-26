@@ -5,7 +5,6 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
-    <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>

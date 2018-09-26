@@ -17,7 +17,7 @@ namespace System.Text.JsonLab.Tests
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: false);
+            var json = new Utf8JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -25,7 +25,7 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
 
             formatter.Clear();
-            json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: true);
+            json = new Utf8JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: true);
             Write(ref json);
 
             formatted = formatter.Formatted;
@@ -35,8 +35,10 @@ namespace System.Text.JsonLab.Tests
 
         static readonly string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
 
-        static void Write(ref JsonWriter<ArrayFormatterWrapper> json)
+        static void Write(ref Utf8JsonWriter<ArrayFormatterWrapper> json)
         {
+            int[] values = { 425121, -425122, 425123 };
+            byte[] valueString = Encoding.UTF8.GetBytes("values");
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
             json.WriteAttribute("first", "John");
@@ -51,11 +53,7 @@ namespace System.Text.JsonLab.Tests
             json.WriteAttribute("city", "Redmond");
             json.WriteAttribute("zip", 98052);
             json.WriteObjectEnd();
-            json.WriteArrayStart("values");
-            json.WriteValue(425121);
-            json.WriteValue(-425122);
-            json.WriteValue(425123);
-            json.WriteArrayEnd();
+            json.WriteArrayUtf8(valueString, values);
             json.WriteObjectEnd();
             json.Flush();
         }
@@ -68,7 +66,7 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: true);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
@@ -87,15 +85,15 @@ namespace System.Text.JsonLab.Tests
         public void WriteBasicJsonUtf8(bool prettyPrint)
         {
             int[] data = GetData(ExtraArraySize, 42, -10000, 10000);
-
+            byte[] ExtraArray = Encoding.UTF8.GetBytes("ExtraArray");
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: true, data);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
-            jsonUtf8.WriteAttribute("first", "John");
+            jsonUtf8.WriteAttribute("first", null);
             jsonUtf8.WriteAttribute("last", "Smith");
             jsonUtf8.WriteArrayStart("phoneNumbers");
             jsonUtf8.WriteValue("425-000-1212");
@@ -108,12 +106,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteObjectEnd();
 
             // Add a large array of values
-            jsonUtf8.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < ExtraArraySize; i++)
-            {
-                jsonUtf8.WriteValue(data[i]);
-            }
-            jsonUtf8.WriteArrayEnd();
+            jsonUtf8.WriteArrayUtf8(ExtraArray, data);
 
             jsonUtf8.WriteObjectEnd();
             jsonUtf8.Flush();
@@ -181,7 +174,7 @@ namespace System.Text.JsonLab.Tests
             json.WritePropertyName("age");
             json.WriteValue(42);
             json.WritePropertyName("first");
-            json.WriteValue("John");
+            json.WriteValue((string)null);
             json.WritePropertyName("last");
             json.WriteValue("Smith");
             json.WritePropertyName("phoneNumbers");

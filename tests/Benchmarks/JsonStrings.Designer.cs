@@ -142,6 +142,87 @@ namespace Benchmarks {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;runtimeTarget&quot;: {
+        ///    &quot;name&quot;: &quot;.NETCoreApp,Version=v2.2&quot;,
+        ///    &quot;signature&quot;: &quot;96b3a7d355de094922eacd5950627ebb97271704&quot;
+        ///  },
+        ///  &quot;compilationOptions&quot;: {},
+        ///  &quot;targets&quot;: {
+        ///    &quot;.NETCoreApp,Version=v2.2&quot;: {
+        ///      &quot;Microsoft.AspNetCore.SignalR.Client.FunctionalTests/3.0.0-alpha1-t000&quot;: {
+        ///        &quot;dependencies&quot;: {
+        ///          &quot;Internal.AspNetCore.Sdk&quot;: &quot;3.0.0-alpha1-10015&quot;,
+        ///          &quot;Microsoft.AspNetCore.Authentication.JwtBearer&quot;: &quot;3.0.0-alpha1-10173&quot;,
+        ///          &quot;Microsoft.AspNetCore.Diagnostics&quot;: &quot;3 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DepsJsonSignalR {
+            get {
+                return ResourceManager.GetString("DepsJsonSignalR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;runtimeTarget&quot;: {
+        ///    &quot;name&quot;: &quot;.NETCoreApp,Version=v2.2&quot;,
+        ///    &quot;signature&quot;: &quot;18b95eb80d620ad20091a8feff5613f1824ca580&quot;
+        ///  },
+        ///  &quot;compilationOptions&quot;: {
+        ///    &quot;defines&quot;: [
+        ///      &quot;TRACE&quot;,
+        ///      &quot;DEBUG&quot;,
+        ///      &quot;NETCOREAPP&quot;,
+        ///      &quot;NETCOREAPP2_2&quot;
+        ///    ],
+        ///    &quot;languageVersion&quot;: &quot;latest&quot;,
+        ///    &quot;platform&quot;: &quot;&quot;,
+        ///    &quot;allowUnsafe&quot;: false,
+        ///    &quot;warningsAsErrors&quot;: true,
+        ///    &quot;optimize&quot;: false,
+        ///    &quot;keyFile&quot;: &quot;E:\\GitHub\\Fork\\SignalR\\build\\Key.snk&quot;,
+        ///    &quot;emitEntryPoint&quot;: true,
+        ///    &quot;xmlDoc&quot;: false,
+        ///  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DepsJsonWeather {
+            get {
+                return ResourceManager.GetString("DepsJsonWeather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;runtimeTarget&quot;: {
+        ///    &quot;name&quot;: &quot;.NETCoreApp,Version=v2.2&quot;,
+        ///    &quot;signature&quot;: &quot;da39a3ee5e6b4b0d3255bfef95601890afd80709&quot;
+        ///  },
+        ///  &quot;compilationOptions&quot;: {},
+        ///  &quot;targets&quot;: {
+        ///    &quot;.NETCoreApp,Version=v2.2&quot;: {
+        ///      &quot;WebSocketSample/3.0.0-alpha1-t000&quot;: {
+        ///        &quot;runtime&quot;: {
+        ///          &quot;WebSocketSample.dll&quot;: {}
+        ///        }
+        ///      }
+        ///    }
+        ///  },
+        ///  &quot;libraries&quot;: {
+        ///    &quot;WebSocketSample/3.0.0-alpha1-t000&quot;: {
+        ///      &quot;type&quot;: &quot;project&quot;,
+        ///      &quot;serviceable&quot;: false,
+        ///      &quot;sha512&quot;: &quot;&quot;
+        ///    }
+        ///  }
+        ///}.
+        /// </summary>
+        internal static string DepsJsonWebSockets {
+            get {
+                return ResourceManager.GetString("DepsJsonWebSockets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;age&quot;:30,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Smith&quot;,&quot;phoneNumbers&quot;:[&quot;425-000-1212&quot;,&quot;425-000-1213&quot;],&quot;address&quot;:{&quot;street&quot;:&quot;1MicrosoftWay&quot;,&quot;city&quot;:&quot;Redmond&quot;,&quot;zip&quot;:98052},&quot;IDs&quot;:[425,-70,9223372036854776000],&quot;arrayWithObjects&quot;:[&quot;text&quot;,14,[],null,false,{},{&quot;time&quot;:24},[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;]],&quot;boolean&quot;:false,&quot;null&quot;:null,&quot;objectName&quot;:{&quot;group&quot;:{&quot;array&quot;:[false],&quot;field&quot;:&quot;simple&quot;,&quot;anotherFieldNum&quot;:5,&quot;anotherFieldBool&quot;:true,&quot;lastField&quot;:null}},&quot;emptyObject&quot;:{}}.
         /// </summary>
         internal static string FullSchema1 {
@@ -174,6 +255,30 @@ namespace Benchmarks {
         internal static string HelloWorld {
             get {
                 return ResourceManager.GetString("HelloWorld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671ebcfd88de5e8dac53641&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,951.98&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 36,
+        ///    &quot;email&quot;: &quot;clementsvillarreal@daycore.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (882) 479-2331&quot;,
+        ///    &quot;address&quot;: &quot;488 Grand Street, Hackneyville, Vermont, 5344&quot;,
+        ///    &quot;registered&quot;: &quot;2015-04-12T05:27:22 +07:00&quot;,
+        ///    &quot;latitude&quot;: -57.256693,
+        ///    &quot;longitude&quot;: 49.961028
+        ///  }
+        ///].
+        /// </summary>
+        internal static string Json400B {
+            get {
+                return ResourceManager.GetString("Json400B", resourceCulture);
             }
         }
         
@@ -249,39 +354,6 @@ namespace Benchmarks {
         internal static string Json4KB {
             get {
                 return ResourceManager.GetString("Json4KB", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [
-        ///  {
-        ///    &quot;_id&quot;: &quot;5671ebcfd88de5e8dac53641&quot;,
-        ///    &quot;index&quot;: 0,
-        ///    &quot;isActive&quot;: true,
-        ///    &quot;balance&quot;: &quot;$3,951.98&quot;,
-        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
-        ///    &quot;age&quot;: 36,
-        ///    &quot;email&quot;: &quot;clementsvillarreal@daycore.com&quot;,
-        ///    &quot;phone&quot;: &quot;+1 (882) 479-2331&quot;,
-        ///    &quot;address&quot;: &quot;488 Grand Street, Hackneyville, Vermont, 5344&quot;,
-        ///    &quot;registered&quot;: &quot;2015-04-12T05:27:22 +07:00&quot;,
-        ///    &quot;latitude&quot;: -57.256693,
-        ///    &quot;longitude&quot;: 49.961028
-        ///  }
-        ///].
-        /// </summary>
-        internal static string Json400B {
-            get {
-                return ResourceManager.GetString("Json400B", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {&quot;+testZero+&quot; : 0,&quot;+testSmallNum+&quot; : 0.1,&quot;+testeZero+&quot; : 0.1e0,&quot;+testENegtiveWithZero+&quot; : 0E-1,&quot;+testeNegativeWithInt+&quot; : 2155e-5,&quot;+testEPositiveWithDecimal+&quot; : 2152.1541E+2,&quot;+testePositiveWithLargeInt+&quot; : 18446744073709551615E109,&quot;+testeNegativeWithLargeDecimal+&quot; : 125125612512512.512512e-0123,&quot;-testZero-&quot; : -0,&quot;-testSmallNum-&quot; : -0.1,&quot;-testeZero-&quot; : -0.1e0,&quot;-testENegtiveWithZero-&quot; : -0E-1,&quot;-testeNegativeWithInt-&quot; : -2155e-5,&quot;-testEPositiveWithDecimal-&quot; : -2152.1541E+2,&quot;-testePositiveWithLargeInt-&quot; :-18446 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string SpecialNumForm {
-            get {
-                return ResourceManager.GetString("SpecialNumForm", resourceCulture);
             }
         }
         
@@ -380,6 +452,15 @@ namespace Benchmarks {
         internal static string ProjectLockJson {
             get {
                 return ResourceManager.GetString("ProjectLockJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;+testZero+&quot; : 0,&quot;+testSmallNum+&quot; : 0.1,&quot;+testeZero+&quot; : 0.1e0,&quot;+testENegtiveWithZero+&quot; : 0E-1,&quot;+testeNegativeWithInt+&quot; : 2155e-5,&quot;+testEPositiveWithDecimal+&quot; : 2152.1541E+2,&quot;+testePositiveWithLargeInt+&quot; : 18446744073709551615E109,&quot;+testeNegativeWithLargeDecimal+&quot; : 125125612512512.512512e-0123,&quot;-testZero-&quot; : -0,&quot;-testSmallNum-&quot; : -0.1,&quot;-testeZero-&quot; : -0.1e0,&quot;-testENegtiveWithZero-&quot; : -0E-1,&quot;-testeNegativeWithInt-&quot; : -2155e-5,&quot;-testEPositiveWithDecimal-&quot; : -2152.1541E+2,&quot;-testePositiveWithLargeInt-&quot; :-18446 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SpecialNumForm {
+            get {
+                return ResourceManager.GetString("SpecialNumForm", resourceCulture);
             }
         }
     }

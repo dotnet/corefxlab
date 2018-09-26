@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
 using System.Text;
@@ -46,9 +47,21 @@ namespace System.Buffers.Tests
 
         public static ReadOnlySequence<byte> Create(params byte[][] buffers)
         {
-            if (buffers.Length == 1) return new ReadOnlySequence<byte>(buffers[0]);
+            if (buffers.Length == 1)
+                return new ReadOnlySequence<byte>(buffers[0]);
             var list = new List<Memory<byte>>();
-            foreach (var b in buffers) list.Add(b);
+            foreach (var buffer in buffers)
+                list.Add(buffer);
+            return Create(list.ToArray());
+        }
+
+        public static ReadOnlySequence<byte> CreateUtf8(params string[] buffers)
+        {
+            if (buffers.Length == 1)
+                return new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(buffers[0]));
+            var list = new List<Memory<byte>>();
+            foreach (var buffer in buffers)
+                list.Add(Encoding.UTF8.GetBytes(buffer));
             return Create(list.ToArray());
         }
 

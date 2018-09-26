@@ -142,6 +142,27 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;runtimeTarget&quot;: {
+        ///    &quot;name&quot;: &quot;.NETCoreApp,Version=v2.2&quot;,
+        ///    &quot;signature&quot;: &quot;96b3a7d355de094922eacd5950627ebb97271704&quot;
+        ///  },
+        ///  &quot;compilationOptions&quot;: {},
+        ///  &quot;targets&quot;: {
+        ///    &quot;.NETCoreApp,Version=v2.2&quot;: {
+        ///      &quot;Microsoft.AspNetCore.SignalR.Client.FunctionalTests/3.0.0-alpha1-t000&quot;: {
+        ///        &quot;dependencies&quot;: {
+        ///          &quot;Internal.AspNetCore.Sdk&quot;: &quot;3.0.0-alpha1-10015&quot;,
+        ///          &quot;Microsoft.AspNetCore.Authentication.JwtBearer&quot;: &quot;3.0.0-alpha1-10173&quot;,
+        ///          &quot;Microsoft.AspNetCore.Diagnostics&quot;: &quot;3 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DepsJsonSignalR {
+            get {
+                return ResourceManager.GetString("DepsJsonSignalR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;age&quot;:30,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Smith&quot;,&quot;phoneNumbers&quot;:[&quot;425-000-1212&quot;,&quot;425-000-1213&quot;],&quot;address&quot;:{&quot;street&quot;:&quot;1 Microsoft Way&quot;,&quot;city&quot;:&quot;Redmond&quot;,&quot;zip&quot;:98052}}.
         /// </summary>
         internal static string ExpectedBasicJson {

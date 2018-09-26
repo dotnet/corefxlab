@@ -5,7 +5,7 @@
 using System.Text.Utf8;
 using BenchmarkDotNet.Attributes;
 
-namespace System.Text.Primitves.Benchmarks
+namespace System.Text.Primitives.Benchmarks
 {
     public class AsciiDecoding
     {

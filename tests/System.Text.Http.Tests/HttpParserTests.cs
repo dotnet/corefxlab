@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Testing;
+using System.Buffers.Tests;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -308,7 +309,7 @@ namespace System.Text.Http.Parser.Tests
         {
             HttpParser parser = new HttpParser();
 
-            ReadOnlySequence<byte> buffer = BufferUtilities.CreateBuffer("GET ", "/");
+            ReadOnlySequence<byte> buffer = BufferUtilities.CreateUtf8Buffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
             bool result = parser.ParseRequestLine(requestHandler, buffer, out SequencePosition consumed, out SequencePosition examined);

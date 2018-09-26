@@ -1,51 +1,54 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using Benchmarks;
-using System.Buffers.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    // Keep the JsonStrings resource names in sync with TestCaseType enum values.
-    public enum TestCaseType
-    {
-        HelloWorld,
-        BasicJson,
-        BasicLargeNum,
-        SpecialNumForm,
-        ProjectLockJson,
-        FullSchema1,
-        FullSchema2,
-        DeepTree,
-        BroadTree,
-        LotsOfNumbers,
-        LotsOfStrings,
-        Json400B,
-        Json4KB,
-        Json40KB,
-        Json400KB
-    }
-
-    // Since there are 120 tests here (4 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    [SimpleJob(-1, 3, 5, 1024)]
+    // Since there are 240 tests here (8 * 2 * 15), setting low values for the warmupCount and targetCount
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
+        // Keep the JsonStrings resource names in sync with TestCaseType enum values.
+        public enum TestCaseType
+        {
+            HelloWorld,
+            BasicJson,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
+            Json400KB
+        }
+
         private string _jsonString;
         private byte[] _dataUtf8;
-        private byte[] _dataUtf16;
+        private ReadOnlySequence<byte> _sequence;
+        private ReadOnlySequence<byte> _sequenceSingle;
         private MemoryStream _stream;
         private StreamReader _reader;
 
-        [Params(true, false)]
-        public bool IsUTF8Encoded;
-
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
+
+        [Params(true, false)]
+        public bool IsDataCompact;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
 
@@ -53,74 +56,52 @@ namespace System.Text.JsonLab.Benchmarks
         public void Setup()
         {
             _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
-            if (IsUTF8Encoded)
+
+            // Remove all formatting/indendation
+            if (IsDataCompact)
             {
-                _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
-                _stream = new MemoryStream(_dataUtf8);
-                _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
+                using (var jsonReader = new JsonTextReader(new StringReader(_jsonString)))
+                {
+                    JToken obj = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (var jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        obj.WriteTo(jsonWriter);
+                        _jsonString = stringWriter.ToString();
+                    }
+                }
             }
-            else
-            {
-                _dataUtf16 = Encoding.Unicode.GetBytes(_jsonString);
-            }
+
+            _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
+
+            ReadOnlyMemory<byte> dataMemory = _dataUtf8;
+            _sequenceSingle = new ReadOnlySequence<byte>(dataMemory);
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, _dataUtf8.Length / 2));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(_dataUtf8.Length / 2);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+            _sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+            _stream = new MemoryStream(_dataUtf8);
+            _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
         [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
-            TextReader reader;
-            if (IsUTF8Encoded)
-            {
-                _stream.Seek(0, SeekOrigin.Begin);
-                reader = _reader;
-            }
-            else
-            {
-                reader = new StringReader(_jsonString);
-            }
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            _stream.Seek(0, SeekOrigin.Begin);
+            TextReader reader = _reader;
+            var json = new JsonTextReader(reader);
             while (json.Read()) ;
         }
 
         [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
-            TextReader reader;
-            if (IsUTF8Encoded)
-            {
-                _stream.Seek(0, SeekOrigin.Begin);
-                reader = _reader;
-            }
-            else
-            {
-                reader = new StringReader(_jsonString);
-            }
+            _stream.Seek(0, SeekOrigin.Begin);
+            TextReader reader = _reader;
 
-            return NewtonsoftReturnStringHelper(reader);
-        }
-
-        [Benchmark]
-        public void ReaderSystemTextJsonLabEmptyLoop()
-        {
-            JsonReader json = IsUTF8Encoded ?
-                new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8) :
-                new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
-
-            while (json.Read()) ;
-        }
-
-        [Benchmark]
-        public byte[] ReaderSystemTextJsonLabReturnBytes()
-        {
-            return IsUTF8Encoded ?
-                    JsonLabReturnBytesHelper(_dataUtf8, SymbolTable.InvariantUtf8) :
-                    JsonLabReturnBytesHelper(_dataUtf16, SymbolTable.InvariantUtf16, 2);
-        }
-
-        private string NewtonsoftReturnStringHelper(TextReader reader)
-        {
-            StringBuilder sb = new StringBuilder();
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            var sb = new StringBuilder();
+            var json = new JsonTextReader(reader);
             while (json.Read())
             {
                 if (json.Value != null)
@@ -132,12 +113,34 @@ namespace System.Text.JsonLab.Benchmarks
             return sb.ToString();
         }
 
-        private byte[] JsonLabReturnBytesHelper(byte[] data, SymbolTable symbolTable, int utf16Multiplier = 1)
+        [Benchmark]
+        public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
-            byte[] outputArray = new byte[data.Length];
+            var json = new Utf8JsonReader(_dataUtf8);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
+        {
+            var json = new Utf8JsonReader(_sequenceSingle);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
+        {
+            var json = new Utf8JsonReader(_sequence);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public byte[] ReaderSystemTextJsonLabReturnBytes()
+        {
+            var outputArray = new byte[_dataUtf8.Length * 2];
 
             Span<byte> destination = outputArray;
-            var json = new JsonReader(data, symbolTable);
+            var json = new Utf8JsonReader(_dataUtf8);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -147,8 +150,8 @@ namespace System.Text.JsonLab.Benchmarks
                     case JsonTokenType.PropertyName:
                         valueSpan.CopyTo(destination);
                         destination[valueSpan.Length] = (byte)',';
-                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
-                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
                         break;
                     case JsonTokenType.Value:
                         var valueType = json.ValueType;
@@ -157,31 +160,104 @@ namespace System.Text.JsonLab.Benchmarks
                         {
                             case JsonValueType.True:
                                 destination[0] = (byte)'T';
-                                destination[1 * utf16Multiplier] = (byte)'r';
-                                destination[2 * utf16Multiplier] = (byte)'u';
-                                destination[3 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(4 * utf16Multiplier);
+                                destination[1] = (byte)'r';
+                                destination[2] = (byte)'u';
+                                destination[3] = (byte)'e';
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
                                 break;
                             case JsonValueType.False:
                                 destination[0] = (byte)'F';
-                                destination[1 * utf16Multiplier] = (byte)'a';
-                                destination[2 * utf16Multiplier] = (byte)'l';
-                                destination[3 * utf16Multiplier] = (byte)'s';
-                                destination[4 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(5 * utf16Multiplier);
+                                destination[1] = (byte)'a';
+                                destination[2] = (byte)'l';
+                                destination[3] = (byte)'s';
+                                destination[4] = (byte)'e';
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
+                                break;
+                            case JsonValueType.Number:
+                            case JsonValueType.String:
+                                valueSpan.CopyTo(destination);
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
+                                break;
+                            case JsonValueType.Null:
+                                // Special casing  Null so that it matches what JSON.NET does
                                 break;
                         }
-
-                        valueSpan.CopyTo(destination);
-                        destination[valueSpan.Length] = (byte)',';
-                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
-                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
                         break;
                     default:
                         break;
                 }
             }
             return outputArray;
+        }
+
+        [Benchmark]
+        public void ReaderUtf8JsonEmptyLoop()
+        {
+            var json = new Utf8Json.JsonReader(_dataUtf8);
+
+            while (json.GetCurrentJsonToken() != Utf8Json.JsonToken.None)
+            {
+                json.ReadNext();
+            }
+        }
+
+        [Benchmark]
+        public byte[] ReaderUtf8JsonReturnBytes()
+        {
+            var json = new Utf8Json.JsonReader(_dataUtf8);
+
+            var outputArray = new byte[_dataUtf8.Length * 2];
+            Span<byte> destination = outputArray;
+
+            Utf8Json.JsonToken token = json.GetCurrentJsonToken();
+            while (token != Utf8Json.JsonToken.None)
+            {
+                json.ReadNext();
+                token = json.GetCurrentJsonToken();
+
+                switch (token)
+                {
+                    case Utf8Json.JsonToken.String:
+                    case Utf8Json.JsonToken.Number:
+                    case Utf8Json.JsonToken.True:
+                    case Utf8Json.JsonToken.False:
+                    case Utf8Json.JsonToken.Null:
+                        ReadOnlySpan<byte> valueSpan = json.ReadNextBlockSegment();
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return outputArray;
+        }
+    }
+
+    internal class BufferSegment<T> : ReadOnlySequenceSegment<T>
+    {
+        public BufferSegment(ReadOnlyMemory<T> memory)
+        {
+            Memory = memory;
+        }
+
+        public BufferSegment<T> Append(ReadOnlyMemory<T> memory)
+        {
+            var segment = new BufferSegment<T>(memory)
+            {
+                RunningIndex = RunningIndex + Memory.Length
+            };
+            Next = segment;
+            return segment;
         }
     }
 }

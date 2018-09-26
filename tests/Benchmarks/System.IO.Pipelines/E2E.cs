@@ -8,12 +8,9 @@ using System.Text;
 using System.Text.Formatting;
 using System.Text.JsonLab;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
-using BenchmarkDotNet.Engines;
 
 namespace System.IO.Pipelines.Benchmarks
 {
-    [SimpleJob(RunStrategy.Monitoring)] // the setting for benchmarks with not-steady state
     public class E2E
     {
         private static readonly byte[] s_genericRequest = Encoding.UTF8.GetBytes(_plaintextTechEmpowerRequest);
@@ -59,7 +56,7 @@ namespace System.IO.Pipelines.Benchmarks
                 formatter.Append("\r\n\r\n");
 
                 // write body
-                var writer = new JsonWriter<BufferWriterFormatter<PipeWriter>>(formatter);
+                var writer = new Utf8JsonWriter<BufferWriterFormatter<PipeWriter>>(formatter);
                 writer.WriteObjectStart();
                 writer.WriteAttribute("message", "Hello, World!");
                 writer.WriteObjectEnd();

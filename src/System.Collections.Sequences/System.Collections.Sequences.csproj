@@ -5,7 +5,6 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>collections, non-allocating, corefxlab</PackageTags>
-    <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />

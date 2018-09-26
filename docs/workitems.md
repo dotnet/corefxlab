@@ -97,7 +97,7 @@
 ## Other to think about
 
 * Refactor networking channels
-* Productize Base64 encoding
+* [done] Productize Base64 encoding
 * SLL
 * [done] Non-allocating compression
 * Built-in cultures

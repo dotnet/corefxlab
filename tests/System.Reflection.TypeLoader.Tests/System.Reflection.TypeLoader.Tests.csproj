@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- Even though the test assembly is targeting netcoreapp2.1, the System.Reflection.TypeLoader.dll we're building in corefxlab is
+         built against netstandard. As long as that's the case, you need to "#define netstandard" in the test project as well.
+         If you don't do that, the test project will assume it can invoke netcore-only Reflection apis on the Type objects it gets back
+         from the TypeLoader. But the configuration we're running (netstandard build of TypeLoader.dll running on CoreCLR) does not
+         permit that. Attempting to do so on such a combination will result in NotImplemented/NullReference exceptions and lots
+         of test failures.
+
+         All this confusion should get straightened out once the library moves to corefx. We're in this pickle here in corefxlab
+         because corefxlab does not support building for multiple target frameworks so we had to choose one.
+      -->
+    <DefineConstants>$(DefineConstants);netstandard</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
+    <PackageReference Include="xunit" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+  </ItemGroup>
+  <!-- Project references -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\System.Reflection.TypeLoader\System.Reflection.TypeLoader.csproj" />
+  </ItemGroup>
+</Project>

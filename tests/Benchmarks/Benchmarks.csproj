@@ -7,6 +7,7 @@
     <NoWarn>$(NoWarn);CS0618</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="BenchmarkDotNet.Artifacts\**" />
@@ -17,23 +18,29 @@
     <EmbeddedResource Include="System.Text.Primitives\SampleTexts\*.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\System.Buffers.Primitives.Tests\BufferSegment.cs" Link="System.Buffers\BufferSegment.cs" />
+    <Compile Include="..\System.Buffers.Primitives.Tests\BufferUtilities.cs" Link="System.Buffers\BufferUtilities.cs" />
+    <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="System.Buffers\SpanLiteralExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNetVersion)" />
     <PackageReference Include="System.Text.Encodings.Web" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Jil" Version="2.15.4" />
+    <PackageReference Include="Jil" Version="2.16.0" />
     <PackageReference Include="Utf8Json" Version="1.3.7" />
     <PackageReference Include="System.Text.Json" Version="2.0.0.11" />
-    <PackageReference Include="fastJSON" Version="2.1.29" />
+    <PackageReference Include="fastJSON" Version="2.1.34" />
     <PackageReference Include="jayrock-json" Version="0.9.16530.1" />
-    <PackageReference Include="LitJson" Version="0.12.0" />
+    <PackageReference Include="LitJson" Version="0.13.0" />
     <PackageReference Include="codetitans-json" Version="1.8.3" />
-    <PackageReference Include="Manatee.Json" Version="9.8.0" />
-    <PackageReference Include="SpanJson" Version="0.1.0-rc2-5" />
+    <PackageReference Include="Manatee.Json" Version="9.9.2" />
+    <PackageReference Include="SpanJson" Version="1.0.7" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
     <ProjectReference Include="..\..\src\System.Azure.Experimental\System.Azure.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
