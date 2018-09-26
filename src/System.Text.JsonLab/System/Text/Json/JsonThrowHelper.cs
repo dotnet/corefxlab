@@ -65,7 +65,12 @@ namespace System.Text.JsonLab
             return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
-        public static void ThrowJsonReaderException(ref Utf8JsonReader json)
+        public static void ThrowJsonReaderException(ref Instrumented.Utf8JsonReader json, string message)
+        {
+            throw new JsonReaderException(message, json._lineNumber, json._position);
+        }
+
+        public static void ThrowJsonReaderException(ref Utf8JsonReader json, string message = "")
         {
             GetJsonReaderException(ref json);
         }
