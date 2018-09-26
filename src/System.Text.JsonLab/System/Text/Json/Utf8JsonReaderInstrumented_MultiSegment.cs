@@ -17,7 +17,7 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonReader
     {
-        public Utf8JsonReader(in ReadOnlySequence<byte> data)
+        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock = true)
         {
             _reader = new BufferReader<byte>(data);
             _isSingleSegment = data.IsSingleSegment; //true;
@@ -33,6 +33,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _inObject = false;
+            _isFinalBlock = isFinalBlock;
 
 #if UseInstrumented
             _lineNumber = 1;
@@ -67,7 +68,8 @@ namespace System.Text.JsonLab
                 if ((uint)(first - '0') <= '9' - '0')
                 {
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
-                    Value = GetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray());
+                    TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
+                    Value = number;
                     ValueType = JsonValueType.Number;
                     reader.Advance(Value.Length);
                     CurrentIndex += Value.Length;
@@ -77,7 +79,8 @@ namespace System.Text.JsonLab
                     //TODO: Is this a valid check?
                     if (reader.End) JsonThrowHelper.ThrowJsonReaderException(ref this);
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
-                    Value = GetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray());
+                    TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
+                    Value = number;
                     ValueType = JsonValueType.Number;
                     reader.Advance(Value.Length);
                     CurrentIndex += Value.Length;
@@ -273,7 +276,7 @@ namespace System.Text.JsonLab
 
             Value = span;
             ValueType = JsonValueType.Number;
-            GetNumber(Value);
+            TryGetNumber(Value, out _);
         }
 
         private void ConsumeNull(ref BufferReader<byte> reader)

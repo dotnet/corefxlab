@@ -308,6 +308,81 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expectedStr, actualStr);
         }
 
+        //TODO: Add test using async to get more data
+        [Theory]
+        [InlineData("\"", 1)]
+        [InlineData("123", 0)]
+        [InlineData("nul", 0)]
+        [InlineData("tru", 0)]
+        [InlineData("fals", 0)]
+        [InlineData("{\"age\":", 7)]
+        [InlineData("{\"name\":\"Ahso", 9)]
+        [InlineData("-", 0)]
+        [InlineData("0.", 0)]
+        [InlineData("10.5e", 0)]
+        [InlineData("10.5e-", 0)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 21)]
+        [InlineData("{\"strings\":[\"abc\", \"def\"", 24)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 19)]
+        public static void PartialJson(string jsonString, int consumed)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8, false);
+
+            while (json.Read()) ;
+
+            Assert.Equal(consumed, json.CurrentIndex);
+        }
+
+        [Theory]
+        [InlineData("{]", 1, 1)]
+        [InlineData("[}", 1, 1)]
+        [InlineData("nulz", 1, 0)]
+        [InlineData("truz", 1, 0)]
+        [InlineData("falsz", 1, 0)]
+        [InlineData("\"age\":", 1, 6)]
+        [InlineData("12345.1.", 1, 0)]
+        [InlineData("-f", 1, 0)]
+        [InlineData("1.f", 1, 0)]
+        [InlineData("0.1f", 1, 0)]
+        [InlineData("0.1e1f", 1, 0)]
+        [InlineData("123,", 1, 3)]
+        [InlineData("01", 1, 0)]
+        [InlineData("-01", 1, 0)]
+        [InlineData("10.5e-0.2", 1, 0)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31)]
+        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7)]
+        [InlineData("{{}}", 1, 1)]
+        [InlineData("[[{{}}]]", 1, 3)]
+        [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 14)]
+        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
+        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        public static void InvalidJsonWhenPartial(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
+        {
+            //TODO: Test multi-segment json payload
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8, false)
+            {
+                MaxDepth = maxDepth
+            };
+
+            try
+            {
+                while (json.Read()) ;
+                Assert.True(false, "Expected JsonReaderException was not thrown.");
+            }
+            catch (JsonReaderException ex)
+            {
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
+            }
+        }
+
         [Theory]
         [InlineData("\"", 1, 1)]
         [InlineData("{]", 1, 1)]
@@ -316,6 +391,8 @@ namespace System.Text.JsonLab.Tests
         [InlineData("tru", 1, 0)]
         [InlineData("fals", 1, 0)]
         [InlineData("\"age\":", 1, 6)]
+        [InlineData("{\"age\":", 1, 7)]
+        [InlineData("{\"name\":\"Ahso", 1, 9)]
         [InlineData("12345.1.", 1, 0)]
         [InlineData("-", 1, 0)]
         [InlineData("-f", 1, 0)]
@@ -323,7 +400,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("0.", 1, 0)]
         [InlineData("0.1f", 1, 0)]
         [InlineData("0.1e1f", 1, 0)]
-        [InlineData("123,", 1, 4)]
+        [InlineData("123,", 1, 3)]
         [InlineData("01", 1, 0)]
         [InlineData("-01", 1, 0)]
         [InlineData("10.5e", 1, 0)]
@@ -334,6 +411,8 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{{}}", 1, 1)]
         [InlineData("[[{{}}]]", 1, 3)]
         [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 22)]
+        [InlineData("{\"strings\":[\"abc\", \"def\"", 1, 24)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
         [InlineData("{\"age\":30, \"name\":\"test}", 1, 19)]
         [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]

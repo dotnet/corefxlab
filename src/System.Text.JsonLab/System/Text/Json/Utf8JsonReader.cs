@@ -268,7 +268,24 @@ namespace System.Text.JsonLab
             }
             else
             {
-                return ConsumeValue(first);
+                if ((uint)(first - '0') <= '9' - '0' || first == '-')
+                {
+                    if (ConsumeNumber())
+                    {
+                        if (CurrentIndex >= (uint)_buffer.Length)
+                            return true;
+#if UseInstrumented
+                        throw new JsonReaderException($"Invalid end of number. Last character read: '{(char)_buffer[CurrentIndex]}'. Expected a single number only.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
+                    }
+                    return false;
+                }
+                else
+                {
+                    return ConsumeValue(first);
+                }
             }
             return true;
         }
@@ -278,7 +295,18 @@ namespace System.Text.JsonLab
             bool retVal = false;
 
             if (CurrentIndex >= (uint)_buffer.Length)
+            {
+                if (_isFinalBlock)
+                {
+                    if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
+                }
                 goto Done;
+            }
 
             byte first = _buffer[CurrentIndex];
 
@@ -286,7 +314,18 @@ namespace System.Text.JsonLab
             {
                 SkipWhiteSpace();
                 if (CurrentIndex >= (uint)_buffer.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+#if UseInstrumented
+                            throw new JsonReaderException($"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.", _lineNumber, _position);
+#else
+                            JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
+                    }
                     goto Done;
+                }
                 first = _buffer[CurrentIndex];
             }
 
@@ -543,7 +582,6 @@ namespace System.Text.JsonLab
                 }
             Throw:
 #if UseInstrumented
-                ReadOnlySpan<byte> span = _buffer.Slice(CurrentIndex);
                 int length = Math.Min(JsonConstants.NullValue.Length, span.Length);
                 string message = "Expected a 'null' value, instead we get '";
                 for (int i = 0; i < length; i++)
@@ -592,7 +630,6 @@ namespace System.Text.JsonLab
                 }
             Throw:
 #if UseInstrumented
-                ReadOnlySpan<byte> span = _buffer.Slice(CurrentIndex);
                 int length = Math.Min(JsonConstants.FalseValue.Length, span.Length);
                 string message = "Expected a 'false' value, instead we get '";
                 for (int i = 0; i < length; i++)
@@ -639,7 +676,6 @@ namespace System.Text.JsonLab
                 }
             Throw:
 #if UseInstrumented
-                ReadOnlySpan<byte> span = _buffer.Slice(CurrentIndex);
                 int length = Math.Min(JsonConstants.TrueValue.Length, span.Length);
                 string message = "Expected a 'true' value, instead we get '";
                 for (int i = 0; i < length; i++)
