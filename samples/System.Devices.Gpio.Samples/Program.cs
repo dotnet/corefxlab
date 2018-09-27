@@ -16,7 +16,8 @@ namespace System.Devices.Gpio.Samples
             Unknown,
             RaspberryPi = 1,
             Odroid = 2,
-            Hummingboard = 3
+            Hummingboard = 3,
+            RaspberryPiOnWindows = 4,
         }
 
         private enum RaspberryPiSettings
@@ -44,6 +45,15 @@ namespace System.Devices.Gpio.Samples
             SpiBusId = 1,
             SpiChipSelectLine = 68,
             I2cBusId = 2
+        }
+
+        private enum RaspberryPiOnWindowsSettings
+        {
+            Led = 47,  // Green LED on RPi2 only (not 3 or above)
+            Button = 18,
+            SpiBusId = 0,
+            SpiChipSelectLine = 8,
+            I2cBusId = 1
         }
 
         private static int s_ledPinNumber;
@@ -96,6 +106,14 @@ namespace System.Devices.Gpio.Samples
                         s_spiBusId = (uint)HummingboardSettings.SpiBusId;
                         s_chipSelectLinePinNumber = (int)HummingboardSettings.SpiChipSelectLine;
                         s_i2cBusId = (uint)HummingboardSettings.I2cBusId;
+                        break;
+
+                    case DeviceKind.RaspberryPiOnWindows:
+                        s_ledPinNumber = (int)RaspberryPiOnWindowsSettings.Led;
+                        s_buttonPinNumber = (int)RaspberryPiOnWindowsSettings.Button;
+                        s_spiBusId = (uint)RaspberryPiOnWindowsSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)RaspberryPiOnWindowsSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)RaspberryPiOnWindowsSettings.I2cBusId;
                         break;
 
                     default:
@@ -234,6 +252,19 @@ namespace System.Devices.Gpio.Samples
                         AzureIoTReceiveCommands();
                         break;
 
+                    case 36:
+                        RaspberryPiOnWindows_BlinkingLed();
+                        break;
+                    case 37:
+                        RaspberryPiOnWindows_ButtonLed();
+                        break;
+                    case 38:
+                        RaspberryPiOnWindowsDriver_BlinkingLed();
+                        break;
+                    case 39:
+                        RaspberryPiOnWindowsDriver_ButtonLed();
+                        break;
+
                     default:
                         Console.WriteLine("Unknown sample");
                         ShowUsage();
@@ -260,6 +291,7 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"        {(int)DeviceKind.RaspberryPi } -> {nameof(DeviceKind.RaspberryPi)}");
             Console.WriteLine($"        {(int)DeviceKind.Odroid      } -> {nameof(DeviceKind.Odroid)}");
             Console.WriteLine($"        {(int)DeviceKind.Hummingboard} -> {nameof(DeviceKind.Hummingboard)}");
+            Console.WriteLine($"        {(int)DeviceKind.RaspberryPiOnWindows} -> {nameof(DeviceKind.RaspberryPiOnWindows)}");
             Console.WriteLine();
             Console.WriteLine("       and <sample> can be any of the following options:");
             Console.WriteLine();
@@ -318,6 +350,12 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       33 -> {nameof(AzureIoTSendData)}");
             Console.WriteLine($"       34 -> {nameof(AzureIoTSendCommands)}");
             Console.WriteLine($"       35 -> {nameof(AzureIoTReceiveCommands)}");
+            Console.WriteLine();
+            Console.WriteLine($"       36 -> {nameof(RaspberryPiOnWindows_BlinkingLed)}");
+            Console.WriteLine($"       37 -> {nameof(RaspberryPiOnWindows_ButtonLed)}");
+            Console.WriteLine($"       38 -> {nameof(RaspberryPiOnWindowsDriver_BlinkingLed)}");
+            Console.WriteLine($"       39 -> {nameof(RaspberryPiOnWindowsDriver_ButtonLed)}");
+
             Console.WriteLine();
         }
 
@@ -1167,6 +1205,30 @@ namespace System.Devices.Gpio.Samples
 
             var sample = new AzureIoTSample();
             sample.StartReceivingCommands();
+        }
+
+        private static void RaspberryPiOnWindows_BlinkingLed()
+        {
+            Console.WriteLine(nameof(RaspberryPiOnWindows_BlinkingLed));
+            BlinkingLed(new Windows10Driver());
+        }
+
+        private static void RaspberryPiOnWindows_ButtonLed()
+        {
+            Console.WriteLine(nameof(RaspberryPiOnWindows_BlinkingLed));
+            ButtonLed(new Windows10Driver());
+        }
+
+        private static void RaspberryPiOnWindowsDriver_BlinkingLed()
+        {
+            Console.WriteLine(nameof(RaspberryPiOnWindowsDriver_BlinkingLed));
+            Driver_BlinkingLed(new Windows10Driver());
+        }
+
+        private static void RaspberryPiOnWindowsDriver_ButtonLed()
+        {
+            Console.WriteLine(nameof(RaspberryPiOnWindowsDriver_BlinkingLed));
+            Driver_ButtonLed(new Windows10Driver());
         }
     }
 }
