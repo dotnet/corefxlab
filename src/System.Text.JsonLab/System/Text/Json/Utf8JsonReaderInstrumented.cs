@@ -93,8 +93,8 @@ namespace System.Text.JsonLab
         internal bool NoMoreData => CurrentIndex >= (uint)_buffer.Length;
 
 #if UseInstrumented
-        internal int _lineNumber;
-        internal int _position;
+        private int _lineNumber;
+        private int _position;
 #endif
 
         /// <summary>
@@ -181,7 +181,11 @@ namespace System.Text.JsonLab
         {
             Depth++;
             if (Depth > MaxDepth)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Depth of {Depth} within an object is larger than max depth of {MaxDepth}");
+#if UseInstrumented
+                throw new JsonReaderException($"Depth of {Depth} within an object is larger than max depth of {MaxDepth}", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
 #if UseInstrumented
             _position++;
@@ -198,11 +202,16 @@ namespace System.Text.JsonLab
 
         private void EndObject()
         {
+#if UseInstrumented
             if (!_inObject)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"We are within an array but observed an '{(char)JsonConstants.CloseBrace}'");
+                throw new JsonReaderException($"We are within an array but observed an '{(char)JsonConstants.CloseBrace}'", _lineNumber, _position);
 
             if (Depth <= 0)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Mismatched number of start/end objects or arrays. Depth is {Depth} but must be greater than 0");
+                throw new JsonReaderException($"Mismatched number of start/end objects or arrays. Depth is {Depth} but must be greater than 0", _lineNumber, _position);
+#else
+            if (!_inObject || Depth <= 0)
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
             if (Depth <= StackFreeMaxDepth)
             {
@@ -222,7 +231,11 @@ namespace System.Text.JsonLab
         {
             Depth++;
             if (Depth > MaxDepth)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Depth of {Depth} within an array is larger than max depth of {MaxDepth}");
+#if UseInstrumented
+                throw new JsonReaderException($"Depth of {Depth} within an array is larger than max depth of {MaxDepth}", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
 #if UseInstrumented
             _position++;
@@ -239,11 +252,16 @@ namespace System.Text.JsonLab
 
         private void EndArray()
         {
+#if UseInstrumented
             if (_inObject)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"We are within an object but observed an '{(char)JsonConstants.CloseBracket}'");
+                throw new JsonReaderException($"We are within an object but observed an '{(char)JsonConstants.CloseBracket}'", _lineNumber, _position);
 
             if (Depth <= 0)
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Mismatched number of start/end objects or arrays. Depth is {Depth} but must be greater than 0");
+                throw new JsonReaderException($"Mismatched number of start/end objects or arrays. Depth is {Depth} but must be greater than 0", _lineNumber, _position);
+#else
+            if (_inObject || Depth <= 0)
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
             if (Depth <= StackFreeMaxDepth)
             {
@@ -293,7 +311,11 @@ namespace System.Text.JsonLab
                         TokenType = JsonTokenType.Value;
                         return true;
                     }
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected end of json after a single value but there is extra data within the payload. Last character read: '{(char)_buffer[CurrentIndex]}'.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Expected end of json after a single value but there is extra data within the payload. Last character read: '{(char)_buffer[CurrentIndex]}'.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
                 }
                 return false;
@@ -310,7 +332,11 @@ namespace System.Text.JsonLab
                 if (!_isSingleValue && _isFinalBlock)
                 {
                     if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
                 goto Done;
             }
@@ -325,7 +351,11 @@ namespace System.Text.JsonLab
                     if (_isFinalBlock)
                     {
                         if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                            JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.");
+#if UseInstrumented
+                            throw new JsonReaderException($"Expected valid end of json payload with TokenType either {JsonTokenType.EndArray} or {JsonTokenType.EndObject}. Current token type is '{TokenType}'.", _lineNumber, _position);
+#else
+                            JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     goto Done;
                 }
@@ -353,7 +383,11 @@ namespace System.Text.JsonLab
                 else
                 {
                     if (first != JsonConstants.Quote)
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected: {(char)JsonConstants.Quote} for start of property name. Instead reached '{(char)first}'.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected: {(char)JsonConstants.Quote} for start of property name. Instead reached '{(char)first}'.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
                     TokenStartIndex++;
                     return ConsumePropertyName();
@@ -417,7 +451,11 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a start of a property name or value after '{(char)JsonConstants.ListSeperator}', but reached end of data instead.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected a start of a property name or value after '{(char)JsonConstants.ListSeperator}', but reached end of data instead.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
@@ -431,7 +469,11 @@ namespace System.Text.JsonLab
                     {
                         if (_isFinalBlock)
                         {
-                            JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a start of a property name or value after '{(char)JsonConstants.ListSeperator}', but reached end of data instead.");
+#if UseInstrumented
+                            throw new JsonReaderException($"Expected a start of a property name or value after '{(char)JsonConstants.ListSeperator}', but reached end of data instead.", _lineNumber, _position);
+#else
+                            JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                         }
                         else return false;
                     }
@@ -442,7 +484,11 @@ namespace System.Text.JsonLab
                 if (_inObject)
                 {
                     if (first != JsonConstants.Quote)
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a start of a string property name with '{JsonConstants.Quote}', instead we got '{(char)first}'.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected a start of a string property name with '{JsonConstants.Quote}', instead we got '{(char)first}'.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     TokenStartIndex++;
                     return ConsumePropertyName();
                 }
@@ -481,7 +527,11 @@ namespace System.Text.JsonLab
                     _position--;
 #endif
                 }
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected either '{(char)JsonConstants.ListSeperator}', '{(char)JsonConstants.CloseBrace}', or '{(char)JsonConstants.CloseBracket}', instead we got '{(char)marker}'.");
+#if UseInstrumented
+                throw new JsonReaderException($"Expected either '{(char)JsonConstants.ListSeperator}', '{(char)JsonConstants.CloseBrace}', or '{(char)JsonConstants.CloseBracket}', instead we got '{(char)marker}'.", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
             return true;
         }
@@ -532,7 +582,11 @@ namespace System.Text.JsonLab
             }
             else
             {
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected start of a value, instead we got '{(char)marker}'.");
+#if UseInstrumented
+                throw new JsonReaderException($"Expected start of a value, instead we got '{(char)marker}'.", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
             return true;
         }
@@ -577,6 +631,7 @@ namespace System.Text.JsonLab
                     return false;
                 }
             Throw:
+#if UseInstrumented
                 int length = Math.Min(JsonConstants.NullValue.Length, span.Length);
                 string message = "Expected a 'null' value, instead we get '";
                 for (int i = 0; i < length; i++)
@@ -584,7 +639,10 @@ namespace System.Text.JsonLab
                     message += (char)span[i];
                 }
                 message += "'";
-                JsonThrowHelper.ThrowJsonReaderException(ref this, message);
+                throw new JsonReaderException(message, _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
             TokenType = JsonTokenType.Value;
             CurrentIndex += 4;
@@ -622,6 +680,7 @@ namespace System.Text.JsonLab
                     return false;
                 }
             Throw:
+#if UseInstrumented
                 int length = Math.Min(JsonConstants.FalseValue.Length, span.Length);
                 string message = "Expected a 'false' value, instead we get '";
                 for (int i = 0; i < length; i++)
@@ -629,7 +688,10 @@ namespace System.Text.JsonLab
                     message += (char)span[i];
                 }
                 message += "'";
-                JsonThrowHelper.ThrowJsonReaderException(ref this, message);
+                throw new JsonReaderException(message, _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
             TokenType = JsonTokenType.Value;
             CurrentIndex += 5;
@@ -665,6 +727,7 @@ namespace System.Text.JsonLab
                     return false;
                 }
             Throw:
+#if UseInstrumented
                 int length = Math.Min(JsonConstants.TrueValue.Length, span.Length);
                 string message = "Expected a 'true' value, instead we get '";
                 for (int i = 0; i < length; i++)
@@ -672,7 +735,10 @@ namespace System.Text.JsonLab
                     message += (char)span[i];
                 }
                 message += "'";
-                JsonThrowHelper.ThrowJsonReaderException(ref this, message);
+                throw new JsonReaderException(message, _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
             TokenType = JsonTokenType.Value;
             CurrentIndex += 4;
@@ -693,7 +759,11 @@ namespace System.Text.JsonLab
             {
                 if (_isFinalBlock)
                 {
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, "Expected a value following the property, but instead reached end of data.");
+#if UseInstrumented
+                    throw new JsonReaderException("Expected a value following the property, but instead reached end of data.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
                 else return false;
             }
@@ -707,7 +777,11 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, "Expected a value following the property, but instead reached end of data.");
+#if UseInstrumented
+                        throw new JsonReaderException("Expected a value following the property, but instead reached end of data.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
@@ -717,7 +791,11 @@ namespace System.Text.JsonLab
             // The next character must be a key / value seperator. Validate and skip.
             if (first != JsonConstants.KeyValueSeperator)
             {
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a '{(char)JsonConstants.KeyValueSeperator}' following the property string, but instead saw '{(char)first}'.");
+#if UseInstrumented
+                throw new JsonReaderException($"Expected a '{(char)JsonConstants.KeyValueSeperator}' following the property string, but instead saw '{(char)first}'.", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
 
             TokenType = JsonTokenType.PropertyName;
@@ -740,7 +818,11 @@ namespace System.Text.JsonLab
             {
                 if (_isFinalBlock)
                 {
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a '{(char)JsonConstants.Quote}' to indicate end of string, but instead reached end of data.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Expected a '{(char)JsonConstants.Quote}' to indicate end of string, but instead reached end of data.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
                 else return false;
             }
@@ -779,7 +861,11 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected a '{(char)JsonConstants.Quote}' to indicate end of string, but instead reached end of data.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Expected a '{(char)JsonConstants.Quote}' to indicate end of string, but instead reached end of data.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
@@ -884,14 +970,22 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
 
                 nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
 
             Debug.Assert(nextByte >= '0' && nextByte <= '9');
@@ -906,7 +1000,11 @@ namespace System.Text.JsonLab
                         goto Done;
 
                     if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
                 else
                 {
@@ -933,7 +1031,11 @@ namespace System.Text.JsonLab
                 if (delimiters.IndexOf(nextByte) != -1)
                     goto Done;
                 if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected '.' or 'E' or 'e'.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
 
             Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
@@ -945,13 +1047,21 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
                 nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 i++;
                 for (; i < data.Length; i++)
                 {
@@ -968,7 +1078,11 @@ namespace System.Text.JsonLab
                 if (delimiters.IndexOf(nextByte) != -1)
                     goto Done;
                 if (nextByte != 'E' && nextByte != 'e')
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected 'E' or 'e'.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected 'E' or 'e'.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
             }
 
             Debug.Assert(nextByte == 'E' || nextByte == 'e');
@@ -978,7 +1092,11 @@ namespace System.Text.JsonLab
             {
                 if (_isFinalBlock)
                 {
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
                 else return false;
             }
@@ -991,7 +1109,11 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                        throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                        JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                     }
                     else return false;
                 }
@@ -999,7 +1121,11 @@ namespace System.Text.JsonLab
             }
 
             if ((uint)(nextByte - '0') > '9' - '0')
-                JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.");
+#if UseInstrumented
+                throw new JsonReaderException($"Invalid number. Last character read: '{(char)nextByte}'. Expected a digit.", _lineNumber, _position);
+#else
+                JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
 
             i++;
             for (; i < data.Length; i++)
@@ -1013,7 +1139,11 @@ namespace System.Text.JsonLab
             {
                 if (delimiters.IndexOf(nextByte) == -1)
                 {
-                    JsonThrowHelper.ThrowJsonReaderException(ref this, $"Invalid end of number. Last character read: '{(char)nextByte}'. Expected a delimiter.");
+#if UseInstrumented
+                    throw new JsonReaderException($"Invalid end of number. Last character read: '{(char)nextByte}'. Expected a delimiter.", _lineNumber, _position);
+#else
+                    JsonThrowHelper.ThrowJsonReaderException(ref this);
+#endif
                 }
             }
             else if (!_isFinalBlock)
