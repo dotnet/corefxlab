@@ -20,7 +20,6 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock = true, JsonReaderState state = default)
         {
             _isRetry = state != default;
-            State = state;
             _containerMask = state._containerMask;
             Depth = state._depth;
             _inObject = state._inObject;

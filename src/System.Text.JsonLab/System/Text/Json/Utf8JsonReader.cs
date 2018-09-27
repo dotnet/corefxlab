@@ -63,7 +63,16 @@ namespace System.Text.JsonLab
         /// </summary>
         public JsonTokenType TokenType { get; private set; }
 
-        public JsonReaderState State { get; private set; }
+        public JsonReaderState State
+            => new JsonReaderState
+            {
+                _containerMask = _containerMask,
+                _depth = Depth,
+                _inObject = _inObject,
+                _searchedNextLast = _searchedNextLast,
+                _stack = _stack,
+                _tokenType = TokenType
+            };
 
         /// <summary>
         /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
@@ -98,10 +107,36 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-        public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock = true, JsonReaderState state = default)
+        public Utf8JsonReader(ReadOnlySpan<byte> data)
+        {
+            _isRetry = false;
+            _containerMask = 0;
+            Depth = 0;
+            _inObject = false;
+            _searchedNextLast = false;
+            _stack = null;
+            TokenType = JsonTokenType.None;
+
+            _reader = default;
+            _isSingleSegment = true;
+            _buffer = data;
+            CurrentIndex = 0;
+            TokenStartIndex = CurrentIndex;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            ValueType = JsonValueType.Unknown;
+            _isFinalBlock = true;
+            _isSingleValue = false;
+
+#if UseInstrumented
+            _lineNumber = 1;
+            _position = 0;
+#endif
+        }
+
+        public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
         {
             _isRetry = state != default;
-            State = state;
             _containerMask = state._containerMask;
             Depth = state._depth;
             _inObject = state._inObject;
@@ -133,28 +168,10 @@ namespace System.Text.JsonLab
         public bool Read()
         {
 #if !UseInstrumented
-            bool retVal = _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment(ref _reader);
-            if (!retVal)
-            {
-                BuildState();
-            }
-            return retVal;
+            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment(ref _reader);
 #else
             return ReadSingleSegment();
 #endif
-        }
-
-        private void BuildState()
-        {
-            State = new JsonReaderState
-            {
-                _containerMask = _containerMask,
-                _depth = Depth,
-                _inObject = _inObject,
-                _searchedNextLast = _searchedNextLast,
-                _stack = _stack,
-                _tokenType = TokenType
-            };
         }
 
         public void Skip()
@@ -304,7 +321,6 @@ namespace System.Text.JsonLab
                 {
                     if (CurrentIndex >= (uint)_buffer.Length)
                     {
-                        TokenType = JsonTokenType.Value;
                         return true;
                     }
 #if UseInstrumented
@@ -312,7 +328,6 @@ namespace System.Text.JsonLab
 #else
                     JsonThrowHelper.ThrowJsonReaderException(ref this);
 #endif
-
                 }
                 return false;
             }
@@ -402,7 +417,6 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    TokenType = JsonTokenType.Value;
                     return ConsumeValue(first);
                 }
             }
