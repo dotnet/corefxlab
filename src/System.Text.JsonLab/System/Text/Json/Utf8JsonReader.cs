@@ -63,6 +63,8 @@ namespace System.Text.JsonLab
         /// </summary>
         public JsonTokenType TokenType { get; private set; }
 
+        public JsonReaderState State { get; private set; }
+
         /// <summary>
         /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
         /// is only relevant when <see cref="TokenType" /> is <see cref="JsonTokenType.Value" /> or
@@ -81,6 +83,8 @@ namespace System.Text.JsonLab
         private readonly bool _isSingleSegment;
         internal readonly bool _isFinalBlock;
         private bool _isSingleValue;
+        internal bool _isRetry;
+        private bool _searchedNextLast;
 
         internal bool NoMoreData => CurrentIndex >= (uint)_buffer.Length;
 
@@ -94,22 +98,25 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-        public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock = true, JsonTokenType tokenType = JsonTokenType.None)
+        public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock = true, JsonReaderState state = default)
         {
+            _isRetry = state != default;
+            State = state;
+            _containerMask = state._containerMask;
+            Depth = state._depth;
+            _inObject = state._inObject;
+            _searchedNextLast = state._searchedNextLast;
+            _stack = state._stack;
+            TokenType = state._tokenType;
+
             _reader = default;
             _isSingleSegment = true;
             _buffer = data;
-            Depth = 0;
-            _containerMask = 0;
             CurrentIndex = 0;
             TokenStartIndex = CurrentIndex;
-            _stack = null;
             _maxDepth = StackFreeMaxDepth;
-
-            TokenType = tokenType;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-            _inObject = false;
             _isFinalBlock = isFinalBlock;
             _isSingleValue = false;
 
@@ -126,10 +133,28 @@ namespace System.Text.JsonLab
         public bool Read()
         {
 #if !UseInstrumented
-            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment(ref _reader);
+            bool retVal = _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment(ref _reader);
+            if (!retVal)
+            {
+                BuildState();
+            }
+            return retVal;
 #else
             return ReadSingleSegment();
 #endif
+        }
+
+        private void BuildState()
+        {
+            State = new JsonReaderState
+            {
+                _containerMask = _containerMask,
+                _depth = Depth,
+                _inObject = _inObject,
+                _searchedNextLast = _searchedNextLast,
+                _stack = _stack,
+                _tokenType = TokenType
+            };
         }
 
         public void Skip()
@@ -312,6 +337,7 @@ namespace System.Text.JsonLab
 
             if (TokenType == JsonTokenType.StartObject)
             {
+                _searchedNextLast = false;
                 if (first == JsonConstants.CloseBrace)
                 {
                     CurrentIndex++;
@@ -331,6 +357,7 @@ namespace System.Text.JsonLab
             }
             else if (TokenType == JsonTokenType.StartArray)
             {
+                _searchedNextLast = false;
                 if (first == JsonConstants.CloseBracket)
                 {
                     CurrentIndex++;
@@ -347,12 +374,17 @@ namespace System.Text.JsonLab
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
-                TokenType = JsonTokenType.Value;
+                _searchedNextLast = false;
                 return ConsumeValue(first);
             }
             else
             {
-                return ConsumeNextToken(first);
+                if (ConsumeNextToken(first))
+                {
+                    _searchedNextLast = true;
+                    return true;
+                }
+                return false;
             }
 
             retVal = true;
@@ -412,7 +444,6 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    TokenType = JsonTokenType.Value;
                     return ConsumeValue(first);
                 }
             }
@@ -426,6 +457,26 @@ namespace System.Text.JsonLab
             }
             else
             {
+                if (_searchedNextLast)
+                {
+                    if (TokenType == JsonTokenType.Value)
+                    {
+                        CurrentIndex--;
+#if UseInstrumented
+                        _position--;
+#endif
+                        TokenStartIndex = CurrentIndex;
+                        TokenType = JsonTokenType.Value;
+                        return ConsumeValue(marker);
+                    }
+                }
+                else
+                {
+                    CurrentIndex--;
+#if UseInstrumented
+                    _position--;
+#endif
+                }
                 JsonThrowHelper.ThrowJsonReaderException(ref this, $"Expected either '{(char)JsonConstants.ListSeperator}', '{(char)JsonConstants.CloseBrace}', or '{(char)JsonConstants.CloseBracket}', instead we got '{(char)marker}'.");
             }
             return true;
@@ -488,6 +539,7 @@ namespace System.Text.JsonLab
             if (!TryGetNumber(_buffer.Slice(CurrentIndex), out ReadOnlySpan<byte> number))
                 return false;
             Value = number;
+            TokenType = JsonTokenType.Value;
             CurrentIndex += Value.Length;
 #if UseInstrumented
             _position += Value.Length;
@@ -530,6 +582,7 @@ namespace System.Text.JsonLab
                 message += "'";
                 JsonThrowHelper.ThrowJsonReaderException(ref this, message);
             }
+            TokenType = JsonTokenType.Value;
             CurrentIndex += 4;
 #if UseInstrumented
             _position += 4;
@@ -574,6 +627,7 @@ namespace System.Text.JsonLab
                 message += "'";
                 JsonThrowHelper.ThrowJsonReaderException(ref this, message);
             }
+            TokenType = JsonTokenType.Value;
             CurrentIndex += 5;
 #if UseInstrumented
             _position += 5;
@@ -616,6 +670,7 @@ namespace System.Text.JsonLab
                 message += "'";
                 JsonThrowHelper.ThrowJsonReaderException(ref this, message);
             }
+            TokenType = JsonTokenType.Value;
             CurrentIndex += 4;
 #if UseInstrumented
             _position += 4;
@@ -691,6 +746,7 @@ namespace System.Text.JsonLab
                 CurrentIndex++;
                 Value = localCopy.Slice(CurrentIndex, idx);
                 ValueType = JsonValueType.String;
+                TokenType = JsonTokenType.Value;
                 CurrentIndex += idx + 1;
 #if UseInstrumented
                 _position++;
@@ -746,6 +802,7 @@ namespace System.Text.JsonLab
             CurrentIndex++;
             Value = _buffer.Slice(CurrentIndex, i - CurrentIndex);
             ValueType = JsonValueType.String;
+            TokenType = JsonTokenType.Value;
 
             i++;
 #if UseInstrumented

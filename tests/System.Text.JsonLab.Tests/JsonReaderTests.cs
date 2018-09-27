@@ -315,7 +315,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("true", 3, 0)]   // "tru"
         [InlineData("false", 4, 0)]  // "fals"
         [InlineData("{\"age\":30}", 7, 7)] // "{\"age\":"
-        [InlineData("{\"name\":\"Ahson\"", 9, 8)]  // "{\"name\":\"Ahso"
+        [InlineData("{\"name\":\"Ahson\"}", 9, 8)]  // "{\"name\":\"Ahso"
         [InlineData("-123456789", 1, 0)] // "-"
         [InlineData("0.5", 2, 0)]    // "0."
         [InlineData("10.5e+3", 5, 0)] // "10.5e"
@@ -324,6 +324,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"strings\":[\"abc\", \"def\"], \"ints\":[1, 2, 3, 4, 5]}", 24, 24)]  // "{\"strings\":[\"abc\", \"def\""
         [InlineData("{\"age\":30, \"name\":\"test}:[]\", \"another string\" : \"tests\"}", 19, 18)]   // "{\"age\":30, \"name\":\"test}"
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]\":[]}]]]]}]]]]", 39, 20)] // "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]"
+        [InlineData("{\r\n\"isActive\": false, \"invalid\"\r\n : \"now its valid\"}", 20, 20)]  // "{\r\n\"isActive\": false, \"invalid\"\r\n}"
         public static void PartialJson(string jsonString, int splitLocation, int consumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
@@ -332,10 +333,39 @@ namespace System.Text.JsonLab.Tests
             while (json.Read()) ;
             Assert.Equal(consumed, json.CurrentIndex);
 
-            // TODO: Need a mechanism to pass state appropriately
-            json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.TokenType);
-            //while (json.Read()) ;
-            //Assert.Equal(dataUtf8.Length, json.CurrentIndex);
+            json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
+        }
+
+        [Theory]
+        [InlineData("{\r\n\"isActive\": false \"invalid\"\r\n}", 20, 20, 1, 1)]
+        [InlineData("{\r\n\"isActive\": false \"invalid\"\r\n}", 21, 21, 1, 0)]
+        [InlineData("{\r\n\"isActive\": false, \"invalid\"\r\n}", 20, 20, 2, 0)]
+        [InlineData("{\r\n\"isActive\": false, \"invalid\"\r\n}", 21, 21, 1, 1)]
+        [InlineData("{\r\n\"isActive\": false, \"invalid\"\r\n}", 22, 22, 1, 0)]
+        [InlineData("{\r\n\"isActive\": false, 5\r\n}", 20, 20, 1, 2)]
+        [InlineData("{\r\n\"isActive\": false, 5\r\n}", 21, 21, 1, 1)]
+        [InlineData("{\r\n\"isActive\": false, 5\r\n}", 22, 22, 1, 0)]
+        public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition)
+        {
+            //TODO: Test multi-segment json payload
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false);
+            while (json.Read()) ;
+            Assert.Equal(consumed, json.CurrentIndex);
+
+            json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State);
+            try
+            {
+                while (json.Read()) ;
+                Assert.True(false, "Expected JsonReaderException was not thrown.");
+            }
+            catch (JsonReaderException ex)
+            {
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
+            }
         }
 
         [Theory]
@@ -360,7 +390,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("[[{{}}]]", 1, 3)]
         [InlineData("[1, 2, 3, ]", 1, 10)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
-        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
@@ -422,7 +452,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"strings\":[\"abc\", \"def\"", 1, 24)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
         [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
-        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 19)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 13)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
