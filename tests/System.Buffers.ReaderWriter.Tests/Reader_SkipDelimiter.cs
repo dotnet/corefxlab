@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
-using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -79,6 +78,47 @@ namespace System.Buffers.Tests
             reader = new BufferReader<byte>(bytes);
             Assert.False(reader.TryReadTo(out span, (byte)'"', (byte)'\\', advancePastDelimiter: true));
             Assert.Equal(0, reader.Consumed);
+
+            bytes = BufferFactory.CreateUtf8("abc\\\"de\"");
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out span, (byte)'"', (byte)'\\', advancePastDelimiter: true));
+            Assert.Equal(Encoding.UTF8.GetBytes("abc\\\"de"), span.ToArray());
+            Assert.True(reader.End);
+            Assert.Equal(8, reader.Consumed);
+        }
+
+        [Fact]
+        public void TryReadTo_SkipDelimiter_Runs()
+        {
+            ReadOnlySequence<byte> bytes = BufferFactory.CreateUtf8("abc\\\\\"def");
+            BufferReader<byte> reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'"', (byte)'\\', advancePastDelimiter: false));
+            Assert.Equal(Encoding.UTF8.GetBytes("abc\\\\"), span.ToArray());
+            Assert.True(reader.IsNext((byte)'"'));
+            Assert.Equal(5, reader.Consumed);
+
+            // Split after escape char
+            bytes = BufferFactory.CreateUtf8("abc\\\\", "\"def");
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out span, (byte)'"', (byte)'\\', advancePastDelimiter: false));
+            Assert.Equal(Encoding.UTF8.GetBytes("abc\\\\"), span.ToArray());
+            Assert.True(reader.IsNext((byte)'"'));
+            Assert.Equal(5, reader.Consumed);
+
+            // Split before and after escape char
+            bytes = BufferFactory.CreateUtf8("abc\\", "\\", "\"def");
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out span, (byte)'"', (byte)'\\', advancePastDelimiter: false));
+            Assert.Equal(Encoding.UTF8.GetBytes("abc\\\\"), span.ToArray());
+            Assert.True(reader.IsNext((byte)'"'));
+            Assert.Equal(5, reader.Consumed);
+
+            // Check advance past delimiter
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out span, (byte)'"', (byte)'\\', advancePastDelimiter: true));
+            Assert.Equal(Encoding.UTF8.GetBytes("abc\\\\"), span.ToArray());
+            Assert.True(reader.IsNext((byte)'d'));
+            Assert.Equal(6, reader.Consumed);
         }
     }
 }
