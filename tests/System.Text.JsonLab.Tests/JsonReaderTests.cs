@@ -943,6 +943,8 @@ namespace System.Text.JsonLab.Tests
                         break;
                     case JsonTokenType.None:
                         break;
+                    case JsonTokenType.Comment:
+                        break;
                     default:
                         throw new ArgumentException();
                 }

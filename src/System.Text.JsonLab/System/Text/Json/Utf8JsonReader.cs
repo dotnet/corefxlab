@@ -96,7 +96,6 @@ namespace System.Text.JsonLab
 
         internal bool NoMoreData => CurrentIndex >= (uint)_buffer.Length;
 
-
         internal int _lineNumber;
         internal int _position;
 
@@ -408,7 +407,7 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                     {
-                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
                     }
                     else return false;
                 }
@@ -421,7 +420,7 @@ namespace System.Text.JsonLab
                     {
                         if (_isFinalBlock)
                         {
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                            ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
                         }
                         else return false;
                     }
@@ -630,7 +629,7 @@ namespace System.Text.JsonLab
             if (!ConsumeString())
                 return false;
 
-            // Create local copy to avoid bounds checks.
+            //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
             if (CurrentIndex >= (uint)localCopy.Length)
             {

@@ -13,6 +13,6 @@ namespace System.Text.JsonLab
         EndArray,
         PropertyName,
         Comment,
-        Value
+        Value,
     }
 }
