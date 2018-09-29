@@ -406,7 +406,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("0.5", 2, 0)]    // "0."
         [InlineData("10.5e+3", 5, 0)] // "10.5e"
         [InlineData("10.5e-1", 6, 0)]    // "10.5e-"
-        [InlineData("{\"ints\":[1, 2, 3, 4, 5]}", 21, 21)]    // "{\"ints\":[1, 2, 3, 4, 5"
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5]}", 21, 19)]    // "{\"ints\":[1, 2, 3, 4, "
         [InlineData("{\"strings\":[\"abc\", \"def\"], \"ints\":[1, 2, 3, 4, 5]}", 24, 24)]  // "{\"strings\":[\"abc\", \"def\""
         [InlineData("{\"age\":30, \"name\":\"test}:[]\", \"another string\" : \"tests\"}", 19, 18)]   // "{\"age\":30, \"name\":\"test}"
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]\":[]}]]]]}]]]]", 39, 20)] // "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]"
@@ -428,11 +428,11 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 22, 22, 3, 15)]
         [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 23, 23, 3, 15)]
         [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 22, 22, 4, 0)]
-        //[InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 23, 23, 4, 0)] // TODO: Needs to be fixed, currently returns 3, 16
-        //[InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 24, 24, 4, 0)] // TODO: Needs to be fixed, currently returns 3, 16
+        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 23, 22, 4, 0)]
+        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 24, 22, 4, 0)]
         [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 22, 22, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 23, 23, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 24, 24, 3, 16)]
+        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 23, 22, 3, 16)]
+        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 24, 22, 3, 16)]
         public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition)
         {
             //TODO: Test multi-segment json payload
@@ -628,8 +628,7 @@ namespace System.Text.JsonLab.Tests
             Assert.True(TryParseRequestMessage(ref message));
 
             message = CreateSegments(dataUtf8);
-            //TODO: Add new states for multi-segment
-            //Assert.True(TryParseRequestMessage(ref message));
+            Assert.True(TryParseRequestMessage(ref message));
         }
 
         [Theory]
@@ -657,8 +656,7 @@ namespace System.Text.JsonLab.Tests
             exception = Assert.Throws<InvalidDataException>(() =>
                 Assert.True(TryParseRequestMessage(ref message)));
 
-            //TODO: Add new states for multi-segment
-            //Assert.Equal(expectedMessage, exception.Message);
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         [Theory]
@@ -682,8 +680,7 @@ namespace System.Text.JsonLab.Tests
             exception = Assert.Throws<InvalidDataException>(() =>
                 TryParseResponseMessage(ref message));
 
-            //TODO: Add new states for multi-segment
-            //Assert.Equal(expectedMessage, exception.Message);
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         private static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
@@ -761,13 +758,6 @@ namespace System.Text.JsonLab.Tests
 
         private static int? ReadAsInt32(ref Utf8JsonReader reader, string propertyName)
         {
-            reader.Read();
-
-            if (reader.TokenType != JsonTokenType.KeyValueSeparator)
-            {
-                throw new InvalidDataException($"Expected ':' to follow the property name.");
-            }
-
             reader.Read();
 
             if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.Number)
@@ -876,8 +866,6 @@ namespace System.Text.JsonLab.Tests
                     case JsonTokenType.EndObject:
                         completed = true;
                         break;
-                    case JsonTokenType.ListSeparator:
-                        break;
                     default:
                         throw new InvalidDataException($"Unexpected token '{reader.TokenType}' when reading handshake request JSON.");
                 }
@@ -897,13 +885,6 @@ namespace System.Text.JsonLab.Tests
 
         private static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
         {
-            reader.Read();
-
-            if (reader.TokenType != JsonTokenType.KeyValueSeparator)
-            {
-                throw new InvalidDataException($"Expected ':' to follow the property name.");
-            }
-
             reader.Read();
 
             if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.String)
@@ -961,10 +942,6 @@ namespace System.Text.JsonLab.Tests
                         }
                         break;
                     case JsonTokenType.None:
-                        break;
-                    case JsonTokenType.KeyValueSeparator:
-                        break;
-                    case JsonTokenType.ListSeparator:
                         break;
                     default:
                         throw new ArgumentException();

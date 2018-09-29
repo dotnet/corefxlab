@@ -12,8 +12,7 @@ namespace System.Text.JsonLab
         StartArray,
         EndArray,
         PropertyName,
-        KeyValueSeparator,
-        Value,
-        ListSeparator
+        Comment,
+        Value
     }
 }

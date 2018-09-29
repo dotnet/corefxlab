@@ -169,7 +169,6 @@ namespace System.Text.JsonLab
             if (TokenType == JsonTokenType.PropertyName)
             {
                 Read();
-                Read(); // Skip JsonTokenType.KeyValueSeparator
             }
 
             if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
@@ -341,7 +340,16 @@ namespace System.Text.JsonLab
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyNotFound, first);
 
                     TokenStartIndex++;
-                    return ConsumePropertyName();
+                    int prevCurrentIndex = CurrentIndex;
+                    int prevPosition = _position;
+                    if (ConsumePropertyName())
+                    {
+                        return true;
+                    }
+                    CurrentIndex = prevCurrentIndex;
+                    TokenType = JsonTokenType.StartObject;
+                    _position = prevPosition;
+                    return false;
                 }
             }
             else if (TokenType == JsonTokenType.StartArray)
@@ -359,35 +367,21 @@ namespace System.Text.JsonLab
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
-                if (first != JsonConstants.KeyValueSeperator)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedSeparaterAfterPropertyNameNotFound, first);
-                }
-                CurrentIndex++;
-                _position++;
-                TokenType = JsonTokenType.KeyValueSeparator;
-            }
-            else if (TokenType == JsonTokenType.KeyValueSeparator)
-            {
                 return ConsumeValue(first);
-            }
-            else if (TokenType == JsonTokenType.ListSeparator)
-            {
-                if (_inObject)
-                {
-                    if (first != JsonConstants.Quote)
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyNotFound, first);
-                    TokenStartIndex++;
-                    return ConsumePropertyName();
-                }
-                else
-                {
-                    return ConsumeValue(first);
-                }
             }
             else
             {
-                ConsumeNextToken(first);
+                int prevCurrentIndex = CurrentIndex;
+                int prevPosition = _position;
+                JsonTokenType prevTokenType = TokenType;
+                if (ConsumeNextToken(first))
+                {
+                    return true;
+                }
+                CurrentIndex = prevCurrentIndex;
+                TokenType = prevTokenType;
+                _position = prevPosition;
+                return false;
             }
 
             retVal = true;
@@ -404,11 +398,50 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        private void ConsumeNextToken(byte marker)
+        private bool ConsumeNextToken(byte marker)
         {
             CurrentIndex++;
             _position++;
-            if (marker == JsonConstants.CloseBrace)
+            if (marker == JsonConstants.ListSeperator)
+            {
+                if (CurrentIndex >= (uint)_buffer.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                    }
+                    else return false;
+                }
+                byte first = _buffer[CurrentIndex];
+
+                if (first <= JsonConstants.Space)
+                {
+                    SkipWhiteSpace();
+                    if (CurrentIndex >= (uint)_buffer.Length)
+                    {
+                        if (_isFinalBlock)
+                        {
+                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                        }
+                        else return false;
+                    }
+                    first = _buffer[CurrentIndex];
+                }
+
+                TokenStartIndex = CurrentIndex;
+                if (_inObject)
+                {
+                    if (first != JsonConstants.Quote)
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyNotFound, first);
+                    TokenStartIndex++;
+                    return ConsumePropertyName();
+                }
+                else
+                {
+                    return ConsumeValue(first);
+                }
+            }
+            else if (marker == JsonConstants.CloseBrace)
             {
                 EndObject();
             }
@@ -416,16 +449,13 @@ namespace System.Text.JsonLab
             {
                 EndArray();
             }
-            else if (marker == JsonConstants.ListSeperator)
-            {
-                TokenType = JsonTokenType.ListSeparator;
-            }
             else
             {
                 CurrentIndex--;
                 _position--;
                 ThrowJsonReaderException(ref this, ExceptionResource.FoundInvalidCharacter, marker);
             }
+            return true;
         }
 
         /// <summary>
@@ -600,6 +630,41 @@ namespace System.Text.JsonLab
             if (!ConsumeString())
                 return false;
 
+            // Create local copy to avoid bounds checks.
+            ReadOnlySpan<byte> localCopy = _buffer;
+            if (CurrentIndex >= (uint)localCopy.Length)
+            {
+                if (_isFinalBlock)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
+                }
+                else return false;
+            }
+
+            byte first = localCopy[CurrentIndex];
+
+            if (first <= JsonConstants.Space)
+            {
+                SkipWhiteSpace();
+                if (CurrentIndex >= (uint)localCopy.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
+                    }
+                    else return false;
+                }
+                first = localCopy[CurrentIndex];
+            }
+
+            // The next character must be a key / value seperator. Validate and skip.
+            if (first != JsonConstants.KeyValueSeperator)
+            {
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedSeparaterAfterPropertyNameNotFound, first);
+            }
+
+            CurrentIndex++;
+            _position++;
             TokenType = JsonTokenType.PropertyName;
             return true;
         }
