@@ -70,7 +70,9 @@ namespace System.Text.JsonLab
                 _inObject = _inObject,
                 _searchedNextLast = _searchedNextLast,
                 _stack = _stack,
-                _tokenType = TokenType
+                _tokenType = TokenType,
+                _lineNumber = _lineNumber,
+                _position = _position
             };
 
         /// <summary>
@@ -153,8 +155,8 @@ namespace System.Text.JsonLab
             _isSingleValue = false;
             Instrument = false;
 
-            _lineNumber = 1;
-            _position = 0;
+            _lineNumber = state != default ? state._lineNumber : 1;
+            _position = state._position;
         }
 
         /// <summary>

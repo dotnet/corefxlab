@@ -33,8 +33,8 @@ namespace System.Text.JsonLab
             _isSingleValue = false;
             Instrument = false;
 
-            _lineNumber = 1;
-            _position = 0;
+            _lineNumber = state != default ? state._lineNumber : 1;
+            _position = state._position;
         }
 
         private void ReadFirstToken(ref BufferReader<byte> reader, byte first)

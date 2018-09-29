@@ -18,6 +18,8 @@ namespace System.Text.JsonLab
         internal int _depth;
         internal JsonTokenType _tokenType;
         internal bool _searchedNextLast;
+        internal int _lineNumber;
+        internal int _position;
 
         public override bool Equals(object obj)
         {
@@ -31,18 +33,19 @@ namespace System.Text.JsonLab
                    _inObject == other._inObject &&
                    _depth == other._depth &&
                    _tokenType == other._tokenType &&
-                   _searchedNextLast == other._searchedNextLast;
+                   _searchedNextLast == other._searchedNextLast &&
+                   _lineNumber == other._lineNumber &&
+                   _position == other._position;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -1676708545;
+            int hashCode = -1676708545;
             hashCode = hashCode * -1521134295 + _containerMask.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Stack<bool>>.Default.GetHashCode(_stack);
-            hashCode = hashCode * -1521134295 + _inObject.GetHashCode();
             hashCode = hashCode * -1521134295 + _depth.GetHashCode();
             hashCode = hashCode * -1521134295 + _tokenType.GetHashCode();
-            hashCode = hashCode * -1521134295 + _searchedNextLast.GetHashCode();
+            hashCode = hashCode * -1521134295 + _lineNumber.GetHashCode();
+            hashCode = hashCode * -1521134295 + _position.GetHashCode();
             return hashCode;
         }
 
