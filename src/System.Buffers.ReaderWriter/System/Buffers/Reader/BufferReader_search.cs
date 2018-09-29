@@ -44,7 +44,7 @@ namespace System.Buffers.Reader
 
         /// <summary>
         /// Try to read everything up to the given <paramref name="delimiter"/>, ignoring delimiters that are
-        /// preceeded by <paramref name="skipDelimiter"/>.
+        /// preceeded by <paramref name="delimiterEscape"/>.
         /// </summary>
         /// <param name="span">The read data, if any.</param>
         /// <param name="delimiter">The delimiter to look for.</param>
@@ -134,7 +134,7 @@ namespace System.Buffers.Reader
 
         /// <summary>
         /// Try to read everything up to the given <paramref name="delimiter"/>, ignoring delimiters that are
-        /// preceeded by <paramref name="skipDelimiter"/>.
+        /// preceeded by <paramref name="delimiterEscape"/>.
         /// </summary>
         /// <param name="sequence">The read data, if any.</param>
         /// <param name="delimiter">The delimiter to look for.</param>
@@ -158,6 +158,7 @@ namespace System.Buffers.Reader
                         // We were in the escaped state, so skip this delimiter
                         priorEscape = false;
                         Advance(index + 1);
+                        continue;
                     }
                     else if (index > 0 && remaining[index - 1].Equals(delimiterEscape))
                     {
