@@ -2,14 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+//TODO: Add multi-segment support for tracking line number/position
+
 using System.Buffers;
 using System.Buffers.Reader;
 
-#if UseInstrumented
-namespace System.Text.JsonLab.Instrumented
-#else
 namespace System.Text.JsonLab
-#endif
 {
     public ref partial struct Utf8JsonReader
     {
@@ -33,14 +31,12 @@ namespace System.Text.JsonLab
             ValueType = JsonValueType.Unknown;
             _isFinalBlock = isFinalBlock;
             _isSingleValue = false;
+            Instrument = false;
 
-#if UseInstrumented
             _lineNumber = 1;
             _position = 0;
-#endif
         }
 
-#if !UseInstrumented
         private void ReadFirstToken(ref BufferReader<byte> reader, byte first)
         {
             if (first == JsonConstants.OpenBrace)
@@ -457,6 +453,5 @@ namespace System.Text.JsonLab
         {
             CurrentIndex += (int)reader.SkipPastAny(JsonConstants.Space, JsonConstants.CarriageReturn, JsonConstants.LineFeed, JsonConstants.Tab);
         }
-#endif
     }
 }

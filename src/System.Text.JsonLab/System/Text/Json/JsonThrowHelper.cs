@@ -67,30 +67,21 @@ namespace System.Text.JsonLab
 
         public static void ThrowJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
         {
-            GetJsonReaderException(ref json);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void GetJsonReaderException(ref Utf8JsonReader json)
-        {
-            var jsonInstrumented = new Instrumented.Utf8JsonReader(json._buffer, json._isFinalBlock,
-                json._isRetry ? json.State : default)
-            {
-                MaxDepth = json.MaxDepth
-            };
-            while (jsonInstrumented.Read()) ;
-            Debug.Assert(false, "We should never reach this point since we should have thrown JsonReaderException already.");
-        }
-
-        public static void ThrowJsonReaderException(ref Instrumented.Utf8JsonReader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
-        {
             GetJsonReaderException(ref json, resource, nextByte, bytes);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void GetJsonReaderException(ref Instrumented.Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
+        private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
-            throw new JsonReaderException(GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray())), json._lineNumber, json._position);
+            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
+            if (json.Instrument)
+            {
+                throw new JsonReaderException(message, json._lineNumber, json._position);
+            }
+            else
+            {
+                throw new JsonReaderException(message, -1, -1);
+            }
         }
 
         public static void ThrowInvalidCastException()
@@ -150,7 +141,7 @@ namespace System.Text.JsonLab
 
         // This function will convert an ExceptionResource enum value to the resource string.
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static string GetResourceString(ref Instrumented.Utf8JsonReader json, ExceptionResource resource, char character, string characters)
+        private static string GetResourceString(ref Utf8JsonReader json, ExceptionResource resource, char character, string characters)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), resource),
                 "The enum value is not defined, please check the ExceptionResource Enum.");
