@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Devices.I2c;
+using System.Devices.I2c.Unix;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;

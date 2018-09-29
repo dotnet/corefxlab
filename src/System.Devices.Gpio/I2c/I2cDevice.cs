@@ -6,16 +6,16 @@ namespace System.Devices.I2c
 {
     public abstract class I2cDevice : IDisposable
     {
-        protected I2cConnectionSettings _settings;
+        protected I2cConnectionSettings _connectionSettings;
 
-        public I2cDevice(I2cConnectionSettings settings)
+        public I2cDevice(I2cConnectionSettings connectionSettings)
         {
-            _settings = settings;
+            _connectionSettings = connectionSettings;
         }
 
         public abstract void Dispose();
 
-        public I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(_settings);
+        public I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(_connectionSettings);
 
         public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
 

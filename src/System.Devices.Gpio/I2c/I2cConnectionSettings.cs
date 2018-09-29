@@ -10,20 +10,20 @@ namespace System.Devices.I2c
     public sealed class I2cConnectionSettings
     {
         /// <summary>
-        /// Gets or sets the I2c bus id for this connection.
+        /// Gets or sets the I2C bus id for this connection.
         /// </summary>
         public uint BusId { get; set; }
 
         /// <summary>
-        /// Gets or sets the I2c connection device address.
+        /// Gets or sets the I2C connection device address.
         /// </summary>
         public uint DeviceAddress { get; set; }
 
         /// <summary>
         /// Initializes new instance of <see cref="I2cConnectionSettings"/>.
         /// </summary>
-        /// <param name="busId">The I2c bus id on which the connection will be made.</param>
-        /// <param name="deviceAddress">The I2c connection device address.</param>
+        /// <param name="busId">The I2C bus id on which the connection will be made.</param>
+        /// <param name="deviceAddress">The I2C connection device address.</param>
         public I2cConnectionSettings(uint busId, uint deviceAddress)
         {
             BusId = busId;
@@ -33,16 +33,16 @@ namespace System.Devices.I2c
         /// <summary>
         /// Initializes new instance of <see cref="I2cConnectionSettings"/>.
         /// </summary>
-        /// <param name="busId">The I2c bus id on which the connection will be made.</param>
+        /// <param name="busId">The I2C bus id on which the connection will be made.</param>
         public I2cConnectionSettings(uint busId)
         {
             BusId = busId;
         }
 
-        internal I2cConnectionSettings(I2cConnectionSettings other)
+        internal I2cConnectionSettings(I2cConnectionSettings newConnectionSettings)
         {
-            BusId = other.BusId;
-            DeviceAddress = other.DeviceAddress;
+            BusId = newConnectionSettings.BusId;
+            DeviceAddress = newConnectionSettings.DeviceAddress;
         }
     }
 }
