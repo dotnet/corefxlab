@@ -173,7 +173,7 @@ namespace System.Text.JsonLab
                     message = string.Format(formatString, character);
                     break;
                 case ExceptionResource.ExpectedEndAfterSingleJson:
-                    message = string.Format(formatString, json._buffer[json.CurrentIndex]);
+                    message = string.Format(formatString, character);
                     break;
                 case ExceptionResource.ExpectedEndOfDigitNotFound:
                     message = string.Format(formatString, character);

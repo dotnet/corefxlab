@@ -395,6 +395,29 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [InlineData("  \"hello\"  ")]
+        [InlineData("  \"he\r\n\\\"l\\\\\\\"lo\\\\\"  ")]
+        [InlineData("  12345  ")]
+        [InlineData("  null  ")]
+        [InlineData("  true  ")]
+        [InlineData("  false  ")]
+        public static void SingleJsonValue(string jsonString)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            for (int i = 0; i < dataUtf8.Length; i++)
+            {
+                var json = new Utf8JsonReader(dataUtf8.AsSpan(0, i), false);
+                while (json.Read()) ;
+
+                int consumed = json.CurrentIndex;
+                json = new Utf8JsonReader(dataUtf8.AsSpan(consumed), true, json.State);
+                while (json.Read()) ;
+                Assert.True(dataUtf8.Length - consumed == json.CurrentIndex, $"{i}");
+            }
+        }
+
+        [Theory]
         [InlineData("\"hello\"", 1, 0)] // "\""
         [InlineData("12345", 3, 0)]   // "123"
         [InlineData("null", 3, 0)]   // "nul"

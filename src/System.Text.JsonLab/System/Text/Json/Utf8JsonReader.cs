@@ -122,7 +122,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isFinalBlock = true;
-            _isSingleValue = false;
+            _isSingleValue = true;
             Instrument = false;
 
             _lineNumber = 1;
@@ -147,7 +147,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isFinalBlock = isFinalBlock;
-            _isSingleValue = false;
+            _isSingleValue = true;
             Instrument = false;
 
             _lineNumber = state != default ? state._lineNumber : 1;
@@ -262,6 +262,7 @@ namespace System.Text.JsonLab
                 CurrentIndex++;
                 _position++;
                 _inObject = true;
+                _isSingleValue = false;
             }
             else if (first == JsonConstants.OpenBracket)
             {
@@ -270,17 +271,27 @@ namespace System.Text.JsonLab
                 ValueType = JsonValueType.Array;
                 CurrentIndex++;
                 _position++;
+                _isSingleValue = false;
             }
             else
             {
-                _isSingleValue = true;
                 if (ConsumeValue(first))
                 {
                     if (CurrentIndex >= (uint)_buffer.Length)
                     {
                         return true;
                     }
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson);
+
+                    if (_buffer[CurrentIndex] <= JsonConstants.Space)
+                    {
+                        SkipWhiteSpace();
+                        if (CurrentIndex >= (uint)_buffer.Length)
+                        {
+                            return true;
+                        }
+                    }
+
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, _buffer[CurrentIndex]);
                 }
                 return false;
             }
@@ -308,7 +319,7 @@ namespace System.Text.JsonLab
                 SkipWhiteSpace();
                 if (CurrentIndex >= (uint)_buffer.Length)
                 {
-                    if (_isFinalBlock)
+                    if (!_isSingleValue && _isFinalBlock)
                     {
                         if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
