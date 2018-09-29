@@ -17,7 +17,6 @@ namespace System.Text.JsonLab
         internal bool _inObject;
         internal int _depth;
         internal JsonTokenType _tokenType;
-        internal bool _searchedNextLast;
         internal int _lineNumber;
         internal int _position;
 
@@ -33,7 +32,6 @@ namespace System.Text.JsonLab
                    _inObject == other._inObject &&
                    _depth == other._depth &&
                    _tokenType == other._tokenType &&
-                   _searchedNextLast == other._searchedNextLast &&
                    _lineNumber == other._lineNumber &&
                    _position == other._position;
         }

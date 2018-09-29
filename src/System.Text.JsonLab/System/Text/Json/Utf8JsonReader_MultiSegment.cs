@@ -17,7 +17,6 @@ namespace System.Text.JsonLab
             _containerMask = state._containerMask;
             Depth = state._depth;
             _inObject = state._inObject;
-            _searchedNextLast = state._searchedNextLast;
             _stack = state._stack;
             TokenType = state._tokenType;
 
