@@ -17,8 +17,6 @@ namespace System.Devices.I2c
 
         public I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(_connectionSettings);
 
-        public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
-
         public abstract void Read(byte[] buffer);
         public abstract byte Read8();
         public abstract ushort Read16();
@@ -32,5 +30,7 @@ namespace System.Devices.I2c
         public abstract void Write24(uint value);
         public abstract void Write32(uint value);
         public abstract void Write64(ulong value);
+
+        public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
     }
 }

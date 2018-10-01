@@ -57,12 +57,4 @@ namespace System.Devices.I2c.Unix
             SmBusWriteBlockDataPec |
             SmBusI2cBlock
     }
-
-    ///// To determine what functionality is supported
-    //[Flags]
-    //private enum I2cFunctionalityFlags : ulong
-    //{
-    //    I2C_FUNC_I2C = 0x00000001,
-    //    I2C_FUNC_SMBUS_BLOCK_DATA = 0x03000000
-    //}
 }

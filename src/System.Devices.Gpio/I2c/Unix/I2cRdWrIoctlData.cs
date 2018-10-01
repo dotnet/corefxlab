@@ -5,7 +5,7 @@
 namespace System.Devices.I2c.Unix
 {
     // TODO: See i2c_rdwr_ioctl_data.
-    internal unsafe struct I2cRdWrIoctlData
+    internal unsafe ref struct I2cRdWrIoctlData
     {
         public I2cMessage* Messages { get; set; }
         public uint NumberOfMessages { get; set; }

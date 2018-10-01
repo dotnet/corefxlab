@@ -6,11 +6,11 @@ namespace System.Devices.I2c
 {
     public static class I2cExtensions
     {
-        public static ulong Read(this I2cDevice device, uint byteCount)
+        public static ulong Read(this I2cDevice device, uint numberOfBytes)
         {
             ulong result;
 
-            switch (byteCount)
+            switch (numberOfBytes)
             {
                 case 1:
                     result = device.Read8();
@@ -33,7 +33,7 @@ namespace System.Devices.I2c
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(byteCount));
+                    throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             }
 
             return result;

@@ -4,7 +4,7 @@
 
 namespace System.Devices.I2c.Unix
 {
-    internal unsafe struct I2cMessage
+    internal unsafe ref struct I2cMessage
     {
         public ushort Address;
         public I2cMessageFlags Flags;
