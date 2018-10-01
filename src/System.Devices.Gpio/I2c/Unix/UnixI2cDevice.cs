@@ -19,7 +19,7 @@ namespace System.Devices.I2c.Unix
         [DllImport(LibraryName, EntryPoint = "ioctl", SetLastError = true)]
         private static extern int IoCtl(int fileDescriptor, uint request, IntPtr arguments);
 
-        [DllImport(LibraryName, EntryPoint = "read", SetLastError = true)]
+        [DllImport(LibraryName, EntryPoint = "ioctl", SetLastError = true)]
         private static extern int IoCtl(int fileDescriptor, uint request, ulong arguments);
 
         [DllImport(LibraryName, EntryPoint = "open", SetLastError = true)]
