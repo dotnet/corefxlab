@@ -6,50 +6,23 @@ using System.Collections.Generic;
 
 namespace System.Text.JsonLab
 {
-    public struct JsonReaderState : IEquatable<JsonReaderState>
+    public struct JsonReaderState
     {
-        // This mask represents a tiny stack to track the state during nested transitions.
-        // The first bit represents the state of the current level (1 == object, 0 == array).
-        // Each subsequent bit is the parent / containing type (object or array). Since this
-        // reader does a linear scan, we only need to keep a single path as we go through the data.
         internal ulong _containerMask;
-        internal Stack<bool> _stack;
-        internal bool _inObject;
         internal int _depth;
+        internal bool _inObject;
+        internal Stack<bool> _stack;
         internal JsonTokenType _tokenType;
-        internal bool _searchedNextLast;
+        internal int _lineNumber;
+        internal int _position;
 
-        public override bool Equals(object obj)
-        {
-            return obj is JsonReaderState && Equals((JsonReaderState)obj);
-        }
-
-        public bool Equals(JsonReaderState other)
-        {
-            return _containerMask == other._containerMask &&
-                   EqualityComparer<Stack<bool>>.Default.Equals(_stack, other._stack) &&
-                   _inObject == other._inObject &&
-                   _depth == other._depth &&
-                   _tokenType == other._tokenType &&
-                   _searchedNextLast == other._searchedNextLast;
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1676708545;
-            hashCode = hashCode * -1521134295 + _containerMask.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Stack<bool>>.Default.GetHashCode(_stack);
-            hashCode = hashCode * -1521134295 + _inObject.GetHashCode();
-            hashCode = hashCode * -1521134295 + _depth.GetHashCode();
-            hashCode = hashCode * -1521134295 + _tokenType.GetHashCode();
-            hashCode = hashCode * -1521134295 + _searchedNextLast.GetHashCode();
-            return hashCode;
-        }
-
-        public static bool operator ==(JsonReaderState left, JsonReaderState right)
-            => left.Equals(right);
-
-        public static bool operator !=(JsonReaderState left, JsonReaderState right)
-            => !left.Equals(right);
+        public bool IsDefault
+            => _containerMask == default &&
+            _depth == default &&
+            _inObject == default &&
+            _stack == null &&
+            _tokenType == default &&
+            _lineNumber == default &&
+            _position == default;
     }
 }
