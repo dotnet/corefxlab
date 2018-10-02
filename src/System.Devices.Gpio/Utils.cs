@@ -10,31 +10,30 @@ namespace System.Devices.Gpio
     internal static class Utils
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort SwapBytes(ushort x)
+        public static ushort SwapBytes(ushort value)
         {
-            x = (ushort)((x << 8) | (x >> 8));
-            return x;
+            value = (ushort)((value << 8) | (value >> 8));
+            return value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SwapBytes(uint x)
+        public static uint SwapBytes(uint value)
         {
-            x = (uint)((SwapBytes((ushort)(x & ushort.MaxValue)) << 16) | SwapBytes((ushort)(x >> 16)));
-            return x;
+            value = (uint)((SwapBytes((ushort)(value & ushort.MaxValue)) << 16) | SwapBytes((ushort)(value >> 16)));
+            return value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ulong SwapBytes(ulong x)
+        public static ulong SwapBytes(ulong value)
         {
-            x = (SwapBytes((uint)(x & uint.MaxValue)) << 32) | SwapBytes((uint)(x >> 32));
-            return x;
+            value = (SwapBytes((uint)(value & uint.MaxValue)) << 32) | SwapBytes((uint)(value >> 32));
+            return value;
         }
 
         public static IOException CreateIOException(string message, int result)
         {
             Interop.ErrorInfo info = Interop.Sys.GetLastErrorInfo();
             message = $"{message}\nResult: {result} {info}";
-
             return new IOException(message);
         }
     }
