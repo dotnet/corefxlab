@@ -14,7 +14,7 @@ namespace System.Text.JsonLab
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
-        internal readonly ReadOnlySpan<byte> _buffer;
+        private readonly ReadOnlySpan<byte> _buffer;
 
         public int CurrentIndex { get; private set; }
 
@@ -437,6 +437,7 @@ namespace System.Text.JsonLab
                 if (first <= JsonConstants.Space)
                 {
                     SkipWhiteSpace();
+                    // The next character must be a start of a property name or value.
                     if (CurrentIndex >= (uint)_buffer.Length)
                     {
                         if (_isFinalBlock)
