@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace System.Numerics
+namespace System.Numerics.Tensors
 {
     /// <summary>
     /// Various methods for creating and manipulating Tensor<T>
