@@ -11,14 +11,17 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonReader
     {
-        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock = true, JsonReaderState state = default)
+        public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
-            _isRetry = state != default;
-            _containerMask = state._containerMask;
-            Depth = state._depth;
-            _inObject = state._inObject;
-            _stack = state._stack;
-            TokenType = state._tokenType;
+            _containerMask = 0;
+            Depth = 0;
+            _inObject = false;
+            _stack = null;
+            TokenType = JsonTokenType.None;
+            _lineNumber = 1;
+            _position = 0;
+
+            _isFinalBlock = true;
 
             _reader = new BufferReader<byte>(data);
             _isSingleSegment = data.IsSingleSegment; //true;
@@ -28,12 +31,45 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-            _isFinalBlock = isFinalBlock;
-            _isSingleValue = false;
+            _isSingleValue = true;
             Instrument = false;
+        }
 
-            _lineNumber = state != default ? state._lineNumber : 1;
-            _position = state._position;
+        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
+        {
+            if (!state.IsDefault)
+            {
+                _containerMask = state._containerMask;
+                Depth = state._depth;
+                _inObject = state._inObject;
+                _stack = state._stack;
+                TokenType = state._tokenType;
+                _lineNumber = state._lineNumber;
+                _position = state._position;
+            }
+            else
+            {
+                _containerMask = 0;
+                Depth = 0;
+                _inObject = false;
+                _stack = null;
+                TokenType = JsonTokenType.None;
+                _lineNumber = 1;
+                _position = 0;
+            }
+
+            _isFinalBlock = isFinalBlock;
+
+            _reader = new BufferReader<byte>(data);
+            _isSingleSegment = data.IsSingleSegment; //true;
+            _buffer = _reader.CurrentSpan;  //data.ToArray();
+            CurrentIndex = 0;
+            TokenStartIndex = CurrentIndex;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            ValueType = JsonValueType.Unknown;
+            _isSingleValue = true;
+            Instrument = false;
         }
 
         private void ReadFirstToken(ref BufferReader<byte> reader, byte first)

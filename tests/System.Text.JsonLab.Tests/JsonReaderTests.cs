@@ -182,10 +182,19 @@ namespace System.Text.JsonLab.Tests
 
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
+            byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int outputLength);
+            Span<byte> outputSpan = new byte[outputLength];
+
+            Stream stream = new MemoryStream(dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            string expectedStr = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
+
             for (int i = 0; i < dataUtf8.Length; i++)
             {
                 var json = new Utf8JsonReader(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                while (json.Read()) ;
+                byte[] output = JsonLabReaderLoop(outputSpan.Length, out int firstLength, ref json);
+                output.AsSpan(0, firstLength).CopyTo(outputSpan);
+                int written = firstLength;
 
                 int consumed = json.CurrentIndex;
                 JsonReaderState jsonState = json.State;
@@ -195,20 +204,35 @@ namespace System.Text.JsonLab.Tests
                     || type == TestCaseType.LotsOfStrings || type == TestCaseType.Json4KB)
                 {
                     json = new Utf8JsonReader(dataUtf8.AsSpan(consumed), isFinalBlock: true, json.State);
-                    while (json.Read()) ;
+                    output = JsonLabReaderLoop(outputSpan.Length - written, out int length, ref json);
+                    output.AsSpan(0, length).CopyTo(outputSpan.Slice(written));
+                    written += length;
                     Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
+
+                    Assert.Equal(outputSpan.Length, written);
+                    string actualStr = Encoding.UTF8.GetString(outputSpan);
+                    Assert.Equal(expectedStr, actualStr);
                 }
                 else
                 {
                     for (int j = consumed; j < dataUtf8.Length - consumed; j++)
                     {
+                        written = firstLength;
                         json = new Utf8JsonReader(dataUtf8.AsSpan(consumed, j), isFinalBlock: false, jsonState);
-                        while (json.Read()) ;
+                        output = JsonLabReaderLoop(outputSpan.Length - written, out int length, ref json);
+                        output.AsSpan(0, length).CopyTo(outputSpan.Slice(written));
+                        written += length;
 
                         int consumedInner = json.CurrentIndex;
                         json = new Utf8JsonReader(dataUtf8.AsSpan(consumed + consumedInner), isFinalBlock: true, json.State);
-                        while (json.Read()) ;
+                        output = JsonLabReaderLoop(outputSpan.Length - written, out length, ref json);
+                        output.AsSpan(0, length).CopyTo(outputSpan.Slice(written));
+                        written += length;
                         Assert.Equal(dataUtf8.Length - consumedInner - consumed, json.CurrentIndex);
+
+                        Assert.Equal(outputSpan.Length, written);
+                        string actualStr = Encoding.UTF8.GetString(outputSpan);
+                        Assert.Equal(expectedStr, actualStr);
                     }
                 }
             }
@@ -413,7 +437,7 @@ namespace System.Text.JsonLab.Tests
                 int consumed = json.CurrentIndex;
                 json = new Utf8JsonReader(dataUtf8.AsSpan(consumed), true, json.State);
                 while (json.Read()) ;
-                Assert.True(dataUtf8.Length - consumed == json.CurrentIndex, $"{i}");
+                Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
             }
         }
 
@@ -423,7 +447,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("null", 3, 0)]   // "nul"
         [InlineData("true", 3, 0)]   // "tru"
         [InlineData("false", 4, 0)]  // "fals"
-        [InlineData("{\"age\":30}", 7, 7)] // "{\"age\":"
+        [InlineData("   {\"age\":30}   ", 10, 10)] // "   {\"age\":"
         [InlineData("{\"name\":\"Ahson\"}", 9, 8)]  // "{\"name\":\"Ahso"
         [InlineData("-123456789", 1, 0)] // "-"
         [InlineData("0.5", 2, 0)]    // "0."
@@ -432,7 +456,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"ints\":[1, 2, 3, 4, 5]}", 21, 19)]    // "{\"ints\":[1, 2, 3, 4, "
         [InlineData("{\"strings\":[\"abc\", \"def\"], \"ints\":[1, 2, 3, 4, 5]}", 24, 24)]  // "{\"strings\":[\"abc\", \"def\""
         [InlineData("{\"age\":30, \"name\":\"test}:[]\", \"another string\" : \"tests\"}", 19, 18)]   // "{\"age\":30, \"name\":\"test}"
-        [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]\":[]}]]]]}]]]]", 39, 20)] // "[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]"
+        [InlineData("   [[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]\":[]}]]]]}]]]]   ", 42, 23)] // "   [[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]"
         [InlineData("{\r\n\"isActive\": false, \"invalid\"\r\n : \"now its valid\"}", 20, 20)]  // "{\r\n\"isActive\": false, \"invalid\"\r\n}"
         public static void PartialJson(string jsonString, int splitLocation, int consumed)
         {
@@ -445,6 +469,78 @@ namespace System.Text.JsonLab.Tests
             json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State);
             while (json.Read()) ;
             Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
+        }
+
+        [Fact]
+        public static void PartialJsonWithWhiteSpace()
+        {
+            string jsonString = "   {   \r   \n   \"   is   Active   \"   :    false   ,    \"   na   me   \"   \r   \n    :    \"   John    Doe   \"   }   ";
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            for (int i = 0; i < dataUtf8.Length; i++)
+            {
+                var json = new Utf8JsonReader(dataUtf8.AsSpan(0, i), isFinalBlock: false);
+                var originalDictionary = new Dictionary<string, object>();
+                string originalKey = "";
+                object originalValue = null;
+                SetKeyValues(ref json, originalDictionary, ref originalKey, ref originalValue);
+
+                int consumed = json.CurrentIndex;
+                JsonReaderState jsonState = json.State;
+                for (int j = consumed; j < dataUtf8.Length - consumed; j++)
+                {
+                    string key = originalKey;
+                    object value = originalValue;
+                    var dictionary = new Dictionary<string, object>(originalDictionary);
+                    json = new Utf8JsonReader(dataUtf8.AsSpan(consumed, j), isFinalBlock: false, jsonState);
+                    SetKeyValues(ref json, dictionary, ref key, ref value);
+
+                    int consumedInner = json.CurrentIndex;
+                    json = new Utf8JsonReader(dataUtf8.AsSpan(consumed + consumedInner), isFinalBlock: true, json.State);
+                    SetKeyValues(ref json, dictionary, ref key, ref value);
+                    Assert.Equal(dataUtf8.Length - consumedInner - consumed, json.CurrentIndex);
+
+                    Assert.True(dictionary.TryGetValue("   is   Active   ", out object value1));
+                    Assert.Equal(false.ToString(), value1.ToString());
+                    Assert.True(dictionary.TryGetValue("   na   me   ", out object value2));
+                    Assert.Equal("   John    Doe   ", value2.ToString());
+                }
+            }
+        }
+
+        private static void SetKeyValues(ref Utf8JsonReader json, Dictionary<string, object> dictionary, ref string key, ref object value)
+        {
+            while (json.Read())
+            {
+                switch (json.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        key = Encoding.UTF8.GetString(json.Value);
+                        dictionary.Add(key, null);
+                        break;
+                    case JsonTokenType.Value:
+                        switch (json.ValueType)
+                        {
+                            case JsonValueType.String:
+                                value = Encoding.UTF8.GetString(json.Value);
+                                break;
+                            case JsonValueType.False:
+                                value = false;
+                                break;
+                        }
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         [Theory]
@@ -988,12 +1084,17 @@ namespace System.Text.JsonLab.Tests
         private static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
-            return JsonLabReaderLoop(data, out length, new Utf8JsonReader(sequence));
+            var reader = new Utf8JsonReader(sequence);
+            byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
+            // TODO: Should we reset the value and valuetype once we are done?
+            //Assert.True(reader.Value.IsEmpty);
+            //Assert.Equal(JsonValueType.Unknown, reader.ValueType);
+            return result;
         }
 
-        private static byte[] JsonLabReaderLoop(byte[] data, out int length, Utf8JsonReader json)
+        private static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref Utf8JsonReader json)
         {
-            byte[] outputArray = new byte[data.Length];
+            byte[] outputArray = new byte[inpuDataLength];
             Span<byte> destination = outputArray;
 
             while (json.Read())
@@ -1055,7 +1156,8 @@ namespace System.Text.JsonLab.Tests
 
         private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
         {
-            return JsonLabReaderLoop(data, out length, new Utf8JsonReader(data));
+            var reader = new Utf8JsonReader(data);
+            return JsonLabReaderLoop(data.Length, out length, ref reader);
         }
     }
 

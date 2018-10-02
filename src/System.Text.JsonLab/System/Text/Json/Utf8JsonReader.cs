@@ -92,7 +92,6 @@ namespace System.Text.JsonLab
         private readonly bool _isSingleSegment;
         internal readonly bool _isFinalBlock;
         private bool _isSingleValue;
-        internal bool _isRetry;
 
         internal bool NoMoreData => CurrentIndex >= (uint)_buffer.Length;
 
@@ -106,12 +105,15 @@ namespace System.Text.JsonLab
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
         public Utf8JsonReader(ReadOnlySpan<byte> data)
         {
-            _isRetry = false;
             _containerMask = 0;
             Depth = 0;
             _inObject = false;
             _stack = null;
             TokenType = JsonTokenType.None;
+            _lineNumber = 1;
+            _position = 0;
+
+            _isFinalBlock = true;
 
             _reader = default;
             _isSingleSegment = true;
@@ -121,22 +123,34 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-            _isFinalBlock = true;
             _isSingleValue = true;
             Instrument = false;
-
-            _lineNumber = 1;
-            _position = 0;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
         {
-            _isRetry = state != default;
-            _containerMask = state._containerMask;
-            Depth = state._depth;
-            _inObject = state._inObject;
-            _stack = state._stack;
-            TokenType = state._tokenType;
+            if (!state.IsDefault)
+            {
+                _containerMask = state._containerMask;
+                Depth = state._depth;
+                _inObject = state._inObject;
+                _stack = state._stack;
+                TokenType = state._tokenType;
+                _lineNumber = state._lineNumber;
+                _position = state._position;
+            }
+            else
+            {
+                _containerMask = 0;
+                Depth = 0;
+                _inObject = false;
+                _stack = null;
+                TokenType = JsonTokenType.None;
+                _lineNumber = 1;
+                _position = 0;
+            }
+
+            _isFinalBlock = isFinalBlock;
 
             _reader = default;
             _isSingleSegment = true;
@@ -146,12 +160,8 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-            _isFinalBlock = isFinalBlock;
             _isSingleValue = true;
             Instrument = false;
-
-            _lineNumber = state != default ? state._lineNumber : 1;
-            _position = state._position;
         }
 
         /// <summary>
