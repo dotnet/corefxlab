@@ -370,117 +370,12 @@ namespace System.Text.JsonLab
 
         private void ConsumeString(ref BufferReader<byte> reader)
         {
-            ReadOnlySpan<byte> buffer = reader.UnreadSpan;
-            int idx = buffer.IndexOf(JsonConstants.Quote);
-            if (idx < 0)
+            if (reader.TryReadTo(out ReadOnlySpan<byte> value, JsonConstants.Quote, (byte)'\\', advancePastDelimiter: true))
             {
-                ConsumeStringUtf8MultiSegmentSlow(ref reader);
-                return;
-            }
-
-            if (idx == 0 || buffer[idx - 1] != JsonConstants.ReverseSolidus)
-            {
-                Value = buffer.Slice(0, idx);
+                Value = value;
                 ValueType = JsonValueType.String;
-
-                idx++;
-                reader.Advance(idx);
-                CurrentIndex += idx;
                 return;
             }
-            ConsumeStringWithNestedQuotes(ref reader);
-        }
-
-        private void ConsumeStringWithNestedQuotes(ref BufferReader<byte> reader)
-        {
-            //TODO: Optimize looking for nested quotes
-            //TODO: Avoid redoing first IndexOf searches
-
-            BufferReader<byte> copy = reader;
-            ReadOnlySpan<byte> buffer = reader.UnreadSpan;
-            if (0 >= (uint)buffer.Length)
-            {
-                reader.Advance(buffer.Length);
-                CurrentIndex += buffer.Length;
-                buffer = reader.CurrentSpan;
-            }
-
-            while (!reader.End)
-            {
-                int counter = 1;
-                int index = buffer.IndexOf(JsonConstants.Quote);
-                if (index != -1)
-                {
-                    // Found the delimiter. Move to it, slice, then move past it.
-                    if (index == 0 || buffer[index - 1] != JsonConstants.ReverseSolidus)
-                        goto Done;
-
-                    for (int j = index - 2; j >= 0; j--)
-                    {
-                        if (buffer[j] != JsonConstants.ReverseSolidus)
-                        {
-                            if (counter % 2 == 0)
-                                goto Done;
-                            break;
-                        }
-                        else
-                            counter++;
-                    }
-                    goto KeepLooking;
-
-                Done:
-                    reader.Advance(index);
-                    CurrentIndex += index;
-                    ReadOnlySequence<byte> sequence = reader.Sequence.Slice(copy.Position, reader.Position);
-                    reader.Advance(1);
-                    CurrentIndex++;
-                    Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
-                    ValueType = JsonValueType.String;
-                    return;
-                }
-            KeepLooking:
-                reader.Advance(index + 1);
-                buffer = reader.UnreadSpan;
-            }
-
-            JsonThrowHelper.ThrowJsonReaderException(ref this);
-        }
-
-        private void ConsumeStringUtf8MultiSegmentSlow(ref BufferReader<byte> reader)
-        {
-            BufferReader<byte> copy = reader;
-            ReadOnlySpan<byte> buffer = reader.UnreadSpan;
-            if (0 >= (uint)buffer.Length)
-            {
-                reader.Advance(buffer.Length);
-                CurrentIndex += buffer.Length;
-                buffer = reader.CurrentSpan;
-            }
-
-            while (!reader.End)
-            {
-                int index = buffer.IndexOf(JsonConstants.Quote);
-                if (index != -1)
-                {
-                    // Found the delimiter. Move to it, slice, then move past it.
-                    if (index == 0 || buffer[index - 1] != JsonConstants.ReverseSolidus)
-                    {
-                        reader.Advance(index);
-                        CurrentIndex += index;
-                        ReadOnlySequence<byte> sequence = reader.Sequence.Slice(copy.Position, reader.Position);
-                        reader.Advance(1);
-                        CurrentIndex++;
-                        Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
-                        ValueType = JsonValueType.String;
-                        return;
-                    }
-                    reader = copy;
-                    ConsumeStringWithNestedQuotes(ref reader);
-                }
-                reader.Advance(buffer.Length);
-                buffer = reader.CurrentSpan;
-            }
-
             JsonThrowHelper.ThrowJsonReaderException(ref this);
         }
 
