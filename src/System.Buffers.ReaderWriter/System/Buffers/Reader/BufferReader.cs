@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
@@ -139,11 +140,16 @@ namespace System.Buffers.Reader
                 while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
                 {
                     _currentPosition = previousNextPosition;
-                    CurrentSpan = memory.Span;
-                    CurrentSpanIndex = 0;
-                    if (CurrentSpan.Length > 0)
+                    if (memory.Length > 0)
                     {
+                        CurrentSpan = memory.Span;
+                        CurrentSpanIndex = 0;
                         return;
+                    }
+                    else
+                    {
+                        CurrentSpan = default;
+                        CurrentSpanIndex = 0;
                     }
                 }
             }
@@ -177,21 +183,25 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void AdvanceToNextSpan(int count)
         {
-            while (!End && count > 0)
+            while (_moreData)
             {
-                if (CurrentSpanIndex < CurrentSpan.Length - count)
+                int remaining = CurrentSpan.Length - CurrentSpanIndex;
+
+                if (remaining > count)
                 {
                     CurrentSpanIndex += count;
                     count = 0;
                     break;
                 }
 
-                int remaining = (CurrentSpan.Length - CurrentSpanIndex);
-
                 CurrentSpanIndex += remaining;
                 count -= remaining;
+                Debug.Assert(count >= 0);
 
                 GetNextSpan();
+
+                if (count == 0)
+                    break;
             }
 
             if (count != 0)
