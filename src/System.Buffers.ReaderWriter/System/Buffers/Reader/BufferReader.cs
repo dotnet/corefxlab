@@ -134,16 +134,23 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSpan()
         {
-            // If Sequence is a single segment, TryGet will return false
-            SequencePosition previousNextPosition = _nextPosition;
-            while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            if (!Sequence.IsSingleSegment)
             {
-                if (memory.Length > 0)
+                SequencePosition previousNextPosition = _nextPosition;
+                while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
                 {
-                    CurrentSpan = memory.Span;
                     _currentPosition = previousNextPosition;
-                    CurrentSpanIndex = 0;
-                    return;
+                    if (memory.Length > 0)
+                    {
+                        CurrentSpan = memory.Span;
+                        CurrentSpanIndex = 0;
+                        return;
+                    }
+                    else
+                    {
+                        CurrentSpan = default;
+                        CurrentSpanIndex = 0;
+                    }
                 }
             }
             _moreData = false;
