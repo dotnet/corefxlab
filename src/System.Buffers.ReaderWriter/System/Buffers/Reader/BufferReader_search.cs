@@ -725,13 +725,8 @@ namespace System.Buffers.Reader
             int length = next.Length;
             SequencePosition nextPosition = _nextPosition;
 
-            while (true)
+            while (next.StartsWith(currentSpan))
             {
-                if (!next.StartsWith(currentSpan))
-                {
-                    break;
-                }
-
                 if (next.Length == currentSpan.Length)
                 {
                     // Fully matched
