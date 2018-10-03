@@ -56,19 +56,13 @@ namespace System.Buffers.Reader
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
 
-            if (index < 0)
-            {
-                goto SlowPath;
-            }
-
-            if (index == 0 || !remaining[index - 1].Equals(delimiterEscape))
+            if ((index > 0 && !remaining[index - 1].Equals(delimiterEscape)) || index == 0)
             {
                 span = remaining.Slice(0, index);
                 Advance(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 
-        SlowPath:
             // This delimiter might be skipped, go down the slow path
             return TryReadToSlow(out span, delimiter, delimiterEscape, index, advancePastDelimiter);
         }
@@ -102,6 +96,7 @@ namespace System.Buffers.Reader
                         // We were in the escaped state, so skip this delimiter
                         priorEscape = false;
                         Advance(index + 1);
+                        remaining = UnreadSpan;
                         goto Continue;
                     }
                     else if (index > 0 && remaining[index - 1].Equals(delimiterEscape))
@@ -256,6 +251,7 @@ namespace System.Buffers.Reader
                         // We were in the escaped state, so skip this delimiter
                         priorEscape = false;
                         Advance(index + 1);
+                        remaining = UnreadSpan;
                         continue;
                     }
                     else if (index > 0 && remaining[index - 1].Equals(delimiterEscape))
