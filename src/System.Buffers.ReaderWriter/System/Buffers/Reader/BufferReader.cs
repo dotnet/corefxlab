@@ -187,6 +187,7 @@ namespace System.Buffers.Reader
                     break;
                 }
 
+                CurrentSpanIndex += remaining;
                 count -= remaining;
                 Debug.Assert(count >= 0);
 
