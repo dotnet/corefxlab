@@ -7,7 +7,7 @@ using System.Text;
 
 namespace System.Buffers.Tests
 {
-    internal static class BufferFactory
+    public static class BufferFactory
     {
         private class ReadOnlyBufferSegment : ReadOnlySequenceSegment<byte>
         {
