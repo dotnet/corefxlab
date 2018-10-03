@@ -713,19 +713,46 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.NoInlining)]
         private unsafe bool IsNextSlow(ReadOnlySpan<T> next, bool advancePast)
         {
-            // Call PeekSlow directly since we know there isn't enough space.
-            Debug.Assert(UnreadSpan.Length < next.Length);
+            ReadOnlySpan<T> currentSpan = UnreadSpan;
 
-            T* t = stackalloc T[next.Length];
-            ReadOnlySpan<T> peek = PeekSlow(new Span<T>(t, next.Length));
+            // We should only come in here if we need more data than we have in our current span
+            Debug.Assert(currentSpan.Length < next.Length);
 
-            if (next.SequenceEqual(peek))
+            int length = next.Length;
+            SequencePosition nextPosition = _nextPosition;
+
+            while (next.StartsWith(currentSpan))
             {
-                if (advancePast)
+                if (next.Length == currentSpan.Length)
                 {
-                    Advance(next.Length);
+                    // Fully matched
+                    if (advancePast)
+                    {
+                        Advance(length);
+                    }
+                    return true;
                 }
-                return true;
+
+                // Need to check the next segment
+                while (true)
+                {
+                    if (!Sequence.TryGet(ref nextPosition, out ReadOnlyMemory<T> nextSegment, advance: true))
+                    {
+                        // Nothing left
+                        return false;
+                    }
+
+                    if (nextSegment.Length > 0)
+                    {
+                        next = next.Slice(currentSpan.Length);
+                        currentSpan = nextSegment.Span;
+                        if (currentSpan.Length > next.Length)
+                        {
+                            currentSpan = currentSpan.Slice(0, next.Length);
+                        }
+                        break;
+                    }
+                }
             }
 
             return false;
