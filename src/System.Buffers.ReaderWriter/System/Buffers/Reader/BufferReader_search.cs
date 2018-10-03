@@ -741,7 +741,6 @@ namespace System.Buffers.Reader
                     }
                     return true;
                 }
-                next = next.Slice(currentSpan.Length);
 
                 // Need to check the next segment
                 while (true)
@@ -754,6 +753,7 @@ namespace System.Buffers.Reader
 
                     if (nextSegment.Length > 0)
                     {
+                        next = next.Slice(currentSpan.Length);
                         currentSpan = nextSegment.Span;
                         if (currentSpan.Length > next.Length)
                         {
