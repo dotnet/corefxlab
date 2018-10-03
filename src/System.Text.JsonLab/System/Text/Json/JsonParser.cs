@@ -50,7 +50,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndObject)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.NoMoreData ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Object);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Object);
                     database.SetLength(rowIndex, numberOfRowsForMembers);
                     if (numberOfRowsForMembers != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForMembers);
@@ -74,7 +74,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndArray)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.NoMoreData ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Array);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Array);
                     database.SetLength(rowIndex, arrayItemsCount);
                     if (numberOfRowsForValues != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForValues);

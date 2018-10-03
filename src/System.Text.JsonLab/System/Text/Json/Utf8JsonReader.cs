@@ -90,10 +90,10 @@ namespace System.Text.JsonLab
         public JsonValueType ValueType { get; private set; }
 
         private readonly bool _isSingleSegment;
-        internal readonly bool _isFinalBlock;
+        private readonly bool _isFinalBlock;
         private bool _isSingleValue;
 
-        internal bool NoMoreData => CurrentIndex >= (uint)_buffer.Length;
+        public bool ConsumedEverything => _isSingleSegment ? CurrentIndex >= (uint)_buffer.Length : _reader.End;
 
         internal int _lineNumber;
         internal int _position;
