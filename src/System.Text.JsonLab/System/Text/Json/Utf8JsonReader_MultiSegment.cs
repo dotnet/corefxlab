@@ -193,8 +193,8 @@ namespace System.Text.JsonLab
                     TokenStartIndex++;
                     int prevCurrentIndex = CurrentIndex;
                     int prevPosition = _position;
-
-                    //reader.Advance(1);    //TODO: How do we revert this?
+                    BufferReader<byte> copy = reader;
+                    reader.Advance(1);
                     CurrentIndex++;
                     _position++;
                     if (ConsumePropertyName(ref reader))
@@ -204,6 +204,7 @@ namespace System.Text.JsonLab
                     CurrentIndex = prevCurrentIndex;
                     TokenType = JsonTokenType.StartObject;
                     _position = prevPosition;
+                    reader = copy;
                     return false;
                 }
             }
@@ -230,6 +231,7 @@ namespace System.Text.JsonLab
                 int prevCurrentIndex = CurrentIndex;
                 int prevPosition = _position;
                 JsonTokenType prevTokenType = TokenType;
+                BufferReader<byte> copy = reader;
                 if (ConsumeNextToken(ref reader, first))
                 {
                     return true;
@@ -237,6 +239,7 @@ namespace System.Text.JsonLab
                 CurrentIndex = prevCurrentIndex;
                 TokenType = prevTokenType;
                 _position = prevPosition;
+                reader = copy;
                 return false;
             }
 
@@ -282,7 +285,7 @@ namespace System.Text.JsonLab
                     if (first != JsonConstants.Quote)
                         ThrowJsonReaderException(ref this);
 
-                    //reader.Advance(1);    //TODO: How do we revert this?
+                    reader.Advance(1);
                     CurrentIndex++;
                     _position++;
                     TokenStartIndex++;
@@ -314,11 +317,21 @@ namespace System.Text.JsonLab
         {
             if (marker == JsonConstants.Quote)
             {
-                //reader.Advance(1);    //TODO: How do we revert this?
+                int prevCurrentIndex = CurrentIndex;
+                int prevPosition = _position;
+                BufferReader<byte> copy = reader;
+                reader.Advance(1);
                 CurrentIndex++;
                 _position++;
                 TokenStartIndex++;
-                return ConsumeString(ref reader);
+                if (!ConsumeString(ref reader))
+                {
+                    CurrentIndex = prevCurrentIndex;
+                    _position = prevPosition;
+                    reader = copy;
+                    return false;
+                }
+                return true;
             }
             else if (marker == JsonConstants.OpenBrace)
             {
@@ -384,11 +397,7 @@ namespace System.Text.JsonLab
             Value = span;
             ValueType = JsonValueType.Number;
             TokenType = JsonTokenType.Value;
-            if (TryGetNumber(Value, out _))
-            {
-                return false;
-            }
-            return true;
+            return TryGetNumber(Value, out _);
         }
 
         private bool ConsumeNull(ref BufferReader<byte> reader)

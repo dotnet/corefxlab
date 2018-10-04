@@ -243,7 +243,9 @@ namespace System.Text.JsonLab.Tests
         public static void TestPartialJsonReaderMultiSegment(bool compactData, TestCaseType type, string jsonString)
         {
             // Skipping really large JSON since slicing them (O(n^2)) is too slow.
-            if (type == TestCaseType.Json40KB || type == TestCaseType.Json400KB || type == TestCaseType.ProjectLockJson)
+            if (type == TestCaseType.Json40KB || type == TestCaseType.Json400KB || type == TestCaseType.ProjectLockJson
+                || type == TestCaseType.DeepTree || type == TestCaseType.BroadTree || type == TestCaseType.LotsOfNumbers
+                || type == TestCaseType.LotsOfStrings || type == TestCaseType.Json4KB)
             {
                 return;
             }
@@ -269,40 +271,20 @@ namespace System.Text.JsonLab.Tests
 
             var sequences = new List<ReadOnlySequence<byte>>();
 
-            // Skipping large JSON since slicing them (O(n^3)) is too slow.
-            if (type == TestCaseType.DeepTree || type == TestCaseType.BroadTree || type == TestCaseType.LotsOfNumbers
-                    || type == TestCaseType.LotsOfStrings || type == TestCaseType.Json4KB)
+            for (int i = 0; i < dataUtf8.Length; i++)
             {
-                for (int i = 0; i < dataUtf8.Length; i++)
-                {
-                    var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
-                    ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
-                    BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
-                    var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
-                    sequences.Add(sequence);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < dataUtf8.Length; i++)
-                {
-                    for (int j = i; j < dataUtf8.Length - i; j++)
-                    {
-                        var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
-                        ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i, j);
-                        ReadOnlyMemory<byte> thirdMem = dataMemory.Slice(i + j);
-                        BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
-                        BufferSegment<byte> thirdSegment = secondSegment.Append(thirdMem);
-                        var sequence = new ReadOnlySequence<byte>(firstSegment, 0, thirdSegment, thirdMem.Length);
-                        sequences.Add(sequence);
-                    }
-                }
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+                sequences.Add(sequence);
             }
 
             for (int i = 0; i < sequences.Count; i++)
             {
                 var json = new Utf8JsonReader(sequences[i]);
                 while (json.Read()) ;
+                Assert.True(json.ConsumedEverything);
             }
 
             for (int i = 0; i < sequences.Count; i++)
@@ -317,7 +299,8 @@ namespace System.Text.JsonLab.Tests
                     JsonReaderState jsonState = json.State;
                     json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.State);
                     while (json.Read()) ;
-                    //Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
+                    Assert.True(json.ConsumedEverything);
+                    Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
                 }
             }
         }
