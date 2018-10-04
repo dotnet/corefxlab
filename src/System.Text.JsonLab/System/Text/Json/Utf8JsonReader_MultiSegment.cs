@@ -118,6 +118,7 @@ namespace System.Text.JsonLab
                         reader.Advance(Value.Length);
                         CurrentIndex += Value.Length;
                         _position += Value.Length;
+                        return true;
                     }
                     else return false;
                 }
