@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace System.Numerics
+namespace System.Numerics.Tensors
 {
     /// <summary>
     /// Represents a tensor using compressed sparse format
