@@ -141,7 +141,7 @@ namespace System.Buffers.Reader
                 else
                 {
                     // No delimiter, need to check the end of the span for odd number of escapes then advance
-                    if (remaining[remaining.Length - 1].Equals(delimiterEscape))
+                    if (remaining.Length > 0 && remaining[remaining.Length - 1].Equals(delimiterEscape))
                     {
                         int escapeCount = 1;
                         int i = remaining.Length - 2;
