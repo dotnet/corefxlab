@@ -211,7 +211,7 @@ namespace System.Text.JsonLab
                     CurrentIndex = prevCurrentIndex;
                     TokenType = JsonTokenType.StartObject;
                     _position = prevPosition;
-                    reader.Retreat(1);
+                    reader.Rewind(1);
                     return false;
                 }
             }
@@ -242,7 +242,7 @@ namespace System.Text.JsonLab
                 {
                     return true;
                 }
-                reader.Retreat(CurrentIndex - prevCurrentIndex);
+                reader.Rewind(CurrentIndex - prevCurrentIndex);
                 CurrentIndex = prevCurrentIndex;
                 TokenType = prevTokenType;
                 _position = prevPosition;
@@ -333,7 +333,7 @@ namespace System.Text.JsonLab
                 {
                     CurrentIndex = prevCurrentIndex;
                     _position = prevPosition;
-                    reader.Retreat(1);
+                    reader.Rewind(1);
                     return false;
                 }
                 return true;

@@ -28,7 +28,7 @@ namespace System.Buffers.Reader
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
                 _moreData = true;
-                
+
                 if (memory.Length == 0)
                 {
                     CurrentSpan = default;
@@ -137,7 +137,7 @@ namespace System.Buffers.Reader
         /// Move the reader back the specified number of positions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Retreat(int count)
+        public void Rewind(long count)
         {
             if (count < 0)
             {
@@ -148,17 +148,17 @@ namespace System.Buffers.Reader
 
             if (CurrentSpanIndex >= count)
             {
-                CurrentSpanIndex -= count;
+                CurrentSpanIndex -= (int)count;
             }
             else
             {
                 // Current segment doesn't have enough space, scan backward through segments
-                RetreatToPreviousSpan(count);
+                RetreatToPreviousSpan(Consumed);
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void RetreatToPreviousSpan(int count)
+        private void RetreatToPreviousSpan(long consumed)
         {
             CurrentSpanIndex = 0;
             Consumed = 0;
@@ -168,7 +168,7 @@ namespace System.Buffers.Reader
             if (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
                 _moreData = true;
-                
+
                 if (memory.Length == 0)
                 {
                     CurrentSpan = default;
@@ -187,7 +187,7 @@ namespace System.Buffers.Reader
                 CurrentSpan = default;
             }
 
-            Advance(Consumed);
+            Advance(consumed);
         }
 
         /// <summary>
