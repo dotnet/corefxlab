@@ -160,6 +160,12 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void RetreatToPreviousSpan(long consumed)
         {
+            ResetReader();
+            Advance(consumed);
+        }
+
+        private void ResetReader()
+        {
             CurrentSpanIndex = 0;
             Consumed = 0;
             _currentPosition = Sequence.Start;
@@ -186,8 +192,6 @@ namespace System.Buffers.Reader
                 _moreData = false;
                 CurrentSpan = default;
             }
-
-            Advance(consumed);
         }
 
         /// <summary>
