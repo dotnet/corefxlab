@@ -107,7 +107,14 @@ namespace System.Text.JsonLab
                     {
                         //TODO: Is this a valid check?
                         if (reader.End)
-                            ThrowJsonReaderException(ref this);
+                        {
+                            if (_isFinalBlock)
+                            {
+                                ThrowJsonReaderException(ref this);
+                            }
+                        }
+                        else return false;
+                        
                     }
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                     TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
@@ -194,7 +201,6 @@ namespace System.Text.JsonLab
                     TokenStartIndex++;
                     int prevCurrentIndex = CurrentIndex;
                     int prevPosition = _position;
-                    BufferReader<byte> copy = reader;
                     reader.Advance(1);
                     CurrentIndex++;
                     _position++;
@@ -205,7 +211,7 @@ namespace System.Text.JsonLab
                     CurrentIndex = prevCurrentIndex;
                     TokenType = JsonTokenType.StartObject;
                     _position = prevPosition;
-                    reader = copy;
+                    reader.Retreat(1);
                     return false;
                 }
             }
@@ -232,15 +238,14 @@ namespace System.Text.JsonLab
                 int prevCurrentIndex = CurrentIndex;
                 int prevPosition = _position;
                 JsonTokenType prevTokenType = TokenType;
-                BufferReader<byte> copy = reader;
                 if (ConsumeNextToken(ref reader, first))
                 {
                     return true;
                 }
+                reader.Retreat(CurrentIndex - prevCurrentIndex);
                 CurrentIndex = prevCurrentIndex;
                 TokenType = prevTokenType;
                 _position = prevPosition;
-                reader = copy;
                 return false;
             }
 
@@ -320,7 +325,6 @@ namespace System.Text.JsonLab
             {
                 int prevCurrentIndex = CurrentIndex;
                 int prevPosition = _position;
-                BufferReader<byte> copy = reader;
                 reader.Advance(1);
                 CurrentIndex++;
                 _position++;
@@ -329,7 +333,7 @@ namespace System.Text.JsonLab
                 {
                     CurrentIndex = prevCurrentIndex;
                     _position = prevPosition;
-                    reader = copy;
+                    reader.Retreat(1);
                     return false;
                 }
                 return true;
