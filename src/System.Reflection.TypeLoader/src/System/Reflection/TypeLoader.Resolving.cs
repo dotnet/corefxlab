@@ -20,7 +20,7 @@ namespace System.Reflection
         // If the resolve logic allows variations on the ref name, it is possible and common for the same assembly instance
         // to appear multiple times (once for each variation that was used to bind to it.) 
         //
-        // We also latch failures. That is, _binds can bind a RuntimeAssemblyName to a RoFailedBindAssembly.
+        // We also latch failures. That is, _binds can bind a RuntimeAssemblyName to an RoExceptionAssembly.
         //
         private readonly ConcurrentDictionary<RoAssemblyName, RoAssembly> _binds = new ConcurrentDictionary<RoAssemblyName, RoAssembly>();
 

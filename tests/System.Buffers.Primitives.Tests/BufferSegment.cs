@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace System.Buffers.Testing
+namespace System.Buffers.Tests
 {
     internal class BufferSegment<T> : ReadOnlySequenceSegment<T> where T : struct
     {

@@ -4,7 +4,7 @@
 
 using BenchmarkDotNet.Attributes;
 using System.Buffers.Reader;
-using System.Buffers.Testing;
+using System.Buffers.Tests;
 
 namespace System.Buffers.Benchmarks
 {
@@ -180,7 +180,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobsSplit);
             byte value = 0x00;
-            while (reader.SkipPast(value))
+            while (reader.SkipPast(value) != 0)
             {
                 value++;
             }
@@ -191,7 +191,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobs);
             byte value = 0x00;
-            while (reader.SkipPast(value))
+            while (reader.SkipPast(value) != 0)
             {
                 value++;
             }

@@ -4,7 +4,7 @@
 
 using System.Diagnostics;
 
-namespace System.Numerics
+namespace System.Numerics.Tensors
 {
     internal static class EmptyArray<T>
     {

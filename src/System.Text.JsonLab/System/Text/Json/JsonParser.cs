@@ -21,7 +21,7 @@ namespace System.Text.JsonLab
         public JsonObject Parse()
         {
             var database = new CustomDb(_pool, DbRow.Size + _utf8Json.Length);
-            var stack = new CustomStack(Utf8JsonReader.MaxDepth * StackRow.Size);
+            var stack = new CustomStack(Utf8JsonReader.StackFreeMaxDepth * StackRow.Size);
             var reader = new Utf8JsonReader(_utf8Json);
 
             bool inArray = false;
@@ -42,7 +42,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForValues++;
-                    database.Append(JsonValueType.Object, reader.StartLocation);
+                    database.Append(JsonValueType.Object, reader.TokenStartIndex);
                     var row = new StackRow(numberOfRowsForMembers + 1);
                     stack.Push(row);
                     numberOfRowsForMembers = 0;
@@ -50,7 +50,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndObject)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.NoMoreData ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Object);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Object);
                     database.SetLength(rowIndex, numberOfRowsForMembers);
                     if (numberOfRowsForMembers != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForMembers);
@@ -65,7 +65,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForMembers++;
-                    database.Append(JsonValueType.Array, reader.StartLocation);
+                    database.Append(JsonValueType.Array, reader.TokenStartIndex);
                     var row = new StackRow(arrayItemsCount, numberOfRowsForValues + 1);
                     stack.Push(row);
                     arrayItemsCount = 0;
@@ -74,7 +74,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndArray)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.NoMoreData ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Array);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Array);
                     database.SetLength(rowIndex, arrayItemsCount);
                     if (numberOfRowsForValues != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForValues);
@@ -87,7 +87,7 @@ namespace System.Text.JsonLab
                     Debug.Assert(tokenType == JsonTokenType.PropertyName || tokenType == JsonTokenType.Value);
                     numberOfRowsForValues++;
                     numberOfRowsForMembers++;
-                    database.Append(reader.ValueType, reader.StartLocation, reader.Value.Length);
+                    database.Append(reader.ValueType, reader.TokenStartIndex, reader.Value.Length);
                     if (tokenType == JsonTokenType.Value && inArray)
                         arrayItemsCount++;
                 }

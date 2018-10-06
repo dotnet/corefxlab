@@ -3,8 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
-using System.Buffers.Testing;
-using System.Text;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -47,15 +45,34 @@ namespace System.Buffers.Tests
             Assert.True(skipReader.TrySkipToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(7, value);
-            Assert.True(skipReader.SkipPast(8));
+            Assert.Equal(1, skipReader.SkipPast(8));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(9, value);
 
             skipReader = new BufferReader<byte>(bytes);
-            Assert.False(skipReader.SkipPast(2));
-            Assert.True(skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
+            Assert.Equal(0, skipReader.SkipPast(2));
+            Assert.Equal(3, skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(4, value);
+        }
+
+        [Fact]
+        public void AdvancePastEmptySegments()
+        {
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {
+                new byte[] { 0          },
+                new byte[] { },
+                new byte[] { },
+                new byte[] { }
+            });
+
+            var reader = new BufferReader<byte>(bytes);
+            reader.Advance(1);
+            Assert.Equal(0, reader.CurrentSpanIndex);
+            Assert.Equal(0, reader.CurrentSpan.Length);
+            Assert.False(reader.TryPeek(out byte value));
+            ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+            Assert.Equal(0, sequence.Length);
         }
 
         [Fact]
@@ -129,60 +146,23 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryParse(out long l64));
+            Assert.True(reader.TryParse(out long l64, out _));
             Assert.Equal(123, l64);
 
-            Assert.True(reader.TryParse(out bool b));
+            Assert.True(reader.TryParse(out bool b, out _));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64));
+            Assert.True(reader.TryParse(out l64, out _));
             Assert.Equal(456, l64);
 
-            Assert.True(reader.TryParse(out b));
+            Assert.True(reader.TryParse(out b, out _));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64));
+            Assert.True(reader.TryParse(out l64, out _));
             Assert.Equal(789, l64);
 
-            Assert.True(reader.TryParse(out b));
+            Assert.True(reader.TryParse(out b, out _));
             Assert.Equal(false, b);
-        }
-
-        private static byte[] s_eol = new byte[] { (byte)'\r', (byte)'\n' };
-
-        [Fact(Skip = "this needs to be redone; given we are unifying ROBs and readers")]
-        private static void BytesReaderBenchmarkBaseline()
-        {
-            int sections = 10;
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < sections; i++)
-            {
-                sb.Append("1234 ");
-            }
-            var data = Encoding.UTF8.GetBytes(sb.ToString());
-
-            var readOnlyBytes = new ReadOnlySequence<byte>(data);
-            var bytesRange = new ReadOnlySequence<byte>(data);
-
-            var robReader = new BufferReader<byte>(readOnlyBytes);
-
-            long robSum = 0;
-            while (robReader.TryParse(out int value))
-            {
-                robSum += value;
-                robReader.Advance(1);
-            }
-
-            var brReader = new BufferReader<byte>(bytesRange);
-            long brSum = 0;
-            while (brReader.TryParse(out int value))
-            {
-                brSum += value;
-                brReader.Advance(1);
-            }
-
-            Assert.Equal(robSum, brSum);
-            Assert.NotEqual(brSum, 0);
         }
     }
 }

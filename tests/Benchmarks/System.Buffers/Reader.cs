@@ -45,7 +45,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
 
-            while (reader.TryParse(out int value))
+            while (reader.TryParse(out int value, out _))
             {
                 reader.Advance(1); // advance past the delimiter
             }
@@ -56,7 +56,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
 
-            while (Utf8Parser.TryParse(reader.CurrentSpan.Slice(reader.Consumed), out int value, out int consumed))
+            while (Utf8Parser.TryParse(reader.CurrentSpan.Slice((int)reader.Consumed), out int value, out int consumed))
             {
                 reader.Advance(consumed + 1);
             }

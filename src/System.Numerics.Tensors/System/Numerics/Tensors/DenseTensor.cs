@@ -4,7 +4,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Numerics
+namespace System.Numerics.Tensors
 {
     /// <summary>
     /// Represents a multi-dimensional collection of objects of type T that can be accessed by indices.  DenseTensor stores values in a contiguous sequential block of memory where all values are represented.

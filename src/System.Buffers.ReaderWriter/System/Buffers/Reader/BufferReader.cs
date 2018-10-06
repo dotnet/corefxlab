@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
@@ -27,11 +28,16 @@ namespace System.Buffers.Reader
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
                 _moreData = true;
-                CurrentSpan = memory.Span;
-                if (CurrentSpan.Length == 0)
+
+                if (memory.Length == 0)
                 {
+                    CurrentSpan = default;
                     // No space in the first span, move to one with space
                     GetNextSpan();
+                }
+                else
+                {
+                    CurrentSpan = memory.Span;
                 }
             }
             else
@@ -79,7 +85,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The total number of {T}s processed by the reader.
         /// </summary>
-        public int Consumed { get; private set; }
+        public long Consumed { get; private set; }
 
         /// <summary>
         /// Peeks at the next value without advancing the reader.
@@ -128,6 +134,67 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
+        /// Move the reader back the specified number of positions.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Rewind(long count)
+        {
+            if (count < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
+            }
+
+            Consumed -= count;
+
+            if (CurrentSpanIndex >= count)
+            {
+                CurrentSpanIndex -= (int)count;
+            }
+            else
+            {
+                // Current segment doesn't have enough space, scan backward through segments
+                RetreatToPreviousSpan(Consumed);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void RetreatToPreviousSpan(long consumed)
+        {
+            ResetReader();
+            Advance(consumed);
+        }
+
+        private void ResetReader()
+        {
+            CurrentSpanIndex = 0;
+            Consumed = 0;
+            _currentPosition = Sequence.Start;
+            _nextPosition = _currentPosition;
+
+            if (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            {
+                _moreData = true;
+
+                if (memory.Length == 0)
+                {
+                    CurrentSpan = default;
+                    // No space in the first span, move to one with space
+                    GetNextSpan();
+                }
+                else
+                {
+                    CurrentSpan = memory.Span;
+                }
+            }
+            else
+            {
+                // No space in any spans and at end of sequence
+                _moreData = false;
+                CurrentSpan = default;
+            }
+        }
+
+        /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -139,11 +206,16 @@ namespace System.Buffers.Reader
                 while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
                 {
                     _currentPosition = previousNextPosition;
-                    CurrentSpan = memory.Span;
-                    CurrentSpanIndex = 0;
-                    if (CurrentSpan.Length > 0)
+                    if (memory.Length > 0)
                     {
+                        CurrentSpan = memory.Span;
+                        CurrentSpanIndex = 0;
                         return;
+                    }
+                    else
+                    {
+                        CurrentSpan = default;
+                        CurrentSpanIndex = 0;
                     }
                 }
             }
@@ -154,18 +226,18 @@ namespace System.Buffers.Reader
         /// Move the reader ahead the specified number of positions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int count)
+        public void Advance(long count)
         {
             if (count < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
 
             Consumed += count;
 
             if (CurrentSpanIndex < CurrentSpan.Length - count)
             {
-                CurrentSpanIndex += count;
+                CurrentSpanIndex += (int)count;
             }
             else
             {
@@ -175,57 +247,64 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void AdvanceToNextSpan(int count)
+        private void AdvanceToNextSpan(long count)
         {
-            while (!End && count > 0)
+            while (_moreData)
             {
-                if (CurrentSpanIndex < CurrentSpan.Length - count)
+                int remaining = CurrentSpan.Length - CurrentSpanIndex;
+
+                if (remaining > count)
                 {
-                    CurrentSpanIndex += count;
+                    CurrentSpanIndex += (int)count;
                     count = 0;
                     break;
                 }
 
-                int remaining = (CurrentSpan.Length - CurrentSpanIndex);
-
                 CurrentSpanIndex += remaining;
                 count -= remaining;
+                Debug.Assert(count >= 0);
 
                 GetNextSpan();
+
+                if (count == 0)
+                    break;
             }
 
             if (count != 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
         }
 
         /// <summary>
-        /// Peek forward the number of positions specified by <paramref name="count"/>.
+        /// Peek forward up to the number of positions specified by <paramref name="maxCount"/>.
         /// </summary>
         /// <returns>Span over the peeked data.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<T> Peek(int count)
+        public ReadOnlySpan<T> Peek(int maxCount)
         {
             ReadOnlySpan<T> firstSpan = UnreadSpan;
-            if (firstSpan.Length >= count)
+            if (firstSpan.Length >= maxCount)
             {
-                return firstSpan.Slice(0, count);
+                return firstSpan.Slice(0, maxCount);
             }
 
             // Not enough contiguous Ts, allocate and copy what we can get
-            return PeekSlow(new T[count]);
+            return PeekSlow(new T[maxCount]);
         }
 
         /// <summary>
-        /// Peek forward the number of positions in <paramref name="copyBuffer"/>, copying into
+        /// Peek forward the number of positions in <paramref name="copyBuffer"/> (at most), copying into
         /// <paramref name="copyBuffer"/> if needed.
         /// </summary>
         /// <param name="copyBuffer">
         /// Temporary buffer to copy into if there isn't a contiguous span within the existing data to return.
-        /// Also describes the count of positions to peek.
+        /// Also describes the maximum count of positions to peek.
         /// </param>
-        /// <returns>Span over the peeked data.</returns>
+        /// <returns>
+        /// Span over the peeked data. The length may be shorter than <paramref name="copyBuffer"/> if there
+        /// is not enough data left to fill the requested length.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Peek(Span<T> copyBuffer)
         {

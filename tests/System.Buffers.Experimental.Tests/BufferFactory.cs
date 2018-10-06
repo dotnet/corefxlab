@@ -7,11 +7,10 @@ using System.Text;
 
 namespace System.Buffers.Tests
 {
-    internal static class BufferFactory
+    public static class BufferFactory
     {
         private class ReadOnlyBufferSegment : ReadOnlySequenceSegment<byte>
         {
-
             public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
             {
                 ReadOnlyBufferSegment segment = null;
@@ -21,12 +20,12 @@ namespace System.Buffers.Tests
                     var newSegment = new ReadOnlyBufferSegment()
                     {
                         Memory = buffer,
-                        RunningIndex = segment?.Memory.Length ?? 0
                     };
 
                     if (segment != null)
                     {
                         segment.Next = newSegment;
+                        newSegment.RunningIndex = segment.RunningIndex + segment.Memory.Length;
                     }
                     else
                     {
@@ -47,9 +46,21 @@ namespace System.Buffers.Tests
 
         public static ReadOnlySequence<byte> Create(params byte[][] buffers)
         {
-            if (buffers.Length == 1) return new ReadOnlySequence<byte>(buffers[0]);
+            if (buffers.Length == 1)
+                return new ReadOnlySequence<byte>(buffers[0]);
             var list = new List<Memory<byte>>();
-            foreach (var b in buffers) list.Add(b);
+            foreach (var buffer in buffers)
+                list.Add(buffer);
+            return Create(list.ToArray());
+        }
+
+        public static ReadOnlySequence<byte> CreateUtf8(params string[] buffers)
+        {
+            if (buffers.Length == 1)
+                return new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(buffers[0]));
+            var list = new List<Memory<byte>>();
+            foreach (var buffer in buffers)
+                list.Add(Encoding.UTF8.GetBytes(buffer));
             return Create(list.ToArray());
         }
 
