@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Expecto.CSharp;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -88,44 +87,6 @@ namespace Microsoft.Experimental.Collections.Tests
             }
 
             Assert.True(d.OrderBy(i => i.Key).SequenceEqual(rd.OrderBy(i => i.Key)));
-        }
-
-        //[Fact]
-        public void PopulatesFaster()
-        {
-            var size = 10_000_000; 
-            const int AggCount = 250;
-            var rand = new Random(11231992);
-            var keys = new ulong[size];
-            for (int i = 0; i < keys.Length; i++)
-            {
-                keys[i] = (ulong)rand.Next(size / AggCount);
-            }
-
-            int PopulateNew(RefDictionary<ulong, int> d)
-            {
-                foreach (var k in keys) d[k] += (int)k;
-                return d.Count;
-            }
-
-            int PopulateOld(RefDictionaryOld<ulong, int> d)
-            {
-                foreach (var k in keys) d[k] += (int)k;
-                return d.Count;
-            }
-
-            var result =
-                Function.IsFasterThan(
-                    () => new RefDictionary<ulong, int>(),
-                    PopulateNew,
-                    () => new RefDictionaryOld<ulong, int>(),
-                    PopulateOld,
-                    "new RefDictionary populates faster",
-                    out string statsMessage
-                );
-
-            Assert.True(result, statsMessage);
-            _output.WriteLine(statsMessage);
         }
     }
 }
