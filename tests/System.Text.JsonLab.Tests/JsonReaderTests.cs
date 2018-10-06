@@ -121,11 +121,6 @@ namespace System.Text.JsonLab.Tests
 
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
-
-            long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
-            JsonLabEmptyLoopHelper(dataUtf8);
-            long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
-            Assert.Equal(0, memoryAfter - memoryBefore);
         }
 
         [Theory]
@@ -147,11 +142,6 @@ namespace System.Text.JsonLab.Tests
             // TODO: Adjust test accordingly
             //Assert.Equal(expectedStr, actualStr);
             Assert.Equal(actualStr, actualStrSequence);
-
-            long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
-            JsonLabEmptyLoopHelper(dataUtf8);
-            long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
-            Assert.Equal(0, memoryAfter - memoryBefore);
         }
 
         [Theory]

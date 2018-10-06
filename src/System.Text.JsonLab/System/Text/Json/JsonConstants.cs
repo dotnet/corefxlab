@@ -37,13 +37,15 @@ namespace System.Text.JsonLab
 
         #region Common values
 
-        public static readonly byte[] TrueValue = { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
-        public static readonly byte[] FalseValue = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
-        public static readonly byte[] NullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
+        public static ReadOnlySpan<byte> TrueValue => new byte[] { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
 
-        public static readonly byte[] Delimiters = { ListSeperator, CloseBrace, CloseBracket, CarriageReturn, LineFeed, Space, Tab };
+        public static ReadOnlySpan<byte> FalseValue => new byte[] { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
 
-        public static readonly byte[] WhiteSpace = { Space, CarriageReturn, LineFeed, Tab };
+        public static ReadOnlySpan<byte> NullValue => new byte[] { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
+
+        public static ReadOnlySpan<byte> Delimiters => new byte[] { ListSeperator, CloseBrace, CloseBracket, CarriageReturn, LineFeed, Space, Tab };
+
+        public static ReadOnlySpan<byte> WhiteSpace => new byte[] { Space, CarriageReturn, LineFeed, Tab };
 
         #endregion Common values
     }
