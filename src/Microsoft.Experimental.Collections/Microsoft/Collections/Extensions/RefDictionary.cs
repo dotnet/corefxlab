@@ -85,22 +85,7 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = entries[entryIndex].next;
                 }
 
-                if (Count == entries.Length)
-                {
-                    var count = Count;
-                    entries = new Entry[count * 2];
-                    Array.Copy(_entries, 0, entries, 0, count);
-                    _entries = entries;
-
-                    int[] newBuckets = new int[count * 2];
-                    _buckets = newBuckets;
-                    for (int i = 0; i < count;)
-                    {
-                        int bucketIndex = GetBucketIndex(entries[i].key);
-                        entries[i].next = newBuckets[bucketIndex] - 1;
-                        newBuckets[bucketIndex] = ++i;
-                    }
-                }
+                if (Count == entries.Length) entries = Resize();
 
                 entryIndex = Count++;
                 entries[entryIndex].key = key;
@@ -109,6 +94,26 @@ namespace Microsoft.Experimental.Collections
                 _buckets[bucket] = entryIndex + 1;
                 return ref entries[entryIndex].value;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Entry[] Resize()
+        {
+            var count = Count;
+            var entries = new Entry[count * 2];
+            Array.Copy(_entries, 0, entries, 0, count);
+            _entries = entries;
+
+            int[] newBuckets = new int[count * 2];
+            _buckets = newBuckets;
+            for (int i = 0; i < count;)
+            {
+                int bucketIndex = GetBucketIndex(entries[i].key);
+                entries[i].next = newBuckets[bucketIndex] - 1;
+                newBuckets[bucketIndex] = ++i;
+            }
+
+            return entries;
         }
 
         public IEnumerable<TKey> Keys
