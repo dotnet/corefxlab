@@ -229,6 +229,73 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [MemberData(nameof(TestCases))]
+        public static void TestPartialJsonReaderMultiSegment(bool compactData, TestCaseType type, string jsonString)
+        {
+            // Skipping really large JSON since slicing them (O(n^2)) is too slow.
+            if (type == TestCaseType.Json40KB || type == TestCaseType.Json400KB || type == TestCaseType.ProjectLockJson
+                || type == TestCaseType.DeepTree || type == TestCaseType.BroadTree || type == TestCaseType.LotsOfNumbers
+                || type == TestCaseType.LotsOfStrings || type == TestCaseType.Json4KB)
+            {
+                return;
+            }
+
+            // Remove all formatting/indendation
+            if (compactData)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                {
+                    jsonReader.FloatParseHandling = FloatParseHandling.Decimal;
+                    JToken jtoken = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        jtoken.WriteTo(jsonWriter);
+                        jsonString = stringWriter.ToString();
+                    }
+                }
+            }
+
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            ReadOnlyMemory<byte> dataMemory = dataUtf8;
+
+            var sequences = new List<ReadOnlySequence<byte>>();
+
+            for (int i = 0; i < dataUtf8.Length; i++)
+            {
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+                sequences.Add(sequence);
+            }
+
+            for (int i = 0; i < sequences.Count; i++)
+            {
+                var json = new Utf8JsonReader(sequences[i]);
+                while (json.Read()) ;
+                Assert.True(json.ConsumedEverything);
+            }
+
+            for (int i = 0; i < sequences.Count; i++)
+            {
+                ReadOnlySequence<byte> sequence = sequences[i];
+                for (int j = 0; j < dataUtf8.Length; j++)
+                {
+                    var json = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
+                    while (json.Read()) ;
+
+                    int consumed = json.CurrentIndex;
+                    JsonReaderState jsonState = json.State;
+                    json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.State);
+                    while (json.Read()) ;
+                    Assert.True(json.ConsumedEverything);
+                    Assert.Equal(dataUtf8.Length - consumed, json.CurrentIndex);
+                }
+            }
+        }
+
+        [Theory]
         [MemberData(nameof(SpecialNumTestCases))]
         public static void TestPartialJsonReaderSpecialNumbers(TestCaseType type, string jsonString)
         {

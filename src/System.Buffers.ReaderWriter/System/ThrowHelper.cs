@@ -31,7 +31,7 @@ namespace System.Buffers
 
     internal enum ExceptionArgument
     {
-
+        count,
         length,
 
     }

@@ -22,7 +22,7 @@ namespace System.Text.JsonLab
             _inObject == default &&
             _stack == null &&
             _tokenType == default &&
-            _lineNumber == default &&
+            //_lineNumber == default && // the default _lineNumber is 1, we want IsDefault to return true for default(JsonReaderState)
             _position == default;
     }
 }

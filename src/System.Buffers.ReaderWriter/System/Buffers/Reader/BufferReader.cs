@@ -28,11 +28,16 @@ namespace System.Buffers.Reader
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
                 _moreData = true;
-                CurrentSpan = memory.Span;
-                if (CurrentSpan.Length == 0)
+
+                if (memory.Length == 0)
                 {
+                    CurrentSpan = default;
                     // No space in the first span, move to one with space
                     GetNextSpan();
+                }
+                else
+                {
+                    CurrentSpan = memory.Span;
                 }
             }
             else
@@ -129,6 +134,67 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
+        /// Move the reader back the specified number of positions.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Rewind(long count)
+        {
+            if (count < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
+            }
+
+            Consumed -= count;
+
+            if (CurrentSpanIndex >= count)
+            {
+                CurrentSpanIndex -= (int)count;
+            }
+            else
+            {
+                // Current segment doesn't have enough space, scan backward through segments
+                RetreatToPreviousSpan(Consumed);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void RetreatToPreviousSpan(long consumed)
+        {
+            ResetReader();
+            Advance(consumed);
+        }
+
+        private void ResetReader()
+        {
+            CurrentSpanIndex = 0;
+            Consumed = 0;
+            _currentPosition = Sequence.Start;
+            _nextPosition = _currentPosition;
+
+            if (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            {
+                _moreData = true;
+
+                if (memory.Length == 0)
+                {
+                    CurrentSpan = default;
+                    // No space in the first span, move to one with space
+                    GetNextSpan();
+                }
+                else
+                {
+                    CurrentSpan = memory.Span;
+                }
+            }
+            else
+            {
+                // No space in any spans and at end of sequence
+                _moreData = false;
+                CurrentSpan = default;
+            }
+        }
+
+        /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -160,18 +226,18 @@ namespace System.Buffers.Reader
         /// Move the reader ahead the specified number of positions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int count)
+        public void Advance(long count)
         {
             if (count < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
 
             Consumed += count;
 
             if (CurrentSpanIndex < CurrentSpan.Length - count)
             {
-                CurrentSpanIndex += count;
+                CurrentSpanIndex += (int)count;
             }
             else
             {
@@ -181,7 +247,7 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void AdvanceToNextSpan(int count)
+        private void AdvanceToNextSpan(long count)
         {
             while (_moreData)
             {
@@ -189,7 +255,7 @@ namespace System.Buffers.Reader
 
                 if (remaining > count)
                 {
-                    CurrentSpanIndex += count;
+                    CurrentSpanIndex += (int)count;
                     count = 0;
                     break;
                 }
@@ -206,7 +272,7 @@ namespace System.Buffers.Reader
 
             if (count != 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
         }
 
