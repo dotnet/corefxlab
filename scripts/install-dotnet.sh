@@ -100,6 +100,10 @@ get_os_download_name_from_platform() {
             echo "ubuntu.16.10"
             return 0
             ;;
+        "ubuntu.18.04")
+            echo "ubuntu"
+            return 0
+            ;;
         "alpine.3.4.3")
             echo "alpine"
             return 0
