@@ -57,6 +57,25 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void AdvancePastEmptySegments()
+        {
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {
+                new byte[] { 0          },
+                new byte[] { },
+                new byte[] { },
+                new byte[] { }
+            });
+
+            var reader = new BufferReader<byte>(bytes);
+            reader.Advance(1);
+            Assert.Equal(0, reader.CurrentSpanIndex);
+            Assert.Equal(0, reader.CurrentSpan.Length);
+            Assert.False(reader.TryPeek(out byte value));
+            ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+            Assert.Equal(0, sequence.Length);
+        }
+
+        [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
             var bytes = BufferFactory.Create(new byte[][] {

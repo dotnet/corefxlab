@@ -7,11 +7,10 @@ using System.Text;
 
 namespace System.Buffers.Tests
 {
-    internal static class BufferFactory
+    public static class BufferFactory
     {
         private class ReadOnlyBufferSegment : ReadOnlySequenceSegment<byte>
         {
-
             public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
             {
                 ReadOnlyBufferSegment segment = null;
@@ -21,12 +20,12 @@ namespace System.Buffers.Tests
                     var newSegment = new ReadOnlyBufferSegment()
                     {
                         Memory = buffer,
-                        RunningIndex = segment?.Memory.Length ?? 0
                     };
 
                     if (segment != null)
                     {
                         segment.Next = newSegment;
+                        newSegment.RunningIndex = segment.RunningIndex + segment.Memory.Length;
                     }
                     else
                     {

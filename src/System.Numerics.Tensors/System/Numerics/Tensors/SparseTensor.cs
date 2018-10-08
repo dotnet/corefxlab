@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Numerics
+namespace System.Numerics.Tensors
 {
     /// <summary>
     /// Represents a multi-dimensional collection of objects of type T that can be accessed by indices.  Unlike other Tensor<T> implementations SparseTensor<T> does not expose its backing storage.  It is meant as an intermediate to be used to build other Tensors, such as CompressedSparseTensor.  Unlike CompressedSparseTensor where insertions are O(n), insertions to SparseTensor<T> are nominally O(1).

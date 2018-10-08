@@ -10,19 +10,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\System.Buffers.Experimental\System\Range.cs" Link="System\Range.cs" />
-    <Compile Include="System\Numerics\ArrayUtilities.cs" />
-    <Compile Include="System\Numerics\ArrayTensorExtensions.cs" />
-    <Compile Include="System\Numerics\DenseTensor.cs" />
-    <Compile Include="System\Numerics\CompressedSparseTensor.cs" />
-    <Compile Include="System\Numerics\SparseTensor.cs" />
-    <Compile Include="System\Numerics\Tensor.cs" />
-    <Compile Include="System\Numerics\TensorView.cs" />
-    <Compile Include="System\Numerics\TensorArithmetic.cs">
+    <Compile Include="System\Numerics\Tensors\ArrayUtilities.cs" />
+    <Compile Include="System\Numerics\Tensors\ArrayTensorExtensions.cs" />
+    <Compile Include="System\Numerics\Tensors\DenseTensor.cs" />
+    <Compile Include="System\Numerics\Tensors\CompressedSparseTensor.cs" />
+    <Compile Include="System\Numerics\Tensors\SparseTensor.cs" />
+    <Compile Include="System\Numerics\Tensors\Tensor.cs" />
+    <Compile Include="System\Numerics\Tensors\TensorView.cs" />
+    <Compile Include="System\Numerics\Tensors\TensorArithmetic.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TensorArithmetic.tt</DependentUpon>
     </Compile>
-    <Compile Include="System\Numerics\Tensor.Operations.cs">
+    <Compile Include="System\Numerics\Tensors\Tensor.Operations.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Tensor.Operations.tt</DependentUpon>
@@ -39,11 +39,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TensorArithmetic.tt</DependentUpon>
     </None>
-    <None Update="System\Numerics\TensorArithmetic.tt">
+    <None Update="System\Numerics\Tensors\TensorArithmetic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TensorArithmetic.cs</LastGenOutput>
     </None>
-    <None Update="System\Numerics\Tensor.Operations.tt">
+    <None Update="System\Numerics\Tensors\Tensor.Operations.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Tensor.Operations.cs</LastGenOutput>
     </None>

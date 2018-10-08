@@ -13,9 +13,13 @@ namespace System.Buffers.Reader
         // (i.e. ReadOnlySequence) this behavior can be extremely expensive and/or lead to overflow and
         // out-of-memory situations. We'll cap the maximum number of bytes to consume.
         private const int MaxParseBytes = 128;
-        private const int MaxBoolLength = 5;
+
+        private const int MaxBoolLength = 5;       // False
+        private const int MaxGuidLength = 38;      // {9f21bcb9-f5c2-4b54-9b1c-9e0869bf9c16}
+        private const int MaxDateTimeLength = 34;  // 9999-12-31T15:59:59.9999999-08:00
 
         private delegate bool ParseDelegate<T>(ReadOnlySpan<byte> source, out T value, out int consumed, char standardFormat);
+        private static ParseDelegate<bool> s_boolParse;
         private static ParseDelegate<byte> s_byteParse;
         private static ParseDelegate<sbyte> s_sbyteParse;
         private static ParseDelegate<short> s_shortParse;
@@ -27,8 +31,67 @@ namespace System.Buffers.Reader
         private static ParseDelegate<float> s_floatParse;
         private static ParseDelegate<double> s_doubleParse;
         private static ParseDelegate<decimal> s_decimalParse;
+        private static ParseDelegate<Guid> s_guidParse;
+        private static ParseDelegate<TimeSpan> s_timeSpanParse;
+        private static ParseDelegate<DateTime> s_dateTimeParse;
+        private static ParseDelegate<DateTimeOffset> s_dateTimeOffsetParse;
 
         // Note: We mark the getters as NoInlining as we want to make sure the delegate creation is lazy.
+
+        private static ParseDelegate<bool> BoolParser
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                if (s_boolParse == null)
+                    s_boolParse = Utf8Parser.TryParse;
+                return s_boolParse;
+            }
+        }
+
+        private static ParseDelegate<Guid> GuidParser
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                if (s_guidParse == null)
+                    s_guidParse = Utf8Parser.TryParse;
+                return s_guidParse;
+            }
+        }
+
+        private static ParseDelegate<TimeSpan> TimeSpanParser
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                if (s_timeSpanParse == null)
+                    s_timeSpanParse = Utf8Parser.TryParse;
+                return s_timeSpanParse;
+            }
+        }
+
+        private static ParseDelegate<DateTime> DateTimeParser
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                if (s_dateTimeParse == null)
+                    s_dateTimeParse = Utf8Parser.TryParse;
+                return s_dateTimeParse;
+            }
+        }
+
+        private static ParseDelegate<DateTimeOffset> DateTimeOffsetParser
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                if (s_dateTimeOffsetParse == null)
+                    s_dateTimeOffsetParse = Utf8Parser.TryParse;
+                return s_dateTimeOffsetParse;
+            }
+        }
 
         private static ParseDelegate<byte> ByteParser
         {
@@ -177,20 +240,31 @@ namespace System.Buffers.Reader
             }
             else if (unread.Length >= MaxBoolLength)
             {
+                // There was already enough available bytes for all valid bool possibilities
+                // in the current span, no need to try again.
                 return false;
             }
 
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat);
+            return TryParseFixed(ref reader, out value, out bytesConsumed, standardFormat, MaxBoolLength, BoolParser);
         }
 
+        /// <summary>
+        /// Parse the specified buffer size.
+        /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private unsafe static bool TryParseSlow(ref BufferReader<byte> reader, out bool value, out int bytesConsumed, char standardFormat)
+        private unsafe static bool TryParseFixed<T>(
+            ref BufferReader<byte> reader,
+            out T value,
+            out int bytesConsumed,
+            char standardFormat,
+            int bufferSize,
+            ParseDelegate<T> parseDelegate) where T : unmanaged
         {
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
-            byte* buffer = stackalloc byte[MaxBoolLength];
-            Span<byte> tempSpan = new Span<byte>(buffer, MaxBoolLength);
-            if (Utf8Parser.TryParse(reader.PeekSlow(tempSpan), out value, out bytesConsumed, standardFormat))
+            byte* buffer = stackalloc byte[bufferSize];
+            Span<byte> tempSpan = new Span<byte>(buffer, bufferSize);
+            if (parseDelegate(reader.PeekSlow(tempSpan), out value, out bytesConsumed, standardFormat))
             {
                 reader.Advance(bytesConsumed);
                 return true;
@@ -199,8 +273,11 @@ namespace System.Buffers.Reader
             return false;
         }
 
+        /// <summary>
+        /// Try parsing until we've grabbed all available valid bytes or hit <see cref="MaxParseBytes"/>.
+        /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static unsafe bool TryParseSlow<T>(
+        private static unsafe bool TryParseGreedy<T>(
             ref BufferReader<byte> reader,
             out T value,
             out int bytesConsumed,
@@ -283,7 +360,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a short will be less than 4 bytes ("255").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 4, ByteParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 4, ByteParser);
         }
 
         /// <summary>
@@ -328,7 +405,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a short will be less than 5 bytes ("-128").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 5, SByteParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 5, SByteParser);
         }
 
         /// <summary>
@@ -373,7 +450,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a short will be less than 8 bytes ("-32,768").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 8, ShortParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 8, ShortParser);
         }
 
         /// <summary>
@@ -412,7 +489,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a short will be less than 7 bytes ("65,535").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 7, UShortParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 7, UShortParser);
         }
 
         /// <summary>
@@ -457,7 +534,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits
             // The typical max size for an int will be less than 15 bytes ("-2,147,483,648").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 15, IntParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 15, IntParser);
         }
 
         /// <summary>
@@ -496,7 +573,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits
             // The typical max size for an int will be less than 14 bytes ("4,294,967,295").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 14, UIntParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 14, UIntParser);
         }
 
         /// <summary>
@@ -541,7 +618,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a long will be less than 27 bytes ("-9,223,372,036,854,775,808").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 27, LongParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 27, LongParser);
         }
 
         /// <summary>
@@ -580,7 +657,7 @@ namespace System.Buffers.Reader
 
             // If we ate all of our unread there may be more valid digits.
             // The typical max size for a long will be less than 27 bytes ("18,446,744,073,709,551,615").
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, 27, ULongParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, 27, ULongParser);
         }
 
         /// <summary>
@@ -601,22 +678,23 @@ namespace System.Buffers.Reader
             out int bytesConsumed,
             char standardFormat = '\0')
         {
+            // We have to have MaxParseBytes available when failing to parse float (or
+            // be at the end of the reader) to ensure we've not failed only because we
+            // don't have enough of the data available (i.e. the value crosses spans).
+            //
+            // We could be partially into "-Infinity" and have to hit the slow path. Same
+            // goes for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
+            // know that we've truly failed.
+
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (!Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat)
                 || bytesConsumed >= MaxParseBytes)
             {
-                // Failed to parse or we consumed more than we're willing to accept
-
-                // Unfortunately the Utf8Parser won't tell us where we've failed. We could
-                // be partially into "-Infinity" and have to hit the slow path. Same goes
-                // for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
-                // know that we've truly failed. Rather than add complicated logic here and
-                // bloating the call sites we'll do one simple check for max space and fall
-                // through to the slow path if we don't have enough space in our current
-                // buffer to make a definitive failure statement.
-                if (unread.Length > MaxParseBytes)
+                if (unread.Length >= MaxParseBytes)
                 {
+                    // We have enough space in the current span to definitively know that
+                    // we've failed or we consumed more than we're willing to.
                     bytesConsumed = 0;
                     return false;
                 }
@@ -631,7 +709,7 @@ namespace System.Buffers.Reader
             // We have to pass MaxParseBytes for float as we have no idea where segments end
             // and the exponent separators would cause a failed parse ('E' and '+') if they
             // fail on it.
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, FloatParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, FloatParser);
         }
 
         /// <summary>
@@ -652,28 +730,23 @@ namespace System.Buffers.Reader
             out int bytesConsumed,
             char standardFormat = '\0')
         {
+            // We have to have MaxParseBytes available when failing to parse double (or
+            // be at the end of the reader) to ensure we've not failed only because we
+            // don't have enough of the data available (i.e. the value crosses spans).
+            //
+            // We could be partially into "-Infinity" and have to hit the slow path. Same
+            // goes for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
+            // know that we've truly failed.
+
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (!Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat)
                 || bytesConsumed >= MaxParseBytes)
             {
-                // Failed to parse or we consumed more than we're willing to accept
-
-                // Note that Utf8Parser only supports up to 50 significant digits. As such
-                // most fixed point double representations are unparsable (as double's max
-                // is 1.79769313486232e308). If this would ever change we'd have to update
-                // our MaxParseBytes to handle these large values. Presumption is that this
-                // won't be a common ask and is an unnecessary tax to the normal usage.
-
-                // Unfortunately the Utf8Parser won't tell us where we've failed. We could
-                // be partially into "-Infinity" and have to hit the slow path. Same goes
-                // for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
-                // know that we've truly failed. Rather than add complicated logic here and
-                // bloating the call sites we'll do one simple check for max space and fall
-                // through to the slow path if we don't have enough space in our current
-                // buffer to make a definitive failure statement.
-                if (unread.Length > MaxParseBytes)
+                if (unread.Length >= MaxParseBytes)
                 {
+                    // We have enough space in the current span to definitively know that
+                    // we've failed or we consumed more than we're willing to.
                     bytesConsumed = 0;
                     return false;
                 }
@@ -688,9 +761,8 @@ namespace System.Buffers.Reader
             // We have to pass MaxParseBytes for float as we have no idea where segments end
             // and the exponent separators would cause a failed parse ('E' and '+') if they
             // fail on it.
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, DoubleParser);
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, DoubleParser);
         }
-
 
         /// <summary>
         /// Try to parse an <see cref="decimal"/> out of the reader (as UTF-8).
@@ -710,22 +782,23 @@ namespace System.Buffers.Reader
             out int bytesConsumed,
             char standardFormat = '\0')
         {
+            // We have to have MaxParseBytes available when failing to parse decimal (or
+            // be at the end of the reader) to ensure we've not failed only because we
+            // don't have enough of the data available (i.e. the value crosses spans).
+            //
+            // We could be partially into "-Infinity" and have to hit the slow path. Same
+            // goes for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
+            // know that we've truly failed.
+
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (!Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat)
                 || bytesConsumed >= MaxParseBytes)
             {
-                // Failed to parse or we consumed more than we're willing to accept
-
-                // Unfortunately the Utf8Parser won't tell us where we've failed. We could
-                // be partially into "-Infinity" and have to hit the slow path. Same goes
-                // for "-3.402823E+38" - if our current buffer ends on "E" or "+" we can't
-                // know that we've truly failed. Rather than add complicated logic here and
-                // bloating the call sites we'll do one simple check for max space and fall
-                // through to the slow path if we don't have enough space in our current
-                // buffer to make a definitive failure statement.
-                if (unread.Length > MaxParseBytes)
+                if (unread.Length >= MaxParseBytes)
                 {
+                    // We have enough space in the current span to definitively know that
+                    // we've failed or we consumed more than we're willing to.
                     bytesConsumed = 0;
                     return false;
                 }
@@ -737,10 +810,151 @@ namespace System.Buffers.Reader
                 return true;
             }
 
-            // We have to pass MaxParseBytes for float as we have no idea where segments end
-            // and the exponent separators would cause a failed parse ('E' and '+') if they
-            // fail on it.
-            return TryParseSlow(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, DecimalParser);
+            // We need to pass MaxParseBytes to ensure we fail correctly (see above).
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, DecimalParser);
+        }
+
+        /// <summary>
+        /// Try to parse a <see cref="Guid"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="Guid"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <param name="bytesConsumed">The number of bytes advanced by the reader.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out Guid, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(ref this BufferReader<byte> reader, out Guid value, out int bytesConsumed, char standardFormat = '\0')
+        {
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
+
+            if (Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat))
+            {
+                reader.Advance(bytesConsumed);
+                return true;
+            }
+            else if (unread.Length >= MaxGuidLength)
+            {
+                // There was already enough available bytes for all valid Guid possibilities
+                // in the current span, no need to try again.
+                return false;
+            }
+
+            return TryParseFixed(ref reader, out value, out bytesConsumed, standardFormat, MaxGuidLength, GuidParser);
+        }
+
+        /// <summary>
+        /// Try to parse an <see cref="TimeSpan"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="TimeSpan"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <param name="bytesConsumed">The number of bytes advanced by the reader.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out TimeSpan, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(
+            ref this BufferReader<byte> reader,
+            out TimeSpan value,
+            out int bytesConsumed,
+            char standardFormat = '\0')
+        {
+            // We have to have MaxParseBytes available when failing to parse TimeSpans (or
+            // be at the end of the reader) to ensure we've not failed only because we
+            // don't have enough of the data available (i.e. the value crosses spans).
+            //
+            // TimeSpan allows unlimited leading zeroes in all but the last segment.
+            // TimeSpan's max value is canonically 10675199.02:48:05.4775807 and
+            // 000010675199.002:0048:00005.4775807 is equivalent, for example.
+
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
+
+            if (!Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat)
+                || bytesConsumed >= MaxParseBytes)
+            {
+                if (unread.Length >= MaxParseBytes)
+                {
+                    // We have enough space in the current span to definitively know that
+                    // we've failed or we consumed more than we're willing to.
+                    bytesConsumed = 0;
+                    return false;
+                }
+            }
+            else if (bytesConsumed < unread.Length)
+            {
+                // The parser found a value it wouldn't consume so we have all useful data.
+                reader.Advance(bytesConsumed);
+                return true;
+            }
+
+            // We need to pass MaxParseBytes to ensure we fail correctly (see above).
+            return TryParseGreedy(ref reader, out value, out bytesConsumed, standardFormat, MaxParseBytes, TimeSpanParser);
+        }
+
+        /// <summary>
+        /// Try to parse a <see cref="DateTime"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="DateTime"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <param name="bytesConsumed">The number of bytes advanced by the reader.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out DateTime, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(ref this BufferReader<byte> reader, out DateTime value, out int bytesConsumed, char standardFormat = '\0')
+        {
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
+
+            if (Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat))
+            {
+                reader.Advance(bytesConsumed);
+                return true;
+            }
+            else if (unread.Length >= MaxDateTimeLength)
+            {
+                // There was already enough available bytes for all valid DateTime possibilities
+                // in the current span, no need to try again.
+                return false;
+            }
+
+            return TryParseFixed(ref reader, out value, out bytesConsumed, standardFormat, MaxDateTimeLength, DateTimeParser);
+        }
+
+        /// <summary>
+        /// Try to parse a <see cref="DateTimeOffset"/> out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed <see cref="DateTimeOffset"/> value or default if failed.</param>
+        /// <param name="standardFormat">Expected format.</param>
+        /// <param name="bytesConsumed">The number of bytes advanced by the reader.</param>
+        /// <remarks>
+        /// <see cref="Utf8Parser.TryParse(ReadOnlySpan{byte}, out DateTimeOffset, out int, char)"/> for supported formats.
+        /// </remarks>
+        /// <exception cref="FormatException">Thrown if the given format isn't supported.</exception>
+        /// <returns>True if successfully parsed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(ref this BufferReader<byte> reader, out DateTimeOffset value, out int bytesConsumed, char standardFormat = '\0')
+        {
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
+
+            if (Utf8Parser.TryParse(unread, out value, out bytesConsumed, standardFormat))
+            {
+                reader.Advance(bytesConsumed);
+                return true;
+            }
+            else if (unread.Length >= MaxDateTimeLength)
+            {
+                // There was already enough available bytes for all valid DateTimeOffset possibilities
+                // in the current span, no need to try again.
+                return false;
+            }
+
+            return TryParseFixed(ref reader, out value, out bytesConsumed, standardFormat, MaxDateTimeLength, DateTimeOffsetParser);
         }
     }
 }

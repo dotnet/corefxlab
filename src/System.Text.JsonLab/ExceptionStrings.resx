@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ArrayDepthTooLarge" xml:space="preserve">
+    <value>Depth of {0} within an array is larger than max depth of {1}.</value>
+  </data>
+  <data name="ArrayEndWithinObject" xml:space="preserve">
+    <value>We are within an object but observed an ']'.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>An error occurred while reading the json.</value>
+  </data>
+  <data name="DepthMustBePositive" xml:space="preserve">
+    <value>Mismatched number of start/end objects or arrays. Depth is {0} but must be greater than 0.</value>
+  </data>
+  <data name="EndOfStringNotFound" xml:space="preserve">
+    <value>Expected a '"' to indicate end of string, but instead reached end of data.</value>
+  </data>
+  <data name="ExpectedDigitNotFound" xml:space="preserve">
+    <value>Invalid number. Last character read: '{0}'. Expected a digit ('0'-'9').</value>
+  </data>
+  <data name="ExpectedDigitNotFoundEndOfData" xml:space="preserve">
+    <value>Invalid number. Last character read: '{0}'. Expected a digit ('0'-'9') but reached end of data.</value>
+  </data>
+  <data name="ExpectedEndAfterSingleJson" xml:space="preserve">
+    <value>Expected end of json after a single value but additional data found. Last character read: '{0}'.</value>
+  </data>
+  <data name="ExpectedEndOfDigitNotFound" xml:space="preserve">
+    <value>Invalid end of number. Last character read: '{0}'. Expected a delimiter.</value>
+  </data>
+  <data name="ExpectedFalse" xml:space="preserve">
+    <value>Expected a 'false' value, but instead got '{0}'.</value>
+  </data>
+  <data name="ExpectedNextDigitComponentNotFound" xml:space="preserve">
+    <value>Invalid number. Last character read: '{0}'. Expected '.' or 'E' or 'e'.</value>
+  </data>
+  <data name="ExpectedNextDigitEValueNotFound" xml:space="preserve">
+    <value>Invalid number. Last character read: '{0}'. Expected 'E' or 'e'.</value>
+  </data>
+  <data name="ExpectedNull" xml:space="preserve">
+    <value>Expected a 'null' value, but instead got '{0}'.</value>
+  </data>
+  <data name="ExpectedSeparaterAfterPropertyNameNotFound" xml:space="preserve">
+    <value>Expected a ':' following the property name, but instead got '{0}'.</value>
+  </data>
+  <data name="ExpectedStartOfPropertyNotFound" xml:space="preserve">
+    <value>Expected '"' for start of property name. Instead reached '{0}'.</value>
+  </data>
+  <data name="ExpectedStartOfPropertyOrValueNotFound" xml:space="preserve">
+    <value>Expected a start of a property name or value after ',', but reached end of data instead.</value>
+  </data>
+  <data name="ExpectedStartOfValueNotFound" xml:space="preserve">
+    <value>Expected start of a value, but instead got '{0}'.</value>
+  </data>
+  <data name="ExpectedTrue" xml:space="preserve">
+    <value>Expected a 'true' value, but instead got '{0}'.</value>
+  </data>
+  <data name="ExpectedValueAfterPropertyNameNotFound" xml:space="preserve">
+    <value>Expected a value following the property, but instead reached end of data.</value>
+  </data>
+  <data name="FoundInvalidCharacter" xml:space="preserve">
+    <value>Expected either ',', '}}', or ']', but instead got '{0}'.</value>
+  </data>
+  <data name="InvalidEndOfJson" xml:space="preserve">
+    <value>Expected valid end of json payload with TokenType either EndArray or EndObject. Current token type is '{0}'.</value>
+  </data>
+  <data name="ObjectDepthTooLarge" xml:space="preserve">
+    <value>Depth of {0} within an object is larger than max depth of {1}.</value>
+  </data>
+  <data name="ObjectEndWithinArray" xml:space="preserve">
+    <value>We are within an array but observed an '}}'.</value>
+  </data>
+</root>

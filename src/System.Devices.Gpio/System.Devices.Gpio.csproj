@@ -16,6 +16,26 @@
     <None Include="Documentation\GPIOSamples.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.1" />
+    <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="winmd\**" />
+    <EmbeddedResource Remove="winmd\**" />
+    <None Remove="winmd\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Windows.Devices">
+      <HintPath>winmd\Windows.Devices.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+    <Reference Include="Windows.Foundation">
+      <HintPath>winmd\Windows.Foundation.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+  </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="echo TargetsUnix   = '$(TargetsUnix)'" />
+    <Exec Command="echo TargetsWindows= '$(TargetsWindows)'" />
+    <Exec Command="echo OSGroup       = '$(OSGroup)'" />
+  </Target>
 </Project>

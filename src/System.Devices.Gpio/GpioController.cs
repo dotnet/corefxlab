@@ -21,6 +21,10 @@ namespace System.Devices.Gpio
             {
                 driver = new UnixDriver();
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                driver = new Windows10Driver();
+            }
             else
             {
                 throw new NotSupportedException($"Platform '{RuntimeInformation.OSDescription}' not supported");
