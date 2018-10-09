@@ -74,14 +74,7 @@ namespace System.Text.JsonLab
         private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
             string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
-            if (json.Instrument)
-            {
-                throw new JsonReaderException(message, json._lineNumber, json._position);
-            }
-            else
-            {
-                throw new JsonReaderException(message, -1, -1);
-            }
+            throw new JsonReaderException(message, json._lineNumber, json._position);
         }
 
         public static void ThrowInvalidCastException()
@@ -228,6 +221,12 @@ namespace System.Text.JsonLab
                 case ExceptionResource.ExpectedTrue:
                     message = string.Format(formatString, characters);
                     break;
+                // This case is covered between ArrayEndWithinObject and ObjectEndWithinArray
+                /*case ExceptionResource.DepthMustBePositive:
+                    break;*/
+                case ExceptionResource.InvalidCharacterWithinString:
+                    message = string.Format(formatString, character);
+                    break;
             }
 
             return message;
@@ -255,6 +254,7 @@ namespace System.Text.JsonLab
             ExpectedTrue,
             ExpectedValueAfterPropertyNameNotFound,
             FoundInvalidCharacter,
+            InvalidCharacterWithinString,
             InvalidEndOfJson,
             ObjectDepthTooLarge,
             ObjectEndWithinArray,

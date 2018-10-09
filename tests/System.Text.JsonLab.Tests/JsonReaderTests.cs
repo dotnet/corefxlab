@@ -613,27 +613,9 @@ namespace System.Text.JsonLab.Tests
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false)
-            {
-                Instrument = true
-            };
+            var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false);
             while (json.Read()) ;
             Assert.Equal(consumed, json.CurrentIndex);
-
-            json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State)
-            {
-                Instrument = true
-            };
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.Position);
-            }
 
             json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State);
             try
@@ -643,8 +625,8 @@ namespace System.Text.JsonLab.Tests
             }
             catch (JsonReaderException ex)
             {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
             }
         }
 
@@ -681,8 +663,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8, false)
             {
-                MaxDepth = maxDepth,
-                Instrument = true
+                MaxDepth = maxDepth
             };
 
             try
@@ -694,22 +675,6 @@ namespace System.Text.JsonLab.Tests
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
                 Assert.Equal(expectedPosition, ex.Position);
-            }
-
-            json = new Utf8JsonReader(dataUtf8, false)
-            {
-                MaxDepth = maxDepth
-            };
-
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
             }
         }
 
@@ -761,8 +726,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8)
             {
-                MaxDepth = maxDepth,
-                Instrument = true
+                MaxDepth = maxDepth
             };
 
             try
@@ -774,21 +738,6 @@ namespace System.Text.JsonLab.Tests
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
                 Assert.Equal(expectedPosition, ex.Position);
-            }
-
-            json = new Utf8JsonReader(dataUtf8)
-            {
-                MaxDepth = maxDepth
-            };
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
             }
         }
 

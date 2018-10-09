@@ -34,7 +34,6 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
-            Instrument = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -71,7 +70,6 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
-            Instrument = false;
         }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)
@@ -531,6 +529,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
+        //TODO: Add string validation
         private bool ConsumeString(ref BufferReader<byte> reader)
         {
             long consumedBefore = reader.Consumed;
@@ -541,12 +540,9 @@ namespace System.Text.JsonLab
                 Value = value;
                 ValueType = JsonValueType.String;
                 TokenType = JsonTokenType.Value;
-                if (Instrument)
-                {
-                    _position += (int)(reader.Consumed - consumedBefore);
-                    if (Value.IndexOf((byte)'\n') != -1)
-                        AdjustLineNumber(Value);
-                }
+                _position += (int)(reader.Consumed - consumedBefore);
+                if (Value.IndexOf((byte)'\n') != -1)
+                    AdjustLineNumber(Value);
                 return true;
             }
             if (_isFinalBlock)
@@ -565,18 +561,15 @@ namespace System.Text.JsonLab
                 }
                 reader.Advance(1);
                 CurrentIndex++;
-                if (Instrument)
+                // TODO: Does this work for Windows and Unix?
+                if (val == JsonConstants.LineFeed)
                 {
-                    // TODO: Does this work for Windows and Unix?
-                    if (val == JsonConstants.LineFeed)
-                    {
-                        _lineNumber++;
-                        _position = 0;
-                    }
-                    else
-                    {
-                        _position++;
-                    }
+                    _lineNumber++;
+                    _position = 0;
+                }
+                else
+                {
+                    _position++;
                 }
             }
         }
