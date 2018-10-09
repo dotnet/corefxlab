@@ -5,7 +5,6 @@
 using System.Buffers.Reader;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
@@ -730,7 +729,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private bool ValidateEscaping_Control_AndHex(ReadOnlySpan<byte> data)
         {
             int lastLineFeedIndex = -1;
