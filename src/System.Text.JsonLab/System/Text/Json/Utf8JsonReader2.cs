@@ -10,12 +10,12 @@ using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
 {
-    public ref partial struct Utf8JsonReader
+    public ref partial struct Utf8JsonReader2
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
-        private const int StringSizeThreshold = 8;
+        private const int StringSizeThreshold = 64;
 
         private readonly ReadOnlySpan<byte> _buffer;
 
@@ -104,7 +104,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-        public Utf8JsonReader(ReadOnlySpan<byte> data)
+        public Utf8JsonReader2(ReadOnlySpan<byte> data)
         {
             _containerMask = 0;
             Depth = 0;
@@ -127,7 +127,7 @@ namespace System.Text.JsonLab
             _isSingleValue = true;
         }
 
-        public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
+        public Utf8JsonReader2(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
         {
             if (!state.IsDefault)
             {
@@ -694,7 +694,7 @@ namespace System.Text.JsonLab
             Debug.Assert(_buffer.Length >= CurrentIndex + 1);
             Debug.Assert(_buffer[CurrentIndex] == JsonConstants.Quote);
 
-            return _buffer.Length >= StringSizeThreshold ? ConsumeStringVectorized() : ConsumeStringLoop();
+            return ConsumeStringLoop();
         }
 
         private bool ConsumeStringVectorized()

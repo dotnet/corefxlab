@@ -70,6 +70,18 @@ namespace System.Text.JsonLab
             GetJsonReaderException(ref json, resource, nextByte, bytes);
         }
 
+        public static void ThrowJsonReaderException(ref Utf8JsonReader2 json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
+        {
+            GetJsonReaderException(ref json, resource, nextByte, bytes);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetJsonReaderException(ref Utf8JsonReader2 json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
+        {
+            string message = "";
+            throw new JsonReaderException(message, json._lineNumber, json._position);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
