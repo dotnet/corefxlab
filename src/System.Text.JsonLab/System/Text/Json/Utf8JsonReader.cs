@@ -729,6 +729,7 @@ namespace System.Text.JsonLab
             }
         }
 
+        // https://tools.ietf.org/html/rfc8259#section-7
         private bool ValidateEscaping_Control_AndHex(ReadOnlySpan<byte> data)
         {
             int lastLineFeedIndex = -1;
