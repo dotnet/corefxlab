@@ -715,6 +715,8 @@ namespace System.Text.JsonLab
                 TokenType = JsonTokenType.Value;
                 CurrentIndex += idx + 1;
 
+                ValidateString(Value);
+
                 if (Instrument)
                 {
                     _position++;
@@ -729,6 +731,16 @@ namespace System.Text.JsonLab
                 return ConsumeStringWithNestedQuotes();
             }
         }
+
+        private static void ValidateString(ReadOnlySpan<byte> data)
+        {
+            if (data.IndexOf((byte)'\\') != -1 || data.IndexOfAnyControl() != -1)
+            {
+                ValidateEscapingAndHex(data);
+            }
+        }
+
+        private static void ValidateEscapingAndHex(ReadOnlySpan<byte> data) => throw new NotImplementedException();
 
         private bool ConsumeStringWithNestedQuotes()
         {
