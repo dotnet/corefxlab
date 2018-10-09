@@ -100,6 +100,10 @@ get_os_download_name_from_platform() {
             echo "ubuntu.16.10"
             return 0
             ;;
+        "ubuntu.18.04")
+            echo "ubuntu18.04"
+            return 0
+            ;;
         "alpine.3.4.3")
             echo "alpine"
             return 0
@@ -657,7 +661,7 @@ local_version_file_relative_path="/.version"
 bin_folder_relative_path=""
 temporary_file_template="${TMPDIR:-/tmp}/dotnet.XXXXXXXXX"
 
-channel="release/1.0.0"
+channel="release/2.1"
 version="Latest"
 install_dir="<auto>"
 architecture="<auto>"
