@@ -10,7 +10,7 @@ namespace System.Text.JsonLab.Benchmarks
     {
         private byte[] _dataUtf8;
 
-        [Params(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 32)]
+        [Params(0, 1, 2, 4, 8, 16, 32, 64, 128)]
         public int StringLength;
 
         [GlobalSetup]
@@ -40,13 +40,6 @@ namespace System.Text.JsonLab.Benchmarks
         public void ValidateReaderIndexOf()
         {
             var json = new Utf8JsonReader(_dataUtf8);
-            while (json.Read()) ;
-        }
-
-        [Benchmark]
-        public void ValidateReaderLoop()
-        {
-            var json = new Utf8JsonReader2(_dataUtf8);
             while (json.Read()) ;
         }
     }

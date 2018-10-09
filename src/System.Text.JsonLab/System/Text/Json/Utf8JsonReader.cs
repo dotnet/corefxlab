@@ -15,8 +15,6 @@ namespace System.Text.JsonLab
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
-        private const int StringSizeThreshold = 8;
-
         private readonly ReadOnlySpan<byte> _buffer;
 
         public int CurrentIndex { get; private set; }
@@ -694,7 +692,7 @@ namespace System.Text.JsonLab
             Debug.Assert(_buffer.Length >= CurrentIndex + 1);
             Debug.Assert(_buffer[CurrentIndex] == JsonConstants.Quote);
 
-            return _buffer.Length >= StringSizeThreshold ? ConsumeStringVectorized() : ConsumeStringLoop();
+            return ConsumeStringVectorized();
         }
 
         private bool ConsumeStringVectorized()
@@ -730,90 +728,6 @@ namespace System.Text.JsonLab
             {
                 return ConsumeStringWithNestedQuotes();
             }
-        }
-
-        private bool ConsumeStringLoop()
-        {
-            //Create local copy to avoid bounds checks.
-            ReadOnlySpan<byte> localCopy = _buffer.Slice(CurrentIndex + 1);
-
-            int lastLineFeedIndex = -1;
-            bool nextCharEscaped = false;
-            int i = 0;
-            for (; i < localCopy.Length; i++)
-            {
-                byte currentByte = localCopy[i];
-                if (currentByte == JsonConstants.Quote)
-                {
-                    if (!nextCharEscaped)
-                    {
-                        Value = localCopy.Slice(0, i);
-                        ValueType = JsonValueType.String;
-                        TokenType = JsonTokenType.Value;
-                        CurrentIndex += i + 2;
-                        if (lastLineFeedIndex != -1)
-                            _position = localCopy.Length - lastLineFeedIndex;
-                        else
-                            _position += i + 2;
-                        goto Done;
-                    }
-                    nextCharEscaped = false;
-                }
-                else if (currentByte == JsonConstants.ReverseSolidus)
-                {
-                    nextCharEscaped = !nextCharEscaped;
-                }
-                else if (currentByte < JsonConstants.Space)
-                {
-                    if (nextCharEscaped)
-                    {
-                        int idx = JsonReaderHelper.IndexOfEscapableChar(currentByte);
-
-                        if (idx == -1)
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-
-                        if (idx == 0)
-                        {
-                            lastLineFeedIndex = i;
-                            _lineNumber++;
-                        }
-                    }
-                    else
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-                    }
-                    nextCharEscaped = false;
-                }
-                else if (nextCharEscaped && currentByte == 'u')
-                {
-                    int startIndex = i + 1;
-                    for (int j = startIndex; j < localCopy.Length; j++)
-                    {
-                        byte nextByte = localCopy[j];
-                        if ((uint)(nextByte - '0') > '9' - '0' && (uint)(nextByte - 'A') > 'F' - 'A' && (uint)(nextByte - 'a') > 'f' - 'a')
-                        {
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, nextByte);
-                        }
-                        if (j - startIndex >= 4)
-                            break;
-                    }
-                    i += 4;
-                    nextCharEscaped = false;
-                }
-                else
-                {
-                    nextCharEscaped = false;
-                }
-            }
-
-            if (i >= localCopy.Length)
-            {
-                if (_isFinalBlock)
-                    ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
-                else return false;
-            }
-            Done:
-            return true;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
