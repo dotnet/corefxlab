@@ -713,19 +713,7 @@ namespace System.Text.JsonLab
             {
                 localCopy = localCopy.Slice(CurrentIndex + 1, idx);
 
-                int controlChars = localCopy.IndexOfAnyControl();
-                if (controlChars != -1)
-                {
-                    (int numberOfNewLines, int indexOfLastNewLine) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, controlChars));
-                    _lineNumber += numberOfNewLines;
-                    if (indexOfLastNewLine != -1)
-                        _position = controlChars - indexOfLastNewLine - 1;
-                    else
-                        _position = CurrentIndex + 1 + controlChars;
-                    ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, localCopy[controlChars]);
-                }
-
-                if (localCopy.IndexOf(JsonConstants.ReverseSolidus) != -1)
+                if (localCopy.IndexOfAnyControlOrEscape() != -1)
                 {
                     _position++;
                     if (ValidateEscaping_AndHex(localCopy))
@@ -753,7 +741,6 @@ namespace System.Text.JsonLab
         // https://tools.ietf.org/html/rfc8259#section-7
         private bool ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
-            int lastLineFeedIndex = -1;
             bool nextCharEscaped = false;
             for (int i = 0; i < data.Length; i++)
             {
@@ -770,7 +757,6 @@ namespace System.Text.JsonLab
 
                     if (currentByte == 'n')
                     {
-                        lastLineFeedIndex = i;
                         _position = -1;
                         _lineNumber++;
                     }
@@ -800,13 +786,12 @@ namespace System.Text.JsonLab
                     }
                     nextCharEscaped = false;
                 }
+                else if (currentByte < JsonConstants.Space)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
+                }
                 _position++;
             }
-
-            /*if (lastLineFeedIndex != -1)
-                _position = data.Length - lastLineFeedIndex;
-            else
-                _position += data.Length + 2;*/
 
             return true;
 
@@ -853,19 +838,8 @@ namespace System.Text.JsonLab
         FoundEndOfString:
             int startIndex = CurrentIndex + 1;
             ReadOnlySpan<byte> localCopy = _buffer.Slice(startIndex, i - startIndex);
-            int controlChars = localCopy.IndexOfAnyControl();
-            if (controlChars != -1)
-            {
-                (int numberOfNewLines, int indexOfLastNewLine) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, controlChars));
-                _lineNumber += numberOfNewLines;
-                if (indexOfLastNewLine != -1)
-                    _position = controlChars - indexOfLastNewLine - 1;
-                else
-                    _position = startIndex + controlChars;
-                ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, localCopy[controlChars]);
-            }
 
-            if (localCopy.IndexOf(JsonConstants.ReverseSolidus) != -1)
+            if (localCopy.IndexOfAnyControlOrEscape() != -1)
             {
                 _position++;
                 if (ValidateEscaping_AndHex(localCopy))
