@@ -32,6 +32,8 @@ namespace System.Text.JsonLab
         public const byte Quote = (byte)'"';
         public const byte ReverseSolidus = (byte)'\\';
         public const byte Solidus = (byte)'/';
+        public const byte BackSpace = (byte)'\b';
+        public const byte FormFeed = (byte)'\f';
 
         #endregion Control characters
 
@@ -41,9 +43,12 @@ namespace System.Text.JsonLab
         public static ReadOnlySpan<byte> FalseValue => new byte[] { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
         public static ReadOnlySpan<byte> NullValue => new byte[] { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
 
-        public static ReadOnlySpan<byte> Delimiters => new byte[] { ListSeperator, CloseBrace, CloseBracket, CarriageReturn, LineFeed, Space, Tab };
+        public static ReadOnlySpan<byte> Delimiters => new byte[] { ListSeperator, CloseBrace, CloseBracket, Space, LineFeed, CarriageReturn, Tab };
 
-        public static ReadOnlySpan<byte> WhiteSpace => new byte[] { Space, CarriageReturn, LineFeed, Tab };
+        public static ReadOnlySpan<byte> WhiteSpace => new byte[] { Space, LineFeed, CarriageReturn, Tab };
+
+        // Explicitly skipping ReverseSolidus since that is handled separately
+        public static ReadOnlySpan<byte> EscapableChars => new byte[] { Quote, (byte)'n', (byte)'r', (byte)'t', Solidus, (byte)'u', (byte)'b', (byte)'f' };
 
         #endregion Common values
     }

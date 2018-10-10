@@ -459,8 +459,8 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", "nam\\\"e, ah\\\"son, ")]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
-            "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\r\n String\r\n, \tMul\r\ntiline String, \\\"somequote\\\"	Mu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
+            "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\\r\\n String\\r\\n, \\tMul\\r\\ntiline String, \\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
         public static void TestJsonReaderUtf8SpecialString(string jsonString, string expectedStr)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
@@ -477,7 +477,7 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData("  \"hello\"  ")]
-        [InlineData("  \"he\r\n\\\"l\\\\\\\"lo\\\\\"  ")]
+        [InlineData("  \"he\\r\\n\\\"l\\\\\\\"lo\\\\\"  ")]
         [InlineData("  12345  ")]
         [InlineData("  null  ")]
         [InlineData("  true  ")]
@@ -601,39 +601,21 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 22, 22, 3, 15)]
-        [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 23, 23, 3, 15)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 22, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 23, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 24, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 22, 22, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 23, 22, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 24, 22, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false \"invalid\"\r\n}", 24, 24, 3, 15)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false \"invalid\"\r\n}", 25, 25, 3, 15)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 24, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 25, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 26, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 24, 24, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 25, 24, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 26, 24, 3, 16)]
         public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition)
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false)
-            {
-                Instrument = true
-            };
+            var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false);
             while (json.Read()) ;
             Assert.Equal(consumed, json.CurrentIndex);
-
-            json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State)
-            {
-                Instrument = true
-            };
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.Position);
-            }
 
             json = new Utf8JsonReader(dataUtf8.AsSpan(json.CurrentIndex), true, json.State);
             try
@@ -643,8 +625,8 @@ namespace System.Text.JsonLab.Tests
             }
             catch (JsonReaderException ex)
             {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
             }
         }
 
@@ -674,29 +656,12 @@ namespace System.Text.JsonLab.Tests
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
         public static void InvalidJsonWhenPartial(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8, false)
-            {
-                MaxDepth = maxDepth,
-                Instrument = true
-            };
-
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.Position);
-            }
-
-            json = new Utf8JsonReader(dataUtf8, false)
             {
                 MaxDepth = maxDepth
             };
@@ -708,8 +673,8 @@ namespace System.Text.JsonLab.Tests
             }
             catch (JsonReaderException ex)
             {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
             }
         }
 
@@ -745,7 +710,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{{}}", 1, 1)]
         [InlineData("[[{{}}]]", 1, 3)]
         [InlineData("[1, 2, 3, ]", 1, 10)]
-        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 22)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21)]
         [InlineData("{\"strings\":[\"abc\", \"def\"", 1, 24)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
         [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
@@ -754,21 +719,36 @@ namespace System.Text.JsonLab.Tests
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 13)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("\"hel\rlo\"", 1, 4)]
+        [InlineData("\"hel\nlo\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\"", 1, 5)]
+        [InlineData("\"hel\rlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\nlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\\\"\"", 1, 5)]
+        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6)]
+        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2)]
+        [InlineData("\"he\\nl\rlo", 1, 0)]
+        [InlineData("\"he\\nl\nlo", 1, 0)]
+        [InlineData("\"he\\nl\\uABCXlo", 1, 0)]
+        [InlineData("\"he\\nl\\\tlo", 1, 0)]
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8)
             {
-                MaxDepth = maxDepth,
-                Instrument = true
+                MaxDepth = maxDepth
             };
 
             try
             {
                 while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
+                Assert.True(false, "Expected JsonReaderException was not thrown with single-segment data.");
             }
             catch (JsonReaderException ex)
             {
@@ -776,19 +756,29 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expectedPosition, ex.Position);
             }
 
-            json = new Utf8JsonReader(dataUtf8)
+            ReadOnlyMemory<byte> dataMemory = dataUtf8;
+            for (int i = 0; i < dataMemory.Length; i++)
             {
-                MaxDepth = maxDepth
-            };
-            try
-            {
-                while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
-            }
-            catch (JsonReaderException ex)
-            {
-                Assert.Equal(-1, ex.LineNumber);
-                Assert.Equal(-1, ex.Position);
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+                var jsonMultiSegment = new Utf8JsonReader(sequence)
+                {
+                    MaxDepth = maxDepth
+                };
+
+                try
+                {
+                    while (jsonMultiSegment.Read()) ;
+                    Assert.True(false, "Expected JsonReaderException was not thrown with multi-segment data.");
+                }
+                catch (JsonReaderException ex)
+                {
+                    Assert.Equal(expectedlineNumber, ex.LineNumber);
+                    Assert.True(expectedPosition == ex.Position, $"{ex.Message}, {ex.Position}, {expectedPosition}, {i}");
+                }
             }
         }
 

@@ -242,6 +242,15 @@ namespace System.Text.JsonLab {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Found an invalid character within a json string: &apos;{0}&apos;. It is expected that the string is properly escaped..
+        /// </summary>
+        internal static string InvalidCharacterWithinString {
+            get {
+                return ResourceManager.GetString("InvalidCharacterWithinString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected valid end of json payload with TokenType either EndArray or EndObject. Current token type is &apos;{0}&apos;..
         /// </summary>
         internal static string InvalidEndOfJson {

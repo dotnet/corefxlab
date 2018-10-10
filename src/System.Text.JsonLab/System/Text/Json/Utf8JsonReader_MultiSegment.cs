@@ -34,7 +34,6 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
-            Instrument = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -71,7 +70,6 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
-            Instrument = false;
         }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)
@@ -105,16 +103,16 @@ namespace System.Text.JsonLab
                 {
                     if (first == '-')
                     {
-                        //TODO: Is this a valid check?
-                        if (reader.End)
+                        // Couldn't find anything beyond '-', can't advance past it since we need '-' to be part of the value
+                        // TODO: This could silently allocate. Try to avoid it.
+                        if (reader.Peek(2).Length == 1)
                         {
                             if (_isFinalBlock)
                             {
                                 ThrowJsonReaderException(ref this);
                             }
+                            else return false;
                         }
-                        else return false;
-                        
                     }
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                     TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
@@ -203,7 +201,6 @@ namespace System.Text.JsonLab
                     int prevPosition = _position;
                     reader.Advance(1);
                     CurrentIndex++;
-                    _position++;
                     if (ConsumePropertyName(ref reader))
                     {
                         return true;
@@ -293,7 +290,6 @@ namespace System.Text.JsonLab
 
                     reader.Advance(1);
                     CurrentIndex++;
-                    _position++;
                     TokenStartIndex++;
                     return ConsumePropertyName(ref reader);
                 }
@@ -327,7 +323,6 @@ namespace System.Text.JsonLab
                 int prevPosition = _position;
                 reader.Advance(1);
                 CurrentIndex++;
-                _position++;
                 TokenStartIndex++;
                 if (!ConsumeString(ref reader))
                 {
@@ -358,8 +353,16 @@ namespace System.Text.JsonLab
             }
             else if (marker == '-')
             {
-                //TODO: Is this a valid check or do we need to do an Advance to be sure?
-                if (reader.End) ThrowJsonReaderException(ref this);
+                // Couldn't find anything beyond '-', can't advance past it since we need '-' to be part of the value
+                // TODO: This could silently allocate. Try to avoid it.
+                if (reader.Peek(2).Length == 1)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this);
+                    }
+                    else return false;
+                }
                 return ConsumeNumber(ref reader);
             }
             else if (marker == 'f')
@@ -397,12 +400,14 @@ namespace System.Text.JsonLab
                 }
                 else return false;
             }
+            if (!TryGetNumber(span, out _))
+                return false;
             CurrentIndex += (int)(reader.Consumed - consumedBefore);
             _position += (int)(reader.Consumed - consumedBefore);
             Value = span;
             ValueType = JsonValueType.Number;
             TokenType = JsonTokenType.Value;
-            return TryGetNumber(Value, out _);
+            return true;
         }
 
         private bool ConsumeNull(ref BufferReader<byte> reader)
@@ -537,16 +542,21 @@ namespace System.Text.JsonLab
 
             if (reader.TryReadTo(out ReadOnlySpan<byte> value, JsonConstants.Quote, (byte)'\\', advancePastDelimiter: true))
             {
+                if (value.IndexOfAnyControlOrEscape() != -1)
+                {
+                    _position++;
+                    if (ValidateEscaping_AndHex(value))
+                        goto Done;
+                    return false;
+                }
+
+                _position += (int)(reader.Consumed - consumedBefore);
+            Done:
+                _position++;
                 CurrentIndex += (int)(reader.Consumed - consumedBefore);
                 Value = value;
                 ValueType = JsonValueType.String;
                 TokenType = JsonTokenType.Value;
-                if (Instrument)
-                {
-                    _position += (int)(reader.Consumed - consumedBefore);
-                    if (Value.IndexOf((byte)'\n') != -1)
-                        AdjustLineNumber(Value);
-                }
                 return true;
             }
             if (_isFinalBlock)
@@ -565,18 +575,15 @@ namespace System.Text.JsonLab
                 }
                 reader.Advance(1);
                 CurrentIndex++;
-                if (Instrument)
+                // TODO: Does this work for Windows and Unix?
+                if (val == JsonConstants.LineFeed)
                 {
-                    // TODO: Does this work for Windows and Unix?
-                    if (val == JsonConstants.LineFeed)
-                    {
-                        _lineNumber++;
-                        _position = 0;
-                    }
-                    else
-                    {
-                        _position++;
-                    }
+                    _lineNumber++;
+                    _position = 0;
+                }
+                else
+                {
+                    _position++;
                 }
             }
         }
