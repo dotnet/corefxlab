@@ -711,16 +711,37 @@ namespace System.Text.JsonLab
 
             if (localCopy[idx + CurrentIndex] != JsonConstants.ReverseSolidus)
             {
-                Value = localCopy.Slice(CurrentIndex + 1, idx);
+                localCopy = localCopy.Slice(CurrentIndex + 1, idx);
+
+                int controlChars = localCopy.IndexOfAnyControl();
+                if (controlChars != -1)
+                {
+                    (int numberOfNewLines, int indexOfLastNewLine) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, controlChars));
+                    _lineNumber += numberOfNewLines;
+                    if (indexOfLastNewLine != -1)
+                        _position = controlChars - indexOfLastNewLine - 1;
+                    else
+                        _position = CurrentIndex + 1 + controlChars;
+                    ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, localCopy[controlChars]);
+                }
+
+                if (localCopy.IndexOf(JsonConstants.ReverseSolidus) != -1)
+                {
+                    _position++;
+                    if (ValidateEscaping_AndHex(localCopy))
+                        goto Done;
+                    return false;
+                }
+                
+                _position += idx + 1;
+
+            Done:
+                _position++;
+                Value = localCopy;
                 ValueType = JsonValueType.String;
                 TokenType = JsonTokenType.Value;
                 CurrentIndex += idx + 2;
-                _position += idx + 2;
 
-                if (Value.IndexOfAnyControlOrEscape() != -1)
-                {
-                    return ValidateEscaping_Control_AndHex(Value);
-                }
                 return true;
             }
             else
@@ -730,7 +751,7 @@ namespace System.Text.JsonLab
         }
 
         // https://tools.ietf.org/html/rfc8259#section-7
-        private bool ValidateEscaping_Control_AndHex(ReadOnlySpan<byte> data)
+        private bool ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
             int lastLineFeedIndex = -1;
             bool nextCharEscaped = false;
@@ -741,64 +762,55 @@ namespace System.Text.JsonLab
                 {
                     nextCharEscaped = !nextCharEscaped;
                 }
-                else if (currentByte < JsonConstants.Space)
+                else if (nextCharEscaped)
                 {
-                    if (nextCharEscaped)
-                    {
-                        int idx = JsonReaderHelper.IndexOfEscapableChar(currentByte);
-
-                        if (idx == -1)
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-
-                        if (idx == 0)
-                        {
-                            lastLineFeedIndex = i;
-                            _lineNumber++;
-                        }
-                    }
-                    else
-                    {
+                    int index = JsonConstants.EscapableChars.IndexOf(currentByte);
+                    if (index == -1)
                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-                    }
-                    nextCharEscaped = false;
-                }
-                else if (nextCharEscaped && currentByte == 'u')
-                {
-                    int startIndex = i + 1;
-                    for (int j = startIndex; j < data.Length; j++)
+
+                    if (currentByte == 'n')
                     {
-                        byte nextByte = data[j];
-                        if ((uint)(nextByte - '0') > '9' - '0' && (uint)(nextByte - 'A') > 'F' - 'A' && (uint)(nextByte - 'a') > 'f' - 'a')
+                        lastLineFeedIndex = i;
+                        _position = -1;
+                        _lineNumber++;
+                    }
+                    else if (currentByte == 'u')
+                    {
+                        _position++;
+                        int startIndex = i + 1;
+                        for (int j = startIndex; j < data.Length; j++)
                         {
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, nextByte);
+                            byte nextByte = data[j];
+                            if ((uint)(nextByte - '0') > '9' - '0' && (uint)(nextByte - 'A') > 'F' - 'A' && (uint)(nextByte - 'a') > 'f' - 'a')
+                            {
+                                ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, nextByte);
+                            }
+                            if (j - startIndex >= 4)
+                                break;
+                            _position++;
                         }
-                        if (j - startIndex >= 4)
-                            break;
-                    }
-                    i += 4;
-                    if (i >= data.Length)
-                    {
-                        if (_isFinalBlock)
-                            ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
-                        else
-                            goto False;
+                        i += 4;
+                        if (i >= data.Length)
+                        {
+                            if (_isFinalBlock)
+                                ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
+                            else
+                                goto False;
+                        }
                     }
                     nextCharEscaped = false;
                 }
-                else
-                {
-                    nextCharEscaped = false;
-                }
+                _position++;
             }
 
-            if (lastLineFeedIndex != -1)
+            /*if (lastLineFeedIndex != -1)
                 _position = data.Length - lastLineFeedIndex;
+            else
+                _position += data.Length + 2;*/
 
             return true;
 
-            False:
-            if (lastLineFeedIndex != -1)
-                _position = data.Length - lastLineFeedIndex;
+        False:
             return false;
         }
 
@@ -828,7 +840,7 @@ namespace System.Text.JsonLab
                         if (counter % 2 == 0)
                         {
                             i += foundIdx;
-                            goto Done;
+                            goto FoundEndOfString;
                         }
                         break;
                     }
@@ -838,21 +850,37 @@ namespace System.Text.JsonLab
                 i += foundIdx + 1;
             }
 
+        FoundEndOfString:
+            int startIndex = CurrentIndex + 1;
+            ReadOnlySpan<byte> localCopy = _buffer.Slice(startIndex, i - startIndex);
+            int controlChars = localCopy.IndexOfAnyControl();
+            if (controlChars != -1)
+            {
+                (int numberOfNewLines, int indexOfLastNewLine) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, controlChars));
+                _lineNumber += numberOfNewLines;
+                if (indexOfLastNewLine != -1)
+                    _position = controlChars - indexOfLastNewLine - 1;
+                else
+                    _position = startIndex + controlChars;
+                ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, localCopy[controlChars]);
+            }
+
+            if (localCopy.IndexOf(JsonConstants.ReverseSolidus) != -1)
+            {
+                _position++;
+                if (ValidateEscaping_AndHex(localCopy))
+                    goto Done;
+                return false;
+            }
+
+            _position = i;
         Done:
-            CurrentIndex++;
-            Value = _buffer.Slice(CurrentIndex, i - CurrentIndex);
+            _position++;
+            Value = localCopy;
             ValueType = JsonValueType.String;
             TokenType = JsonTokenType.Value;
+            CurrentIndex = i + 1;
 
-            i++;
-            _position++;
-            CurrentIndex = i;
-            _position += i - CurrentIndex;
-            if (Value.IndexOfAnyControlOrEscape() != -1)
-            {
-                return ValidateEscaping_Control_AndHex(Value);
-            }
-            
             return true;
         }
 

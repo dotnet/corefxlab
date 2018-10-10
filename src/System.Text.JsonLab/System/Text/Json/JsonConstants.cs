@@ -47,7 +47,8 @@ namespace System.Text.JsonLab
 
         public static ReadOnlySpan<byte> WhiteSpace => new byte[] { Space, LineFeed, CarriageReturn, Tab };
 
-        public static ReadOnlySpan<byte> EscapableChars => new byte[] { LineFeed, CarriageReturn, Tab, BackSpace, FormFeed };
+        // Explicitly skipping ReverseSolidus since that is handled separately
+        public static ReadOnlySpan<byte> EscapableChars => new byte[] { Quote, (byte)'n', (byte)'r', (byte)'t', Solidus, (byte)'u', (byte)'b', (byte)'f' };
 
         #endregion Common values
     }

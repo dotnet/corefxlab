@@ -459,8 +459,8 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", "nam\\\"e, ah\\\"son, ")]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
-            "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\r\n String\r\n, \tMul\r\ntiline String, \\\"somequote\\\"	Mu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
+            "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\\r\\n String\\r\\n, \\tMul\\r\\ntiline String, \\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
         public static void TestJsonReaderUtf8SpecialString(string jsonString, string expectedStr)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
@@ -477,7 +477,7 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData("  \"hello\"  ")]
-        [InlineData("  \"he\r\n\\\"l\\\\\\\"lo\\\\\"  ")]
+        [InlineData("  \"he\\r\\n\\\"l\\\\\\\"lo\\\\\"  ")]
         [InlineData("  12345  ")]
         [InlineData("  null  ")]
         [InlineData("  true  ")]
@@ -601,14 +601,14 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 22, 22, 3, 15)]
-        [InlineData("{\r\n\"is\r\nActive\": false \"invalid\"\r\n}", 23, 23, 3, 15)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 22, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 23, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, \"invalid\"\r\n}", 24, 22, 4, 0)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 22, 22, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 23, 22, 3, 16)]
-        [InlineData("{\r\n\"is\r\nActive\": false, 5\r\n}", 24, 22, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false \"invalid\"\r\n}", 24, 24, 3, 15)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false \"invalid\"\r\n}", 25, 25, 3, 15)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 24, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 25, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, \"invalid\"\r\n}", 26, 24, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 24, 24, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 25, 24, 3, 16)]
+        [InlineData("{\r\n\"is\\r\\nActive\": false, 5\r\n}", 26, 24, 3, 16)]
         public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition)
         {
             //TODO: Test multi-segment json payload
@@ -656,7 +656,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 22)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
         public static void InvalidJsonWhenPartial(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload
@@ -719,7 +719,19 @@ namespace System.Text.JsonLab.Tests
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 13)]
         [InlineData("[[[[{\r\n\"temp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 26)]
         [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
-        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("\"hel\rlo\"", 1, 4)]
+        [InlineData("\"hel\nlo\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\"", 1, 5)]
+        [InlineData("\"hel\rlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\nlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\\\"\"", 1, 5)]
+        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6)]
+        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2)]
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload

@@ -11,42 +11,49 @@ namespace System.Text.JsonLab
 {
     internal static class JsonReaderHelper
     {
-        // Using this instead of IndexOf since EscapableChars.Length is too small to benefit from vectorization
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOfEscapableChar(byte value)
+        public static (int, int) CountNewLines(ReadOnlySpan<byte> data)
         {
-            ReadOnlySpan<byte> local = JsonConstants.EscapableChars;
-            int i = 0;
-            for (; i < local.Length; i++)
+            int lastLineFeedIndex = -1;
+            int newLines = 0;
+            bool nextCharEscaped = false;
+            for (int i = 0; i < data.Length; i++)
             {
-                if (local[i] == value)
-                    goto Done;
+                byte currentByte = data[i];
+                if (currentByte == JsonConstants.ReverseSolidus)
+                {
+                    nextCharEscaped = !nextCharEscaped;
+                }
+                else if (nextCharEscaped)
+                {
+                    if (currentByte == 'n')
+                    {
+                        lastLineFeedIndex = i;
+                        newLines++;
+                    }
+                    nextCharEscaped = false;
+                }
             }
-            return -1;
-        Done:
-            return i;
+            return (newLines, lastLineFeedIndex);
         }
 
         // https://tools.ietf.org/html/rfc8259
-        // Does the span contain '\' or any control characters (i.e. 0 to 31)
-        // IndexOfAny(92, < 32)
+        // Does the span contain any control characters (i.e. 0 to 31)
+        // IndexOfAny(< 32)
         // Borrowed and modified from SpanHelpers.Byte:
         // https://github.com/dotnet/corefx/blob/fc169cddedb6820aaabbdb8b7bece2a3df0fd1a5/src/Common/src/CoreLib/System/SpanHelpers.Byte.cs#L473-L604
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOfAnyControlOrEscape(this ReadOnlySpan<byte> span)
+        public static int IndexOfAnyControl(this ReadOnlySpan<byte> span)
         {
             return IndexOfAny(
                     ref MemoryMarshal.GetReference(span),
-                    JsonConstants.ReverseSolidus,
                     JsonConstants.Space,
                     span.Length);
         }
 
-        private static unsafe int IndexOfAny(ref byte searchSpace, byte value0, byte lessThan, int length)
+        private static unsafe int IndexOfAny(ref byte searchSpace, byte lessThan, int length)
         {
             Debug.Assert(length >= 0);
 
-            uint uValue0 = value0; // Use uint for comparisons to avoid unnecessary 8->32 extensions
             uint uLessThan = lessThan; // Use uint for comparisons to avoid unnecessary 8->32 extensions
             IntPtr index = (IntPtr)0; // Use IntPtr for arithmetic to avoid unnecessary 64->32->64 truncations
             IntPtr nLength = (IntPtr)length;
@@ -63,28 +70,28 @@ namespace System.Text.JsonLab
                 nLength -= 8;
 
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 1);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found1;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 2);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found2;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 3);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found3;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 4);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found4;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 5);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found5;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 6);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found6;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 7);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found7;
 
                 index += 8;
@@ -95,16 +102,16 @@ namespace System.Text.JsonLab
                 nLength -= 4;
 
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 1);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found1;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 2);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found2;
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index + 3);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found3;
 
                 index += 4;
@@ -115,7 +122,7 @@ namespace System.Text.JsonLab
                 nLength -= 1;
 
                 lookUp = Unsafe.AddByteOffset(ref searchSpace, index);
-                if (uValue0 == lookUp || uLessThan > lookUp)
+                if (uLessThan > lookUp)
                     goto Found;
 
                 index += 1;
@@ -126,16 +133,13 @@ namespace System.Text.JsonLab
                 nLength = (IntPtr)((length - (int)(byte*)index) & ~(Vector<byte>.Count - 1));
 
                 // Get comparison Vector
-                Vector<byte> values0 = new Vector<byte>(value0);
                 Vector<byte> valuesLessThan = new Vector<byte>(lessThan);
 
                 while ((byte*)nLength > (byte*)index)
                 {
                     Vector<byte> vData = Unsafe.ReadUnaligned<Vector<byte>>(ref Unsafe.AddByteOffset(ref searchSpace, index));
 
-                    var vMatches = Vector.BitwiseOr(
-                                    Vector.Equals(vData, values0),
-                                    Vector.LessThan(vData, valuesLessThan));
+                    var vMatches = Vector.LessThan(vData, valuesLessThan);
 
                     if (Vector<byte>.Zero.Equals(vMatches))
                     {
