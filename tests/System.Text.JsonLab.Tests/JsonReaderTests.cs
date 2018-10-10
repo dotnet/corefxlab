@@ -710,7 +710,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{{}}", 1, 1)]
         [InlineData("[[{{}}]]", 1, 3)]
         [InlineData("[1, 2, 3, ]", 1, 10)]
-        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 22)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21)]
         [InlineData("{\"strings\":[\"abc\", \"def\"", 1, 24)]
         [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
         [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
@@ -732,6 +732,10 @@ namespace System.Text.JsonLab.Tests
         [InlineData("\"he\\nl\nlo\\\"\"", 2, 1)]
         [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6)]
         [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2)]
+        [InlineData("\"he\\nl\rlo", 1, 0)]
+        [InlineData("\"he\\nl\nlo", 1, 0)]
+        [InlineData("\"he\\nl\\uABCXlo", 1, 0)]
+        [InlineData("\"he\\nl\\\tlo", 1, 0)]
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload
@@ -744,12 +748,37 @@ namespace System.Text.JsonLab.Tests
             try
             {
                 while (json.Read()) ;
-                Assert.True(false, "Expected JsonReaderException was not thrown.");
+                Assert.True(false, "Expected JsonReaderException was not thrown with single-segment data.");
             }
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
                 Assert.Equal(expectedPosition, ex.Position);
+            }
+
+            ReadOnlyMemory<byte> dataMemory = dataUtf8;
+            for (int i = 0; i < dataMemory.Length; i++)
+            {
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+                var jsonMultiSegment = new Utf8JsonReader(sequence)
+                {
+                    MaxDepth = maxDepth
+                };
+
+                try
+                {
+                    while (jsonMultiSegment.Read()) ;
+                    Assert.True(false, "Expected JsonReaderException was not thrown with multi-segment data.");
+                }
+                catch (JsonReaderException ex)
+                {
+                    Assert.Equal(expectedlineNumber, ex.LineNumber);
+                    Assert.True(expectedPosition == ex.Position, $"{ex.Message}, {ex.Position}, {expectedPosition}, {i}");
+                }
             }
         }
 

@@ -281,25 +281,40 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (ConsumeValue(first))
+                if ((uint)(first - '0') <= '9' - '0' || first == '-')
                 {
+                    ValueType = JsonValueType.Number;
+                    if (!TryGetNumber(_buffer.Slice(CurrentIndex), out ReadOnlySpan<byte> number))
+                        return false;
+                    Value = number;
+                    TokenType = JsonTokenType.Value;
+                    CurrentIndex += Value.Length;
+                    _position += Value.Length;
+                    goto Done;
+                }
+                else if (ConsumeValue(first))
+                {
+                    goto Done;
+                }
+
+                return false;
+
+                Done:
+                if (CurrentIndex >= (uint)_buffer.Length)
+                {
+                    return true;
+                }
+
+                if (_buffer[CurrentIndex] <= JsonConstants.Space)
+                {
+                    SkipWhiteSpace();
                     if (CurrentIndex >= (uint)_buffer.Length)
                     {
                         return true;
                     }
-
-                    if (_buffer[CurrentIndex] <= JsonConstants.Space)
-                    {
-                        SkipWhiteSpace();
-                        if (CurrentIndex >= (uint)_buffer.Length)
-                        {
-                            return true;
-                        }
-                    }
-
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, _buffer[CurrentIndex]);
                 }
-                return false;
+
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, _buffer[CurrentIndex]);
             }
             return true;
         }
@@ -529,7 +544,7 @@ namespace System.Text.JsonLab
         private bool ConsumeNumber()
         {
             ValueType = JsonValueType.Number;
-            if (!TryGetNumber(_buffer.Slice(CurrentIndex), out ReadOnlySpan<byte> number))
+            if (!TryGetNumberLookForEnd(_buffer.Slice(CurrentIndex), out ReadOnlySpan<byte> number))
                 return false;
             Value = number;
             TokenType = JsonTokenType.Value;
@@ -757,7 +772,7 @@ namespace System.Text.JsonLab
 
                     if (currentByte == 'n')
                     {
-                        _position = -1;
+                        _position = -1; // Should be 0, but we increment _position below already
                         _lineNumber++;
                     }
                     else if (currentByte == 'u')
@@ -885,20 +900,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        private void AdjustLineNumber(ReadOnlySpan<byte> span)
-        {
-            //TODO: Avoid redoing first IndexOf search
-            int index = span.IndexOf(JsonConstants.LineFeed);
-            while (index != -1)
-            {
-                _lineNumber++;
-                _position = 0;
-                span = span.Slice(index + 1);
-                index = span.IndexOf(JsonConstants.LineFeed);
-            }
-            _position = span.Length + 1;
-        }
-
         // https://tools.ietf.org/html/rfc7159#section-6
         private bool TryGetNumber(ReadOnlySpan<byte> data, out ReadOnlySpan<byte> number)
         {
@@ -997,6 +998,167 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                         goto Done;
+                    else return false;
+                }
+                if (delimiters.IndexOf(nextByte) != -1)
+                    goto Done;
+                if (nextByte != 'E' && nextByte != 'e')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitEValueNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte == 'E' || nextByte == 'e');
+            i++;
+
+            if (i >= data.Length)
+            {
+                if (_isFinalBlock)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                }
+                else return false;
+            }
+
+            nextByte = data[i];
+            if (nextByte == '+' || nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                    }
+                    else return false;
+                }
+                nextByte = data[i];
+            }
+
+            if ((uint)(nextByte - '0') > '9' - '0')
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+
+            i++;
+            for (; i < data.Length; i++)
+            {
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    break;
+            }
+
+            if (i < data.Length)
+            {
+                if (delimiters.IndexOf(nextByte) == -1)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
+                }
+            }
+            else if (!_isFinalBlock)
+            {
+                return false;
+            }
+
+        Done:
+            number = data.Slice(0, i);
+            return true;
+        }
+
+        // https://tools.ietf.org/html/rfc7159#section-6
+        private bool TryGetNumberLookForEnd(ReadOnlySpan<byte> data, out ReadOnlySpan<byte> number)
+        {
+            Debug.Assert(data.Length > 0);
+
+            ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
+
+            number = default;
+
+            int i = 0;
+            byte nextByte = data[i];
+
+            if (nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                    }
+                    else return false;
+                }
+
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte >= '0' && nextByte <= '9');
+
+            if (nextByte == '0')
+            {
+                i++;
+                if (i < data.Length)
+                {
+                    nextByte = data[i];
+                    if (delimiters.IndexOf(nextByte) != -1)
+                        goto Done;
+
+                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+                }
+                else
+                {
+                    if (_isFinalBlock)
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
+                    else return false;
+                }
+            }
+            else
+            {
+                i++;
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if ((uint)(nextByte - '0') > '9' - '0')
+                        break;
+                }
+                if (i >= data.Length)
+                {
+                    if (_isFinalBlock)
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
+                    else return false;
+                }
+                if (delimiters.IndexOf(nextByte) != -1)
+                    goto Done;
+                if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
+
+            if (nextByte == '.')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                    }
+                    else return false;
+                }
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+                i++;
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if ((uint)(nextByte - '0') > '9' - '0')
+                        break;
+                }
+                if (i >= data.Length)
+                {
+                    if (_isFinalBlock)
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                     else return false;
                 }
                 if (delimiters.IndexOf(nextByte) != -1)
