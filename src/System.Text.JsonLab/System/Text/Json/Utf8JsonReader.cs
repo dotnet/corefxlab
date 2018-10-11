@@ -18,7 +18,7 @@ namespace System.Text.JsonLab
 
         public int CurrentIndex { get; private set; }
 
-        public int TokenStartIndex { get; private set; }
+        internal int TokenStartIndex { get; private set; }
 
         public int MaxDepth
         {
