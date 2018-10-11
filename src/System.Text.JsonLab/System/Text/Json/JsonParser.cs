@@ -42,7 +42,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForValues++;
-                    database.Append(JsonValueType.Object, reader.TokenStartIndex);
+                    database.Append(JsonValueType.Object, (int)reader.TokenStartIndex);
                     var row = new StackRow(numberOfRowsForMembers + 1);
                     stack.Push(row);
                     numberOfRowsForMembers = 0;
@@ -65,7 +65,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForMembers++;
-                    database.Append(JsonValueType.Array, reader.TokenStartIndex);
+                    database.Append(JsonValueType.Array, (int)reader.TokenStartIndex);
                     var row = new StackRow(arrayItemsCount, numberOfRowsForValues + 1);
                     stack.Push(row);
                     arrayItemsCount = 0;
@@ -87,7 +87,7 @@ namespace System.Text.JsonLab
                     Debug.Assert(tokenType == JsonTokenType.PropertyName || tokenType == JsonTokenType.Value);
                     numberOfRowsForValues++;
                     numberOfRowsForMembers++;
-                    database.Append(reader.ValueType, reader.TokenStartIndex, reader.Value.Length);
+                    database.Append(reader.ValueType, (int)reader.TokenStartIndex, reader.Value.Length);
                     if (tokenType == JsonTokenType.Value && inArray)
                         arrayItemsCount++;
                 }

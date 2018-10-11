@@ -13,8 +13,8 @@ namespace System.Text.JsonLab
         internal bool _inObject;
         internal Stack<InternalJsonTokenType> _stack;
         internal JsonTokenType _tokenType;
-        internal int _lineNumber;
-        internal int _position;
+        internal long _lineNumber;
+        internal long _position;
 
         public bool IsDefault
             => _containerMask == default &&
