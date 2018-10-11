@@ -475,55 +475,19 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        // TODO: Fix allocations
         private bool ConsumeMultiLineComment(ref BufferReader<byte> reader)
         {
-            long consumedBefore = reader.Consumed;
-
-            byte[] partialComment = null;
-            ReadOnlySpan<byte> span = default;
-            while (true)
+            if (!reader.TryReadTo(out ReadOnlySequence<byte> sequence, JsonConstants.EndOfComment, advancePastDelimiter: true))
             {
-                if (reader.TryReadTo(out span, JsonConstants.Solidus, advancePastDelimiter: true))
+                if (_isFinalBlock)
                 {
-                    if (span.Length > 0 && span[span.Length - 1] == '*')
-                    {
-                        if (partialComment != null)
-                        {
-                            if (partialComment.Length == 0)
-                                partialComment = new byte[] { JsonConstants.Solidus };
-                            byte[] temp = span.Slice(0, span.Length - 1).ToArray();
-                            var newArray = new byte[partialComment.Length + temp.Length];
-                            Array.Copy(partialComment, newArray, partialComment.Length);
-                            Array.Copy(temp, 0, newArray, partialComment.Length, temp.Length);
-                            partialComment = newArray;
-                        }
-                        break;
-                    }
-
-                    if (partialComment == null)
-                        partialComment = span.ToArray();
-                    else
-                    {
-                        byte[] temp = span.ToArray();
-                        var newArray = new byte[partialComment.Length + temp.Length];
-                        Array.Copy(partialComment, newArray, partialComment.Length);
-                        Array.Copy(temp, 0, newArray, partialComment.Length, temp.Length);
-                        partialComment = newArray;
-                    }
+                    ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
                 }
-                else
-                {
-                    if (_isFinalBlock)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
-                    }
-                    else return false;
-                }
+                else return false;
             }
 
             _stack.Push((InternalJsonTokenType)TokenType);
-            Value = partialComment == null ? span.Slice(0, span.Length - 1) : partialComment;
+            Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
             TokenType = JsonTokenType.Comment;
             CurrentIndex += 4 + Value.Length;
 
