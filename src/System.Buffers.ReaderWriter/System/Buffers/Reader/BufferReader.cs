@@ -149,6 +149,7 @@ namespace System.Buffers.Reader
             if (CurrentSpanIndex >= count)
             {
                 CurrentSpanIndex -= (int)count;
+                _moreData = true;
             }
             else
             {

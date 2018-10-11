@@ -227,6 +227,8 @@ namespace System.Text.JsonLab
                 case ExceptionResource.InvalidCharacterWithinString:
                     message = string.Format(formatString, character);
                     break;
+                case ExceptionResource.EndOfCommentNotFound:
+                    break;
             }
 
             return message;
@@ -238,6 +240,7 @@ namespace System.Text.JsonLab
             ArrayEndWithinObject,
             Default,
             DepthMustBePositive,
+            EndOfCommentNotFound,
             EndOfStringNotFound,
             ExpectedDigitNotFound,
             ExpectedDigitNotFoundEndOfData,
