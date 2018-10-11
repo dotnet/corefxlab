@@ -25,7 +25,16 @@ namespace System.Buffers.Tests
             for (int i = 1; i < bytes.Length; i++)
             {
                 reader.Advance(i);
-                reader.Rewind(i);
+                if (reader.End)
+                {
+                    reader.Rewind(1);
+                    Assert.False(reader.End);
+                    reader.Rewind(i - 1);
+                }
+                else
+                {
+                    reader.Rewind(i);
+                }
 
                 Assert.Equal(copy.Position, reader.Position);
                 Assert.Equal(copy.Consumed, reader.Consumed);
