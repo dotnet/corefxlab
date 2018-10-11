@@ -425,6 +425,7 @@ namespace System.Buffers.Reader
                 peekBuffer = new Span<T>(new T[delimiter.Length]);
             }
 
+            bool advanced = false;
             while (!End)
             {
                 if (!TryReadTo(out sequence, delimiter[0], advancePastDelimiter: false))
@@ -441,6 +442,9 @@ namespace System.Buffers.Reader
                 ReadOnlySpan<T> next = Peek(peekBuffer);
                 if (next.SequenceEqual(delimiter))
                 {
+                    //TODO: Figure out a faster way to do this, potentially by avoiding the Advance in the previous TryReadTo call
+                    if (advanced)
+                        sequence = copy.Sequence.Slice(copy.Consumed, Consumed - copy.Consumed);
                     if (advancePastDelimiter)
                     {
                         Advance(delimiter.Length);
@@ -450,6 +454,7 @@ namespace System.Buffers.Reader
                 else
                 {
                     Advance(1);
+                    advanced = true;
                 }
             }
 

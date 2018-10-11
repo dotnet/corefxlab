@@ -129,6 +129,9 @@
   <data name="DepthMustBePositive" xml:space="preserve">
     <value>Mismatched number of start/end objects or arrays. Depth is {0} but must be greater than 0.</value>
   </data>
+  <data name="EndOfCommentNotFound" xml:space="preserve">
+    <value>Expected either a '\n' or '*/' to indicate end of comment, but instead reached end of data.</value>
+  </data>
   <data name="EndOfStringNotFound" xml:space="preserve">
     <value>Expected a '"' to indicate end of string, but instead reached end of data.</value>
   </data>

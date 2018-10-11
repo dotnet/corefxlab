@@ -18,7 +18,7 @@ namespace System.Text.JsonLab
 
         public int CurrentIndex { get; private set; }
 
-        public int TokenStartIndex { get; private set; }
+        internal int TokenStartIndex { get; private set; }
 
         public int MaxDepth
         {
@@ -32,15 +32,31 @@ namespace System.Text.JsonLab
                     ThrowArgumentException("Max depth must be positive.");
                 _maxDepth = value;
                 if (_maxDepth > StackFreeMaxDepth)
-                    _stack = new Stack<bool>();
+                    _stack = new Stack<InternalJsonTokenType>();
             }
         }
+
+        public bool AllowComments
+        {
+            get
+            {
+                return _allowComments;
+            }
+            set
+            {
+                _allowComments = value;
+                if (_stack == null)
+                    _stack = new Stack<InternalJsonTokenType>();
+            }
+        }
+
+        private bool _allowComments;
 
         private int _maxDepth;
 
         private BufferReader<byte> _reader;
 
-        private Stack<bool> _stack;
+        private Stack<InternalJsonTokenType> _stack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -122,6 +138,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
+            _allowComments = false;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -158,6 +175,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
+            _allowComments = false;
         }
 
         /// <summary>
@@ -196,7 +214,7 @@ namespace System.Text.JsonLab
             if (Depth <= StackFreeMaxDepth)
                 _containerMask = (_containerMask << 1) | 1;
             else
-                _stack.Push(true);
+                _stack.Push(InternalJsonTokenType.StartObject);
 
             TokenType = JsonTokenType.StartObject;
             _inObject = true;
@@ -214,7 +232,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                _inObject = _stack.Pop();
+                _inObject = _stack.Pop() != InternalJsonTokenType.StartArray;
             }
 
             Depth--;
@@ -232,7 +250,7 @@ namespace System.Text.JsonLab
             if (Depth <= StackFreeMaxDepth)
                 _containerMask = _containerMask << 1;
             else
-                _stack.Push(false);
+                _stack.Push(InternalJsonTokenType.StartArray);
 
             TokenType = JsonTokenType.StartArray;
             _inObject = false;
@@ -250,7 +268,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                _inObject = _stack.Pop();
+                _inObject = _stack.Pop() != InternalJsonTokenType.StartArray;
             }
 
             Depth--;
@@ -299,7 +317,7 @@ namespace System.Text.JsonLab
 
                 return false;
 
-                Done:
+            Done:
                 if (CurrentIndex >= (uint)_buffer.Length)
                 {
                     return true;
@@ -314,6 +332,13 @@ namespace System.Text.JsonLab
                     }
                 }
 
+                if (AllowComments)
+                {
+                    if (TokenType == JsonTokenType.Comment || _buffer[CurrentIndex] == JsonConstants.Solidus)
+                    {
+                        return true;
+                    }
+                }
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, _buffer[CurrentIndex]);
             }
             return true;
@@ -433,6 +458,24 @@ namespace System.Text.JsonLab
         {
             CurrentIndex++;
             _position++;
+
+            if (AllowComments)
+            {
+                if (marker == JsonConstants.Solidus)
+                {
+                    CurrentIndex--;
+                    _position--;
+                    return ConsumeComment();
+                }
+                if (TokenType == JsonTokenType.Comment)
+                {
+                    CurrentIndex--;
+                    _position--;
+                    TokenType = (JsonTokenType)_stack.Pop();
+                    return ReadSingleSegment();
+                }
+            }
+
             if (marker == JsonConstants.ListSeperator)
             {
                 if (CurrentIndex >= (uint)_buffer.Length)
@@ -529,14 +572,104 @@ namespace System.Text.JsonLab
             {
                 return ConsumeNull();
             }
-            else if (marker == '/')
+            else
             {
-                // TODO: Comments?
-                ThrowNotImplementedException();
+                if (AllowComments && marker == JsonConstants.Solidus)
+                    return ConsumeComment();
+
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+            }
+            return true;
+        }
+
+        private bool ConsumeComment()
+        {
+            //Create local copy to avoid bounds checks.
+            ReadOnlySpan<byte> localCopy = _buffer.Slice(CurrentIndex + 1);
+
+            if (localCopy.Length > 0)
+            {
+                byte marker = localCopy[0];
+                if (marker == JsonConstants.Solidus)
+                    return ConsumeSingleLineComment(localCopy.Slice(1));
+                else if (marker == '*')
+                    return ConsumeMultiLineComment(localCopy.Slice(1));
+                else
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+            }
+
+            if (_isFinalBlock)
+            {
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Solidus);
+            }
+            else return false;
+
+            return true;
+        }
+
+        private bool ConsumeSingleLineComment(ReadOnlySpan<byte> localCopy)
+        {
+            int idx = localCopy.IndexOf(JsonConstants.LineFeed);
+            if (idx == -1)
+            {
+                if (_isFinalBlock)
+                {
+                    // Assume everything on this line is a comment and there is no more data.
+                    Value = localCopy;
+                    _position += 2 + Value.Length;
+                    goto Done;
+                }
+                else return false;
+            }
+
+            Value = localCopy.Slice(0, idx);
+            CurrentIndex++;
+            _position = 0;
+            _lineNumber++;
+        Done:
+            _stack.Push((InternalJsonTokenType)TokenType);
+            TokenType = JsonTokenType.Comment;
+            CurrentIndex += 2 + Value.Length;
+            return true;
+        }
+
+        private bool ConsumeMultiLineComment(ReadOnlySpan<byte> localCopy)
+        {
+            int idx = 0;
+            while (true)
+            {
+                int foundIdx = localCopy.Slice(idx).IndexOf(JsonConstants.Solidus);
+                if (foundIdx == -1)
+                {
+                    if (_isFinalBlock)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
+                    }
+                    else return false;
+                }
+                if (foundIdx != 0 && localCopy[foundIdx + idx - 1] == '*')
+                {
+                    idx += foundIdx;
+                    break;
+                }
+                idx += foundIdx + 1;
+            }
+
+            Debug.Assert(idx >= 1);
+            _stack.Push((InternalJsonTokenType)TokenType);
+            Value = localCopy.Slice(0, idx - 1);
+            TokenType = JsonTokenType.Comment;
+            CurrentIndex += 4 + Value.Length;
+
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
+            _lineNumber += newLines;
+            if (newLineIndex != -1)
+            {
+                _position = Value.Length - newLineIndex + 1;
             }
             else
             {
-                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+                _position += 4 + Value.Length;
             }
             return true;
         }
@@ -735,7 +868,7 @@ namespace System.Text.JsonLab
                         goto Done;
                     return false;
                 }
-                
+
                 _position += idx + 1;
 
             Done:

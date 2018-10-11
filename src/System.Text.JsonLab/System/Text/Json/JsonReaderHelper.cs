@@ -11,6 +11,21 @@ namespace System.Text.JsonLab
 {
     internal static class JsonReaderHelper
     {
+        public static (int, int) CountNewLines(ReadOnlySpan<byte> data)
+        {
+            int lastLineFeedIndex = -1;
+            int newLines = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == JsonConstants.LineFeed)
+                {
+                    lastLineFeedIndex = i;
+                    newLines++;
+                }
+            }
+            return (newLines, lastLineFeedIndex);
+        }
+
         // https://tools.ietf.org/html/rfc8259
         // Does the span contain '\' or any control characters (i.e. 0 to 31)
         // IndexOfAny(92, < 32)

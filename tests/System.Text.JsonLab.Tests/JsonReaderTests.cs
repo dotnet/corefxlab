@@ -738,7 +738,6 @@ namespace System.Text.JsonLab.Tests
         [InlineData("\"he\\nl\\\tlo", 1, 0)]
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
-            //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new Utf8JsonReader(dataUtf8)
             {
@@ -777,7 +776,175 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.True(expectedPosition == ex.Position, $"{ex.Message}, {ex.Position}, {expectedPosition}, {i}");
+                    Assert.Equal(expectedPosition, ex.Position);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData("//", "", 2)]
+        [InlineData("//\n", "", 3)]
+        [InlineData("/**/", "", 4)]
+        [InlineData("/*/*/", "/", 5)]
+
+        [InlineData("//This is a comment before json\n\"hello\"", "This is a comment before json", 32)]
+        [InlineData("\"hello\"//This is a comment after json", "This is a comment after json", 37)]
+        [InlineData("\"hello\"//This is a comment after json\n", "This is a comment after json", 38)]
+        [InlineData("\"alpha\" \r\n//This is a comment after json\n//Here is another comment/*and a multi-line comment*///Another single-line comment", "This is a comment after json", 41)]
+        [InlineData("\"beta\" \r\n//This is a comment after json\n//Here is another comment/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a comment after json", 40)]
+        [InlineData("\"gamma\" \r\n//This is a comment after json\n//Here is another comment\n/*and a multi-line comment*///Another single-line comment", "This is a comment after json", 41)]
+        [InlineData("\"delta\" \r\n//This is a comment after json\n//Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a comment after json", 41)]
+        [InlineData("\"hello\"//This is a comment after json with new line\n", "This is a comment after json with new line", 52)]
+        [InlineData("{\"age\" : \n//This is a comment between key-value pairs\n 30}", "This is a comment between key-value pairs", 54)]
+        [InlineData("{\"age\" : 30//This is a comment between key-value pairs on the same line\n}", "This is a comment between key-value pairs on the same line", 72)]
+
+        [InlineData("/*This is a multi-line comment before json*/\"hello\"", "This is a multi-line comment before json", 44)]
+        [InlineData("\"hello\"/*This is a multi-line comment after json*/", "This is a multi-line comment after json", 50)]
+        [InlineData("\"alpha\" \r\n/*This is a multi-line comment after json*///Here is another comment/*and a multi-line comment*///Another single-line comment", "This is a multi-line comment after json", 53)]
+        [InlineData("\"beta\" \r\n/*This is a multi-line comment after json*///Here is another comment/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a multi-line comment after json", 52)]
+        [InlineData("\"gamma\" \r\n/*This is a multi-line comment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment", "This is a multi-line comment after json", 53)]
+        [InlineData("\"delta\" \r\n/*This is a multi-line comment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a multi-line comment after json", 53)]
+        [InlineData("{\"age\" : \n/*This is a comment between key-value pairs*/ 30}", "This is a comment between key-value pairs", 55)]
+        [InlineData("{\"age\" : 30/*This is a comment between key-value pairs on the same line*/}", "This is a comment between key-value pairs on the same line", 73)]
+
+        [InlineData("/*This is a split multi-line \ncomment before json*/\"hello\"", "This is a split multi-line \ncomment before json", 51)]
+        [InlineData("\"hello\"/*This is a split multi-line \ncomment after json*/", "This is a split multi-line \ncomment after json", 57)]
+        [InlineData("\"alpha\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment/*and a multi-line comment*///Another single-line comment", "This is a split multi-line \ncomment after json", 60)]
+        [InlineData("\"beta\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a split multi-line \ncomment after json", 59)]
+        [InlineData("\"gamma\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment", "This is a split multi-line \ncomment after json", 60)]
+        [InlineData("\"delta\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/", "This is a split multi-line \ncomment after json", 60)]
+        [InlineData("{\"age\" : \n/*This is a split multi-line \ncomment between key-value pairs*/ 30}", "This is a split multi-line \ncomment between key-value pairs", 73)]
+        [InlineData("{\"age\" : 30/*This is a split multi-line \ncomment between key-value pairs on the same line*/}", "This is a split multi-line \ncomment between key-value pairs on the same line", 91)]
+        public static void AllowComments(string jsonString, string expectedComment, int expectedIndex)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8)
+            {
+                AllowComments = true
+            };
+
+            bool foundComment = false;
+            int indexAfterFirstComment = 0;
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                switch (tokenType)
+                {
+                    case JsonTokenType.Comment:
+                        if (foundComment)
+                            break;
+                        foundComment = true;
+                        indexAfterFirstComment = json.CurrentIndex;
+                        string actualComment = Encoding.UTF8.GetString(json.Value);
+                        Assert.Equal(expectedComment, actualComment);
+                        break;
+                }
+            }
+            Assert.True(foundComment);
+            Assert.Equal(expectedIndex, indexAfterFirstComment);
+
+            ReadOnlyMemory<byte> dataMemory = dataUtf8;
+            for (int i = 0; i < dataMemory.Length; i++)
+            {
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+                var jsonMultiSegment = new Utf8JsonReader(sequence)
+                {
+                    AllowComments = true
+                };
+
+                foundComment = false;
+                indexAfterFirstComment = 0;
+                while (jsonMultiSegment.Read())
+                {
+                    JsonTokenType tokenType = jsonMultiSegment.TokenType;
+                    switch (tokenType)
+                    {
+                        case JsonTokenType.Comment:
+                            if (foundComment)
+                                break;
+                            foundComment = true;
+                            indexAfterFirstComment = jsonMultiSegment.CurrentIndex;
+                            string actualComment = Encoding.UTF8.GetString(jsonMultiSegment.Value);
+                            Assert.Equal(expectedComment, actualComment);
+                            break;
+                    }
+                }
+                Assert.True(foundComment);
+                Assert.Equal(expectedIndex, indexAfterFirstComment);
+            }
+        }
+
+        [Theory]
+        [InlineData("//\n}", 2, 0)]
+        [InlineData("//comment\n}", 2, 0)]
+        [InlineData("/**/}", 1, 4)]
+        [InlineData("/*\n*/}", 2, 2)]
+        [InlineData("/*comment\n*/}", 2, 2)]
+        [InlineData("/*/*/}", 1, 5)]
+        [InlineData("//This is a comment before json\n\"hello\"{", 2, 7)]
+        [InlineData("\"hello\"//This is a comment after json\n{", 2, 0)]
+        [InlineData("\"gamma\" \r\n//This is a comment after json\n//Here is another comment\n/*and a multi-line comment*/{//Another single-line comment", 4, 28)]
+        [InlineData("\"delta\" \r\n//This is a comment after json\n//Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/{", 5, 18)]
+        [InlineData("\"hello\"//This is a comment after json with new line\n{", 2, 0)]
+        [InlineData("{\"age\" : \n//This is a comment between key-value pairs\n 30}{", 3, 4)]
+        [InlineData("{\"age\" : 30//This is a comment between key-value pairs on the same line\n}{", 2, 1)]
+        [InlineData("/*This is a multi-line comment before json*/\"hello\"{", 1, 51)]
+        [InlineData("\"hello\"/*This is a multi-line comment after json*/{", 1, 50)]
+        [InlineData("\"gamma\" \r\n/*This is a multi-line comment after json*///Here is another comment\n/*and a multi-line comment*/{//Another single-line comment", 3, 28)]
+        [InlineData("\"delta\" \r\n/*This is a multi-line comment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/{", 4, 18)]
+        [InlineData("{\"age\" : \n/*This is a comment between key-value pairs*/ 30}{", 2, 49)]
+        [InlineData("{\"age\" : 30/*This is a comment between key-value pairs on the same line*/}{", 1, 74)]
+        [InlineData("/*This is a split multi-line \ncomment before json*/\"hello\"{", 2, 28)]
+        [InlineData("\"hello\"/*This is a split multi-line \ncomment after json*/{", 2, 20)]
+        [InlineData("\"gamma\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment\n/*and a multi-line comment*/{//Another single-line comment", 4, 28)]
+        [InlineData("\"delta\" \r\n/*This is a split multi-line \ncomment after json*///Here is another comment\n/*and a multi-line comment*///Another single-line comment\n\t  /*blah * blah*/{", 5, 18)]
+        [InlineData("{\"age\" : \n/*This is a split multi-line \ncomment between key-value pairs*/ 30}{", 3, 37)]
+        [InlineData("{\"age\" : 30/*This is a split multi-line \ncomment between key-value pairs on the same line*/}{", 2, 51)]
+        public static void InvalidJsonWithComments(string jsonString, int expectedlineNumber, int expectedPosition)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            var json = new Utf8JsonReader(dataUtf8)
+            {
+                AllowComments = true
+            };
+
+            try
+            {
+                while (json.Read()) ;
+                Assert.True(false, "Expected JsonReaderException was not thrown with single-segment data.");
+            }
+            catch (JsonReaderException ex)
+            {
+                Assert.Equal(expectedlineNumber, ex.LineNumber);
+                Assert.Equal(expectedPosition, ex.Position);
+            }
+
+            ReadOnlyMemory<byte> dataMemory = dataUtf8;
+            for (int i = 0; i < dataMemory.Length; i++)
+            {
+                var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, i));
+                ReadOnlyMemory<byte> secondMem = dataMemory.Slice(i);
+                BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+                var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+                var jsonMultiSegment = new Utf8JsonReader(sequence)
+                {
+                    AllowComments = true
+                };
+
+                try
+                {
+                    while (jsonMultiSegment.Read()) ;
+                    Assert.True(false, "Expected JsonReaderException was not thrown with multi-segment data.");
+                }
+                catch (JsonReaderException ex)
+                {
+                    Assert.Equal(expectedlineNumber, ex.LineNumber);
+                    Assert.Equal(expectedPosition, ex.Position);
                 }
             }
         }

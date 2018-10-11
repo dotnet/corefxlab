@@ -56,6 +56,42 @@ namespace System.Buffers.Tests
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
+        public void TryReadToSpan_Sequence(bool advancePastDelimiter)
+        {
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {
+                new byte[] { 0, 0 },
+                new byte[] { 1, 1, 2, 2 },
+                new byte[] { },
+                new byte[] { 3, 3, 4, 4, 5, 5, 6, 6 }
+            });
+
+            BufferReader<byte> reader = new BufferReader<byte>(bytes);
+            for (byte i = 0; i < bytes.Length / 2 - 1; i++)
+            {
+                byte[] expected = new byte[i * 2 + 1];
+                for (int j = 0; j < expected.Length - 1; j++)
+                {
+                    expected[j] = (byte)(j / 2);
+                }
+                expected[i * 2] = i;
+                ReadOnlySpan<byte> searchFor = new byte []{ i, (byte)(i + 1) };
+                BufferReader<byte> copy = reader;
+                Assert.True(copy.TryReadTo(out ReadOnlySequence<byte> seq, searchFor, advancePastDelimiter));
+                Assert.True(seq.ToArray().AsSpan().SequenceEqual(expected));
+            }
+
+            bytes = BufferFactory.Create(new byte[][] {
+                new byte[] { 47, 42, 66, 32, 42, 32, 66, 42, 47 }   // /*b * b*/
+            });
+
+            reader = new BufferReader<byte>(bytes);
+            Assert.True(reader.TryReadTo(out ReadOnlySequence<byte> sequence, new byte[] { 42, 47 }, advancePastDelimiter));    //  */
+            Assert.True(sequence.ToArray().AsSpan().SequenceEqual(new byte[] { 47, 42, 66, 32, 42, 32, 66 }));
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public void TryReadTo_NotFound_Span(bool advancePastDelimiter)
         {
             ReadOnlySequence<byte> bytes = BufferFactory.Create(new byte[][] {

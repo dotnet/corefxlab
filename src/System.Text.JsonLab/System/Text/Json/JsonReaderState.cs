@@ -11,7 +11,7 @@ namespace System.Text.JsonLab
         internal ulong _containerMask;
         internal int _depth;
         internal bool _inObject;
-        internal Stack<bool> _stack;
+        internal Stack<InternalJsonTokenType> _stack;
         internal JsonTokenType _tokenType;
         internal int _lineNumber;
         internal int _position;

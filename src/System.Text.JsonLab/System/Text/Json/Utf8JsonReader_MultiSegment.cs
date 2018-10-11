@@ -34,6 +34,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
+            _allowComments = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -70,6 +71,7 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
+            _allowComments = false;
         }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)
@@ -141,6 +143,16 @@ namespace System.Text.JsonLab
                             return true;
                         }
                     }
+
+                    if (AllowComments)
+                    {
+                        reader.TryPeek(out first);
+                        if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
+                        {
+                            return true;
+                        }
+                    }
+
                     ThrowJsonReaderException(ref this);
                 }
                 return false;
@@ -261,6 +273,26 @@ namespace System.Text.JsonLab
             reader.Advance(1);
             CurrentIndex++;
             _position++;
+
+            if (AllowComments)
+            {
+                if (marker == JsonConstants.Solidus)
+                {
+                    CurrentIndex--;
+                    _position--;
+                    reader.Rewind(1);
+                    return ConsumeComment(ref reader);
+                }
+                if (TokenType == JsonTokenType.Comment)
+                {
+                    CurrentIndex--;
+                    _position--;
+                    reader.Rewind(1);
+                    TokenType = (JsonTokenType)_stack.Pop();
+                    return ReadMultiSegment(ref reader);
+                }
+            }
+
             if (marker == JsonConstants.ListSeperator)
             {
                 if (!reader.TryPeek(out byte first))
@@ -377,14 +409,97 @@ namespace System.Text.JsonLab
             {
                 return ConsumeNull(ref reader);
             }
-            else if (marker == '/')
+            else
             {
-                // TODO: Comments?
-                ThrowNotImplementedException();
+                if (AllowComments && marker == JsonConstants.Solidus)
+                    return ConsumeComment(ref reader);
+
+                ThrowJsonReaderException(ref this);
+            }
+            return true;
+        }
+
+        private bool ConsumeComment(ref BufferReader<byte> reader)
+        {
+            //TODO: Re-evaluate recovery mechanism if this fails. Do we need to rewind?
+            reader.Advance(1);
+            if (reader.TryPeek(out byte marker))
+            {
+                if (marker == JsonConstants.Solidus)
+                {
+                    reader.Advance(1);
+                    return ConsumeSingleLineComment(ref reader);
+                }
+                else if (marker == '*')
+                {
+                    reader.Advance(1);
+                    return ConsumeMultiLineComment(ref reader);
+                }
+                else
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+            }
+
+            if (_isFinalBlock)
+            {
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Solidus);
+            }
+            else return false;
+
+            return true;
+        }
+
+        private bool ConsumeSingleLineComment(ref BufferReader<byte> reader)
+        {
+            if (!reader.TryReadTo(out ReadOnlySpan<byte> span, JsonConstants.LineFeed, advancePastDelimiter: true))
+            {
+                if (_isFinalBlock)
+                {
+                    // Assume everything on this line is a comment and there is no more data.
+                    ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+                    Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+                    _position += 2 + Value.Length;
+                    reader.Advance(Value.Length);
+                    goto Done;
+                }
+                else return false;
+            }
+
+            Value = span;
+            CurrentIndex++;
+            _position = 0;
+            _lineNumber++;
+        Done:
+            _stack.Push((InternalJsonTokenType)TokenType);
+            TokenType = JsonTokenType.Comment;
+            CurrentIndex += 2 + Value.Length;
+            return true;
+        }
+
+        private bool ConsumeMultiLineComment(ref BufferReader<byte> reader)
+        {
+            if (!reader.TryReadTo(out ReadOnlySequence<byte> sequence, JsonConstants.EndOfComment, advancePastDelimiter: true))
+            {
+                if (_isFinalBlock)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
+                }
+                else return false;
+            }
+
+            _stack.Push((InternalJsonTokenType)TokenType);
+            Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            TokenType = JsonTokenType.Comment;
+            CurrentIndex += 4 + Value.Length;
+
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
+            _lineNumber += newLines;
+            if (newLineIndex != -1)
+            {
+                _position = Value.Length - newLineIndex + 1;
             }
             else
             {
-                ThrowJsonReaderException(ref this);
+                _position += 4 + Value.Length;
             }
             return true;
         }

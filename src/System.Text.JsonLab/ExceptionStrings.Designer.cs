@@ -98,6 +98,15 @@ namespace System.Text.JsonLab {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected either a &apos;\n&apos; or &apos;*/&apos; to indicate end of comment, but instead reached end of data..
+        /// </summary>
+        internal static string EndOfCommentNotFound {
+            get {
+                return ResourceManager.GetString("EndOfCommentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected a &apos;&quot;&apos; to indicate end of string, but instead reached end of data..
         /// </summary>
         internal static string EndOfStringNotFound {
