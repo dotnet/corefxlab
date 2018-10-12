@@ -49,6 +49,11 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
+        /// Return true if we're in the last segment
+        /// </summary>
+        public bool IsLastSegment => _nextPosition.GetObject() == null;
+
+        /// <summary>
         /// True when there is no more data in the <see cref="Sequence"/>.
         /// </summary>
         public bool End => !_moreData;
@@ -61,7 +66,8 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The current position in the <see cref="Sequence"/>.
         /// </summary>
-        public SequencePosition Position => Sequence.GetPosition(CurrentSpanIndex, _currentPosition);
+        public SequencePosition Position
+            => new SequencePosition(_currentPosition.GetObject(), CurrentSpanIndex + (_currentPosition.GetInteger() & ~(1 << 31)));
 
         /// <summary>
         /// The current segment in the <see cref="Sequence"/>.
@@ -217,6 +223,7 @@ namespace System.Buffers.Reader
                     {
                         CurrentSpan = default;
                         CurrentSpanIndex = 0;
+                        previousNextPosition = _nextPosition;
                     }
                 }
             }

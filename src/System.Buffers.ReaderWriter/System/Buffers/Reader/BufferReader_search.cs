@@ -464,17 +464,17 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip until the given <paramref name="delimiter"/>, if found.
+        /// Advance until the given <paramref name="delimiter"/>, if found.
         /// </summary>
         /// <param name="advancePastDelimiter">True to move past the <paramref name="delimiter"/> if found.</param>
         /// <returns>True if the given <paramref name="delimiter"/> was found.</returns>
-        public bool TrySkipTo(T delimiter, bool advancePastDelimiter = true)
+        public bool TryAdvanceTo(T delimiter, bool advancePastDelimiter = true)
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
             if (index != -1)
             {
-                Advance(index);
+                Advance(advancePastDelimiter ? index + 1 : index);
                 return true;
             }
 
@@ -482,17 +482,17 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip until any of the given <paramref name="delimiters"/>, if found.
+        /// Advance until any of the given <paramref name="delimiters"/>, if found.
         /// </summary>
         /// <param name="advancePastDelimiter">True to move past the first found instance of any of the given <paramref name="delimiters"/>.</param>
         /// <returns>True if any of the given <paramref name="delimiters"/> was found.</returns>
-        public bool TrySkipToAny(ReadOnlySpan<T> delimiters, bool advancePastDelimiter = true)
+        public bool TryAdvanceToAny(ReadOnlySpan<T> delimiters, bool advancePastDelimiter = true)
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOfAny(delimiters);
             if (index != -1)
             {
-                Advance(index);
+                Advance(advancePastDelimiter ? index + 1 : index);
                 return true;
             }
 
@@ -500,16 +500,16 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip consecutive instances of the given <paramref name="value"/>.
+        /// Advance past consecutive instances of the given <paramref name="value"/>.
         /// </summary>
-        /// <returns>Count of skipped <typeparamref name="T"/> values.</returns>
-        public long SkipPast(T value)
+        /// <returns>How many positions the reader has been advanced.</returns>
+        public long AdvancePast(T value)
         {
             long start = Consumed;
 
             do
             {
-                // Skip all matches in the current span
+                // Advance past all matches in the current span
                 int i;
                 for (i = CurrentSpanIndex; i < CurrentSpan.Length && CurrentSpan[i].Equals(value); i++)
                 {
@@ -518,7 +518,7 @@ namespace System.Buffers.Reader
                 int advanced = i - CurrentSpanIndex;
                 if (advanced == 0)
                 {
-                    // Didn't skip at all in this span, exit.
+                    // Didn't advance at all in this span, exit.
                     break;
                 }
 
@@ -534,14 +534,14 @@ namespace System.Buffers.Reader
         /// <summary>
         /// Skip consecutive instances of any of the given <paramref name="values"/>.
         /// </summary>
-        /// <returns>Count of skipped <typeparamref name="T"/> values.</returns>
-        public long SkipPastAny(ReadOnlySpan<T> values)
+        /// <returns>How many positions the reader has been advanced.</returns>
+        public long AdvancePastAny(ReadOnlySpan<T> values)
         {
             long start = Consumed;
 
             do
             {
-                // Skip all matches in the current span
+                // Advance past all matches in the current span
                 int i;
                 for (i = CurrentSpanIndex; i < CurrentSpan.Length && values.IndexOf(CurrentSpan[i]) != -1; i++)
                 {
@@ -550,7 +550,7 @@ namespace System.Buffers.Reader
                 int advanced = i - CurrentSpanIndex;
                 if (advanced == 0)
                 {
-                    // Didn't skip at all in this span, exit.
+                    // Didn't advance at all in this span, exit.
                     break;
                 }
 
@@ -564,16 +564,16 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip consecutive instances of any of the given values.
+        /// Advance past consecutive instances of any of the given values.
         /// </summary>
-        /// <returns>Count of skipped <typeparamref name="T"/> values.</returns>
-        public long SkipPastAny(T value0, T value1, T value2, T value3)
+        /// <returns>How many positions the reader has been advanced.</returns>
+        public long AdvancePastAny(T value0, T value1, T value2, T value3)
         {
             long start = Consumed;
 
             do
             {
-                // Skip all matches in the current span
+                // Advance past all matches in the current span
                 int i;
                 for (i = CurrentSpanIndex; i < CurrentSpan.Length; i++)
                 {
@@ -587,7 +587,7 @@ namespace System.Buffers.Reader
                 int advanced = i - CurrentSpanIndex;
                 if (advanced == 0)
                 {
-                    // Didn't skip at all in this span, exit.
+                    // Didn't advance at all in this span, exit.
                     break;
                 }
 
@@ -601,16 +601,16 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip consecutive instances of any of the given values.
+        /// Advance past consecutive instances of any of the given values.
         /// </summary>
-        /// <returns>Count of skipped <typeparamref name="T"/> values.</returns>
-        public long SkipPastAny(T value0, T value1, T value2)
+        /// <returns>How many positions the reader has been advanced.</returns>
+        public long AdvancePastAny(T value0, T value1, T value2)
         {
             long start = Consumed;
 
             do
             {
-                // Skip all matches in the current span
+                // Advance past all matches in the current span
                 int i;
                 for (i = CurrentSpanIndex; i < CurrentSpan.Length; i++)
                 {
@@ -624,7 +624,7 @@ namespace System.Buffers.Reader
                 int advanced = i - CurrentSpanIndex;
                 if (advanced == 0)
                 {
-                    // Didn't skip at all in this span, exit.
+                    // Didn't advance at all in this span, exit.
                     break;
                 }
 
@@ -638,16 +638,16 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Skip consecutive instances of any of the given values.
+        /// Advance past consecutive instances of any of the given values.
         /// </summary>
-        /// <returns>Count of skipped <typeparamref name="T"/> values.</returns>
-        public long SkipPastAny(T value0, T value1)
+        /// <returns>How many positions the reader has been advanced.</returns>
+        public long AdvancePastAny(T value0, T value1)
         {
             long start = Consumed;
 
             do
             {
-                // Skip all matches in the current span
+                // Advance past all matches in the current span
                 int i;
                 for (i = CurrentSpanIndex; i < CurrentSpan.Length; i++)
                 {
@@ -661,7 +661,7 @@ namespace System.Buffers.Reader
                 int advanced = i - CurrentSpanIndex;
                 if (advanced == 0)
                 {
-                    // Didn't skip at all in this span, exit.
+                    // Didn't advance at all in this span, exit.
                     break;
                 }
 
