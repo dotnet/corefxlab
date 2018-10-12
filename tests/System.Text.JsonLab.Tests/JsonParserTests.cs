@@ -294,7 +294,7 @@ namespace System.Text.JsonLab.Tests
 
         private static Value GetValue(ref Utf8JsonReader jsonReader)
         {
-            var value = new Value { Type = MapValueType(jsonReader.ValueType) };
+            var value = new Value { Type = MapValueType(jsonReader.TokenType) };
             switch (value.Type)
             {
                 case Value.ValueType.String:
@@ -322,23 +322,23 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
-        private static Value.ValueType MapValueType(JsonValueType type)
+        private static Value.ValueType MapValueType(JsonTokenType type)
         {
             switch (type)
             {
-                case JsonValueType.False:
+                case JsonTokenType.False:
                     return Value.ValueType.False;
-                case JsonValueType.True:
+                case JsonTokenType.True:
                     return Value.ValueType.True;
-                case JsonValueType.Null:
+                case JsonTokenType.Null:
                     return Value.ValueType.Null;
-                case JsonValueType.Number:
+                case JsonTokenType.Number:
                     return Value.ValueType.Number;
-                case JsonValueType.String:
+                case JsonTokenType.String:
                     return Value.ValueType.String;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     return Value.ValueType.Array;
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     return Value.ValueType.Object;
                 default:
                     throw new ArgumentException();
@@ -395,7 +395,11 @@ namespace System.Text.JsonLab.Tests
                         return jsonArray;
                     case JsonTokenType.StartArray:
                     case JsonTokenType.StartObject:
-                    case JsonTokenType.Value:
+                    case JsonTokenType.False:
+                    case JsonTokenType.True:
+                    case JsonTokenType.Null:
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
                         jsonValues.Add(GetValue(ref jsonReader));
                         break;
                     default:

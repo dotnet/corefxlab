@@ -14,25 +14,20 @@ namespace System.Text.JsonLab
             return Encodings.Utf8.ToString(span);
         }
 
-        private static bool IsDecimal(this ReadOnlySpan<byte> span)
-        {
-            return span.IndexOfAny((byte)'.', (byte)'e', (byte)'E') != -1;
-        }
-
-        public static (NumberType, object) GetNumberType(this ReadOnlySpan<byte> span)
+        public static object ConvertToNumber(this ReadOnlySpan<byte> span)
         {
             if (Utf8Parser.TryParse(span, out int intVal, out int bytesConsumed))
             {
                 if (span.Length == bytesConsumed)
                 {
-                    return (NumberType.Integer, intVal);
+                    return intVal;
                 }
             }
             if (Utf8Parser.TryParse(span, out long longVal, out bytesConsumed))
             {
                 if (span.Length == bytesConsumed)
                 {
-                    return (NumberType.Long, longVal);
+                    return longVal;
                 }
             }
 
@@ -42,7 +37,7 @@ namespace System.Text.JsonLab
                 {
                     if (span.Length == bytesConsumed)
                     {
-                        return (NumberType.Decimal, span.ConvertToDecimal());
+                        return span.ConvertToDecimal();
                     }
                 }
             }
@@ -52,7 +47,7 @@ namespace System.Text.JsonLab
                 {
                     if (span.Length == bytesConsumed)
                     {
-                        return (NumberType.Decimal, span.ConvertToDecimal());
+                        return span.ConvertToDecimal();
                     }
                 }
             }
