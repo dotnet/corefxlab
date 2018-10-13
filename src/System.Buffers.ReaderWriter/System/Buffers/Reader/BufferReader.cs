@@ -254,23 +254,6 @@ namespace System.Buffers.Reader
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AdvanceCurrentSpan(long count)
-        {
-            Debug.Assert(count <= CurrentSpan.Length - count);
-
-            Consumed += count;
-            if (CurrentSpanIndex < CurrentSpan.Length - count)
-            {
-                CurrentSpanIndex += (int)count;
-            }
-            else
-            {
-                // Ate the whole span, grab another
-                GetNextSpan();
-            }
-        }
-
         private void AdvanceToNextSpan(long count)
         {
             while (_moreData)

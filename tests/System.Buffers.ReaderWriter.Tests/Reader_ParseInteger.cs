@@ -254,10 +254,12 @@ namespace System.Buffers.Tests
             // Too many bytes
             Assert.False(parser(ref reader, out T value, standardFormat));
             reader.Advance(140);
-            Assert.Equal(0, reader.Consumed);
+            Assert.Equal(140, reader.Consumed);
             Assert.True(parser(ref reader, out value, standardFormat));
             Assert.Equal(expected, value);
             Assert.True(reader.Consumed > 20, "should have consumed all of the leading zeroes");
+
+            long priorConsumed = reader.Consumed;
 
             // Overflow
             bytes = BufferFactory.CreateUtf8(
@@ -273,7 +275,7 @@ namespace System.Buffers.Tests
             );
 
             Assert.False(parser(ref reader, out value, standardFormat));
-            Assert.Equal(0, reader.Consumed);
+            Assert.Equal(priorConsumed, reader.Consumed);
         }
 
         [Fact]

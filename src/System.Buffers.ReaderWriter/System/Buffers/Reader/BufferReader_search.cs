@@ -24,7 +24,7 @@ namespace System.Buffers.Reader
             if (index != -1)
             {
                 span = index == 0 ? default : remaining.Slice(0, index);
-                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
+                Advance(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 
@@ -60,7 +60,7 @@ namespace System.Buffers.Reader
             if ((index > 0 && !remaining[index - 1].Equals(delimiterEscape)) || index == 0)
             {
                 span = remaining.Slice(0, index);
-                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
+                Advance(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 
@@ -328,7 +328,7 @@ namespace System.Buffers.Reader
             if (index != -1)
             {
                 span = remaining.Slice(0, index);
-                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
+                Advance(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 

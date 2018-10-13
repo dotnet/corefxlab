@@ -40,7 +40,7 @@ namespace System.Buffers.Reader
             // doesn't care what follows "True" or "False" and neither should we.
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
             else if (unread.Length >= MaxBoolLength)
@@ -155,7 +155,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -203,7 +203,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -251,7 +251,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -293,7 +293,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -341,7 +341,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -383,7 +383,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -431,7 +431,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -473,7 +473,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -527,7 +527,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -582,7 +582,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -637,7 +637,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -668,7 +668,7 @@ namespace System.Buffers.Reader
 
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
             else if (unread.Length >= MaxGuidLength)
@@ -726,7 +726,7 @@ namespace System.Buffers.Reader
             else if (bytesConsumed < unread.Length)
             {
                 // The parser found a value it wouldn't consume so we have all useful data.
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
 
@@ -757,7 +757,7 @@ namespace System.Buffers.Reader
 
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
             else if (unread.Length >= MaxDateTimeLength)
@@ -793,7 +793,7 @@ namespace System.Buffers.Reader
 
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.AdvanceCurrentSpan(bytesConsumed);
+                reader.Advance(bytesConsumed);
                 return true;
             }
             else if (unread.Length >= MaxDateTimeLength)

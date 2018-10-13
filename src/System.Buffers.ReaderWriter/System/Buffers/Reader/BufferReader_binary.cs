@@ -25,7 +25,7 @@ namespace System.Buffers.Reader
             if (span.Length >= sizeof(T))
             {
                 value = MemoryMarshal.Read<T>(span);
-                reader.AdvanceCurrentSpan(sizeof(T));
+                reader.Advance(sizeof(T));
                 return true;
             }
 
