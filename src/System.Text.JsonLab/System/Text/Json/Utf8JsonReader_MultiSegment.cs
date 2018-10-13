@@ -113,7 +113,9 @@ namespace System.Text.JsonLab
                         }
                     }
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
-                    TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
+
+                    if (!TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number))
+                        return false;
                     if (_isFinalBlock)
                     {
                         Value = number;
@@ -121,37 +123,40 @@ namespace System.Text.JsonLab
                         reader.Advance(Value.Length);
                         Consumed += Value.Length;
                         _position += Value.Length;
-                        return true;
+                        goto Done;
                     }
                     else return false;
                 }
                 else if (ConsumeValue(ref reader, first))
                 {
-                    if (!reader.TryPeek(out first))
+                    goto Done;
+                }
+
+                return false;
+
+            Done:
+                if (!reader.TryPeek(out first))
+                {
+                    return true;
+                }
+                if (first <= JsonConstants.Space)
+                {
+                    SkipWhiteSpace(ref reader);
+                    if (reader.End)
                     {
                         return true;
                     }
-                    if (first <= JsonConstants.Space)
-                    {
-                        SkipWhiteSpace(ref reader);
-                        if (reader.End)
-                        {
-                            return true;
-                        }
-                    }
-
-                    if (AllowComments)
-                    {
-                        reader.TryPeek(out first);
-                        if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
-                        {
-                            return true;
-                        }
-                    }
-
-                    ThrowJsonReaderException(ref this);
                 }
-                return false;
+
+                if (AllowComments)
+                {
+                    reader.TryPeek(out first);
+                    if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
+                    {
+                        return true;
+                    }
+                }
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, first);
             }
             return true;
         }
@@ -670,7 +675,7 @@ namespace System.Text.JsonLab
 
         private void SkipWhiteSpace(ref BufferReader<byte> reader)
         {
-            while(true)
+            while (true)
             {
                 reader.TryPeek(out byte val);
                 if (val != JsonConstants.Space && val != JsonConstants.CarriageReturn && val != JsonConstants.LineFeed && val != JsonConstants.Tab)

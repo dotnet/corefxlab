@@ -112,7 +112,7 @@ namespace System.Text.JsonLab
                 if (valueRow.IsSimpleValue)
                 {
                     ReadOnlySpan<byte> value = child.GetSpan(valueRow);
-                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonTokenType.String);
+                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonType.String);
                 }
                 else
                 {

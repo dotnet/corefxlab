@@ -25,7 +25,7 @@ namespace System.Text.JsonLab
             {
                 DbRow record = _database.Get(i);
                 // Special casing Null so that it matches what JSON.NET does
-                if (record.IsSimpleValue && record.JsonType != JsonTokenType.Null)
+                if (record.IsSimpleValue && record.JsonType != JsonType.Null)
                 {
                     ReadOnlySpan<byte> value = _jsonData.Slice(record.Location, record.SizeOrLength);
                     sb.Append(Encoding.UTF8.GetString(value.ToArray())).Append(", ");
@@ -56,7 +56,7 @@ namespace System.Text.JsonLab
                 value = default;
                 return false;
             }
-            if (record.JsonType != JsonTokenType.StartObject)
+            if (record.JsonType != JsonType.StartObject)
             {
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
@@ -123,7 +123,7 @@ namespace System.Text.JsonLab
         {
             DbRow record = _database.Get();
 
-            if (record.JsonType != JsonTokenType.StartObject)
+            if (record.JsonType != JsonType.StartObject)
                 JsonThrowHelper.ThrowInvalidOperationException();
 
             for (int i = DbRow.Size; i < _database.Length; i += DbRow.Size)
@@ -137,7 +137,7 @@ namespace System.Text.JsonLab
                     continue;
                 }
 
-                Debug.Assert(record.JsonType == JsonTokenType.String);
+                //Debug.Assert(record.JsonType == JsonType.String);
 
                 int startIndex = i + DbRow.Size;
                 DbRow nextRecord = _database.Get(startIndex);
@@ -190,7 +190,7 @@ namespace System.Text.JsonLab
             if (startIndex >= DbRow.Size)
             {
                 DbRow row = GetRowDbIndex(startIndex - DbRow.Size);
-                if (row.JsonType == JsonTokenType.String)
+                if (row.JsonType == JsonType.String)
                     name = _jsonData.Slice(row.Location, row.SizeOrLength);
             }
             return new JsonObject(_jsonData, copy, name);
@@ -228,7 +228,7 @@ namespace System.Text.JsonLab
             {
                 DbRow record = _database.Get();
 
-                if (record.JsonType != JsonTokenType.StartArray)
+                if (record.JsonType != JsonType.StartArray)
                     JsonThrowHelper.ThrowInvalidOperationException();
 
                 if ((uint)index >= (uint)record.SizeOrLength)
@@ -246,7 +246,7 @@ namespace System.Text.JsonLab
             get
             {
                 DbRow record = _database.Get();
-                if (record.JsonType != JsonTokenType.StartArray)
+                if (record.JsonType != JsonType.StartArray)
                 {
                     JsonThrowHelper.ThrowInvalidOperationException();
                 }
@@ -458,7 +458,7 @@ namespace System.Text.JsonLab
 
         internal ReadOnlySpan<byte> GetSpan(DbRow row)
         {
-            Debug.Assert(row.IsSimpleValue);
+            //Debug.Assert(row.IsSimpleValue);
             return _jsonData.Slice(row.Location, row.SizeOrLength);
         }
 
@@ -502,13 +502,13 @@ namespace System.Text.JsonLab
             public bool MoveNext()
             {
                 DbRow row = _obj.GetRow();
-                if (row.JsonType == JsonTokenType.StartObject)
+                if (row.JsonType == JsonType.StartObject)
                 {
                     if (_index < _obj.Size - 1)
                     {
                         _index++;
                         row = _obj.GetRow(_index);
-                        if (row.JsonType != JsonTokenType.String)
+                        if (row.JsonType != JsonType.String)
                             JsonThrowHelper.ThrowInvalidOperationException();
 
                         _index++;
@@ -527,7 +527,7 @@ namespace System.Text.JsonLab
                         return true;
                     }
                 }
-                else if (row.JsonType == JsonTokenType.StartArray)
+                else if (row.JsonType == JsonType.StartArray)
                 {
                     if (_index < _obj.Size)
                     {

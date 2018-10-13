@@ -45,9 +45,9 @@ namespace System.Text.JsonLab
         public int Length => Span.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(JsonTokenType jsonType, int startLocation, int LengthOrNumberOfRows = DbRow.UnknownSize)
+        public void Append(JsonType jsonType, int startLocation, int LengthOrNumberOfRows = DbRow.UnknownSize)
         {
-            Debug.Assert(jsonType >= JsonTokenType.None && jsonType <= JsonTokenType.Comment);
+            Debug.Assert(jsonType >= JsonType.StartObject && jsonType <= JsonType.Null);
             Debug.Assert(startLocation >= 0);
             Debug.Assert(LengthOrNumberOfRows >= DbRow.UnknownSize);
 
@@ -102,13 +102,13 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int FindIndexOfFirstUnsetSizeOrLength(JsonTokenType lookupType)
+        public int FindIndexOfFirstUnsetSizeOrLength(JsonType lookupType)
         {
-            Debug.Assert(lookupType == JsonTokenType.EndObject || lookupType == JsonTokenType.EndArray);
+            Debug.Assert(lookupType == JsonType.StartObject || lookupType == JsonType.StartArray);
             return BackwardPass(lookupType);
         }
 
-        private int ForwardPass(JsonTokenType lookupType)
+        private int ForwardPass(JsonType lookupType)
         {
             for (int i = 0; i < Span.Length; i += DbRow.Size)
             {
@@ -127,7 +127,7 @@ namespace System.Text.JsonLab
             return -1;
         }
 
-        private int BackwardPass(JsonTokenType lookupType)
+        private int BackwardPass(JsonType lookupType)
         {
             // TODO: Investigate performance impact of adding "skip" logic similar to ForwardPass
             for (int i = Index - DbRow.Size; i >= DbRow.Size; i -= DbRow.Size)
@@ -169,7 +169,19 @@ namespace System.Text.JsonLab
         {
             Debug.Assert(index >= 0 && index <= Span.Length - DbRow.Size);
             int union = MemoryMarshal.Read<int>(Span.Slice(index + 8));
-            return (JsonTokenType)((union & 0x70000000) >> 28);
+            JsonType jsonType = (JsonType)((union & 0x70000000) >> 28);
+
+            JsonTokenType tokenType = (JsonTokenType)(jsonType + 4);
+            if (jsonType == JsonType.StartObject)
+            {
+                tokenType = JsonTokenType.StartObject;
+            }
+            else if (jsonType == JsonType.StartArray)
+            {
+                tokenType = JsonTokenType.StartArray;
+            }
+
+            return tokenType;
         }
 
         public bool GetHasChildren(int index = 0)
