@@ -146,22 +146,22 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryParse(out long l64, out _));
+            Assert.True(reader.TryParse(out long l64));
             Assert.Equal(123, l64);
 
-            Assert.True(reader.TryParse(out bool b, out _));
+            Assert.True(reader.TryParse(out bool b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64, out _));
+            Assert.True(reader.TryParse(out l64));
             Assert.Equal(456, l64);
 
-            Assert.True(reader.TryParse(out b, out _));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64, out _));
+            Assert.True(reader.TryParse(out l64));
             Assert.Equal(789, l64);
 
-            Assert.True(reader.TryParse(out b, out _));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(false, b);
         }
     }

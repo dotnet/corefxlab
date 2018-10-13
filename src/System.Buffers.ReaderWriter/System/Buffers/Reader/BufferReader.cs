@@ -254,7 +254,6 @@ namespace System.Buffers.Reader
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void AdvanceToNextSpan(long count)
         {
             while (_moreData)

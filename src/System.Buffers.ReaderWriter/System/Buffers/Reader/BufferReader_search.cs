@@ -20,6 +20,7 @@ namespace System.Buffers.Reader
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
+
             if (index != -1)
             {
                 span = index == 0 ? default : remaining.Slice(0, index);
@@ -27,12 +28,12 @@ namespace System.Buffers.Reader
                 return true;
             }
 
-            return TryReadToSlow(out span, delimiter, remaining.Length, advancePastDelimiter);
+            return TryReadToSlow(out span, delimiter, advancePastDelimiter);
         }
 
-        private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, int skip, bool advancePastDelimiter)
+        private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, bool advancePastDelimiter)
         {
-            if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, advancePastDelimiter, skip))
+            if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, advancePastDelimiter, CurrentSpan.Length - CurrentSpanIndex))
             {
                 span = default;
                 return false;
