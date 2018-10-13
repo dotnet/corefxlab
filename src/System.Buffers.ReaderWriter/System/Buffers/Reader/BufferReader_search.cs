@@ -20,19 +20,20 @@ namespace System.Buffers.Reader
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
+
             if (index != -1)
             {
                 span = index == 0 ? default : remaining.Slice(0, index);
-                Advance(index + (advancePastDelimiter ? 1 : 0));
+                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 
-            return TryReadToSlow(out span, delimiter, remaining.Length, advancePastDelimiter);
+            return TryReadToSlow(out span, delimiter, advancePastDelimiter);
         }
 
-        private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, int skip, bool advancePastDelimiter)
+        private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, bool advancePastDelimiter)
         {
-            if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, advancePastDelimiter, skip))
+            if (!TryReadToInternal(out ReadOnlySequence<T> sequence, delimiter, advancePastDelimiter, CurrentSpan.Length - CurrentSpanIndex))
             {
                 span = default;
                 return false;
@@ -59,7 +60,7 @@ namespace System.Buffers.Reader
             if ((index > 0 && !remaining[index - 1].Equals(delimiterEscape)) || index == 0)
             {
                 span = remaining.Slice(0, index);
-                Advance(index + (advancePastDelimiter ? 1 : 0));
+                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 
@@ -327,7 +328,7 @@ namespace System.Buffers.Reader
             if (index != -1)
             {
                 span = remaining.Slice(0, index);
-                Advance(index + (advancePastDelimiter ? 1 : 0));
+                AdvanceCurrentSpan(index + (advancePastDelimiter ? 1 : 0));
                 return true;
             }
 

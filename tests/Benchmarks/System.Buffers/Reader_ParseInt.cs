@@ -30,7 +30,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
 
-            while (reader.TryParse(out int value, out _))
+            while (reader.TryParse(out int value))
             {
                 // Skip the delimiter
                 reader.Advance(1);
@@ -42,7 +42,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
 
-            while (reader.TryParse(out int value, out _))
+            while (reader.TryParse(out int value))
             {
                 // Skip the delimiter
                 reader.Advance(1);
