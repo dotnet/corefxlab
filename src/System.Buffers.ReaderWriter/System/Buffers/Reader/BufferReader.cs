@@ -204,26 +204,29 @@ namespace System.Buffers.Reader
         /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSpan()
         {
-            CurrentSpanIndex = 0;
-            CurrentSpan = default;
-
-            SequencePosition previousNextPosition = _nextPosition;
-            while (_nextPosition.GetObject() != null && Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            if (!Sequence.IsSingleSegment)
             {
-                _currentPosition = previousNextPosition;
-                if (memory.Length > 0)
+                SequencePosition previousNextPosition = _nextPosition;
+                while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
                 {
-                    CurrentSpan = memory.Span;
-                    return;
-                }
-                else
-                {
-                    previousNextPosition = _nextPosition;
+                    _currentPosition = previousNextPosition;
+                    if (memory.Length > 0)
+                    {
+                        CurrentSpan = memory.Span;
+                        CurrentSpanIndex = 0;
+                        return;
+                    }
+                    else
+                    {
+                        CurrentSpan = default;
+                        CurrentSpanIndex = 0;
+                        previousNextPosition = _nextPosition;
+                    }
                 }
             }
-
             _moreData = false;
         }
 
