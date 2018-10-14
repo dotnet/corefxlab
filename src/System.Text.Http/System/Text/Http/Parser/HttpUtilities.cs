@@ -42,16 +42,16 @@ namespace System.Text.Http.Parser.Internal
         private readonly static ulong _mask5Chars = GetMaskAsLong(new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00 });
         private readonly static ulong _mask4Chars = GetMaskAsLong(new byte[] { 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 });
 
-        private readonly static Tuple<ulong, ulong, Http.Method, int>[] _knownMethods =
+        private readonly static (ulong Mask, ulong Signature, Http.Method Method, int Length)[] _knownMethods =
         {
-            Tuple.Create(_mask4Chars, _httpPutMethodLong, Http.Method.Put, 3),
-            Tuple.Create(_mask5Chars, _httpPostMethodLong, Http.Method.Post, 4),
-            Tuple.Create(_mask5Chars, _httpHeadMethodLong, Http.Method.Head, 4),
-            Tuple.Create(_mask6Chars, _httpTraceMethodLong, Http.Method.Trace, 5),
-            Tuple.Create(_mask6Chars, _httpPatchMethodLong, Http.Method.Patch, 5),
-            Tuple.Create(_mask7Chars, _httpDeleteMethodLong, Http.Method.Delete, 6),
-            Tuple.Create(_mask8Chars, _httpConnectMethodLong, Http.Method.Connect, 7),
-            Tuple.Create(_mask8Chars, _httpOptionsMethodLong, Http.Method.Options, 7),
+            (_mask4Chars, _httpPutMethodLong, Http.Method.Put, 3),
+            (_mask5Chars, _httpPostMethodLong, Http.Method.Post, 4),
+            (_mask5Chars, _httpHeadMethodLong, Http.Method.Head, 4),
+            (_mask6Chars, _httpTraceMethodLong, Http.Method.Trace, 5),
+            (_mask6Chars, _httpPatchMethodLong, Http.Method.Patch, 5),
+            (_mask7Chars, _httpDeleteMethodLong, Http.Method.Delete, 6),
+            (_mask8Chars, _httpConnectMethodLong, Http.Method.Connect, 7),
+            (_mask8Chars, _httpOptionsMethodLong, Http.Method.Options, 7),
         };
 
         private readonly static string[] _methodNames = CreateMethodNames();
@@ -121,7 +121,7 @@ namespace System.Text.Http.Parser.Internal
             return asciiString;
         }
 
-        public static string GetAsciiStringEscaped(this Span<byte> span, int maxChars)
+        public static string GetAsciiStringEscaped(this ReadOnlySpan<byte> span, int maxChars)
         {
             var sb = new StringBuilder();
 
@@ -152,74 +152,34 @@ namespace System.Text.Http.Parser.Internal
         /// </remarks>
         /// <returns><c>true</c> if the input matches a known string, <c>false</c> otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool GetKnownMethod(this Span<byte> span, out Http.Method method, out int length)
+        public static bool GetKnownMethod(this ReadOnlySpan<byte> span, out Http.Method method, out int length)
         {
-            fixed (byte* data = &MemoryMarshal.GetReference(span))
-            {
-                method = GetKnownMethod(data, span.Length, out length);
-                return method != Http.Method.Custom;
-            }
-        }
+            length = 0;
+            method = Http.Method.Custom;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal unsafe static Http.Method GetKnownMethod(byte* data, int length, out int methodLength)
-        {
-            methodLength = 0;
-            if (length < sizeof(uint))
+            if (span.Length >= sizeof(uint))
             {
-                return Http.Method.Custom;
-            }
-            else if (*(uint*)data == _httpGetMethodInt)
-            {
-                methodLength = 3;
-                return Http.Method.Get;
-            }
-            else if (length < sizeof(ulong))
-            {
-                return Http.Method.Custom;
-            }
-            else
-            {
-                var value = *(ulong*)data;
-                foreach (var x in _knownMethods)
+                if (Unsafe.ReadUnaligned<uint>(ref GetReference(span)) == _httpGetMethodInt)
                 {
-                    if ((value & x.Item1) == x.Item2)
+                    length = 3;
+                    method = Http.Method.Get;
+                }
+                else if (length >= sizeof(ulong))
+                {
+                    ulong value = Unsafe.ReadUnaligned<uint>(ref GetReference(span));
+                    foreach (var (Mask, Signature, Method, Length) in _knownMethods)
                     {
-                        methodLength = x.Item4;
-                        return x.Item3;
+                        if ((value & Mask) == Signature)
+                        {
+                            length = Length;
+                            method = Method;
+                            break;
+                        }
                     }
                 }
             }
 
-            return Http.Method.Custom;
-        }
-
-        /// <summary>
-        /// Checks 9 bytes from <paramref name="span"/>  correspond to a known HTTP version.
-        /// </summary>
-        /// <remarks>
-        /// A "known HTTP version" Is is either HTTP/1.0 or HTTP/1.1.
-        /// Since those fit in 8 bytes, they can be optimally looked up by reading those bytes as a long. Once
-        /// in that format, it can be checked against the known versions.
-        /// The Known versions will be checked with the required '\r'.
-        /// To optimize performance the HTTP/1.1 will be checked first.
-        /// </remarks>
-        /// <returns><c>true</c> if the input matches a known string, <c>false</c> otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool GetKnownVersion(this Span<byte> span, out Http.Version knownVersion, out byte length)
-        {
-            fixed (byte* data = &MemoryMarshal.GetReference(span))
-            {
-                knownVersion = GetKnownVersion(data, span.Length);
-                if (knownVersion != Http.Version.Unknown)
-                {
-                    length = sizeof(ulong);
-                    return true;
-                }
-
-                length = 0;
-                return false;
-            }
+            return method != Http.Method.Custom;
         }
 
         /// <summary>
@@ -234,28 +194,25 @@ namespace System.Text.Http.Parser.Internal
         /// </remarks>
         /// <returns><c>true</c> if the input matches a known string, <c>false</c> otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal unsafe static Http.Version GetKnownVersion(byte* location, int length)
+        internal static bool GetKnownVersion(ReadOnlySpan<byte> location, out Http.Version knownVersion)
         {
-            Http.Version knownVersion;
-            var version = *(ulong*)location;
-            if (length < sizeof(ulong) + 1 || location[sizeof(ulong)] != (byte)'\r')
+            knownVersion = Http.Version.Unknown;
+
+            if (location.Length >= sizeof(ulong) + 1 && location[sizeof(ulong)] == (byte)'\r')
             {
-                knownVersion = Http.Version.Unknown;
-            }
-            else if (version == _http11VersionLong)
-            {
-                knownVersion = Http.Version.Http11;
-            }
-            else if (version == _http10VersionLong)
-            {
-                knownVersion = Http.Version.Http10;
-            }
-            else
-            {
-                knownVersion = Http.Version.Unknown;
+                ulong version = Unsafe.ReadUnaligned<ulong>(ref GetReference(location));
+
+                if (version == _http11VersionLong)
+                {
+                    knownVersion = Http.Version.Http11;
+                }
+                else if (version == _http10VersionLong)
+                {
+                    knownVersion = Http.Version.Http10;
+                }
             }
 
-            return knownVersion;
+            return knownVersion != Http.Version.Unknown;
         }
 
         /// <summary>
@@ -265,20 +222,11 @@ namespace System.Text.Http.Parser.Internal
         /// <param name="knownScheme">A reference to the known scheme, if the input matches any</param>
         /// <returns>True when memory starts with known http or https schema</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool GetKnownHttpScheme(this Span<byte> span, out HttpScheme knownScheme)
+        public static bool GetKnownHttpScheme(this Span<byte> span, out HttpScheme knownScheme)
         {
-            fixed (byte* data = &MemoryMarshal.GetReference(span))
+            if (span.Length >= sizeof(ulong))
             {
-                return GetKnownHttpScheme(data, span.Length, out knownScheme);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe bool GetKnownHttpScheme(byte* location, int length, out HttpScheme knownScheme)
-        {
-            if (length >= sizeof(ulong))
-            {
-                var scheme = *(ulong*)location;
+                ulong scheme = Unsafe.ReadUnaligned<ulong>(ref GetReference(span));
                 if ((scheme & _mask7Chars) == _httpSchemeLong)
                 {
                     knownScheme = HttpScheme.Http;

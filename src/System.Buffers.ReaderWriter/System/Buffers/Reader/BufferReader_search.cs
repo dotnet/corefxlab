@@ -737,10 +737,11 @@ namespace System.Buffers
                 }
                 return true;
             }
+
+            // Only check the slow path if there wasn't enough to satisfy next
             return unread.Length < next.Length && IsNextSlow(next, advancePast);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private unsafe bool IsNextSlow(ReadOnlySpan<T> next, bool advancePast)
         {
             ReadOnlySpan<T> currentSpan = UnreadSpan;
