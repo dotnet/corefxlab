@@ -5,7 +5,7 @@
 namespace System.Text.JsonLab
 {
     // Choosing the relevant subset of JsonTokenType since we can only support 8 (2 ^ 3)
-    // Keep the enum order in sync with JsonTokenType since we case between the two
+    // Keep the enum order in sync with JsonTokenType since we cast between the two
     internal enum JsonType
     {
         StartObject,

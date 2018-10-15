@@ -137,7 +137,7 @@ namespace System.Text.JsonLab
                     continue;
                 }
 
-                //Debug.Assert(record.JsonType == JsonType.String);
+                Debug.Assert(record.JsonType == JsonType.String);
 
                 int startIndex = i + DbRow.Size;
                 DbRow nextRecord = _database.Get(startIndex);
@@ -458,7 +458,7 @@ namespace System.Text.JsonLab
 
         internal ReadOnlySpan<byte> GetSpan(DbRow row)
         {
-            //Debug.Assert(row.IsSimpleValue);
+            Debug.Assert(row.IsSimpleValue);
             return _jsonData.Slice(row.Location, row.SizeOrLength);
         }
 
