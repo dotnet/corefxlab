@@ -16,7 +16,7 @@ namespace System.Text.JsonLab
         internal long _lineNumber;
         internal long _position;
 
-        public bool IsDefault
+        internal bool IsDefault
             => _containerMask == default &&
             _depth == default &&
             _inObject == default &&

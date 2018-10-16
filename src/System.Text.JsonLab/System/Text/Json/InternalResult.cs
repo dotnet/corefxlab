@@ -4,11 +4,10 @@
 
 namespace System.Text.JsonLab
 {
-    public enum NumberType
+    internal enum InternalResult
     {
-        Integer = 0,
-        Long = 1,
-        Decimal = 2,
-        BigInteger = 3,
+        Success,
+        FailureRollback,
+        FalseNoRollback
     }
 }

@@ -400,10 +400,13 @@ namespace System.Text.JsonLab.Tests
             return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
         }
 
-        public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length)
+        public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
-            var reader = new Utf8JsonReader(sequence);
+            var reader = new Utf8JsonReader(sequence)
+            {
+                Options = options
+            };
             byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
             // TODO: Should we reset the value and valuetype once we are done?
             //Assert.True(reader.Value.IsEmpty);
@@ -430,6 +433,7 @@ namespace System.Text.JsonLab.Tests
                         break;
                     case JsonTokenType.Number:
                     case JsonTokenType.String:
+                    case JsonTokenType.Comment:
                         valueSpan.CopyTo(destination);
                         destination[valueSpan.Length] = (byte)',';
                         destination[valueSpan.Length + 1] = (byte)' ';
@@ -478,7 +482,7 @@ namespace System.Text.JsonLab.Tests
                 {
                     case JsonTokenType.True:
                     case JsonTokenType.False:
-                        root = valueSpan.ConvertToBool();
+                        root = valueSpan[0] == 't';
                         break;
                     case JsonTokenType.Number:
                         root = valueSpan.ConvertToNumber();
@@ -525,7 +529,7 @@ namespace System.Text.JsonLab.Tests
                         break;
                     case JsonTokenType.True:
                     case JsonTokenType.False:
-                        value = valueSpan.ConvertToBool();
+                        value = valueSpan[0] == 't';
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -649,15 +653,21 @@ namespace System.Text.JsonLab.Tests
             return arrayList;
         }
 
-        public static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
+        public static byte[] JsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var reader = new Utf8JsonReader(data);
+            var reader = new Utf8JsonReader(data)
+            {
+                Options = options
+            };
             return JsonLabReaderLoop(data.Length, out length, ref reader);
         }
 
-        public static object JsonLabReturnObjectHelper(byte[] data)
+        public static object JsonLabReturnObjectHelper(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var reader = new Utf8JsonReader(data);
+            var reader = new Utf8JsonReader(data)
+            {
+                Options = options
+            };
             return JsonLabReaderLoop(ref reader);
         }
     }
