@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Reader;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using static System.Text.JsonLab.JsonThrowHelper;
@@ -1528,6 +1529,219 @@ namespace System.Text.JsonLab
         Done:
             number = data.Slice(0, i);
             return true;
+        }
+
+        public string GetValueAsString()
+        {
+            return Encodings.Utf8.ToString(Value);
+        }
+
+        public int GetValueAsInt32()
+        {
+            if (Utf8Parser.TryParse(Value, out int value, out int bytesConsumed))
+            {
+                if (Value.Length == bytesConsumed)
+                {
+                    return value;
+                }
+            }
+            //TODO: Proper error message
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        public long GetValueAsInt64()
+        {
+            if (Utf8Parser.TryParse(Value, out long value, out int bytesConsumed))
+            {
+                if (Value.Length == bytesConsumed)
+                {
+                    return value;
+                }
+            }
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        public float GetValueAsSingle()
+        {
+            //TODO: We know whether this is true or not ahead of time
+            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            {
+                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            else
+            {
+                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed, 'e'))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        public double GetValueAsDouble()
+        {
+            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            {
+                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            else
+            {
+                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed, standardFormat: 'e'))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        public decimal GetValueAsDecimal()
+        {
+            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            {
+                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            else
+            {
+                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed, standardFormat: 'e'))
+                {
+                    if (Value.Length == bytesConsumed)
+                    {
+                        return value;
+                    }
+                }
+            }
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        public object GetValueAsNumber()
+        {
+            if (Utf8Parser.TryParse(Value, out int intVal, out int bytesConsumed))
+            {
+                if (Value.Length == bytesConsumed)
+                {
+                    return intVal;
+                }
+            }
+
+            if (Utf8Parser.TryParse(Value, out long longVal, out bytesConsumed))
+            {
+                if (Value.Length == bytesConsumed)
+                {
+                    return longVal;
+                }
+            }
+
+            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            {
+                return NumberAsObject(Value);
+            }
+            else
+            {
+                return NumberAsObject(Value, standardFormat: 'e');
+            }
+        }
+
+        private static object NumberAsObject(ReadOnlySpan<byte> value, char standardFormat = default)
+        {
+            if (Utf8Parser.TryParse(value, out decimal valueDecimal, out int bytesConsumed, standardFormat))
+            {
+                if (value.Length == bytesConsumed)
+                {
+                    return TryToChangeToInt32_64(valueDecimal);
+                }
+            }
+            else if (Utf8Parser.TryParse(value, out double valueDouble, out bytesConsumed, standardFormat))
+            {
+                if (value.Length == bytesConsumed)
+                {
+                    return TryToChangeToInt32_64(valueDouble);
+                }
+            }
+            else if (Utf8Parser.TryParse(value, out float valueFloat, out bytesConsumed, standardFormat))
+            {
+                if (value.Length == bytesConsumed)
+                {
+                    return TryToChangeToInt32_64(valueFloat);
+                }
+            }
+
+            // Number too large for .NET
+            ThrowInvalidCastException();
+            return default;
+        }
+
+        private static object TryToChangeToInt32_64(float valueFloat)
+        {
+            float rounded = (float)Math.Floor(valueFloat);
+            if (rounded != valueFloat)
+            {
+                return valueFloat;
+            }
+            if (rounded <= int.MaxValue && rounded >= int.MinValue)
+                return Convert.ToInt32(rounded);
+            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
+                return Convert.ToInt64(rounded);
+            else
+                return valueFloat;
+        }
+
+        private static object TryToChangeToInt32_64(double valueDouble)
+        {
+            double rounded = Math.Floor(valueDouble);
+            if (rounded != valueDouble)
+            {
+                return valueDouble;
+            }
+            if (rounded <= int.MaxValue && rounded >= int.MinValue)
+                return Convert.ToInt32(rounded);
+            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
+                return Convert.ToInt64(rounded);
+            else
+                return valueDouble;
+        }
+
+        private static object TryToChangeToInt32_64(decimal valueDecimal)
+        {
+            decimal rounded = Math.Floor(valueDecimal);
+            if (rounded != valueDecimal)
+            {
+                return valueDecimal;
+            }
+            if (rounded <= int.MaxValue && rounded >= int.MinValue)
+                return Convert.ToInt32(rounded);
+            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
+                return Convert.ToInt64(rounded);
+            else
+                return valueDecimal;
         }
     }
 }

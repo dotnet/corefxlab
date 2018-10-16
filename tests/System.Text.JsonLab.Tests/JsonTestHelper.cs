@@ -485,10 +485,10 @@ namespace System.Text.JsonLab.Tests
                         root = valueSpan[0] == 't';
                         break;
                     case JsonTokenType.Number:
-                        root = valueSpan.ConvertToNumber();
+                        root = json.GetValueAsNumber();
                         break;
                     case JsonTokenType.String:
-                        root = valueSpan.ConvertToString();
+                        root = json.GetValueAsString();
                         break;
                     case JsonTokenType.Null:
                         break;
@@ -524,7 +524,7 @@ namespace System.Text.JsonLab.Tests
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        key = valueSpan.ConvertToString();
+                        key = json.GetValueAsString();
                         dictionary.Add(key, null);
                         break;
                     case JsonTokenType.True:
@@ -540,7 +540,7 @@ namespace System.Text.JsonLab.Tests
                         }
                         break;
                     case JsonTokenType.Number:
-                        value = valueSpan.ConvertToNumber();
+                        value = json.GetValueAsNumber();
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -551,7 +551,7 @@ namespace System.Text.JsonLab.Tests
                         }
                         break;
                     case JsonTokenType.String:
-                        value = valueSpan.ConvertToString();
+                        value = json.GetValueAsString();
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -623,11 +623,11 @@ namespace System.Text.JsonLab.Tests
                         arrayList.Add(value);
                         break;
                     case JsonTokenType.Number:
-                        value = valueSpan.ConvertToNumber();
+                        value = json.GetValueAsNumber();
                         arrayList.Add(value);
                         break;
                     case JsonTokenType.String:
-                        value = valueSpan.ConvertToString();
+                        value = json.GetValueAsString();
                         arrayList.Add(value);
                         break;
                     case JsonTokenType.Null:
@@ -669,6 +669,26 @@ namespace System.Text.JsonLab.Tests
                 Options = options
             };
             return JsonLabReaderLoop(ref reader);
+        }
+
+        public static float NextFloat(Random random)
+        {
+            double mantissa = (random.NextDouble() * 2.0) - 1.0;
+            // choose -149 instead of -126 to also generate subnormal floats (*)
+            double exponent = Math.Pow(2.0, random.Next(-126, 128));
+            return (float)(mantissa * exponent);
+        }
+
+        public static double NextDouble(Random random, double minValue, double maxValue)
+        {
+            double value = random.NextDouble() * (maxValue - minValue) + minValue;
+            return value;
+        }
+
+        public static decimal NextDecimal(Random random, double minValue, double maxValue)
+        {
+            double value = random.NextDouble() * (maxValue - minValue) + minValue;
+            return (decimal)value;
         }
     }
 }

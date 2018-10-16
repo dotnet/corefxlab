@@ -69,70 +69,6 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        [Fact]
-        public static void TestConvertToInt32APIs()
-        {
-            ReadOnlySpan<byte> data = new byte[] { 48, 49 };    // 01
-            Utf8Parser.TryParse(data, out int expected, out _);
-            int result = data.ConvertToInt32();
-            Assert.Equal(expected, result);
-
-            data = new byte[] { 48, 49, 97 };       // 01a
-            Utf8Parser.TryParse(data, out expected, out _);
-            try
-            {
-                result = data.ConvertToInt32();
-                Assert.Equal(expected, result);
-                Assert.True(false);
-            }
-            catch (InvalidCastException)
-            {
-                Assert.Equal(1, expected);
-            }
-
-            data = new byte[] { 49, 46, 49 };       // 1.1
-            Utf8Parser.TryParse(data, out expected, out _);
-            try
-            {
-                result = data.ConvertToInt32();
-                Assert.Equal(expected, result);
-                Assert.True(false);
-            }
-            catch (InvalidCastException)
-            {
-                Assert.Equal(1, expected);
-            }
-
-            data = new byte[] { 50, 49, 52, 55, 52, 56, 51, 54, 52, 56 };   // int.MaxValue + 1 = 2147483648
-            Utf8Parser.TryParse(data, out expected, out _);
-            try
-            {
-                result = data.ConvertToInt32();
-                Assert.Equal(expected, result);
-                Assert.True(false);
-            }
-            catch (InvalidCastException)
-            {
-                Assert.Equal(0, expected);
-
-                long resultLong = data.ConvertToInt64();
-                Utf8Parser.TryParse(data, out long expectedLong, out _);
-                Assert.Equal(expectedLong, resultLong);
-            }
-
-            object resultObject = data.ConvertToNumber();
-            Assert.Equal((long)int.MaxValue + 1, (long)resultObject);
-
-            data = new byte[] { 49, 46, 49, 101, 49 };       // 1.1e1 = 11
-            resultObject = data.ConvertToNumber();
-            Assert.Equal(11, (int)resultObject);
-
-            data = new byte[] { 49, 46, 49, 69, 49 };       // 1.1E1 = 11
-            resultObject = data.ConvertToNumber();
-            Assert.Equal(11, (int)resultObject);
-            
-        }
-
         // TestCaseType is only used to give the json strings a descriptive name.
         [Theory]
         [MemberData(nameof(TestCases))]
@@ -823,6 +759,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData("null,", 1, 4)]
         [InlineData("\"hello\",", 1, 7)]
         [InlineData("01", 1, 0)]
+        [InlineData("1a", 1, 0)]
         [InlineData("-01", 1, 0)]
         [InlineData("10.5e", 1, 0)]
         [InlineData("10.5e-", 1, 0)]
@@ -1317,6 +1254,256 @@ namespace System.Text.JsonLab.Tests
                 TryParseResponseMessage(ref message));
 
             Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void TestingNumbers()
+        {
+            var random = new Random(42);
+
+            // Make sure we have 1_005 values in each numeric list.
+            var ints = new List<int>
+            {
+                0,
+                12345,
+                -12345,
+                int.MaxValue,
+                int.MinValue
+            };
+            for (int i = 0; i < 1_000; i++)
+            {
+                int value = random.Next(int.MinValue, int.MaxValue);
+                ints.Add(value);
+            }
+
+            var longs = new List<long>
+            {
+                0,
+                12345678901,
+                -12345678901,
+                long.MaxValue,
+                long.MinValue
+            };
+            for (int i = 0; i < 1_000; i++)
+            {
+                long value = random.Next(int.MinValue, int.MaxValue);
+                if (value < 0)
+                    value += int.MinValue;
+                else
+                    value += int.MaxValue;
+                longs.Add(value);
+            }
+
+            var doubles = new List<double>
+            {
+                0.000,
+                1.1234e1,
+                -1.1234e1,
+                1.79769313486231E+308,  // double.MaxValue doesn't round trip
+                -1.79769313486231E+308  // double.MinValue doesn't round trip
+            };
+            for (int i = 0; i < 500; i++)
+            {
+                double value = NextDouble(random, double.MinValue / 10, double.MaxValue / 10);
+                doubles.Add(value);
+            }
+            for (int i = 0; i < 500; i++)
+            {
+                double value = NextDouble(random, 1_000_000, -1_000_000);
+                doubles.Add(value);
+            }
+
+            var floats = new List<float>
+            {
+                0.000f,
+                1.1234e1f,
+                -1.1234e1f,
+                float.MaxValue,
+                float.MinValue
+            };
+            for (int i = 0; i < 1_000; i++)
+            {
+                float value = NextFloat(random);
+                floats.Add(value);
+            }
+
+            var decimals = new List<decimal>
+            {
+                (decimal)0.000,
+                (decimal)1.1234e1,
+                (decimal)-1.1234e1,
+                decimal.MaxValue,
+                decimal.MinValue
+            };
+            for (int i = 0; i < 500; i++)
+            {
+                decimal value = NextDecimal(random, 78E14, -78E14);
+                decimals.Add(value);
+            }
+            for (int i = 0; i < 500; i++)
+            {
+                decimal value = NextDecimal(random, 1_000_000, -1_000_000);
+                decimals.Add(value);
+            }
+
+            var builder = new StringBuilder();
+            builder.Append("{");
+
+            for (int i = 0; i < ints.Count; i++)
+            {
+                builder.Append("\"int").Append(i).Append("\": ");
+                builder.Append(ints[i]).Append(", ");
+            }
+            for (int i = 0; i < longs.Count; i++)
+            {
+                builder.Append("\"long").Append(i).Append("\": ");
+                builder.Append(longs[i]).Append(", ");
+            }
+            for (int i = 0; i < doubles.Count; i++)
+            {
+                builder.Append("\"double").Append(i).Append("\": ");
+                builder.Append(doubles[i]).Append(", ");
+            }
+            for (int i = 0; i < floats.Count; i++)
+            {
+                builder.Append("\"float").Append(i).Append("\": ");
+                builder.Append(floats[i]).Append(", ");
+            }
+            for (int i = 0; i < decimals.Count; i++)
+            {
+                builder.Append("\"decimal").Append(i).Append("\": ");
+                builder.Append(decimals[i]).Append(", ");
+            }
+
+            builder.Append("\"intEnd\": 0}");
+
+            string jsonString = builder.ToString();
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            var json = new Utf8JsonReader(dataUtf8);
+            string key = "";
+            int count = 0;
+            while (json.Read())
+            {
+                if (json.TokenType == JsonTokenType.PropertyName)
+                {
+                    key = json.GetValueAsString();
+                }
+                if (json.TokenType == JsonTokenType.Number)
+                {
+                    if (key.StartsWith("int"))
+                    {
+                        int numberInt = json.GetValueAsInt32();
+                        if (count >= ints.Count)
+                            count = 0;
+                        Assert.Equal(ints[count], numberInt);
+                        count++;
+                    }
+                    else if (key.StartsWith("long"))
+                    {
+                        long numberLong = json.GetValueAsInt64();
+                        if (count >= longs.Count)
+                            count = 0;
+                        Assert.Equal(longs[count], numberLong);
+                        count++;
+                    }
+                    else if (key.StartsWith("float"))
+                    {
+                        float numberFloat = json.GetValueAsSingle();
+                        if (count >= floats.Count)
+                            count = 0;
+
+                        float expected = float.Parse(floats[count].ToString());
+
+                        Assert.Equal(expected, numberFloat);
+                        count++;
+                    }
+                    else if (key.StartsWith("double"))
+                    {
+                        double numberDouble = json.GetValueAsDouble();
+                        if (count >= doubles.Count)
+                            count = 0;
+
+                        double expected = double.Parse(doubles[count].ToString());
+
+                        Assert.Equal(expected, numberDouble);
+                        count++;
+                    }
+                    else if (key.StartsWith("decimal"))
+                    {
+                        decimal numberDecimal = json.GetValueAsDecimal();
+                        if (count >= decimals.Count)
+                            count = 0;
+                        Assert.Equal(decimals[count], numberDecimal);
+                        count++;
+                    }
+                }
+            }
+
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+        }
+
+        [Theory]
+        [InlineData("0.000", 0)]
+        [InlineData("1e1", 10)]
+        [InlineData("1.1e2", 110)]
+        [InlineData("12345.1", 12345.1)]
+        [InlineData("12345678901", 12345678901)]
+        [InlineData("123456789012345678901", 123456789012345678901d)]
+        public void TestingNumbersInvalidCastToInt32(string jsonString, double expected)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            var json = new Utf8JsonReader(dataUtf8);
+            while (json.Read())
+            {
+                if (json.TokenType == JsonTokenType.Number)
+                {
+                    try
+                    {
+                        int value = json.GetValueAsInt32();
+                        Assert.True(false, "Expected InvalidCastException when trying to read invalid int32.");
+                    }
+                    catch (InvalidCastException)
+                    {
+                        double value = json.GetValueAsDouble();
+                        Assert.Equal(expected, value);
+                    }
+                }
+            }
+
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+        }
+
+        [Theory]
+        [InlineData("0.000", 0)]
+        [InlineData("1e1", 10)]
+        [InlineData("1.1e2", 110)]
+        [InlineData("12345.1", 12345.1)]
+        [InlineData("123456789012345678901", 123456789012345678901d)]
+        public void TestingNumbersInvalidCastToInt64(string jsonString, double expected)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            var json = new Utf8JsonReader(dataUtf8);
+            while (json.Read())
+            {
+                if (json.TokenType == JsonTokenType.Number)
+                {
+                    try
+                    {
+                        long value = json.GetValueAsInt64();
+                        Assert.True(false, "Expected InvalidCastException when trying to read invalid int64.");
+                    }
+                    catch (InvalidCastException)
+                    {
+                        double value = json.GetValueAsDouble();
+                        Assert.Equal(expected, value);
+                    }
+                }
+            }
+
+            Assert.Equal(dataUtf8.Length, json.Consumed);
         }
     }
 }
