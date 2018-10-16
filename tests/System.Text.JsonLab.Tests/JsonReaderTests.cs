@@ -85,7 +85,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expected, result);
                 Assert.True(false);
             }
-            catch (InvalidCastException ex)
+            catch (InvalidCastException)
             {
                 Assert.Equal(1, expected);
             }
@@ -98,7 +98,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expected, result);
                 Assert.True(false);
             }
-            catch (InvalidCastException ex)
+            catch (InvalidCastException)
             {
                 Assert.Equal(1, expected);
             }
@@ -111,7 +111,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(expected, result);
                 Assert.True(false);
             }
-            catch (InvalidCastException ex)
+            catch (InvalidCastException)
             {
                 Assert.Equal(0, expected);
 
@@ -388,9 +388,7 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
-
-            foreach (JsonReaderOptions option in optionValues)
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
@@ -586,9 +584,7 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
-
-            foreach (JsonReaderOptions option in optionValues)
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
@@ -629,10 +625,8 @@ namespace System.Text.JsonLab.Tests
         public static void PartialJson(string jsonString, int splitLocation, int consumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
-
-            foreach (JsonReaderOptions option in optionValues)
+            
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false)
                 {
@@ -699,9 +693,7 @@ namespace System.Text.JsonLab.Tests
         public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition)
         {
             //TODO: Test multi-segment json payload
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
-
-            foreach (JsonReaderOptions option in optionValues)
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
                 var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false)
@@ -759,9 +751,8 @@ namespace System.Text.JsonLab.Tests
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
 
-            foreach (JsonReaderOptions option in optionValues)
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 var json = new Utf8JsonReader(dataUtf8, false)
                 {
@@ -843,9 +834,8 @@ namespace System.Text.JsonLab.Tests
         public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int maxDepth = 64)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            System.Array optionValues = Enum.GetValues(typeof(JsonReaderOptions));
 
-            foreach (JsonReaderOptions option in optionValues)
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 var json = new Utf8JsonReader(dataUtf8)
                 {

@@ -464,7 +464,7 @@ namespace System.Text.JsonLab
 
             if (_readerOptions != JsonReaderOptions.Default)
             {
-                //TODO: Re-evaluate use of Result enum for the common case
+                //TODO: Re-evaluate use of InternalResult enum for the common case
                 if (_readerOptions == JsonReaderOptions.AllowComments)
                 {
                     if (marker == JsonConstants.Solidus)
