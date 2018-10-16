@@ -37,7 +37,7 @@ namespace System.Text.JsonLab
                 {
                     if (span.Length == bytesConsumed)
                     {
-                        return span.ConvertToDecimal();
+                        return value;
                     }
                 }
             }
@@ -47,7 +47,15 @@ namespace System.Text.JsonLab
                 {
                     if (span.Length == bytesConsumed)
                     {
-                        return span.ConvertToDecimal();
+                        decimal rounded = Math.Floor(value);
+                        if (rounded != value)
+                        {
+                            return value;
+                        }
+                        if (rounded <= int.MaxValue && rounded >= int.MinValue)
+                            return Convert.ToInt32(rounded);
+                        else
+                            return Convert.ToInt64(rounded);
                     }
                 }
             }
@@ -170,7 +178,7 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        public static BigInteger ConvertToBigInteger(this ReadOnlySpan<byte> span)
+        private static BigInteger ConvertToBigInteger(this ReadOnlySpan<byte> span)
         {
             //if (span.IndexOfAny((byte)'e', (byte)'E') == -1)
             //{
@@ -196,19 +204,6 @@ namespace System.Text.JsonLab
             //return default;
 
             throw new NotImplementedException();
-        }
-
-        public static bool ConvertToBool(this ReadOnlySpan<byte> span)
-        {
-            if (Utf8Parser.TryParse(span, out bool value, out int bytesConsumed))
-            {
-                if (span.Length == bytesConsumed)
-                {
-                    return value;
-                }
-            }
-            JsonThrowHelper.ThrowInvalidCastException();
-            return default;
         }
     }
 }

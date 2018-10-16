@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -13,6 +14,23 @@ namespace System.Text.JsonLab
     {
         public static (int, int) CountNewLines(ReadOnlySpan<byte> data)
         {
+            int lastLineFeedIndex = -1;
+            int newLines = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == JsonConstants.LineFeed)
+                {
+                    lastLineFeedIndex = i;
+                    newLines++;
+                }
+            }
+            return (newLines, lastLineFeedIndex);
+        }
+
+        public static (int, int) CountNewLines(in ReadOnlySequence<byte> sequence)
+        {
+            //TODO: Can we avoid allocations here
+            ReadOnlySpan<byte> data = sequence.IsSingleSegment? sequence.First.Span : sequence.ToArray();
             int lastLineFeedIndex = -1;
             int newLines = 0;
             for (int i = 0; i < data.Length; i++)

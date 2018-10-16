@@ -33,7 +33,7 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             _isSingleValue = true;
-            _allowComments = false;
+            _readerOptions = JsonReaderOptions.Default;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -69,7 +69,7 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             _isSingleValue = true;
-            _allowComments = false;
+            _readerOptions = JsonReaderOptions.Default;
         }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)
@@ -148,14 +148,26 @@ namespace System.Text.JsonLab
                     }
                 }
 
-                if (AllowComments)
+                if (_readerOptions != JsonReaderOptions.Default)
                 {
                     reader.TryPeek(out first);
-                    if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
+                    if (_readerOptions == JsonReaderOptions.AllowComments)
                     {
-                        return true;
+                        if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        // JsonReaderOptions.SkipComments
+                        if (first == JsonConstants.Solidus)
+                        {
+                            return true;
+                        }
                     }
                 }
+
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, first);
             }
             return true;
@@ -248,14 +260,19 @@ namespace System.Text.JsonLab
                 long prevConsumed = Consumed;
                 long prevPosition = _position;
                 JsonTokenType prevTokenType = TokenType;
-                if (ConsumeNextToken(ref reader, first))
+
+                InternalResult result = ConsumeNextToken(ref reader, first);
+                if (result == InternalResult.Success)
                 {
                     return true;
                 }
-                reader.Rewind(Consumed - prevConsumed);
-                Consumed = prevConsumed;
-                TokenType = prevTokenType;
-                _position = prevPosition;
+                if (result == InternalResult.FailureRollback)
+                {
+                    reader.Rewind(Consumed - prevConsumed);
+                    Consumed = prevConsumed;
+                    TokenType = prevTokenType;
+                    _position = prevPosition;
+                }
                 return false;
             }
 
@@ -269,28 +286,70 @@ namespace System.Text.JsonLab
             goto Done;
         }
 
-        private bool ConsumeNextToken(ref BufferReader<byte> reader, byte marker)
+        private InternalResult ConsumeNextToken(ref BufferReader<byte> reader, byte marker)
         {
             reader.Advance(1);
             Consumed++;
             _position++;
 
-            if (AllowComments)
+            if (_readerOptions != JsonReaderOptions.Default)
             {
-                if (marker == JsonConstants.Solidus)
+                if (_readerOptions == JsonReaderOptions.AllowComments)
                 {
-                    Consumed--;
-                    _position--;
-                    reader.Rewind(1);
-                    return ConsumeComment(ref reader);
+                    if (marker == JsonConstants.Solidus)
+                    {
+                        Consumed--;
+                        _position--;
+                        reader.Rewind(1);
+                        return ConsumeComment(ref reader) ? InternalResult.Success : InternalResult.FailureRollback;
+                    }
+                    if (TokenType == JsonTokenType.Comment)
+                    {
+                        Consumed--;
+                        _position--;
+                        reader.Rewind(1);
+                        TokenType = (JsonTokenType)_stack.Pop();
+                        return ReadMultiSegment(ref reader) ? InternalResult.Success : InternalResult.FailureRollback;
+                    }
                 }
-                if (TokenType == JsonTokenType.Comment)
+                else
                 {
-                    Consumed--;
-                    _position--;
-                    reader.Rewind(1);
-                    TokenType = (JsonTokenType)_stack.Pop();
-                    return ReadMultiSegment(ref reader);
+                    // JsonReaderOptions.SkipComments
+                    if (marker == JsonConstants.Solidus)
+                    {
+                        Consumed--;
+                        _position--;
+                        reader.Rewind(1);
+                        if (SkipComment(ref reader))
+                        {
+                            if (!reader.TryPeek(out byte first))
+                            {
+                                if (!_isSingleValue && _isFinalBlock)
+                                {
+                                    if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+                                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                                }
+                                return InternalResult.FalseNoRollback;
+                            }
+
+                            if (first <= JsonConstants.Space)
+                            {
+                                SkipWhiteSpace(ref reader);
+                                if (!reader.TryPeek(out first))
+                                {
+                                    if (!_isSingleValue && _isFinalBlock)
+                                    {
+                                        if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+                                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                                    }
+                                    return InternalResult.FalseNoRollback;
+                                }
+                            }
+
+                            return ConsumeNextToken(ref reader, first);
+                        }
+                        return InternalResult.FailureRollback;
+                    }
                 }
             }
 
@@ -300,7 +359,7 @@ namespace System.Text.JsonLab
                 {
                     if (_isFinalBlock)
                         ThrowJsonReaderException(ref this);
-                    else return false;
+                    else return InternalResult.FailureRollback;
                 }
 
                 if (first <= JsonConstants.Space)
@@ -311,7 +370,7 @@ namespace System.Text.JsonLab
                     {
                         if (_isFinalBlock)
                             ThrowJsonReaderException(ref this);
-                        else return false;
+                        else return InternalResult.FailureRollback;
                     }
                 }
 
@@ -324,11 +383,11 @@ namespace System.Text.JsonLab
                     reader.Advance(1);
                     Consumed++;
                     TokenStartIndex++;
-                    return ConsumePropertyName(ref reader);
+                    return ConsumePropertyName(ref reader) ? InternalResult.Success : InternalResult.FailureRollback;
                 }
                 else
                 {
-                    return ConsumeValue(ref reader, first);
+                    return ConsumeValue(ref reader, first) ? InternalResult.Success : InternalResult.FailureRollback;
                 }
             }
             else if (marker == JsonConstants.CloseBrace)
@@ -345,7 +404,7 @@ namespace System.Text.JsonLab
                 _position--;
                 ThrowJsonReaderException(ref this);
             }
-            return true;
+            return InternalResult.Success;
         }
 
         private bool ConsumeValue(ref BufferReader<byte> reader, byte marker)
@@ -410,10 +469,134 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (AllowComments && marker == JsonConstants.Solidus)
-                    return ConsumeComment(ref reader);
+                if (_readerOptions != JsonReaderOptions.Default)
+                {
+                    if (_readerOptions == JsonReaderOptions.AllowComments)
+                    {
+                        if (marker == JsonConstants.Solidus)
+                        {
+                            return ConsumeComment(ref reader);
+                        }
+                    }
+                    else
+                    {
+                        // JsonReaderOptions.SkipComments
+                        if (marker == JsonConstants.Solidus)
+                        {
+                            if (SkipComment(ref reader))
+                            {
+                                if (!reader.TryPeek(out byte first))
+                                {
+                                    if (!_isSingleValue && _isFinalBlock)
+                                    {
+                                        if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+                                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                                    }
+                                    return false;
+                                }
+
+                                if (first <= JsonConstants.Space)
+                                {
+                                    SkipWhiteSpace(ref reader);
+                                    if (!reader.TryPeek(out first))
+                                    {
+                                        if (!_isSingleValue && _isFinalBlock)
+                                        {
+                                            if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
+                                                ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
+                                        }
+                                        return false;
+                                    }
+                                }
+                                return ConsumeValue(ref reader, first);
+                            }
+                            return false;
+                        }
+                    }
+                }
 
                 ThrowJsonReaderException(ref this);
+            }
+            return true;
+        }
+
+        private bool SkipComment(ref BufferReader<byte> reader)
+        {
+            //TODO: Re-evaluate recovery mechanism if this fails. Do we need to rewind?
+            reader.Advance(1);
+            if (reader.TryPeek(out byte marker))
+            {
+                if (marker == JsonConstants.Solidus)
+                {
+                    reader.Advance(1);
+                    return SkipSingleLineComment(ref reader);
+                }
+                else if (marker == '*')
+                {
+                    reader.Advance(1);
+                    return SkipMultiLineComment(ref reader);
+                }
+                else
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+            }
+
+            if (_isFinalBlock)
+            {
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Solidus);
+            }
+            else return false;
+
+            return true;
+        }
+
+        private bool SkipSingleLineComment(ref BufferReader<byte> reader)
+        {
+            long length = 0;
+            if (!reader.TryReadTo(out ReadOnlySpan<byte> span, JsonConstants.LineFeed, advancePastDelimiter: true))
+            {
+                if (_isFinalBlock)
+                {
+                    // Assume everything on this line is a comment and there is no more data.
+                    ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
+                    length = sequence.Length;
+                    _position += 2 + length;
+                    reader.Advance(length);
+                    goto Done;
+                }
+                else return false;
+            }
+            length = span.Length;
+
+            Consumed++;
+            _position = 0;
+            _lineNumber++;
+        Done:
+            Consumed += 2 + length;
+            return true;
+        }
+
+        private bool SkipMultiLineComment(ref BufferReader<byte> reader)
+        {
+            if (!reader.TryReadTo(out ReadOnlySequence<byte> sequence, JsonConstants.EndOfComment, advancePastDelimiter: true))
+            {
+                if (_isFinalBlock)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
+                }
+                else return false;
+            }
+
+            Consumed += 4 + sequence.Length;
+
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(sequence);
+            _lineNumber += newLines;
+            if (newLineIndex != -1)
+            {
+                _position = sequence.Length - newLineIndex + 1;
+            }
+            else
+            {
+                _position += 4 + sequence.Length;
             }
             return true;
         }
