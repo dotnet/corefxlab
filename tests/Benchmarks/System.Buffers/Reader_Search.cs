@@ -77,6 +77,16 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
+        public void Reader_Position()
+        {
+            BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
+            for (int i = 0; i < 10_000; i++)
+            {
+                SequencePosition position = reader.Position;
+            }
+        }
+
+        [Benchmark]
         public void TryReadUntil_Span()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
@@ -146,19 +156,19 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TrySkipTo()
+        public void TryAdvanceTo()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
-            while (reader.TrySkipTo(42))
+            while (reader.TryAdvanceTo(42))
             {
             }
         }
 
         [Benchmark]
-        public void TrySkipTo_SingleSegment()
+        public void TryAdvanceTo_SingleSegment()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
-            while (reader.TrySkipTo(42))
+            while (reader.TryAdvanceTo(42))
             {
             }
         }
@@ -169,9 +179,9 @@ namespace System.Buffers.Benchmarks
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte* b = stackalloc byte[] { 0x00, 0xFF };
             Span<byte> span = new Span<byte>(b, 2);
-            while (reader.TrySkipToAny(span, advancePastDelimiter: false))
+            while (reader.TryAdvanceToAny(span, advancePastDelimiter: false))
             {
-                reader.SkipPastAny(span);
+                reader.AdvancePastAny(span);
             }
         }
 
@@ -180,7 +190,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobsSplit);
             byte value = 0x00;
-            while (reader.SkipPast(value) != 0)
+            while (reader.AdvancePast(value) != 0)
             {
                 value++;
             }
@@ -191,7 +201,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobs);
             byte value = 0x00;
-            while (reader.SkipPast(value) != 0)
+            while (reader.AdvancePast(value) != 0)
             {
                 value++;
             }

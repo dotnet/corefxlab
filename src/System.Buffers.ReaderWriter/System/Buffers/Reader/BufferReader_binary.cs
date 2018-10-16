@@ -22,12 +22,14 @@ namespace System.Buffers.Reader
         public static unsafe bool TryRead<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
         {
             ReadOnlySpan<byte> span = reader.UnreadSpan;
-            if (span.Length < sizeof(T))
-                return TryReadSlow(ref reader, out value);
+            if (span.Length >= sizeof(T))
+            {
+                value = MemoryMarshal.Read<T>(span);
+                reader.Advance(sizeof(T));
+                return true;
+            }
 
-            value = MemoryMarshal.Read<T>(span);
-            reader.Advance(sizeof(T));
-            return true;
+            return TryReadSlow(ref reader, out value);
         }
 
         private static unsafe bool TryReadSlow<T>(ref BufferReader<byte> reader, out T value) where T : unmanaged
@@ -64,7 +66,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int16"/> as big  endian.
+        /// Reads an <see cref="Int16"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
         public static bool TryReadInt16BigEndian(ref this BufferReader<byte> reader, out short value)
@@ -103,7 +105,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int32"/> as big  endian.
+        /// Reads an <see cref="Int32"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
         public static bool TryReadInt32BigEndian(ref this BufferReader<byte> reader, out int value)
@@ -142,7 +144,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int64"/> as big  endian.
+        /// Reads an <see cref="Int64"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
         public static bool TryReadInt64BigEndian(ref this BufferReader<byte> reader, out long value)

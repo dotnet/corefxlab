@@ -147,7 +147,7 @@ namespace System.Text.JsonLab
                         return true;
                     }
                 }
-
+                
                 if (_readerOptions != JsonReaderOptions.Default)
                 {
                     reader.TryPeek(out first);
