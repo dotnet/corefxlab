@@ -4,19 +4,16 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonTokenType
+    // Choosing the relevant subset of JsonTokenType since we can only support 8 (2 ^ 3)
+    // Keep the enum order in sync with JsonTokenType since we cast between the two
+    internal enum JsonType
     {
-        None,
         StartObject,
-        EndObject,
         StartArray,
-        EndArray,
-        PropertyName,
         String,
         Number,
         True,
         False,
         Null,
-        Comment,
     }
 }

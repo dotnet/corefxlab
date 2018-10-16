@@ -153,41 +153,35 @@ namespace System.Text.JsonLab.Benchmarks
                         destination[valueSpan.Length + 1] = (byte)' ';
                         destination = destination.Slice(valueSpan.Length + 2);
                         break;
-                    case JsonTokenType.Value:
-                        var valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                                destination[0] = (byte)'T';
-                                destination[1] = (byte)'r';
-                                destination[2] = (byte)'u';
-                                destination[3] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.False:
-                                destination[0] = (byte)'F';
-                                destination[1] = (byte)'a';
-                                destination[2] = (byte)'l';
-                                destination[3] = (byte)'s';
-                                destination[4] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Number:
-                            case JsonValueType.String:
-                                valueSpan.CopyTo(destination);
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Null:
-                                // Special casing  Null so that it matches what JSON.NET does
-                                break;
-                        }
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.True:
+                        // Special casing True/False so that the casing matches with Json.NET
+                        destination[0] = (byte)'T';
+                        destination[1] = (byte)'r';
+                        destination[2] = (byte)'u';
+                        destination[3] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.False:
+                        destination[0] = (byte)'F';
+                        destination[1] = (byte)'a';
+                        destination[2] = (byte)'l';
+                        destination[3] = (byte)'s';
+                        destination[4] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Null:
+                        // Special casing Null so that it matches what JSON.NET does
                         break;
                     default:
                         break;

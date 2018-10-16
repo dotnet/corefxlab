@@ -51,24 +51,25 @@ namespace System.Text.JsonLab
 
         public void Write(JsonObject jsonObject)
         {
-            JsonValueType type = jsonObject.Type;
+            JsonTokenType type = jsonObject.Type;
             switch (type)
             {
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     WriteObjectStart();
                     WriteObject(jsonObject);
                     break;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     WriteArrayStart();
                     WriteArray(jsonObject);
                     break;
-                case JsonValueType.String:
+                case JsonTokenType.String:
+                case JsonTokenType.PropertyName:
                     ReadOnlySpan<byte> span = jsonObject.GetSpan();
                     while (!TryWriteValueStringAlreadyUtf8(span))
                         EnsureBufferConstant();
                     break;
                 default:
-                    Debug.Assert(type >= JsonValueType.Number && type <= JsonValueType.Null);
+                    Debug.Assert(type >= JsonTokenType.Number && type <= JsonTokenType.Null);
                     span = jsonObject.GetSpan();
                     while (!TryWriteValueAlreadyUtf8(span))
                         EnsureBufferConstant();
@@ -78,14 +79,14 @@ namespace System.Text.JsonLab
 
         private void Write(JsonObject jsonObject, ReadOnlySpan<byte> name)
         {
-            JsonValueType type = jsonObject.Type;
+            JsonTokenType type = jsonObject.Type;
             switch (type)
             {
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     WriteObjectStart(name);
                     WriteObject(jsonObject);
                     break;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     WriteArrayStart(name);
                     WriteArray(jsonObject);
                     break;
@@ -111,7 +112,7 @@ namespace System.Text.JsonLab
                 if (valueRow.IsSimpleValue)
                 {
                     ReadOnlySpan<byte> value = child.GetSpan(valueRow);
-                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonValueType.String);
+                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonType.String);
                 }
                 else
                 {

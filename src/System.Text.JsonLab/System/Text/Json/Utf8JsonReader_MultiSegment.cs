@@ -32,7 +32,6 @@ namespace System.Text.JsonLab
             TokenStartIndex = Consumed;
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
-            ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
             _allowComments = false;
         }
@@ -69,7 +68,6 @@ namespace System.Text.JsonLab
             TokenStartIndex = Consumed;
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
-            ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
             _allowComments = false;
         }
@@ -81,7 +79,6 @@ namespace System.Text.JsonLab
                 Depth++;
                 _containerMask = 1;
                 TokenType = JsonTokenType.StartObject;
-                ValueType = JsonValueType.Object;
                 reader.Advance(1);
                 Consumed++;
                 _position++;
@@ -92,7 +89,6 @@ namespace System.Text.JsonLab
             {
                 Depth++;
                 TokenType = JsonTokenType.StartArray;
-                ValueType = JsonValueType.Array;
                 reader.Advance(1);
                 Consumed++;
                 _position++;
@@ -117,45 +113,50 @@ namespace System.Text.JsonLab
                         }
                     }
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
-                    TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number);
+
+                    if (!TryGetNumber(sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray(), out ReadOnlySpan<byte> number))
+                        return false;
                     if (_isFinalBlock)
                     {
                         Value = number;
-                        ValueType = JsonValueType.Number;
+                        TokenType = JsonTokenType.Number;
                         reader.Advance(Value.Length);
                         Consumed += Value.Length;
                         _position += Value.Length;
-                        return true;
+                        goto Done;
                     }
                     else return false;
                 }
                 else if (ConsumeValue(ref reader, first))
                 {
-                    if (!reader.TryPeek(out first))
+                    goto Done;
+                }
+
+                return false;
+
+            Done:
+                if (!reader.TryPeek(out first))
+                {
+                    return true;
+                }
+                if (first <= JsonConstants.Space)
+                {
+                    SkipWhiteSpace(ref reader);
+                    if (reader.End)
                     {
                         return true;
                     }
-                    if (first <= JsonConstants.Space)
-                    {
-                        SkipWhiteSpace(ref reader);
-                        if (reader.End)
-                        {
-                            return true;
-                        }
-                    }
-
-                    if (AllowComments)
-                    {
-                        reader.TryPeek(out first);
-                        if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
-                        {
-                            return true;
-                        }
-                    }
-
-                    ThrowJsonReaderException(ref this);
                 }
-                return false;
+
+                if (AllowComments)
+                {
+                    reader.TryPeek(out first);
+                    if (TokenType == JsonTokenType.Comment || first == JsonConstants.Solidus)
+                    {
+                        return true;
+                    }
+                }
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndAfterSingleJson, first);
             }
             return true;
         }
@@ -370,14 +371,12 @@ namespace System.Text.JsonLab
                 reader.Advance(1);
                 Consumed++;
                 StartObject();
-                ValueType = JsonValueType.Object;
             }
             else if (marker == JsonConstants.OpenBracket)
             {
                 reader.Advance(1);
                 Consumed++;
                 StartArray();
-                ValueType = JsonValueType.Array;
             }
             else if ((uint)(marker - '0') <= '9' - '0')
             {
@@ -520,15 +519,13 @@ namespace System.Text.JsonLab
             Consumed += (int)(reader.Consumed - consumedBefore);
             _position += (int)(reader.Consumed - consumedBefore);
             Value = span;
-            ValueType = JsonValueType.Number;
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.Number;
             return true;
         }
 
         private bool ConsumeNull(ref BufferReader<byte> reader)
         {
             Value = JsonConstants.NullValue;
-            ValueType = JsonValueType.Null;
 
             Debug.Assert(reader.TryPeek(out byte first) && first == Value[0]);
 
@@ -547,7 +544,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.Null;
             Consumed += 4;
             _position += 4;
             return true;
@@ -556,7 +553,6 @@ namespace System.Text.JsonLab
         private bool ConsumeFalse(ref BufferReader<byte> reader)
         {
             Value = JsonConstants.FalseValue;
-            ValueType = JsonValueType.False;
 
             Debug.Assert(reader.TryPeek(out byte first) && first == Value[0]);
 
@@ -575,7 +571,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.False;
             Consumed += 5;
             _position += 5;
             return true;
@@ -584,7 +580,6 @@ namespace System.Text.JsonLab
         private bool ConsumeTrue(ref BufferReader<byte> reader)
         {
             Value = JsonConstants.TrueValue;
-            ValueType = JsonValueType.True;
 
             Debug.Assert(reader.TryPeek(out byte first) && first == Value[0]);
 
@@ -603,7 +598,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.True;
             Consumed += 4;
             _position += 4;
             return true;
@@ -670,8 +665,7 @@ namespace System.Text.JsonLab
                 _position++;
                 Consumed += (int)(reader.Consumed - consumedBefore);
                 Value = value;
-                ValueType = JsonValueType.String;
-                TokenType = JsonTokenType.Value;
+                TokenType = JsonTokenType.String;
                 return true;
             }
             if (_isFinalBlock)
@@ -681,7 +675,7 @@ namespace System.Text.JsonLab
 
         private void SkipWhiteSpace(ref BufferReader<byte> reader)
         {
-            while(true)
+            while (true)
             {
                 reader.TryPeek(out byte val);
                 if (val != JsonConstants.Space && val != JsonConstants.CarriageReturn && val != JsonConstants.LineFeed && val != JsonConstants.Tab)

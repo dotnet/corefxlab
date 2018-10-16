@@ -96,13 +96,6 @@ namespace System.Text.JsonLab
         /// </summary>
         public ReadOnlySpan<byte> Value { get; private set; }
 
-        /// <summary>
-        /// Gets the JSON value type of the last processed token. The contents of this
-        /// is only relevant when <see cref="TokenType" /> is <see cref="JsonTokenType.Value" /> or
-        /// <see cref="JsonTokenType.PropertyName" />.
-        /// </summary>
-        public JsonValueType ValueType { get; private set; }
-
         private readonly bool _isSingleSegment;
         private readonly bool _isFinalBlock;
         private bool _isSingleValue;
@@ -136,7 +129,6 @@ namespace System.Text.JsonLab
             TokenStartIndex = Consumed;
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
-            ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
             _allowComments = false;
         }
@@ -173,7 +165,6 @@ namespace System.Text.JsonLab
             TokenStartIndex = Consumed;
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
-            ValueType = JsonValueType.Unknown;
             _isSingleValue = true;
             _allowComments = false;
         }
@@ -282,7 +273,6 @@ namespace System.Text.JsonLab
                 Depth++;
                 _containerMask = 1;
                 TokenType = JsonTokenType.StartObject;
-                ValueType = JsonValueType.Object;
                 Consumed++;
                 _position++;
                 _inObject = true;
@@ -292,7 +282,6 @@ namespace System.Text.JsonLab
             {
                 Depth++;
                 TokenType = JsonTokenType.StartArray;
-                ValueType = JsonValueType.Array;
                 Consumed++;
                 _position++;
                 _isSingleValue = false;
@@ -301,11 +290,10 @@ namespace System.Text.JsonLab
             {
                 if ((uint)(first - '0') <= '9' - '0' || first == '-')
                 {
-                    ValueType = JsonValueType.Number;
                     if (!TryGetNumber(_buffer.Slice((int)Consumed), out ReadOnlySpan<byte> number))
                         return false;
                     Value = number;
-                    TokenType = JsonTokenType.Value;
+                    TokenType = JsonTokenType.Number;
                     Consumed += Value.Length;
                     _position += Value.Length;
                     goto Done;
@@ -548,13 +536,11 @@ namespace System.Text.JsonLab
             {
                 Consumed++;
                 StartObject();
-                ValueType = JsonValueType.Object;
             }
             else if (marker == JsonConstants.OpenBracket)
             {
                 Consumed++;
                 StartArray();
-                ValueType = JsonValueType.Array;
             }
             else if ((uint)(marker - '0') <= '9' - '0' || marker == '-')
             {
@@ -676,11 +662,10 @@ namespace System.Text.JsonLab
 
         private bool ConsumeNumber()
         {
-            ValueType = JsonValueType.Number;
             if (!TryGetNumberLookForEnd(_buffer.Slice((int)Consumed), out ReadOnlySpan<byte> number))
                 return false;
             Value = number;
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.Number;
             Consumed += Value.Length;
             _position += Value.Length;
             return true;
@@ -689,7 +674,6 @@ namespace System.Text.JsonLab
         private bool ConsumeNull()
         {
             Value = JsonConstants.NullValue;
-            ValueType = JsonValueType.Null;
 
             ReadOnlySpan<byte> span = _buffer.Slice((int)Consumed);
 
@@ -714,7 +698,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNull, bytes: span);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.Null;
             Consumed += 4;
             _position += 4;
             return true;
@@ -723,7 +707,6 @@ namespace System.Text.JsonLab
         private bool ConsumeFalse()
         {
             Value = JsonConstants.FalseValue;
-            ValueType = JsonValueType.False;
 
             ReadOnlySpan<byte> span = _buffer.Slice((int)Consumed);
 
@@ -750,7 +733,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedFalse, bytes: span);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.False;
             Consumed += 5;
             _position += 5;
             return true;
@@ -759,7 +742,6 @@ namespace System.Text.JsonLab
         private bool ConsumeTrue()
         {
             Value = JsonConstants.TrueValue;
-            ValueType = JsonValueType.True;
 
             ReadOnlySpan<byte> span = _buffer.Slice((int)Consumed);
 
@@ -784,7 +766,7 @@ namespace System.Text.JsonLab
             Throw:
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedTrue, bytes: span);
             }
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.True;
             Consumed += 4;
             _position += 4;
             return true;
@@ -874,8 +856,7 @@ namespace System.Text.JsonLab
             Done:
                 _position++;
                 Value = localCopy;
-                ValueType = JsonValueType.String;
-                TokenType = JsonTokenType.Value;
+                TokenType = JsonTokenType.String;
                 Consumed += idx + 2;
 
                 return true;
@@ -999,8 +980,7 @@ namespace System.Text.JsonLab
         Done:
             _position++;
             Value = localCopy;
-            ValueType = JsonValueType.String;
-            TokenType = JsonTokenType.Value;
+            TokenType = JsonTokenType.String;
             Consumed = i + 1;
 
             return true;

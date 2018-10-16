@@ -113,16 +113,20 @@ namespace System.Text.JsonLab.Tests
                         key = Encoding.UTF8.GetString(json.Value);
                         dictionary.Add(key, null);
                         break;
-                    case JsonTokenType.Value:
-                        switch (json.ValueType)
+                    case JsonTokenType.String:
+                        value = Encoding.UTF8.GetString(json.Value);
+                        if (dictionary.TryGetValue(key, out _))
                         {
-                            case JsonValueType.String:
-                                value = Encoding.UTF8.GetString(json.Value);
-                                break;
-                            case JsonValueType.False:
-                                value = false;
-                                break;
+                            dictionary[key] = value;
                         }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = json.Value[0] == (byte)'t';
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -215,7 +219,7 @@ namespace System.Text.JsonLab.Tests
         {
             reader.Read();
 
-            if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.Number)
+            if (reader.TokenType != JsonTokenType.Number)
             {
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
             }
@@ -241,33 +245,27 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static string GetTokenString(JsonValueType valueType, JsonTokenType tokenType)
+        public static string GetTokenString(JsonTokenType tokenType)
         {
-            switch (valueType)
+            switch (tokenType)
             {
-                case JsonValueType.Number:
+                case JsonTokenType.Number:
                     return "Integer";
-                case JsonValueType.Unknown:
-                    if (tokenType == JsonTokenType.StartArray)
-                    {
-                        return JsonValueType.Array.ToString();
-                    }
-                    if (tokenType == JsonTokenType.StartObject)
-                    {
-                        return JsonValueType.Object.ToString();
-                    }
-                    return tokenType.ToString();
+                case JsonTokenType.StartArray:
+                    return "Array";
+                case JsonTokenType.StartObject:
+                    return "Object";
                 default:
                     break;
             }
-            return valueType.ToString();
+            return tokenType.ToString();
         }
 
         public static void EnsureObjectStart(ref Utf8JsonReader reader)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
-                throw new InvalidDataException($"Unexpected JSON Token Type '{GetTokenString(reader.ValueType, reader.TokenType)}'. Expected a JSON Object.");
+                throw new InvalidDataException($"Unexpected JSON Token Type '{GetTokenString(reader.TokenType)}'. Expected a JSON Object.");
             }
         }
 
@@ -342,7 +340,7 @@ namespace System.Text.JsonLab.Tests
         {
             reader.Read();
 
-            if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.String)
+            if (reader.TokenType != JsonTokenType.String)
             {
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type String.");
             }
@@ -369,36 +367,21 @@ namespace System.Text.JsonLab.Tests
                 {
                     case JsonTokenType.StartObject:
                     case JsonTokenType.EndObject:
+                        break;
                     case JsonTokenType.StartArray:
                     case JsonTokenType.EndArray:
                         break;
                     case JsonTokenType.PropertyName:
                         break;
-                    case JsonTokenType.Value:
-                        JsonValueType valueType = json.ValueType;
-                        switch (valueType)
-                        {
-                            case JsonValueType.Unknown:
-                                break;
-                            case JsonValueType.Object:
-                                break;
-                            case JsonValueType.Array:
-                                break;
-                            case JsonValueType.Number:
-                                break;
-                            case JsonValueType.String:
-                                break;
-                            case JsonValueType.True:
-                                break;
-                            case JsonValueType.False:
-                                break;
-                            case JsonValueType.Null:
-                                break;
-                        }
+                    case JsonTokenType.String:
                         break;
-                    case JsonTokenType.None:
+                    case JsonTokenType.Number:
                         break;
-                    case JsonTokenType.Comment:
+                    case JsonTokenType.True:
+                        break;
+                    case JsonTokenType.False:
+                        break;
+                    case JsonTokenType.Null:
                         break;
                     default:
                         throw new ArgumentException();
@@ -445,42 +428,35 @@ namespace System.Text.JsonLab.Tests
                         destination[valueSpan.Length + 1] = (byte)' ';
                         destination = destination.Slice(valueSpan.Length + 2);
                         break;
-                    case JsonTokenType.Value:
-                        JsonValueType valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            // Special casing True/False so that the casing matches with Json.NET
-                            case JsonValueType.True:
-                                destination[0] = (byte)'T';
-                                destination[1] = (byte)'r';
-                                destination[2] = (byte)'u';
-                                destination[3] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.False:
-                                destination[0] = (byte)'F';
-                                destination[1] = (byte)'a';
-                                destination[2] = (byte)'l';
-                                destination[3] = (byte)'s';
-                                destination[4] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Number:
-                            case JsonValueType.String:
-                                valueSpan.CopyTo(destination);
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Null:
-                                // Special casing Null so that it matches what JSON.NET does
-                                break;
-                        }
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.True:
+                        // Special casing True/False so that the casing matches with Json.NET
+                        destination[0] = (byte)'T';
+                        destination[1] = (byte)'r';
+                        destination[2] = (byte)'u';
+                        destination[3] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.False:
+                        destination[0] = (byte)'F';
+                        destination[1] = (byte)'a';
+                        destination[2] = (byte)'l';
+                        destination[3] = (byte)'s';
+                        destination[4] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Null:
+                        // Special casing Null so that it matches what JSON.NET does
                         break;
                     default:
                         break;
@@ -500,50 +476,17 @@ namespace System.Text.JsonLab.Tests
                 ReadOnlySpan<byte> valueSpan = json.Value;
                 switch (tokenType)
                 {
-                    case JsonTokenType.Value:
-                        JsonValueType valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                            case JsonValueType.False:
-                                root = valueSpan.ConvertToBool();
-                                break;
-                            case JsonValueType.Number:
-
-                                NumberType type;
-                                (type, root) = valueSpan.GetNumberType();
-
-                                //OR
-
-                                /*if (Utf8Parser.TryParse(valueSpan, out int intVal, out int bytesConsumed))
-                                {
-                                    if (valueSpan.Length == bytesConsumed)
-                                    {
-                                        value = intVal;
-                                        break;
-                                    }
-                                }
-                                if (Utf8Parser.TryParse(valueSpan, out long longVal, out bytesConsumed))
-                                {
-                                    if (valueSpan.Length == bytesConsumed)
-                                    {
-                                        value = longVal;
-                                        break;
-                                    }
-                                }
-                                if (valueSpan.IndexOfAny((byte)'.', (byte)'e', (byte)'E') != -1)
-                                {
-                                    value = valueSpan.ConvertToDecimal();
-                                }*/
-                                break;
-                            case JsonValueType.String:
-                                root = valueSpan.ConvertToString();
-                                break;
-                            case JsonValueType.Null:
-                                break;
-                        }
-
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        root = valueSpan.ConvertToBool();
+                        break;
+                    case JsonTokenType.Number:
+                        root = valueSpan.ConvertToNumber();
+                        break;
+                    case JsonTokenType.String:
+                        root = valueSpan.ConvertToString();
+                        break;
+                    case JsonTokenType.Null:
                         break;
                     case JsonTokenType.StartObject:
                         root = JsonLabReaderDictionaryLoop(ref json);
@@ -580,26 +523,9 @@ namespace System.Text.JsonLab.Tests
                         key = valueSpan.ConvertToString();
                         dictionary.Add(key, null);
                         break;
-                    case JsonTokenType.Value:
-                        JsonValueType valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                            case JsonValueType.False:
-                                value = valueSpan.ConvertToBool();
-                                break;
-                            case JsonValueType.Number:
-                                NumberType type;
-                                (type, value) = valueSpan.GetNumberType();
-                                break;
-                            case JsonValueType.String:
-                                value = valueSpan.ConvertToString();
-                                break;
-                            case JsonValueType.Null:
-                                break;
-                        }
-
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = valueSpan.ConvertToBool();
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -608,7 +534,39 @@ namespace System.Text.JsonLab.Tests
                         {
                             dictionary.Add(key, value);
                         }
-
+                        break;
+                    case JsonTokenType.Number:
+                        value = valueSpan.ConvertToNumber();
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.String:
+                        value = valueSpan.ConvertToString();
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.Null:
+                        value = null;
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
                         break;
                     case JsonTokenType.StartObject:
                         value = JsonLabReaderDictionaryLoop(ref json);
@@ -655,28 +613,22 @@ namespace System.Text.JsonLab.Tests
                 ReadOnlySpan<byte> valueSpan = json.Value;
                 switch (tokenType)
                 {
-                    case JsonTokenType.Value:
-                        JsonValueType valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                            case JsonValueType.False:
-                                value = valueSpan.ConvertToBool();
-                                break;
-                            case JsonValueType.Number:
-                                NumberType type;
-                                (type, value) = valueSpan.GetNumberType();
-                                break;
-                            case JsonValueType.String:
-                                value = valueSpan.ConvertToString();
-                                break;
-                            case JsonValueType.Null:
-                                break;
-                        }
-
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = valueSpan[0] == 't';
                         arrayList.Add(value);
-
+                        break;
+                    case JsonTokenType.Number:
+                        value = valueSpan.ConvertToNumber();
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.String:
+                        value = valueSpan.ConvertToString();
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.Null:
+                        value = null;
+                        arrayList.Add(value);
                         break;
                     case JsonTokenType.StartObject:
                         value = JsonLabReaderDictionaryLoop(ref json);

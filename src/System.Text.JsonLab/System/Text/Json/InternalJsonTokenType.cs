@@ -13,7 +13,11 @@ namespace System.Text.JsonLab
         StartArray,
         EndArray,
         PropertyName,
+        Integer,
+        Float,
+        String,
+        Boolean,
+        Null,
         Comment,
-        Value,
     }
 }

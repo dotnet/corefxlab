@@ -402,7 +402,7 @@ namespace System.Text.JsonLab.Tests
                 int actualDepth = 0;
                 while (json.Read())
                 {
-                    if (json.TokenType == JsonTokenType.Value)
+                    if (json.TokenType >= JsonTokenType.String && json.TokenType <= JsonTokenType.Null)
                         actualDepth = json.Depth;
                 }
 
