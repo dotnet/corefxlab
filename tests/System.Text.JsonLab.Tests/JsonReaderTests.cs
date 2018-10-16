@@ -774,6 +774,33 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 1, 48)]
+        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโ\\nทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 2, 18)]
+        public static void PositionInCharacters(string jsonString, int expectedlineNumber, int expectedPosition)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            {
+                var json = new Utf8JsonReader(dataUtf8, false)
+                {
+                    Options = option
+                };
+
+                try
+                {
+                    while (json.Read()) ;
+                    Assert.True(false, "Expected JsonReaderException was not thrown.");
+                }
+                catch (JsonReaderException ex)
+                {
+                    Assert.Equal(expectedlineNumber, ex.LineNumber);
+                    //Assert.Equal(expectedPosition, ex.LinePosition); //TODO: LinePosition needs to be in UTF-16 characters
+                }
+            }
+        }
+
+        [Theory]
         [InlineData("\"", 1, 0)]
         [InlineData("{]", 1, 1)]
         [InlineData("[}", 1, 1)]
