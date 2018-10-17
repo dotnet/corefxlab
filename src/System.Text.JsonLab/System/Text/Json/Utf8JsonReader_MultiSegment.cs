@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Buffers.Reader;
+using System.Buffers.Text;
 using System.Diagnostics;
 using static System.Text.JsonLab.JsonThrowHelper;
 
@@ -147,7 +148,7 @@ namespace System.Text.JsonLab
                         return true;
                     }
                 }
-                
+
                 if (_readerOptions != JsonReaderOptions.Default)
                 {
                     reader.TryPeek(out first);
@@ -559,7 +560,17 @@ namespace System.Text.JsonLab
                     // Assume everything on this line is a comment and there is no more data.
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                     length = sequence.Length;
-                    _position += 2 + length;
+
+                    if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                        _position += 2 + length;
+                    else
+                    {
+                        //TODO: Try to avoid allocation
+                        OperationStatus status = Encodings.Utf8.ToUtf16Length(sequence.ToArray(), out int bytesNeeded);
+                        Debug.Assert(status == OperationStatus.Done);
+                        _position += 2 + (bytesNeeded / 2);
+                    }
+
                     reader.Advance(length);
                     goto Done;
                 }
@@ -592,11 +603,25 @@ namespace System.Text.JsonLab
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _position = sequence.Length - newLineIndex + 1;
+                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                    _position = sequence.Length - newLineIndex + 1;
+                else
+                {
+                    OperationStatus status = Encodings.Utf8.ToUtf16Length(sequence.Slice(newLineIndex).ToArray(), out int bytesNeeded);
+                    Debug.Assert(status == OperationStatus.Done);
+                    _position += 2 + (bytesNeeded / 2);
+                }
             }
             else
             {
-                _position += 4 + sequence.Length;
+                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                    _position += 4 + sequence.Length;
+                else
+                {
+                    OperationStatus status = Encodings.Utf8.ToUtf16Length(sequence.ToArray(), out int bytesNeeded);
+                    Debug.Assert(status == OperationStatus.Done);
+                    _position += 4 + (bytesNeeded / 2) - 1;
+                }
             }
             return true;
         }
@@ -639,7 +664,16 @@ namespace System.Text.JsonLab
                     // Assume everything on this line is a comment and there is no more data.
                     ReadOnlySequence<byte> sequence = reader.Sequence.Slice(reader.Position);
                     Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
-                    _position += 2 + Value.Length;
+
+                    if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                        _position += 2 + Value.Length;
+                    else
+                    {
+                        OperationStatus status = Encodings.Utf8.ToUtf16Length(Value, out int bytesNeeded);
+                        Debug.Assert(status == OperationStatus.Done);
+                        _position += 2 + (bytesNeeded / 2);
+                    }
+
                     reader.Advance(Value.Length);
                     goto Done;
                 }
@@ -677,11 +711,25 @@ namespace System.Text.JsonLab
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _position = Value.Length - newLineIndex + 1;
+                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                    _position = Value.Length - newLineIndex + 1;
+                else
+                {
+                    OperationStatus status = Encodings.Utf8.ToUtf16Length(Value.Slice(newLineIndex), out int bytesNeeded);
+                    Debug.Assert(status == OperationStatus.Done);
+                    _position += 2 + (bytesNeeded / 2);
+                }
             }
             else
             {
-                _position += 4 + Value.Length;
+                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                    _position += 4 + Value.Length;
+                else
+                {
+                    OperationStatus status = Encodings.Utf8.ToUtf16Length(Value, out int bytesNeeded);
+                    Debug.Assert(status == OperationStatus.Done);
+                    _position += 4 + (bytesNeeded / 2);
+                }
             }
             return true;
         }
@@ -843,7 +891,15 @@ namespace System.Text.JsonLab
                     return false;
                 }
 
-                _position += (int)(reader.Consumed - consumedBefore);
+                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
+                    _position += (int)(reader.Consumed - consumedBefore);
+                else
+                {
+                    OperationStatus status = Encodings.Utf8.ToUtf16Length(value, out int bytesNeeded);
+                    Debug.Assert(status == OperationStatus.Done);
+                    _position += 1 + (bytesNeeded / 2);
+                }
+
             Done:
                 _position++;
                 Consumed += (int)(reader.Consumed - consumedBefore);

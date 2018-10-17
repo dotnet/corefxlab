@@ -9,6 +9,7 @@ namespace System.Text.JsonLab
     {
         Default = 0b0000,       // Don't allow comments, treat as invalid json if found
         AllowComments = 0b0001, // Allow comments but don't skip them
-        SkipComments = 0b0011   // Allow and Skip comments
+        SkipComments = 0b0011,  // Allow and Skip comments
+        TrackPositionAsCodePoints = 0b0100, // Track the position by counting UTF-8 code points
     }
 }
