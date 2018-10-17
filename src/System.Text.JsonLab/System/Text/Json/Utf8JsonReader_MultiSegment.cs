@@ -5,7 +5,7 @@
 //TODO: Add multi-segment support for tracking line number/position
 
 using System.Buffers;
-using System.Buffers.Reader;
+
 using System.Buffers.Text;
 using System.Diagnostics;
 using static System.Text.JsonLab.JsonThrowHelper;

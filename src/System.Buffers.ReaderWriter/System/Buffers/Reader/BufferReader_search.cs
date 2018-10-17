@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
@@ -39,7 +39,7 @@ namespace System.Buffers.Reader
                 return false;
             }
 
-            span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            span = sequence.ToSpan(_arrayPool);
             return true;
         }
 
@@ -77,9 +77,11 @@ namespace System.Buffers.Reader
             }
 
             Debug.Assert(sequence.Length > 0);
-            span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            span = sequence.ToSpan(_arrayPool);
             return true;
         }
+
+
 
         private bool TryReadToSlow(out ReadOnlySequence<T> sequence, T delimiter, T delimiterEscape, int index, bool advancePastDelimiter)
         {
@@ -347,7 +349,7 @@ namespace System.Buffers.Reader
                 return false;
             }
 
-            span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            span = sequence.ToSpan(_arrayPool);
             return true;
         }
 
@@ -427,7 +429,7 @@ namespace System.Buffers.Reader
             }
             else
             {
-                peekBuffer = new Span<T>(new T[delimiter.Length]);
+                peekBuffer = new Span<T>(_arrayPool.Rent(delimiter.Length));
             }
 
             bool advanced = false;

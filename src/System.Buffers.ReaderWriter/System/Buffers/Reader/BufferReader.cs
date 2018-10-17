@@ -5,25 +5,28 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
+        private static NewArray<T> s_newArray = new NewArray<T>();
         private SequencePosition _currentPosition;
         private SequencePosition _nextPosition;
+        private ArrayPool<T> _arrayPool;
         private bool _moreData;
 
         /// <summary>
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BufferReader(in ReadOnlySequence<T> buffer)
+        public BufferReader(in ReadOnlySequence<T> buffer, ArrayPool<T> arrayPool = null)
         {
             CurrentSpanIndex = 0;
             Consumed = 0;
             Sequence = buffer;
             _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
+            _arrayPool = arrayPool ?? s_newArray;
 
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
@@ -297,7 +300,7 @@ namespace System.Buffers.Reader
             }
 
             // Not enough contiguous Ts, allocate and copy what we can get
-            return PeekSlow(new T[maxCount]);
+            return PeekSlow(_arrayPool.Rent(maxCount));
         }
 
         /// <summary>

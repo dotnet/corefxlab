@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public static partial class ReaderExtensions
     {
