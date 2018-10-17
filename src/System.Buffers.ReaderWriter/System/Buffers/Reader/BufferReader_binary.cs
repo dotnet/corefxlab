@@ -4,6 +4,7 @@
 
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers.Reader
@@ -22,14 +23,12 @@ namespace System.Buffers.Reader
         public static unsafe bool TryRead<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
         {
             ReadOnlySpan<byte> span = reader.UnreadSpan;
-            if (span.Length >= sizeof(T))
-            {
-                value = MemoryMarshal.Read<T>(span);
-                reader.Advance(sizeof(T));
-                return true;
-            }
+            if (span.Length < sizeof(T))
+                return TryReadSlow(ref reader, out value);
 
-            return TryReadSlow(ref reader, out value);
+            value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(span));
+            reader.Advance(sizeof(T));
+            return true;
         }
 
         private static unsafe bool TryReadSlow<T>(ref BufferReader<byte> reader, out T value) where T : unmanaged
@@ -46,7 +45,7 @@ namespace System.Buffers.Reader
                 return false;
             }
 
-            value = MemoryMarshal.Read<T>(tempSpan);
+            value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(tempSpan));
             reader.Advance(sizeof(T));
             return true;
         }
