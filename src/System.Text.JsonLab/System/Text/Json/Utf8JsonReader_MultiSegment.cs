@@ -745,8 +745,7 @@ namespace System.Text.JsonLab
                 }
                 else return false;
             }
-            if (!TryGetNumber(span, out _))
-                return false;
+            ValidateNumber(span);
             Consumed += (int)(reader.Consumed - consumedBefore);
             _position += (int)(reader.Consumed - consumedBefore);
             Value = span;
@@ -934,6 +933,133 @@ namespace System.Text.JsonLab
                     _position++;
                 }
             }
+        }
+
+        // https://tools.ietf.org/html/rfc7159#section-6
+        // TODO: Avoid code duplication with TryGetNumber
+        private void ValidateNumber(ReadOnlySpan<byte> data)
+        {
+            Debug.Assert(data.Length > 0);
+
+            ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
+
+            int i = 0;
+            byte nextByte = data[i];
+
+            if (nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                }
+
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte >= '0' && nextByte <= '9');
+
+            if (nextByte == '0')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    goto Done;
+                }
+                else
+                {
+                    nextByte = data[i];
+
+                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+                }
+            }
+            else
+            {
+                i++;
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if ((uint)(nextByte - '0') > '9' - '0')
+                        break;
+                }
+                if (i >= data.Length)
+                {
+                    goto Done;
+                }
+                if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
+
+            if (nextByte == '.')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                }
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+                i++;
+                for (; i < data.Length; i++)
+                {
+                    nextByte = data[i];
+                    if ((uint)(nextByte - '0') > '9' - '0')
+                        break;
+                }
+                if (i >= data.Length)
+                {
+                    goto Done;
+                }
+                if (nextByte != 'E' && nextByte != 'e')
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitEValueNotFound, nextByte);
+            }
+
+            Debug.Assert(nextByte == 'E' || nextByte == 'e');
+            i++;
+
+            if (i >= data.Length)
+            {
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+            }
+
+            nextByte = data[i];
+            if (nextByte == '+' || nextByte == '-')
+            {
+                i++;
+                if (i >= data.Length)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                }
+                nextByte = data[i];
+            }
+
+            if ((uint)(nextByte - '0') > '9' - '0')
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+
+            i++;
+            for (; i < data.Length; i++)
+            {
+                nextByte = data[i];
+                if ((uint)(nextByte - '0') > '9' - '0')
+                    break;
+            }
+
+            if (i < data.Length)
+            {
+                if (delimiters.IndexOf(nextByte) == -1)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
+                }
+            }
+
+        Done:
+            ;
         }
     }
 }

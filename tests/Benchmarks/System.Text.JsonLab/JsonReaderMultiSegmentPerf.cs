@@ -88,5 +88,49 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonReader(_sequences[segmentSize]);
             while (json.Read()) ;
         }
+
+        [Benchmark]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
+        [Arguments(4_000)]
+        [Arguments(8_000)]
+        public void MultiSegmentSequenceUsingSpan(int segmentSize)
+        {
+            ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];
+
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(segmentSize * 2);
+            JsonReaderState state = default;
+            int previous = 0;
+            foreach (ReadOnlyMemory<byte> memory in sequenceMultiple)
+            {
+                ReadOnlySpan<byte> span = memory.Span;
+                Span<byte> bufferSpan = buffer;
+                span.CopyTo(bufferSpan.Slice(previous));
+                bufferSpan = bufferSpan.Slice(0, span.Length + previous);
+
+                bool isFinalBlock = bufferSpan.Length == 0;
+
+                var json = new Utf8JsonReader(bufferSpan, isFinalBlock, state);
+                while (json.Read()) ;
+
+                if (isFinalBlock)
+                    break;
+
+                state = json.State;
+                sequenceMultiple = sequenceMultiple.Slice(json.Consumed);
+
+                if (json.Consumed != bufferSpan.Length)
+                {
+                    ReadOnlySpan<byte> leftover = sequenceMultiple.First.Span;
+                    previous = leftover.Length;
+                    leftover.CopyTo(buffer);
+                }
+                else
+                {
+                    previous = 0;
+                }
+            }
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 }
