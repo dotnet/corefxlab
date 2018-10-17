@@ -5,6 +5,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Buffers;
+using System.Buffers.Tests;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
@@ -1546,6 +1547,93 @@ namespace System.Text.JsonLab.Tests
             }
 
             Assert.Equal(dataUtf8.Length, json.Consumed);
+        }
+
+        private static ReadOnlySequence<byte> GetSequence(byte[] _dataUtf8, int segmentSize)
+        {
+            int numberOfSegments = _dataUtf8.Length / segmentSize + 1;
+            byte[][] buffers = new byte[numberOfSegments][];
+
+            for (int j = 0; j < numberOfSegments - 1; j++)
+            {
+                buffers[j] = new byte[segmentSize];
+                System.Array.Copy(_dataUtf8, j * segmentSize, buffers[j], 0, segmentSize);
+            }
+
+            int remaining = _dataUtf8.Length % segmentSize;
+            buffers[numberOfSegments - 1] = new byte[remaining];
+            System.Array.Copy(_dataUtf8, _dataUtf8.Length - remaining, buffers[numberOfSegments - 1], 0, remaining);
+
+            return BufferFactory.Create(buffers);
+        }
+
+        [Fact]
+        public void SingleSegmentSequence()
+        {
+            string jsonString = TestJson.Json400KB;
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            ReadOnlySequence<byte> sequenceSingle = new ReadOnlySequence<byte>(dataUtf8);
+            var json = new Utf8JsonReader(sequenceSingle);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+        }
+
+        [Fact]
+        public void MultiSegmentSequence()
+        {
+            string jsonString = TestJson.Json400KB;
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            ReadOnlySequence<byte> sequenceMultiple = GetSequence(dataUtf8, 4_000);
+            var json = new Utf8JsonReader(sequenceMultiple);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+        }
+
+        [Fact]
+        public void MultiSegmentSequenceUsingSpan()
+        {
+            string jsonString = TestJson.Json400KB;
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            ReadOnlySequence<byte> sequenceMultiple = GetSequence(dataUtf8, 4_000);
+
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(8_000);
+            JsonReaderState state = default;
+            int previous = 0;
+
+            int numberOfSegments = dataUtf8.Length / 4_000 + 1;
+            int counter = 0;
+            foreach (ReadOnlyMemory<byte> memory in sequenceMultiple)
+            {
+                ReadOnlySpan<byte> span = memory.Span;
+                Span<byte> bufferSpan = buffer;
+                span.CopyTo(bufferSpan.Slice(previous));
+                bufferSpan = bufferSpan.Slice(0, span.Length + previous);
+
+                bool isFinalBlock = bufferSpan.Length == 0;
+
+                var json = new Utf8JsonReader(bufferSpan, isFinalBlock, state);
+                while (json.Read()) ;
+
+                if (isFinalBlock)
+                    break;
+
+                state = json.State;
+                sequenceMultiple = sequenceMultiple.Slice(json.Consumed);
+
+                if (json.Consumed != bufferSpan.Length)
+                {
+                    ReadOnlySpan<byte> leftover = sequenceMultiple.First.Span;
+                    previous = leftover.Length;
+                    leftover.CopyTo(buffer);
+                }
+                else
+                {
+                    previous = 0;
+                }
+                counter++;
+            }
+            ArrayPool<byte>.Shared.Return(buffer);
+            Assert.Equal(numberOfSegments, counter);
         }
     }
 }

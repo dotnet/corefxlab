@@ -24,6 +24,7 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
+    <ProjectReference Include="..\System.Buffers.ReaderWriter.Tests\System.Buffers.ReaderWriter.Tests.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\TestJson.Designer.cs">
