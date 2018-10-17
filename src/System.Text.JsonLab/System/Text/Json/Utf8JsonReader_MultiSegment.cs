@@ -1050,6 +1050,14 @@ namespace System.Text.JsonLab
                     break;
             }
 
+            if (i < data.Length)
+            {
+                if (delimiters.IndexOf(nextByte) == -1)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
+                }
+            }
+
         Done:
             ;
         }
