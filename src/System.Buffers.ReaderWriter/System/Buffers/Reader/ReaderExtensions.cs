@@ -9,13 +9,13 @@ namespace System.Buffers
     public static partial class ReaderExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ReadOnlySpan<T> ToSpan<T>(this in ReadOnlySequence<T> sequence, ArrayPool<T> arrayPool)
+        internal static ReadOnlySpan<T> ToSpan<T>(this in ReadOnlySequence<T> sequence, Allocator<T> allocator)
         {
             if (sequence.IsSingleSegment)
                 return sequence.First.Span;
 
             int length = checked((int)sequence.Length);
-            Span<T> destination = new Span<T>(arrayPool.Rent(length), 0, length);
+            Span<T> destination = allocator(length);
             sequence.CopyTo(destination);
             return destination;
         }

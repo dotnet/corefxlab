@@ -39,7 +39,7 @@ namespace System.Buffers
                 return false;
             }
 
-            span = sequence.ToSpan(_arrayPool);
+            span = sequence.ToSpan(_allocator);
             return true;
         }
 
@@ -77,7 +77,7 @@ namespace System.Buffers
             }
 
             Debug.Assert(sequence.Length > 0);
-            span = sequence.ToSpan(_arrayPool);
+            span = sequence.ToSpan(_allocator);
             return true;
         }
 
@@ -349,7 +349,7 @@ namespace System.Buffers
                 return false;
             }
 
-            span = sequence.ToSpan(_arrayPool);
+            span = sequence.ToSpan(_allocator);
             return true;
         }
 
@@ -429,7 +429,7 @@ namespace System.Buffers
             }
             else
             {
-                peekBuffer = new Span<T>(_arrayPool.Rent(delimiter.Length));
+                peekBuffer = _allocator(delimiter.Length);
             }
 
             bool advanced = false;

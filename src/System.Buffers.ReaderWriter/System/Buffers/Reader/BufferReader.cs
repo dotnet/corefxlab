@@ -9,24 +9,26 @@ namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
-        private static NewArray<T> s_newArray = new NewArray<T>();
+        private static Allocator<T> s_allocator = Allocate;
         private SequencePosition _currentPosition;
         private SequencePosition _nextPosition;
-        private ArrayPool<T> _arrayPool;
+        private Allocator<T> _allocator;
         private bool _moreData;
+
+        private static Span<T> Allocate(int length) => new T[length];
 
         /// <summary>
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BufferReader(in ReadOnlySequence<T> buffer, ArrayPool<T> arrayPool = null)
+        public BufferReader(in ReadOnlySequence<T> buffer, Allocator<T> allocator = null)
         {
             CurrentSpanIndex = 0;
             Consumed = 0;
             Sequence = buffer;
             _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
-            _arrayPool = arrayPool ?? s_newArray;
+            _allocator = allocator ?? s_allocator;
 
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
@@ -300,7 +302,7 @@ namespace System.Buffers
             }
 
             // Not enough contiguous Ts, allocate and copy what we can get
-            return PeekSlow(_arrayPool.Rent(maxCount));
+            return PeekSlow(_allocator(maxCount));
         }
 
         /// <summary>
