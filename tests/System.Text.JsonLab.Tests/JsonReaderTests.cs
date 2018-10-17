@@ -1600,6 +1600,10 @@ namespace System.Text.JsonLab.Tests
             JsonReaderState state = default;
             int previous = 0;
 
+            byte[] outputArray = new byte[dataUtf8.Length];
+            Span<byte> destination = outputArray;
+            int currentLength = 0;
+
             int numberOfSegments = dataUtf8.Length / 4_000 + 1;
             int counter = 0;
             foreach (ReadOnlyMemory<byte> memory in sequenceMultiple)
@@ -1612,7 +1616,57 @@ namespace System.Text.JsonLab.Tests
                 bool isFinalBlock = bufferSpan.Length == 0;
 
                 var json = new Utf8JsonReader(bufferSpan, isFinalBlock, state);
-                while (json.Read()) ;
+
+                Span<byte> copy = destination.Slice(currentLength);
+
+                while (json.Read())
+                {
+                    JsonTokenType tokenType = json.TokenType;
+                    ReadOnlySpan<byte> valueSpan = json.Value;
+                    switch (tokenType)
+                    {
+                        case JsonTokenType.PropertyName:
+                            valueSpan.CopyTo(copy);
+                            copy[valueSpan.Length] = (byte)',';
+                            copy[valueSpan.Length + 1] = (byte)' ';
+                            copy = copy.Slice(valueSpan.Length + 2);
+                            break;
+                        case JsonTokenType.Number:
+                        case JsonTokenType.String:
+                        case JsonTokenType.Comment:
+                            valueSpan.CopyTo(copy);
+                            copy[valueSpan.Length] = (byte)',';
+                            copy[valueSpan.Length + 1] = (byte)' ';
+                            copy = copy.Slice(valueSpan.Length + 2);
+                            break;
+                        case JsonTokenType.True:
+                            // Special casing True/False so that the casing matches with Json.NET
+                            copy[0] = (byte)'T';
+                            copy[1] = (byte)'r';
+                            copy[2] = (byte)'u';
+                            copy[3] = (byte)'e';
+                            copy[valueSpan.Length] = (byte)',';
+                            copy[valueSpan.Length + 1] = (byte)' ';
+                            copy = copy.Slice(valueSpan.Length + 2);
+                            break;
+                        case JsonTokenType.False:
+                            copy[0] = (byte)'F';
+                            copy[1] = (byte)'a';
+                            copy[2] = (byte)'l';
+                            copy[3] = (byte)'s';
+                            copy[4] = (byte)'e';
+                            copy[valueSpan.Length] = (byte)',';
+                            copy[valueSpan.Length + 1] = (byte)' ';
+                            copy = copy.Slice(valueSpan.Length + 2);
+                            break;
+                        case JsonTokenType.Null:
+                            // Special casing Null so that it matches what JSON.NET does
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                currentLength = outputArray.Length - copy.Length;
 
                 if (isFinalBlock)
                     break;
@@ -1634,6 +1688,14 @@ namespace System.Text.JsonLab.Tests
             }
             ArrayPool<byte>.Shared.Return(buffer);
             Assert.Equal(numberOfSegments, counter);
+
+            string actualStr = Encoding.UTF8.GetString(outputArray.AsSpan(0, currentLength));
+
+            Stream stream = new MemoryStream(dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            string expectedStr = NewtonsoftReturnStringHelper(reader);
+
+            Assert.Equal(expectedStr, actualStr);
         }
     }
 }
