@@ -321,10 +321,14 @@ namespace System.Buffers.Reader
         /// <param name="delimiters">The delimiters to look for.</param>
         /// <param name="advancePastDelimiter">True to move past the first found instance of any of the given <paramref name="delimiters"/>.</param>
         /// <returns>True if any of the the <paramref name="delimiters"/> were found.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryReadToAny(out ReadOnlySpan<T> span, ReadOnlySpan<T> delimiters, bool advancePastDelimiter = true)
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
-            int index = remaining.IndexOfAny(delimiters);
+            int index = delimiters.Length == 2
+                ? remaining.IndexOfAny(delimiters[0], delimiters[1])
+                : remaining.IndexOfAny(delimiters);
+
             if (index != -1)
             {
                 span = remaining.Slice(0, index);
@@ -332,12 +336,12 @@ namespace System.Buffers.Reader
                 return true;
             }
 
-            return TryReadToAnySlow(out span, delimiters, remaining.Length, advancePastDelimiter);
+            return TryReadToAnySlow(out span, delimiters, advancePastDelimiter);
         }
 
-        private bool TryReadToAnySlow(out ReadOnlySpan<T> span, ReadOnlySpan<T> delimiters, int skip, bool advancePastDelimiter)
+        private bool TryReadToAnySlow(out ReadOnlySpan<T> span, ReadOnlySpan<T> delimiters, bool advancePastDelimiter)
         {
-            if (!TryReadToAnyInternal(out ReadOnlySequence<T> sequence, delimiters, advancePastDelimiter, skip))
+            if (!TryReadToAnyInternal(out ReadOnlySequence<T> sequence, delimiters, advancePastDelimiter, CurrentSpan.Length - CurrentSpanIndex))
             {
                 span = default;
                 return false;
