@@ -117,11 +117,10 @@ namespace System.Text.JsonLab.Benchmarks
                     break;
 
                 state = json.State;
-                sequenceMultiple = sequenceMultiple.Slice(json.Consumed);
 
                 if (json.Consumed != bufferSpan.Length)
                 {
-                    ReadOnlySpan<byte> leftover = sequenceMultiple.First.Span;
+                    ReadOnlySpan<byte> leftover = bufferSpan.Slice((int)json.Consumed);
                     previous = leftover.Length;
                     leftover.CopyTo(buffer);
                 }
@@ -131,6 +130,20 @@ namespace System.Text.JsonLab.Benchmarks
                 }
             }
             ArrayPool<byte>.Shared.Return(buffer);
+        }
+
+        [Benchmark]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
+        [Arguments(4_000)]
+        [Arguments(8_000)]
+        public void MultiSegmentSequenceUsingReaderSequence(int segmentSize)
+        {
+            ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];
+
+            var json = new Utf8JsonReaderSequence(sequenceMultiple);
+            while (json.Read()) ;
+            json.Dispose();
         }
     }
 }
