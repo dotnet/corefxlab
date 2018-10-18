@@ -9,59 +9,50 @@ namespace System.Text.JsonLab
     public ref struct Utf8JsonReaderSequence
     {
         private Utf8JsonReader _jsonReader;
-        private ReadOnlySequence<byte> _data;
         private Span<byte> _span;
-        private bool _isFinalBlock;
-        private JsonReaderState _state;
+        private readonly bool _isFinalBlock;
         private ReadOnlySequence<byte>.Enumerator _enumerator;
         private byte[] _buffer;
 
         public JsonTokenType TokenType => _jsonReader.TokenType;
         public ReadOnlySpan<byte> Value => _jsonReader.Value;
 
-        public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data, ReadOnlySpan<byte> leftOver = default)
+        public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data)
         {
-            _data = data;
-            _enumerator = _data.GetEnumerator();
-            _enumerator.MoveNext();
-            ReadOnlySpan<byte> localSpan = _enumerator.Current.Span;
-            _buffer = ArrayPool<byte>.Shared.Rent(localSpan.Length * 2);
+            _enumerator = data.GetEnumerator();
+            while (_enumerator.MoveNext())
+            {
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+            ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
+            _buffer = ArrayPool<byte>.Shared.Rent(currentSpan.Length * 2);
 
             _span = _buffer;
-            leftOver.CopyTo(_span);
-            localSpan.CopyTo(_span.Slice(leftOver.Length));
-            _span = _span.Slice(0, localSpan.Length + leftOver.Length);
+            currentSpan.CopyTo(_span);
+            _span = _span.Slice(0, currentSpan.Length);
 
-            _isFinalBlock = _span.Length == 0;
+            _isFinalBlock = data.IsSingleSegment;
             _jsonReader = new Utf8JsonReader(_span, _isFinalBlock);
-            
-            _state = default;
         }
 
-        public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data, bool isFinalBlock, ReadOnlySpan<byte> leftOver = default, JsonReaderState state = default)
+        public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
         {
-            _data = data;
-            _enumerator = _data.GetEnumerator();
-            _enumerator.MoveNext();
-            ReadOnlySpan<byte> localSpan = _enumerator.Current.Span;
-            _buffer = ArrayPool<byte>.Shared.Rent(localSpan.Length * 2);
+            _enumerator = data.GetEnumerator();
+            while (_enumerator.MoveNext())
+            {
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+            ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
+            _buffer = ArrayPool<byte>.Shared.Rent(currentSpan.Length * 2);
 
             _span = _buffer;
-            leftOver.CopyTo(_span);
-            localSpan.CopyTo(_span.Slice(leftOver.Length));
-            _span = _span.Slice(0, _span.Length + leftOver.Length);
+            currentSpan.CopyTo(_span);
+            _span = _span.Slice(0, _span.Length);
 
-            _isFinalBlock = _span.Length == 0 || isFinalBlock;
+            _isFinalBlock = isFinalBlock;
             _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, state);
-            
-            if (!state.IsDefault)
-            {
-                _state = state;
-            }
-            else
-            {
-                _state = default;
-            }
         }
 
         public bool Read()
@@ -76,11 +67,9 @@ namespace System.Text.JsonLab
 
         private bool ReadNext()
         {
-            _isFinalBlock = !_enumerator.MoveNext();
-            if (_isFinalBlock)
+            bool noMoreData = !_enumerator.MoveNext();
+            if (noMoreData)
                 return false;
-
-            _state = _jsonReader.State;
 
             ReadOnlySpan<byte> leftOver = default;
             if (_jsonReader.Consumed != _span.Length)
@@ -95,7 +84,7 @@ namespace System.Text.JsonLab
             currentSpan.CopyTo(_span.Slice(leftOver.Length));
             _span = _span.Slice(0, currentSpan.Length + leftOver.Length);
 
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _state);
+            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.State);
             return _jsonReader.Read();
         }
 
