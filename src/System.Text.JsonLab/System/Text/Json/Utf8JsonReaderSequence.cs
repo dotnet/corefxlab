@@ -67,9 +67,16 @@ namespace System.Text.JsonLab
 
         private bool ReadNext()
         {
-            bool noMoreData = !_enumerator.MoveNext();
-            if (noMoreData)
-                return false;
+            while (true)
+            {
+                bool noMoreData = !_enumerator.MoveNext();
+                if (noMoreData)
+                    return false;
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+
+            ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
 
             ReadOnlySpan<byte> leftOver = default;
             if (_jsonReader.Consumed != _span.Length)
@@ -77,15 +84,26 @@ namespace System.Text.JsonLab
                 leftOver = _span.Slice((int)_jsonReader.Consumed);
             }
 
+            int bufferSize = leftOver.Length + currentSpan.Length;
+            if (bufferSize > _buffer.Length)
+            {
+                ResizeBuffer(bufferSize);
+            }
+
             _span = _buffer;
             leftOver.CopyTo(_span);
-
-            ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
+            
             currentSpan.CopyTo(_span.Slice(leftOver.Length));
-            _span = _span.Slice(0, currentSpan.Length + leftOver.Length);
+            _span = _span.Slice(0, bufferSize);
 
             _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.State);
             return _jsonReader.Read();
+        }
+
+        private void ResizeBuffer(int minimumSize)
+        {
+            ArrayPool<byte>.Shared.Return(_buffer);
+            _buffer = ArrayPool<byte>.Shared.Rent(minimumSize);
         }
 
         public void Dispose()
