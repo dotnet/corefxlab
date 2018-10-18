@@ -311,18 +311,15 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            if (_isSingleSegment)
+            bool result = ReadSingleSegment();
+
+            if (_isSingleSegment || result)
             {
-                return ReadSingleSegment();
+                return result;
             }
             else
             {
-                bool result = ReadSingleSegment();
-                if (!result)
-                {
-                    return ReadNext();
-                }
-                return result;
+                return ReadNext();
             }
         }
 
