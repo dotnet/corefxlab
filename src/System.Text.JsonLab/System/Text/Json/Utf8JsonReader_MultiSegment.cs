@@ -310,7 +310,13 @@ namespace System.Text.JsonLab
                         _position--;
                         reader.Rewind(1);
                         TokenType = (JsonTokenType)_stack.Pop();
-                        return ReadMultiSegment(ref reader) ? InternalResult.Success : InternalResult.FailureRollback;
+                        if (ReadMultiSegment(ref reader))
+                            return InternalResult.Success;
+                        else
+                        {
+                            _stack.Push((InternalJsonTokenType)TokenType);
+                            return InternalResult.FailureRollback;
+                        }
                     }
                 }
                 else

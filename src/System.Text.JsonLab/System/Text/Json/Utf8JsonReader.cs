@@ -480,7 +480,14 @@ namespace System.Text.JsonLab
                         Consumed--;
                         _position--;
                         TokenType = (JsonTokenType)_stack.Pop();
-                        return ReadSingleSegment() ? InternalResult.Success : InternalResult.FailureRollback;
+                        if (ReadSingleSegment())
+                            return InternalResult.Success;
+                        else
+                        {
+                            //TODO: Add test
+                            _stack.Push((InternalJsonTokenType)TokenType);
+                            return InternalResult.FailureRollback;
+                        }
                     }
                 }
                 else
