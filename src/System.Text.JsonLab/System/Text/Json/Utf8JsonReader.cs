@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Reader;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +15,7 @@ namespace System.Text.JsonLab
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
 
-        private readonly ReadOnlySpan<byte> _buffer;
+        private ReadOnlySpan<byte> _buffer;
 
         public long Consumed { get; private set; }
 
@@ -39,8 +38,6 @@ namespace System.Text.JsonLab
         }
 
         private int _maxDepth;
-
-        private BufferReader<byte> _reader;
 
         private Stack<InternalJsonTokenType> _stack;
 
@@ -99,13 +96,17 @@ namespace System.Text.JsonLab
         public ReadOnlySpan<byte> Value { get; private set; }
 
         private readonly bool _isSingleSegment;
-        private readonly bool _isFinalBlock;
+        private bool _isFinalBlock;
         private bool _isSingleValue;
 
-        internal bool ConsumedEverything => _isSingleSegment ? Consumed >= (uint)_buffer.Length : _reader.End;
+        internal bool ConsumedEverything => Consumed >= (uint)_buffer.Length;
 
         internal long _lineNumber;
         internal long _position;
+
+        private Span<byte> _bufferSpan;
+        private ReadOnlySequence<byte>.Enumerator _enumerator;
+        private byte[] _pooledArray;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -124,7 +125,6 @@ namespace System.Text.JsonLab
 
             _isFinalBlock = true;
 
-            _reader = default;
             _isSingleSegment = true;
             _buffer = data;
             Consumed = 0;
@@ -133,6 +133,10 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
+
+            _bufferSpan = default;
+            _enumerator = default;
+            _pooledArray = null;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -160,7 +164,6 @@ namespace System.Text.JsonLab
 
             _isFinalBlock = isFinalBlock;
 
-            _reader = default;
             _isSingleSegment = true;
             _buffer = data;
             Consumed = 0;
@@ -169,6 +172,137 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
+
+            _bufferSpan = default;
+            _enumerator = default;
+            _pooledArray = null;
+        }
+
+        public Utf8JsonReader(in ReadOnlySequence<byte> data)
+        {
+            _containerMask = 0;
+            Depth = 0;
+            _inObject = false;
+            _stack = null;
+            TokenType = JsonTokenType.None;
+            _lineNumber = 1;
+            _position = 0;
+
+            _isFinalBlock = data.IsSingleSegment;   //TODO: Fix this logic
+
+            _isSingleSegment = data.IsSingleSegment; //true;
+            Consumed = 0;
+            TokenStartIndex = Consumed;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            _isSingleValue = true;
+            _readerOptions = JsonReaderOptions.Default;
+
+            _enumerator = data.GetEnumerator();
+            while (_enumerator.MoveNext())
+            {
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+
+            _buffer = _enumerator.Current.Span;
+            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+            _bufferSpan = default;
+        }
+
+        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
+        {
+            if (!state.IsDefault)
+            {
+                _containerMask = state._containerMask;
+                Depth = state._depth;
+                _inObject = state._inObject;
+                _stack = state._stack;
+                TokenType = state._tokenType;
+                _lineNumber = state._lineNumber;
+                _position = state._position;
+            }
+            else
+            {
+                _containerMask = 0;
+                Depth = 0;
+                _inObject = false;
+                _stack = null;
+                TokenType = JsonTokenType.None;
+                _lineNumber = 1;
+                _position = 0;
+            }
+
+            _isFinalBlock = isFinalBlock;
+
+            _isSingleSegment = data.IsSingleSegment; //true;
+            Consumed = 0;
+            TokenStartIndex = Consumed;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            _isSingleValue = true;
+            _readerOptions = JsonReaderOptions.Default;
+
+            _enumerator = data.GetEnumerator();
+            while (_enumerator.MoveNext())
+            {
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+
+            _buffer = _enumerator.Current.Span;
+            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+            _bufferSpan = default;
+        }
+
+        private bool ReadNext()
+        {
+            while (true)
+            {
+                bool noMoreData = !_enumerator.MoveNext();
+                if (noMoreData)
+                    return false;
+                if (_enumerator.Current.Length != 0)
+                    break;
+            }
+
+            ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
+
+            ReadOnlySpan<byte> leftOver = default;
+            if (Consumed < _buffer.Length)
+            {
+                leftOver = _buffer.Slice((int)Consumed);
+            }
+
+            int bufferSize = leftOver.Length + currentSpan.Length;
+            if (bufferSize > _buffer.Length)
+            {
+                ResizeBuffer(bufferSize);
+            }
+
+            _bufferSpan = _pooledArray;
+            leftOver.CopyTo(_bufferSpan);
+
+            currentSpan.CopyTo(_bufferSpan.Slice(leftOver.Length));
+            _bufferSpan = _bufferSpan.Slice(0, bufferSize);
+
+            Consumed = 0;
+            TokenStartIndex = Consumed;
+
+            _buffer = _bufferSpan;
+            return Read();
+        }
+
+        private void ResizeBuffer(int minimumSize)
+        {
+            ArrayPool<byte>.Shared.Return(_pooledArray);
+            _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
+        }
+
+        public void Dispose()
+        {
+            ArrayPool<byte>.Shared.Return(_pooledArray);
+            _pooledArray = null;
         }
 
         /// <summary>
@@ -177,7 +311,19 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment(ref _reader);
+            if (_isSingleSegment)
+            {
+                return ReadSingleSegment();
+            }
+            else
+            {
+                bool result = ReadSingleSegment();
+                if (!result)
+                {
+                    return ReadNext();
+                }
+                return result;
+            }
         }
 
         public void Skip()
@@ -480,7 +626,13 @@ namespace System.Text.JsonLab
                         Consumed--;
                         _position--;
                         TokenType = (JsonTokenType)_stack.Pop();
-                        return ReadSingleSegment() ? InternalResult.Success : InternalResult.FailureRollback;
+                        if (ReadSingleSegment())
+                            return InternalResult.Success;
+                        else
+                        {
+                            _stack.Push((InternalJsonTokenType)TokenType);
+                            return InternalResult.FailureRollback;
+                        }
                     }
                 }
                 else

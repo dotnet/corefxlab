@@ -14,64 +14,6 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonReader
     {
-        public Utf8JsonReader(in ReadOnlySequence<byte> data)
-        {
-            _containerMask = 0;
-            Depth = 0;
-            _inObject = false;
-            _stack = null;
-            TokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-
-            _isFinalBlock = true;
-
-            _reader = new BufferReader<byte>(data);
-            _isSingleSegment = data.IsSingleSegment; //true;
-            _buffer = _reader.CurrentSpan;  //data.ToArray();
-            Consumed = 0;
-            TokenStartIndex = Consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = JsonReaderOptions.Default;
-        }
-
-        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
-        {
-            if (!state.IsDefault)
-            {
-                _containerMask = state._containerMask;
-                Depth = state._depth;
-                _inObject = state._inObject;
-                _stack = state._stack;
-                TokenType = state._tokenType;
-                _lineNumber = state._lineNumber;
-                _position = state._position;
-            }
-            else
-            {
-                _containerMask = 0;
-                Depth = 0;
-                _inObject = false;
-                _stack = null;
-                TokenType = JsonTokenType.None;
-                _lineNumber = 1;
-                _position = 0;
-            }
-
-            _isFinalBlock = isFinalBlock;
-
-            _reader = new BufferReader<byte>(data);
-            _isSingleSegment = data.IsSingleSegment; //true;
-            _buffer = _reader.CurrentSpan;  //data.ToArray();
-            Consumed = 0;
-            TokenStartIndex = Consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = JsonReaderOptions.Default;
-        }
 
         private bool ReadFirstToken(ref BufferReader<byte> reader, byte first)
         {
