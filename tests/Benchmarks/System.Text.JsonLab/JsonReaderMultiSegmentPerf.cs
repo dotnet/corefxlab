@@ -72,16 +72,16 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void SingleSegmentSequence()
         {
-            var json = new Utf8JsonReader(_sequenceSingle);
-            while (json.Read()) ;
+            //var json = new Utf8JsonReader(_sequenceSingle);
+            //while (json.Read()) ;
         }
 
         [Benchmark]
         [Arguments(4_000)]
         public void MultiSegmentSequence(int segmentSize)
         {
-            var json = new Utf8JsonReader(_sequences[segmentSize]);
-            while (json.Read()) ;
+            //var json = new Utf8JsonReader(_sequences[segmentSize]);
+            //while (json.Read()) ;
         }
 
         [Benchmark]

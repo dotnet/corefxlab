@@ -123,15 +123,15 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
-            var json = new Utf8JsonReader(_sequenceSingle);
-            while (json.Read()) ;
+            //var json = new Utf8JsonReader(_sequenceSingle);
+            //while (json.Read()) ;
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
-            var json = new Utf8JsonReader(_sequence);
-            while (json.Read()) ;
+            //var json = new Utf8JsonReader(_sequence);
+            //while (json.Read()) ;
         }
 
         [Benchmark]
