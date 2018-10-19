@@ -171,6 +171,135 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [MemberData(nameof(TestCases))]
+        public static void TestJsonReaderUtf8SegmentSizeOne(bool compactData, TestCaseType type, string jsonString)
+        {
+            // Remove all formatting/indendation
+            if (compactData)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                {
+                    jsonReader.FloatParseHandling = FloatParseHandling.Decimal;
+                    JToken jtoken = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        jtoken.WriteTo(jsonWriter);
+                        jsonString = stringWriter.ToString();
+                    }
+                }
+            }
+
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            Stream stream = new MemoryStream(dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            string expectedStr = NewtonsoftReturnStringHelper(reader);
+
+            ReadOnlySequence<byte> sequence = GetSequence(dataUtf8, 1);
+
+            // Skipping really large JSON since slicing them (O(n^2)) is too slow.
+            if (type == TestCaseType.Json40KB || type == TestCaseType.Json400KB || type == TestCaseType.ProjectLockJson)
+            {
+                var utf8JsonReader = new Utf8JsonReader(sequence);
+                byte[] resultSequence = JsonLabReaderLoop(dataUtf8.Length, out int length, ref utf8JsonReader);
+                string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
+                Assert.Equal(expectedStr, actualStrSequence);
+                reader.Dispose();
+                return;
+            }
+
+            for (int j = 0; j < dataUtf8.Length; j++)
+            {
+                var utf8JsonReader = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
+                byte[] resultSequence = JsonLabReaderLoop(dataUtf8.Length, out int length, ref utf8JsonReader);
+                string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
+
+                long consumed = utf8JsonReader.Consumed;
+                JsonReaderState jsonState = utf8JsonReader.State;
+                reader.Dispose();
+                utf8JsonReader = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, utf8JsonReader.State);
+                resultSequence = JsonLabReaderLoop(dataUtf8.Length, out length, ref utf8JsonReader);
+                actualStrSequence += Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
+                Assert.Equal(dataUtf8.Length - consumed, utf8JsonReader.Consumed);
+
+                Assert.Equal(expectedStr, actualStrSequence);
+                reader.Dispose();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TestCases))]
+        public static void TestJsonReaderUtf8NBytesAtaTime(bool compactData, TestCaseType type, string jsonString)
+        {
+            // Remove all formatting/indendation
+            if (compactData)
+            {
+                using (JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonString)))
+                {
+                    jsonReader.FloatParseHandling = FloatParseHandling.Decimal;
+                    JToken jtoken = JToken.ReadFrom(jsonReader);
+                    var stringWriter = new StringWriter();
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(stringWriter))
+                    {
+                        jtoken.WriteTo(jsonWriter);
+                        jsonString = stringWriter.ToString();
+                    }
+                }
+            }
+
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            int[] numBytes = new int[] { 1, 10, 100, 1_000 };
+
+            Stream stream = new MemoryStream(dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            string expectedStr = NewtonsoftReturnStringHelper(reader);
+
+            for (int i = 0; i < numBytes.Length; i++)
+            {
+                JsonReaderState jsonState = default;
+                int consumed = 0;
+
+                if (numBytes[i] >= dataUtf8.Length)
+                    numBytes[i] = dataUtf8.Length - 1;
+
+                int numberOfBytes = numBytes[i];
+                bool isFinalBlock = false;
+                string actualStr = "";
+                while (consumed != dataUtf8.Length)
+                {
+                    ReadOnlySpan<byte> data = dataUtf8.AsSpan();
+                    
+                    if (isFinalBlock)
+                    {
+                        data = data.Slice(consumed);
+                    }
+                    else
+                    {
+                        data = data.Slice(consumed, numberOfBytes);
+                    }
+
+                    var utf8JsonReader = new Utf8JsonReader(data, isFinalBlock, jsonState);
+
+                    byte[] result = JsonLabReaderLoop((numberOfBytes * 2) + 128, out int length, ref utf8JsonReader);
+                    actualStr += Encoding.UTF8.GetString(result.AsSpan(0, length));
+
+                    if (utf8JsonReader.Consumed == 0)
+                        numberOfBytes++;
+                    else
+                        numberOfBytes = numBytes[i];
+                    consumed += (int)utf8JsonReader.Consumed;
+                    jsonState = utf8JsonReader.State;
+                    if (consumed >= dataUtf8.Length - numBytes[i])
+                        isFinalBlock = true;
+                }
+
+                Assert.Equal(expectedStr, actualStr);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TestCases))]
         public static void TestPartialJsonReader(bool compactData, TestCaseType type, string jsonString)
         {
             // Skipping really large JSON since slicing them (O(n^2)) is too slow.
@@ -310,11 +439,13 @@ namespace System.Text.JsonLab.Tests
                     var json = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
                     while (json.Read()) ;
 
+                    json.Dispose();
                     long consumed = json.Consumed;
                     JsonReaderState jsonState = json.State;
                     json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.State);
                     while (json.Read()) ;
                     Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
+                    json.Dispose();
                 }
             }
         }
@@ -869,6 +1000,7 @@ namespace System.Text.JsonLab.Tests
                             errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                             Assert.True(expectedBytes == ex.LinePosition, errorMessage);
                         }
+                        jsonMultiSegment.Dispose();
                     }
                 }
             }
@@ -1100,6 +1232,8 @@ namespace System.Text.JsonLab.Tests
                 }
                 Assert.True(foundComment);
                 Assert.Equal(expectedIndex, indexAfterFirstComment);
+
+                jsonMultiSegment.Dispose();
             }
         }
 
@@ -1305,6 +1439,8 @@ namespace System.Text.JsonLab.Tests
                     prevTokenType = tokenType;
                 }
                 Assert.Equal(dataUtf8.Length, json.Consumed);
+
+                jsonMultiSegment.Dispose();
             }
         }
 
@@ -1495,6 +1631,7 @@ namespace System.Text.JsonLab.Tests
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
                     Assert.Equal(expectedPosition, ex.LinePosition);
+                    jsonMultiSegment.Dispose();
                 }
             }
         }
@@ -1689,6 +1826,7 @@ namespace System.Text.JsonLab.Tests
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
                     Assert.Equal(expectedPosition, ex.LinePosition);
+                    jsonMultiSegment.Dispose();
                 }
             }
         }

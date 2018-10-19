@@ -18,6 +18,8 @@ namespace System.Text.JsonLab.Benchmarks
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
+            Json4KB,
+            Json40KB,
             Json400KB
         }
 
@@ -40,7 +42,7 @@ namespace System.Text.JsonLab.Benchmarks
 
             _sequenceSingle = new ReadOnlySequence<byte>(_dataUtf8);
 
-            int[] segmentSizes = { 1_000, 2_000, 4_000, 8_000 };
+            int[] segmentSizes = { 1, 10, 100, 1_000, 2_000, 4_000, 8_000 };
 
             _sequences = new Dictionary<int, ReadOnlySequence<byte>>();
 
@@ -77,7 +79,53 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        [Arguments(1)]
+        [Arguments(10)]
+        [Arguments(100)]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
         [Arguments(4_000)]
+        [Arguments(8_000)]
+        public void SingleSegmentSequenceByN(int numberOfBytes)
+        {
+            JsonReaderState jsonState = default;
+            int consumed = 0;
+            int numBytes = numberOfBytes;
+            bool isFinalBlock = false;
+            while (consumed != _dataUtf8.Length)
+            {
+                ReadOnlySpan<byte> data = _dataUtf8.AsSpan();
+                if (isFinalBlock)
+                {
+                    data = data.Slice(consumed);
+                }
+                else
+                {
+                    data = data.Slice(consumed, numBytes);
+                }
+                var json = new Utf8JsonReader(data, isFinalBlock, jsonState);
+
+                while (json.Read()) ;
+
+                if (json.Consumed == 0)
+                    numBytes++;
+                else
+                    numBytes = numberOfBytes;
+                consumed += (int)json.Consumed;
+                jsonState = json.State;
+                if (consumed >= _dataUtf8.Length - numberOfBytes)
+                    isFinalBlock = true;
+            }
+        }
+
+        [Benchmark]
+        [Arguments(1)]
+        [Arguments(10)]
+        [Arguments(100)]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
+        [Arguments(4_000)]
+        [Arguments(8_000)]
         public void MultiSegmentSequence(int segmentSize)
         {
             var json = new Utf8JsonReader(_sequences[segmentSize]);
@@ -86,7 +134,10 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
         [Arguments(4_000)]
+        [Arguments(8_000)]
         public void MultiSegmentSequenceUsingSpan(int segmentSize)
         {
             ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];
@@ -126,7 +177,10 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
         [Arguments(4_000)]
+        [Arguments(8_000)]
         public void MultiSegmentSequenceUsingReaderSequence(int segmentSize)
         {
             ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];

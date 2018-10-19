@@ -26,7 +26,7 @@ namespace System.Text.JsonLab
                     break;
             }
             ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
-            _buffer = ArrayPool<byte>.Shared.Rent(currentSpan.Length * 2);
+            _buffer = ArrayPool<byte>.Shared.Rent(currentSpan.Length * 2);  //TODO: Support data straddling more than 1 segment
 
             _span = _buffer;
             currentSpan.CopyTo(_span);
