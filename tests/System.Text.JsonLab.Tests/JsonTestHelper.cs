@@ -193,6 +193,7 @@ namespace System.Text.JsonLab.Tests
                 }
             };
 
+            reader.Dispose();
             return true;
         }
 
@@ -332,7 +333,7 @@ namespace System.Text.JsonLab.Tests
             {
                 throw new InvalidDataException($"Missing required property '{ProtocolVersionPropertyName}'.");
             }
-
+            reader.Dispose();
             return true;
         }
 
@@ -408,6 +409,8 @@ namespace System.Text.JsonLab.Tests
                 Options = options
             };
             byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
+            reader.Dispose();
+
             // TODO: Should we reset the value and valuetype once we are done?
             //Assert.True(reader.Value.IsEmpty);
             //Assert.Equal(JsonValueType.Unknown, reader.ValueType);

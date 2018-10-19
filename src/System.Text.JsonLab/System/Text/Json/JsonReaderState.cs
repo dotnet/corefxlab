@@ -15,6 +15,7 @@ namespace System.Text.JsonLab
         internal JsonTokenType _tokenType;
         internal long _lineNumber;
         internal long _position;
+        internal bool _isSingleValue;
 
         internal bool IsDefault
             => _containerMask == default &&
@@ -23,6 +24,7 @@ namespace System.Text.JsonLab
             _stack == null &&
             _tokenType == default &&
             //_lineNumber == default && // the default _lineNumber is 1, we want IsDefault to return true for default(JsonReaderState)
+            //_isSingleValue == default && // the default _isSingleValue is true, we want IsDefault to return true for default(JsonReaderState)
             _position == default;
     }
 }
