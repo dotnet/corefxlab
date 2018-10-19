@@ -25,4 +25,10 @@ namespace System.Text.JsonLab
             //_lineNumber == default && // the default _lineNumber is 1, we want IsDefault to return true for default(JsonReaderState)
             _position == default;
     }
+
+    internal struct RollbackState
+    {
+        internal JsonReaderState _state;
+        internal int _consumed;
+    }
 }

@@ -307,14 +307,25 @@ namespace System.Text.JsonLab.Tests
                 ReadOnlySequence<byte> sequence = sequences[i];
                 for (int j = 0; j < dataUtf8.Length; j++)
                 {
-                    var json = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
-                    while (json.Read()) ;
+                    if (i == 13 && j == 14)
+                    {
+                        var temp = 0;
+                    }
+                    try
+                    {
+                        var json = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
+                        while (json.Read()) ;
 
-                    long consumed = json.Consumed;
-                    JsonReaderState jsonState = json.State;
-                    json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.State);
-                    while (json.Read()) ;
-                    Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
+                        long consumed = json.Consumed;
+                        JsonReaderState jsonState = json.State;
+                        json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.State);
+                        while (json.Read()) ;
+                        Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
+                    }
+                    catch (Exception ex)
+                    {
+                        Assert.True(false, $"{i}, {j}, {ex.Message}");
+                    }
                 }
             }
         }
@@ -839,6 +850,11 @@ namespace System.Text.JsonLab.Tests
                     BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
                     var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
+                    if (i == 9)
+                    {
+                        var temp = 0;
+                    }
+
                     var jsonMultiSegment = new Utf8JsonReader(sequence)
                     {
                         MaxDepth = maxDepth,
@@ -852,11 +868,23 @@ namespace System.Text.JsonLab.Tests
                     }
                     catch (JsonReaderException ex)
                     {
-                        Assert.Equal(expectedlineNumber, ex.LineNumber);
+                        string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {option}";
+                        string firstSegmentString = Encodings.Utf8.ToString(dataMemory.Slice(0, i).Span);
+                        string secondSegmentString = Encodings.Utf8.ToString(secondMem.Span);
+                        errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
+                        Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
                         if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                            Assert.Equal(expectedPosition, ex.LinePosition);
+                        {
+                            errorMessage = $"expectedPosition: {expectedPosition} | actual: {ex.LinePosition} | index: {i} | option: {option}";
+                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
+                            Assert.True(expectedPosition == ex.LinePosition, errorMessage);
+                        }
                         else
-                            Assert.Equal(expectedBytes, ex.LinePosition);
+                        {
+                            errorMessage = $"expectedBytes: {expectedBytes} | actual: {ex.LinePosition} | index: {i} | option: {option}";
+                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
+                            Assert.True(expectedBytes == ex.LinePosition, errorMessage);
+                        }
                     }
                 }
             }

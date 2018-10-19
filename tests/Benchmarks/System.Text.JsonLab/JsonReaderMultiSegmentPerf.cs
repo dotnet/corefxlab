@@ -18,8 +18,6 @@ namespace System.Text.JsonLab.Benchmarks
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
-            Json4KB,
-            Json40KB,
             Json400KB
         }
 
@@ -79,10 +77,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        [Arguments(1_000)]
-        [Arguments(2_000)]
         [Arguments(4_000)]
-        [Arguments(8_000)]
         public void MultiSegmentSequence(int segmentSize)
         {
             var json = new Utf8JsonReader(_sequences[segmentSize]);
@@ -90,10 +85,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        [Arguments(1_000)]
-        [Arguments(2_000)]
         [Arguments(4_000)]
-        [Arguments(8_000)]
         public void MultiSegmentSequenceUsingSpan(int segmentSize)
         {
             ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];
@@ -133,10 +125,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        [Arguments(1_000)]
-        [Arguments(2_000)]
         [Arguments(4_000)]
-        [Arguments(8_000)]
         public void MultiSegmentSequenceUsingReaderSequence(int segmentSize)
         {
             ReadOnlySequence<byte> sequenceMultiple = _sequences[segmentSize];
