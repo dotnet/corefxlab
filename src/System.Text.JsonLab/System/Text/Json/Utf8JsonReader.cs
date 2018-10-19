@@ -108,6 +108,13 @@ namespace System.Text.JsonLab
         internal long _lineNumber;
         internal long _position;
 
+        private Span<byte> _bufferSpan;
+        private byte[] _pooledArray;
+        private SequencePosition _nextPosition;
+        private ReadOnlySequence<byte> _data;
+        private bool _isLastSegment;
+
+
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
         /// </summary>
@@ -133,6 +140,12 @@ namespace System.Text.JsonLab
             Value = ReadOnlySpan<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
+
+            _bufferSpan = default;
+            _pooledArray = null;
+            _nextPosition = default;
+            _data = default;
+            _isLastSegment = true;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -169,6 +182,136 @@ namespace System.Text.JsonLab
             _maxDepth = StackFreeMaxDepth;
             Value = ReadOnlySpan<byte>.Empty;
             _readerOptions = JsonReaderOptions.Default;
+
+            _bufferSpan = default;
+            _pooledArray = null;
+            _nextPosition = default;
+            _data = default;
+            _isLastSegment = _isFinalBlock;
+        }
+
+        private void ResizeBuffer(int minimumSize)
+        {
+            ArrayPool<byte>.Shared.Return(_pooledArray);
+            _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
+        }
+
+        public void Dispose()
+        {
+            ArrayPool<byte>.Shared.Return(_pooledArray);
+            _pooledArray = null;
+        }
+
+
+        public Utf8JsonReader(in ReadOnlySequence<byte> data)
+        {
+            _containerMask = 0;
+            Depth = 0;
+            _inObject = false;
+            _stack = null;
+            TokenType = JsonTokenType.None;
+            _lineNumber = 1;
+            _position = 0;
+
+            _isFinalBlock = true;
+
+            _buffer = data.First.Span;
+            _totalConsumed = 0;
+            _consumed = 0;
+            TokenStartIndex = _consumed;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            _isSingleValue = true;
+            _readerOptions = JsonReaderOptions.Default;
+
+            _data = data;
+            _bufferSpan = default;
+            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+            
+            if (data.IsSingleSegment)
+            {
+                _isLastSegment = true;
+                _nextPosition = default;
+            }
+            else
+            {
+                _nextPosition = data.Start;
+                if (_buffer.Length == 0)
+                {
+                    while (data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
+                    {
+                        if (memory.Length != 0)
+                        {
+                            _buffer = memory.Span;
+                            break;
+                        }
+                    }
+                }
+                _isLastSegment = !data.TryGet(ref _nextPosition, out _, advance: true);
+            }
+        }
+
+        public Utf8JsonReader(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
+        {
+            if (!state.IsDefault)
+            {
+                _containerMask = state._containerMask;
+                Depth = state._depth;
+                _inObject = state._inObject;
+                _stack = state._stack;
+                TokenType = state._tokenType;
+                _lineNumber = state._lineNumber;
+                _position = state._position;
+                _isSingleValue = state._isSingleValue;
+            }
+            else
+            {
+                _containerMask = 0;
+                Depth = 0;
+                _inObject = false;
+                _stack = null;
+                TokenType = JsonTokenType.None;
+                _lineNumber = 1;
+                _position = 0;
+                _isSingleValue = true;
+            }
+
+            _isFinalBlock = isFinalBlock;
+
+            _buffer = data.First.Span;
+            _totalConsumed = 0;
+            _consumed = 0;
+            TokenStartIndex = _consumed;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            _readerOptions = JsonReaderOptions.Default;
+
+            _data = data;
+            _bufferSpan = default;
+            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+
+            if (data.IsSingleSegment)
+            {
+                _nextPosition = default;
+                _isLastSegment = isFinalBlock;
+            }
+            else
+            {
+                _nextPosition = data.Start;
+                if (_buffer.Length == 0)
+                {
+                    while (data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
+                    {
+                        if (memory.Length != 0)
+                        {
+                            _buffer = memory.Span;
+                            break;
+                        }
+                    }
+                }
+
+                _isLastSegment = !data.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
+            }
         }
 
         /// <summary>
@@ -177,7 +320,55 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            return ReadSingleSegment();
+            bool result = ReadSingleSegment();
+            if (result || _isLastSegment)
+                return result;
+            else
+                return ReadNextSegment();
+        }
+
+        public bool ReadNextSegment()
+        {
+            ReadOnlyMemory<byte> memory = default;
+            while (true)
+            {
+                bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
+                if (noMoreData)
+                    return false;
+                if (memory.Length != 0)
+                    break;
+            }
+
+            if (_isFinalBlock)
+                _isLastSegment = !_data.TryGet(ref _nextPosition, out _, advance: false);
+
+            ReadOnlySpan<byte> currentSpan = memory.Span;
+
+            ReadOnlySpan<byte> leftOver = default;
+            if (_consumed < _buffer.Length)
+            {
+                leftOver = _buffer.Slice(_consumed);
+            }
+
+            int bufferSize = leftOver.Length + currentSpan.Length;
+            if (bufferSize > _buffer.Length)
+            {
+                ResizeBuffer(bufferSize);
+            }
+
+            _bufferSpan = _pooledArray;
+            leftOver.CopyTo(_bufferSpan);
+
+            currentSpan.CopyTo(_bufferSpan.Slice(leftOver.Length));
+            _bufferSpan = _bufferSpan.Slice(0, bufferSize);
+
+            _totalConsumed += _consumed;
+            _consumed = 0;
+            TokenStartIndex = _consumed;
+
+            _buffer = _bufferSpan;
+
+            return Read();
         }
 
         public void Skip()
@@ -345,13 +536,15 @@ namespace System.Text.JsonLab
             return true;
         }
 
+        private bool IsLastSpan => _isFinalBlock && (_isLastSegment || _pooledArray == null);
+
         private bool ReadSingleSegment()
         {
             bool retVal = false;
 
             if (_consumed >= (uint)_buffer.Length)
             {
-                if (!_isSingleValue && _isFinalBlock)
+                if (!_isSingleValue && IsLastSpan)
                 {
                     if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -366,7 +559,7 @@ namespace System.Text.JsonLab
                 SkipWhiteSpace();
                 if (_consumed >= (uint)_buffer.Length)
                 {
-                    if (!_isSingleValue && _isFinalBlock)
+                    if (!_isSingleValue && IsLastSpan)
                     {
                         if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -502,7 +695,7 @@ namespace System.Text.JsonLab
                         {
                             if (_consumed >= (uint)_buffer.Length)
                             {
-                                if (!_isSingleValue && _isFinalBlock)
+                                if (!_isSingleValue && IsLastSpan)
                                 {
                                     if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -517,7 +710,7 @@ namespace System.Text.JsonLab
                                 SkipWhiteSpace();
                                 if (_consumed >= (uint)_buffer.Length)
                                 {
-                                    if (!_isSingleValue && _isFinalBlock)
+                                    if (!_isSingleValue && IsLastSpan)
                                     {
                                         if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -538,7 +731,7 @@ namespace System.Text.JsonLab
             {
                 if (_consumed >= (uint)_buffer.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         _consumed--;
                         _position--;
@@ -554,7 +747,7 @@ namespace System.Text.JsonLab
                     // The next character must be a start of a property name or value.
                     if (_consumed >= (uint)_buffer.Length)
                     {
-                        if (_isFinalBlock)
+                        if (IsLastSpan)
                         {
                             ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
                         }
@@ -650,7 +843,7 @@ namespace System.Text.JsonLab
                             {
                                 if (_consumed >= (uint)_buffer.Length)
                                 {
-                                    if (!_isSingleValue && _isFinalBlock)
+                                    if (!_isSingleValue && IsLastSpan)
                                     {
                                         if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -665,7 +858,7 @@ namespace System.Text.JsonLab
                                     SkipWhiteSpace();
                                     if (_consumed >= (uint)_buffer.Length)
                                     {
-                                        if (!_isSingleValue && _isFinalBlock)
+                                        if (!_isSingleValue && IsLastSpan)
                                         {
                                             if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                                                 ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
@@ -703,7 +896,7 @@ namespace System.Text.JsonLab
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
             }
 
-            if (_isFinalBlock)
+            if (IsLastSpan)
             {
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Solidus);
             }
@@ -718,7 +911,7 @@ namespace System.Text.JsonLab
             int idx = localCopy.IndexOf(JsonConstants.LineFeed);
             if (idx == -1)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     idx = localCopy.Length;
                     // Assume everything on this line is a comment and there is no more data.
@@ -752,7 +945,7 @@ namespace System.Text.JsonLab
                 int foundIdx = localCopy.Slice(idx).IndexOf(JsonConstants.Solidus);
                 if (foundIdx == -1)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
                     }
@@ -814,7 +1007,7 @@ namespace System.Text.JsonLab
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
             }
 
-            if (_isFinalBlock)
+            if (IsLastSpan)
             {
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Solidus);
             }
@@ -828,7 +1021,7 @@ namespace System.Text.JsonLab
             int idx = localCopy.IndexOf(JsonConstants.LineFeed);
             if (idx == -1)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     // Assume everything on this line is a comment and there is no more data.
                     Value = localCopy;
@@ -866,7 +1059,7 @@ namespace System.Text.JsonLab
                 int foundIdx = localCopy.Slice(idx).IndexOf(JsonConstants.Solidus);
                 if (foundIdx == -1)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.EndOfCommentNotFound);
                     }
@@ -934,7 +1127,7 @@ namespace System.Text.JsonLab
 
             if (!span.StartsWith(Value))
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     goto Throw;
                 }
@@ -967,7 +1160,7 @@ namespace System.Text.JsonLab
 
             if (!span.StartsWith(Value))
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     goto Throw;
                 }
@@ -1002,7 +1195,7 @@ namespace System.Text.JsonLab
 
             if (!span.StartsWith(Value))
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     goto Throw;
                 }
@@ -1034,7 +1227,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> localCopy = _buffer;
             if (_consumed >= (uint)localCopy.Length)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
                 }
@@ -1048,7 +1241,7 @@ namespace System.Text.JsonLab
                 SkipWhiteSpace();
                 if (_consumed >= (uint)localCopy.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
                     }
@@ -1085,7 +1278,7 @@ namespace System.Text.JsonLab
             int idx = localCopy.Slice(_consumed + 1).IndexOf(JsonConstants.Quote);
             if (idx < 0)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
                 }
@@ -1167,7 +1360,7 @@ namespace System.Text.JsonLab
                         i += 4;
                         if (i >= data.Length)
                         {
-                            if (_isFinalBlock)
+                            if (IsLastSpan)
                                 ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
                             else
                                 goto False;
@@ -1224,7 +1417,7 @@ namespace System.Text.JsonLab
                 int foundIdx = _buffer.Slice(i).IndexOf(JsonConstants.Quote);
                 if (foundIdx == -1)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
                     }
@@ -1322,7 +1515,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1350,7 +1543,7 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         goto Done;
                     else return false;
                 }
@@ -1366,7 +1559,7 @@ namespace System.Text.JsonLab
                 }
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         goto Done;
                     else return false;
                 }
@@ -1383,7 +1576,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1401,7 +1594,7 @@ namespace System.Text.JsonLab
                 }
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         goto Done;
                     else return false;
                 }
@@ -1416,7 +1609,7 @@ namespace System.Text.JsonLab
 
             if (i >= data.Length)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                 }
@@ -1429,7 +1622,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1456,7 +1649,7 @@ namespace System.Text.JsonLab
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                 }
             }
-            else if (!_isFinalBlock)
+            else if (!IsLastSpan)
             {
                 return false;
             }
@@ -1483,7 +1676,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1511,7 +1704,7 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                     else return false;
                 }
@@ -1527,7 +1720,7 @@ namespace System.Text.JsonLab
                 }
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                     else return false;
                 }
@@ -1544,7 +1737,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1562,7 +1755,7 @@ namespace System.Text.JsonLab
                 }
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                     else return false;
                 }
@@ -1577,7 +1770,7 @@ namespace System.Text.JsonLab
 
             if (i >= data.Length)
             {
-                if (_isFinalBlock)
+                if (IsLastSpan)
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                 }
@@ -1590,7 +1783,7 @@ namespace System.Text.JsonLab
                 i++;
                 if (i >= data.Length)
                 {
-                    if (_isFinalBlock)
+                    if (IsLastSpan)
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
@@ -1617,7 +1810,7 @@ namespace System.Text.JsonLab
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
                 }
             }
-            else if (!_isFinalBlock)
+            else if (!IsLastSpan)
             {
                 return false;
             }

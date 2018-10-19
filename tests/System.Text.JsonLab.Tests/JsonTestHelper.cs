@@ -142,7 +142,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        /*public static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
+        public static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
         {
             if (!TryParseMessage(ref buffer, out var payload))
             {
@@ -194,7 +194,7 @@ namespace System.Text.JsonLab.Tests
             };
 
             return true;
-        }*/
+        }
 
         public static readonly byte RecordSeparator = 0x1e;
 
@@ -281,7 +281,7 @@ namespace System.Text.JsonLab.Tests
         public static readonly byte[] ErrorPropertyNameUtf8 = Encoding.UTF8.GetBytes("error");
         public static readonly byte[] TypePropertyNameUtf8 = Encoding.UTF8.GetBytes("type");
 
-        /*public static bool TryParseRequestMessage(ref ReadOnlySequence<byte> buffer)
+        public static bool TryParseRequestMessage(ref ReadOnlySequence<byte> buffer)
         {
             if (!TryParseMessage(ref buffer, out var payload))
             {
@@ -334,7 +334,7 @@ namespace System.Text.JsonLab.Tests
             }
 
             return true;
-        }*/
+        }
 
         public static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
         {
@@ -400,7 +400,7 @@ namespace System.Text.JsonLab.Tests
             return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
         }
 
-        /*public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
             var reader = new Utf8JsonReader(sequence)
@@ -412,7 +412,7 @@ namespace System.Text.JsonLab.Tests
             //Assert.True(reader.Value.IsEmpty);
             //Assert.Equal(JsonValueType.Unknown, reader.ValueType);
             return result;
-        }*/
+        }
 
         public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref Utf8JsonReader json)
         {
