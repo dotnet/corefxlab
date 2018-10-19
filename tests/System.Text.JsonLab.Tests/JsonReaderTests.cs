@@ -2148,6 +2148,7 @@ namespace System.Text.JsonLab.Tests
             var json = new Utf8JsonReader(sequenceMultiple);
             while (json.Read()) ;
             Assert.Equal(dataUtf8.Length, json.Consumed);
+            json.Dispose();
         }
 
         [Fact]

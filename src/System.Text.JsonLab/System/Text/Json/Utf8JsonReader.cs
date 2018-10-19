@@ -58,6 +58,8 @@ namespace System.Text.JsonLab
         internal bool InArray => !_inObject;
         private bool _inObject;
 
+        private bool IsLastSpan => _isFinalBlock && (_isSingleSegment || _isLastSegment);
+
         /// <summary>
         /// Gets the token type of the last processed token in the JSON stream.
         /// </summary>
@@ -100,6 +102,7 @@ namespace System.Text.JsonLab
         /// </summary>
         public ReadOnlySpan<byte> Value { get; private set; }
 
+        private readonly bool _isSingleSegment;
         private bool _isFinalBlock;
         private bool _isSingleValue;
 
@@ -146,6 +149,7 @@ namespace System.Text.JsonLab
             _nextPosition = default;
             _data = default;
             _isLastSegment = true;
+            _isSingleSegment = true;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -188,20 +192,25 @@ namespace System.Text.JsonLab
             _nextPosition = default;
             _data = default;
             _isLastSegment = _isFinalBlock;
+            _isSingleSegment = true;
         }
 
         private void ResizeBuffer(int minimumSize)
         {
+            Debug.Assert(minimumSize > 0);
+            Debug.Assert(_pooledArray != null);
             ArrayPool<byte>.Shared.Return(_pooledArray);
             _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
         }
 
         public void Dispose()
         {
-            ArrayPool<byte>.Shared.Return(_pooledArray);
-            _pooledArray = null;
+            if (_pooledArray != null)
+            {
+                ArrayPool<byte>.Shared.Return(_pooledArray);
+                _pooledArray = null;
+            }
         }
-
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
@@ -226,12 +235,13 @@ namespace System.Text.JsonLab
 
             _data = data;
             _bufferSpan = default;
-            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
             
             if (data.IsSingleSegment)
             {
                 _isLastSegment = true;
                 _nextPosition = default;
+                _pooledArray = null;
+                _isSingleSegment = true;
             }
             else
             {
@@ -248,6 +258,8 @@ namespace System.Text.JsonLab
                     }
                 }
                 _isLastSegment = !data.TryGet(ref _nextPosition, out _, advance: true);
+                _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+                _isSingleSegment = false;
             }
         }
 
@@ -288,12 +300,13 @@ namespace System.Text.JsonLab
 
             _data = data;
             _bufferSpan = default;
-            _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
 
             if (data.IsSingleSegment)
             {
                 _nextPosition = default;
                 _isLastSegment = isFinalBlock;
+                _pooledArray = null;
+                _isSingleSegment = true;
             }
             else
             {
@@ -311,6 +324,8 @@ namespace System.Text.JsonLab
                 }
 
                 _isLastSegment = !data.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
+                _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
+                _isSingleSegment = false;
             }
         }
 
@@ -535,8 +550,6 @@ namespace System.Text.JsonLab
             }
             return true;
         }
-
-        private bool IsLastSpan => _isFinalBlock && (_isLastSegment || _pooledArray == null);
 
         private bool ReadSingleSegment()
         {

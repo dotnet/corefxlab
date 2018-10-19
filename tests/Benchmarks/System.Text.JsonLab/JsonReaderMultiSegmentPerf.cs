@@ -82,6 +82,7 @@ namespace System.Text.JsonLab.Benchmarks
         {
             var json = new Utf8JsonReader(_sequences[segmentSize]);
             while (json.Read()) ;
+            json.Dispose();
         }
 
         [Benchmark]
