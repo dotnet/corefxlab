@@ -12,15 +12,15 @@ namespace System.Text.JsonLab.Benchmarks
     [MemoryDiagnoser]
     public class BufferReaderTryReadTo
     {
-        private string _jsonString;
-        private byte[] _dataUtf8;
         private ReadOnlySequence<byte> _sequenceSingle;
+
+        const int NumberOfStrings = 1_000;
 
         [GlobalSetup]
         public void Setup()
         {
             var builder = new StringBuilder();
-            for (int j = 0; j < 1_000; j++)
+            for (int j = 0; j < NumberOfStrings; j++)
             {
                 builder.Append('\"');
                 for (int i = 0; i < 10; i++)
@@ -29,54 +29,51 @@ namespace System.Text.JsonLab.Benchmarks
                 }
                 builder.Append('\"');
             }
-            _jsonString = builder.ToString();   // "aaaaaaaaaa""aaaaaaaaaa"...."aaaaaaaaaa""aaaaaaaaaa"
-
-            _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
-
-            _sequenceSingle = new ReadOnlySequence<byte>(_dataUtf8);
+            string jsonString = builder.ToString();   // "aaaaaaaaaa""aaaaaaaaaa"...."aaaaaaaaaa""aaaaaaaaaa"
+            _sequenceSingle = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(jsonString));
         }
 
         [Benchmark]
         public void SingleSegmentBufferReader_original()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
-            for (int i = 0; i < 1_000; i++)
+            for (int i = 0; i < NumberOfStrings; i++)
                 ConsumeString_original(ref reader);
         }
 
         [Benchmark]
-        public void SingleSegmentBufferReader1()
+        public void SingleSegmentBufferReaderSkipAdvance()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
-            for (int i = 0; i < 1_000; i++)
-                ConsumeString1(ref reader);
+            for (int i = 0; i < NumberOfStrings; i++)
+                ConsumeStringSkipAdvance(ref reader);
         }
 
         [Benchmark]
-        public void SingleSegmentBufferReader2()
+        public void SingleSegmentBufferReaderNoOptionalArg()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
-            for (int i = 0; i < 1_000; i++)
-                ConsumeString2(ref reader);
+            for (int i = 0; i < NumberOfStrings; i++)
+                ConsumeStringNoOptionalArg(ref reader);
         }
 
         [Benchmark]
-        public void SingleSegmentBufferReader3()
+        public void SingleSegmentBufferReaderUnsafeAdvance()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
-            for (int i = 0; i < 1_000; i++)
-                ConsumeString3(ref reader);
+            for (int i = 0; i < NumberOfStrings; i++)
+                ConsumeStringUnsafeAdvance(ref reader);
         }
 
         [Benchmark(Baseline = true)]
         public void SingleSegmentSpan()
         {
-            ReadOnlySpan<byte> reader = _sequenceSingle.First.Span;
-            for (int i = 0; i < 1_000; i++)
-                ConsumeString(reader);
+            ReadOnlySpan<byte> span = _sequenceSingle.First.Span;
+            for (int i = 0; i < NumberOfStrings; i++)
+                ConsumeString(span);
         }
 
-        private bool ConsumeString1(ref BufferReader<byte> reader)
+        private bool ConsumeStringSkipAdvance(ref BufferReader<byte> reader)
         {
             if (reader.TryReadToAndAdvanceSkipOne(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\'))
             {
@@ -85,7 +82,7 @@ namespace System.Text.JsonLab.Benchmarks
             return false;
         }
 
-        private bool ConsumeString2(ref BufferReader<byte> reader)
+        private bool ConsumeStringNoOptionalArg(ref BufferReader<byte> reader)
         {
             reader.Advance(1);
             if (reader.TryReadToAndAdvance(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\'))
@@ -95,7 +92,7 @@ namespace System.Text.JsonLab.Benchmarks
             return false;
         }
 
-        private bool ConsumeString3(ref BufferReader<byte> reader)
+        private bool ConsumeStringUnsafeAdvance(ref BufferReader<byte> reader)
         {
             reader.UnsafeAdvance(1);
             if (reader.TryReadToAndAdvance(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\'))
