@@ -68,6 +68,68 @@ namespace System.Buffers.Reader
             return TryReadToSlow(out span, delimiter, delimiterEscape, index, advancePastDelimiter);
         }
 
+        public bool TryReadToAndAdvanceSkipOne(out ReadOnlySpan<T> span, T delimiter, T delimiterEscape)
+        {
+            ReadOnlySpan<T> remaining = UnreadSpan;
+            int index = remaining.Slice(1).IndexOf(delimiter);
+
+            if (index < 0)
+            {
+                TryReadToAndAdvanceSlow(out span, delimiter, delimiterEscape);
+            }
+
+            int count = index + 1;
+            if (!remaining[index].Equals(delimiterEscape) && (count < remaining.Length))
+            {
+                span = remaining.Slice(1, index);
+                Consumed += count;
+                CurrentSpanIndex += count;
+                return true;
+            }
+            else
+            {
+                return TryReadToAndAdvanceSlow(out span, delimiter, delimiterEscape);
+            }
+        }
+
+        public bool TryReadToAndAdvance(out ReadOnlySpan<T> span, T delimiter, T delimiterEscape)
+        {
+            ReadOnlySpan<T> remaining = UnreadSpan;
+            int index = remaining.IndexOf(delimiter);
+
+            if (index < 0)
+            {
+                TryReadToAndAdvanceSlow(out span, delimiter, delimiterEscape);
+            }
+
+            int count = index + 1;
+            if ((index == 0 || !remaining[index - 1].Equals(delimiterEscape)) && (count < remaining.Length))
+            {
+                span = remaining.Slice(0, index);
+                Consumed += count;
+                CurrentSpanIndex += count;
+                return true;
+            }
+            else
+            {
+                return TryReadToAndAdvanceSlow(out span, delimiter, delimiterEscape);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private bool TryReadToAndAdvanceSlow(out ReadOnlySpan<T> span, T delimiter, T delimiterEscape)
+        {
+            if (!TryReadToSlow(out ReadOnlySequence<T> sequence, delimiter, delimiterEscape, -1, advancePastDelimiter : true))
+            {
+                span = default;
+                return false;
+            }
+
+            Debug.Assert(sequence.Length > 0);
+            span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
+            return true;
+        }
+
         private bool TryReadToSlow(out ReadOnlySpan<T> span, T delimiter, T delimiterEscape, int index, bool advancePastDelimiter)
         {
             if (!TryReadToSlow(out ReadOnlySequence<T> sequence, delimiter, delimiterEscape, index, advancePastDelimiter))

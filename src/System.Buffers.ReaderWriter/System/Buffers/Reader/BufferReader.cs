@@ -254,6 +254,13 @@ namespace System.Buffers.Reader
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void UnsafeAdvance(long count)
+        {
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+        }
+
         private void AdvanceToNextSpan(long count)
         {
             while (_moreData)
