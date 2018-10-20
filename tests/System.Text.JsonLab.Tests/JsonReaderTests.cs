@@ -269,7 +269,7 @@ namespace System.Text.JsonLab.Tests
                 while (consumed != dataUtf8.Length)
                 {
                     ReadOnlySpan<byte> data = dataUtf8.AsSpan();
-                    
+
                     if (isFinalBlock)
                     {
                         data = data.Slice(consumed);
@@ -693,7 +693,7 @@ namespace System.Text.JsonLab.Tests
         public static void PartialJson(string jsonString, int splitLocation, int consumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            
+
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
                 var json = new Utf8JsonReader(dataUtf8.AsSpan(0, splitLocation), false)
@@ -2466,6 +2466,88 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = NewtonsoftReturnStringHelper(textReader);
 
             Assert.Equal(expectedStr, actualStr);
+        }
+
+        [Theory]
+        [InlineData(10_000, 1)]
+        [InlineData(100_000, 1)]
+        [InlineData(1_000_000, 1)]
+        [InlineData(10_000_000, 1)]
+        [InlineData(10_000, 4_000)]
+        [InlineData(100_000, 4_000)]
+        [InlineData(1_000_000, 4_000)]
+        [InlineData(10_000_000, 4_000)]
+        [InlineData(10_000, 1_000_000)]
+        [InlineData(100_000, 1_000_000)]
+        [InlineData(1_000_000, 1_000_000)]
+        [InlineData(10_000_000, 1_000_000)]
+        [InlineData(1_000_000_000, 1_000_000)]
+        public void MultiSegmentSequenceMaxTokenSize(int tokenSize, int segmentSize)
+        {
+            var builder = new StringBuilder();
+            builder.Append("\"");
+            for (int i = 0; i < tokenSize; i++)
+            {
+                builder.Append("a");
+            }
+            builder.Append("\"");
+            string jsonString = builder.ToString();
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            ReadOnlySequence<byte> sequenceMultiple = GetSequence(dataUtf8, segmentSize);
+            var json = new Utf8JsonReader(sequenceMultiple);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+            json.Dispose();
+        }
+
+        [Theory]
+        [InlineData(250)]   // 1 MB
+        [InlineData(250_000)]    // 1 GB
+        //[InlineData(2_500_000)] // 10 GB, takes too long to run (~7 minutes)
+        public void MultiSegmentSequenceLarge(int numberOfSegments)
+        {
+            const int segmentSize = 4_000;
+            byte[][] buffers = new byte[numberOfSegments][];
+
+            for (int j = 0; j < numberOfSegments; j++)
+            {
+                byte[] arr = new byte[segmentSize];
+
+                for (int i = 0; i < segmentSize - 7; i += 7)
+                {
+                    arr[i] = (byte)'"';
+                    arr[i + 1] = (byte)'a';
+                    arr[i + 2] = (byte)'a';
+                    arr[i + 3] = (byte)'a';
+                    arr[i + 4] = (byte)'"';
+                    arr[i + 5] = (byte)',';
+                    arr[i + 6] = (byte)' ';
+                }
+                arr[3_997] = (byte)' ';
+                arr[3_998] = (byte)' ';
+                arr[3_999] = (byte)' ';
+
+                buffers[j] = arr;
+            }
+
+            buffers[0][0] = (byte)'[';
+            buffers[0][1] = (byte)' ';
+            buffers[0][2] = (byte)' ';
+            buffers[0][3] = (byte)' ';
+            buffers[0][4] = (byte)' ';
+            buffers[0][5] = (byte)' ';
+
+            buffers[numberOfSegments - 1][segmentSize - 5] = (byte)']';
+            buffers[numberOfSegments - 1][segmentSize - 4] = (byte)' ';
+            buffers[numberOfSegments - 1][segmentSize - 3] = (byte)' ';
+            buffers[numberOfSegments - 1][segmentSize - 2] = (byte)' ';
+            buffers[numberOfSegments - 1][segmentSize - 1] = (byte)' ';
+
+            ReadOnlySequence<byte> sequenceMultiple = BufferFactory.Create(buffers);
+            var json = new Utf8JsonReader(sequenceMultiple);
+            while (json.Read()) ;
+            Assert.Equal(sequenceMultiple.Length, json.Consumed);
+            json.Dispose();
         }
     }
 }
