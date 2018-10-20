@@ -14,7 +14,7 @@ namespace System.Text.JsonLab.Tests
     {
         public ReadFromPipeTests()
         {
-            string jsonString = TestJson.Json40KB;
+            string jsonString = TestJson.Json400KB;
             _dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             _written = 0;
             _pipe = new Pipe();
