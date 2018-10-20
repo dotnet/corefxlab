@@ -42,6 +42,14 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        public void SingleSegmentBufferReader_original_with_opts()
+        {
+            var reader = new BufferReader<byte>(_sequenceSingle);
+            for (int i = 0; i < NumberOfStrings; i++)
+                ConsumeString_original_opt(ref reader);
+        }
+
+        //[Benchmark]
         public void SingleSegmentBufferReaderSkipAdvance()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
@@ -75,7 +83,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private bool ConsumeStringSkipAdvance(ref BufferReader<byte> reader)
         {
-            if (reader.TryReadToAndAdvanceSkipOne(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\'))
+            if (reader.TryReadToAndAdvanceSkipN(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\'))
             {
                 return true;
             }
@@ -106,6 +114,15 @@ namespace System.Text.JsonLab.Benchmarks
         {
             reader.Advance(1);
             if (reader.TryReadTo(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\', advancePastDelimiter: true))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool ConsumeString_original_opt(ref BufferReader<byte> reader)
+        {
+            if (reader.TryReadTo_opt(out ReadOnlySpan<byte> value, (byte)'\"', (byte)'\\', startIndex: 1, advancePastDelimiter: true))
             {
                 return true;
             }
