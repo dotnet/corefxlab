@@ -395,25 +395,31 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (leftOver.Length > _buffer.Length - memory.Length)
+                    if (leftOver.Length == 0)
                     {
-                        if (leftOver.Length > int.MaxValue - memory.Length)
-                            ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
+                        _buffer = memory.Span;
+                    }
+                    else
+                    {
+                        if (leftOver.Length > _buffer.Length - memory.Length)
+                        {
+                            if (leftOver.Length > int.MaxValue - memory.Length)
+                                ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
 
-                        ResizeBuffer(leftOver.Length + memory.Length);
+                            ResizeBuffer(leftOver.Length + memory.Length);
+                        }
+
+                        Span<byte> bufferSpan = _pooledArray;
+                        leftOver.CopyTo(bufferSpan);
+
+                        memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
+                        bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is gauranteed to not overflow
+                        _buffer = bufferSpan;
                     }
 
-                    Span<byte> bufferSpan = _pooledArray;
-                    leftOver.CopyTo(bufferSpan);
-
-                    memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
-                    bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is gauranteed to not overflow
                     _leftOverLength = leftOver.Length;
-
                     _totalConsumed += _consumed;
                     _consumed = 0;
-
-                    _buffer = bufferSpan;
                 }
 
                 result = ReadSingleSegment();
