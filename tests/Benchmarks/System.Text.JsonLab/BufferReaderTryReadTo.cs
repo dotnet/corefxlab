@@ -49,7 +49,7 @@ namespace System.Text.JsonLab.Benchmarks
                 ConsumeString_original_opt(ref reader);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void SingleSegmentBufferReaderSkipAdvance()
         {
             var reader = new BufferReader<byte>(_sequenceSingle);
