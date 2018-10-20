@@ -79,6 +79,11 @@ namespace System.Text.JsonLab
             }
         }
 
+        public SequencePosition Position
+            => _currentPosition.GetObject() != null ?
+            _data.GetPosition(_consumed - _leftOverLength, _currentPosition) :
+            default;
+
         private JsonReaderOptions _readerOptions;
 
         public JsonReaderState State
@@ -113,8 +118,10 @@ namespace System.Text.JsonLab
 
         private byte[] _pooledArray;
         private SequencePosition _nextPosition;
+        private SequencePosition _currentPosition;
         private ReadOnlySequence<byte> _data;
         private bool _isLastSegment;
+        private int _leftOverLength;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -144,9 +151,11 @@ namespace System.Text.JsonLab
 
             _pooledArray = null;
             _nextPosition = default;
+            _currentPosition = default;
             _data = default;
             _isLastSegment = true;
             _isSingleSegment = true;
+            _leftOverLength = 0;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -186,9 +195,11 @@ namespace System.Text.JsonLab
 
             _pooledArray = null;
             _nextPosition = default;
+            _currentPosition = default;
             _data = default;
             _isLastSegment = _isFinalBlock;
             _isSingleSegment = true;
+            _leftOverLength = 0;
         }
 
         private void ResizeBuffer(int minimumSize)
@@ -237,6 +248,7 @@ namespace System.Text.JsonLab
                 _nextPosition = default;
                 _pooledArray = null;
                 _isSingleSegment = true;
+                _currentPosition = default;
             }
             else
             {
@@ -252,10 +264,12 @@ namespace System.Text.JsonLab
                         }
                     }
                 }
+                _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _leftOverLength = 0;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -298,6 +312,7 @@ namespace System.Text.JsonLab
             if (jsonData.IsSingleSegment)
             {
                 _nextPosition = default;
+                _currentPosition = default;
                 _isLastSegment = isFinalBlock;
                 _pooledArray = null;
                 _isSingleSegment = true;
@@ -317,10 +332,12 @@ namespace System.Text.JsonLab
                     }
                 }
 
+                _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _leftOverLength = 0;
         }
 
         /// <summary>
@@ -344,12 +361,17 @@ namespace System.Text.JsonLab
 
             do
             {
+                SequencePosition copy = _currentPosition;
+                _currentPosition = _nextPosition;
                 ReadOnlyMemory<byte> memory = default;
                 while (true)
                 {
                     bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
                     if (noMoreData)
+                    {
+                        _currentPosition = copy;
                         return false;
+                    }
                     if (memory.Length != 0)
                         break;
                 }
@@ -386,6 +408,7 @@ namespace System.Text.JsonLab
 
                     memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
                     bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is gauranteed to not overflow
+                    _leftOverLength = leftOver.Length;
 
                     _totalConsumed += _consumed;
                     _consumed = 0;
