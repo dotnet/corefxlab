@@ -34,19 +34,33 @@ namespace System.Buffers.Reader
         public static bool TryParse(ref this BufferReader<byte> reader, out bool value, char standardFormat = '\0')
         {
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
+            bool result = true;
 
             // For other types (int, etc) we won't know if we've consumed all of the type
             // ("235612" can be split over segments, for example). For bool, Utf8Parser
             // doesn't care what follows "True" or "False" and neither should we.
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.Advance(bytesConsumed);
-                return true;
+                reader.Consumed += bytesConsumed;
+                reader.CurrentSpanIndex += bytesConsumed;
+                if (bytesConsumed == unread.Length)
+                    reader.GetNextSpan();
+                goto Done;
             }
-            else if (unread.Length >= MaxBoolLength)
+
+            result = TryParseSlow(ref reader, out value, standardFormat);
+        Done:
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool TryParseSlow(ref this BufferReader<byte> reader, out bool value, char standardFormat = '\0')
+        {
+            if (reader.CurrentSpan.Length - reader.CurrentSpanIndex >= MaxBoolLength)
             {
                 // There was already enough available bytes for all valid bool possibilities
                 // in the current span, no need to try again.
+                value = default;
                 return false;
             }
 

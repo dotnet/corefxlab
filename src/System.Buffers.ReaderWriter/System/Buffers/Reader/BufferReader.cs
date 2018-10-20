@@ -77,7 +77,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The index in the <see cref="CurrentSpan"/>.
         /// </summary>
-        public int CurrentSpanIndex { get; private set; }
+        public int CurrentSpanIndex { get; internal set; }
 
         /// <summary>
         /// The unread portion of the <see cref="CurrentSpan"/>.
@@ -91,7 +91,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The total number of {T}s processed by the reader.
         /// </summary>
-        public long Consumed { get; private set; }
+        public long Consumed { get; internal set; }
 
         /// <summary>
         /// Peeks at the next value without advancing the reader.
@@ -205,7 +205,7 @@ namespace System.Buffers.Reader
         /// Get the next segment with available space, if any.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void GetNextSpan()
+        internal void GetNextSpan()
         {
             if (!Sequence.IsSingleSegment)
             {
