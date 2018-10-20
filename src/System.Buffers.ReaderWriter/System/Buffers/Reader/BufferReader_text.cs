@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Reader
 {
@@ -18,8 +19,50 @@ namespace System.Buffers.Reader
         private const int MaxGuidLength = 38;      // {9f21bcb9-f5c2-4b54-9b1c-9e0869bf9c16}
         private const int MaxDateTimeLength = 34;  // 9999-12-31T15:59:59.9999999-08:00
 
+        public static unsafe bool TryReadOriginal<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
+        {
+            ReadOnlySpan<byte> span = reader.UnreadSpan;
+            if (span.Length < sizeof(T))
+                return TryReadSlow(ref reader, out value);
+
+            value = MemoryMarshal.Read<T>(span);
+            reader.Advance(sizeof(T));
+            return true;
+        }
+
+        public static unsafe bool TryRead_NoSlowMethodCall<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
+        {
+            ReadOnlySpan<byte> span = reader.UnreadSpan;
+            bool result = true;
+            if (span.Length >= sizeof(T))
+            {
+                value = MemoryMarshal.Read<T>(span);
+                reader.Advance(sizeof(T));
+                goto Done;
+            }
+            value = default;
+            result = false;
+        Done:
+            return result;
+        }
+
+        public static unsafe bool TryReadOriginal_optimized<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
+        {
+            ReadOnlySpan<byte> span = reader.UnreadSpan;
+            bool result = true;
+            if (span.Length >= sizeof(T))
+            {
+                value = MemoryMarshal.Read<T>(span);
+                reader.Advance(sizeof(T));
+                goto Done;
+            }
+            result = TryReadSlow(ref reader, out value);
+        Done:
+            return result;
+        }
+
         private delegate bool ParseDelegate<T>(ReadOnlySpan<byte> source, out T value, out int consumed, char standardFormat);
- 
+
         /// <summary>
         /// Try to parse a bool out of the reader (as UTF-8).
         /// </summary>
@@ -89,7 +132,7 @@ namespace System.Buffers.Reader
             out T value,
             char standardFormat,
             int bufferSize,
-            ParseDelegate<T> parseDelegate) where T: unmanaged
+            ParseDelegate<T> parseDelegate) where T : unmanaged
         {
             // Note that in calling this with the expected max size of a normal instance of the given
             // type may do more work than needed for the degenerate case of zero prefaced numbers at

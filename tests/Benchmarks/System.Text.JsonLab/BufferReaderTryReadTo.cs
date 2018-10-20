@@ -30,6 +30,17 @@ namespace System.Text.JsonLab.Benchmarks
                 builder.Append('\"');
             }
             string jsonString = builder.ToString();   // "aaaaaaaaaa""aaaaaaaaaa"...."aaaaaaaaaa""aaaaaaaaaa"
+
+            char[] whitespace = { ' ', '\t', '\r', '\n' };
+            builder = new StringBuilder();
+            var random = new Random(42);
+            for (int i = 0; i < 1_000; i++)
+            {
+                int index = random.Next(0, 4);
+                builder.Append(whitespace[index]);
+            }
+            //jsonString = builder.ToString();
+
             _sequenceSingle = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(jsonString));
         }
 
@@ -187,6 +198,67 @@ namespace System.Text.JsonLab.Benchmarks
             long startIndex = 1;
             ReadOnlySpan<byte> localCopy = _buffer.Slice((int)startIndex, (int)(i - startIndex));
             return true;
+        }
+
+        private int SkipWhiteSpace_original(ref BufferReader<byte> reader)
+        {
+            int _position = 0;
+            while (reader.TryPeek(out byte val))
+            {
+                if (val != ' ' && val != '\r' && val != '\n' && val != '\t')
+                    break;
+
+                if (val == '\n')
+                    _position = 0;
+                else
+                    _position++;
+
+                reader.Advance(1);
+            }
+            return _position;
+        }
+
+        private int SkipWhiteSpace(ReadOnlySpan<byte> _buffer)
+        {
+            int _position = 0;
+            //Create local copy to avoid bounds checks.
+            ReadOnlySpan<byte> localCopy = _buffer;
+            for (int i = 0; i < localCopy.Length; i++)
+            {
+                byte val = localCopy[i];
+                if (val != ' ' && val != '\r' && val != '\n' && val != '\t')
+                    break;
+
+                if (val == '\n')
+                    _position = 0;
+                else
+                    _position++;
+            }
+            return _position;
+        }
+
+        [Benchmark]
+        public void SingleSegmentBufferReader_TryRead_original()
+        {
+            var reader = new BufferReader<byte>(_sequenceSingle);
+            for (int i = 0; i < NumberOfStrings; i++)
+                reader.TryReadOriginal(out int value);
+        }
+
+        [Benchmark]
+        public void SingleSegmentBufferReader_TryRead_nomethodcall()
+        {
+            var reader = new BufferReader<byte>(_sequenceSingle);
+            for (int i = 0; i < NumberOfStrings; i++)
+                reader.TryRead_NoSlowMethodCall(out int value);
+        }
+
+        [Benchmark]
+        public void SingleSegmentBufferReader_TryRead_optimized()
+        {
+            var reader = new BufferReader<byte>(_sequenceSingle);
+            for (int i = 0; i < NumberOfStrings; i++)
+                reader.TryReadOriginal_optimized(out int value);
         }
     }
 }
