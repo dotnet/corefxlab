@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {

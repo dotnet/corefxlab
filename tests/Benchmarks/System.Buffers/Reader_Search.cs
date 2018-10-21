@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
-using System.Buffers.Reader;
 using System.Buffers.Tests;
 
 namespace System.Buffers.Benchmarks
@@ -14,10 +13,6 @@ namespace System.Buffers.Benchmarks
         private static ReadOnlySequence<byte> s_ros;
         private static ReadOnlySequence<byte> s_rosSplit;
 
-        private static byte[] s_arrayBlobs;
-        private static ReadOnlySequence<byte> s_rosBlobs;
-        private static ReadOnlySequence<byte> s_rosBlobsSplit;
-
         [GlobalSetup]
         public void Setup()
         {
@@ -26,25 +21,6 @@ namespace System.Buffers.Benchmarks
             r.NextBytes(s_array);
             s_ros = new ReadOnlySequence<byte>(s_array);
             s_rosSplit = BufferUtilities.CreateSplitBuffer(s_array, 10, 100);
-
-            s_arrayBlobs = new byte[1_000_000];
-            int remaining = s_arrayBlobs.Length;
-            Span<byte> blobs = new Span<byte>(s_arrayBlobs);
-            byte value = 0x00;
-            while (remaining > 0)
-            {
-                int run = Math.Min(r.Next(3, 15), remaining);
-                for (int j = 0; j < run; j++)
-                {
-                    blobs[j] = value;
-                }
-                value++;
-                remaining -= run;
-                blobs.Slice(run);
-            }
-
-            s_rosBlobs = new ReadOnlySequence<byte>(s_arrayBlobs);
-            s_rosBlobsSplit = BufferUtilities.CreateSplitBuffer(s_arrayBlobs, 10, 100);
         }
 
         [Benchmark]
@@ -182,28 +158,6 @@ namespace System.Buffers.Benchmarks
             while (reader.TryAdvanceToAny(span, advancePastDelimiter: false))
             {
                 reader.AdvancePastAny(span);
-            }
-        }
-
-        [Benchmark]
-        public unsafe void SkipPast()
-        {
-            BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobsSplit);
-            byte value = 0x00;
-            while (reader.AdvancePast(value) != 0)
-            {
-                value++;
-            }
-        }
-
-        [Benchmark]
-        public unsafe void SkipPast_SingleSegment()
-        {
-            BufferReader<byte> reader = new BufferReader<byte>(s_rosBlobs);
-            byte value = 0x00;
-            while (reader.AdvancePast(value) != 0)
-            {
-                value++;
             }
         }
     }
