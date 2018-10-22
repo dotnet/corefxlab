@@ -413,7 +413,7 @@ namespace System.Text.JsonLab
                         leftOver.CopyTo(bufferSpan);
 
                         memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
-                        bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is gauranteed to not overflow
+                        bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is guaranteed to not overflow
                         _buffer = bufferSpan;
                     }
 

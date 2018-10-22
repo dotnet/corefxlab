@@ -154,7 +154,7 @@ namespace System.Text.JsonLab
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ArrayEndWithinObject.ToString());
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.EndOfStringNotFound:
@@ -207,7 +207,7 @@ namespace System.Text.JsonLab
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ObjectEndWithinArray.ToString());
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.Default:

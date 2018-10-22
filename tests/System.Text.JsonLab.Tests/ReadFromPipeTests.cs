@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Newtonsoft.Json;
 using System.Buffers;
+using System.IO;
 using System.IO.Pipelines;
 using System.Text.JsonLab.Tests.Resources;
 using System.Threading.Tasks;
@@ -18,6 +20,10 @@ namespace System.Text.JsonLab.Tests
             _dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             _written = 0;
             _pipe = new Pipe();
+
+            Stream stream = new MemoryStream(_dataUtf8);
+            TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
+            _expectedString = NewtonsoftReturnStringHelper(reader);
         }
 
         public void Dispose()
@@ -29,11 +35,27 @@ namespace System.Text.JsonLab.Tests
         private readonly Pipe _pipe;
         private readonly byte[] _dataUtf8;
         private int _written;
+        private string _expectedString;
 
-        const string expectedStartsWith = "_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregisteredlatitudelongitudetagsfriendsidnameidnameidnamegreetingfavoriteFruit_idindexguidisActivebalancepictureageeyeColornamegendercompanyemailphoneaddressaboutregiste";
+        public static string NewtonsoftReturnStringHelper(TextReader reader)
+        {
+            var sb = new StringBuilder();
+            var json = new JsonTextReader(reader);
+            while (json.Read())
+            {
+                if (json.TokenType == JsonToken.PropertyName)
+                {
+                    if (json.Value != null)
+                    {
+                        sb.Append(json.Value);
+                    }
+                }
+            }
+            return sb.ToString();
+        }
 
         [Fact]
-        public void ReadFromPipe()
+        public void ReadFromPipeUsingSequence()
         {
             string actual = "";
             var taskReader = Task.Run(async () =>
@@ -45,12 +67,13 @@ namespace System.Text.JsonLab.Tests
                 {
                     ReadResult result = await _pipe.Reader.ReadAsync();
                     ReadOnlySequence<byte> data = result.Buffer;
-                    bool isFinalBlock = data.Length == 0;   // TODO: Fix isFinalBlock condition, if Writer is done instead, isLastSegment?
+                    bool isFinalBlock = result.IsCompleted;
                     (state, position, str) = ProcessData(data, isFinalBlock, state);
-                    if (isFinalBlock)
-                        break;
                     _pipe.Reader.AdvanceTo(position);
                     actual += str;
+                    if (isFinalBlock)
+                        break;
+                    
                 }
             });
 
@@ -80,7 +103,7 @@ namespace System.Text.JsonLab.Tests
             Task[] tasks = new Task[] { taskReader, taskWriter };
             Task.WaitAll(tasks, 5_000);    // The test shouldn't take more than 5 seconds to finish.
 
-            Assert.True(actual.StartsWith(expectedStartsWith));
+            Assert.Equal(_expectedString, actual);
         }
 
         private static (JsonReaderState, SequencePosition, string) ProcessData(ReadOnlySequence<byte> ros, bool isFinalBlock, JsonReaderState state = default)
@@ -101,7 +124,7 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Fact]
-        public void ReadSpanFromPipe()
+        public void ReadFromPipeUsingSpan()
         {
             string actual = "";
             var taskReader = Task.Run(async () =>
@@ -113,12 +136,12 @@ namespace System.Text.JsonLab.Tests
                 {
                     ReadResult result = await _pipe.Reader.ReadAsync();
                     ReadOnlySequence<byte> data = result.Buffer;
-                    bool isFinalBlock = data.Length == 0;   // TODO: Fix isFinalBlock condition, if Writer is done instead, isLastSegment?
+                    bool isFinalBlock = result.IsCompleted;
                     (state, position, str) = ProcessDataSpan(data, isFinalBlock, state);
-                    if (isFinalBlock)
-                        break;
                     _pipe.Reader.AdvanceTo(position);
                     actual += str;
+                    if (isFinalBlock)
+                        break;
                 }
             });
 
@@ -148,7 +171,7 @@ namespace System.Text.JsonLab.Tests
             Task[] tasks = new Task[] { taskReader, taskWriter };
             Task.WaitAll(tasks, 5_000);    // The test shouldn't take more than 5 seconds to finish.
 
-            Assert.True(actual.StartsWith(expectedStartsWith));
+            Assert.Equal(_expectedString, actual);
         }
 
         private static (JsonReaderState, SequencePosition, string) ProcessDataSpan(ReadOnlySequence<byte> ros, bool isFinalBlock, JsonReaderState state = default)
@@ -165,7 +188,7 @@ namespace System.Text.JsonLab.Tests
                 if (leftOver.Length > int.MaxValue - span.Length)
                     throw new ArgumentOutOfRangeException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
 
-                pooledArray = ArrayPool<byte>.Shared.Rent(span.Length + leftOver.Length);    // This is gauranteed to not overflow
+                pooledArray = ArrayPool<byte>.Shared.Rent(span.Length + leftOver.Length);    // This is guaranteed to not overflow
                 Span<byte> bufferSpan = pooledArray.AsSpan(0, leftOver.Length + span.Length);
                 leftOver.CopyTo(bufferSpan);
                 span.CopyTo(bufferSpan.Slice(leftOver.Length));
