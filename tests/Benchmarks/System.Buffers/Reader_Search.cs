@@ -24,7 +24,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntil_Sequence()
+        public void TryReadTo_Sequence()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             while (reader.TryReadTo(out ReadOnlySequence<byte> bytes, 42))
@@ -33,7 +33,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_2_Sequence()
+        public void TryReadToAny_2_Sequence()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte[] delimiters = { 0, 255 };
@@ -43,7 +43,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_5_Sequence()
+        public void TryReadToAny_5_Sequence()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte[] delimiters = { 2, 3, 5, 7, 11 };
@@ -63,7 +63,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntil_Span()
+        public void TryReadTo_Span()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             while (reader.TryReadTo(out ReadOnlySpan<byte> bytes, 42))
@@ -72,7 +72,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntil_Span_OneSegment()
+        public void TryReadTo_Span_OneSegment()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
             while (reader.TryReadTo(out ReadOnlySpan<byte> bytes, 42))
@@ -81,7 +81,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_2_Span()
+        public void TryReadToAny_2_Span()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte[] delimiters = { 0, 255 };
@@ -91,7 +91,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_2_Span_OneSegment()
+        public void TryReadToAny_2_Span_OneSegment()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
             byte[] delimiters = { 0, 255 };
@@ -101,7 +101,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_5_Span()
+        public void TryReadToAny_5_Span()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte[] delimiters = { 2, 3, 5, 7, 11 };
@@ -111,7 +111,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public void TryReadUntilAny_5_Span_OneSegment()
+        public void TryReadToAny_5_Span_OneSegment()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
             byte[] delimiters = { 2, 3, 5, 7, 11 };
@@ -121,7 +121,7 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
-        public unsafe void TryReadUntil_2Span()
+        public unsafe void TryReadTo_2Span()
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
             byte* b = stackalloc byte[] { 0x0, 0x1 };
