@@ -5,15 +5,11 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\**\*.cs" Exclude="experiments\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExceptionStrings.Designer.cs">
+    <Compile Update="ExceptionStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ExceptionStrings.resx</DependentUpon>
