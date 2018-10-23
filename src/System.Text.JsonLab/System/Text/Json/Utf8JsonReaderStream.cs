@@ -33,7 +33,7 @@ namespace System.Text.JsonLab
             _span = _buffer.AsSpan(0, numberOfBytes);
             _stream = jsonStream;
 
-            _isFinalBlock = numberOfBytes < FirstSegmentSize;
+            _isFinalBlock = numberOfBytes == 0;
             _jsonReader = new Utf8JsonReader(_span, _isFinalBlock);
             _consumed = 0;
         }
@@ -64,12 +64,8 @@ namespace System.Text.JsonLab
                     // TODO: Should this be a settable property?
                     if (leftOver >= 1_000_000)
                     {
-                        // A single JSON token exceeds 1 MB in size . In such a rare case, allocate.
-                        byte[] maxBuffer = new byte[2_000_000_000];
-                        int maxBytes = _stream.Read(maxBuffer, 0, maxBuffer.Length);
-                        _isFinalBlock = maxBytes < amountToRead;
-                        _span = maxBuffer.AsSpan(0, maxBytes);
-                        goto ReadNext;
+                        // A single JSON token exceeds 1 MB in size. Start doubling.
+                        amountToRead = leftOver * 2;
                     }
                     else
                     {
@@ -88,11 +84,10 @@ namespace System.Text.JsonLab
                     ResizeBuffer(amountToRead);
 
                 int numberOfBytes = _stream.Read(_buffer, 0, amountToRead);
-                _isFinalBlock = numberOfBytes < amountToRead;
+                _isFinalBlock = numberOfBytes == 0;
 
                 _span = _buffer.AsSpan(0, numberOfBytes);
 
-            ReadNext:
                 _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.State);
                 result = _jsonReader.Read();
             } while (!result && !_isFinalBlock);
