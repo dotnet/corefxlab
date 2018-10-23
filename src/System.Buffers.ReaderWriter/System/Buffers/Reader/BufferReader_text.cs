@@ -41,10 +41,7 @@ namespace System.Buffers
             // doesn't care what follows "True" or "False" and neither should we.
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.Consumed += bytesConsumed;
-                reader.CurrentSpanIndex += bytesConsumed;
-                if (bytesConsumed == unread.Length)
-                    reader.GetNextSpan();
+                reader.AdvanceCurrentSpan(bytesConsumed);
                 goto Done;
             }
 

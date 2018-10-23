@@ -77,7 +77,7 @@ namespace System.Buffers
         /// <summary>
         /// The index in the <see cref="CurrentSpan"/>.
         /// </summary>
-        public int CurrentSpanIndex { get; internal set; }
+        public int CurrentSpanIndex { get; private set; }
 
         /// <summary>
         /// The unread portion of the <see cref="CurrentSpan"/>.
@@ -91,7 +91,7 @@ namespace System.Buffers
         /// <summary>
         /// The total number of {T}s processed by the reader.
         /// </summary>
-        public long Consumed { get; internal set; }
+        public long Consumed { get; private set; }
 
         /// <summary>
         /// Peeks at the next value without advancing the reader.
@@ -205,7 +205,7 @@ namespace System.Buffers
         /// Get the next segment with available space, if any.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        internal void GetNextSpan()
+        private void GetNextSpan()
         {
             if (!Sequence.IsSingleSegment)
             {
@@ -247,6 +247,31 @@ namespace System.Buffers
                 // Can't satisfy from the current span
                 AdvanceToNextSpan(count);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceCurrentSpan(long count)
+        {
+            // Unchecked helper to avoid unnecessary checks where you know count is valid.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+            if (CurrentSpanIndex >= CurrentSpan.Length)
+                GetNextSpan();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceWithinSpan(long count)
+        {
+            // Only call this helper if you know that you are advancing in the current span
+            // with valid count and there is no need to fetch the next one.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+
+            Debug.Assert(CurrentSpanIndex < CurrentSpan.Length);
         }
 
         private void AdvanceToNextSpan(long count)
