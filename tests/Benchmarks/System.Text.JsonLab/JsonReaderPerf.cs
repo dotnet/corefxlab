@@ -21,8 +21,8 @@ namespace System.Text.JsonLab.Benchmarks
         public enum TestCaseType
         {
             HelloWorld,
-            BasicJson,
-            BasicLargeNum,
+            //BasicJson,
+            //BasicLargeNum,
             //SpecialNumForm,
             //ProjectLockJson,
             //FullSchema1,
@@ -32,9 +32,9 @@ namespace System.Text.JsonLab.Benchmarks
             //LotsOfNumbers,
             //LotsOfStrings,
             Json400B,
-            Json4KB,
-            Json40KB,
-            Json400KB
+            //Json4KB,
+            //Json40KB,
+            //Json400KB
         }
 
         private string _jsonString;
