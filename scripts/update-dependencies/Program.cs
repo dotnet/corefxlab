@@ -104,6 +104,7 @@ namespace Microsoft.Dotnet.Scripts
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemNumericsVectorsVersion", "System.Numerics.Vectors");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemBuffersVersion", "System.Buffers");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemIOPipelinesVersion", "System.IO.Pipelines");
+            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemThreadingTasksExtensionsVersion", "System.Threading.Tasks.Extensions");
             yield return CreateFileUpdater(config.CLIVersionFilePath, "core-sdk");
         }
 
