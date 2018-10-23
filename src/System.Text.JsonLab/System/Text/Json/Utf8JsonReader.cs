@@ -118,6 +118,7 @@ namespace System.Text.JsonLab
         private bool _isLastSegment;
         private Stream _stream;
 
+        const int FirstSegmentSize = 1_024; //TODO: Is this necessary?
         const int StreamSegmentSize = 4_096;
 
         /// <summary>
@@ -166,10 +167,10 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.None;
             _lineNumber = 1;
             _position = 0;
-           
-            _pooledArray = ArrayPool<byte>.Shared.Rent(StreamSegmentSize);
-            int numberOfBytes = jsonStream.Read(_pooledArray, 0, StreamSegmentSize);
-            _isFinalBlock = numberOfBytes < StreamSegmentSize;
+
+            _pooledArray = ArrayPool<byte>.Shared.Rent(FirstSegmentSize);
+            int numberOfBytes = jsonStream.Read(_pooledArray, 0, FirstSegmentSize);
+            _isFinalBlock = numberOfBytes < FirstSegmentSize;
 
             _buffer = _pooledArray.AsSpan(0, numberOfBytes);
             _totalConsumed = 0;
@@ -458,23 +459,47 @@ namespace System.Text.JsonLab
                     leftOver = _buffer.Slice(_consumed);
                 }
 
-                if (leftOver.Length > _pooledArray.Length - StreamSegmentSize)
+                int amountToRead = StreamSegmentSize;
+                if (leftOver.Length > 0)
                 {
-                    if (leftOver.Length > int.MaxValue - StreamSegmentSize)
-                        ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
+                    _stream.Position -= leftOver.Length;
 
-                    ResizeBuffer(leftOver.Length + StreamSegmentSize);
+                    // TODO: Should this be a settable property?
+                    if (leftOver.Length >= 1_000_000)
+                    {
+                        // A single JSON token exceeds 1 MB in size . In such a rare case, allocate.
+                        byte[] maxBuffer = new byte[2_000_000_000];
+                        int maxBytes = _stream.Read(maxBuffer, 0, maxBuffer.Length);
+                        _isFinalBlock = maxBytes < amountToRead;
+                        _buffer = maxBuffer.AsSpan(0, maxBytes);
+                        goto ReadNext;
+                    }
+                    else
+                    {
+                        if (Consumed == 0)
+                        {
+                            if (leftOver.Length > int.MaxValue - amountToRead)
+                                ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
+
+                            amountToRead += leftOver.Length;   // This is gauranteed to not overflow
+                            ResizeBuffer(amountToRead);
+                        }
+                    }
                 }
+
+                if (_pooledArray.Length < amountToRead)
+                    ResizeBuffer(amountToRead);
 
                 Span<byte> bufferSpan = _pooledArray;
                 leftOver.CopyTo(bufferSpan);
 
-                int numberOfBytes = _stream.Read(_pooledArray, leftOver.Length, StreamSegmentSize);
+                int numberOfBytes = _stream.Read(_pooledArray, 0, amountToRead);
 
-                _isLastSegment = numberOfBytes < StreamSegmentSize;
+                _isLastSegment = numberOfBytes < amountToRead;
 
-                _buffer = _pooledArray.AsSpan(0, leftOver.Length + numberOfBytes);   // This is gauranteed to not overflow
+                _buffer = _pooledArray.AsSpan(0, numberOfBytes);   // This is gauranteed to not overflow
 
+            ReadNext:
                 _totalConsumed += _consumed;
                 _consumed = 0;
 
