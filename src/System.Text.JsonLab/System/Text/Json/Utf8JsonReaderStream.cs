@@ -25,8 +25,8 @@ namespace System.Text.JsonLab
 
         public Utf8JsonReaderStream(Stream jsonStream)
         {
-            if (!jsonStream.CanRead)
-                JsonThrowHelper.ThrowArgumentException("Stream must be readable");
+            if (!jsonStream.CanRead || !jsonStream.CanSeek)
+                JsonThrowHelper.ThrowArgumentException("Stream must be readable and seekable.");
 
             _buffer = ArrayPool<byte>.Shared.Rent(FirstSegmentSize);
             int numberOfBytes = jsonStream.Read(_buffer, 0, FirstSegmentSize);
@@ -90,7 +90,7 @@ namespace System.Text.JsonLab
                     ResizeBuffer(amountToRead);
 
                 int numberOfBytes = _stream.Read(_buffer, 0, amountToRead);
-                _isFinalBlock = numberOfBytes == 0;
+                _isFinalBlock = numberOfBytes == 0; // TODO: Can this be inferred differently based on leftOver and numberOfBytes
 
                 _span = _buffer.AsSpan(0, numberOfBytes);
 
