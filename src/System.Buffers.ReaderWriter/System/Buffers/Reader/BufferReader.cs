@@ -204,7 +204,6 @@ namespace System.Buffers
         /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSpan()
         {
             if (!Sequence.IsSingleSegment)
