@@ -65,7 +65,13 @@ namespace System.Text.JsonLab
                     if (leftOver >= 1_000_000)
                     {
                         // A single JSON token exceeds 1 MB in size. Start doubling.
-                        amountToRead = leftOver * 2;
+                        if (leftOver > 1_000_000_000)
+                            amountToRead = 2_000_000_000;
+                        else
+                            amountToRead = leftOver * 2;
+
+                        if (leftOver >= 2_000_000_000)
+                            JsonThrowHelper.ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
                     }
                     else
                     {

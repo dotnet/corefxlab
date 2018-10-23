@@ -2501,11 +2501,30 @@ namespace System.Text.JsonLab.Tests
             while (json.Read()) ;
             Assert.Equal(dataUtf8.Length, json.Consumed);
             json.Dispose();
+        }
+
+        [Theory]
+        [InlineData(10_000)]
+        [InlineData(100_000)]
+        [InlineData(1_000_000)]
+        [InlineData(10_000_000)]
+        [InlineData(1_000_000_000)]
+        public void StreamMaxTokenSize(int tokenSize)
+        {
+            var builder = new StringBuilder();
+            builder.Append("\"");
+            for (int i = 0; i < tokenSize; i++)
+            {
+                builder.Append("a");
+            }
+            builder.Append("\"");
+            string jsonString = builder.ToString();
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
             var stream = new MemoryStream(dataUtf8);
-            var jsonStream = new Utf8JsonReaderStream(stream);
-            while (jsonStream.Read()) ;
-            Assert.Equal(dataUtf8.Length, jsonStream.Consumed);
+            var json = new Utf8JsonReaderStream(stream);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length, json.Consumed);
             json.Dispose();
         }
 
