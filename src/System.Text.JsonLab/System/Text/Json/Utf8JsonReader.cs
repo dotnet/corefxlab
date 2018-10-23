@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
@@ -115,6 +116,9 @@ namespace System.Text.JsonLab
         private SequencePosition _nextPosition;
         private ReadOnlySequence<byte> _data;
         private bool _isLastSegment;
+        private Stream _stream;
+
+        const int StreamSegmentSize = 4_096;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -147,6 +151,40 @@ namespace System.Text.JsonLab
             _data = default;
             _isLastSegment = true;
             _isSingleSegment = true;
+            _stream = null;
+        }
+
+        public Utf8JsonReader(Stream jsonStream)
+        {
+            if (!jsonStream.CanRead)
+                ThrowArgumentException("Stream must be readable");
+
+            _containerMask = 0;
+            Depth = 0;
+            _inObject = false;
+            _stack = null;
+            TokenType = JsonTokenType.None;
+            _lineNumber = 1;
+            _position = 0;
+           
+            _pooledArray = ArrayPool<byte>.Shared.Rent(StreamSegmentSize);
+            int numberOfBytes = jsonStream.Read(_pooledArray, 0, StreamSegmentSize);
+            _isFinalBlock = numberOfBytes < StreamSegmentSize;
+
+            _buffer = _pooledArray.AsSpan(0, numberOfBytes);
+            _totalConsumed = 0;
+            _consumed = 0;
+            TokenStartIndex = _consumed;
+            _maxDepth = StackFreeMaxDepth;
+            Value = ReadOnlySpan<byte>.Empty;
+            _isSingleValue = true;
+            _readerOptions = JsonReaderOptions.Default;
+
+            _nextPosition = default;
+            _data = default;
+            _isLastSegment = _isFinalBlock;
+            _isSingleSegment = true;
+            _stream = jsonStream;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -189,6 +227,7 @@ namespace System.Text.JsonLab
             _data = default;
             _isLastSegment = _isFinalBlock;
             _isSingleSegment = true;
+            _stream = null;
         }
 
         private void ResizeBuffer(int minimumSize)
@@ -256,6 +295,7 @@ namespace System.Text.JsonLab
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _stream = null;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -321,6 +361,7 @@ namespace System.Text.JsonLab
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _stream = null;
         }
 
         /// <summary>
@@ -341,6 +382,9 @@ namespace System.Text.JsonLab
             bool result = false;
 
             Debug.Assert(!_isLastSegment);
+
+            if (_stream != null)
+                return ReadNextStreamSegment();
 
             do
             {
@@ -392,6 +436,46 @@ namespace System.Text.JsonLab
 
                     _buffer = bufferSpan;
                 }
+
+                result = ReadSingleSegment();
+            } while (!result && !_isLastSegment);
+            return result;
+        }
+
+        private bool ReadNextStreamSegment()
+        {
+            bool result = false;
+
+            Debug.Assert(!_isLastSegment);
+            Debug.Assert(_stream != null);
+
+            do
+            {
+                ReadOnlySpan<byte> leftOver = default;
+                if (_consumed < _buffer.Length)
+                {
+                    leftOver = _buffer.Slice(_consumed);
+                }
+
+                if (leftOver.Length > _pooledArray.Length - StreamSegmentSize)
+                {
+                    if (leftOver.Length > int.MaxValue - StreamSegmentSize)
+                        ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
+
+                    ResizeBuffer(leftOver.Length + StreamSegmentSize);
+                }
+
+                Span<byte> bufferSpan = _pooledArray;
+                leftOver.CopyTo(bufferSpan);
+
+                int numberOfBytes = _stream.Read(_pooledArray, leftOver.Length, StreamSegmentSize);
+
+                _isLastSegment = numberOfBytes < StreamSegmentSize;
+
+                _buffer = _pooledArray.AsSpan(0, leftOver.Length + numberOfBytes);   // This is gauranteed to not overflow
+
+                _totalConsumed += _consumed;
+                _consumed = 0;
 
                 result = ReadSingleSegment();
             } while (!result && !_isLastSegment);
