@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
@@ -204,7 +204,6 @@ namespace System.Buffers.Reader
         /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSpan()
         {
             if (!Sequence.IsSingleSegment)
@@ -236,26 +235,27 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(long count)
         {
-            if (count < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
-            }
-
-            Consumed += count;
-
-            if (CurrentSpanIndex < CurrentSpan.Length - count)
+            const long TooBigOrNegative = unchecked((long)0xFFFFFFFF80000000);
+            if ((count & TooBigOrNegative) == 0 && CurrentSpan.Length - CurrentSpanIndex > (int)count)
             {
                 CurrentSpanIndex += (int)count;
+                Consumed += count;
             }
             else
             {
-                // Current segment doesn't have enough space, scan forward through segments
+                // Can't satisfy from the current span
                 AdvanceToNextSpan(count);
             }
         }
 
         private void AdvanceToNextSpan(long count)
         {
+            if (count < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
+            }
+
+            Consumed += count;
             while (_moreData)
             {
                 int remaining = CurrentSpan.Length - CurrentSpanIndex;
@@ -279,6 +279,8 @@ namespace System.Buffers.Reader
 
             if (count != 0)
             {
+                // Not enough space left- adjust for where we actually ended and throw
+                Consumed -= count;
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
         }

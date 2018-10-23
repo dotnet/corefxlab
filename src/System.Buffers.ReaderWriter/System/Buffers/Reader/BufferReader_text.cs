@@ -5,7 +5,7 @@
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public static partial class ReaderExtensions
     {

@@ -9,6 +9,7 @@ namespace System.Buffers
 {
     internal class ThrowHelper
     {
+        // For speed
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
         {
             throw GetArgumentOutOfRangeException(argument);
@@ -33,6 +34,5 @@ namespace System.Buffers
     {
         count,
         length,
-
     }
 }

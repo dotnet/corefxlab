@@ -5,18 +5,38 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
         /// <summary>
-        /// Try to read everything up to the given <paramref name="delimiter"/>.
+        /// Try to read everything up to the given <paramref name="delimiter"/>. The reader will be positioned
+        /// after the first occurence of <paramref name="delimiter"/> when successful.
         /// </summary>
         /// <param name="span">The read data, if any.</param>
         /// <param name="delimiter">The delimiter to look for.</param>
-        /// <param name="advancePastDelimiter">True to move past the <paramref name="delimiter"/> if found.</param>
         /// <returns>True if the <paramref name="delimiter"/> was found.</returns>
-        public bool TryReadTo(out ReadOnlySpan<T> span, T delimiter, bool advancePastDelimiter = true)
+        public bool TryReadTo(out ReadOnlySpan<T> span, T delimiter)
+        {
+            ReadOnlySpan<T> remaining = UnreadSpan;
+            int index = remaining.IndexOf(delimiter);
+
+            if (index != -1)
+            {
+                span = remaining.Slice(0, index);
+                Advance(index + 1);
+                return true;
+            }
+
+            return TryReadToMultisegment(out span, delimiter);
+        }
+
+        private bool TryReadToMultisegment(out ReadOnlySpan<T> span, T delimiter)
+        {
+            return TryReadToSlow(out span, delimiter, advancePastDelimiter: true);
+        }
+
+        public bool TryReadTo(out ReadOnlySpan<T> span, T delimiter, bool advancePastDelimiter)
         {
             ReadOnlySpan<T> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
