@@ -248,6 +248,31 @@ namespace System.Buffers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceCurrentSpan(long count)
+        {
+            // Unchecked helper to avoid unnecessary checks where you know count is valid.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+            if (CurrentSpanIndex >= CurrentSpan.Length)
+                GetNextSpan();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceWithinSpan(long count)
+        {
+            // Only call this helper if you know that you are advancing in the current span
+            // with valid count and there is no need to fetch the next one.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+
+            Debug.Assert(CurrentSpanIndex < CurrentSpan.Length);
+        }
+
         private void AdvanceToNextSpan(long count)
         {
             if (count < 0)
