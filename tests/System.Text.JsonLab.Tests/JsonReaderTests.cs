@@ -99,9 +99,6 @@ namespace System.Text.JsonLab.Tests
             byte[] resultStream = JsonLabStreamReturnBytesHelper(dataUtf8, out length);
             string actualStrStream = Encoding.UTF8.GetString(resultStream.AsSpan(0, length));
 
-            byte[] resultStream2 = JsonLabStream2ReturnBytesHelper(dataUtf8, out length);
-            string actualStrStream2 = Encoding.UTF8.GetString(resultStream2.AsSpan(0, length));
-
             Stream stream = new MemoryStream(dataUtf8);
             TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
             string expectedStr = NewtonsoftReturnStringHelper(reader);
@@ -109,7 +106,6 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
             Assert.Equal(expectedStr, actualStrStream);
-            Assert.Equal(expectedStr, actualStrStream2);
 
             // Json payload contains numbers that are too large for .NET (need BigInteger+)
             if (type != TestCaseType.FullSchema1)

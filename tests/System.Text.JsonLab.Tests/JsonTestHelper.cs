@@ -731,16 +731,6 @@ namespace System.Text.JsonLab.Tests
             return result;
         }
 
-        public static byte[] JsonLabStream2ReturnBytesHelper(byte[] data, out int length)
-        {
-            Stream stream = new MemoryStream(data);
-            var reader = new Utf8JsonReader(stream);
-
-            byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
-            reader.Dispose();
-            return result;
-        }
-
         public static object JsonLabReturnObjectHelper(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             var reader = new Utf8JsonReader(data)
