@@ -385,6 +385,7 @@ namespace System.Text.JsonLab
                     leftOver = _buffer.Slice(_consumed);
                 }
 
+                // TODO: Should this be a settable property?
                 if (leftOver.Length >= 1_000_000)
                 {
                     // A single JSON token exceeds 1 MB in size . In such a rare case, allocate.

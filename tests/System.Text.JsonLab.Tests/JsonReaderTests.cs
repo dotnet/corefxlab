@@ -96,6 +96,8 @@ namespace System.Text.JsonLab.Tests
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
             byte[] resultSequence = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
             string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
+            byte[] resultStream = JsonLabStreamReturnBytesHelper(dataUtf8, out length);
+            string actualStrStream = Encoding.UTF8.GetString(resultStream.AsSpan(0, length));
 
             Stream stream = new MemoryStream(dataUtf8);
             TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
@@ -103,6 +105,7 @@ namespace System.Text.JsonLab.Tests
 
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
+            Assert.Equal(expectedStr, actualStrStream);
 
             // Json payload contains numbers that are too large for .NET (need BigInteger+)
             if (type != TestCaseType.FullSchema1)
@@ -2501,6 +2504,31 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [InlineData(10_000)]
+        [InlineData(100_000)]
+        [InlineData(1_000_000)]
+        [InlineData(10_000_000)]
+        [InlineData(1_000_000_000)]
+        public void StreamMaxTokenSize(int tokenSize)
+        {
+            var builder = new StringBuilder();
+            builder.Append("\"");
+            for (int i = 0; i < tokenSize; i++)
+            {
+                builder.Append("a");
+            }
+            builder.Append("\"");
+            string jsonString = builder.ToString();
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+
+            var stream = new MemoryStream(dataUtf8);
+            var json = new Utf8JsonReaderStream(stream);
+            while (json.Read()) ;
+            Assert.Equal(dataUtf8.Length, json.Consumed);
+            json.Dispose();
+        }
+
+        [Theory]
         [InlineData(250)]   // 1 MB
         [InlineData(250_000)]    // 1 GB
         //[InlineData(2_500_000)] // 10 GB, takes too long to run (~7 minutes)
@@ -2547,6 +2575,12 @@ namespace System.Text.JsonLab.Tests
             var json = new Utf8JsonReader(sequenceMultiple);
             while (json.Read()) ;
             Assert.Equal(sequenceMultiple.Length, json.Consumed);
+            json.Dispose();
+
+            var stream = new MemoryStream(sequenceMultiple.ToArray());
+            var jsonStream = new Utf8JsonReaderStream(stream);
+            while (jsonStream.Read()) ;
+            Assert.Equal(sequenceMultiple.Length, jsonStream.Consumed);
             json.Dispose();
         }
     }

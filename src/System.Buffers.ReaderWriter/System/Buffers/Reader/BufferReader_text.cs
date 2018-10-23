@@ -40,13 +40,21 @@ namespace System.Buffers
             // doesn't care what follows "True" or "False" and neither should we.
             if (Utf8Parser.TryParse(unread, out value, out int bytesConsumed, standardFormat))
             {
-                reader.Advance(bytesConsumed);
+                reader.AdvanceCurrentSpan(bytesConsumed);
                 return true;
             }
-            else if (unread.Length >= MaxBoolLength)
+
+            return TryParseSlow(ref reader, out value, standardFormat);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool TryParseSlow(ref this BufferReader<byte> reader, out bool value, char standardFormat = '\0')
+        {
+            if (reader.CurrentSpan.Length - reader.CurrentSpanIndex >= MaxBoolLength)
             {
                 // There was already enough available bytes for all valid bool possibilities
                 // in the current span, no need to try again.
+                value = default;
                 return false;
             }
 

@@ -121,6 +121,15 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        public void ReaderSystemTextJsonLabStreamTypeEmptyLoop()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            var json = new Utf8JsonReaderStream(_stream);
+            while (json.Read()) ;
+            json.Dispose();
+        }
+
+        [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequenceSingle);
