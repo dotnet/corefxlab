@@ -981,9 +981,7 @@ namespace System.Text.JsonLab
             Debug.Assert(idx >= 1);
             _consumed += 3 + idx;
 
-            var span = localCopy.Slice(0, idx - 1);
-
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(span);
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, idx - 1));
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
@@ -1300,7 +1298,6 @@ namespace System.Text.JsonLab
         private bool ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
             bool nextCharEscaped = false;
-            int incrementBy = 1;
             for (int i = 0; i < data.Length; i++)
             {
                 byte currentByte = data[i];
