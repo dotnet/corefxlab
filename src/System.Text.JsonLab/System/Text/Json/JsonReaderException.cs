@@ -7,15 +7,15 @@ namespace System.Text.JsonLab
     public class JsonReaderException : Exception
     {
         //TODO: Consider adding line number and position to the message itself
-        public JsonReaderException(string message, long lineNumber, long linePosition) : base(message)
+        public JsonReaderException(string message, long lineNumber, long bytePosition) : base(message)
         {
             LineNumber = lineNumber;
-            LinePosition = linePosition;
+            BytePosition = bytePosition;
         }
 
         public long LineNumber { get; }
 
-        public long LinePosition { get; }
+        public long BytePosition { get; }
 
         //TODO: Should we add a path string (allocating a stack/etc)?
     }
