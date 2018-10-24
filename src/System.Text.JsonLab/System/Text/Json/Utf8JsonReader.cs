@@ -942,14 +942,7 @@ namespace System.Text.JsonLab
                     idx = localCopy.Length;
                     // Assume everything on this line is a comment and there is no more data.
 
-                    if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                        _position += 2 + localCopy.Length;
-                    else
-                    {
-                        OperationStatus status = Encodings.Utf8.ToUtf16Length(localCopy, out int bytesNeeded);
-                        Debug.Assert(status == OperationStatus.Done);
-                        _position += 2 + (bytesNeeded / 2);
-                    }
+                    _position += 2 + localCopy.Length;
                     goto Done;
                 }
                 else return false;
@@ -988,31 +981,15 @@ namespace System.Text.JsonLab
             Debug.Assert(idx >= 1);
             _consumed += 3 + idx;
 
-            var span = localCopy.Slice(0, idx - 1);
-
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(span);
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, idx - 1));
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position = idx - newLineIndex;
-                else
-                {
-                    OperationStatus status = Encodings.Utf8.ToUtf16Length(span.Slice(newLineIndex), out int bytesNeeded);
-                    Debug.Assert(status == OperationStatus.Done);
-                    _position += 2 + (bytesNeeded / 2);
-                }
+                _position = idx - newLineIndex;
             }
             else
             {
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position += 4 + idx - 1;
-                else
-                {
-                    OperationStatus status = Encodings.Utf8.ToUtf16Length(span, out int bytesNeeded);
-                    Debug.Assert(status == OperationStatus.Done);
-                    _position += 4 + (bytesNeeded / 2) - 1;
-                }
+                _position += 4 + idx - 1;
             }
             return true;
         }
@@ -1052,14 +1029,7 @@ namespace System.Text.JsonLab
                     // Assume everything on this line is a comment and there is no more data.
                     Value = localCopy;
 
-                    if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                        _position += 2 + Value.Length;
-                    else
-                    {
-                        OperationStatus status = Encodings.Utf8.ToUtf16Length(Value, out int bytesNeeded);
-                        Debug.Assert(status == OperationStatus.Done);
-                        _position += 2 + (bytesNeeded / 2);
-                    }
+                    _position += 2 + Value.Length;
 
                     goto Done;
                 }
@@ -1109,25 +1079,11 @@ namespace System.Text.JsonLab
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position = Value.Length - newLineIndex + 1;
-                else
-                {
-                    OperationStatus status = Encodings.Utf8.ToUtf16Length(Value.Slice(newLineIndex), out int bytesNeeded);
-                    Debug.Assert(status == OperationStatus.Done);
-                    _position += 2 + (bytesNeeded / 2);
-                }
+                _position = Value.Length - newLineIndex + 1;
             }
             else
             {
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position += 4 + Value.Length;
-                else
-                {
-                    OperationStatus status = Encodings.Utf8.ToUtf16Length(Value, out int bytesNeeded);
-                    Debug.Assert(status == OperationStatus.Done);
-                    _position += 4 + (bytesNeeded / 2);
-                }
+                _position += 4 + Value.Length;
             }
             return true;
         }
@@ -1323,14 +1279,7 @@ namespace System.Text.JsonLab
                     return false;
                 }
 
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position += idx + 1;
-                else
-                {
-                    OperationStatus status = Encodings.Utf8.ToUtf16Length(localCopy, out int bytesNeeded);
-                    Debug.Assert(status == OperationStatus.Done);
-                    _position += 1 + (bytesNeeded / 2);
-                }
+                _position += idx + 1;
 
             Done:
                 _position++;
@@ -1349,7 +1298,6 @@ namespace System.Text.JsonLab
         private bool ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
             bool nextCharEscaped = false;
-            int incrementBy = 1;
             for (int i = 0; i < data.Length; i++)
             {
                 byte currentByte = data[i];
@@ -1399,32 +1347,7 @@ namespace System.Text.JsonLab
                     ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
                 }
 
-                if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                    _position++;
-                else
-                {
-                    if (currentByte >= 0x0 && currentByte <= 0x7F)
-                    {
-                        incrementBy = 1;
-                    }
-                    else if (currentByte >= 0xC0 && currentByte <= 0xDF)
-                    {
-                        incrementBy = 2;
-                    }
-                    else if (currentByte >= 0xE0 && currentByte <= 0xEF)
-                    {
-                        incrementBy = 3;
-                    }
-                    else if (currentByte >= 0xF0 && currentByte <= 0xF7)
-                    {
-                        incrementBy = 4;
-                    }
-                    else
-                        incrementBy--;
-
-                    if (incrementBy == 1)
-                        _position += 1;
-                }
+                _position++;
             }
             return true;
 
@@ -1480,14 +1403,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            if (_readerOptions != JsonReaderOptions.TrackPositionAsCodePoints)
-                _position = i;
-            else
-            {
-                OperationStatus status = Encodings.Utf8.ToUtf16Length(localCopy, out int bytesNeeded);
-                Debug.Assert(status == OperationStatus.Done);
-                _position += bytesNeeded / 2;
-            }
+            _position = i;
 
         Done:
             _position++;

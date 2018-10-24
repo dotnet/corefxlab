@@ -753,15 +753,15 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false \"in漢字valid\"\r\n}", 30, 30, 3, 17, 21)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false \"in漢字valid\"\r\n}", 31, 31, 3, 17, 21)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 30, 30, 4, 0, 0)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 31, 30, 4, 0, 0)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 32, 30, 4, 0, 0)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 30, 30, 3, 18, 22)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 31, 30, 3, 18, 22)]
-        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 32, 30, 3, 18, 22)]
-        public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedPosition, int expectedBytes)
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false \"in漢字valid\"\r\n}", 30, 30, 3, 21)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false \"in漢字valid\"\r\n}", 31, 31, 3, 21)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 30, 30, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 31, 30, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, \"in漢字valid\"\r\n}", 32, 30, 4, 0)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 30, 30, 3, 22)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 31, 30, 3, 22)]
+        [InlineData("{\r\n\"is\\r\\nAct漢字ive\": false, 5\r\n}", 32, 30, 3, 22)]
+        public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedBytePosition)
         {
             //TODO: Test multi-segment json payload
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
@@ -786,42 +786,39 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        Assert.Equal(expectedPosition, ex.LinePosition);
-                    else
-                        Assert.Equal(expectedBytes, ex.LinePosition);
+                    Assert.Equal(expectedBytePosition, ex.BytePosition);
                 }
             }
         }
 
         [Theory]
-        [InlineData("{]", 1, 1, 1)]
-        [InlineData("[}", 1, 1, 1)]
-        [InlineData("nulz", 1, 0, 0)]
-        [InlineData("truz", 1, 0, 0)]
-        [InlineData("falsz", 1, 0, 0)]
-        [InlineData("\"a漢字ge\":", 1, 7, 11)]
-        [InlineData("12345.1.", 1, 0, 0)]
-        [InlineData("-f", 1, 0, 0)]
-        [InlineData("1.f", 1, 0, 0)]
-        [InlineData("0.1f", 1, 0, 0)]
-        [InlineData("0.1e1f", 1, 0, 0)]
-        [InlineData("123,", 1, 3, 3)]
-        [InlineData("01", 1, 0, 0)]
-        [InlineData("-01", 1, 0, 0)]
-        [InlineData("10.5e-0.2", 1, 0, 0)]
-        [InlineData("{\"a漢字ge\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 33, 37)]
-        [InlineData("{\"a漢字ge\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7, 7)]
-        [InlineData("{{}}", 1, 1, 1)]
-        [InlineData("[[{{}}]]", 1, 3, 3)]
-        [InlineData("[1, 2, 3, ]", 1, 10, 10)]
-        [InlineData("{\"a漢字ge\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 35, 39)]
-        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18, 18)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 24, 28)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 28, 32)]
-        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3, 3)]
-        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35, 35)]
-        public static void InvalidJsonWhenPartial(string jsonString, int expectedlineNumber, int expectedPosition, int expectedBytes, int maxDepth = 64)
+        [InlineData("{]", 1, 1)]
+        [InlineData("[}", 1, 1)]
+        [InlineData("nulz", 1, 0)]
+        [InlineData("truz", 1, 0)]
+        [InlineData("falsz", 1, 0)]
+        [InlineData("\"a漢字ge\":", 1, 11)]
+        [InlineData("12345.1.", 1, 0)]
+        [InlineData("-f", 1, 0)]
+        [InlineData("1.f", 1, 0)]
+        [InlineData("0.1f", 1, 0)]
+        [InlineData("0.1e1f", 1, 0)]
+        [InlineData("123,", 1, 3)]
+        [InlineData("01", 1, 0)]
+        [InlineData("-01", 1, 0)]
+        [InlineData("10.5e-0.2", 1, 0)]
+        [InlineData("{\"a漢字ge\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 37)]
+        [InlineData("{\"a漢字ge\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7)]
+        [InlineData("{{}}", 1, 1)]
+        [InlineData("[[{{}}]]", 1, 3)]
+        [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"a漢字ge\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 39)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 28)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 32)]
+        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
+        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        public static void InvalidJsonWhenPartial(string jsonString, int expectedlineNumber, int expectedBytePosition, int maxDepth = 64)
         {
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
@@ -842,18 +839,15 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        Assert.Equal(expectedPosition, ex.LinePosition);
-                    else
-                        Assert.Equal(expectedBytes, ex.LinePosition);
+                    Assert.Equal(expectedBytePosition, ex.BytePosition);
                 }
             }
         }
 
         [Theory]
-        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 1, 47, 109)]
-        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโ\\nทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 2, 17, 41)]
-        public static void PositionInCharacters(string jsonString, int expectedlineNumber, int expectedPosition, int expectedBytes)
+        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 1, 109)]
+        [InlineData("{\"text\": \"๏ แผ่นดินฮั่นเสื่อมโ\\nทรมแสนสังเวช\\uABCZ พระปกเกศกองบู๊กู้ขึ้นใหม่\"}", 2, 41)]
+        public static void PositionInCharacters(string jsonString, int expectedlineNumber, int expectedBytePosition)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
@@ -872,74 +866,71 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        Assert.Equal(expectedPosition, ex.LinePosition);
-                    else
-                        Assert.Equal(expectedBytes, ex.LinePosition);
+                    Assert.Equal(expectedBytePosition, ex.BytePosition);
                 }
             }
         }
 
         [Theory]
-        [InlineData("\"", 1, 0, 0)]
-        [InlineData("{]", 1, 1, 1)]
-        [InlineData("[}", 1, 1, 1)]
-        [InlineData("nul", 1, 0, 0)]
-        [InlineData("tru", 1, 0, 0)]
-        [InlineData("fals", 1, 0, 0)]
-        [InlineData("\"a漢字ge\":", 1, 7, 11)]
-        [InlineData("{\"a漢字ge\":", 1, 9, 13)]
-        [InlineData("{\"name\":\"A漢字hso", 1, 8, 8)]
-        [InlineData("12345.1.", 1, 0, 0)]
-        [InlineData("-", 1, 0, 0)]
-        [InlineData("-f", 1, 0, 0)]
-        [InlineData("1.f", 1, 0, 0)]
-        [InlineData("0.", 1, 0, 0)]
-        [InlineData("0.1f", 1, 0, 0)]
-        [InlineData("0.1e1f", 1, 0, 0)]
-        [InlineData("123,", 1, 3, 3)]
-        [InlineData("false,", 1, 5, 5)]
-        [InlineData("true,", 1, 4, 4)]
-        [InlineData("null,", 1, 4, 4)]
-        [InlineData("\"h漢字ello\",", 1, 9, 13)]
-        [InlineData("01", 1, 0, 0)]
-        [InlineData("1a", 1, 0, 0)]
-        [InlineData("-01", 1, 0, 0)]
-        [InlineData("10.5e", 1, 0, 0)]
-        [InlineData("10.5e-", 1, 0, 0)]
-        [InlineData("10.5e-0.2", 1, 0, 0)]
-        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31, 31)]
-        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7, 7)]
-        [InlineData("{{}}", 1, 1, 1)]
-        [InlineData("[[{{}}]]", 1, 3, 3)]
-        [InlineData("[1, 2, 3, ]", 1, 10, 10)]
-        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21, 21)]
-        [InlineData("{\"s漢字trings\":[\"a漢字bc\", \"def\"", 1, 28, 36)]
-        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33, 33)]
-        [InlineData("{\"age\":30, \"name\":\"test}", 1, 18, 18)]
-        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18, 18)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 24, 28)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 15, 19)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 28, 32)]
-        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3, 3)]
-        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35, 35)]
-        [InlineData("\"hel\rlo\"", 1, 4, 4)]
-        [InlineData("\"hel\nlo\"", 1, 4, 4)]
-        [InlineData("\"hel\\uABCXlo\"", 1, 9, 9)]
-        [InlineData("\"hel\\\tlo\"", 1, 5, 5)]
-        [InlineData("\"hel\rlo\\\"\"", 1, 4, 4)]
-        [InlineData("\"hel\nlo\\\"\"", 1, 4, 4)]
-        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9, 9)]
-        [InlineData("\"hel\\\tlo\\\"\"", 1, 5, 5)]
-        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1, 1)]
-        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1, 1)]
-        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6, 6)]
-        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2, 2)]
-        [InlineData("\"he\\nl\rlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\nlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\\uABCXlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\\\tlo", 1, 0, 0)]
-        public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedPosition, int expectedBytes, int maxDepth = 64)
+        [InlineData("\"", 1, 0)]
+        [InlineData("{]", 1, 1)]
+        [InlineData("[}", 1, 1)]
+        [InlineData("nul", 1, 0)]
+        [InlineData("tru", 1, 0)]
+        [InlineData("fals", 1, 0)]
+        [InlineData("\"a漢字ge\":", 1, 11)]
+        [InlineData("{\"a漢字ge\":", 1, 13)]
+        [InlineData("{\"name\":\"A漢字hso", 1, 8)]
+        [InlineData("12345.1.", 1, 0)]
+        [InlineData("-", 1, 0)]
+        [InlineData("-f", 1, 0)]
+        [InlineData("1.f", 1, 0)]
+        [InlineData("0.", 1, 0)]
+        [InlineData("0.1f", 1, 0)]
+        [InlineData("0.1e1f", 1, 0)]
+        [InlineData("123,", 1, 3)]
+        [InlineData("false,", 1, 5)]
+        [InlineData("true,", 1, 4)]
+        [InlineData("null,", 1, 4)]
+        [InlineData("\"h漢字ello\",", 1, 13)]
+        [InlineData("01", 1, 0)]
+        [InlineData("1a", 1, 0)]
+        [InlineData("-01", 1, 0)]
+        [InlineData("10.5e", 1, 0)]
+        [InlineData("10.5e-", 1, 0)]
+        [InlineData("10.5e-0.2", 1, 0)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31)]
+        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7)]
+        [InlineData("{{}}", 1, 1)]
+        [InlineData("[[{{}}]]", 1, 3)]
+        [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21)]
+        [InlineData("{\"s漢字trings\":[\"a漢字bc\", \"def\"", 1, 36)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 28)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 19)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 32)]
+        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
+        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("\"hel\rlo\"", 1, 4)]
+        [InlineData("\"hel\nlo\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\"", 1, 5)]
+        [InlineData("\"hel\rlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\nlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\\\"\"", 1, 5)]
+        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6)]
+        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2)]
+        [InlineData("\"he\\nl\rlo", 1, 0)]
+        [InlineData("\"he\\nl\nlo", 1, 0)]
+        [InlineData("\"he\\nl\\uABCXlo", 1, 0)]
+        [InlineData("\"he\\nl\\\tlo", 1, 0)]
+        public static void InvalidJson(string jsonString, int expectedlineNumber, int expectedBytePosition, int maxDepth = 64)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
@@ -959,10 +950,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        Assert.Equal(expectedPosition, ex.LinePosition);
-                    else
-                        Assert.Equal(expectedBytes, ex.LinePosition);
+                    Assert.Equal(expectedBytePosition, ex.BytePosition);
                 }
 
                 ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -991,18 +979,9 @@ namespace System.Text.JsonLab.Tests
                         string secondSegmentString = Encodings.Utf8.ToString(secondMem.Span);
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        {
-                            errorMessage = $"expectedPosition: {expectedPosition} | actual: {ex.LinePosition} | index: {i} | option: {option}";
-                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                            Assert.True(expectedPosition == ex.LinePosition, errorMessage);
-                        }
-                        else
-                        {
-                            errorMessage = $"expectedBytes: {expectedBytes} | actual: {ex.LinePosition} | index: {i} | option: {option}";
-                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                            Assert.True(expectedBytes == ex.LinePosition, errorMessage);
-                        }
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.BytePosition} | index: {i} | option: {option}";
+                        errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
+                        Assert.True(expectedBytePosition == ex.BytePosition, errorMessage);
                         jsonMultiSegment.Dispose();
                     }
                 }
@@ -1010,65 +989,65 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("\"", 1, 0, 0)]
-        [InlineData("{]", 1, 1, 1)]
-        [InlineData("[}", 1, 1, 1)]
-        [InlineData("nul", 1, 0, 0)]
-        [InlineData("tru", 1, 0, 0)]
-        [InlineData("fals", 1, 0, 0)]
-        [InlineData("\"a漢字ge\":", 1, 7, 11)]
-        [InlineData("{\"a漢字ge\":", 1, 9, 13)]
-        [InlineData("{\"name\":\"A漢字hso", 1, 8, 8)]
-        [InlineData("12345.1.", 1, 0, 0)]
-        [InlineData("-", 1, 0, 0)]
-        [InlineData("-f", 1, 0, 0)]
-        [InlineData("1.f", 1, 0, 0)]
-        [InlineData("0.", 1, 0, 0)]
-        [InlineData("0.1f", 1, 0, 0)]
-        [InlineData("0.1e1f", 1, 0, 0)]
-        [InlineData("123,", 1, 3, 3)]
-        [InlineData("false,", 1, 5, 5)]
-        [InlineData("true,", 1, 4, 4)]
-        [InlineData("null,", 1, 4, 4)]
-        [InlineData("\"h漢字ello\",", 1, 9, 13)]
-        [InlineData("01", 1, 0, 0)]
-        [InlineData("1a", 1, 0, 0)]
-        [InlineData("-01", 1, 0, 0)]
-        [InlineData("10.5e", 1, 0, 0)]
-        [InlineData("10.5e-", 1, 0, 0)]
-        [InlineData("10.5e-0.2", 1, 0, 0)]
-        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31, 31)]
-        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7, 7)]
+        [InlineData("\"", 1, 0)]
+        [InlineData("{]", 1, 1)]
+        [InlineData("[}", 1, 1)]
+        [InlineData("nul", 1, 0)]
+        [InlineData("tru", 1, 0)]
+        [InlineData("fals", 1, 0)]
+        [InlineData("\"a漢字ge\":", 1, 11)]
+        [InlineData("{\"a漢字ge\":", 1, 13)]
+        [InlineData("{\"name\":\"A漢字hso", 1, 8)]
+        [InlineData("12345.1.", 1, 0)]
+        [InlineData("-", 1, 0)]
+        [InlineData("-f", 1, 0)]
+        [InlineData("1.f", 1, 0)]
+        [InlineData("0.", 1, 0)]
+        [InlineData("0.1f", 1, 0)]
+        [InlineData("0.1e1f", 1, 0)]
+        [InlineData("123,", 1, 3)]
+        [InlineData("false,", 1, 5)]
+        [InlineData("true,", 1, 4)]
+        [InlineData("null,", 1, 4)]
+        [InlineData("\"h漢字ello\",", 1, 13)]
+        [InlineData("01", 1, 0)]
+        [InlineData("1a", 1, 0)]
+        [InlineData("-01", 1, 0)]
+        [InlineData("10.5e", 1, 0)]
+        [InlineData("10.5e-", 1, 0)]
+        [InlineData("10.5e-0.2", 1, 0)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5.1e7.3]}", 1, 31)]
+        [InlineData("{\"age\":30, \r\n \"num\":-0.e, \r\n \"ints\":[1, 2, 3, 4, 5]}", 2, 7)]
         [InlineData("{{}}", 1, 1, 1)]
-        [InlineData("[[{{}}]]", 1, 3, 3)]
-        [InlineData("[1, 2, 3, ]", 1, 10, 10)]
-        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21, 21)]
-        [InlineData("{\"s漢字trings\":[\"a漢字bc\", \"def\"", 1, 28, 36)]
-        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33, 33)]
-        [InlineData("{\"age\":30, \"name\":\"test}", 1, 18, 18)]
-        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18, 18)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 24, 28)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 15, 19)]
-        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 28, 32)]
-        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3, 3)]
-        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35, 35)]
-        [InlineData("\"hel\rlo\"", 1, 4, 4)]
-        [InlineData("\"hel\nlo\"", 1, 4, 4)]
-        [InlineData("\"hel\\uABCXlo\"", 1, 9, 9)]
-        [InlineData("\"hel\\\tlo\"", 1, 5, 5)]
-        [InlineData("\"hel\rlo\\\"\"", 1, 4, 4)]
-        [InlineData("\"hel\nlo\\\"\"", 1, 4, 4)]
-        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9, 9)]
-        [InlineData("\"hel\\\tlo\\\"\"", 1, 5, 5)]
-        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1, 1)]
-        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1, 1)]
-        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6, 6)]
-        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2, 2)]
-        [InlineData("\"he\\nl\rlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\nlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\\uABCXlo", 1, 0, 0)]
-        [InlineData("\"he\\nl\\\tlo", 1, 0, 0)]
-        public static void InvalidJsonSingleSegment(string jsonString, int expectedlineNumber, int expectedPosition, int expectedBytes, int maxDepth = 64)
+        [InlineData("[[{{}}]]", 1, 3)]
+        [InlineData("[1, 2, 3, ]", 1, 10)]
+        [InlineData("{\"ints\":[1, 2, 3, 4, 5", 1, 21)]
+        [InlineData("{\"s漢字trings\":[\"a漢字bc\", \"def\"", 1, 36)]
+        [InlineData("{\"age\":30, \"ints\":[1, 2, 3, 4, 5}}", 1, 33)]
+        [InlineData("{\"age\":30, \"name\":\"test}", 1, 18)]
+        [InlineData("{\r\n\"isActive\": false \"\r\n}", 2, 18)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[}]]]]}]]]]", 2, 28)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2:[]}]]]]}]]]]", 2, 19)]
+        [InlineData("[[[[{\r\n\"t漢字emp1\":[[[[{\"temp2\":[]},[}]]]]}]]]]", 2, 32)]
+        [InlineData("{\r\n\t\"isActive\": false,\r\n\t\"array\": [\r\n\t\t[{\r\n\t\t\t\"id\": 1\r\n\t\t}]\r\n\t]\r\n}", 4, 3, 3)]
+        [InlineData("{\"Here is a 漢字string: \\\"\\\"\":\"Here is 漢字a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str:\"\\\"\\\"\"}", 5, 35)]
+        [InlineData("\"hel\rlo\"", 1, 4)]
+        [InlineData("\"hel\nlo\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\"", 1, 5)]
+        [InlineData("\"hel\rlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\nlo\\\"\"", 1, 4)]
+        [InlineData("\"hel\\uABCXlo\\\"\"", 1, 9)]
+        [InlineData("\"hel\\\tlo\\\"\"", 1, 5)]
+        [InlineData("\"he\\nl\rlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\nlo\\\"\"", 2, 1)]
+        [InlineData("\"he\\nl\\uABCXlo\\\"\"", 2, 6)]
+        [InlineData("\"he\\nl\\\tlo\\\"\"", 2, 2)]
+        [InlineData("\"he\\nl\rlo", 1, 0)]
+        [InlineData("\"he\\nl\nlo", 1, 0)]
+        [InlineData("\"he\\nl\\uABCXlo", 1, 0)]
+        [InlineData("\"he\\nl\\\tlo", 1, 0)]
+        public static void InvalidJsonSingleSegment(string jsonString, int expectedlineNumber, int expectedBytePosition, int maxDepth = 64)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
@@ -1088,10 +1067,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        Assert.Equal(expectedPosition, ex.LinePosition);
-                    else
-                        Assert.Equal(expectedBytes, ex.LinePosition);
+                    Assert.Equal(expectedBytePosition, ex.BytePosition);
                 }
 
                 for (int i = 0; i < dataUtf8.Length; i++)
@@ -1124,18 +1100,9 @@ namespace System.Text.JsonLab.Tests
                         string secondSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        if (option == JsonReaderOptions.TrackPositionAsCodePoints)
-                        {
-                            errorMessage = $"expectedPosition: {expectedPosition} | actual: {ex.LinePosition} | index: {i} | option: {option}";
-                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                            Assert.True(expectedPosition == ex.LinePosition, errorMessage);
-                        }
-                        else
-                        {
-                            errorMessage = $"expectedBytes: {expectedBytes} | actual: {ex.LinePosition} | index: {i} | option: {option}";
-                            errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                            Assert.True(expectedBytes == ex.LinePosition, errorMessage);
-                        }
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.BytePosition} | index: {i} | option: {option}";
+                        errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
+                        Assert.True(expectedBytePosition == ex.BytePosition, errorMessage);
                     }
                 }
             }
@@ -1604,7 +1571,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.LinePosition);
+                Assert.Equal(expectedPosition, ex.BytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1633,7 +1600,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.LinePosition);
+                    Assert.Equal(expectedPosition, ex.BytePosition);
                     jsonMultiSegment.Dispose();
                 }
             }
@@ -1695,7 +1662,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.LinePosition);
+                Assert.Equal(expectedPosition, ex.BytePosition);
             }
 
             for (int i = 0; i < dataUtf8.Length; i++)
@@ -1731,7 +1698,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.LinePosition);
+                    Assert.Equal(expectedPosition, ex.BytePosition);
                 }
             }
         }
@@ -1804,7 +1771,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.LinePosition);
+                Assert.Equal(expectedPosition, ex.BytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1828,7 +1795,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.LinePosition);
+                    Assert.Equal(expectedPosition, ex.BytePosition);
                     jsonMultiSegment.Dispose();
                 }
             }
@@ -1902,7 +1869,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.LinePosition);
+                Assert.Equal(expectedPosition, ex.BytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1929,7 +1896,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.LinePosition);
+                    Assert.Equal(expectedPosition, ex.BytePosition);
                 }
             }
         }
