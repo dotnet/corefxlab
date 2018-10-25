@@ -28,7 +28,7 @@ namespace System.Text.Http.Parser
         private const byte BytePercentage = (byte)'%';
         private const long maxRequestLineLength = 1024;
 
-        static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
+        private static ReadOnlySpan<byte> Eol => new byte[] { ByteCR, ByteLF };
         static readonly byte[] s_http11 = Encoding.UTF8.GetBytes("HTTP/1.1");
         static readonly byte[] s_http10 = Encoding.UTF8.GetBytes("HTTP/1.0");
         static readonly byte[] s_http20 = Encoding.UTF8.GetBytes("HTTP/2.0");
@@ -50,34 +50,25 @@ namespace System.Text.Http.Parser
             consumed = buffer.Start;
             examined = buffer.End;
 
-            // Prepare the first span
-            var span = buffer.First.Span;
-            var lineIndex = span.IndexOf(ByteLF);
-            if (lineIndex >= 0)
+            // Look for CR/LF
+
+            BufferReader<byte> reader = new BufferReader<byte>(buffer);
+            if (!reader.TryReadToAny(out ReadOnlySpan<byte> requestLine, Eol, advancePastDelimiter: false))
             {
-                consumed = buffer.GetPosition(lineIndex + 1, consumed);
-                span = span.Slice(0, lineIndex + 1);
-            }
-            else if (buffer.IsSingleSegment)
-            {
+                // Couldn't find a delimiter
                 return false;
             }
-            else
+
+            if (!reader.IsNext(Eol, advancePast: true))
             {
-                if (TryGetNewLineSpan(buffer, out SequencePosition found))
-                {
-                    span = PipelineExtensions.ToSpan(buffer.Slice(consumed, found));
-                    consumed = found;
-                }
-                else
-                {
-                    // No request line end
-                    return false;
-                }
+                // Not CR/LF
+                RejectRequestLine(requestLine);
             }
 
+            consumed = reader.Position;
+
             // Parse the span
-            ParseRequestLine(ref handler, span);
+            ParseRequestLine(ref handler, requestLine);
 
             examined = consumed;
             return true;
@@ -85,35 +76,45 @@ namespace System.Text.Http.Parser
 
         public bool ParseRequestLine<T>(ref T handler, in ReadOnlySequence<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
-            // Prepare the first span
-            var span = buffer.First.Span;
-            var lineIndex = span.IndexOf(ByteLF);
-            if (lineIndex >= 0)
+            // Look for CR/LF
+
+            BufferReader<byte> reader = new BufferReader<byte>(buffer);
+            if (!reader.TryReadToAny(out ReadOnlySpan<byte> requestLine, Eol, advancePastDelimiter: false))
             {
-                consumed = lineIndex + 1;
-                span = span.Slice(0, lineIndex + 1);
+                // Couldn't find a delimiter
+                consumed = 0;
+                return false;
             }
-            else
+
+            if (!reader.IsNext(Eol, advancePast: true))
             {
-                var eol = Sequence.IndexOf(buffer, s_Eol[0], s_Eol[1]);
-                if (eol == -1)
+                if (reader.TryRead(out byte value) && value == ByteCR && !reader.TryRead(out value))
                 {
+                    // Incomplete if ends in CR
                     consumed = 0;
                     return false;
                 }
 
-                span = PipelineExtensions.ToSpan(buffer.Slice(0, eol + s_Eol.Length));
+                // Not CR/LF
+                RejectRequestLine(requestLine);
             }
 
-            // Parse the span
-            ParseRequestLine(ref handler, span);
+            ParseRequestLine(ref handler, requestLine);
 
-            consumed = span.Length;
+            consumed = (int)reader.Consumed;
             return true;
         }
 
-        private void ParseRequestLine<T>(ref T handler, ReadOnlySpan<byte> data) where T : IHttpRequestLineHandler
+        private void ParseRequestLine<T>(ref T handler, in ReadOnlySpan<byte> data) where T : IHttpRequestLineHandler
         {
+            // The absolute smallest request line is something like "Z * HTTP/1.1"
+            // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.2
+
+            if (data.Length < 11)
+            {
+                RejectRequestLine(data);
+            }
+
             ReadOnlySpan<byte> customMethod = default;
 
             // Get Method and set the offset
@@ -123,16 +124,9 @@ namespace System.Text.Http.Parser
             }
 
             // Skip the space after the method
-            offset++;
-
-            if (offset >= data.Length)
-            {
-                // Need some path data
-                RejectRequestLine(data);
-            }
+            ReadOnlySpan<byte> target = data.Slice(++offset);
 
             bool pathEncoded = false;
-            ReadOnlySpan<byte> target = data.Slice(offset);
             int pathEnd = target.IndexOfAny(ByteSpace, ByteQuestionMark);
             if (pathEnd < 1 || pathEnd > target.Length - 1)
             {
@@ -176,22 +170,7 @@ namespace System.Text.Http.Parser
 
             if (!HttpUtilities.GetKnownVersion(version, out Http.Version httpVersion))
             {
-                if (version[0] == ByteCR || data[data.Length - 2] != ByteCR)
-                {
-                    // If missing delimiter or CR before LF, reject and log entire line
-                    RejectRequestLine(data);
-                }
-                else
-                {
-                    // else inform HTTP version is unsupported.
-                    RejectUnknownVersion(data.Slice(offset, data.Length - offset - 2));
-                }
-            }
-
-            // After version's 8 bytes and CR, expect LF
-            if (version[8 + 1] != ByteLF)
-            {
-                RejectRequestLine(data);
+                RejectUnknownVersion(version);
             }
 
             handler.OnStartLine(method, httpVersion, target, path, query, customMethod, pathEncoded);
@@ -209,20 +188,19 @@ namespace System.Text.Http.Parser
             consumedBytes = 0;
 
             BufferReader<byte> reader = new BufferReader<byte>(buffer);
-            ReadOnlySpan<byte> eol = s_Eol;
 
             bool success = false;
 
             while (!reader.End)
             {
-                if (!reader.TryReadToAny(out ReadOnlySpan<byte> headerLine, eol, advancePastDelimiter: false))
+                if (!reader.TryReadToAny(out ReadOnlySpan<byte> headerLine, Eol, advancePastDelimiter: false))
                 {
                     // Couldn't find another delimiter
                     break;
                 }
 
                 int headerLength = headerLine.Length;
-                if (!reader.IsNext(eol, advancePast: true))
+                if (!reader.IsNext(Eol, advancePast: true))
                 {
                     // Not a good CR/LF pair
                     if (headerLength == 0)
@@ -414,7 +392,7 @@ namespace System.Text.Http.Parser
 
             var reasonStart = consumedBytes + 1;
             var reason = codeSlice.Slice(reasonStart, codeSlice.Length - reasonStart - 2);
-            consumedBytes = lf + s_Eol.Length;
+            consumedBytes = lf + Eol.Length;
 
             handler.OnStatusLine(version, code, reason);
 
@@ -660,27 +638,32 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private ReadOnlySpan<byte> GetUnknownMethod(ReadOnlySpan<byte> data, out int methodLength)
+        private ReadOnlySpan<byte> GetUnknownMethod(in ReadOnlySpan<byte> data, out int methodLength)
         {
             methodLength = 0;
-            for (var i = 0; i < data.Length; i++)
+            for (; methodLength < data.Length; methodLength++)
             {
-                var ch = data[i];
+                byte ch = data[methodLength];
 
                 if (ch == ByteSpace)
                 {
-                    if (i == 0)
+                    if (methodLength == 0)
                     {
                         RejectRequestLine(data);
                     }
 
-                    methodLength = i;
                     break;
                 }
                 else if (!IsValidTokenChar((char)ch))
                 {
                     RejectRequestLine(data);
                 }
+            }
+
+            if (methodLength == data.Length)
+            {
+                // Didn't find a space
+                RejectRequestLine(data);
             }
 
             return data.Slice(0, methodLength);

@@ -9,7 +9,6 @@ namespace System.Buffers
 {
     internal class ThrowHelper
     {
-        // For speed
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
         {
             throw GetArgumentOutOfRangeException(argument);
@@ -27,6 +26,13 @@ namespace System.Buffers
                 "The enum value is not defined, please check the ExceptionArgument Enum.");
 
             return argument.ToString();
+        }
+
+        internal static void ThrowInvalidOperationException_EndPositionNotReached() { throw CreateInvalidOperationException_EndPositionNotReached(); }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception CreateInvalidOperationException_EndPositionNotReached()
+        {
+            return new InvalidOperationException("EndPositionNotReached");
         }
     }
 

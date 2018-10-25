@@ -152,29 +152,28 @@ namespace System.Text.Http.Parser.Internal
         /// </remarks>
         /// <returns><c>true</c> if the input matches a known string, <c>false</c> otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetKnownMethod(this ReadOnlySpan<byte> span, out Http.Method method, out int length)
+        public static bool GetKnownMethod(in this ReadOnlySpan<byte> span, out Http.Method method, out int length)
         {
+            Debug.Assert(span.Length > sizeof(ulong));
+
             length = 0;
             method = Http.Method.Custom;
 
-            if (span.Length >= sizeof(uint))
+            if (Unsafe.ReadUnaligned<uint>(ref GetReference(span)) == _httpGetMethodInt)
             {
-                if (Unsafe.ReadUnaligned<uint>(ref GetReference(span)) == _httpGetMethodInt)
+                length = 3;
+                method = Http.Method.Get;
+            }
+            else
+            {
+                ulong value = Unsafe.ReadUnaligned<uint>(ref GetReference(span));
+                foreach (var (Mask, Signature, Method, Length) in _knownMethods)
                 {
-                    length = 3;
-                    method = Http.Method.Get;
-                }
-                else if (length >= sizeof(ulong))
-                {
-                    ulong value = Unsafe.ReadUnaligned<uint>(ref GetReference(span));
-                    foreach (var (Mask, Signature, Method, Length) in _knownMethods)
+                    if ((value & Mask) == Signature)
                     {
-                        if ((value & Mask) == Signature)
-                        {
-                            length = Length;
-                            method = Method;
-                            break;
-                        }
+                        length = Length;
+                        method = Method;
+                        break;
                     }
                 }
             }
@@ -189,16 +188,15 @@ namespace System.Text.Http.Parser.Internal
         /// A "known HTTP version" Is is either HTTP/1.0 or HTTP/1.1.
         /// Since those fit in 8 bytes, they can be optimally looked up by reading those bytes as a long. Once
         /// in that format, it can be checked against the known versions.
-        /// The Known versions will be checked with the required '\r'.
         /// To optimize performance the HTTP/1.1 will be checked first.
         /// </remarks>
         /// <returns><c>true</c> if the input matches a known string, <c>false</c> otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool GetKnownVersion(ReadOnlySpan<byte> location, out Http.Version knownVersion)
+        internal static bool GetKnownVersion(in ReadOnlySpan<byte> location, out Http.Version knownVersion)
         {
             knownVersion = Http.Version.Unknown;
 
-            if (location.Length >= sizeof(ulong) + 1 && location[sizeof(ulong)] == (byte)'\r')
+            if (location.Length == sizeof(ulong))
             {
                 ulong version = Unsafe.ReadUnaligned<ulong>(ref GetReference(location));
 

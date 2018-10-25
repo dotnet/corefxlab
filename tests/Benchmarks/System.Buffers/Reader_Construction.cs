@@ -5,9 +5,11 @@
 using BenchmarkDotNet.Attributes;
 using System.Buffers;
 using System.Buffers.Tests;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Benchmarks
 {
+    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class Reader_Construction
     {
         private static byte[] s_array;
@@ -25,12 +27,14 @@ namespace System.Buffers.Benchmarks
         }
 
         [Benchmark]
+        [MethodImpl(MethodImplOptions.NoOptimization)]
         public void ConstructSingleSegment()
         {
             new BufferReader<byte>(s_ros);
         }
 
         [Benchmark]
+        [MethodImpl(MethodImplOptions.NoOptimization)]
         public void ConstructMultiSegment()
         {
             new BufferReader<byte>(s_rosSplit);
