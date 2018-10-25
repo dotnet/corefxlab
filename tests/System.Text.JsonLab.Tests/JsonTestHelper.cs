@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Tests;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
@@ -103,6 +104,45 @@ namespace System.Text.JsonLab.Tests
             return builder.ToString();
         }
 
+        public static void SetKeyValues(ref HeapableReader.Token json, Dictionary<string, object> dictionary, ref string key, ref object value)
+        {
+            while (json.Read())
+            {
+                switch (json.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        key = Encoding.UTF8.GetString(json.Value);
+                        dictionary.Add(key, null);
+                        break;
+                    case JsonTokenType.String:
+                        value = Encoding.UTF8.GetString(json.Value);
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = json.Value[0] == (byte)'t';
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         public static void SetKeyValues(ref Utf8JsonReader json, Dictionary<string, object> dictionary, ref string key, ref object value)
         {
             while (json.Read())
@@ -140,6 +180,62 @@ namespace System.Text.JsonLab.Tests
                         break;
                 }
             }
+        }
+
+        public static bool TryParseResponseMessageHeapable(ref ReadOnlySequence<byte> buffer)
+        {
+            if (!TryParseMessage(ref buffer, out var payload))
+            {
+                return false;
+            }
+
+            var reader = new HeapableReader();
+            var json = reader.Read(payload);
+
+            CheckRead(ref json);
+            EnsureObjectStart(ref json);
+
+            int? minorVersion = null;
+            string error = null;
+
+            var completed = false;
+            while (!completed && CheckRead(ref json))
+            {
+                switch (json.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        ReadOnlySpan<byte> memberName = json.Value;
+
+                        if (memberName.SequenceEqual(TypePropertyNameUtf8))
+                        {
+
+                            // a handshake response does not have a type
+                            // check the incoming message was not any other type of message
+                            throw new InvalidDataException("Handshake response should not have a 'type' value.");
+                        }
+                        else if (memberName.SequenceEqual(ErrorPropertyNameUtf8))
+                        {
+                            error = ReadAsString(ref json, ErrorPropertyName);
+                        }
+                        else if (memberName.SequenceEqual(MinorVersionPropertyNameUtf8))
+                        {
+                            minorVersion = ReadAsInt32(ref json, MinorVersionPropertyName);
+                        }
+                        else
+                        {
+                            json.Skip();
+                        }
+                        break;
+                    case JsonTokenType.EndObject:
+                        completed = true;
+                        break;
+                    default:
+                        throw new InvalidDataException($"Unexpected token '{json.TokenType}' when reading handshake response JSON.");
+                }
+            };
+
+            json.Dispose();
+            return true;
         }
 
         public static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
@@ -197,6 +293,24 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
+        public static ReadOnlySequence<byte> GetSequence(byte[] _dataUtf8, int segmentSize)
+        {
+            int numberOfSegments = _dataUtf8.Length / segmentSize + 1;
+            byte[][] buffers = new byte[numberOfSegments][];
+
+            for (int j = 0; j < numberOfSegments - 1; j++)
+            {
+                buffers[j] = new byte[segmentSize];
+                System.Array.Copy(_dataUtf8, j * segmentSize, buffers[j], 0, segmentSize);
+            }
+
+            int remaining = _dataUtf8.Length % segmentSize;
+            buffers[numberOfSegments - 1] = new byte[remaining];
+            System.Array.Copy(_dataUtf8, _dataUtf8.Length - remaining, buffers[numberOfSegments - 1], 0, remaining);
+
+            return BufferFactory.Create(buffers);
+        }
+
         public static readonly byte RecordSeparator = 0x1e;
 
         public static bool TryParseMessage(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> payload)
@@ -236,7 +350,37 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
+        public static int? ReadAsInt32(ref HeapableReader.Token reader, string propertyName)
+        {
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.Number)
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
+            }
+
+            if (reader.Value.IsEmpty)
+            {
+                return null;
+            }
+            if (!Utf8Parser.TryParse(reader.Value, out int value, out _))
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
+            }
+            return value;
+        }
+
         public static bool CheckRead(ref Utf8JsonReader reader)
+        {
+            if (!reader.Read())
+            {
+                throw new InvalidDataException("Unexpected end when reading JSON.");
+            }
+
+            return true;
+        }
+
+        public static bool CheckRead(ref HeapableReader.Token reader)
         {
             if (!reader.Read())
             {
@@ -263,6 +407,14 @@ namespace System.Text.JsonLab.Tests
         }
 
         public static void EnsureObjectStart(ref Utf8JsonReader reader)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new InvalidDataException($"Unexpected JSON Token Type '{GetTokenString(reader.TokenType)}'. Expected a JSON Object.");
+            }
+        }
+
+        public static void EnsureObjectStart(ref HeapableReader.Token reader)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -337,7 +489,84 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
+        public static bool TryParseRequestMessageHeapable(ref ReadOnlySequence<byte> buffer)
+        {
+            if (!TryParseMessage(ref buffer, out var payload))
+            {
+                return false;
+            }
+
+            var reader = new HeapableReader();
+            HeapableReader.Token json = reader.Read(payload);
+            CheckRead(ref json);
+            EnsureObjectStart(ref json);
+
+            string protocol = null;
+            int? protocolVersion = null;
+
+            var completed = false;
+            while (!completed && CheckRead(ref json))
+            {
+                switch (json.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        ReadOnlySpan<byte> memberName = json.Value;
+
+                        if (memberName.SequenceEqual(ProtocolPropertyNameUtf8))
+                        {
+                            protocol = ReadAsString(ref json, ProtocolPropertyName);
+                        }
+                        else if (memberName.SequenceEqual(ProtocolVersionPropertyNameUtf8))
+                        {
+                            protocolVersion = ReadAsInt32(ref json, ProtocolVersionPropertyName);
+                        }
+                        else
+                        {
+                            json.Skip();
+                        }
+                        break;
+                    case JsonTokenType.EndObject:
+                        completed = true;
+                        break;
+                    default:
+                        throw new InvalidDataException($"Unexpected token '{json.TokenType}' when reading handshake request JSON.");
+                }
+            }
+
+            if (protocol == null)
+            {
+                throw new InvalidDataException($"Missing required property '{ProtocolPropertyName}'.");
+            }
+            if (protocolVersion == null)
+            {
+                throw new InvalidDataException($"Missing required property '{ProtocolVersionPropertyName}'.");
+            }
+            json.Dispose();
+            return true;
+        }
+
         public static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
+        {
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.String)
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type String.");
+            }
+
+            if (reader.Value.IsEmpty) return "";
+
+#if NETCOREAPP2_2
+            return Encoding.UTF8.GetString(reader.Value);
+#else
+            fixed (byte* bytes = &MemoryMarshal.GetReference(reader.Value))
+            {
+                return Encoding.UTF8.GetString(bytes, reader.Value.Length);
+            }
+#endif
+        }
+
+        public static unsafe string ReadAsString(ref HeapableReader.Token reader, string propertyName)
         {
             reader.Read();
 
@@ -390,6 +619,39 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
+        public static void HeapableJsonLabEmptyLoopHelper(byte[] data)
+        {
+            var reader = new HeapableReader();
+            HeapableReader.Token json = reader.Read(data);
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                switch (tokenType)
+                {
+                    case JsonTokenType.StartObject:
+                    case JsonTokenType.EndObject:
+                        break;
+                    case JsonTokenType.StartArray:
+                    case JsonTokenType.EndArray:
+                        break;
+                    case JsonTokenType.PropertyName:
+                        break;
+                    case JsonTokenType.String:
+                        break;
+                    case JsonTokenType.Number:
+                        break;
+                    case JsonTokenType.True:
+                        break;
+                    case JsonTokenType.False:
+                        break;
+                    case JsonTokenType.Null:
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+        }
+
         public static ReadOnlySequence<byte> CreateSegments(byte[] data)
         {
             ReadOnlyMemory<byte> dataMemory = data;
@@ -399,6 +661,21 @@ namespace System.Text.JsonLab.Tests
             BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
 
             return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+        }
+
+        public static byte[] HeapableJsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        {
+            ReadOnlySequence<byte> sequence = CreateSegments(data);
+            var json = new HeapableReader();
+            HeapableReader.Token reader = json.Read(sequence);
+            reader.Options = options;
+            byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
+            reader.Dispose();
+
+            // TODO: Should we reset the value and valuetype once we are done?
+            //Assert.True(reader.Value.IsEmpty);
+            //Assert.Equal(JsonValueType.Unknown, reader.ValueType);
+            return result;
         }
 
         public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
@@ -529,6 +806,62 @@ namespace System.Text.JsonLab.Tests
             return outputArray;
         }
 
+        public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref HeapableReader.Token json)
+        {
+            byte[] outputArray = new byte[inpuDataLength];
+            Span<byte> destination = outputArray;
+
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
+                    case JsonTokenType.Comment:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.True:
+                        // Special casing True/False so that the casing matches with Json.NET
+                        destination[0] = (byte)'T';
+                        destination[1] = (byte)'r';
+                        destination[2] = (byte)'u';
+                        destination[3] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.False:
+                        destination[0] = (byte)'F';
+                        destination[1] = (byte)'a';
+                        destination[2] = (byte)'l';
+                        destination[3] = (byte)'s';
+                        destination[4] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Null:
+                        // Special casing Null so that it matches what JSON.NET does
+                        break;
+                    default:
+                        break;
+                }
+            }
+            length = outputArray.Length - destination.Length;
+            return outputArray;
+        }
+
         public static object JsonLabReaderLoop(ref Utf8JsonReader json)
         {
             object root = null;
@@ -569,7 +902,142 @@ namespace System.Text.JsonLab.Tests
             return root;
         }
 
+        public static object JsonLabReaderLoop(ref HeapableReader.Token json)
+        {
+            object root = null;
+
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
+                {
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        root = valueSpan[0] == 't';
+                        break;
+                    case JsonTokenType.Number:
+                        root = json.GetValueAsNumber();
+                        break;
+                    case JsonTokenType.String:
+                        root = json.GetValueAsString();
+                        break;
+                    case JsonTokenType.Null:
+                        break;
+                    case JsonTokenType.StartObject:
+                        root = JsonLabReaderDictionaryLoop(ref json);
+                        break;
+                    case JsonTokenType.StartArray:
+                        root = JsonLabReaderListLoop(ref json);
+                        break;
+                    case JsonTokenType.EndObject:
+                    case JsonTokenType.EndArray:
+                        break;
+                    case JsonTokenType.None:
+                    case JsonTokenType.Comment:
+                    default:
+                        break;
+                }
+            }
+            return root;
+        }
+
         public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref Utf8JsonReader json)
+        {
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+
+            string key = "";
+            object value = null;
+
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        key = json.GetValueAsString();
+                        dictionary.Add(key, null);
+                        break;
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = valueSpan[0] == 't';
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.Number:
+                        value = json.GetValueAsNumber();
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.String:
+                        value = json.GetValueAsString();
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.Null:
+                        value = null;
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.StartObject:
+                        value = JsonLabReaderDictionaryLoop(ref json);
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.StartArray:
+                        value = JsonLabReaderListLoop(ref json);
+                        if (dictionary.TryGetValue(key, out _))
+                        {
+                            dictionary[key] = value;
+                        }
+                        else
+                        {
+                            dictionary.Add(key, value);
+                        }
+                        break;
+                    case JsonTokenType.EndObject:
+                        return dictionary;
+                    case JsonTokenType.None:
+                    case JsonTokenType.Comment:
+                    default:
+                        break;
+                }
+            }
+            return dictionary;
+        }
+
+        public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref HeapableReader.Token json)
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
@@ -712,6 +1180,62 @@ namespace System.Text.JsonLab.Tests
             return arrayList;
         }
 
+        public static List<object> JsonLabReaderListLoop(ref HeapableReader.Token json)
+        {
+            List<object> arrayList = new List<object>();
+
+            object value = null;
+
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
+                {
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                        value = valueSpan[0] == 't';
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.Number:
+                        value = json.GetValueAsNumber();
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.String:
+                        value = json.GetValueAsString();
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.Null:
+                        value = null;
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.StartObject:
+                        value = JsonLabReaderDictionaryLoop(ref json);
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.StartArray:
+                        value = JsonLabReaderListLoop(ref json);
+                        arrayList.Add(value);
+                        break;
+                    case JsonTokenType.EndArray:
+                        return arrayList;
+                    case JsonTokenType.None:
+                    case JsonTokenType.Comment:
+                    default:
+                        break;
+                }
+            }
+            return arrayList;
+        }
+
+        public static byte[] HeapableJsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        {
+            var json = new HeapableReader();
+            HeapableReader.Token reader = json.Read(data);
+            reader.Options = options;
+            return JsonLabReaderLoop(data.Length, out length, ref reader);
+        }
+
         public static byte[] JsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             var reader = new Utf8JsonReader(data)
@@ -738,6 +1262,14 @@ namespace System.Text.JsonLab.Tests
                 Options = options
             };
             return JsonLabReaderLoop(ref reader);
+        }
+
+        public static object JsonLabReturnObjectHelperHeapable(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
+        {
+            var reader = new HeapableReader();
+            HeapableReader.Token json = reader.Read(data);
+            json.Options = options;
+            return JsonLabReaderLoop(ref json);
         }
 
         public static float NextFloat(Random random)

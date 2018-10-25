@@ -121,6 +121,14 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
+        public void HeapableReaderSystemTextJsonLabSpanEmptyLoop()
+        {
+            var reader = new HeapableReader();
+            HeapableReader.Token json = reader.Read(_dataUtf8);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
         public void ReaderSystemTextJsonLabStreamTypeEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
