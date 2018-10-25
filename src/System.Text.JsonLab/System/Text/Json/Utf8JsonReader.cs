@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
@@ -14,6 +15,8 @@ namespace System.Text.JsonLab
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
+
+        const int MinimumSegmentSize = 4_096;
 
         private ReadOnlySpan<byte> _buffer;
 
@@ -338,65 +341,139 @@ namespace System.Text.JsonLab
 
         private bool ReadNextSegment()
         {
+            if (_pooledArray == null)
+                return false;
+
             bool result = false;
 
             Debug.Assert(!_isLastSegment);
 
             do
             {
-                ReadOnlyMemory<byte> memory = default;
-                while (true)
+                if (_consumed == 0)
                 {
-                    bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
-                    if (noMoreData)
+                    if (!_data.TryGet(ref _nextPosition, out _, advance: false))
                         return false;
-                    if (memory.Length != 0)
-                        break;
-                }
-
-                if (_isFinalBlock)
-                    _isLastSegment = !_data.TryGet(ref _nextPosition, out _, advance: false);
-
-                ReadOnlySpan<byte> leftOver = default;
-                if (_consumed < _buffer.Length)
-                {
-                    leftOver = _buffer.Slice(_consumed);
-                }
-
-                // TODO: Should this be a settable property?
-                if (leftOver.Length >= 1_000_000)
-                {
-                    // A single JSON token exceeds 1 MB in size . In such a rare case, allocate.
-                    // TODO: Slice based on current SequencePosition
-                    _buffer = _data.Slice(Consumed).ToArray();
-                    if (_isFinalBlock)
-                        _isLastSegment = true;
+                    CopyNextSequences();
                 }
                 else
                 {
-                    if (leftOver.Length > _buffer.Length - memory.Length)
+                    ReadOnlyMemory<byte> memory = default;
+                    while (true)
                     {
-                        if (leftOver.Length > int.MaxValue - memory.Length)
-                            ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
-
-                        ResizeBuffer(leftOver.Length + memory.Length);
+                        bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
+                        if (noMoreData)
+                            return false;
+                        if (memory.Length != 0)
+                            break;
                     }
 
-                    Span<byte> bufferSpan = _pooledArray;
-                    leftOver.CopyTo(bufferSpan);
+                    if (_isFinalBlock)
+                        _isLastSegment = !_data.TryGet(ref _nextPosition, out _, advance: false);
 
-                    memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
-                    bufferSpan = bufferSpan.Slice(0, leftOver.Length + memory.Length);   // This is gauranteed to not overflow
-
-                    _totalConsumed += _consumed;
-                    _consumed = 0;
-
-                    _buffer = bufferSpan;
+                    CopyLeftOverAndNext(memory);
                 }
 
                 result = ReadSingleSegment();
             } while (!result && !_isLastSegment);
             return result;
+        }
+
+        private void CopyLeftOverAndNext(ReadOnlyMemory<byte> memory)
+        {
+            if (_consumed < _buffer.Length)
+            {
+                ReadOnlySpan<byte> leftOver = _buffer.Slice(_consumed);
+
+                if (leftOver.Length > _buffer.Length - memory.Length)
+                {
+                    if (leftOver.Length > int.MaxValue - memory.Length)
+                        ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
+
+                    // This is guaranteed to not overflow due to the check above.
+                    ResizeBuffer(leftOver.Length + memory.Length);
+                }
+
+                // This is guaranteed to not overflow
+                // -> _buffer.Length <= int.MaxValue, since it needs to fit in a span.
+                // -> leftOver.Length < _buffer.Length, since we leftOver is a slice of _buffer and _consumed != 0
+                // -> if leftOver.Length + memory.Length > _buffer.Length
+                // ->-> we check if leftOver.Length + memory.Length > int.MaxValue and throw above
+                // -> therefore, leftOver.Length + memory.Length < _buffer.Length <= int.MaxValue
+                Span<byte> bufferSpan = _pooledArray.AsSpan(0, leftOver.Length + memory.Length);
+                leftOver.CopyTo(bufferSpan);
+                memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
+                _buffer = bufferSpan;
+                bufferSpan = default;
+            }
+            else
+            {
+                if (_buffer.Length < memory.Length)
+                    ResizeBuffer(memory.Length);
+
+                Span<byte> bufferSpan = _pooledArray.AsSpan(0, memory.Length);
+                memory.Span.CopyTo(bufferSpan);
+                _buffer = bufferSpan;
+                bufferSpan = default;
+            }
+
+            _totalConsumed += _consumed;
+            _consumed = 0;
+        }
+
+        private void CopyNextSequences()
+        {
+            Debug.Assert(_consumed == 0);
+
+            // TODO: Should we try to support more than 1 GB?
+            if (_buffer.Length > 1_000_000_000)
+                ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
+
+            // TODO: Always double or is it useful to have MinimumSegmentSize?
+            // This is guaranteed to not overflow since _buffer.Length <= 1 billion
+            int minSize = Math.Max(_buffer.Length * 2, MinimumSegmentSize);
+            if (_pooledArray.Length <= minSize)
+                ResizeBuffer(minSize);
+
+            Span<byte> bufferSpan = _pooledArray;
+            _buffer.CopyTo(bufferSpan);
+            bufferSpan = bufferSpan.Slice(_buffer.Length);
+
+            int copied = 0;
+            while (true)
+            {
+                SequencePosition prevNextPosition = _nextPosition;
+                if (_data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
+                {
+                    if (memory.Length == 0)
+                        continue;
+
+                    ReadOnlySpan<byte> currentSpan = memory.Span;
+                    if (!currentSpan.TryCopyTo(bufferSpan.Slice(copied)))
+                    {
+                        _nextPosition = prevNextPosition;
+                        break;
+                    }
+
+                    // This is guaranteed to not overflow:
+                    // -> _pooledArray.Length <= int.MaxValue, therefore bufferSpan.Length <= int.MaxValue
+                    // -> bufferSpan.Length - copied >= currentSpan.Length, since currentSpan.TryCopyTo succeeded
+                    // -> int.MaxValue - copied >= currentSpan.Length, assuming maximum bufferSpan.Length possible
+                    // -> int.MaxValue >= currentSpan.Length + copied
+                    copied += currentSpan.Length;
+                    prevNextPosition = _nextPosition;
+                }
+                else
+                {
+                    _nextPosition = prevNextPosition;
+                    if (_isFinalBlock)
+                        _isLastSegment = true;
+                    break;
+                }
+            }
+            bufferSpan = default;
+            Debug.Assert(_buffer.Length <= int.MaxValue - copied);
+            _buffer = _pooledArray.AsSpan(0, _buffer.Length + copied);  // This is guaranteed to not overflow
         }
 
         public void Skip()

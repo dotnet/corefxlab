@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.IO;
 
 namespace System.Text.JsonLab
@@ -10,9 +11,9 @@ namespace System.Text.JsonLab
     public ref struct Utf8JsonReaderStream
     {
         private Utf8JsonReader _jsonReader;
-        private Span<byte> _span;
+        private Span<byte> _buffer;
         private Stream _stream;
-        private byte[] _buffer;
+        private byte[] _pooledArray;
         private bool _isFinalBlock;
         private long _consumed;
 
@@ -28,13 +29,13 @@ namespace System.Text.JsonLab
             if (!jsonStream.CanRead || !jsonStream.CanSeek)
                 JsonThrowHelper.ThrowArgumentException("Stream must be readable and seekable.");
 
-            _buffer = ArrayPool<byte>.Shared.Rent(FirstSegmentSize);
-            int numberOfBytes = jsonStream.Read(_buffer, 0, FirstSegmentSize);
-            _span = _buffer.AsSpan(0, numberOfBytes);
+            _pooledArray = ArrayPool<byte>.Shared.Rent(FirstSegmentSize);
+            int numberOfBytes = jsonStream.Read(_pooledArray, 0, FirstSegmentSize);
+            _buffer = _pooledArray.AsSpan(0, numberOfBytes);
             _stream = jsonStream;
 
             _isFinalBlock = numberOfBytes == 0;
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock);
+            _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock);
             _consumed = 0;
         }
 
@@ -55,46 +56,32 @@ namespace System.Text.JsonLab
             do
             {
                 _consumed += _jsonReader.Consumed;
-                int leftOver = _span.Length - (int)_jsonReader.Consumed;
+                int leftOver = _buffer.Length - (int)_jsonReader.Consumed;
                 int amountToRead = StreamSegmentSize;
                 if (leftOver > 0)
                 {
                     _stream.Position -= leftOver;
 
-                    // TODO: Should this be a settable property?
-                    if (leftOver >= 1_000_000)
+                    if (_jsonReader.Consumed == 0)
                     {
-                        // A single JSON token exceeds 1 MB in size. Start doubling.
                         if (leftOver > 1_000_000_000)
-                            amountToRead = 2_000_000_000;
-                        else
-                            amountToRead = leftOver * 2;
-
-                        if (leftOver >= 2_000_000_000)
                             JsonThrowHelper.ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
-                    }
-                    else
-                    {
-                        if (_jsonReader.Consumed == 0)
-                        {
-                            if (leftOver > int.MaxValue - amountToRead)
-                                JsonThrowHelper.ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
 
-                            amountToRead += leftOver;   // This is gauranteed to not overflow
-                            ResizeBuffer(amountToRead);
-                        }
+                        // This is guaranteed to not overflow due to the check above.
+                        amountToRead += leftOver * 2;
+                        ResizeBuffer(amountToRead);
                     }
                 }
 
-                if (_buffer.Length < amountToRead)
-                    ResizeBuffer(amountToRead);
+                if (_pooledArray.Length < StreamSegmentSize)
+                    ResizeBuffer(StreamSegmentSize);
 
-                int numberOfBytes = _stream.Read(_buffer, 0, amountToRead);
+                int numberOfBytes = _stream.Read(_pooledArray, 0, amountToRead);
                 _isFinalBlock = numberOfBytes == 0; // TODO: Can this be inferred differently based on leftOver and numberOfBytes
 
-                _span = _buffer.AsSpan(0, numberOfBytes);
+                _buffer = _pooledArray.AsSpan(0, numberOfBytes);
 
-                _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.State);
+                _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock, _jsonReader.State);
                 result = _jsonReader.Read();
             } while (!result && !_isFinalBlock);
 
@@ -103,14 +90,19 @@ namespace System.Text.JsonLab
 
         private void ResizeBuffer(int minimumSize)
         {
-            ArrayPool<byte>.Shared.Return(_buffer);
-            _buffer = ArrayPool<byte>.Shared.Rent(minimumSize);
+            Debug.Assert(minimumSize > 0);
+            Debug.Assert(_pooledArray != null);
+            ArrayPool<byte>.Shared.Return(_pooledArray);
+            _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
         }
 
         public void Dispose()
         {
-            ArrayPool<byte>.Shared.Return(_buffer);
-            _buffer = null;
+            if (_pooledArray != null)
+            {
+                ArrayPool<byte>.Shared.Return(_pooledArray);
+                _pooledArray = null;
+            }
         }
     }
 }

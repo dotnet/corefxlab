@@ -2443,6 +2443,14 @@ namespace System.Text.JsonLab.Tests
         [InlineData(100_000, 1)]
         [InlineData(1_000_000, 1)]
         [InlineData(10_000_000, 1)]
+        [InlineData(10_000, 7)]
+        [InlineData(100_000, 7)]
+        [InlineData(1_000_000, 7)]
+        [InlineData(10_000_000, 7)]
+        [InlineData(10_000, 19)]
+        [InlineData(100_000, 19)]
+        [InlineData(1_000_000, 19)]
+        [InlineData(10_000_000, 19)]
         [InlineData(10_000, 4_000)]
         [InlineData(100_000, 4_000)]
         [InlineData(1_000_000, 4_000)]
@@ -2451,23 +2459,55 @@ namespace System.Text.JsonLab.Tests
         [InlineData(100_000, 1_000_000)]
         [InlineData(1_000_000, 1_000_000)]
         [InlineData(10_000_000, 1_000_000)]
-        [InlineData(1_000_000_000, 1_000_000)]
+        //[InlineData(1_000_000_000, 1_000_000)] // Too large, causes intermittent OOM
         public void MultiSegmentSequenceMaxTokenSize(int tokenSize, int segmentSize)
         {
-            var builder = new StringBuilder();
-            builder.Append("\"");
-            for (int i = 0; i < tokenSize; i++)
+            var random = new Random(42);
+            for (int i = 0; i < 5; i++)
             {
-                builder.Append("a");
+                int splitIndex = random.Next(3, 1_000);
+
+                byte[] dataUtf8 = new byte[tokenSize];
+                System.Array.Fill<byte>(dataUtf8, 97);  // 'a'
+
+                dataUtf8[0] = 91;   // '['
+                dataUtf8[1] = 34;   // '"'
+                dataUtf8[splitIndex - 1] = 34;   // '"'
+                dataUtf8[splitIndex] = 44;   // ', '
+                dataUtf8[splitIndex + 1] = 34;   // '"'
+                dataUtf8[tokenSize - 2] = 34; // '"'
+                dataUtf8[tokenSize - 1] = 93; // ']'
+
+                byte[] expectedFirstValue = new byte[splitIndex - 3];
+                System.Array.Fill<byte>(expectedFirstValue, 97);  // 'a'
+
+                byte[] expectedSecondValue = new byte[tokenSize - (7 + expectedFirstValue.Length)];  // adding 7 since we have 7 format characters: ["...","..."]
+                System.Array.Fill<byte>(expectedSecondValue, 97);  // 'a'
+
+                bool first = true;
+
+                ReadOnlySequence<byte> sequenceMultiple = GetSequence(dataUtf8, segmentSize);
+                var json = new Utf8JsonReader(sequenceMultiple);
+                while (json.Read())
+                {
+                    Assert.True(json.TokenType == JsonTokenType.StartArray || json.TokenType == JsonTokenType.String || json.TokenType == JsonTokenType.EndArray);
+
+                    if (json.TokenType == JsonTokenType.String)
+                    {
+                        if (first)
+                        {
+                            Assert.True(json.Value.SequenceEqual(expectedFirstValue));
+                            first = false;
+                        }
+                        else
+                        {
+                            Assert.True(json.Value.SequenceEqual(expectedSecondValue));
+                        }
+                    }
+                }
+                Assert.Equal(dataUtf8.Length, json.Consumed);
+                json.Dispose();
             }
-            builder.Append("\"");
-            string jsonString = builder.ToString();
-            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            ReadOnlySequence<byte> sequenceMultiple = GetSequence(dataUtf8, segmentSize);
-            var json = new Utf8JsonReader(sequenceMultiple);
-            while (json.Read()) ;
-            Assert.Equal(dataUtf8.Length, json.Consumed);
-            json.Dispose();
         }
 
         [Theory]
@@ -2478,20 +2518,40 @@ namespace System.Text.JsonLab.Tests
         [InlineData(1_000_000_000)]
         public void StreamMaxTokenSize(int tokenSize)
         {
-            var builder = new StringBuilder();
-            builder.Append("\"");
-            for (int i = 0; i < tokenSize; i++)
-            {
-                builder.Append("a");
-            }
-            builder.Append("\"");
-            string jsonString = builder.ToString();
-            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            byte[] dataUtf8 = new byte[tokenSize];
+            System.Array.Fill<byte>(dataUtf8, 97);
+
+            dataUtf8[0] = 34;
+            dataUtf8[dataUtf8.Length - 1] = 34;
 
             var stream = new MemoryStream(dataUtf8);
             var json = new Utf8JsonReaderStream(stream);
             while (json.Read()) ;
             Assert.Equal(dataUtf8.Length, json.Consumed);
+            json.Dispose();
+        }
+
+        [Fact]
+        public void StreamTokenSizeOverflow()
+        {
+            int tokenSize = 1_500_000_000; // 1.5GB
+            byte[] dataUtf8 = new byte[tokenSize];
+            System.Array.Fill<byte>(dataUtf8, 97);
+
+            dataUtf8[0] = 34;
+            dataUtf8[dataUtf8.Length - 1] = 34;
+
+            var stream = new MemoryStream(dataUtf8);
+            var json = new Utf8JsonReaderStream(stream);
+            try
+            {
+                while (json.Read()) ;
+                Assert.True(false, "Expected ArgumentException to be thrown since token size larger than 1 GB is not supported.");
+            }
+            catch (ArgumentException)
+            {
+                Assert.Equal(0, json.Consumed);
+            }
             json.Dispose();
         }
 
