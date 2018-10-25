@@ -40,6 +40,7 @@ namespace System.Buffers
 
         // TODO:
         // Move to helper in ReadOnlySequence
+        // https://github.com/dotnet/corefx/issues/33029
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe static void GetFirstSpan(in ReadOnlySequence<T> buffer, out ReadOnlySpan<T> first, out SequencePosition next)
         {
