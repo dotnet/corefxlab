@@ -105,7 +105,7 @@ namespace System.Text.JsonLab
             
             var position = _data.Slice(_consumed).GetPosition(0);
             return position;
-            //return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+            // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
         }
 
         /// <summary>
