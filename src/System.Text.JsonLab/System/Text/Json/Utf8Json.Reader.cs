@@ -5,7 +5,6 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Diagnostics;
-
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
@@ -48,7 +47,7 @@ namespace System.Text.JsonLab
             public ReadOnlySpan<byte> Value { get; private set; }
 
             private readonly bool _isSingleSegment;
-            private bool _isFinalBlock;
+            private readonly bool _isFinalBlock;
 
             internal bool ConsumedEverything => _consumed >= (uint)_buffer.Length && _isLastSegment;
 
@@ -138,23 +137,6 @@ namespace System.Text.JsonLab
                 _isSingleSegment = true;
             }
 
-            private void ResizeBuffer(int minimumSize)
-            {
-                Debug.Assert(minimumSize > 0);
-                Debug.Assert(_pooledArray != null);
-                ArrayPool<byte>.Shared.Return(_pooledArray);
-                _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
-            }
-
-            public void Dispose()
-            {
-                if (_pooledArray != null)
-                {
-                    ArrayPool<byte>.Shared.Return(_pooledArray);
-                    _pooledArray = null;
-                }
-            }
-
             internal Reader(Utf8Json jsonReader, in ReadOnlySequence<byte> jsonData, bool isFinalBlock)
             {
                 _utf8Json = jsonReader;
@@ -194,6 +176,23 @@ namespace System.Text.JsonLab
                     _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
                     _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                     _isSingleSegment = false;
+                }
+            }
+
+            private void ResizeBuffer(int minimumSize)
+            {
+                Debug.Assert(minimumSize > 0);
+                Debug.Assert(_pooledArray != null);
+                ArrayPool<byte>.Shared.Return(_pooledArray);
+                _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
+            }
+
+            public void Dispose()
+            {
+                if (_pooledArray != null)
+                {
+                    ArrayPool<byte>.Shared.Return(_pooledArray);
+                    _pooledArray = null;
                 }
             }
 
