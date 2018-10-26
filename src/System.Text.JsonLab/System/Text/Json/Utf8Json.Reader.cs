@@ -53,8 +53,10 @@ namespace System.Text.JsonLab
 
             private byte[] _pooledArray;
             private SequencePosition _nextPosition;
+            private SequencePosition _currentPosition;
             private ReadOnlySequence<byte> _data;
             private bool _isLastSegment;
+            private int _leftOverLength;
 
             internal Utf8Json _utf8Json;
 
@@ -72,9 +74,11 @@ namespace System.Text.JsonLab
 
                 _pooledArray = null;
                 _nextPosition = default;
+                _currentPosition = default;
                 _data = default;
                 _isLastSegment = true;
                 _isSingleSegment = true;
+                _leftOverLength = 0;
             }
 
             internal Reader(Utf8Json jsonReader, in ReadOnlySequence<byte> jsonData)
@@ -95,6 +99,7 @@ namespace System.Text.JsonLab
                 {
                     _isLastSegment = true;
                     _nextPosition = default;
+                    _currentPosition = default;
                     _pooledArray = null;
                     _isSingleSegment = true;
                 }
@@ -112,10 +117,12 @@ namespace System.Text.JsonLab
                             }
                         }
                     }
+                    _currentPosition = _nextPosition;
                     _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
                     _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                     _isSingleSegment = false;
                 }
+                _leftOverLength = 0;
             }
 
             internal Reader(Utf8Json jsonReader, ReadOnlySpan<byte> jsonData, bool isFinalBlock)
@@ -132,9 +139,11 @@ namespace System.Text.JsonLab
 
                 _pooledArray = null;
                 _nextPosition = default;
+                _currentPosition = default;
                 _data = default;
                 _isLastSegment = _isFinalBlock;
                 _isSingleSegment = true;
+                _leftOverLength = 0;
             }
 
             internal Reader(Utf8Json jsonReader, in ReadOnlySequence<byte> jsonData, bool isFinalBlock)
@@ -154,6 +163,7 @@ namespace System.Text.JsonLab
                 if (jsonData.IsSingleSegment)
                 {
                     _nextPosition = default;
+                    _currentPosition = default;
                     _isLastSegment = isFinalBlock;
                     _pooledArray = null;
                     _isSingleSegment = true;
@@ -173,10 +183,12 @@ namespace System.Text.JsonLab
                         }
                     }
 
+                    _currentPosition = _nextPosition;
                     _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
                     _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                     _isSingleSegment = false;
                 }
+                _leftOverLength = 0;
             }
 
             private void ResizeBuffer(int minimumSize)
@@ -246,7 +258,23 @@ namespace System.Text.JsonLab
 
                     result = ReadSingleSegment();
                 } while (!result && !_isLastSegment);
+
+                if (!result)
+                {
+                    _utf8Json._state._sequencePosition = GetPosition();
+                }
+
                 return result;
+            }
+
+            private SequencePosition GetPosition()
+            {
+                if (_currentPosition.GetObject() == null)
+                    return default;
+
+                var position = _data.Slice(_consumed).GetPosition(0);
+                return position;
+                //return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
             }
 
             private void CopyLeftOverAndNext(ReadOnlyMemory<byte> memory)
@@ -254,6 +282,7 @@ namespace System.Text.JsonLab
                 if (_consumed < _buffer.Length)
                 {
                     ReadOnlySpan<byte> leftOver = _buffer.Slice(_consumed);
+                    _leftOverLength = leftOver.Length;
 
                     if (leftOver.Length > _buffer.Length - memory.Length)
                     {
@@ -278,13 +307,8 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_buffer.Length < memory.Length)
-                        ResizeBuffer(memory.Length);
-
-                    Span<byte> bufferSpan = _pooledArray.AsSpan(0, memory.Length);
-                    memory.Span.CopyTo(bufferSpan);
-                    _buffer = bufferSpan;
-                    bufferSpan = default;
+                    _buffer = memory.Span;
+                    _leftOverLength = 0;
                 }
 
                 _totalConsumed += _consumed;
@@ -312,11 +336,16 @@ namespace System.Text.JsonLab
                 int copied = 0;
                 while (true)
                 {
+                    _currentPosition = _nextPosition;
                     SequencePosition prevNextPosition = _nextPosition;
                     if (_data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
                     {
                         if (memory.Length == 0)
+                        {
+                            _currentPosition = prevNextPosition;
+                            prevNextPosition = _nextPosition;
                             continue;
+                        }
 
                         ReadOnlySpan<byte> currentSpan = memory.Span;
                         if (!currentSpan.TryCopyTo(bufferSpan.Slice(copied)))
@@ -331,6 +360,7 @@ namespace System.Text.JsonLab
                         // -> int.MaxValue - copied >= currentSpan.Length, assuming maximum bufferSpan.Length possible
                         // -> int.MaxValue >= currentSpan.Length + copied
                         copied += currentSpan.Length;
+                        _currentPosition = prevNextPosition;
                         prevNextPosition = _nextPosition;
                     }
                     else
@@ -341,6 +371,7 @@ namespace System.Text.JsonLab
                         break;
                     }
                 }
+                // TODO: Set _leftOverLength?
                 bufferSpan = default;
                 Debug.Assert(_buffer.Length <= int.MaxValue - copied);
                 _buffer = _pooledArray.AsSpan(0, _buffer.Length + copied);  // This is guaranteed to not overflow

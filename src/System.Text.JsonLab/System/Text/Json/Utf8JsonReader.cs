@@ -82,11 +82,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        public SequencePosition Position
-            => _currentPosition.GetObject() != null ?
-            _data.GetPosition(_consumed - _leftOverLength, _currentPosition) :
-            default;
-
         private JsonReaderOptions _readerOptions;
 
         public JsonReaderState State
@@ -99,8 +94,19 @@ namespace System.Text.JsonLab
                 _tokenType = TokenType,
                 _lineNumber = _lineNumber,
                 _position = _position,
-                _isSingleValue = _isSingleValue
+                _isSingleValue = _isSingleValue,
+                _sequencePosition = GetPosition(),
             };
+
+        private SequencePosition GetPosition()
+        {
+            if (_currentPosition.GetObject() == null)
+                return default;
+            
+            var position = _data.Slice(_consumed).GetPosition(0);
+            return position;
+            //return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+        }
 
         /// <summary>
         /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
@@ -335,7 +341,7 @@ namespace System.Text.JsonLab
                     }
                 }
 
-                _currentPosition = default;
+                _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
