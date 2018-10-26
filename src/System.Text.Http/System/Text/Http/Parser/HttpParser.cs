@@ -109,7 +109,8 @@ namespace System.Text.Http.Parser
             // The absolute smallest request line is something like "Z * HTTP/1.1"
             // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.2
 
-            if (data.Length < 11)
+            // Note that GetKnownMethod depends on the buffer having at least 9 bytes.
+            if (data.Length < 12)
             {
                 RejectRequestLine(data);
             }
@@ -250,13 +251,13 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public bool ParseHeaders<T>(ref T handler, ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public bool ParseHeaders<T>(T handler, ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
             var reader = new BufferReader<byte>(buffer);
             consumedBytes = 0;
 
             bool success = ParseHeaders(handler, ref reader);
-            if (success == true)
+            if (success)
                 consumedBytes = (int)reader.Consumed;
             return success;
         }

@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Buffers.Text;
 
 using static System.Runtime.InteropServices.MemoryMarshal;
@@ -80,15 +79,6 @@ namespace System.Text.Http.Parser.Internal
             return Read<ulong>(span);
         }
 
-        private static uint GetAsciiStringAsInt(string str)
-        {
-            Debug.Assert(str.Length == 4, "String must be exactly 4 (ASCII) characters long.");
-
-            Span<byte> span = stackalloc byte[4];
-            Encodings.Utf16.ToUtf8(AsBytes(str.AsSpan()), span, out int consumed, out int written);
-            return Read<uint>(span);
-        }
-
         private unsafe static ulong GetMaskAsLong(byte[] bytes)
         {
             Debug.Assert(bytes.Length == 8, "Mask must be exactly 8 bytes long.");
@@ -97,28 +87,6 @@ namespace System.Text.Http.Parser.Internal
             {
                 return *(ulong*)ptr;
             }
-        }
-
-        public unsafe static string GetAsciiStringNonNullCharacters(this Span<byte> span)
-        {
-            if (span.IsEmpty)
-            {
-                return string.Empty;
-            }
-
-            var asciiString = new string('\0', span.Length);
-
-            fixed (char* output = asciiString)
-            fixed (byte* buffer = &MemoryMarshal.GetReference(span))
-            {
-                // This version if AsciiUtilities returns null if there are any null (0 byte) characters
-                // in the string
-                if (!AsciiUtilities.TryGetAsciiString(buffer, output, span.Length))
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-            return asciiString;
         }
 
         public static string GetAsciiStringEscaped(this ReadOnlySpan<byte> span, int maxChars)
@@ -253,6 +221,7 @@ namespace System.Text.Http.Parser.Internal
                     return null;
             }
         }
+
         public static string MethodToString(Http.Method method)
         {
             int methodIndex = (int)method;

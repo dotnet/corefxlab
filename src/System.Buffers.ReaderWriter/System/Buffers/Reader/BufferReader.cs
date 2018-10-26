@@ -42,7 +42,7 @@ namespace System.Buffers
         // Move to helper in ReadOnlySequence
         // https://github.com/dotnet/corefx/issues/33029
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe static void GetFirstSpan(in ReadOnlySequence<T> buffer, out ReadOnlySpan<T> first, out SequencePosition next)
+        private static void GetFirstSpan(in ReadOnlySequence<T> buffer, out ReadOnlySpan<T> first, out SequencePosition next)
         {
             first = default;
             next = default;
@@ -108,7 +108,7 @@ namespace System.Buffers
             else // endIndex >= 0, A == 1 && B == 0 means SequenceType.MemoryManager
             {
                 startIndex &= IndexBitMask;
-                return ((MemoryManager<T>)startObject).Memory.Slice(startIndex, endIndex - startIndex).Span;
+                return ((MemoryManager<T>)startObject).Memory.Span.Slice(startIndex, endIndex - startIndex);
             }
         }
 

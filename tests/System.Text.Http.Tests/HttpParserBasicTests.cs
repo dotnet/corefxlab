@@ -19,10 +19,10 @@ namespace System.Text.Http.Parser.Tests
             var request = new Request();
             ReadOnlySequence<byte> buffer = new ReadOnlySequence<byte>(Encoding.ASCII.GetBytes(requestText));
 
-            Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
+            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
-            Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
+            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
             Assert.Equal(8, consumed);
 
             // request line
@@ -55,11 +55,11 @@ namespace System.Text.Http.Parser.Tests
                 var request = new Request();
 
                 try {
-                    Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
+                    Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
                     Assert.Equal(25, consumed);
 
                     var unconsumed = buffer.Slice(consumed);
-                    Assert.True(parser.ParseHeaders(ref request, unconsumed, out consumed));
+                    Assert.True(parser.ParseHeaders(request, unconsumed, out consumed));
                     Assert.Equal(8, consumed);
                 }
                 catch {
@@ -85,10 +85,10 @@ namespace System.Text.Http.Parser.Tests
             var request = new Request();
             ReadOnlySequence<byte> buffer = new ReadOnlySequence<byte>(_plaintextTechEmpowerRequestBytes);
 
-            Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
+            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
-            Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
+            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
             Assert.Equal(139, consumed);
 
             // request line
