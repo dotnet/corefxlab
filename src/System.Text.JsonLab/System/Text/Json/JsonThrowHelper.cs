@@ -156,17 +156,17 @@ namespace System.Text.JsonLab
             switch (resource)
             {
                 case ExceptionResource.ArrayDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json.MaxDepth);
                     break;
                 case ExceptionResource.ArrayEndWithinObject:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ArrayEndWithinObject.ToString());
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.EndOfStringNotFound:
@@ -209,17 +209,17 @@ namespace System.Text.JsonLab
                     message = string.Format(formatString, json.TokenType);
                     break;
                 case ExceptionResource.ObjectDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json.MaxDepth);
                     break;
                 case ExceptionResource.ObjectEndWithinArray:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ObjectEndWithinArray.ToString());
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.Default:

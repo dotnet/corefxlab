@@ -528,7 +528,7 @@ namespace System.Text.JsonLab.Tests
                 while (json.Read())
                 {
                     if (json.TokenType >= JsonTokenType.String && json.TokenType <= JsonTokenType.Null)
-                        actualDepth = json.Depth;
+                        actualDepth = json.CurrentDepth;
                 }
 
                 Stream stream = new MemoryStream(data.ToArray());
@@ -586,8 +586,8 @@ namespace System.Text.JsonLab.Tests
                 int maxDepth = 0;
                 while (json.Read())
                 {
-                    if (maxDepth < json.Depth)
-                        maxDepth = json.Depth;
+                    if (maxDepth < json.CurrentDepth)
+                        maxDepth = json.CurrentDepth;
                 }
                 Assert.True(false, $"Expected JsonReaderException was not thrown. Max depth allowed = {json.MaxDepth} | Max depth reached = {maxDepth}");
             }

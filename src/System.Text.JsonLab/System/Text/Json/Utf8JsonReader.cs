@@ -49,7 +49,7 @@ namespace System.Text.JsonLab
         private Stack<JsonTokenType> _stack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
-        public int Depth { get; private set; }
+        public int CurrentDepth { get; private set; }
 
         // This mask represents a tiny stack to track the state during nested transitions.
         // The first bit represents the state of the current level (1 == object, 0 == array).
@@ -82,13 +82,18 @@ namespace System.Text.JsonLab
             }
         }
 
+        public SequencePosition Position
+            => _currentPosition.GetObject() != null ?
+            _data.GetPosition(_consumed - _leftOverLength, _currentPosition) :
+            default;
+
         private JsonReaderOptions _readerOptions;
 
         public JsonReaderState State
             => new JsonReaderState
             {
                 _containerMask = _containerMask,
-                _currentDepth = Depth,
+                _currentDepth = CurrentDepth,
                 _inObject = _inObject,
                 _stack = _stack,
                 _tokenType = TokenType,
@@ -116,8 +121,10 @@ namespace System.Text.JsonLab
 
         private byte[] _pooledArray;
         private SequencePosition _nextPosition;
+        private SequencePosition _currentPosition;
         private ReadOnlySequence<byte> _data;
         private bool _isLastSegment;
+        private int _leftOverLength;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -127,7 +134,7 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(ReadOnlySpan<byte> jsonData)
         {
             _containerMask = 0;
-            Depth = 0;
+            CurrentDepth = 0;
             _inObject = false;
             _stack = null;
             TokenType = JsonTokenType.None;
@@ -147,9 +154,11 @@ namespace System.Text.JsonLab
 
             _pooledArray = null;
             _nextPosition = default;
+            _currentPosition = default;
             _data = default;
             _isLastSegment = true;
             _isSingleSegment = true;
+            _leftOverLength = 0;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -157,7 +166,7 @@ namespace System.Text.JsonLab
             if (!state.IsDefault)
             {
                 _containerMask = state._containerMask;
-                Depth = state._currentDepth;
+                CurrentDepth = state._currentDepth;
                 _inObject = state._inObject;
                 _stack = state._stack;
                 TokenType = state._tokenType;
@@ -168,7 +177,7 @@ namespace System.Text.JsonLab
             else
             {
                 _containerMask = 0;
-                Depth = 0;
+                CurrentDepth = 0;
                 _inObject = false;
                 _stack = null;
                 TokenType = JsonTokenType.None;
@@ -189,9 +198,11 @@ namespace System.Text.JsonLab
 
             _pooledArray = null;
             _nextPosition = default;
+            _currentPosition = default;
             _data = default;
             _isLastSegment = _isFinalBlock;
             _isSingleSegment = true;
+            _leftOverLength = 0;
         }
 
         private void ResizeBuffer(int minimumSize)
@@ -214,7 +225,7 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData)
         {
             _containerMask = 0;
-            Depth = 0;
+            CurrentDepth = 0;
             _inObject = false;
             _stack = null;
             TokenType = JsonTokenType.None;
@@ -238,6 +249,7 @@ namespace System.Text.JsonLab
             {
                 _isLastSegment = true;
                 _nextPosition = default;
+                _currentPosition = default;
                 _pooledArray = null;
                 _isSingleSegment = true;
             }
@@ -255,10 +267,12 @@ namespace System.Text.JsonLab
                         }
                     }
                 }
+                _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _leftOverLength = 0;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -266,7 +280,7 @@ namespace System.Text.JsonLab
             if (!state.IsDefault)
             {
                 _containerMask = state._containerMask;
-                Depth = state._currentDepth;
+                CurrentDepth = state._currentDepth;
                 _inObject = state._inObject;
                 _stack = state._stack;
                 TokenType = state._tokenType;
@@ -277,7 +291,7 @@ namespace System.Text.JsonLab
             else
             {
                 _containerMask = 0;
-                Depth = 0;
+                CurrentDepth = 0;
                 _inObject = false;
                 _stack = null;
                 TokenType = JsonTokenType.None;
@@ -301,6 +315,7 @@ namespace System.Text.JsonLab
             if (jsonData.IsSingleSegment)
             {
                 _nextPosition = default;
+                _currentPosition = default;
                 _isLastSegment = isFinalBlock;
                 _pooledArray = null;
                 _isSingleSegment = true;
@@ -320,10 +335,12 @@ namespace System.Text.JsonLab
                     }
                 }
 
+                _currentPosition = default;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
                 _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
+            _leftOverLength = 0;
         }
 
         /// <summary>
@@ -361,9 +378,14 @@ namespace System.Text.JsonLab
                     ReadOnlyMemory<byte> memory = default;
                     while (true)
                     {
+                        SequencePosition copy = _currentPosition;
+                        _currentPosition = _nextPosition;
                         bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
                         if (noMoreData)
+                        {
+                            _currentPosition = copy;
                             return false;
+                        }
                         if (memory.Length != 0)
                             break;
                     }
@@ -384,6 +406,7 @@ namespace System.Text.JsonLab
             if (_consumed < _buffer.Length)
             {
                 ReadOnlySpan<byte> leftOver = _buffer.Slice(_consumed);
+                _leftOverLength = leftOver.Length;
 
                 if (leftOver.Length > _buffer.Length - memory.Length)
                 {
@@ -408,13 +431,8 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_buffer.Length < memory.Length)
-                    ResizeBuffer(memory.Length);
-
-                Span<byte> bufferSpan = _pooledArray.AsSpan(0, memory.Length);
-                memory.Span.CopyTo(bufferSpan);
-                _buffer = bufferSpan;
-                bufferSpan = default;
+                _buffer = memory.Span;
+                _leftOverLength = 0;
             }
 
             _totalConsumed += _consumed;
@@ -442,11 +460,16 @@ namespace System.Text.JsonLab
             int copied = 0;
             while (true)
             {
+                _currentPosition = _nextPosition;
                 SequencePosition prevNextPosition = _nextPosition;
                 if (_data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
                 {
                     if (memory.Length == 0)
+                    {
+                        _currentPosition = prevNextPosition;
+                        prevNextPosition = _nextPosition;
                         continue;
+                    }
 
                     ReadOnlySpan<byte> currentSpan = memory.Span;
                     if (!currentSpan.TryCopyTo(bufferSpan.Slice(copied)))
@@ -461,6 +484,7 @@ namespace System.Text.JsonLab
                     // -> int.MaxValue - copied >= currentSpan.Length, assuming maximum bufferSpan.Length possible
                     // -> int.MaxValue >= currentSpan.Length + copied
                     copied += currentSpan.Length;
+                    _currentPosition = prevNextPosition;
                     prevNextPosition = _nextPosition;
                 }
                 else
@@ -471,6 +495,7 @@ namespace System.Text.JsonLab
                     break;
                 }
             }
+            // TODO: Set _leftOverLength?
             bufferSpan = default;
             Debug.Assert(_buffer.Length <= int.MaxValue - copied);
             _buffer = _pooledArray.AsSpan(0, _buffer.Length + copied);  // This is guaranteed to not overflow
@@ -485,8 +510,8 @@ namespace System.Text.JsonLab
 
             if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
             {
-                int depth = Depth;
-                while (Read() && depth < Depth)
+                int depth = CurrentDepth;
+                while (Read() && depth < CurrentDepth)
                 {
                 }
             }
@@ -494,13 +519,13 @@ namespace System.Text.JsonLab
 
         private void StartObject()
         {
-            Depth++;
-            if (Depth > MaxDepth)
+            CurrentDepth++;
+            if (CurrentDepth > MaxDepth)
                 ThrowJsonReaderException(ref this, ExceptionResource.ObjectDepthTooLarge);
 
             _position++;
 
-            if (Depth <= StackFreeMaxDepth)
+            if (CurrentDepth <= StackFreeMaxDepth)
                 _containerMask = (_containerMask << 1) | 1;
             else
                 _stack.Push(JsonTokenType.StartObject);
@@ -511,10 +536,10 @@ namespace System.Text.JsonLab
 
         private void EndObject()
         {
-            if (!_inObject || Depth <= 0)
+            if (!_inObject || CurrentDepth <= 0)
                 ThrowJsonReaderException(ref this, ExceptionResource.ObjectEndWithinArray);
 
-            if (Depth <= StackFreeMaxDepth)
+            if (CurrentDepth <= StackFreeMaxDepth)
             {
                 _containerMask >>= 1;
                 _inObject = (_containerMask & 1) != 0;
@@ -524,19 +549,19 @@ namespace System.Text.JsonLab
                 _inObject = _stack.Pop() != JsonTokenType.StartArray;
             }
 
-            Depth--;
+            CurrentDepth--;
             TokenType = JsonTokenType.EndObject;
         }
 
         private void StartArray()
         {
-            Depth++;
-            if (Depth > MaxDepth)
+            CurrentDepth++;
+            if (CurrentDepth > MaxDepth)
                 ThrowJsonReaderException(ref this, ExceptionResource.ArrayDepthTooLarge);
 
             _position++;
 
-            if (Depth <= StackFreeMaxDepth)
+            if (CurrentDepth <= StackFreeMaxDepth)
                 _containerMask = _containerMask << 1;
             else
                 _stack.Push(JsonTokenType.StartArray);
@@ -547,10 +572,10 @@ namespace System.Text.JsonLab
 
         private void EndArray()
         {
-            if (_inObject || Depth <= 0)
+            if (_inObject || CurrentDepth <= 0)
                 ThrowJsonReaderException(ref this, ExceptionResource.ArrayEndWithinObject);
 
-            if (Depth <= StackFreeMaxDepth)
+            if (CurrentDepth <= StackFreeMaxDepth)
             {
                 _containerMask >>= 1;
                 _inObject = (_containerMask & 1) != 0;
@@ -560,7 +585,7 @@ namespace System.Text.JsonLab
                 _inObject = _stack.Pop() != JsonTokenType.StartArray;
             }
 
-            Depth--;
+            CurrentDepth--;
             TokenType = JsonTokenType.EndArray;
         }
 
@@ -568,7 +593,7 @@ namespace System.Text.JsonLab
         {
             if (first == JsonConstants.OpenBrace)
             {
-                Depth++;
+                CurrentDepth++;
                 _containerMask = 1;
                 TokenType = JsonTokenType.StartObject;
                 _consumed++;
@@ -578,7 +603,7 @@ namespace System.Text.JsonLab
             }
             else if (first == JsonConstants.OpenBracket)
             {
-                Depth++;
+                CurrentDepth++;
                 TokenType = JsonTokenType.StartArray;
                 _consumed++;
                 _position++;
