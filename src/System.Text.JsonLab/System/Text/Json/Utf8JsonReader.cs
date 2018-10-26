@@ -40,13 +40,13 @@ namespace System.Text.JsonLab
                     ThrowArgumentException("Max depth must be positive.");
                 _maxDepth = value;
                 if (_maxDepth > StackFreeMaxDepth)
-                    _stack = new Stack<InternalJsonTokenType>();
+                    _stack = new Stack<JsonTokenType>();
             }
         }
 
         private int _maxDepth;
 
-        private Stack<InternalJsonTokenType> _stack;
+        private Stack<JsonTokenType> _stack;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -78,7 +78,7 @@ namespace System.Text.JsonLab
             {
                 _readerOptions = value;
                 if (_readerOptions == JsonReaderOptions.AllowComments && _stack == null)
-                    _stack = new Stack<InternalJsonTokenType>();
+                    _stack = new Stack<JsonTokenType>();
             }
         }
 
@@ -88,7 +88,7 @@ namespace System.Text.JsonLab
             => new JsonReaderState
             {
                 _containerMask = _containerMask,
-                _depth = Depth,
+                _currentDepth = Depth,
                 _inObject = _inObject,
                 _stack = _stack,
                 _tokenType = TokenType,
@@ -157,7 +157,7 @@ namespace System.Text.JsonLab
             if (!state.IsDefault)
             {
                 _containerMask = state._containerMask;
-                Depth = state._depth;
+                Depth = state._currentDepth;
                 _inObject = state._inObject;
                 _stack = state._stack;
                 TokenType = state._tokenType;
@@ -266,7 +266,7 @@ namespace System.Text.JsonLab
             if (!state.IsDefault)
             {
                 _containerMask = state._containerMask;
-                Depth = state._depth;
+                Depth = state._currentDepth;
                 _inObject = state._inObject;
                 _stack = state._stack;
                 TokenType = state._tokenType;
@@ -503,7 +503,7 @@ namespace System.Text.JsonLab
             if (Depth <= StackFreeMaxDepth)
                 _containerMask = (_containerMask << 1) | 1;
             else
-                _stack.Push(InternalJsonTokenType.StartObject);
+                _stack.Push(JsonTokenType.StartObject);
 
             TokenType = JsonTokenType.StartObject;
             _inObject = true;
@@ -521,7 +521,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                _inObject = _stack.Pop() != InternalJsonTokenType.StartArray;
+                _inObject = _stack.Pop() != JsonTokenType.StartArray;
             }
 
             Depth--;
@@ -539,7 +539,7 @@ namespace System.Text.JsonLab
             if (Depth <= StackFreeMaxDepth)
                 _containerMask = _containerMask << 1;
             else
-                _stack.Push(InternalJsonTokenType.StartArray);
+                _stack.Push(JsonTokenType.StartArray);
 
             TokenType = JsonTokenType.StartArray;
             _inObject = false;
@@ -557,7 +557,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                _inObject = _stack.Pop() != InternalJsonTokenType.StartArray;
+                _inObject = _stack.Pop() != JsonTokenType.StartArray;
             }
 
             Depth--;
@@ -777,12 +777,12 @@ namespace System.Text.JsonLab
                     {
                         _consumed--;
                         _position--;
-                        TokenType = (JsonTokenType)_stack.Pop();
+                        TokenType = _stack.Pop();
                         if (ReadSingleSegment())
                             return InternalResult.Success;
                         else
                         {
-                            _stack.Push((InternalJsonTokenType)TokenType);
+                            _stack.Push(TokenType);
                             return InternalResult.FailureRollback;
                         }
                     }
@@ -1118,7 +1118,7 @@ namespace System.Text.JsonLab
             _position = 0;
             _lineNumber++;
         Done:
-            _stack.Push((InternalJsonTokenType)TokenType);
+            _stack.Push(TokenType);
             TokenType = JsonTokenType.Comment;
             _consumed += 2 + Value.Length;
             return true;
@@ -1147,7 +1147,7 @@ namespace System.Text.JsonLab
             }
 
             Debug.Assert(idx >= 1);
-            _stack.Push((InternalJsonTokenType)TokenType);
+            _stack.Push(TokenType);
             Value = localCopy.Slice(0, idx - 1);
             TokenType = JsonTokenType.Comment;
             _consumed += 4 + Value.Length;

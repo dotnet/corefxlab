@@ -104,7 +104,7 @@ namespace System.Text.JsonLab.Tests
             return builder.ToString();
         }
 
-        public static void SetKeyValues(ref HeapableReader.Token json, Dictionary<string, object> dictionary, ref string key, ref object value)
+        public static void SetKeyValues(ref Utf8Json.Reader json, Dictionary<string, object> dictionary, ref string key, ref object value)
         {
             while (json.Read())
             {
@@ -189,8 +189,8 @@ namespace System.Text.JsonLab.Tests
                 return false;
             }
 
-            var reader = new HeapableReader();
-            var json = reader.Read(payload);
+            var reader = new Utf8Json();
+            var json = reader.GetReader(payload);
 
             CheckRead(ref json);
             EnsureObjectStart(ref json);
@@ -350,7 +350,7 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
-        public static int? ReadAsInt32(ref HeapableReader.Token reader, string propertyName)
+        public static int? ReadAsInt32(ref Utf8Json.Reader reader, string propertyName)
         {
             reader.Read();
 
@@ -380,7 +380,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static bool CheckRead(ref HeapableReader.Token reader)
+        public static bool CheckRead(ref Utf8Json.Reader reader)
         {
             if (!reader.Read())
             {
@@ -414,7 +414,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        public static void EnsureObjectStart(ref HeapableReader.Token reader)
+        public static void EnsureObjectStart(ref Utf8Json.Reader reader)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -496,8 +496,8 @@ namespace System.Text.JsonLab.Tests
                 return false;
             }
 
-            var reader = new HeapableReader();
-            HeapableReader.Token json = reader.Read(payload);
+            var reader = new Utf8Json();
+            Utf8Json.Reader json = reader.GetReader(payload);
             CheckRead(ref json);
             EnsureObjectStart(ref json);
 
@@ -566,7 +566,7 @@ namespace System.Text.JsonLab.Tests
 #endif
         }
 
-        public static unsafe string ReadAsString(ref HeapableReader.Token reader, string propertyName)
+        public static unsafe string ReadAsString(ref Utf8Json.Reader reader, string propertyName)
         {
             reader.Read();
 
@@ -621,8 +621,8 @@ namespace System.Text.JsonLab.Tests
 
         public static void HeapableJsonLabEmptyLoopHelper(byte[] data)
         {
-            var reader = new HeapableReader();
-            HeapableReader.Token json = reader.Read(data);
+            var reader = new Utf8Json();
+            Utf8Json.Reader json = reader.GetReader(data);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -666,11 +666,11 @@ namespace System.Text.JsonLab.Tests
         public static byte[] HeapableJsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
-            var json = new HeapableReader()
+            var json = new Utf8Json()
             {
                 Options = options
             };
-            HeapableReader.Token reader = json.Read(sequence);
+            Utf8Json.Reader reader = json.GetReader(sequence);
             byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
             reader.Dispose();
 
@@ -808,7 +808,7 @@ namespace System.Text.JsonLab.Tests
             return outputArray;
         }
 
-        public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref HeapableReader.Token json)
+        public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref Utf8Json.Reader json)
         {
             byte[] outputArray = new byte[inpuDataLength];
             Span<byte> destination = outputArray;
@@ -904,7 +904,7 @@ namespace System.Text.JsonLab.Tests
             return root;
         }
 
-        public static object JsonLabReaderLoop(ref HeapableReader.Token json)
+        public static object JsonLabReaderLoop(ref Utf8Json.Reader json)
         {
             object root = null;
 
@@ -1039,7 +1039,7 @@ namespace System.Text.JsonLab.Tests
             return dictionary;
         }
 
-        public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref HeapableReader.Token json)
+        public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref Utf8Json.Reader json)
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
@@ -1182,7 +1182,7 @@ namespace System.Text.JsonLab.Tests
             return arrayList;
         }
 
-        public static List<object> JsonLabReaderListLoop(ref HeapableReader.Token json)
+        public static List<object> JsonLabReaderListLoop(ref Utf8Json.Reader json)
         {
             List<object> arrayList = new List<object>();
 
@@ -1232,11 +1232,11 @@ namespace System.Text.JsonLab.Tests
 
         public static byte[] HeapableJsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var json = new HeapableReader()
+            var json = new Utf8Json()
             {
                 Options = options
             };
-            HeapableReader.Token reader = json.Read(data);
+            Utf8Json.Reader reader = json.GetReader(data);
             return JsonLabReaderLoop(data.Length, out length, ref reader);
         }
 
@@ -1270,11 +1270,11 @@ namespace System.Text.JsonLab.Tests
 
         public static object JsonLabReturnObjectHelperHeapable(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var reader = new HeapableReader()
+            var reader = new Utf8Json()
             {
                 Options = options
             };
-            HeapableReader.Token json = reader.Read(data);
+            Utf8Json.Reader json = reader.GetReader(data);
             return JsonLabReaderLoop(ref json);
         }
 

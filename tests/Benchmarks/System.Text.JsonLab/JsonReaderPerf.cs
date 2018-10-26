@@ -123,8 +123,8 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void HeapableReaderSystemTextJsonLabSpanEmptyLoop()
         {
-            var reader = new HeapableReader();
-            HeapableReader.Token json = reader.Read(_dataUtf8);
+            var reader = new Utf8Json();
+            Utf8Json.Reader json = reader.GetReader(_dataUtf8);
             while (json.Read()) ;
         }
 
@@ -211,9 +211,9 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
-            var json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new global::Utf8Json.JsonReader(_dataUtf8);
 
-            while (json.GetCurrentJsonToken() != Utf8Json.JsonToken.None)
+            while (json.GetCurrentJsonToken() != global::Utf8Json.JsonToken.None)
             {
                 json.ReadNext();
             }
@@ -222,24 +222,24 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
-            var json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new global::Utf8Json.JsonReader(_dataUtf8);
 
             var outputArray = new byte[_dataUtf8.Length * 2];
             Span<byte> destination = outputArray;
 
-            Utf8Json.JsonToken token = json.GetCurrentJsonToken();
-            while (token != Utf8Json.JsonToken.None)
+            global::Utf8Json.JsonToken token = json.GetCurrentJsonToken();
+            while (token != global::Utf8Json.JsonToken.None)
             {
                 json.ReadNext();
                 token = json.GetCurrentJsonToken();
 
                 switch (token)
                 {
-                    case Utf8Json.JsonToken.String:
-                    case Utf8Json.JsonToken.Number:
-                    case Utf8Json.JsonToken.True:
-                    case Utf8Json.JsonToken.False:
-                    case Utf8Json.JsonToken.Null:
+                    case global::Utf8Json.JsonToken.String:
+                    case global::Utf8Json.JsonToken.Number:
+                    case global::Utf8Json.JsonToken.True:
+                    case global::Utf8Json.JsonToken.False:
+                    case global::Utf8Json.JsonToken.Null:
                         ReadOnlySpan<byte> valueSpan = json.ReadNextBlockSegment();
                         valueSpan.CopyTo(destination);
                         destination[valueSpan.Length] = (byte)',';

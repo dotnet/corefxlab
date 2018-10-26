@@ -9,9 +9,9 @@ namespace System.Text.JsonLab
     public struct JsonReaderState
     {
         internal ulong _containerMask;
-        internal int _depth;
+        internal int _currentDepth;
         internal bool _inObject;
-        internal Stack<InternalJsonTokenType> _stack;
+        internal Stack<JsonTokenType> _stack;
         internal JsonTokenType _tokenType;
         internal long _lineNumber;
         internal long _position;
@@ -19,7 +19,7 @@ namespace System.Text.JsonLab
 
         internal bool IsDefault
             => _containerMask == default &&
-            _depth == default &&
+            _currentDepth == default &&
             _inObject == default &&
             _stack == null &&
             _tokenType == default &&

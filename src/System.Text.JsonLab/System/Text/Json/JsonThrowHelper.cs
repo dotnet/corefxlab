@@ -65,7 +65,7 @@ namespace System.Text.JsonLab
             return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
-        public static void ThrowJsonReaderException(ref HeapableReader.Token json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
+        public static void ThrowJsonReaderException(ref Utf8Json.Reader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
         {
             GetJsonReaderException(ref json, resource, nextByte, bytes);
         }
@@ -83,10 +83,10 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void GetJsonReaderException(ref HeapableReader.Token json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
+        private static void GetJsonReaderException(ref Utf8Json.Reader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
             string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
-            throw new JsonReaderException(message, json._state._lineNumber, json._state._position);
+            throw new JsonReaderException(message, json._utf8Json._state._lineNumber, json._utf8Json._state._position);
         }
 
         public static void ThrowInvalidCastException()
@@ -248,7 +248,7 @@ namespace System.Text.JsonLab
 
         // This function will convert an ExceptionResource enum value to the resource string.
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static string GetResourceString(ref HeapableReader.Token json, ExceptionResource resource, char character, string characters)
+        private static string GetResourceString(ref Utf8Json.Reader json, ExceptionResource resource, char character, string characters)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), resource),
                 "The enum value is not defined, please check the ExceptionResource Enum.");
@@ -258,13 +258,13 @@ namespace System.Text.JsonLab
             switch (resource)
             {
                 case ExceptionResource.ArrayDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json._state.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json._utf8Json.MaxDepth);
                     break;
                 case ExceptionResource.ArrayEndWithinObject:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {
@@ -311,13 +311,13 @@ namespace System.Text.JsonLab
                     message = string.Format(formatString, json.TokenType);
                     break;
                 case ExceptionResource.ObjectDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json._state.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json._utf8Json.MaxDepth);
                     break;
                 case ExceptionResource.ObjectEndWithinArray:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {

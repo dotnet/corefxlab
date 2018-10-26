@@ -4,112 +4,15 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
 {
-    public class HeapableReader
+    public partial class Utf8Json
     {
-        public Token Read(ReadOnlySequence<byte> jsonData, bool isFinalBlock = true) => new Token(this, jsonData, isFinalBlock);
-
-        public Token Read(ReadOnlySpan<byte> jsonData, bool isFinalBlock = true) => new Token(this, jsonData, isFinalBlock);
-
-        // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
-        internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
-
-        // This mask represents a tiny stack to track the state during nested transitions.
-        // The first bit represents the state of the current level (1 == object, 0 == array).
-        // Each subsequent bit is the parent / containing type (object or array). Since this
-        // reader does a linear scan, we only need to keep a single path as we go through the data.
-        internal ulong _containerMask;
-        internal int _depth;
-        internal bool _inObject;
-        internal Stack<InternalJsonTokenType> _stack;
-        internal JsonTokenType _tokenType;
-        internal long _lineNumber;
-        internal long _position;
-        internal bool _isSingleValue;
-
-        private JsonReaderOptions _readerOptions;
-        private int _maxDepth;
-
-        public HeapableReader()
-        {
-            _containerMask = 0;
-            _depth = 0;
-            _inObject = false;
-            _stack = null;
-            _tokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-            _isSingleValue = true;
-
-            _readerOptions = JsonReaderOptions.Default;
-            _maxDepth = StackFreeMaxDepth;
-        }
-
-        public HeapableReader(JsonReaderState initialState)
-        {
-            _containerMask = initialState._containerMask;
-            _depth = initialState._depth;
-            _inObject = initialState._inObject;
-            _stack = initialState._stack;
-            _tokenType = initialState._tokenType;
-            _lineNumber = initialState._lineNumber;
-            _position = initialState._position;
-            _isSingleValue = initialState._isSingleValue;
-
-            _readerOptions = JsonReaderOptions.Default;
-            _maxDepth = StackFreeMaxDepth;
-        }
-
-        public JsonReaderState State
-            => new JsonReaderState
-            {
-                _containerMask = _containerMask,
-                _depth = _depth,
-                _inObject = _inObject,
-                _stack = _stack,
-                _tokenType = _tokenType,
-                _lineNumber = _lineNumber,
-                _position = _position,
-                _isSingleValue = _isSingleValue
-            };
-
-        public JsonReaderOptions Options
-        {
-            get
-            {
-                return _readerOptions;
-            }
-            set
-            {
-                _readerOptions = value;
-                if (_readerOptions == JsonReaderOptions.AllowComments && _stack == null)
-                    _stack = new Stack<InternalJsonTokenType>();
-            }
-        }
-
-        public int MaxDepth
-        {
-            get
-            {
-                return _maxDepth;
-            }
-            set
-            {
-                if (value <= 0)
-                    ThrowArgumentException("Max depth must be positive.");
-                _maxDepth = value;
-                if (_maxDepth > StackFreeMaxDepth)
-                    _stack = new Stack<InternalJsonTokenType>();
-            }
-        }
-
-        public ref struct Token
+        public ref struct Reader
         {
             const int MinimumSegmentSize = 4_096;
 
@@ -124,17 +27,17 @@ namespace System.Text.JsonLab
             internal int TokenStartIndex { get; private set; }
 
             // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
-            public int Depth => _state._depth;
+            public int CurrentDepth => _utf8Json._state._currentDepth;
 
             // These properties are helpers for determining the current state of the reader
-            internal bool InArray => !_state._inObject;
+            internal bool InArray => !_utf8Json._state._inObject;
 
             private bool IsLastSpan => _isFinalBlock && (_isSingleSegment || _isLastSegment);
 
             /// <summary>
             /// Gets the token type of the last processed token in the JSON stream.
             /// </summary>
-            public JsonTokenType TokenType => _state._tokenType;
+            public JsonTokenType TokenType => _utf8Json._state._tokenType;
 
             /// <summary>
             /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
@@ -154,11 +57,11 @@ namespace System.Text.JsonLab
             private ReadOnlySequence<byte> _data;
             private bool _isLastSegment;
 
-            internal HeapableReader _state;
+            internal Utf8Json _utf8Json;
 
-            internal Token(HeapableReader jsonReader, ReadOnlySpan<byte> jsonData)
+            internal Reader(Utf8Json utf8Json, ReadOnlySpan<byte> jsonData)
             {
-                _state = jsonReader;
+                _utf8Json = utf8Json;
 
                 _isFinalBlock = true;
 
@@ -175,9 +78,9 @@ namespace System.Text.JsonLab
                 _isSingleSegment = true;
             }
 
-            internal Token(HeapableReader jsonReader, in ReadOnlySequence<byte> jsonData)
+            internal Reader(Utf8Json jsonReader, in ReadOnlySequence<byte> jsonData)
             {
-                _state = jsonReader;
+                _utf8Json = jsonReader;
 
                 _isFinalBlock = true;
 
@@ -216,9 +119,9 @@ namespace System.Text.JsonLab
                 }
             }
 
-            internal Token(HeapableReader jsonReader, ReadOnlySpan<byte> jsonData, bool isFinalBlock)
+            internal Reader(Utf8Json jsonReader, ReadOnlySpan<byte> jsonData, bool isFinalBlock)
             {
-                _state = jsonReader;
+                _utf8Json = jsonReader;
 
                 _isFinalBlock = isFinalBlock;
 
@@ -252,9 +155,9 @@ namespace System.Text.JsonLab
                 }
             }
 
-            internal Token(HeapableReader jsonReader, in ReadOnlySequence<byte> jsonData, bool isFinalBlock)
+            internal Reader(Utf8Json jsonReader, in ReadOnlySequence<byte> jsonData, bool isFinalBlock)
             {
-                _state = jsonReader;
+                _utf8Json = jsonReader;
 
                 _isFinalBlock = isFinalBlock;
 
@@ -446,15 +349,15 @@ namespace System.Text.JsonLab
 
             public void Skip()
             {
-                if (_state._tokenType == JsonTokenType.PropertyName)
+                if (_utf8Json._state._tokenType == JsonTokenType.PropertyName)
                 {
                     Read();
                 }
 
-                if (_state._tokenType == JsonTokenType.StartObject || _state._tokenType == JsonTokenType.StartArray)
+                if (_utf8Json._state._tokenType == JsonTokenType.StartObject || _utf8Json._state._tokenType == JsonTokenType.StartArray)
                 {
-                    int depth = Depth;
-                    while (Read() && depth < Depth)
+                    int depth = CurrentDepth;
+                    while (Read() && depth < CurrentDepth)
                     {
                     }
                 }
@@ -462,95 +365,95 @@ namespace System.Text.JsonLab
 
             private void StartObject()
             {
-                _state._depth++;
-                if (Depth > _state._maxDepth)
+                _utf8Json._state._currentDepth++;
+                if (CurrentDepth > _utf8Json._maxDepth)
                     ThrowJsonReaderException(ref this, ExceptionResource.ObjectDepthTooLarge);
 
-                _state._position++;
+                _utf8Json._state._position++;
 
-                if (Depth <= StackFreeMaxDepth)
-                    _state._containerMask = (_state._containerMask << 1) | 1;
+                if (CurrentDepth <= StackFreeMaxDepth)
+                    _utf8Json._state._containerMask = (_utf8Json._state._containerMask << 1) | 1;
                 else
-                    _state._stack.Push(InternalJsonTokenType.StartObject);
+                    _utf8Json._state._stack.Push(JsonTokenType.StartObject);
 
-                _state._tokenType = JsonTokenType.StartObject;
-                _state._inObject = true;
+                _utf8Json._state._tokenType = JsonTokenType.StartObject;
+                _utf8Json._state._inObject = true;
             }
 
             private void EndObject()
             {
-                if (!_state._inObject || Depth <= 0)
+                if (!_utf8Json._state._inObject || CurrentDepth <= 0)
                     ThrowJsonReaderException(ref this, ExceptionResource.ObjectEndWithinArray);
 
-                if (Depth <= StackFreeMaxDepth)
+                if (CurrentDepth <= StackFreeMaxDepth)
                 {
-                    _state._containerMask >>= 1;
-                    _state._inObject = (_state._containerMask & 1) != 0;
+                    _utf8Json._state._containerMask >>= 1;
+                    _utf8Json._state._inObject = (_utf8Json._state._containerMask & 1) != 0;
                 }
                 else
                 {
-                    _state._inObject = _state._stack.Pop() != InternalJsonTokenType.StartArray;
+                    _utf8Json._state._inObject = _utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
                 }
 
-                _state._depth--;
-                _state._tokenType = JsonTokenType.EndObject;
+                _utf8Json._state._currentDepth--;
+                _utf8Json._state._tokenType = JsonTokenType.EndObject;
             }
 
             private void StartArray()
             {
-                _state._depth++;
-                if (Depth > _state._maxDepth)
+                _utf8Json._state._currentDepth++;
+                if (CurrentDepth > _utf8Json._maxDepth)
                     ThrowJsonReaderException(ref this, ExceptionResource.ArrayDepthTooLarge);
 
-                _state._position++;
+                _utf8Json._state._position++;
 
-                if (Depth <= StackFreeMaxDepth)
-                    _state._containerMask = _state._containerMask << 1;
+                if (CurrentDepth <= StackFreeMaxDepth)
+                    _utf8Json._state._containerMask = _utf8Json._state._containerMask << 1;
                 else
-                    _state._stack.Push(InternalJsonTokenType.StartArray);
+                    _utf8Json._state._stack.Push(JsonTokenType.StartArray);
 
-                _state._tokenType = JsonTokenType.StartArray;
-                _state._inObject = false;
+                _utf8Json._state._tokenType = JsonTokenType.StartArray;
+                _utf8Json._state._inObject = false;
             }
 
             private void EndArray()
             {
-                if (_state._inObject || Depth <= 0)
+                if (_utf8Json._state._inObject || CurrentDepth <= 0)
                     ThrowJsonReaderException(ref this, ExceptionResource.ArrayEndWithinObject);
 
-                if (Depth <= StackFreeMaxDepth)
+                if (CurrentDepth <= StackFreeMaxDepth)
                 {
-                    _state._containerMask >>= 1;
-                    _state._inObject = (_state._containerMask & 1) != 0;
+                    _utf8Json._state._containerMask >>= 1;
+                    _utf8Json._state._inObject = (_utf8Json._state._containerMask & 1) != 0;
                 }
                 else
                 {
-                    _state._inObject = _state._stack.Pop() != InternalJsonTokenType.StartArray;
+                    _utf8Json._state._inObject = _utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
                 }
 
-                _state._depth--;
-                _state._tokenType = JsonTokenType.EndArray;
+                _utf8Json._state._currentDepth--;
+                _utf8Json._state._tokenType = JsonTokenType.EndArray;
             }
 
             private bool ReadFirstToken(byte first)
             {
                 if (first == JsonConstants.OpenBrace)
                 {
-                    _state._depth++;
-                    _state._containerMask = 1;
-                    _state._tokenType = JsonTokenType.StartObject;
+                    _utf8Json._state._currentDepth++;
+                    _utf8Json._state._containerMask = 1;
+                    _utf8Json._state._tokenType = JsonTokenType.StartObject;
                     _consumed++;
-                    _state._position++;
-                    _state._inObject = true;
-                    _state._isSingleValue = false;
+                    _utf8Json._state._position++;
+                    _utf8Json._state._inObject = true;
+                    _utf8Json._state._isSingleValue = false;
                 }
                 else if (first == JsonConstants.OpenBracket)
                 {
-                    _state._depth++;
-                    _state._tokenType = JsonTokenType.StartArray;
+                    _utf8Json._state._currentDepth++;
+                    _utf8Json._state._tokenType = JsonTokenType.StartArray;
                     _consumed++;
-                    _state._position++;
-                    _state._isSingleValue = false;
+                    _utf8Json._state._position++;
+                    _utf8Json._state._isSingleValue = false;
                 }
                 else
                 {
@@ -559,9 +462,9 @@ namespace System.Text.JsonLab
                         if (!TryGetNumber(_buffer.Slice(_consumed), out ReadOnlySpan<byte> number))
                             return false;
                         Value = number;
-                        _state._tokenType = JsonTokenType.Number;
+                        _utf8Json._state._tokenType = JsonTokenType.Number;
                         _consumed += Value.Length;
-                        _state._position += Value.Length;
+                        _utf8Json._state._position += Value.Length;
                         goto Done;
                     }
                     else if (ConsumeValue(first))
@@ -586,11 +489,11 @@ namespace System.Text.JsonLab
                         }
                     }
 
-                    if (_state._readerOptions != JsonReaderOptions.Default)
+                    if (_utf8Json._readerOptions != JsonReaderOptions.Default)
                     {
-                        if (_state._readerOptions == JsonReaderOptions.AllowComments)
+                        if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
                         {
-                            if (_state._tokenType == JsonTokenType.Comment || _buffer[_consumed] == JsonConstants.Solidus)
+                            if (_utf8Json._state._tokenType == JsonTokenType.Comment || _buffer[_consumed] == JsonConstants.Solidus)
                             {
                                 return true;
                             }
@@ -615,9 +518,9 @@ namespace System.Text.JsonLab
 
                 if (_consumed >= (uint)_buffer.Length)
                 {
-                    if (!_state._isSingleValue && IsLastSpan)
+                    if (!_utf8Json._state._isSingleValue && IsLastSpan)
                     {
-                        if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                        if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                     }
                     goto Done;
@@ -630,9 +533,9 @@ namespace System.Text.JsonLab
                     SkipWhiteSpace();
                     if (_consumed >= (uint)_buffer.Length)
                     {
-                        if (!_state._isSingleValue && IsLastSpan)
+                        if (!_utf8Json._state._isSingleValue && IsLastSpan)
                         {
-                            if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                            if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                                 ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                         }
                         goto Done;
@@ -642,17 +545,17 @@ namespace System.Text.JsonLab
 
                 TokenStartIndex = _consumed;
 
-                if (_state._tokenType == JsonTokenType.None)
+                if (_utf8Json._state._tokenType == JsonTokenType.None)
                 {
                     goto ReadFirstToken;
                 }
 
-                if (_state._tokenType == JsonTokenType.StartObject)
+                if (_utf8Json._state._tokenType == JsonTokenType.StartObject)
                 {
                     if (first == JsonConstants.CloseBrace)
                     {
                         _consumed++;
-                        _state._position++;
+                        _utf8Json._state._position++;
                         EndObject();
                     }
                     else
@@ -662,23 +565,23 @@ namespace System.Text.JsonLab
 
                         TokenStartIndex++;
                         int prevConsumed = _consumed;
-                        long prevPosition = _state._position;
+                        long prevPosition = _utf8Json._state._position;
                         if (ConsumePropertyName())
                         {
                             return true;
                         }
                         _consumed = prevConsumed;
-                        _state._tokenType = JsonTokenType.StartObject;
-                        _state._position = prevPosition;
+                        _utf8Json._state._tokenType = JsonTokenType.StartObject;
+                        _utf8Json._state._position = prevPosition;
                         return false;
                     }
                 }
-                else if (_state._tokenType == JsonTokenType.StartArray)
+                else if (_utf8Json._state._tokenType == JsonTokenType.StartArray)
                 {
                     if (first == JsonConstants.CloseBracket)
                     {
                         _consumed++;
-                        _state._position++;
+                        _utf8Json._state._position++;
                         EndArray();
                     }
                     else
@@ -686,16 +589,16 @@ namespace System.Text.JsonLab
                         return ConsumeValue(first);
                     }
                 }
-                else if (_state._tokenType == JsonTokenType.PropertyName)
+                else if (_utf8Json._state._tokenType == JsonTokenType.PropertyName)
                 {
                     return ConsumeValue(first);
                 }
                 else
                 {
                     int prevConsumed = _consumed;
-                    long prevPosition = _state._position;
-                    long prevLineNumber = _state._lineNumber;
-                    JsonTokenType prevTokenType = _state._tokenType;
+                    long prevPosition = _utf8Json._state._position;
+                    long prevLineNumber = _utf8Json._state._lineNumber;
+                    JsonTokenType prevTokenType = _utf8Json._state._tokenType;
                     InternalResult result = ConsumeNextToken(first);
                     if (result == InternalResult.Success)
                     {
@@ -704,9 +607,9 @@ namespace System.Text.JsonLab
                     if (result == InternalResult.FailureRollback)
                     {
                         _consumed = prevConsumed;
-                        _state._tokenType = prevTokenType;
-                        _state._position = prevPosition;
-                        _state._lineNumber = prevLineNumber;
+                        _utf8Json._state._tokenType = prevTokenType;
+                        _utf8Json._state._position = prevPosition;
+                        _utf8Json._state._lineNumber = prevLineNumber;
                     }
                     return false;
                 }
@@ -728,29 +631,29 @@ namespace System.Text.JsonLab
             private InternalResult ConsumeNextToken(byte marker)
             {
                 _consumed++;
-                _state._position++;
+                _utf8Json._state._position++;
 
-                if (_state._readerOptions != JsonReaderOptions.Default)
+                if (_utf8Json._readerOptions != JsonReaderOptions.Default)
                 {
                     //TODO: Re-evaluate use of InternalResult enum for the common case
-                    if (_state._readerOptions == JsonReaderOptions.AllowComments)
+                    if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
                     {
                         if (marker == JsonConstants.Solidus)
                         {
                             _consumed--;
-                            _state._position--;
+                            _utf8Json._state._position--;
                             return ConsumeComment() ? InternalResult.Success : InternalResult.FailureRollback;
                         }
-                        if (_state._tokenType == JsonTokenType.Comment)
+                        if (_utf8Json._state._tokenType == JsonTokenType.Comment)
                         {
                             _consumed--;
-                            _state._position--;
-                            _state._tokenType = (JsonTokenType)_state._stack.Pop();
+                            _utf8Json._state._position--;
+                            _utf8Json._state._tokenType = _utf8Json._state._stack.Pop();
                             if (ReadSingleSegment())
                                 return InternalResult.Success;
                             else
                             {
-                                _state._stack.Push((InternalJsonTokenType)_state._tokenType);
+                                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
                                 return InternalResult.FailureRollback;
                             }
                         }
@@ -761,14 +664,14 @@ namespace System.Text.JsonLab
                         if (marker == JsonConstants.Solidus)
                         {
                             _consumed--;
-                            _state._position--;
+                            _utf8Json._state._position--;
                             if (SkipComment())
                             {
                                 if (_consumed >= (uint)_buffer.Length)
                                 {
-                                    if (!_state._isSingleValue && IsLastSpan)
+                                    if (!_utf8Json._state._isSingleValue && IsLastSpan)
                                     {
-                                        if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                                        if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                                             ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                                     }
                                     return InternalResult.FalseNoRollback;
@@ -781,9 +684,9 @@ namespace System.Text.JsonLab
                                     SkipWhiteSpace();
                                     if (_consumed >= (uint)_buffer.Length)
                                     {
-                                        if (!_state._isSingleValue && IsLastSpan)
+                                        if (!_utf8Json._state._isSingleValue && IsLastSpan)
                                         {
-                                            if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                                            if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                                                 ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                                         }
                                         return InternalResult.FalseNoRollback;
@@ -805,7 +708,7 @@ namespace System.Text.JsonLab
                         if (IsLastSpan)
                         {
                             _consumed--;
-                            _state._position--;
+                            _utf8Json._state._position--;
                             ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
                         }
                         else return InternalResult.FailureRollback;
@@ -828,7 +731,7 @@ namespace System.Text.JsonLab
                     }
 
                     TokenStartIndex = _consumed;
-                    if (_state._inObject)
+                    if (_utf8Json._state._inObject)
                     {
                         if (first != JsonConstants.Quote)
                             ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyNotFound, first);
@@ -851,7 +754,7 @@ namespace System.Text.JsonLab
                 else
                 {
                     _consumed--;
-                    _state._position--;
+                    _utf8Json._state._position--;
                     ThrowJsonReaderException(ref this, ExceptionResource.FoundInvalidCharacter, marker);
                 }
                 return InternalResult.Success;
@@ -896,9 +799,9 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_state._readerOptions != JsonReaderOptions.Default)
+                    if (_utf8Json._readerOptions != JsonReaderOptions.Default)
                     {
-                        if (_state._readerOptions == JsonReaderOptions.AllowComments)
+                        if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
                         {
                             if (marker == JsonConstants.Solidus)
                             {
@@ -914,9 +817,9 @@ namespace System.Text.JsonLab
                                 {
                                     if (_consumed >= (uint)_buffer.Length)
                                     {
-                                        if (!_state._isSingleValue && IsLastSpan)
+                                        if (!_utf8Json._state._isSingleValue && IsLastSpan)
                                         {
-                                            if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                                            if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                                                 ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                                         }
                                         return false;
@@ -929,9 +832,9 @@ namespace System.Text.JsonLab
                                         SkipWhiteSpace();
                                         if (_consumed >= (uint)_buffer.Length)
                                         {
-                                            if (!_state._isSingleValue && IsLastSpan)
+                                            if (!_utf8Json._state._isSingleValue && IsLastSpan)
                                             {
-                                                if (_state._tokenType != JsonTokenType.EndArray && _state._tokenType != JsonTokenType.EndObject)
+                                                if (_utf8Json._state._tokenType != JsonTokenType.EndArray && _utf8Json._state._tokenType != JsonTokenType.EndObject)
                                                     ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                                             }
                                             return false;
@@ -987,15 +890,15 @@ namespace System.Text.JsonLab
                         idx = localCopy.Length;
                         // Assume everything on this line is a comment and there is no more data.
 
-                        _state._position += 2 + localCopy.Length;
+                        _utf8Json._state._position += 2 + localCopy.Length;
                         goto Done;
                     }
                     else return false;
                 }
 
                 _consumed++;
-                _state._position = 0;
-                _state._lineNumber++;
+                _utf8Json._state._position = 0;
+                _utf8Json._state._lineNumber++;
             Done:
                 _consumed += 2 + idx;
                 return true;
@@ -1027,14 +930,14 @@ namespace System.Text.JsonLab
                 _consumed += 3 + idx;
 
                 (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(localCopy.Slice(0, idx - 1));
-                _state._lineNumber += newLines;
+                _utf8Json._state._lineNumber += newLines;
                 if (newLineIndex != -1)
                 {
-                    _state._position = idx - newLineIndex;
+                    _utf8Json._state._position = idx - newLineIndex;
                 }
                 else
                 {
-                    _state._position += 4 + idx - 1;
+                    _utf8Json._state._position += 4 + idx - 1;
                 }
                 return true;
             }
@@ -1074,7 +977,7 @@ namespace System.Text.JsonLab
                         // Assume everything on this line is a comment and there is no more data.
                         Value = localCopy;
 
-                        _state._position += 2 + Value.Length;
+                        _utf8Json._state._position += 2 + Value.Length;
 
                         goto Done;
                     }
@@ -1083,11 +986,11 @@ namespace System.Text.JsonLab
 
                 Value = localCopy.Slice(0, idx);
                 _consumed++;
-                _state._position = 0;
-                _state._lineNumber++;
+                _utf8Json._state._position = 0;
+                _utf8Json._state._lineNumber++;
             Done:
-                _state._stack.Push((InternalJsonTokenType)_state._tokenType);
-                _state._tokenType = JsonTokenType.Comment;
+                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
+                _utf8Json._state._tokenType = JsonTokenType.Comment;
                 _consumed += 2 + Value.Length;
                 return true;
             }
@@ -1115,20 +1018,20 @@ namespace System.Text.JsonLab
                 }
 
                 Debug.Assert(idx >= 1);
-                _state._stack.Push((InternalJsonTokenType)_state._tokenType);
+                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
                 Value = localCopy.Slice(0, idx - 1);
-                _state._tokenType = JsonTokenType.Comment;
+                _utf8Json._state._tokenType = JsonTokenType.Comment;
                 _consumed += 4 + Value.Length;
 
                 (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
-                _state._lineNumber += newLines;
+                _utf8Json._state._lineNumber += newLines;
                 if (newLineIndex != -1)
                 {
-                    _state._position = Value.Length - newLineIndex + 1;
+                    _utf8Json._state._position = Value.Length - newLineIndex + 1;
                 }
                 else
                 {
-                    _state._position += 4 + Value.Length;
+                    _utf8Json._state._position += 4 + Value.Length;
                 }
                 return true;
             }
@@ -1138,9 +1041,9 @@ namespace System.Text.JsonLab
                 if (!TryGetNumberLookForEnd(_buffer.Slice(_consumed), out ReadOnlySpan<byte> number))
                     return false;
                 Value = number;
-                _state._tokenType = JsonTokenType.Number;
+                _utf8Json._state._tokenType = JsonTokenType.Number;
                 _consumed += Value.Length;
-                _state._position += Value.Length;
+                _utf8Json._state._position += Value.Length;
                 return true;
             }
 
@@ -1171,9 +1074,9 @@ namespace System.Text.JsonLab
                 Throw:
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNull, bytes: span);
                 }
-                _state._tokenType = JsonTokenType.Null;
+                _utf8Json._state._tokenType = JsonTokenType.Null;
                 _consumed += 4;
-                _state._position += 4;
+                _utf8Json._state._position += 4;
                 return true;
             }
 
@@ -1206,9 +1109,9 @@ namespace System.Text.JsonLab
                 Throw:
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedFalse, bytes: span);
                 }
-                _state._tokenType = JsonTokenType.False;
+                _utf8Json._state._tokenType = JsonTokenType.False;
                 _consumed += 5;
-                _state._position += 5;
+                _utf8Json._state._position += 5;
                 return true;
             }
 
@@ -1239,9 +1142,9 @@ namespace System.Text.JsonLab
                 Throw:
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedTrue, bytes: span);
                 }
-                _state._tokenType = JsonTokenType.True;
+                _utf8Json._state._tokenType = JsonTokenType.True;
                 _consumed += 4;
-                _state._position += 4;
+                _utf8Json._state._position += 4;
                 return true;
             }
 
@@ -1284,8 +1187,8 @@ namespace System.Text.JsonLab
                 }
 
                 _consumed++;
-                _state._position++;
-                _state._tokenType = JsonTokenType.PropertyName;
+                _utf8Json._state._position++;
+                _utf8Json._state._tokenType = JsonTokenType.PropertyName;
                 return true;
             }
 
@@ -1318,18 +1221,18 @@ namespace System.Text.JsonLab
 
                     if (localCopy.IndexOfAnyControlOrEscape() != -1)
                     {
-                        _state._position++;
+                        _utf8Json._state._position++;
                         if (ValidateEscaping_AndHex(localCopy))
                             goto Done;
                         return false;
                     }
 
-                    _state._position += idx + 1;
+                    _utf8Json._state._position += idx + 1;
 
                 Done:
-                    _state._position++;
+                    _utf8Json._state._position++;
                     Value = localCopy;
-                    _state._tokenType = JsonTokenType.String;
+                    _utf8Json._state._tokenType = JsonTokenType.String;
                     _consumed += idx + 2;
                     return true;
                 }
@@ -1358,12 +1261,12 @@ namespace System.Text.JsonLab
 
                         if (currentByte == 'n')
                         {
-                            _state._position = -1; // Should be 0, but we increment _state._position below already
-                            _state._lineNumber++;
+                            _utf8Json._state._position = -1; // Should be 0, but we increment _state._position below already
+                            _utf8Json._state._lineNumber++;
                         }
                         else if (currentByte == 'u')
                         {
-                            _state._position++;
+                            _utf8Json._state._position++;
                             int startIndex = i + 1;
                             for (int j = startIndex; j < data.Length; j++)
                             {
@@ -1374,7 +1277,7 @@ namespace System.Text.JsonLab
                                 }
                                 if (j - startIndex >= 4)
                                     break;
-                                _state._position++;
+                                _utf8Json._state._position++;
                             }
                             i += 4;
                             if (i >= data.Length)
@@ -1392,7 +1295,7 @@ namespace System.Text.JsonLab
                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
                     }
 
-                    _state._position++;
+                    _utf8Json._state._position++;
                 }
                 return true;
 
@@ -1442,18 +1345,18 @@ namespace System.Text.JsonLab
 
                 if (localCopy.IndexOfAnyControlOrEscape() != -1)
                 {
-                    _state._position++;
+                    _utf8Json._state._position++;
                     if (ValidateEscaping_AndHex(localCopy))
                         goto Done;
                     return false;
                 }
 
-                _state._position = i;
+                _utf8Json._state._position = i;
 
             Done:
-                _state._position++;
+                _utf8Json._state._position++;
                 Value = localCopy;
-                _state._tokenType = JsonTokenType.String;
+                _utf8Json._state._tokenType = JsonTokenType.String;
                 _consumed = i + 1;
                 return true;
             }
@@ -1475,12 +1378,12 @@ namespace System.Text.JsonLab
 
                     if (val == JsonConstants.LineFeed)
                     {
-                        _state._lineNumber++;
-                        _state._position = 0;
+                        _utf8Json._state._lineNumber++;
+                        _utf8Json._state._position = 0;
                     }
                     else
                     {
-                        _state._position++;
+                        _utf8Json._state._position++;
                     }
                 }
             }

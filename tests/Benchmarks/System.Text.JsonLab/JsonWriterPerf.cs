@@ -192,7 +192,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterUtf8JsonBasic(ReadOnlySpan<int> data)
         {
-            Utf8Json.JsonWriter json = new Utf8Json.JsonWriter();
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter();
 
             json.WriteBeginObject();
             json.WritePropertyName("age");
@@ -263,7 +263,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterUtf8JsonHelloWorldHelper(byte[] output)
         {
-            Utf8Json.JsonWriter json = new Utf8Json.JsonWriter(output);
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(output);
 
             json.WriteBeginObject();
             json.WritePropertyName("message");
@@ -281,7 +281,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterUtf8JsonArrayOnly(ReadOnlySpan<int> data, byte[] output)
         {
-            Utf8Json.JsonWriter json = new Utf8Json.JsonWriter(output);
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(output);
 
             json.WriteBeginArray();
             json.WritePropertyName("ExtraArray");
