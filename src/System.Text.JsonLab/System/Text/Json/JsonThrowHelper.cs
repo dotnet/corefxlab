@@ -258,7 +258,7 @@ namespace System.Text.JsonLab
             switch (resource)
             {
                 case ExceptionResource.ArrayDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.Depth, json._state.MaxDepth);
                     break;
                 case ExceptionResource.ArrayEndWithinObject:
                     if (json.Depth <= 0)
@@ -311,7 +311,7 @@ namespace System.Text.JsonLab
                     message = string.Format(formatString, json.TokenType);
                     break;
                 case ExceptionResource.ObjectDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.Depth, json._state.MaxDepth);
                     break;
                 case ExceptionResource.ObjectEndWithinArray:
                     if (json.Depth <= 0)

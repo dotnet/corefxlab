@@ -467,22 +467,25 @@ namespace System.Text.JsonLab.Tests
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
-                    var reader = new HeapableReader();
+                    var reader = new HeapableReader
+                    {
+                        Options = option
+                    };
                     HeapableReader.Token json = reader.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                    json.Options = option;
                     while (json.Read()) ;
 
                     long consumed = json.Consumed;
                     for (long j = consumed; j < dataUtf8.Length - consumed; j++)
                     {
-                        var copy = new HeapableReader(reader.State);
+                        var copy = new HeapableReader(reader.State)
+                        {
+                            Options = option
+                        };
                         json = copy.Read(dataUtf8.AsSpan((int)consumed, (int)j), isFinalBlock: false);
-                        json.Options = option;
                         while (json.Read()) ;
 
                         long consumedInner = json.Consumed;
                         json = copy.Read(dataUtf8.AsSpan((int)(consumed + consumedInner)), isFinalBlock: true);
-                        json.Options = option;
                         while (json.Read()) ;
                         Assert.Equal(dataUtf8.Length - consumedInner - consumed, json.Consumed);
                     }
@@ -518,9 +521,11 @@ namespace System.Text.JsonLab.Tests
                 string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
 
                 Span<byte> data = formatted.Array.AsSpan(formatted.Offset, formatted.Count);
-                var heapReader = new HeapableReader();
+                var heapReader = new HeapableReader()
+                {
+                    MaxDepth = depth
+                };
                 HeapableReader.Token json = heapReader.Read(data);
-                json.MaxDepth = depth;
 
                 int actualDepth = 0;
                 while (json.Read())
@@ -575,9 +580,11 @@ namespace System.Text.JsonLab.Tests
 
             Span<byte> data = formatted.Array.AsSpan(formatted.Offset, formatted.Count);
 
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                MaxDepth = depth - 1
+            };
             HeapableReader.Token json = reader.Read(data);
-            json.MaxDepth = depth - 1;
 
             try
             {
@@ -587,7 +594,7 @@ namespace System.Text.JsonLab.Tests
                     if (maxDepth < json.Depth)
                         maxDepth = json.Depth;
                 }
-                Assert.True(false, $"Expected JsonReaderException was not thrown. Max depth allowed = {json.MaxDepth} | Max depth reached = {maxDepth}");
+                Assert.True(false, $"Expected JsonReaderException was not thrown. Max depth allowed = {reader.MaxDepth} | Max depth reached = {maxDepth}");
             }
             catch (JsonReaderException)
             { }
@@ -601,10 +608,9 @@ namespace System.Text.JsonLab.Tests
             Span<byte> data = Span<byte>.Empty;
 
             var reader = new HeapableReader();
-            HeapableReader.Token json = reader.Read(data);
             try
             {
-                json.MaxDepth = depth;
+                reader.MaxDepth = depth;
                 Assert.True(false, "Expected ArgumentException was not thrown. Max depth must be set to greater than 0.");
             }
             catch (ArgumentException)
@@ -659,14 +665,15 @@ namespace System.Text.JsonLab.Tests
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
-                    var reader = new HeapableReader();
+                    var reader = new HeapableReader()
+                    {
+                        Options = option
+                    };
                     HeapableReader.Token json = reader.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                    json.Options = option;
                     while (json.Read()) ;
 
                     long consumed = json.Consumed;
                     json = reader.Read(dataUtf8.AsSpan((int)consumed), isFinalBlock: true);
-                    json.Options = option;
                     while (json.Read()) ;
                     Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
                 }
@@ -696,14 +703,15 @@ namespace System.Text.JsonLab.Tests
 
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8.AsSpan(0, splitLocation), isFinalBlock: false);
-                json.Options = option;
                 while (json.Read()) ;
                 Assert.Equal(consumed, json.Consumed);
 
                 json = reader.Read(dataUtf8.AsSpan((int)json.Consumed), isFinalBlock: true);
-                json.Options = option;
                 while (json.Read()) ;
                 Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
             }
@@ -766,14 +774,15 @@ namespace System.Text.JsonLab.Tests
             {
                 byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8.AsSpan(0, splitLocation), false);
-                json.Options = option;
                 while (json.Read()) ;
                 Assert.Equal(consumed, json.Consumed);
 
                 json = reader.Read(dataUtf8.AsSpan((int)json.Consumed), true);
-                json.Options = option;
                 try
                 {
                     while (json.Read()) ;
@@ -821,10 +830,12 @@ namespace System.Text.JsonLab.Tests
 
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    MaxDepth = maxDepth,
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8, false);
-                json.MaxDepth = maxDepth;
-                json.Options = option;
 
                 try
                 {
@@ -848,9 +859,11 @@ namespace System.Text.JsonLab.Tests
 
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8, false);
-                json.Options = option;
 
                 try
                 {
@@ -930,10 +943,12 @@ namespace System.Text.JsonLab.Tests
 
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    MaxDepth = maxDepth,
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8);
-                json.Options = option;
-                json.MaxDepth = maxDepth;
 
                 try
                 {
@@ -954,10 +969,12 @@ namespace System.Text.JsonLab.Tests
                     BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
                     var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
-                    var readerIn = new HeapableReader();
+                    var readerIn = new HeapableReader()
+                    {
+                        MaxDepth = maxDepth,
+                        Options = option
+                    };
                     HeapableReader.Token jsonMultiSegment = readerIn.Read(sequence);
-                    jsonMultiSegment.Options = option;
-                    jsonMultiSegment.MaxDepth = maxDepth;
 
                     try
                     {
@@ -1045,10 +1062,12 @@ namespace System.Text.JsonLab.Tests
 
             foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
             {
-                var reader = new HeapableReader();
+                var reader = new HeapableReader()
+                {
+                    MaxDepth = maxDepth,
+                    Options = option
+                };
                 HeapableReader.Token json = reader.Read(dataUtf8);
-                json.Options = option;
-                json.MaxDepth = maxDepth;
 
                 try
                 {
@@ -1065,17 +1084,17 @@ namespace System.Text.JsonLab.Tests
                 {
                     try
                     {
-                        var readerIn = new HeapableReader();
+                        var readerIn = new HeapableReader()
+                        {
+                            MaxDepth = maxDepth,
+                            Options = option
+                        };
                         HeapableReader.Token jsonSlice = readerIn.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                        jsonSlice.Options = option;
-                        jsonSlice.MaxDepth = maxDepth;
                         while (jsonSlice.Read()) ;
 
                         long consumed = jsonSlice.Consumed;
 
                         jsonSlice = readerIn.Read(dataUtf8.AsSpan((int)consumed), isFinalBlock: true);
-                        jsonSlice.Options = option;
-                        jsonSlice.MaxDepth = maxDepth;
                         while (jsonSlice.Read()) ;
 
                         Assert.True(false, "Expected JsonReaderException was not thrown with multi-segment data.");
@@ -1132,9 +1151,11 @@ namespace System.Text.JsonLab.Tests
         public static void AllowComments(string jsonString, string expectedComment, int expectedIndex)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.AllowComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.AllowComments;
 
             bool foundComment = false;
             long indexAfterFirstComment = 0;
@@ -1164,9 +1185,11 @@ namespace System.Text.JsonLab.Tests
                 BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
                 var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.AllowComments
+                };
                 HeapableReader.Token jsonMultiSegment = readerIn.Read(sequence);
-                jsonMultiSegment.Options = JsonReaderOptions.AllowComments;
 
                 foundComment = false;
                 indexAfterFirstComment = 0;
@@ -1229,9 +1252,11 @@ namespace System.Text.JsonLab.Tests
         public static void AllowCommentsSingleSegment(string jsonString, string expectedComment, int expectedIndex)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.AllowComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.AllowComments;
 
             bool foundComment = false;
             long indexAfterFirstComment = 0;
@@ -1255,9 +1280,11 @@ namespace System.Text.JsonLab.Tests
 
             for (int i = 0; i < dataUtf8.Length; i++)
             {
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.AllowComments
+                };
                 HeapableReader.Token jsonSlice = readerIn.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                jsonSlice.Options = JsonReaderOptions.AllowComments;
 
                 foundComment = false;
                 indexAfterFirstComment = 0;
@@ -1280,7 +1307,6 @@ namespace System.Text.JsonLab.Tests
                 int consumed = (int)jsonSlice.Consumed;
 
                 jsonSlice = readerIn.Read(dataUtf8.AsSpan(consumed), isFinalBlock: true);
-                jsonSlice.Options = JsonReaderOptions.AllowComments;
 
                 if (!foundComment)
                 {
@@ -1344,9 +1370,11 @@ namespace System.Text.JsonLab.Tests
         public static void SkipComments(string jsonString, int expectedConsumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.SkipComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.SkipComments;
 
             JsonTokenType prevTokenType = JsonTokenType.None;
             while (json.Read())
@@ -1371,9 +1399,11 @@ namespace System.Text.JsonLab.Tests
                 BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
                 var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.SkipComments
+                };
                 HeapableReader.Token jsonMultiSegment = readerIn.Read(sequence);
-                jsonMultiSegment.Options = JsonReaderOptions.SkipComments;
                 prevTokenType = JsonTokenType.None;
                 while (jsonMultiSegment.Read())
                 {
@@ -1430,9 +1460,11 @@ namespace System.Text.JsonLab.Tests
         public static void SkipCommentsSingleSegment(string jsonString, int expectedConsumed)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.SkipComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.SkipComments;
 
             JsonTokenType prevTokenType = JsonTokenType.None;
             while (json.Read())
@@ -1451,9 +1483,11 @@ namespace System.Text.JsonLab.Tests
 
             for (int i = 0; i < dataUtf8.Length; i++)
             {
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.SkipComments
+                };
                 HeapableReader.Token jsonSlice = readerIn.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                jsonSlice.Options = JsonReaderOptions.SkipComments;
 
                 prevTokenType = JsonTokenType.None;
                 while (jsonSlice.Read())
@@ -1471,7 +1505,6 @@ namespace System.Text.JsonLab.Tests
 
                 int prevConsumed = (int)jsonSlice.Consumed;
                 jsonSlice = readerIn.Read(dataUtf8.AsSpan(prevConsumed), isFinalBlock: true);
-                jsonSlice.Options = JsonReaderOptions.SkipComments;
 
                 while (jsonSlice.Read())
                 {
@@ -1738,9 +1771,11 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.AllowComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.AllowComments;
 
             try
             {
@@ -1761,9 +1796,11 @@ namespace System.Text.JsonLab.Tests
                 BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
                 var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.AllowComments
+                };
                 HeapableReader.Token jsonMultiSegment = readerIn.Read(sequence);
-                jsonMultiSegment.Options = JsonReaderOptions.AllowComments;
 
                 try
                 {
@@ -1835,9 +1872,11 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = JsonReaderOptions.AllowComments
+            };
             HeapableReader.Token json = reader.Read(dataUtf8);
-            json.Options = JsonReaderOptions.AllowComments;
 
             try
             {
@@ -1854,16 +1893,17 @@ namespace System.Text.JsonLab.Tests
             for (int i = 0; i < dataMemory.Length; i++)
             {
 
-                var readerIn = new HeapableReader();
+                var readerIn = new HeapableReader()
+                {
+                    Options = JsonReaderOptions.AllowComments
+                };
                 HeapableReader.Token jsonSlice = readerIn.Read(dataUtf8.AsSpan(0, i), isFinalBlock: false);
-                jsonSlice.Options = JsonReaderOptions.AllowComments;
 
                 try
                 {
                     while (jsonSlice.Read()) ;
 
                     jsonSlice = readerIn.Read(dataUtf8.AsSpan((int)jsonSlice.Consumed), isFinalBlock: true);
-                    jsonSlice.Options = JsonReaderOptions.AllowComments;
 
                     while (jsonSlice.Read()) ;
 

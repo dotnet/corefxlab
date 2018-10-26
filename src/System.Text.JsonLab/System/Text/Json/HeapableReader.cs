@@ -17,6 +17,9 @@ namespace System.Text.JsonLab
 
         public Token Read(ReadOnlySpan<byte> jsonData, bool isFinalBlock = true) => new Token(this, jsonData, isFinalBlock);
 
+        // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
+        internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
+
         // This mask represents a tiny stack to track the state during nested transitions.
         // The first bit represents the state of the current level (1 == object, 0 == array).
         // Each subsequent bit is the parent / containing type (object or array). Since this
@@ -30,6 +33,9 @@ namespace System.Text.JsonLab
         internal long _position;
         internal bool _isSingleValue;
 
+        private JsonReaderOptions _readerOptions;
+        private int _maxDepth;
+
         public HeapableReader()
         {
             _containerMask = 0;
@@ -40,18 +46,24 @@ namespace System.Text.JsonLab
             _lineNumber = 1;
             _position = 0;
             _isSingleValue = true;
+
+            _readerOptions = JsonReaderOptions.Default;
+            _maxDepth = StackFreeMaxDepth;
         }
 
-        public HeapableReader(JsonReaderState state)
+        public HeapableReader(JsonReaderState initialState)
         {
-            _containerMask = state._containerMask;
-            _depth = state._depth;
-            _inObject = state._inObject;
-            _stack = state._stack;
-            _tokenType = state._tokenType;
-            _lineNumber = state._lineNumber;
-            _position = state._position;
-            _isSingleValue = state._isSingleValue;
+            _containerMask = initialState._containerMask;
+            _depth = initialState._depth;
+            _inObject = initialState._inObject;
+            _stack = initialState._stack;
+            _tokenType = initialState._tokenType;
+            _lineNumber = initialState._lineNumber;
+            _position = initialState._position;
+            _isSingleValue = initialState._isSingleValue;
+
+            _readerOptions = JsonReaderOptions.Default;
+            _maxDepth = StackFreeMaxDepth;
         }
 
         public JsonReaderState State
@@ -67,11 +79,38 @@ namespace System.Text.JsonLab
                 _isSingleValue = _isSingleValue
             };
 
+        public JsonReaderOptions Options
+        {
+            get
+            {
+                return _readerOptions;
+            }
+            set
+            {
+                _readerOptions = value;
+                if (_readerOptions == JsonReaderOptions.AllowComments && _stack == null)
+                    _stack = new Stack<InternalJsonTokenType>();
+            }
+        }
+
+        public int MaxDepth
+        {
+            get
+            {
+                return _maxDepth;
+            }
+            set
+            {
+                if (value <= 0)
+                    ThrowArgumentException("Max depth must be positive.");
+                _maxDepth = value;
+                if (_maxDepth > StackFreeMaxDepth)
+                    _stack = new Stack<InternalJsonTokenType>();
+            }
+        }
+
         public ref struct Token
         {
-            // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
-            internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
-
             const int MinimumSegmentSize = 4_096;
 
             private ReadOnlySpan<byte> _buffer;
@@ -83,24 +122,6 @@ namespace System.Text.JsonLab
             public long Consumed => _totalConsumed + _consumed;
 
             internal int TokenStartIndex { get; private set; }
-
-            public int MaxDepth
-            {
-                get
-                {
-                    return _maxDepth;
-                }
-                set
-                {
-                    if (value <= 0)
-                        ThrowArgumentException("Max depth must be positive.");
-                    _maxDepth = value;
-                    if (_maxDepth > StackFreeMaxDepth)
-                        _state._stack = new Stack<InternalJsonTokenType>();
-                }
-            }
-
-            private int _maxDepth;
 
             // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
             public int Depth => _state._depth;
@@ -114,22 +135,6 @@ namespace System.Text.JsonLab
             /// Gets the token type of the last processed token in the JSON stream.
             /// </summary>
             public JsonTokenType TokenType => _state._tokenType;
-
-            public JsonReaderOptions Options
-            {
-                get
-                {
-                    return _readerOptions;
-                }
-                set
-                {
-                    _readerOptions = value;
-                    if (_readerOptions == JsonReaderOptions.AllowComments && _state._stack == null)
-                        _state._stack = new Stack<InternalJsonTokenType>();
-                }
-            }
-
-            private JsonReaderOptions _readerOptions;
 
             /// <summary>
             /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
@@ -161,10 +166,7 @@ namespace System.Text.JsonLab
                 _totalConsumed = 0;
                 _consumed = 0;
                 TokenStartIndex = _consumed;
-                _maxDepth = StackFreeMaxDepth;
                 Value = ReadOnlySpan<byte>.Empty;
-                
-                _readerOptions = JsonReaderOptions.Default;
 
                 _pooledArray = null;
                 _nextPosition = default;
@@ -183,9 +185,7 @@ namespace System.Text.JsonLab
                 _totalConsumed = 0;
                 _consumed = 0;
                 TokenStartIndex = _consumed;
-                _maxDepth = StackFreeMaxDepth;
                 Value = ReadOnlySpan<byte>.Empty;
-                _readerOptions = JsonReaderOptions.Default;
 
                 _data = jsonData;
 
@@ -226,9 +226,7 @@ namespace System.Text.JsonLab
                 _totalConsumed = 0;
                 _consumed = 0;
                 TokenStartIndex = _consumed;
-                _maxDepth = StackFreeMaxDepth;
                 Value = ReadOnlySpan<byte>.Empty;
-                _readerOptions = JsonReaderOptions.Default;
 
                 _pooledArray = null;
                 _nextPosition = default;
@@ -264,9 +262,7 @@ namespace System.Text.JsonLab
                 _totalConsumed = 0;
                 _consumed = 0;
                 TokenStartIndex = _consumed;
-                _maxDepth = StackFreeMaxDepth;
                 Value = ReadOnlySpan<byte>.Empty;
-                _readerOptions = JsonReaderOptions.Default;
 
                 _data = jsonData;
 
@@ -467,7 +463,7 @@ namespace System.Text.JsonLab
             private void StartObject()
             {
                 _state._depth++;
-                if (Depth > MaxDepth)
+                if (Depth > _state._maxDepth)
                     ThrowJsonReaderException(ref this, ExceptionResource.ObjectDepthTooLarge);
 
                 _state._position++;
@@ -503,7 +499,7 @@ namespace System.Text.JsonLab
             private void StartArray()
             {
                 _state._depth++;
-                if (Depth > MaxDepth)
+                if (Depth > _state._maxDepth)
                     ThrowJsonReaderException(ref this, ExceptionResource.ArrayDepthTooLarge);
 
                 _state._position++;
@@ -590,9 +586,9 @@ namespace System.Text.JsonLab
                         }
                     }
 
-                    if (_readerOptions != JsonReaderOptions.Default)
+                    if (_state._readerOptions != JsonReaderOptions.Default)
                     {
-                        if (_readerOptions == JsonReaderOptions.AllowComments)
+                        if (_state._readerOptions == JsonReaderOptions.AllowComments)
                         {
                             if (_state._tokenType == JsonTokenType.Comment || _buffer[_consumed] == JsonConstants.Solidus)
                             {
@@ -734,10 +730,10 @@ namespace System.Text.JsonLab
                 _consumed++;
                 _state._position++;
 
-                if (_readerOptions != JsonReaderOptions.Default)
+                if (_state._readerOptions != JsonReaderOptions.Default)
                 {
                     //TODO: Re-evaluate use of InternalResult enum for the common case
-                    if (_readerOptions == JsonReaderOptions.AllowComments)
+                    if (_state._readerOptions == JsonReaderOptions.AllowComments)
                     {
                         if (marker == JsonConstants.Solidus)
                         {
@@ -900,9 +896,9 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_readerOptions != JsonReaderOptions.Default)
+                    if (_state._readerOptions != JsonReaderOptions.Default)
                     {
-                        if (_readerOptions == JsonReaderOptions.AllowComments)
+                        if (_state._readerOptions == JsonReaderOptions.AllowComments)
                         {
                             if (marker == JsonConstants.Solidus)
                             {

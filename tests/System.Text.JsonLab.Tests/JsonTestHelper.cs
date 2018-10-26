@@ -666,9 +666,11 @@ namespace System.Text.JsonLab.Tests
         public static byte[] HeapableJsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
-            var json = new HeapableReader();
+            var json = new HeapableReader()
+            {
+                Options = options
+            };
             HeapableReader.Token reader = json.Read(sequence);
-            reader.Options = options;
             byte[] result = JsonLabReaderLoop(data.Length, out length, ref reader);
             reader.Dispose();
 
@@ -1230,9 +1232,11 @@ namespace System.Text.JsonLab.Tests
 
         public static byte[] HeapableJsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var json = new HeapableReader();
+            var json = new HeapableReader()
+            {
+                Options = options
+            };
             HeapableReader.Token reader = json.Read(data);
-            reader.Options = options;
             return JsonLabReaderLoop(data.Length, out length, ref reader);
         }
 
@@ -1266,9 +1270,11 @@ namespace System.Text.JsonLab.Tests
 
         public static object JsonLabReturnObjectHelperHeapable(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
         {
-            var reader = new HeapableReader();
+            var reader = new HeapableReader()
+            {
+                Options = options
+            };
             HeapableReader.Token json = reader.Read(data);
-            json.Options = options;
             return JsonLabReaderLoop(ref json);
         }
 
