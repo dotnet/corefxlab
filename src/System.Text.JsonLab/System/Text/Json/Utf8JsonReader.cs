@@ -84,7 +84,7 @@ namespace System.Text.JsonLab
 
         private JsonReaderOptions _readerOptions;
 
-        public JsonReaderState State
+        public JsonReaderState CurrentState
             => new JsonReaderState
             {
                 _containerMask = _containerMask,

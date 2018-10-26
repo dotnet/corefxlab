@@ -119,7 +119,7 @@ namespace System.Text.JsonLab.Tests
                 }
             }
             json.Dispose();
-            return (json.State, builder.ToString());
+            return (json.CurrentState, builder.ToString());
         }
 
         //[Fact]
@@ -216,9 +216,9 @@ namespace System.Text.JsonLab.Tests
                 if (pooledArray != null)    // TODO: Will this work if data spans more than two segments?
                     ArrayPool<byte>.Shared.Return(pooledArray);
 
-                state = json.State;
+                state = json.CurrentState;
             }
-            return (json.State, ros.GetPosition(totalConsumed), builder.ToString());
+            return (json.CurrentState, ros.GetPosition(totalConsumed), builder.ToString());
         }
     }
 }

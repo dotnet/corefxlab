@@ -81,7 +81,7 @@ namespace System.Text.JsonLab
 
                 _buffer = _pooledArray.AsSpan(0, numberOfBytes);
 
-                _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock, _jsonReader.State);
+                _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock, _jsonReader.CurrentState);
                 result = _jsonReader.Read();
             } while (!result && !_isFinalBlock);
 
