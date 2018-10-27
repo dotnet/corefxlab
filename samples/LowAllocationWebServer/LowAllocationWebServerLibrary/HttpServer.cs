@@ -84,12 +84,12 @@ namespace Microsoft.Net
                 var requestBytes = new ReadOnlySequence<byte>(rootBuffer, 0, requestBuffer, requestBuffer.Memory.Length);
 
                 var request = new HttpRequest();
-                if(!s_parser.ParseRequestLine(ref request, requestBytes, out int consumed))
+                if(!s_parser.ParseRequestLine(request, requestBytes, out int consumed))
                 {
                     throw new Exception();
                 }
                 requestBytes = requestBytes.Slice(consumed);
-                if (!s_parser.ParseHeaders(ref request, requestBytes, out consumed))
+                if (!s_parser.ParseHeaders(request, requestBytes, out consumed))
                 {
                     throw new Exception();
                 }

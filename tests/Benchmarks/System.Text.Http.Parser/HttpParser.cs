@@ -30,23 +30,32 @@ namespace System.Text.Http.Parser.Benchmarks
         private static readonly ReadOnlySequence<byte> s_plaintextTechEmpowerRequestRos = new ReadOnlySequence<byte>(s_plaintextTechEmpowerRequestArray);
         private static readonly ReadOnlySequence<byte> s_plaintextTechEmpowerHeadersRos = new ReadOnlySequence<byte>(s_plaintextTechEmpowerHeadersArray);
 
-        private static readonly System.Text.Http.Parser.HttpParser s_parser = new System.Text.Http.Parser.HttpParser();
+        private static readonly HttpParser s_parser = new HttpParser();
 
         // new T(); is very expensive because it calls Activator.CreateInstance
         // so we create it once and keep it in the field (the benchmarks are not mutating it's state so it's fine)
         private T request = new T();
 
         [Benchmark]
-        public void RequestLine() => s_parser.ParseRequestLine(request, s_plaintextTechEmpowerRequestRos, out _, out _);
+        public void RequestLine()
+        {
+            BufferReader<byte> reader = new BufferReader<byte>(s_plaintextTechEmpowerRequestRos);
+            s_parser.ParseRequestLine(request, ref reader);
+        }
 
         [Benchmark]
-        public void Headers() => s_parser.ParseHeaders(request, s_plaintextTechEmpowerHeadersRos, out _, out _, out _);
+        public void Headers()
+        {
+            BufferReader<byte> reader = new BufferReader<byte>(s_plaintextTechEmpowerHeadersRos);
+            s_parser.ParseHeaders(request, ref reader);
+        }
 
         [Benchmark]
         public void FullRequest()
         {
-            s_parser.ParseRequestLine(request, s_plaintextTechEmpowerRequestRos, out var consumed, out _);
-            s_parser.ParseHeaders(request, s_plaintextTechEmpowerRequestRos.Slice(consumed), out consumed, out _, out _);
+            BufferReader<byte> reader = new BufferReader<byte>(s_plaintextTechEmpowerRequestRos);
+            s_parser.ParseRequestLine(request, ref reader);
+            s_parser.ParseHeaders(request, ref reader);
         }
     }
 

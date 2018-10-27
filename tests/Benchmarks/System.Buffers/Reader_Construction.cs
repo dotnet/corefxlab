@@ -5,6 +5,7 @@
 using BenchmarkDotNet.Attributes;
 using System.Buffers;
 using System.Buffers.Tests;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Benchmarks
 {

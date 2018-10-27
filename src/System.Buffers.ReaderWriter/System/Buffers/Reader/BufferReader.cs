@@ -17,34 +17,98 @@ namespace System.Buffers
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BufferReader(in ReadOnlySequence<T> buffer)
+        public BufferReader(ReadOnlySequence<T> buffer)
         {
             CurrentSpanIndex = 0;
             Consumed = 0;
             Sequence = buffer;
-            _currentPosition = Sequence.Start;
-            _nextPosition = _currentPosition;
+            _currentPosition = buffer.Start;
 
-            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            GetFirstSpan(buffer, out ReadOnlySpan<T> first, out _nextPosition);
+            CurrentSpan = first;
+            _moreData = first.Length > 0;
+
+            if (!buffer.IsSingleSegment && !_moreData)
             {
                 _moreData = true;
+                GetNextSpan();
+            }
+        }
 
-                if (memory.Length == 0)
+        private const int FlagBitMask = 1 << 31;
+        private const int IndexBitMask = ~FlagBitMask;
+
+        // TODO:
+        // Move to helper in ReadOnlySequence
+        // https://github.com/dotnet/corefx/issues/33029
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetFirstSpan(in ReadOnlySequence<T> buffer, out ReadOnlySpan<T> first, out SequencePosition next)
+        {
+            first = default;
+            next = default;
+            SequencePosition start = buffer.Start;
+            int startIndex = start.GetInteger();
+            object startObject = start.GetObject();
+
+            if (startObject != null)
+            {
+                SequencePosition end = buffer.End;
+                int endIndex = end.GetInteger();
+                bool isMultiSegment = startObject != end.GetObject();
+
+                // A == 0 && B == 0 means SequenceType.MultiSegment
+                if (startIndex >= 0)
                 {
-                    CurrentSpan = default;
-                    // No space in the first span, move to one with space
-                    GetNextSpan();
+                    if (endIndex >= 0)  // SequenceType.MultiSegment
+                    {
+                        ReadOnlySequenceSegment<T> segment = (ReadOnlySequenceSegment<T>)startObject;
+                        next = new SequencePosition(segment.Next, 0);
+                        first = segment.Memory.Span;
+                        if (isMultiSegment)
+                        {
+                            first = first.Slice(startIndex);
+                        }
+                        else
+                        {
+                            first = first.Slice(startIndex, endIndex - startIndex);
+                        }
+                    }
+                    else
+                    {
+                        if (isMultiSegment)
+                            ThrowHelper.ThrowInvalidOperationException_EndPositionNotReached();
+
+                        first = new ReadOnlySpan<T>((T[])startObject, startIndex, (endIndex & IndexBitMask) - startIndex);
+                    }
                 }
                 else
                 {
-                    CurrentSpan = memory.Span;
+                    first = GetFirstSpanSlow(startObject, startIndex, endIndex, isMultiSegment);
                 }
             }
-            else
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ReadOnlySpan<T> GetFirstSpanSlow(object startObject, int startIndex, int endIndex, bool isMultiSegment)
+        {
+            Debug.Assert(startIndex < 0 || endIndex < 0);
+            if (isMultiSegment)
+                ThrowHelper.ThrowInvalidOperationException_EndPositionNotReached();
+
+            // The type == char check here is redundant. However, we still have it to allow
+            // the JIT to see when that the code is unreachable and eliminate it.
+            // A == 1 && B == 1 means SequenceType.String
+            if (typeof(T) == typeof(char) && endIndex < 0)
             {
-                // No space in any spans and at end of sequence
-                _moreData = false;
-                CurrentSpan = default;
+                var memory = (ReadOnlyMemory<T>)(object)((string)startObject).AsMemory();
+
+                // No need to remove the FlagBitMask since (endIndex - startIndex) == (endIndex & ReadOnlySequence.IndexBitMask) - (startIndex & ReadOnlySequence.IndexBitMask)
+                return memory.Span.Slice(startIndex & IndexBitMask, endIndex - startIndex);
+            }
+            else // endIndex >= 0, A == 1 && B == 0 means SequenceType.MemoryManager
+            {
+                startIndex &= IndexBitMask;
+                return ((MemoryManager<T>)startObject).Memory.Span.Slice(startIndex, endIndex - startIndex);
             }
         }
 
