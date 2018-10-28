@@ -96,6 +96,7 @@ namespace System.Text.JsonLab
                 _position = _position,
                 _isSingleValue = _isSingleValue,
                 _sequencePosition = GetPosition(),
+                _consumed = _consumed,
             };
 
         private SequencePosition GetPosition()
@@ -103,7 +104,7 @@ namespace System.Text.JsonLab
             if (_currentPosition.GetObject() == null)
                 return default;
             
-            var position = _data.Slice(_consumed).GetPosition(0);
+            SequencePosition position = _data.Slice(_consumed).GetPosition(0);
             return position;
             // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
         }
