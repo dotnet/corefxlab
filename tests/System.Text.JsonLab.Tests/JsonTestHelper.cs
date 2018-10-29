@@ -760,7 +760,7 @@ namespace System.Text.JsonLab.Tests
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.IsValueMultiSegment ? json.ValueSegment.ToArray() : json.Value;
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
