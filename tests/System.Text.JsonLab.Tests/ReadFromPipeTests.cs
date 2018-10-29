@@ -54,7 +54,7 @@ namespace System.Text.JsonLab.Tests
             return sb.ToString();
         }
 
-        //[Fact]
+        [Fact]
         public void ReadFromPipeUsingSequence()
         {
             string actual = "";
@@ -122,7 +122,7 @@ namespace System.Text.JsonLab.Tests
             return (json.CurrentState, builder.ToString());
         }
 
-        //[Fact]
+        [Fact]
         public void ReadFromPipeUsingSpan()
         {
             string actual = "";

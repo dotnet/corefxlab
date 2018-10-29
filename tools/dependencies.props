@@ -3,11 +3,11 @@
     <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
     <RoslynVersion>2.8.0-beta4</RoslynVersion>
     <SystemMemoryVersion>4.5.1</SystemMemoryVersion>
-    <SystemCompilerServicesUnsafeVersion>4.6.0-preview1-27018-01</SystemCompilerServicesUnsafeVersion>
-    <SystemNumericsVectorsVersion>4.6.0-preview1-27018-01</SystemNumericsVectorsVersion>
+    <SystemCompilerServicesUnsafeVersion>4.5.2</SystemCompilerServicesUnsafeVersion>
+    <SystemNumericsVectorsVersion>4.5.0</SystemNumericsVectorsVersion>
     <SystemBuffersVersion>4.5.0</SystemBuffersVersion>
     <SystemIOPipelinesVersion>4.5.2</SystemIOPipelinesVersion>
-    <SystemThreadingTasksExtensionsVersion>4.6.0-preview1-27018-01</SystemThreadingTasksExtensionsVersion>
+    <SystemThreadingTasksExtensionsVersion>4.5.1</SystemThreadingTasksExtensionsVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
