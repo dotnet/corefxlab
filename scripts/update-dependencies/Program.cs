@@ -99,10 +99,6 @@ namespace Microsoft.Dotnet.Scripts
 
         private static IEnumerable<IDependencyUpdater> GetUpdaters()
         {
-            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemCompilerServicesUnsafeVersion", "System.Runtime.CompilerServices.Unsafe");
-            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemNumericsVectorsVersion", "System.Numerics.Vectors");
-            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemIOPipelinesVersion", "System.IO.Pipelines");
-            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemThreadingTasksExtensionsVersion", "System.Threading.Tasks.Extensions");
             yield return CreateFileUpdater(config.CLIVersionFilePath, "core-sdk");
         }
 

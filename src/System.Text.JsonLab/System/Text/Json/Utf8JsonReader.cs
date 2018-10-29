@@ -104,7 +104,7 @@ namespace System.Text.JsonLab
             if (_currentPosition.GetObject() == null)
                 return default;
             
-            SequencePosition position = _data.Slice(_consumed).GetPosition(0);
+            SequencePosition position = _data.GetPosition(Consumed);
             return position;
             // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
         }
