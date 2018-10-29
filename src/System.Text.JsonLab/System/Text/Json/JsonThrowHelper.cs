@@ -65,6 +65,11 @@ namespace System.Text.JsonLab
             return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
+        public static void ThrowJsonReaderException(ref Utf8Json.Reader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
+        {
+            GetJsonReaderException(ref json, resource, nextByte, bytes);
+        }
+
         public static void ThrowJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
         {
             GetJsonReaderException(ref json, resource, nextByte, bytes);
@@ -75,6 +80,13 @@ namespace System.Text.JsonLab
         {
             string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
             throw new JsonReaderException(message, json._lineNumber, json._position);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetJsonReaderException(ref Utf8Json.Reader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
+        {
+            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
+            throw new JsonReaderException(message, json._utf8Json._state._lineNumber, json._utf8Json._state._position);
         }
 
         public static void ThrowInvalidCastException()
@@ -144,17 +156,17 @@ namespace System.Text.JsonLab
             switch (resource)
             {
                 case ExceptionResource.ArrayDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json.MaxDepth);
                     break;
                 case ExceptionResource.ArrayEndWithinObject:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ArrayEndWithinObject.ToString());
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.EndOfStringNotFound:
@@ -197,17 +209,119 @@ namespace System.Text.JsonLab
                     message = string.Format(formatString, json.TokenType);
                     break;
                 case ExceptionResource.ObjectDepthTooLarge:
-                    message = string.Format(formatString, json.Depth, json.MaxDepth);
+                    message = string.Format(formatString, json.CurrentDepth, json.MaxDepth);
                     break;
                 case ExceptionResource.ObjectEndWithinArray:
-                    if (json.Depth <= 0)
+                    if (json.CurrentDepth <= 0)
                     {
                         formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
-                        message = string.Format(formatString, json.Depth);
+                        message = string.Format(formatString, json.CurrentDepth);
                     }
                     else
                     {
-                        message = ExceptionStrings.ResourceManager.GetString(ExceptionResource.ObjectEndWithinArray.ToString());
+                        message = string.Format(formatString);
+                    }
+                    break;
+                case ExceptionResource.Default:
+                    break;
+                case ExceptionResource.ExpectedFalse:
+                    message = string.Format(formatString, characters);
+                    break;
+                case ExceptionResource.ExpectedNull:
+                    message = string.Format(formatString, characters);
+                    break;
+                case ExceptionResource.ExpectedTrue:
+                    message = string.Format(formatString, characters);
+                    break;
+                // This case is covered between ArrayEndWithinObject and ObjectEndWithinArray
+                /*case ExceptionResource.DepthMustBePositive:
+                    break;*/
+                case ExceptionResource.InvalidCharacterWithinString:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.EndOfCommentNotFound:
+                    break;
+            }
+
+            return message;
+        }
+
+        // This function will convert an ExceptionResource enum value to the resource string.
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static string GetResourceString(ref Utf8Json.Reader json, ExceptionResource resource, char character, string characters)
+        {
+            Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), resource),
+                "The enum value is not defined, please check the ExceptionResource Enum.");
+
+            string formatString = ExceptionStrings.ResourceManager.GetString(resource.ToString());
+            string message = formatString;
+            switch (resource)
+            {
+                case ExceptionResource.ArrayDepthTooLarge:
+                    message = string.Format(formatString, json.CurrentDepth, json._utf8Json.MaxDepth);
+                    break;
+                case ExceptionResource.ArrayEndWithinObject:
+                    if (json.CurrentDepth <= 0)
+                    {
+                        formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
+                        message = string.Format(formatString, json.CurrentDepth);
+                    }
+                    else
+                    {
+                        message = string.Format(formatString);
+                    }
+                    break;
+                case ExceptionResource.EndOfStringNotFound:
+                    break;
+                case ExceptionResource.ExpectedDigitNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedDigitNotFoundEndOfData:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedEndAfterSingleJson:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedEndOfDigitNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedNextDigitComponentNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedNextDigitEValueNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedSeparaterAfterPropertyNameNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedStartOfPropertyNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedStartOfPropertyOrValueNotFound:
+                    break;
+                case ExceptionResource.ExpectedStartOfValueNotFound:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.ExpectedValueAfterPropertyNameNotFound:
+                    break;
+                case ExceptionResource.FoundInvalidCharacter:
+                    message = string.Format(formatString, character);
+                    break;
+                case ExceptionResource.InvalidEndOfJson:
+                    message = string.Format(formatString, json.TokenType);
+                    break;
+                case ExceptionResource.ObjectDepthTooLarge:
+                    message = string.Format(formatString, json.CurrentDepth, json._utf8Json.MaxDepth);
+                    break;
+                case ExceptionResource.ObjectEndWithinArray:
+                    if (json.CurrentDepth <= 0)
+                    {
+                        formatString = ExceptionStrings.ResourceManager.GetString(ExceptionResource.DepthMustBePositive.ToString());
+                        message = string.Format(formatString, json.CurrentDepth);
+                    }
+                    else
+                    {
+                        message = string.Format(formatString);
                     }
                     break;
                 case ExceptionResource.Default:

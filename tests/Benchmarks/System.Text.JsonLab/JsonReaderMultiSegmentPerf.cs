@@ -112,7 +112,7 @@ namespace System.Text.JsonLab.Benchmarks
                 else
                     numBytes = numberOfBytes;
                 consumed += (int)json.Consumed;
-                jsonState = json.State;
+                jsonState = json.CurrentState;
                 if (consumed >= _dataUtf8.Length - numberOfBytes)
                     isFinalBlock = true;
             }
@@ -160,7 +160,7 @@ namespace System.Text.JsonLab.Benchmarks
                 if (isFinalBlock)
                     break;
 
-                state = json.State;
+                state = json.CurrentState;
 
                 if (json.Consumed != bufferSpan.Length)
                 {

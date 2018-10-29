@@ -96,7 +96,7 @@ namespace System.Text.JsonLab
             currentSpan.CopyTo(_span.Slice(leftOver.Length));
             _span = _span.Slice(0, bufferSize);
 
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.State);
+            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.CurrentState);
             return _jsonReader.Read();
         }
 

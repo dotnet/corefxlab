@@ -22,7 +22,8 @@ namespace System.Text.JsonLab
         {
             var database = new CustomDb(_pool, DbRow.Size + _utf8Json.Length);
             var stack = new CustomStack(Utf8JsonReader.StackFreeMaxDepth * StackRow.Size);
-            var reader = new Utf8JsonReader(_utf8Json);
+            var json = new Utf8Json();
+            var reader = json.GetReader(_utf8Json);
 
             bool inArray = false;
             int arrayItemsCount = 0;
@@ -42,7 +43,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForValues++;
-                    database.Append(JsonType.StartObject, (int)reader.TokenStartIndex);
+                    database.Append(JsonType.StartObject, reader.TokenStartIndex);
                     var row = new StackRow(numberOfRowsForMembers + 1);
                     stack.Push(row);
                     numberOfRowsForMembers = 0;
@@ -65,7 +66,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForMembers++;
-                    database.Append(JsonType.StartArray, (int)reader.TokenStartIndex);
+                    database.Append(JsonType.StartArray, reader.TokenStartIndex);
                     var row = new StackRow(arrayItemsCount, numberOfRowsForValues + 1);
                     stack.Push(row);
                     arrayItemsCount = 0;
@@ -86,7 +87,7 @@ namespace System.Text.JsonLab
                 {
                     numberOfRowsForValues++;
                     numberOfRowsForMembers++;
-                    database.Append(JsonType.String, (int)reader.TokenStartIndex, reader.Value.Length);
+                    database.Append(JsonType.String, reader.TokenStartIndex, reader.Value.Length);
                     if (inArray)
                         arrayItemsCount++;
                 }
@@ -95,7 +96,7 @@ namespace System.Text.JsonLab
                     Debug.Assert(tokenType >= JsonTokenType.String && tokenType <= JsonTokenType.Null);
                     numberOfRowsForValues++;
                     numberOfRowsForMembers++;
-                    database.Append((JsonType)(tokenType - 4), (int)reader.TokenStartIndex, reader.Value.Length);
+                    database.Append((JsonType)(tokenType - 4), reader.TokenStartIndex, reader.Value.Length);
                     if (inArray)
                         arrayItemsCount++;
                 }
