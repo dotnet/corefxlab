@@ -28,7 +28,7 @@ namespace System.Text.JsonLab
                 if (record.IsSimpleValue && record.JsonType != JsonType.Null)
                 {
                     ReadOnlySpan<byte> value = _jsonData.Slice(record.Location, record.SizeOrLength);
-                    sb.Append(Encoding.UTF8.GetString(value.ToArray())).Append(", ");
+                    sb.Append(Encoding.UTF8.GetString(value.ToArray(), 0, value.Length)).Append(", ");
                 }
             }
             return sb.ToString();

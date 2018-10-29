@@ -100,7 +100,7 @@ namespace System.Text.JsonLab.Tests
             });
 
             Task[] tasks = new Task[] { taskReader, taskWriter };
-            Task.WaitAll(tasks, 5_000);    // The test shouldn't take more than 5 seconds to finish.
+            Task.WaitAll(tasks, 30_000);    // The test shouldn't take more than 30 seconds to finish.
 
             Assert.Equal(_expectedString, actual);
         }
@@ -168,7 +168,7 @@ namespace System.Text.JsonLab.Tests
             });
 
             Task[] tasks = new Task[] { taskReader, taskWriter };
-            Task.WaitAll(tasks, 5_000);    // The test shouldn't take more than 5 seconds to finish.
+            Task.WaitAll(tasks, 30_000);    // The test shouldn't take more than 30 seconds to finish.
 
             Assert.Equal(_expectedString, actual);
         }
