@@ -118,7 +118,6 @@ namespace System.Text.JsonLab.Tests
                         break;
                 }
             }
-            json.Dispose();
             return (json.CurrentState, builder.ToString());
         }
 

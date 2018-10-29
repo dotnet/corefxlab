@@ -207,7 +207,6 @@ namespace System.Text.JsonLab.Tests
                 byte[] resultSequence = JsonLabReaderLoop(dataUtf8.Length, out int length, ref utf8JsonReader);
                 string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
                 Assert.Equal(expectedStr, actualStrSequence);
-                reader.Dispose();
                 return;
             }
 
@@ -219,14 +218,12 @@ namespace System.Text.JsonLab.Tests
 
                 long consumed = utf8JsonReader.Consumed;
                 JsonReaderState jsonState = utf8JsonReader.CurrentState;
-                reader.Dispose();
                 utf8JsonReader = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, utf8JsonReader.CurrentState);
                 resultSequence = JsonLabReaderLoop(dataUtf8.Length, out length, ref utf8JsonReader);
                 actualStrSequence += Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
                 Assert.Equal(dataUtf8.Length - consumed, utf8JsonReader.Consumed);
 
                 Assert.Equal(expectedStr, actualStrSequence);
-                reader.Dispose();
             }
         }
 
@@ -442,13 +439,11 @@ namespace System.Text.JsonLab.Tests
                     var json = new Utf8JsonReader(sequence.Slice(0, j), isFinalBlock: false);
                     while (json.Read()) ;
 
-                    json.Dispose();
                     long consumed = json.Consumed;
                     JsonReaderState jsonState = json.CurrentState;
                     json = new Utf8JsonReader(sequence.Slice(consumed), isFinalBlock: true, json.CurrentState);
                     while (json.Read()) ;
                     Assert.Equal(dataUtf8.Length - consumed, json.Consumed);
-                    json.Dispose();
                 }
             }
         }
@@ -982,7 +977,6 @@ namespace System.Text.JsonLab.Tests
                         errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.BytePosition} | index: {i} | option: {option}";
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedBytePosition == ex.BytePosition, errorMessage);
-                        jsonMultiSegment.Dispose();
                     }
                 }
             }
@@ -1202,8 +1196,6 @@ namespace System.Text.JsonLab.Tests
                 }
                 Assert.True(foundComment);
                 Assert.Equal(expectedIndex, indexAfterFirstComment);
-
-                jsonMultiSegment.Dispose();
             }
         }
 
@@ -1409,8 +1401,6 @@ namespace System.Text.JsonLab.Tests
                     prevTokenType = tokenType;
                 }
                 Assert.Equal(dataUtf8.Length, json.Consumed);
-
-                jsonMultiSegment.Dispose();
             }
         }
 
@@ -1601,7 +1591,6 @@ namespace System.Text.JsonLab.Tests
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
                     Assert.Equal(expectedPosition, ex.BytePosition);
-                    jsonMultiSegment.Dispose();
                 }
             }
         }
@@ -1796,7 +1785,6 @@ namespace System.Text.JsonLab.Tests
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
                     Assert.Equal(expectedPosition, ex.BytePosition);
-                    jsonMultiSegment.Dispose();
                 }
             }
         }
@@ -2238,7 +2226,6 @@ namespace System.Text.JsonLab.Tests
             var json = new Utf8JsonReader(sequenceMultiple);
             while (json.Read()) ;
             Assert.Equal(dataUtf8.Length, json.Consumed);
-            json.Dispose();
         }
 
         [Fact]
@@ -2417,7 +2404,6 @@ namespace System.Text.JsonLab.Tests
                     }
                 }
                 Assert.Equal(dataUtf8.Length, json.Consumed);
-                json.Dispose();
             }
         }
 
@@ -2468,13 +2454,11 @@ namespace System.Text.JsonLab.Tests
             var json = new Utf8JsonReader(sequenceMultiple);
             while (json.Read()) ;
             Assert.Equal(sequenceMultiple.Length, json.Consumed);
-            json.Dispose();
 
             var stream = new MemoryStream(sequenceMultiple.ToArray());
             var jsonStream = new Utf8JsonReaderStream(stream);
             while (jsonStream.Read()) ;
             Assert.Equal(sequenceMultiple.Length, jsonStream.Consumed);
-            json.Dispose();
         }
     }
 }

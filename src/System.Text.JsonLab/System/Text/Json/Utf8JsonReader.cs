@@ -348,10 +348,6 @@ namespace System.Text.JsonLab
             return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment();
         }
 
-        public void Dispose()
-        {
-        }
-
         public void Skip()
         {
             if (TokenType == JsonTokenType.PropertyName)
