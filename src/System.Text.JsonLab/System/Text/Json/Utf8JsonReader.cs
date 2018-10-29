@@ -1194,10 +1194,8 @@ namespace System.Text.JsonLab
         // https://tools.ietf.org/html/rfc8259#section-7
         private void ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
-            if (data[data.Length - 1] != JsonConstants.Quote)
-            {
-                ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
-            }
+            Debug.Assert(data[data.Length - 1] != JsonConstants.Quote);
+
             bool nextCharEscaped = false;
             for (int i = 0; i < data.Length; i++)
             {
@@ -1450,8 +1448,6 @@ namespace System.Text.JsonLab
             Debug.Assert(data.Length > 0);
 
             ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
-            SequencePosition startPosition = _currentPosition;
-            int startConsumed = _consumed;
             consumed = 0;
 
             int i = 0;
