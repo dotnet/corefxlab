@@ -116,9 +116,9 @@ namespace System.Text.JsonLab
         /// <see cref="JsonTokenType.PropertyName" />. Otherwise, this value should be set to
         /// <see cref="ReadOnlySpan{T}.Empty"/>.
         /// </summary>
-        public ReadOnlySpan<byte> Value { get; private set; }
+        public ReadOnlySpan<byte> ValueSpan { get; private set; }
 
-        public ReadOnlySequence<byte> ValueSegment { get; private set; }
+        public ReadOnlySequence<byte> ValueSequence { get; private set; }
         private bool _isValueMultiSegment;
 
         public bool IsValueMultiSegment => _isValueMultiSegment;
@@ -159,8 +159,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
 
@@ -205,8 +205,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _readerOptions = JsonReaderOptions.Default;
 
             _nextPosition = default;
@@ -235,8 +235,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
 
@@ -303,8 +303,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _readerOptions = JsonReaderOptions.Default;
 
             _data = jsonData;
@@ -958,23 +958,23 @@ namespace System.Text.JsonLab
                 if (IsLastSpan)
                 {
                     // Assume everything on this line is a comment and there is no more data.
-                    Value = localCopy;
+                    ValueSpan = localCopy;
 
-                    _position += 2 + Value.Length;
+                    _position += 2 + ValueSpan.Length;
 
                     goto Done;
                 }
                 else return false;
             }
 
-            Value = localCopy.Slice(0, idx);
+            ValueSpan = localCopy.Slice(0, idx);
             _consumed++;
             _position = 0;
             _lineNumber++;
         Done:
             _stack.Push(TokenType);
             TokenType = JsonTokenType.Comment;
-            _consumed += 2 + Value.Length;
+            _consumed += 2 + ValueSpan.Length;
             return true;
         }
 
@@ -1002,19 +1002,19 @@ namespace System.Text.JsonLab
 
             Debug.Assert(idx >= 1);
             _stack.Push(TokenType);
-            Value = localCopy.Slice(0, idx - 1);
+            ValueSpan = localCopy.Slice(0, idx - 1);
             TokenType = JsonTokenType.Comment;
-            _consumed += 4 + Value.Length;
+            _consumed += 4 + ValueSpan.Length;
 
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(ValueSpan);
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _position = Value.Length - newLineIndex + 1;
+                _position = ValueSpan.Length - newLineIndex + 1;
             }
             else
             {
-                _position += 4 + Value.Length;
+                _position += 4 + ValueSpan.Length;
             }
             return true;
         }
@@ -1059,7 +1059,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 4);
+            ValueSpan = span.Slice(0, 4);
         Done:
             TokenType = JsonTokenType.Null;
             _consumed += 4;
@@ -1082,7 +1082,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 5);
+            ValueSpan = span.Slice(0, 5);
         Done:
             TokenType = JsonTokenType.False;
             _consumed += 5;
@@ -1105,7 +1105,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 4);
+            ValueSpan = span.Slice(0, 4);
         Done:
             TokenType = JsonTokenType.True;
             _consumed += 4;
@@ -1176,7 +1176,7 @@ namespace System.Text.JsonLab
 
             Done:
                 _position++;
-                Value = localCopy;
+                ValueSpan = localCopy;
                 TokenType = JsonTokenType.String;
                 _consumed += idx + 2;
                 return true;
@@ -1289,7 +1289,7 @@ namespace System.Text.JsonLab
 
         Done:
             _position++;
-            Value = localCopy;
+            ValueSpan = localCopy;
             TokenType = JsonTokenType.String;
             _consumed = i + 1;
             return true;
@@ -1516,7 +1516,7 @@ namespace System.Text.JsonLab
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
 
         Done:
-            Value = data.Slice(0, i);
+            ValueSpan = data.Slice(0, i);
             consumed = i;
             return true;
         }
@@ -1524,14 +1524,14 @@ namespace System.Text.JsonLab
         public string GetValueAsString()
         {
             //TODO: Perform additional validation and unescaping if necessary
-            return Encodings.Utf8.ToString(Value);
+            return Encodings.Utf8.ToString(ValueSpan);
         }
 
         public int GetValueAsInt32()
         {
-            if (Utf8Parser.TryParse(Value, out int value, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out int value, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return value;
                 }
@@ -1543,9 +1543,9 @@ namespace System.Text.JsonLab
 
         public long GetValueAsInt64()
         {
-            if (Utf8Parser.TryParse(Value, out long value, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out long value, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return value;
                 }
@@ -1557,11 +1557,11 @@ namespace System.Text.JsonLab
         public float GetValueAsSingle()
         {
             //TODO: We know whether this is true or not ahead of time
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out float value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1569,9 +1569,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed, 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out float value, out int bytesConsumed, 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1583,11 +1583,11 @@ namespace System.Text.JsonLab
 
         public double GetValueAsDouble()
         {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out double value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1595,9 +1595,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed, standardFormat: 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out double value, out int bytesConsumed, standardFormat: 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1609,11 +1609,11 @@ namespace System.Text.JsonLab
 
         public decimal GetValueAsDecimal()
         {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out decimal value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1621,9 +1621,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed, standardFormat: 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out decimal value, out int bytesConsumed, standardFormat: 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1635,29 +1635,29 @@ namespace System.Text.JsonLab
 
         public object GetValueAsNumber()
         {
-            if (Utf8Parser.TryParse(Value, out int intVal, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out int intVal, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return intVal;
                 }
             }
 
-            if (Utf8Parser.TryParse(Value, out long longVal, out bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out long longVal, out bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return longVal;
                 }
             }
 
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                return NumberAsObject(Value);
+                return NumberAsObject(ValueSpan);
             }
             else
             {
-                return NumberAsObject(Value, standardFormat: 'e');
+                return NumberAsObject(ValueSpan, standardFormat: 'e');
             }
         }
 

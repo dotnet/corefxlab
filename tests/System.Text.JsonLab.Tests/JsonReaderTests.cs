@@ -1156,7 +1156,7 @@ namespace System.Text.JsonLab.Tests
                             break;
                         foundComment = true;
                         indexAfterFirstComment = json.Consumed;
-                        string actualComment = Encoding.UTF8.GetString(json.Value);
+                        string actualComment = Encoding.UTF8.GetString(json.ValueSpan);
                         Assert.Equal(expectedComment, actualComment);
                         break;
                 }
@@ -1189,7 +1189,7 @@ namespace System.Text.JsonLab.Tests
                                 break;
                             foundComment = true;
                             indexAfterFirstComment = jsonMultiSegment.Consumed;
-                            string actualComment = Encoding.UTF8.GetString(jsonMultiSegment.Value);
+                            string actualComment = Encoding.UTF8.GetString(jsonMultiSegment.ValueSpan);
                             Assert.Equal(expectedComment, actualComment);
                             break;
                     }
@@ -1253,7 +1253,7 @@ namespace System.Text.JsonLab.Tests
                             break;
                         foundComment = true;
                         indexAfterFirstComment = json.Consumed;
-                        string actualComment = Encoding.UTF8.GetString(json.Value);
+                        string actualComment = Encoding.UTF8.GetString(json.ValueSpan);
                         Assert.Equal(expectedComment, actualComment);
                         break;
                 }
@@ -1280,7 +1280,7 @@ namespace System.Text.JsonLab.Tests
                                 break;
                             foundComment = true;
                             indexAfterFirstComment = jsonSlice.Consumed;
-                            string actualComment = Encoding.UTF8.GetString(jsonSlice.Value);
+                            string actualComment = Encoding.UTF8.GetString(jsonSlice.ValueSpan);
                             Assert.Equal(expectedComment, actualComment);
                             break;
                     }
@@ -1305,7 +1305,7 @@ namespace System.Text.JsonLab.Tests
                                     break;
                                 foundComment = true;
                                 indexAfterFirstComment = jsonSlice.Consumed;
-                                string actualComment = Encoding.UTF8.GetString(jsonSlice.Value);
+                                string actualComment = Encoding.UTF8.GetString(jsonSlice.ValueSpan);
                                 Assert.Equal(expectedComment, actualComment);
                                 break;
                         }
@@ -2261,7 +2261,7 @@ namespace System.Text.JsonLab.Tests
                 while (json.Read())
                 {
                     JsonTokenType tokenType = json.TokenType;
-                    ReadOnlySpan<byte> valueSpan = json.Value;
+                    ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                     switch (tokenType)
                     {
                         case JsonTokenType.PropertyName:
@@ -2394,12 +2394,12 @@ namespace System.Text.JsonLab.Tests
                     {
                         if (first)
                         {
-                            Assert.True(json.Value.SequenceEqual(expectedFirstValue));
+                            Assert.True(json.ValueSpan.SequenceEqual(expectedFirstValue));
                             first = false;
                         }
                         else
                         {
-                            Assert.True(json.Value.SequenceEqual(expectedSecondValue));
+                            Assert.True(json.ValueSpan.SequenceEqual(expectedSecondValue));
                         }
                     }
                 }

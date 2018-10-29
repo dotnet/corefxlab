@@ -30,33 +30,33 @@ namespace System.Text.JsonLab
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        int key = GetHashCode(reader.Value);
+                        int key = GetHashCode(reader.ValueSpan);
                         reader.Read(); // Move to the value token
                         JsonTokenType type = reader.TokenType;
                         switch (type)
                         {
                             case JsonTokenType.String:
-                                PropertyInfo pi = GetPropertyInfo(dictionary, key, reader.Value);
-                                pi.SetValue(instance, new Utf8String(reader.Value));    // TODO: Use Ref.Emit instead of Reflection
+                                PropertyInfo pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
+                                pi.SetValue(instance, new Utf8String(reader.ValueSpan));    // TODO: Use Ref.Emit instead of Reflection
                                 break;
                             case JsonTokenType.StartObject: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 throw new NotImplementedException("object support not implemented yet.");
                             case JsonTokenType.True:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, true);
                                 break;
                             case JsonTokenType.False:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, false);
                                 break;
                             case JsonTokenType.Null:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, null);
                                 break;
                             case JsonTokenType.Number:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 // TODO: Add support for other numeric types like double, long, etc.
-                                if (!Utf8Parser.TryParse(reader.Value, out int result, out _))
+                                if (!Utf8Parser.TryParse(reader.ValueSpan, out int result, out _))
                                 {
                                     throw new InvalidCastException();
                                 }

@@ -150,11 +150,11 @@ namespace System.Text.JsonLab.Tests
                 switch (json.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        key = Encoding.UTF8.GetString(json.Value);
+                        key = Encoding.UTF8.GetString(json.ValueSpan);
                         dictionary.Add(key, null);
                         break;
                     case JsonTokenType.String:
-                        value = Encoding.UTF8.GetString(json.Value);
+                        value = Encoding.UTF8.GetString(json.ValueSpan);
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -166,7 +166,7 @@ namespace System.Text.JsonLab.Tests
                         break;
                     case JsonTokenType.True:
                     case JsonTokenType.False:
-                        value = json.Value[0] == (byte)'t';
+                        value = json.ValueSpan[0] == (byte)'t';
                         if (dictionary.TryGetValue(key, out _))
                         {
                             dictionary[key] = value;
@@ -259,7 +259,7 @@ namespace System.Text.JsonLab.Tests
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        ReadOnlySpan<byte> memberName = reader.Value;
+                        ReadOnlySpan<byte> memberName = reader.ValueSpan;
 
                         if (memberName.SequenceEqual(TypePropertyNameUtf8))
                         {
@@ -338,11 +338,11 @@ namespace System.Text.JsonLab.Tests
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
             }
 
-            if (reader.Value.IsEmpty)
+            if (reader.ValueSpan.IsEmpty)
             {
                 return null;
             }
-            if (!Utf8Parser.TryParse(reader.Value, out int value, out _))
+            if (!Utf8Parser.TryParse(reader.ValueSpan, out int value, out _))
             {
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
             }
@@ -453,7 +453,7 @@ namespace System.Text.JsonLab.Tests
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        ReadOnlySpan<byte> memberName = reader.Value;
+                        ReadOnlySpan<byte> memberName = reader.ValueSpan;
 
                         if (memberName.SequenceEqual(ProtocolPropertyNameUtf8))
                         {
@@ -552,14 +552,14 @@ namespace System.Text.JsonLab.Tests
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type String.");
             }
 
-            if (reader.Value.IsEmpty) return "";
+            if (reader.ValueSpan.IsEmpty) return "";
 
 #if NETCOREAPP2_2
             return Encoding.UTF8.GetString(reader.Value);
 #else
-            fixed (byte* bytes = &MemoryMarshal.GetReference(reader.Value))
+            fixed (byte* bytes = &MemoryMarshal.GetReference(reader.ValueSpan))
             {
-                return Encoding.UTF8.GetString(bytes, reader.Value.Length);
+                return Encoding.UTF8.GetString(bytes, reader.ValueSpan.Length);
             }
 #endif
         }
@@ -587,7 +587,12 @@ namespace System.Text.JsonLab.Tests
 
         public static void JsonLabEmptyLoopHelper(byte[] data)
         {
-            var json = new Utf8JsonReader(data);
+            var json = new Utf8JsonReader(data)
+            {
+                MaxDepth = 32,
+                Options = JsonReaderOptions.SkipComments
+            };
+
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -619,7 +624,12 @@ namespace System.Text.JsonLab.Tests
 
         public static void HeapableJsonLabEmptyLoopHelper(byte[] data)
         {
-            var reader = new Utf8Json();
+            var reader = new Utf8Json()
+            {
+                MaxDepth = 32,
+                Options = JsonReaderOptions.SkipComments
+            };
+
             Utf8Json.Reader json = reader.GetReader(data);
             while (json.Read())
             {
@@ -757,7 +767,7 @@ namespace System.Text.JsonLab.Tests
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.IsValueMultiSegment ? json.ValueSegment.ToArray() : json.Value;
+                ReadOnlySpan<byte> valueSpan = json.IsValueMultiSegment ? json.ValueSequence.ToArray() : json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
@@ -868,7 +878,7 @@ namespace System.Text.JsonLab.Tests
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.True:
@@ -951,7 +961,7 @@ namespace System.Text.JsonLab.Tests
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
@@ -1140,7 +1150,7 @@ namespace System.Text.JsonLab.Tests
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.True:

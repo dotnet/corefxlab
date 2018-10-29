@@ -161,7 +161,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:

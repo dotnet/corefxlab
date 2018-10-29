@@ -558,23 +558,23 @@ namespace System.Text.JsonLab
                 if (IsLastSpan)
                 {
                     // Assume everything on this line is a comment and there is no more data.
-                    Value = localCopy;
+                    ValueSpan = localCopy;
 
-                    _position += 2 + Value.Length;
+                    _position += 2 + ValueSpan.Length;
 
                     goto Done;
                 }
                 else return false;
             }
 
-            Value = localCopy.Slice(0, idx);
+            ValueSpan = localCopy.Slice(0, idx);
             _consumed++;
             _position = 0;
             _lineNumber++;
         Done:
             _stack.Push(TokenType);
             TokenType = JsonTokenType.Comment;
-            _consumed += 2 + Value.Length;
+            _consumed += 2 + ValueSpan.Length;
             return true;
         }
 
@@ -602,19 +602,19 @@ namespace System.Text.JsonLab
 
             Debug.Assert(idx >= 1);
             _stack.Push(TokenType);
-            Value = localCopy.Slice(0, idx - 1);
+            ValueSpan = localCopy.Slice(0, idx - 1);
             TokenType = JsonTokenType.Comment;
-            _consumed += 4 + Value.Length;
+            _consumed += 4 + ValueSpan.Length;
 
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(ValueSpan);
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _position = Value.Length - newLineIndex + 1;
+                _position = ValueSpan.Length - newLineIndex + 1;
             }
             else
             {
-                _position += 4 + Value.Length;
+                _position += 4 + ValueSpan.Length;
             }
             return true;
         }
@@ -670,7 +670,7 @@ namespace System.Text.JsonLab
                         _isValueMultiSegment = true;
                         SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + _consumed);
                         SequencePosition end = new SequencePosition(_currentPosition.GetObject(), _currentPosition.GetInteger() + leftToMatch.Length);
-                        ValueSegment = _data.Slice(start, end);
+                        ValueSequence = _data.Slice(start, end);
                         return true;
                     }
 
@@ -700,7 +700,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 4);
+            ValueSpan = span.Slice(0, 4);
             _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.Null;
@@ -724,7 +724,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 5);
+            ValueSpan = span.Slice(0, 5);
             _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.False;
@@ -748,7 +748,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            Value = span.Slice(0, 4);
+            ValueSpan = span.Slice(0, 4);
             _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.True;
@@ -823,7 +823,7 @@ namespace System.Text.JsonLab
 
             Done:
                 _position++;
-                Value = localCopy;
+                ValueSpan = localCopy;
                 _isValueMultiSegment = false;
                 TokenType = JsonTokenType.String;
                 _consumed += idx + 2;
@@ -883,8 +883,8 @@ namespace System.Text.JsonLab
 
         Done:
             SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + startConsumed);
-            ValueSegment = _data.Slice(start, end);
-            ValidateEscaping_AndHex(ValueSegment);  //TODO: Can this be done while searching for end quote?
+            ValueSequence = _data.Slice(start, end);
+            ValidateEscaping_AndHex(ValueSequence);  //TODO: Can this be done while searching for end quote?
             _position++;    // TODO: Fix
             TokenType = JsonTokenType.String;
             return true;
@@ -1025,7 +1025,7 @@ namespace System.Text.JsonLab
 
         Done:
             _position++;
-            Value = localCopy;
+            ValueSpan = localCopy;
             _isValueMultiSegment = false;
             TokenType = JsonTokenType.String;
             _consumed = i + 1;
@@ -1323,12 +1323,12 @@ namespace System.Text.JsonLab
             {
                 SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + startConsumed);
                 SequencePosition end = new SequencePosition(_currentPosition.GetObject(), _currentPosition.GetInteger() + i);
-                ValueSegment = _data.Slice(start, end);
+                ValueSequence = _data.Slice(start, end);
                 consumed = i;
             }
             else
             {
-                Value = data.Slice(0, i);
+                ValueSpan = data.Slice(0, i);
                 _isValueMultiSegment = false;
                 consumed = i;
             }

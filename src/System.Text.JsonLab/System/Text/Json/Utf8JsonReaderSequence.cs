@@ -15,7 +15,7 @@ namespace System.Text.JsonLab
         private byte[] _buffer;
 
         public JsonTokenType TokenType => _jsonReader.TokenType;
-        public ReadOnlySpan<byte> Value => _jsonReader.Value;
+        public ReadOnlySpan<byte> Value => _jsonReader.ValueSpan;
 
         public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data)
         {
