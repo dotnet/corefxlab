@@ -3,452 +3,42 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-
 using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonReader
     {
-        // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
-        internal const int StackFreeMaxDepth = sizeof(ulong) * 8;
-
-        const int MinimumSegmentSize = 4_096;
-
-        private ReadOnlySpan<byte> _buffer;
-
-        private int _consumed;
-
-        private long _totalConsumed;
-
-        public long Consumed => _totalConsumed + _consumed;
-
-        internal int TokenStartIndex { get; private set; }
-
-        public int MaxDepth
+        private bool GetNextSpan()
         {
-            get
+            ReadOnlyMemory<byte> memory = default;
+            while (true)
             {
-                return _maxDepth;
-            }
-            set
-            {
-                if (value <= 0)
-                    ThrowArgumentException("Max depth must be positive.");
-                _maxDepth = value;
-                if (_maxDepth > StackFreeMaxDepth)
-                    _stack = new Stack<JsonTokenType>();
-            }
-        }
-
-        private int _maxDepth;
-
-        private Stack<JsonTokenType> _stack;
-
-        // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
-        public int CurrentDepth { get; private set; }
-
-        // This mask represents a tiny stack to track the state during nested transitions.
-        // The first bit represents the state of the current level (1 == object, 0 == array).
-        // Each subsequent bit is the parent / containing type (object or array). Since this
-        // reader does a linear scan, we only need to keep a single path as we go through the data.
-        private ulong _containerMask;
-
-        // These properties are helpers for determining the current state of the reader
-        internal bool InArray => !_inObject;
-        private bool _inObject;
-
-        private bool IsLastSpan => _isFinalBlock && (_isSingleSegment || _isLastSegment);
-
-        /// <summary>
-        /// Gets the token type of the last processed token in the JSON stream.
-        /// </summary>
-        public JsonTokenType TokenType { get; private set; }
-
-        public JsonReaderOptions Options
-        {
-            get
-            {
-                return _readerOptions;
-            }
-            set
-            {
-                _readerOptions = value;
-                if (_readerOptions == JsonReaderOptions.AllowComments && _stack == null)
-                    _stack = new Stack<JsonTokenType>();
-            }
-        }
-
-        private JsonReaderOptions _readerOptions;
-
-        public JsonReaderState CurrentState
-            => new JsonReaderState
-            {
-                _containerMask = _containerMask,
-                _currentDepth = CurrentDepth,
-                _inObject = _inObject,
-                _stack = _stack,
-                _tokenType = TokenType,
-                _lineNumber = _lineNumber,
-                _position = _position,
-                _isSingleValue = _isSingleValue,
-                _sequencePosition = GetPosition(),
-                _consumed = _consumed,
-            };
-
-        private SequencePosition GetPosition()
-        {
-            if (_currentPosition.GetObject() == null)
-                return default;
-
-            SequencePosition position = _data.GetPosition(Consumed);
-            return position;
-            // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
-        }
-
-        /// <summary>
-        /// Gets the value as a ReadOnlySpan<byte> of the last processed token. The contents of this
-        /// is only relevant when <see cref="TokenType" /> is <see cref="JsonTokenType.Value" /> or
-        /// <see cref="JsonTokenType.PropertyName" />. Otherwise, this value should be set to
-        /// <see cref="ReadOnlySpan{T}.Empty"/>.
-        /// </summary>
-        public ReadOnlySpan<byte> Value { get; private set; }
-
-        public ReadOnlySequence<byte> ValueSegment { get; private set; }
-        private bool _isValueMultiSegment;
-
-        public bool IsValueMultiSegment => _isValueMultiSegment;
-
-        private readonly bool _isSingleSegment;
-        private bool _isFinalBlock;
-        private bool _isSingleValue;
-
-        internal bool ConsumedEverything => _consumed >= (uint)_buffer.Length && _isLastSegment;
-
-        internal long _lineNumber;
-        internal long _position;
-
-        private SequencePosition _nextPosition;
-        private SequencePosition _currentPosition;
-        private ReadOnlySequence<byte> _data;
-        private bool _isLastSegment;
-
-        /// <summary>
-        /// Constructs a new JsonReader instance. This is a stack-only type.
-        /// </summary>
-        /// <param name="jsonData">The <see cref="Span{byte}"/> value to consume. </param>
-        /// <param name="encoder">An encoder used for decoding bytes from <paramref name="jsonData"/> into characters.</param>
-        public Utf8JsonReader(ReadOnlySpan<byte> jsonData)
-        {
-            _containerMask = 0;
-            CurrentDepth = 0;
-            _inObject = false;
-            _stack = null;
-            TokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-
-            _isFinalBlock = true;
-
-            _buffer = jsonData;
-            _totalConsumed = 0;
-            _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = JsonReaderOptions.Default;
-
-            _nextPosition = default;
-            _currentPosition = default;
-            _data = default;
-            _isLastSegment = true;
-            _isSingleSegment = true;
-
-            _isValueMultiSegment = false;
-        }
-
-        public Utf8JsonReader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
-        {
-            if (!state.IsDefault)
-            {
-                _containerMask = state._containerMask;
-                CurrentDepth = state._currentDepth;
-                _inObject = state._inObject;
-                _stack = state._stack;
-                TokenType = state._tokenType;
-                _lineNumber = state._lineNumber;
-                _position = state._position;
-                _isSingleValue = state._isSingleValue;
-            }
-            else
-            {
-                _containerMask = 0;
-                CurrentDepth = 0;
-                _inObject = false;
-                _stack = null;
-                TokenType = JsonTokenType.None;
-                _lineNumber = 1;
-                _position = 0;
-                _isSingleValue = true;
-            }
-
-            _isFinalBlock = isFinalBlock;
-
-            _buffer = jsonData;
-            _totalConsumed = 0;
-            _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
-            _readerOptions = JsonReaderOptions.Default;
-
-            _nextPosition = default;
-            _currentPosition = default;
-            _data = default;
-            _isLastSegment = _isFinalBlock;
-            _isSingleSegment = true;
-
-            _isValueMultiSegment = false;
-        }
-
-        public Utf8JsonReader(in ReadOnlySequence<byte> jsonData)
-        {
-            _containerMask = 0;
-            CurrentDepth = 0;
-            _inObject = false;
-            _stack = null;
-            TokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-
-            _isFinalBlock = true;
-
-            _buffer = jsonData.First.Span;
-            _totalConsumed = 0;
-            _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = JsonReaderOptions.Default;
-
-            _data = jsonData;
-
-            if (jsonData.IsSingleSegment)
-            {
-                _isLastSegment = true;
-                _nextPosition = default;
-                _currentPosition = default;
-                _isSingleSegment = true;
-            }
-            else
-            {
-                _nextPosition = jsonData.Start;
-                if (_buffer.Length == 0)
-                {
-                    while (jsonData.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
-                    {
-                        if (memory.Length != 0)
-                        {
-                            _buffer = memory.Span;
-                            break;
-                        }
-                    }
-                }
+                SequencePosition copy = _currentPosition;
                 _currentPosition = _nextPosition;
-                _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
-                _isSingleSegment = false;
+                bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
+                if (noMoreData)
+                {
+                    _currentPosition = copy;
+                    return false;
+                }
+                if (memory.Length != 0)
+                    break;
             }
 
-            _isValueMultiSegment = false;
-        }
+            if (_isFinalBlock)
+                _isLastSegment = !_data.TryGet(ref _nextPosition, out _, advance: false);
 
-        public Utf8JsonReader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
-        {
-            if (!state.IsDefault)
-            {
-                _containerMask = state._containerMask;
-                CurrentDepth = state._currentDepth;
-                _inObject = state._inObject;
-                _stack = state._stack;
-                TokenType = state._tokenType;
-                _lineNumber = state._lineNumber;
-                _position = state._position;
-                _isSingleValue = state._isSingleValue;
-            }
-            else
-            {
-                _containerMask = 0;
-                CurrentDepth = 0;
-                _inObject = false;
-                _stack = null;
-                TokenType = JsonTokenType.None;
-                _lineNumber = 1;
-                _position = 0;
-                _isSingleValue = true;
-            }
-
-            _isFinalBlock = isFinalBlock;
-
-            _buffer = jsonData.First.Span;
-            _totalConsumed = 0;
+            _buffer = memory.Span;
+            _totalConsumed += _consumed;
             _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
-            ValueSegment = ReadOnlySequence<byte>.Empty;
-            _readerOptions = JsonReaderOptions.Default;
 
-            _data = jsonData;
-
-            if (jsonData.IsSingleSegment)
-            {
-                _nextPosition = default;
-                _currentPosition = default;
-                _isLastSegment = isFinalBlock;
-                _isSingleSegment = true;
-            }
-            else
-            {
-                _nextPosition = jsonData.Start;
-                if (_buffer.Length == 0)
-                {
-                    while (jsonData.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
-                    {
-                        if (memory.Length != 0)
-                        {
-                            _buffer = memory.Span;
-                            break;
-                        }
-                    }
-                }
-
-                _currentPosition = _nextPosition;
-                _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
-                _isSingleSegment = false;
-            }
-
-            _isValueMultiSegment = false;
+            return true;
         }
 
-        /// <summary>
-        /// Read the next token from the data buffer.
-        /// </summary>
-        /// <returns>True if the token was read successfully, else false.</returns>
-        public bool Read()
-        {
-            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment();
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public void Skip()
-        {
-            if (TokenType == JsonTokenType.PropertyName)
-            {
-                Read();
-            }
-
-            if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
-            {
-                int depth = CurrentDepth;
-                while (Read() && depth < CurrentDepth)
-                {
-                }
-            }
-        }
-
-        private void StartObject()
-        {
-            CurrentDepth++;
-            if (CurrentDepth > MaxDepth)
-                ThrowJsonReaderException(ref this, ExceptionResource.ObjectDepthTooLarge);
-
-            _consumed++;
-            _position++;
-
-            if (CurrentDepth <= StackFreeMaxDepth)
-                _containerMask = (_containerMask << 1) | 1;
-            else
-                _stack.Push(JsonTokenType.StartObject);
-
-            TokenType = JsonTokenType.StartObject;
-            _inObject = true;
-        }
-
-        private void EndObject()
-        {
-            if (!_inObject || CurrentDepth <= 0)
-                ThrowJsonReaderException(ref this, ExceptionResource.ObjectEndWithinArray);
-
-            _consumed++;
-            _position++;
-
-            if (CurrentDepth <= StackFreeMaxDepth)
-            {
-                _containerMask >>= 1;
-                _inObject = (_containerMask & 1) != 0;
-            }
-            else
-            {
-                _inObject = _stack.Pop() != JsonTokenType.StartArray;
-            }
-
-            CurrentDepth--;
-            TokenType = JsonTokenType.EndObject;
-        }
-
-        private void StartArray()
-        {
-            CurrentDepth++;
-            if (CurrentDepth > MaxDepth)
-                ThrowJsonReaderException(ref this, ExceptionResource.ArrayDepthTooLarge);
-
-            _consumed++;
-            _position++;
-
-            if (CurrentDepth <= StackFreeMaxDepth)
-                _containerMask = _containerMask << 1;
-            else
-                _stack.Push(JsonTokenType.StartArray);
-
-            TokenType = JsonTokenType.StartArray;
-            _inObject = false;
-        }
-
-        private void EndArray()
-        {
-            if (_inObject || CurrentDepth <= 0)
-                ThrowJsonReaderException(ref this, ExceptionResource.ArrayEndWithinObject);
-
-            _consumed++;
-            _position++;
-
-            if (CurrentDepth <= StackFreeMaxDepth)
-            {
-                _containerMask >>= 1;
-                _inObject = (_containerMask & 1) != 0;
-            }
-            else
-            {
-                _inObject = _stack.Pop() != JsonTokenType.StartArray;
-            }
-
-            CurrentDepth--;
-            TokenType = JsonTokenType.EndArray;
-        }
-
-        private bool ReadFirstToken(byte first)
+        private bool ReadFirstTokenMultiSegment(byte first)
         {
             if (first == JsonConstants.OpenBrace)
             {
@@ -472,14 +62,14 @@ namespace System.Text.JsonLab
             {
                 if ((uint)(first - '0') <= '9' - '0' || first == '-')
                 {
-                    if (!TryGetNumber(_buffer.Slice(_consumed), out int consumed))
+                    if (!TryGetNumberMultiSegment(_buffer.Slice(_consumed), out int consumed))
                         return false;
                     TokenType = JsonTokenType.Number;
                     _consumed += consumed;
                     _position += consumed;
                     goto Done;
                 }
-                else if (ConsumeValue(first))
+                else if (ConsumeValueMultiSegment(first))
                 {
                     goto Done;
                 }
@@ -494,7 +84,7 @@ namespace System.Text.JsonLab
 
                 if (_buffer[_consumed] <= JsonConstants.Space)
                 {
-                    SkipWhiteSpace();
+                    SkipWhiteSpaceMultiSegment();
                     if (_consumed >= (uint)_buffer.Length)
                     {
                         return true;
@@ -525,7 +115,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool HasMoreData()
+        private bool HasMoreDataMultiSegment()
         {
             if (_consumed >= (uint)_buffer.Length)
             {
@@ -534,13 +124,14 @@ namespace System.Text.JsonLab
                     if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                 }
-                return false;
+                if (!GetNextSpan())
+                    return false;
             }
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool HasMoreData(ExceptionResource resource)
+        private bool HasMoreDataMultiSegment(ExceptionResource resource)
         {
             if (_consumed >= (uint)_buffer.Length)
             {
@@ -548,25 +139,26 @@ namespace System.Text.JsonLab
                 {
                     ThrowJsonReaderException(ref this, resource);
                 }
-                return false;
+                if (!GetNextSpan())
+                    return false;
             }
             return true;
         }
 
-        private bool ReadSingleSegment()
+        private bool ReadMultiSegment()
         {
             bool retVal = false;
             _isValueMultiSegment = false;
 
-            if (!HasMoreData())
+            if (!HasMoreDataMultiSegment())
                 goto Done;
 
             byte first = _buffer[_consumed];
 
             if (first <= JsonConstants.Space)
             {
-                SkipWhiteSpace();
-                if (!HasMoreData())
+                SkipWhiteSpaceMultiSegment();
+                if (!HasMoreDataMultiSegment())
                     goto Done;
                 first = _buffer[_consumed];
             }
@@ -592,7 +184,7 @@ namespace System.Text.JsonLab
                     TokenStartIndex++;
                     int prevConsumed = _consumed;
                     long prevPosition = _position;
-                    if (ConsumePropertyName())
+                    if (ConsumePropertyNameMultiSegment())
                     {
                         return true;
                     }
@@ -610,12 +202,12 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    return ConsumeValue(first);
+                    return ConsumeValueMultiSegment(first);
                 }
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
-                return ConsumeValue(first);
+                return ConsumeValueMultiSegment(first);
             }
             else
             {
@@ -623,7 +215,7 @@ namespace System.Text.JsonLab
                 long prevPosition = _position;
                 long prevLineNumber = _lineNumber;
                 JsonTokenType prevTokenType = TokenType;
-                InternalResult result = ConsumeNextToken(first);
+                InternalResult result = ConsumeNextTokenMultiSegment(first);
                 if (result == InternalResult.Success)
                 {
                     return true;
@@ -652,7 +244,7 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        private InternalResult ConsumeNextToken(byte marker)
+        private InternalResult ConsumeNextTokenMultiSegment(byte marker)
         {
             if (_readerOptions != JsonReaderOptions.Default)
             {
@@ -661,7 +253,7 @@ namespace System.Text.JsonLab
                 {
                     if (marker == JsonConstants.Solidus)
                     {
-                        return ConsumeComment() ? InternalResult.Success : InternalResult.FailureRollback;
+                        return ConsumeCommentMultiSegment() ? InternalResult.Success : InternalResult.FailureRollback;
                     }
                     if (TokenType == JsonTokenType.Comment)
                     {
@@ -680,17 +272,17 @@ namespace System.Text.JsonLab
                     // JsonReaderOptions.SkipComments
                     if (marker == JsonConstants.Solidus)
                     {
-                        if (SkipComment())
+                        if (SkipCommentMultiSegment())
                         {
-                            if (!HasMoreData())
+                            if (!HasMoreDataMultiSegment())
                                 return InternalResult.FalseNoRollback;
 
                             byte first = _buffer[_consumed];
 
                             if (first <= JsonConstants.Space)
                             {
-                                SkipWhiteSpace();
-                                if (!HasMoreData())
+                                SkipWhiteSpaceMultiSegment();
+                                if (!HasMoreDataMultiSegment())
                                     return InternalResult.FalseNoRollback;
                                 first = _buffer[_consumed];
                             }
@@ -715,15 +307,19 @@ namespace System.Text.JsonLab
                         _position--;
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
                     }
-                    else return InternalResult.FailureRollback;
+                    else
+                    {
+                        if (!GetNextSpan())
+                            return InternalResult.FailureRollback;
+                    }
                 }
                 byte first = _buffer[_consumed];
 
                 if (first <= JsonConstants.Space)
                 {
-                    SkipWhiteSpace();
+                    SkipWhiteSpaceMultiSegment();
                     // The next character must be a start of a property name or value.
-                    if (!HasMoreData(ExceptionResource.ExpectedStartOfPropertyOrValueNotFound))
+                    if (!HasMoreDataMultiSegment(ExceptionResource.ExpectedStartOfPropertyOrValueNotFound))
                         return InternalResult.FailureRollback;
                     first = _buffer[_consumed];
                 }
@@ -734,11 +330,11 @@ namespace System.Text.JsonLab
                     if (first != JsonConstants.Quote)
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyNotFound, first);
                     TokenStartIndex++;
-                    return ConsumePropertyName() ? InternalResult.Success : InternalResult.FailureRollback;
+                    return ConsumePropertyNameMultiSegment() ? InternalResult.Success : InternalResult.FailureRollback;
                 }
                 else
                 {
-                    return ConsumeValue(first) ? InternalResult.Success : InternalResult.FailureRollback;
+                    return ConsumeValueMultiSegment(first) ? InternalResult.Success : InternalResult.FailureRollback;
                 }
             }
             else if (marker == JsonConstants.CloseBrace)
@@ -760,12 +356,12 @@ namespace System.Text.JsonLab
         /// This method contains the logic for processing the next value token and determining
         /// what type of data it is.
         /// </summary>
-        private bool ConsumeValue(byte marker)
+        private bool ConsumeValueMultiSegment(byte marker)
         {
             if (marker == JsonConstants.Quote)
             {
                 TokenStartIndex++;
-                return ConsumeString();
+                return ConsumeStringMultiSegment();
             }
             else if (marker == JsonConstants.OpenBrace)
             {
@@ -777,19 +373,19 @@ namespace System.Text.JsonLab
             }
             else if ((uint)(marker - '0') <= '9' - '0' || marker == '-')
             {
-                return ConsumeNumber();
+                return ConsumeNumberMultiSegment();
             }
             else if (marker == 'f')
             {
-                return ConsumeFalse();
+                return ConsumeFalseMultiSegment();
             }
             else if (marker == 't')
             {
-                return ConsumeTrue();
+                return ConsumeTrueMultiSegment();
             }
             else if (marker == 'n')
             {
-                return ConsumeNull();
+                return ConsumeNullMultiSegment();
             }
             else
             {
@@ -799,7 +395,7 @@ namespace System.Text.JsonLab
                     {
                         if (marker == JsonConstants.Solidus)
                         {
-                            return ConsumeComment();
+                            return ConsumeCommentMultiSegment();
                         }
                     }
                     else
@@ -807,7 +403,7 @@ namespace System.Text.JsonLab
                         // JsonReaderOptions.SkipComments
                         if (marker == JsonConstants.Solidus)
                         {
-                            if (SkipComment())
+                            if (SkipCommentMultiSegment())
                             {
                                 if (_consumed >= (uint)_buffer.Length)
                                 {
@@ -823,8 +419,8 @@ namespace System.Text.JsonLab
 
                                 if (first <= JsonConstants.Space)
                                 {
-                                    SkipWhiteSpace();
-                                    if (!HasMoreData())
+                                    SkipWhiteSpaceMultiSegment();
+                                    if (!HasMoreDataMultiSegment())
                                         return false;
                                     first = _buffer[_consumed];
                                 }
@@ -841,7 +437,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool SkipComment()
+        private bool SkipCommentMultiSegment()
         {
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer.Slice(_consumed + 1);
@@ -850,9 +446,9 @@ namespace System.Text.JsonLab
             {
                 byte marker = localCopy[0];
                 if (marker == JsonConstants.Solidus)
-                    return SkipSingleLineComment(localCopy.Slice(1));
+                    return SkipSingleLineCommentMultiSegment(localCopy.Slice(1));
                 else if (marker == '*')
-                    return SkipMultiLineComment(localCopy.Slice(1));
+                    return SkipMultiLineCommentMultiSegment(localCopy.Slice(1));
                 else
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
             }
@@ -866,7 +462,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool SkipSingleLineComment(ReadOnlySpan<byte> localCopy)
+        private bool SkipSingleLineCommentMultiSegment(ReadOnlySpan<byte> localCopy)
         {
             //TODO: Match Json.NET's end of comment semantics
             int idx = localCopy.IndexOf(JsonConstants.LineFeed);
@@ -891,7 +487,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool SkipMultiLineComment(ReadOnlySpan<byte> localCopy)
+        private bool SkipMultiLineCommentMultiSegment(ReadOnlySpan<byte> localCopy)
         {
             int idx = 0;
             while (true)
@@ -929,7 +525,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeComment()
+        private bool ConsumeCommentMultiSegment()
         {
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer.Slice(_consumed + 1);
@@ -938,9 +534,9 @@ namespace System.Text.JsonLab
             {
                 byte marker = localCopy[0];
                 if (marker == JsonConstants.Solidus)
-                    return ConsumeSingleLineComment(localCopy.Slice(1));
+                    return ConsumeSingleLineCommentMultiSegment(localCopy.Slice(1));
                 else if (marker == '*')
-                    return ConsumeMultiLineComment(localCopy.Slice(1));
+                    return ConsumeMultiLineCommentMultiSegment(localCopy.Slice(1));
                 else
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
             }
@@ -954,7 +550,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeSingleLineComment(ReadOnlySpan<byte> localCopy)
+        private bool ConsumeSingleLineCommentMultiSegment(ReadOnlySpan<byte> localCopy)
         {
             int idx = localCopy.IndexOf(JsonConstants.LineFeed);
             if (idx == -1)
@@ -982,7 +578,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeMultiLineComment(ReadOnlySpan<byte> localCopy)
+        private bool ConsumeMultiLineCommentMultiSegment(ReadOnlySpan<byte> localCopy)
         {
             int idx = 0;
             while (true)
@@ -1023,9 +619,9 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeNumber()
+        private bool ConsumeNumberMultiSegment()
         {
-            if (!TryGetNumber(_buffer.Slice(_consumed), out int consumed))
+            if (!TryGetNumberMultiSegment(_buffer.Slice(_consumed), out int consumed))
                 return false;
 
             TokenType = JsonTokenType.Number;
@@ -1034,11 +630,10 @@ namespace System.Text.JsonLab
 
             if (_consumed >= (uint)_buffer.Length)
             {
-                if (IsLastSpan)
+                if (IsLastSpan || !GetNextSpan())
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, _buffer[_consumed - 1]);
                 }
-                else return false;
             }
 
             if (JsonConstants.Delimiters.IndexOf(_buffer[_consumed]) >= 0)
@@ -1048,7 +643,49 @@ namespace System.Text.JsonLab
             return false;
         }
 
-        private bool ConsumeNull()
+        private bool ConsumeLiteralMultiSegment(ReadOnlySpan<byte> span, ReadOnlySpan<byte> literalValue, ExceptionResource resource)
+        {
+            if (span.Length >= literalValue.Length || IsLastSpan)
+            {
+                goto Throw;
+            }
+            else
+            {
+                if (!literalValue.StartsWith(span))
+                    goto Throw;
+
+                ReadOnlySpan<byte> leftToMatch = literalValue.Slice(span.Length);
+
+                SequencePosition startPosition = _currentPosition;
+                int startConsumed = _consumed;
+
+                while (true)
+                {
+                    if (!GetNextSpan())
+                        return false;
+
+                    span = _buffer;
+                    if (span.StartsWith(leftToMatch))
+                    {
+                        _isValueMultiSegment = true;
+                        SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + _consumed);
+                        SequencePosition end = new SequencePosition(_currentPosition.GetObject(), _currentPosition.GetInteger() + leftToMatch.Length);
+                        ValueSegment = _data.Slice(start, end);
+                        return true;
+                    }
+
+                    if (!leftToMatch.StartsWith(span))
+                        goto Throw;
+
+                    leftToMatch = leftToMatch.Slice(span.Length);
+                }
+            }
+        Throw:
+            ThrowJsonReaderException(ref this, resource, bytes: span);
+            return false;
+        }
+
+        private bool ConsumeNullMultiSegment()
         {
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
@@ -1064,6 +701,7 @@ namespace System.Text.JsonLab
             }
 
             Value = span.Slice(0, 4);
+            _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.Null;
             _consumed += 4;
@@ -1071,7 +709,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeFalse()
+        private bool ConsumeFalseMultiSegment()
         {
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
@@ -1087,6 +725,7 @@ namespace System.Text.JsonLab
             }
 
             Value = span.Slice(0, 5);
+            _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.False;
             _consumed += 5;
@@ -1094,7 +733,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeTrue()
+        private bool ConsumeTrueMultiSegment()
         {
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
@@ -1110,6 +749,7 @@ namespace System.Text.JsonLab
             }
 
             Value = span.Slice(0, 4);
+            _isValueMultiSegment = false;
         Done:
             TokenType = JsonTokenType.True;
             _consumed += 4;
@@ -1117,20 +757,20 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumePropertyName()
+        private bool ConsumePropertyNameMultiSegment()
         {
-            if (!ConsumeString())
+            if (!ConsumeStringMultiSegment())
                 return false;
 
-            if (!HasMoreData(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
+            if (!HasMoreDataMultiSegment(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
                 return false;
 
             byte first = _buffer[_consumed];
 
             if (first <= JsonConstants.Space)
             {
-                SkipWhiteSpace();
-                if (!HasMoreData(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
+                SkipWhiteSpaceMultiSegment();
+                if (!HasMoreDataMultiSegment(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
                     return false;
                 first = _buffer[_consumed];
             }
@@ -1147,7 +787,7 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ConsumeString()
+        private bool ConsumeStringMultiSegment()
         {
             Debug.Assert(_buffer.Length >= _consumed + 1);
             Debug.Assert(_buffer[_consumed] == JsonConstants.Quote);
@@ -1162,7 +802,10 @@ namespace System.Text.JsonLab
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
                 }
-                else return false;
+                else
+                {
+                    return ConsumeStringNextSegment();
+                }
             }
 
             if (localCopy[idx + _consumed] != JsonConstants.ReverseSolidus)
@@ -1181,71 +824,146 @@ namespace System.Text.JsonLab
             Done:
                 _position++;
                 Value = localCopy;
+                _isValueMultiSegment = false;
                 TokenType = JsonTokenType.String;
                 _consumed += idx + 2;
                 return true;
             }
             else
             {
-                return ConsumeStringWithNestedQuotes(idx);
+                return ConsumeStringWithNestedQuotesMultiSegment(idx);
             }
+        }
+
+        private bool ConsumeStringNextSegment(int counter = 0)
+        {
+            SequencePosition startPosition = _currentPosition;
+            SequencePosition end = default;
+            int startConsumed = _consumed + 1;
+            _isValueMultiSegment = true;
+            int leftOver = _buffer.Length - _consumed;
+
+            //TODO: Worth vectorizing?
+            while (true)
+            {
+                if (!GetNextSpan())
+                    return false;
+
+                //Create local copy to avoid bounds checks.
+                ReadOnlySpan<byte> localCopy = _buffer;
+                int i = 0;
+                for (; i < localCopy.Length; i++)
+                {
+                    byte nextByte = localCopy[i];
+                    if (nextByte == JsonConstants.ReverseSolidus)
+                        counter++;
+                    else if (nextByte == JsonConstants.Quote)
+                    {
+                        if ((counter & 1) == 0)
+                        {
+                            end = new SequencePosition(_currentPosition.GetObject(), _currentPosition.GetInteger() + i);
+                            if (i >= localCopy.Length - 1)
+                            {
+                                if (!GetNextSpan())
+                                    return false;
+                                i = -1; // _consumed will equal 0 below if we move to the next segment
+                            }
+                            _totalConsumed += leftOver;
+                            _consumed = i + 1;
+                            goto Done;
+                        }
+                        counter = 0;
+                    }
+                    else
+                    {
+                        counter = 0;
+                    }
+                }
+            }
+
+        Done:
+            SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + startConsumed);
+            ValueSegment = _data.Slice(start, end);
+            ValidateEscaping_AndHex(ValueSegment);  //TODO: Can this be done while searching for end quote?
+            _position++;    // TODO: Fix
+            TokenType = JsonTokenType.String;
+            return true;
         }
 
         // https://tools.ietf.org/html/rfc8259#section-7
-        private void ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
+        private void ValidateEscaping_AndHex(ReadOnlySequence<byte> sequence)
         {
-            if (data[data.Length - 1] != JsonConstants.Quote)
-            {
-                ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
-            }
             bool nextCharEscaped = false;
-            for (int i = 0; i < data.Length; i++)
+            ReadOnlySequence<byte>.Enumerator enumerator = sequence.GetEnumerator();
+            while (enumerator.MoveNext())
             {
-                byte currentByte = data[i];
-                if (currentByte == JsonConstants.ReverseSolidus)
+                ReadOnlySpan<byte> data = enumerator.Current.Span;
+                int i = 0;
+                while (true)
                 {
-                    nextCharEscaped = !nextCharEscaped;
-                }
-                else if (nextCharEscaped)
-                {
-                    int index = JsonConstants.EscapableChars.IndexOf(currentByte);
-                    if (index == -1)
-                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-
-                    if (currentByte == 'n')
+                    if (i >= data.Length)
+                        break;
+                    byte currentByte = data[i];
+                    if (currentByte == JsonConstants.ReverseSolidus)
                     {
-                        _position = -1; // Should be 0, but we increment _position below already
-                        _lineNumber++;
+                        nextCharEscaped = !nextCharEscaped;
                     }
-                    else if (currentByte == 'u')
+                    else if (nextCharEscaped)
                     {
-                        _position++;
-                        int startIndex = i + 1;
-                        for (int j = startIndex; j < data.Length; j++)
+                        int index = JsonConstants.EscapableChars.IndexOf(currentByte);
+                        if (index == -1)
+                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
+
+                        if (currentByte == 'n')
                         {
-                            byte nextByte = data[j];
-                            if ((uint)(nextByte - '0') > '9' - '0' && (uint)(nextByte - 'A') > 'F' - 'A' && (uint)(nextByte - 'a') > 'f' - 'a')
-                            {
-                                ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, nextByte);
-                            }
-                            if (j - startIndex >= 4)
-                                break;
-                            _position++;
+                            _position = -1; // Should be 0, but we increment _position below already
+                            _lineNumber++;
                         }
-                        i += 4;
+                        else if (currentByte == 'u')
+                        {
+                            _position++;
+                            int j = i + 1;
+                            int count = 0;
+                            while (true)
+                            {
+                                if (j >= data.Length)
+                                {
+                                    if (!enumerator.MoveNext())
+                                        ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
+                                    data = enumerator.Current.Span;
+                                    j = 0;
+                                    i = 0;
+                                }
+                                byte nextByte = data[j];
+                                if ((uint)(nextByte - '0') > '9' - '0' && (uint)(nextByte - 'A') > 'F' - 'A' && (uint)(nextByte - 'a') > 'f' - 'a')
+                                {
+                                    ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, nextByte);
+                                }
+                                count++;
+                                if (count >= 4)
+                                {
+                                    i--;     // We increment i below already
+                                    break;
+                                }
+                                _position++;
+                                i++;
+                                j++;
+                            }
+                        }
+                        nextCharEscaped = false;
                     }
-                    nextCharEscaped = false;
-                }
-                else if (currentByte < JsonConstants.Space)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
-                }
+                    else if (currentByte < JsonConstants.Space)
+                    {
+                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterWithinString, currentByte);
+                    }
 
-                _position++;
+                    _position++;
+                    i++;
+                }
             }
         }
 
-        private bool ConsumeStringWithNestedQuotes(int i)
+        private bool ConsumeStringWithNestedQuotesMultiSegment(int i)
         {
             //TODO: Optimize looking for nested quotes
             i += 1;
@@ -1259,7 +977,19 @@ namespace System.Text.JsonLab
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
                     }
-                    else return false;
+                    else
+                    {
+                        // No unescaped quote found, count how many backslashes exist at the end of the buffer.
+                        counter = 0;
+                        for (int j = _buffer.Length - 1; j >= 0; j--)
+                        {
+                            if (_buffer[j] == JsonConstants.ReverseSolidus)
+                                counter++;
+                            else
+                                break;
+                        }
+                        return ConsumeStringNextSegment(counter);
+                    }
                 }
                 if (foundIdx == 0)
                     break;
@@ -1296,12 +1026,13 @@ namespace System.Text.JsonLab
         Done:
             _position++;
             Value = localCopy;
+            _isValueMultiSegment = false;
             TokenType = JsonTokenType.String;
             _consumed = i + 1;
             return true;
         }
 
-        private void SkipWhiteSpace()
+        private void SkipWhiteSpaceMultiSegment()
         {
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
@@ -1326,9 +1057,15 @@ namespace System.Text.JsonLab
                     _position++;
                 }
             }
+            if (_consumed >= localCopy.Length)
+            {
+                if (!GetNextSpan())
+                    return;
+                SkipWhiteSpaceMultiSegment();
+            }
         }
 
-        private InternalNumberResult ConsumeNegativeSign(ref ReadOnlySpan<byte> data, ref int i)
+        private InternalNumberResult ConsumeNegativeSignMultiSegment(ref ReadOnlySpan<byte> data, ref int i)
         {
             byte nextByte = data[i];
 
@@ -1341,7 +1078,16 @@ namespace System.Text.JsonLab
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
-                    else return InternalNumberResult.NeedMoreData;
+                    else
+                    {
+                        if (!GetNextSpan())
+                        {
+                            return InternalNumberResult.NeedMoreData;
+                        }
+                        _isValueMultiSegment = true;
+                        i = 0;
+                        data = _buffer;
+                    }
                 }
 
                 nextByte = data[i];
@@ -1351,7 +1097,7 @@ namespace System.Text.JsonLab
             return InternalNumberResult.OperationIncomplete;
         }
 
-        private InternalNumberResult ConsumeZero(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
+        private InternalNumberResult ConsumeZeroMultiSegment(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
         {
             i++;
             byte nextByte = data[i];
@@ -1364,7 +1110,17 @@ namespace System.Text.JsonLab
             {
                 if (IsLastSpan)
                     return InternalNumberResult.Success;
-                else return InternalNumberResult.NeedMoreData;
+                else
+                {
+                    if (!GetNextSpan())
+                    {
+                        return InternalNumberResult.NeedMoreData;
+                    }
+                    _isValueMultiSegment = true;
+                    i = 0;
+                    data = _buffer;
+                    nextByte = data[i];
+                }
             }
 
             if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
@@ -1373,7 +1129,7 @@ namespace System.Text.JsonLab
             return InternalNumberResult.OperationIncomplete;
         }
 
-        private InternalNumberResult ConsumeIntegerDigits(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
+        private InternalNumberResult ConsumeIntegerDigitsMultiSegment(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
         {
             byte nextByte = default;
             for (; i < data.Length; i++)
@@ -1386,7 +1142,18 @@ namespace System.Text.JsonLab
             {
                 if (IsLastSpan)
                     return InternalNumberResult.Success;
-                else return InternalNumberResult.NeedMoreData;
+                else
+                {
+                    if (!GetNextSpan())
+                    {
+                        return InternalNumberResult.NeedMoreData;
+                    }
+                    _isValueMultiSegment = true;
+                    i = 0;
+                    data = _buffer;
+                    nextByte = data[i];
+                    return ConsumeIntegerDigitsMultiSegment(ref data, ref i, delimiters);   // TODO: Go to iterative solution instead of recursive
+                }
             }
             if (delimiters.IndexOf(nextByte) >= 0)
                 return InternalNumberResult.Success;
@@ -1394,7 +1161,7 @@ namespace System.Text.JsonLab
             return InternalNumberResult.OperationIncomplete;
         }
 
-        private InternalNumberResult ConsumeDecimalDigits(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters, byte nextByte)
+        private InternalNumberResult ConsumeDecimalDigitsMultiSegment(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters, byte nextByte)
         {
             if (i >= data.Length)
             {
@@ -1402,17 +1169,27 @@ namespace System.Text.JsonLab
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                 }
-                else return InternalNumberResult.NeedMoreData;
+                else
+                {
+                    if (!GetNextSpan())
+                    {
+                        return InternalNumberResult.NeedMoreData;
+                    }
+                    _isValueMultiSegment = true;
+                    i = 0;
+                    data = _buffer;
+                }
             }
             nextByte = data[i];
             if ((uint)(nextByte - '0') > '9' - '0')
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
             i++;
 
-            return ConsumeIntegerDigits(ref data, ref i, delimiters);
+            return ConsumeIntegerDigitsMultiSegment(ref data, ref i, delimiters);
         }
 
-        private InternalNumberResult ConsumeSign(ref ReadOnlySpan<byte> data, ref int i, byte nextByte)
+
+        private InternalNumberResult ConsumeSignMultiSegment(ref ReadOnlySpan<byte> data, ref int i, byte nextByte)
         {
             if (i >= data.Length)
             {
@@ -1420,7 +1197,16 @@ namespace System.Text.JsonLab
                 {
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                 }
-                else return InternalNumberResult.NeedMoreData;
+                else
+                {
+                    if (!GetNextSpan())
+                    {
+                        return InternalNumberResult.NeedMoreData;
+                    }
+                    _isValueMultiSegment = true;
+                    i = 0;
+                    data = _buffer;
+                }
             }
 
             nextByte = data[i];
@@ -1433,7 +1219,16 @@ namespace System.Text.JsonLab
                     {
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
-                    else return InternalNumberResult.NeedMoreData;
+                    else
+                    {
+                        if (!GetNextSpan())
+                        {
+                            return InternalNumberResult.NeedMoreData;
+                        }
+                        _isValueMultiSegment = true;
+                        i = 0;
+                        data = _buffer;
+                    }
                 }
                 nextByte = data[i];
             }
@@ -1445,7 +1240,7 @@ namespace System.Text.JsonLab
         }
 
         // https://tools.ietf.org/html/rfc7159#section-6
-        private bool TryGetNumber(ReadOnlySpan<byte> data, out int consumed)
+        private bool TryGetNumberMultiSegment(ReadOnlySpan<byte> data, out int consumed)
         {
             Debug.Assert(data.Length > 0);
 
@@ -1456,7 +1251,7 @@ namespace System.Text.JsonLab
 
             int i = 0;
 
-            InternalNumberResult signResult = ConsumeNegativeSign(ref data, ref i);
+            InternalNumberResult signResult = ConsumeNegativeSignMultiSegment(ref data, ref i);
             if (signResult == InternalNumberResult.NeedMoreData)
                 return false;
 
@@ -1467,7 +1262,7 @@ namespace System.Text.JsonLab
 
             if (nextByte == '0')
             {
-                InternalNumberResult result = ConsumeZero(ref data, ref i, delimiters);
+                InternalNumberResult result = ConsumeZeroMultiSegment(ref data, ref i, delimiters);
                 if (result == InternalNumberResult.NeedMoreData)
                     return false;
                 if (result == InternalNumberResult.Success)
@@ -1478,7 +1273,7 @@ namespace System.Text.JsonLab
             else
             {
                 i++;
-                InternalNumberResult result = ConsumeIntegerDigits(ref data, ref i, delimiters);
+                InternalNumberResult result = ConsumeIntegerDigitsMultiSegment(ref data, ref i, delimiters);
                 if (result == InternalNumberResult.NeedMoreData)
                     return false;
                 if (result == InternalNumberResult.Success)
@@ -1494,7 +1289,7 @@ namespace System.Text.JsonLab
             if (nextByte == '.')
             {
                 i++;
-                InternalNumberResult result = ConsumeDecimalDigits(ref data, ref i, delimiters, nextByte);
+                InternalNumberResult result = ConsumeDecimalDigitsMultiSegment(ref data, ref i, delimiters, nextByte);
                 if (result == InternalNumberResult.NeedMoreData)
                     return false;
                 if (result == InternalNumberResult.Success)
@@ -1508,14 +1303,14 @@ namespace System.Text.JsonLab
             Debug.Assert(nextByte == 'E' || nextByte == 'e');
             i++;
 
-            signResult = ConsumeSign(ref data, ref i, nextByte);
+            signResult = ConsumeSignMultiSegment(ref data, ref i, nextByte);
             if (signResult == InternalNumberResult.NeedMoreData)
                 return false;
 
             Debug.Assert(signResult == InternalNumberResult.OperationIncomplete);
 
             i++;
-            InternalNumberResult resultExponent = ConsumeIntegerDigits(ref data, ref i, delimiters);
+            InternalNumberResult resultExponent = ConsumeIntegerDigitsMultiSegment(ref data, ref i, delimiters);
             if (resultExponent == InternalNumberResult.NeedMoreData)
                 return false;
             if (resultExponent == InternalNumberResult.Success)
@@ -1523,224 +1318,21 @@ namespace System.Text.JsonLab
             if (resultExponent == InternalNumberResult.OperationIncomplete)
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
 
-        Done:
-            Value = data.Slice(0, i);
-            consumed = i;
+            Done:
+            if (_isValueMultiSegment)
+            {
+                SequencePosition start = new SequencePosition(startPosition.GetObject(), startPosition.GetInteger() + startConsumed);
+                SequencePosition end = new SequencePosition(_currentPosition.GetObject(), _currentPosition.GetInteger() + i);
+                ValueSegment = _data.Slice(start, end);
+                consumed = i;
+            }
+            else
+            {
+                Value = data.Slice(0, i);
+                _isValueMultiSegment = false;
+                consumed = i;
+            }
             return true;
-        }
-
-        public string GetValueAsString()
-        {
-            //TODO: Perform additional validation and unescaping if necessary
-            return Encodings.Utf8.ToString(Value);
-        }
-
-        public int GetValueAsInt32()
-        {
-            if (Utf8Parser.TryParse(Value, out int value, out int bytesConsumed))
-            {
-                if (Value.Length == bytesConsumed)
-                {
-                    return value;
-                }
-            }
-            //TODO: Proper error message
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        public long GetValueAsInt64()
-        {
-            if (Utf8Parser.TryParse(Value, out long value, out int bytesConsumed))
-            {
-                if (Value.Length == bytesConsumed)
-                {
-                    return value;
-                }
-            }
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        public float GetValueAsSingle()
-        {
-            //TODO: We know whether this is true or not ahead of time
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
-            {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            else
-            {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed, 'e'))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        public double GetValueAsDouble()
-        {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
-            {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            else
-            {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed, standardFormat: 'e'))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        public decimal GetValueAsDecimal()
-        {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
-            {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            else
-            {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed, standardFormat: 'e'))
-                {
-                    if (Value.Length == bytesConsumed)
-                    {
-                        return value;
-                    }
-                }
-            }
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        public object GetValueAsNumber()
-        {
-            if (Utf8Parser.TryParse(Value, out int intVal, out int bytesConsumed))
-            {
-                if (Value.Length == bytesConsumed)
-                {
-                    return intVal;
-                }
-            }
-
-            if (Utf8Parser.TryParse(Value, out long longVal, out bytesConsumed))
-            {
-                if (Value.Length == bytesConsumed)
-                {
-                    return longVal;
-                }
-            }
-
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
-            {
-                return NumberAsObject(Value);
-            }
-            else
-            {
-                return NumberAsObject(Value, standardFormat: 'e');
-            }
-        }
-
-        private static object NumberAsObject(ReadOnlySpan<byte> value, char standardFormat = default)
-        {
-            if (Utf8Parser.TryParse(value, out decimal valueDecimal, out int bytesConsumed, standardFormat))
-            {
-                if (value.Length == bytesConsumed)
-                {
-                    return TryToChangeToInt32_64(valueDecimal);
-                }
-            }
-            else if (Utf8Parser.TryParse(value, out double valueDouble, out bytesConsumed, standardFormat))
-            {
-                if (value.Length == bytesConsumed)
-                {
-                    return TryToChangeToInt32_64(valueDouble);
-                }
-            }
-            else if (Utf8Parser.TryParse(value, out float valueFloat, out bytesConsumed, standardFormat))
-            {
-                if (value.Length == bytesConsumed)
-                {
-                    return TryToChangeToInt32_64(valueFloat);
-                }
-            }
-
-            // Number too large for .NET
-            ThrowInvalidCastException();
-            return default;
-        }
-
-        private static object TryToChangeToInt32_64(float valueFloat)
-        {
-            float rounded = (float)Math.Floor(valueFloat);
-            if (rounded != valueFloat)
-            {
-                return valueFloat;
-            }
-            if (rounded <= int.MaxValue && rounded >= int.MinValue)
-                return Convert.ToInt32(rounded);
-            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
-                return Convert.ToInt64(rounded);
-            else
-                return valueFloat;
-        }
-
-        private static object TryToChangeToInt32_64(double valueDouble)
-        {
-            double rounded = Math.Floor(valueDouble);
-            if (rounded != valueDouble)
-            {
-                return valueDouble;
-            }
-            if (rounded <= int.MaxValue && rounded >= int.MinValue)
-                return Convert.ToInt32(rounded);
-            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
-                return Convert.ToInt64(rounded);
-            else
-                return valueDouble;
-        }
-
-        private static object TryToChangeToInt32_64(decimal valueDecimal)
-        {
-            decimal rounded = Math.Floor(valueDecimal);
-            if (rounded != valueDecimal)
-            {
-                return valueDecimal;
-            }
-            if (rounded <= int.MaxValue && rounded >= int.MinValue)
-                return Convert.ToInt32(rounded);
-            else if (rounded <= long.MaxValue && rounded >= long.MinValue)
-                return Convert.ToInt64(rounded);
-            else
-                return valueDecimal;
         }
     }
 }
