@@ -78,7 +78,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
-            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
+            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Length));
             message += $" LineNumber: {json._lineNumber} | BytePosition: {json._position}.";
             throw new JsonReaderException(message, json._lineNumber, json._position);
         }
@@ -86,7 +86,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonReaderException(ref Utf8Json.Reader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
-            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray()));
+            string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Length));
             throw new JsonReaderException(message, json._utf8Json._state._lineNumber, json._utf8Json._state._position);
         }
 

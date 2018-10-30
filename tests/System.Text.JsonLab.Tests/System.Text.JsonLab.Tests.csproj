@@ -24,7 +24,11 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Buffers.ReaderWriter.Tests\System.Buffers.ReaderWriter.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\TestJson.Designer.cs">
