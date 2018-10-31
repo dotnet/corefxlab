@@ -1100,7 +1100,7 @@ namespace System.Text.JsonLab
             _position += 4;
             return true;
         }
-        
+
         private bool CheckLiteral(ReadOnlySpan<byte> span, ReadOnlySpan<byte> literal, ExceptionResource resource)
         {
             Debug.Assert(span.Length > 0 && span[0] == literal[0]);

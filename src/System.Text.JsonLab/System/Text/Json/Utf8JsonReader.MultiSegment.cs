@@ -1603,7 +1603,7 @@ namespace System.Text.JsonLab
             else
             {
                 Debug.Assert(nextByte >= '1' && nextByte <= '9');
-                
+
                 InternalNumberResult result = ConsumeIntegerDigitsMultiSegment(ref data, ref i, delimiters);
                 if (result == InternalNumberResult.NeedMoreData)
                 {
