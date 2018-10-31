@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 using static System.Text.JsonLab.JsonThrowHelper;
 
@@ -95,18 +96,21 @@ namespace System.Text.JsonLab
                 _lineNumber = _lineNumber,
                 _position = _position,
                 _isSingleValue = _isSingleValue,
-                _sequencePosition = GetPosition(),
-                _consumed = _consumed,
+                _sequencePosition = Position,
+                _consumed = Consumed,
             };
 
-        private SequencePosition GetPosition()
+        public SequencePosition Position
         {
-            if (_currentPosition.GetObject() == null)
-                return default;
-            
-            SequencePosition position = _data.GetPosition(Consumed);
-            return position;
-            // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+            get
+            {
+                if (_currentPosition.GetObject() == null)
+                    return default;
+
+                SequencePosition position = _data.GetPosition(Consumed);
+                return position;
+                // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+            }
         }
 
         /// <summary>
@@ -115,7 +119,12 @@ namespace System.Text.JsonLab
         /// <see cref="JsonTokenType.PropertyName" />. Otherwise, this value should be set to
         /// <see cref="ReadOnlySpan{T}.Empty"/>.
         /// </summary>
-        public ReadOnlySpan<byte> Value { get; private set; }
+        public ReadOnlySpan<byte> ValueSpan { get; private set; }
+
+        public ReadOnlySequence<byte> ValueSequence { get; private set; }
+        private bool _isValueMultiSegment;
+
+        public bool IsValueMultiSegment => _isValueMultiSegment;
 
         private readonly bool _isSingleSegment;
         private bool _isFinalBlock;
@@ -126,12 +135,10 @@ namespace System.Text.JsonLab
         internal long _lineNumber;
         internal long _position;
 
-        private byte[] _pooledArray;
         private SequencePosition _nextPosition;
         private SequencePosition _currentPosition;
         private ReadOnlySequence<byte> _data;
         private bool _isLastSegment;
-        private int _leftOverLength;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
@@ -155,17 +162,18 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
 
-            _pooledArray = null;
             _nextPosition = default;
             _currentPosition = default;
             _data = default;
             _isLastSegment = true;
             _isSingleSegment = true;
-            _leftOverLength = 0;
+
+            _isValueMultiSegment = false;
         }
 
         public Utf8JsonReader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -200,33 +208,17 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _readerOptions = JsonReaderOptions.Default;
 
-            _pooledArray = null;
             _nextPosition = default;
             _currentPosition = default;
             _data = default;
             _isLastSegment = _isFinalBlock;
             _isSingleSegment = true;
-            _leftOverLength = 0;
-        }
 
-        private void ResizeBuffer(int minimumSize)
-        {
-            Debug.Assert(minimumSize > 0);
-            Debug.Assert(_pooledArray != null);
-            ArrayPool<byte>.Shared.Return(_pooledArray);
-            _pooledArray = ArrayPool<byte>.Shared.Rent(minimumSize);
-        }
-
-        public void Dispose()
-        {
-            if (_pooledArray != null)
-            {
-                ArrayPool<byte>.Shared.Return(_pooledArray);
-                _pooledArray = null;
-            }
+            _isValueMultiSegment = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData)
@@ -246,7 +238,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _isSingleValue = true;
             _readerOptions = JsonReaderOptions.Default;
 
@@ -257,7 +250,6 @@ namespace System.Text.JsonLab
                 _isLastSegment = true;
                 _nextPosition = default;
                 _currentPosition = default;
-                _pooledArray = null;
                 _isSingleSegment = true;
             }
             else
@@ -276,10 +268,10 @@ namespace System.Text.JsonLab
                 }
                 _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
-                _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
-            _leftOverLength = 0;
+
+            _isValueMultiSegment = false;
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
@@ -314,7 +306,8 @@ namespace System.Text.JsonLab
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
-            Value = ReadOnlySpan<byte>.Empty;
+            ValueSpan = ReadOnlySpan<byte>.Empty;
+            ValueSequence = ReadOnlySequence<byte>.Empty;
             _readerOptions = JsonReaderOptions.Default;
 
             _data = jsonData;
@@ -324,7 +317,6 @@ namespace System.Text.JsonLab
                 _nextPosition = default;
                 _currentPosition = default;
                 _isLastSegment = isFinalBlock;
-                _pooledArray = null;
                 _isSingleSegment = true;
             }
             else
@@ -344,10 +336,10 @@ namespace System.Text.JsonLab
 
                 _currentPosition = _nextPosition;
                 _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true) && isFinalBlock; // Don't re-order to avoid short-circuiting
-                _pooledArray = ArrayPool<byte>.Shared.Rent(_buffer.Length * 2);
                 _isSingleSegment = false;
             }
-            _leftOverLength = 0;
+
+            _isValueMultiSegment = false;
         }
 
         /// <summary>
@@ -356,156 +348,7 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            bool result = ReadSingleSegment();
-            if (result || _isLastSegment)
-                return result;
-            else
-                return ReadNextSegment();
-        }
-
-        private bool ReadNextSegment()
-        {
-            if (_pooledArray == null)
-                return false;
-
-            bool result = false;
-
-            Debug.Assert(!_isLastSegment);
-
-            do
-            {
-                if (_consumed == 0)
-                {
-                    if (!_data.TryGet(ref _nextPosition, out _, advance: false))
-                        return false;
-                    CopyNextSequences();
-                }
-                else
-                {
-                    ReadOnlyMemory<byte> memory = default;
-                    while (true)
-                    {
-                        SequencePosition copy = _currentPosition;
-                        _currentPosition = _nextPosition;
-                        bool noMoreData = !_data.TryGet(ref _nextPosition, out memory, advance: true);
-                        if (noMoreData)
-                        {
-                            _currentPosition = copy;
-                            return false;
-                        }
-                        if (memory.Length != 0)
-                            break;
-                    }
-
-                    if (_isFinalBlock)
-                        _isLastSegment = !_data.TryGet(ref _nextPosition, out _, advance: false);
-
-                    CopyLeftOverAndNext(memory);
-                }
-
-                result = ReadSingleSegment();
-            } while (!result && !_isLastSegment);
-            return result;
-        }
-
-        private void CopyLeftOverAndNext(ReadOnlyMemory<byte> memory)
-        {
-            if (_consumed < _buffer.Length)
-            {
-                ReadOnlySpan<byte> leftOver = _buffer.Slice(_consumed);
-                _leftOverLength = leftOver.Length;
-
-                if (leftOver.Length > _buffer.Length - memory.Length)
-                {
-                    if (leftOver.Length > int.MaxValue - memory.Length)
-                        ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
-
-                    // This is guaranteed to not overflow due to the check above.
-                    ResizeBuffer(leftOver.Length + memory.Length);
-                }
-
-                // This is guaranteed to not overflow
-                // -> _buffer.Length <= int.MaxValue, since it needs to fit in a span.
-                // -> leftOver.Length < _buffer.Length, since we leftOver is a slice of _buffer and _consumed != 0
-                // -> if leftOver.Length + memory.Length > _buffer.Length
-                // ->-> we check if leftOver.Length + memory.Length > int.MaxValue and throw above
-                // -> therefore, leftOver.Length + memory.Length < _buffer.Length <= int.MaxValue
-                Span<byte> bufferSpan = _pooledArray.AsSpan(0, leftOver.Length + memory.Length);
-                leftOver.CopyTo(bufferSpan);
-                memory.Span.CopyTo(bufferSpan.Slice(leftOver.Length));
-                _buffer = bufferSpan;
-                bufferSpan = default;
-            }
-            else
-            {
-                _buffer = memory.Span;
-                _leftOverLength = 0;
-            }
-
-            _totalConsumed += _consumed;
-            _consumed = 0;
-        }
-
-        private void CopyNextSequences()
-        {
-            Debug.Assert(_consumed == 0);
-
-            // TODO: Should we try to support more than 1 GB?
-            if (_buffer.Length > 1_000_000_000)
-                ThrowArgumentException("Current sequence segment size is too large to fit left over data from the previous segment into a 2 GB buffer.");
-
-            // TODO: Always double or is it useful to have MinimumSegmentSize?
-            // This is guaranteed to not overflow since _buffer.Length <= 1 billion
-            int minSize = Math.Max(_buffer.Length * 2, MinimumSegmentSize);
-            if (_pooledArray.Length <= minSize)
-                ResizeBuffer(minSize);
-
-            Span<byte> bufferSpan = _pooledArray;
-            _buffer.CopyTo(bufferSpan);
-            bufferSpan = bufferSpan.Slice(_buffer.Length);
-
-            int copied = 0;
-            while (true)
-            {
-                _currentPosition = _nextPosition;
-                SequencePosition prevNextPosition = _nextPosition;
-                if (_data.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
-                {
-                    if (memory.Length == 0)
-                    {
-                        _currentPosition = prevNextPosition;
-                        prevNextPosition = _nextPosition;
-                        continue;
-                    }
-
-                    ReadOnlySpan<byte> currentSpan = memory.Span;
-                    if (!currentSpan.TryCopyTo(bufferSpan.Slice(copied)))
-                    {
-                        _nextPosition = prevNextPosition;
-                        break;
-                    }
-
-                    // This is guaranteed to not overflow:
-                    // -> _pooledArray.Length <= int.MaxValue, therefore bufferSpan.Length <= int.MaxValue
-                    // -> bufferSpan.Length - copied >= currentSpan.Length, since currentSpan.TryCopyTo succeeded
-                    // -> int.MaxValue - copied >= currentSpan.Length, assuming maximum bufferSpan.Length possible
-                    // -> int.MaxValue >= currentSpan.Length + copied
-                    copied += currentSpan.Length;
-                    _currentPosition = prevNextPosition;
-                    prevNextPosition = _nextPosition;
-                }
-                else
-                {
-                    _nextPosition = prevNextPosition;
-                    if (_isFinalBlock)
-                        _isLastSegment = true;
-                    break;
-                }
-            }
-            // TODO: Set _leftOverLength?
-            bufferSpan = default;
-            Debug.Assert(_buffer.Length <= int.MaxValue - copied);
-            _buffer = _pooledArray.AsSpan(0, _buffer.Length + copied);  // This is guaranteed to not overflow
+            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment();
         }
 
         public void Skip()
@@ -530,6 +373,7 @@ namespace System.Text.JsonLab
             if (CurrentDepth > MaxDepth)
                 ThrowJsonReaderException(ref this, ExceptionResource.ObjectDepthTooLarge);
 
+            _consumed++;
             _position++;
 
             if (CurrentDepth <= StackFreeMaxDepth)
@@ -545,6 +389,9 @@ namespace System.Text.JsonLab
         {
             if (!_inObject || CurrentDepth <= 0)
                 ThrowJsonReaderException(ref this, ExceptionResource.ObjectEndWithinArray);
+
+            _consumed++;
+            _position++;
 
             if (CurrentDepth <= StackFreeMaxDepth)
             {
@@ -566,6 +413,7 @@ namespace System.Text.JsonLab
             if (CurrentDepth > MaxDepth)
                 ThrowJsonReaderException(ref this, ExceptionResource.ArrayDepthTooLarge);
 
+            _consumed++;
             _position++;
 
             if (CurrentDepth <= StackFreeMaxDepth)
@@ -581,6 +429,9 @@ namespace System.Text.JsonLab
         {
             if (_inObject || CurrentDepth <= 0)
                 ThrowJsonReaderException(ref this, ExceptionResource.ArrayEndWithinObject);
+
+            _consumed++;
+            _position++;
 
             if (CurrentDepth <= StackFreeMaxDepth)
             {
@@ -620,12 +471,11 @@ namespace System.Text.JsonLab
             {
                 if ((uint)(first - '0') <= '9' - '0' || first == '-')
                 {
-                    if (!TryGetNumber(_buffer.Slice(_consumed), out ReadOnlySpan<byte> number))
+                    if (!TryGetNumber(_buffer.Slice(_consumed), out int consumed))
                         return false;
-                    Value = number;
                     TokenType = JsonTokenType.Number;
-                    _consumed += Value.Length;
-                    _position += Value.Length;
+                    _consumed += consumed;
+                    _position += consumed;
                     goto Done;
                 }
                 else if (ConsumeValue(first))
@@ -673,10 +523,9 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ReadSingleSegment()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool HasMoreData()
         {
-            bool retVal = false;
-
             if (_consumed >= (uint)_buffer.Length)
             {
                 if (!_isSingleValue && IsLastSpan)
@@ -684,23 +533,40 @@ namespace System.Text.JsonLab
                     if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
                         ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
                 }
-                goto Done;
+                return false;
             }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool HasMoreData(ExceptionResource resource)
+        {
+            if (_consumed >= (uint)_buffer.Length)
+            {
+                if (IsLastSpan)
+                {
+                    ThrowJsonReaderException(ref this, resource);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private bool ReadSingleSegment()
+        {
+            bool retVal = false;
+            _isValueMultiSegment = false;
+
+            if (!HasMoreData())
+                goto Done;
 
             byte first = _buffer[_consumed];
 
             if (first <= JsonConstants.Space)
             {
                 SkipWhiteSpace();
-                if (_consumed >= (uint)_buffer.Length)
-                {
-                    if (!_isSingleValue && IsLastSpan)
-                    {
-                        if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
-                    }
+                if (!HasMoreData())
                     goto Done;
-                }
                 first = _buffer[_consumed];
             }
 
@@ -715,8 +581,6 @@ namespace System.Text.JsonLab
             {
                 if (first == JsonConstants.CloseBrace)
                 {
-                    _consumed++;
-                    _position++;
                     EndObject();
                 }
                 else
@@ -741,8 +605,6 @@ namespace System.Text.JsonLab
             {
                 if (first == JsonConstants.CloseBracket)
                 {
-                    _consumed++;
-                    _position++;
                     EndArray();
                 }
                 else
@@ -791,9 +653,6 @@ namespace System.Text.JsonLab
         /// </summary>
         private InternalResult ConsumeNextToken(byte marker)
         {
-            _consumed++;
-            _position++;
-
             if (_readerOptions != JsonReaderOptions.Default)
             {
                 //TODO: Re-evaluate use of InternalResult enum for the common case
@@ -801,14 +660,10 @@ namespace System.Text.JsonLab
                 {
                     if (marker == JsonConstants.Solidus)
                     {
-                        _consumed--;
-                        _position--;
                         return ConsumeComment() ? InternalResult.Success : InternalResult.FailureRollback;
                     }
                     if (TokenType == JsonTokenType.Comment)
                     {
-                        _consumed--;
-                        _position--;
                         TokenType = _stack.Pop();
                         if (ReadSingleSegment())
                             return InternalResult.Success;
@@ -824,34 +679,18 @@ namespace System.Text.JsonLab
                     // JsonReaderOptions.SkipComments
                     if (marker == JsonConstants.Solidus)
                     {
-                        _consumed--;
-                        _position--;
                         if (SkipComment())
                         {
-                            if (_consumed >= (uint)_buffer.Length)
-                            {
-                                if (!_isSingleValue && IsLastSpan)
-                                {
-                                    if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                                        ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
-                                }
+                            if (!HasMoreData())
                                 return InternalResult.FalseNoRollback;
-                            }
 
                             byte first = _buffer[_consumed];
 
                             if (first <= JsonConstants.Space)
                             {
                                 SkipWhiteSpace();
-                                if (_consumed >= (uint)_buffer.Length)
-                                {
-                                    if (!_isSingleValue && IsLastSpan)
-                                    {
-                                        if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                                            ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
-                                    }
+                                if (!HasMoreData())
                                     return InternalResult.FalseNoRollback;
-                                }
                                 first = _buffer[_consumed];
                             }
 
@@ -864,6 +703,9 @@ namespace System.Text.JsonLab
 
             if (marker == JsonConstants.ListSeperator)
             {
+                _consumed++;
+                _position++;
+
                 if (_consumed >= (uint)_buffer.Length)
                 {
                     if (IsLastSpan)
@@ -880,14 +722,8 @@ namespace System.Text.JsonLab
                 {
                     SkipWhiteSpace();
                     // The next character must be a start of a property name or value.
-                    if (_consumed >= (uint)_buffer.Length)
-                    {
-                        if (IsLastSpan)
-                        {
-                            ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfPropertyOrValueNotFound);
-                        }
-                        else return InternalResult.FailureRollback;
-                    }
+                    if (!HasMoreData(ExceptionResource.ExpectedStartOfPropertyOrValueNotFound))
+                        return InternalResult.FailureRollback;
                     first = _buffer[_consumed];
                 }
 
@@ -914,8 +750,6 @@ namespace System.Text.JsonLab
             }
             else
             {
-                _consumed--;
-                _position--;
                 ThrowJsonReaderException(ref this, ExceptionResource.FoundInvalidCharacter, marker);
             }
             return InternalResult.Success;
@@ -934,12 +768,10 @@ namespace System.Text.JsonLab
             }
             else if (marker == JsonConstants.OpenBrace)
             {
-                _consumed++;
                 StartObject();
             }
             else if (marker == JsonConstants.OpenBracket)
             {
-                _consumed++;
                 StartArray();
             }
             else if ((uint)(marker - '0') <= '9' - '0' || marker == '-')
@@ -991,15 +823,8 @@ namespace System.Text.JsonLab
                                 if (first <= JsonConstants.Space)
                                 {
                                     SkipWhiteSpace();
-                                    if (_consumed >= (uint)_buffer.Length)
-                                    {
-                                        if (!_isSingleValue && IsLastSpan)
-                                        {
-                                            if (TokenType != JsonTokenType.EndArray && TokenType != JsonTokenType.EndObject)
-                                                ThrowJsonReaderException(ref this, ExceptionResource.InvalidEndOfJson);
-                                        }
+                                    if (!HasMoreData())
                                         return false;
-                                    }
                                     first = _buffer[_consumed];
                                 }
 
@@ -1136,23 +961,23 @@ namespace System.Text.JsonLab
                 if (IsLastSpan)
                 {
                     // Assume everything on this line is a comment and there is no more data.
-                    Value = localCopy;
+                    ValueSpan = localCopy;
 
-                    _position += 2 + Value.Length;
+                    _position += 2 + ValueSpan.Length;
 
                     goto Done;
                 }
                 else return false;
             }
 
-            Value = localCopy.Slice(0, idx);
+            ValueSpan = localCopy.Slice(0, idx);
             _consumed++;
             _position = 0;
             _lineNumber++;
         Done:
             _stack.Push(TokenType);
             TokenType = JsonTokenType.Comment;
-            _consumed += 2 + Value.Length;
+            _consumed += 2 + ValueSpan.Length;
             return true;
         }
 
@@ -1180,61 +1005,60 @@ namespace System.Text.JsonLab
 
             Debug.Assert(idx >= 1);
             _stack.Push(TokenType);
-            Value = localCopy.Slice(0, idx - 1);
+            ValueSpan = localCopy.Slice(0, idx - 1);
             TokenType = JsonTokenType.Comment;
-            _consumed += 4 + Value.Length;
+            _consumed += 4 + ValueSpan.Length;
 
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(Value);
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(ValueSpan);
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _position = Value.Length - newLineIndex + 1;
+                _position = ValueSpan.Length - newLineIndex + 1;
             }
             else
             {
-                _position += 4 + Value.Length;
+                _position += 4 + ValueSpan.Length;
             }
             return true;
         }
 
         private bool ConsumeNumber()
         {
-            if (!TryGetNumberLookForEnd(_buffer.Slice(_consumed), out ReadOnlySpan<byte> number))
+            if (!TryGetNumber(_buffer.Slice(_consumed), out int consumed))
                 return false;
-            Value = number;
+
             TokenType = JsonTokenType.Number;
-            _consumed += Value.Length;
-            _position += Value.Length;
-            return true;
+            _consumed += consumed;
+            _position += consumed;
+
+            if (_consumed >= (uint)_buffer.Length)
+            {
+                if (IsLastSpan)
+                {
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, _buffer[_consumed - 1]);
+                }
+                else return false;
+            }
+
+            if (JsonConstants.Delimiters.IndexOf(_buffer[_consumed]) >= 0)
+                return true;
+
+            ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, _buffer[_consumed]);
+            return false;
         }
 
         private bool ConsumeNull()
         {
-            Value = JsonConstants.NullValue;
-
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
-            Debug.Assert(span.Length > 0 && span[0] == Value[0]);
+            Debug.Assert(span.Length > 0 && span[0] == JsonConstants.NullValue[0]);
 
-            if (!span.StartsWith(Value))
+            if (!span.StartsWith(JsonConstants.NullValue))
             {
-                if (IsLastSpan)
-                {
-                    goto Throw;
-                }
-                else
-                {
-                    if (span.Length > 1 && span[1] != Value[1])
-                        goto Throw;
-                    if (span.Length > 2 && span[2] != Value[2])
-                        goto Throw;
-                    if (span.Length >= Value.Length)
-                        goto Throw;
-                    return false;
-                }
-            Throw:
-                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNull, bytes: span);
+                return CheckLiteral(span, JsonConstants.NullValue, ExceptionResource.ExpectedNull);
             }
+
+            ValueSpan = span.Slice(0, 4);
             TokenType = JsonTokenType.Null;
             _consumed += 4;
             _position += 4;
@@ -1243,33 +1067,16 @@ namespace System.Text.JsonLab
 
         private bool ConsumeFalse()
         {
-            Value = JsonConstants.FalseValue;
-
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
-            Debug.Assert(span.Length > 0 && span[0] == Value[0]);
+            Debug.Assert(span.Length > 0 && span[0] == JsonConstants.FalseValue[0]);
 
-            if (!span.StartsWith(Value))
+            if (!span.StartsWith(JsonConstants.FalseValue))
             {
-                if (IsLastSpan)
-                {
-                    goto Throw;
-                }
-                else
-                {
-                    if (span.Length > 1 && span[1] != Value[1])
-                        goto Throw;
-                    if (span.Length > 2 && span[2] != Value[2])
-                        goto Throw;
-                    if (span.Length > 3 && span[3] != Value[3])
-                        goto Throw;
-                    if (span.Length >= Value.Length)
-                        goto Throw;
-                    return false;
-                }
-            Throw:
-                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedFalse, bytes: span);
+                return CheckLiteral(span, JsonConstants.FalseValue, ExceptionResource.ExpectedFalse);
             }
+
+            ValueSpan = span.Slice(0, 5);
             TokenType = JsonTokenType.False;
             _consumed += 5;
             _position += 5;
@@ -1278,35 +1085,55 @@ namespace System.Text.JsonLab
 
         private bool ConsumeTrue()
         {
-            Value = JsonConstants.TrueValue;
-
             ReadOnlySpan<byte> span = _buffer.Slice(_consumed);
 
-            Debug.Assert(span.Length > 0 && span[0] == Value[0]);
+            Debug.Assert(span.Length > 0 && span[0] == JsonConstants.TrueValue[0]);
 
-            if (!span.StartsWith(Value))
+            if (!span.StartsWith(JsonConstants.TrueValue))
             {
-                if (IsLastSpan)
-                {
-                    goto Throw;
-                }
-                else
-                {
-                    if (span.Length > 1 && span[1] != Value[1])
-                        goto Throw;
-                    if (span.Length > 2 && span[2] != Value[2])
-                        goto Throw;
-                    if (span.Length >= Value.Length)
-                        goto Throw;
-                    return false;
-                }
-            Throw:
-                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedTrue, bytes: span);
+                return CheckLiteral(span, JsonConstants.TrueValue, ExceptionResource.ExpectedTrue);
             }
+
+            ValueSpan = span.Slice(0, 4);
             TokenType = JsonTokenType.True;
             _consumed += 4;
             _position += 4;
             return true;
+        }
+
+        private bool CheckLiteral(ReadOnlySpan<byte> span, ReadOnlySpan<byte> literal, ExceptionResource resource)
+        {
+            Debug.Assert(span.Length > 0 && span[0] == literal[0]);
+
+            int indexOfFirstMismatch = 0;
+
+            for (int i = 1; i < literal.Length; i++)
+            {
+                if (span.Length > i)
+                {
+                    if (span[i] != literal[i])
+                    {
+                        indexOfFirstMismatch = i;
+                        _position += indexOfFirstMismatch;
+                        ThrowJsonReaderException(ref this, resource, bytes: span);
+                        break;
+                    }
+                }
+                else
+                {
+                    indexOfFirstMismatch = i;
+                    break;
+                }
+            }
+
+            Debug.Assert(indexOfFirstMismatch > 0 && indexOfFirstMismatch < literal.Length);
+
+            if (IsLastSpan)
+            {
+                _position += indexOfFirstMismatch;
+                ThrowJsonReaderException(ref this, resource, bytes: span);
+            }
+            return false;
         }
 
         private bool ConsumePropertyName()
@@ -1314,31 +1141,17 @@ namespace System.Text.JsonLab
             if (!ConsumeString())
                 return false;
 
-            //Create local copy to avoid bounds checks.
-            ReadOnlySpan<byte> localCopy = _buffer;
-            if (_consumed >= (uint)localCopy.Length)
-            {
-                if (IsLastSpan)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
-                }
-                else return false;
-            }
+            if (!HasMoreData(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
+                return false;
 
-            byte first = localCopy[_consumed];
+            byte first = _buffer[_consumed];
 
             if (first <= JsonConstants.Space)
             {
                 SkipWhiteSpace();
-                if (_consumed >= (uint)localCopy.Length)
-                {
-                    if (IsLastSpan)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedValueAfterPropertyNameNotFound);
-                    }
-                    else return false;
-                }
-                first = localCopy[_consumed];
+                if (!HasMoreData(ExceptionResource.ExpectedValueAfterPropertyNameNotFound))
+                    return false;
+                first = _buffer[_consumed];
             }
 
             // The next character must be a key / value seperator. Validate and skip.
@@ -1358,11 +1171,6 @@ namespace System.Text.JsonLab
             Debug.Assert(_buffer.Length >= _consumed + 1);
             Debug.Assert(_buffer[_consumed] == JsonConstants.Quote);
 
-            return ConsumeStringVectorized();
-        }
-
-        private bool ConsumeStringVectorized()
-        {
             //Create local copy to avoid bounds checks.
             ReadOnlySpan<byte> localCopy = _buffer;
 
@@ -1383,16 +1191,15 @@ namespace System.Text.JsonLab
                 if (localCopy.IndexOfAnyControlOrEscape() != -1)
                 {
                     _position++;
-                    if (ValidateEscaping_AndHex(localCopy))
-                        goto Done;
-                    return false;
+                    ValidateEscaping_AndHex(localCopy);
+                    goto Done;
                 }
 
                 _position += idx + 1;
 
             Done:
                 _position++;
-                Value = localCopy;
+                ValueSpan = localCopy;
                 TokenType = JsonTokenType.String;
                 _consumed += idx + 2;
                 return true;
@@ -1404,7 +1211,7 @@ namespace System.Text.JsonLab
         }
 
         // https://tools.ietf.org/html/rfc8259#section-7
-        private bool ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
+        private void ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
             bool nextCharEscaped = false;
             for (int i = 0; i < data.Length; i++)
@@ -1441,13 +1248,6 @@ namespace System.Text.JsonLab
                             _position++;
                         }
                         i += 4;
-                        if (i >= data.Length)
-                        {
-                            if (IsLastSpan)
-                                ThrowJsonReaderException(ref this, ExceptionResource.EndOfStringNotFound);
-                            else
-                                goto False;
-                        }
                     }
                     nextCharEscaped = false;
                 }
@@ -1458,10 +1258,6 @@ namespace System.Text.JsonLab
 
                 _position++;
             }
-            return true;
-
-        False:
-            return false;
         }
 
         private bool ConsumeStringWithNestedQuotes()
@@ -1469,6 +1265,9 @@ namespace System.Text.JsonLab
             //TODO: Optimize looking for nested quotes
             //TODO: Avoid redoing first IndexOf search
             int i = _consumed + 1;
+
+            Debug.Assert(_buffer.Length >= i);
+
             while (true)
             {
                 int counter = 0;
@@ -1487,7 +1286,7 @@ namespace System.Text.JsonLab
                 {
                     if (_buffer[j] != JsonConstants.ReverseSolidus)
                     {
-                        if (counter % 2 == 0)
+                        if ((counter & 1) == 0)
                         {
                             i += foundIdx;
                             goto FoundEndOfString;
@@ -1507,16 +1306,15 @@ namespace System.Text.JsonLab
             if (localCopy.IndexOfAnyControlOrEscape() != -1)
             {
                 _position++;
-                if (ValidateEscaping_AndHex(localCopy))
-                    goto Done;
-                return false;
+                ValidateEscaping_AndHex(localCopy);
+                goto Done;
             }
 
             _position = i;
 
         Done:
             _position++;
-            Value = localCopy;
+            ValueSpan = localCopy;
             TokenType = JsonTokenType.String;
             _consumed = i + 1;
             return true;
@@ -1549,16 +1347,8 @@ namespace System.Text.JsonLab
             }
         }
 
-        // https://tools.ietf.org/html/rfc7159#section-6
-        private bool TryGetNumber(ReadOnlySpan<byte> data, out ReadOnlySpan<byte> number)
+        private InternalNumberResult ConsumeNegativeSign(ref ReadOnlySpan<byte> data, ref int i)
         {
-            Debug.Assert(data.Length > 0);
-
-            ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
-
-            number = default;
-
-            int i = 0;
             byte nextByte = data[i];
 
             if (nextByte == '-')
@@ -1568,103 +1358,101 @@ namespace System.Text.JsonLab
                 {
                     if (IsLastSpan)
                     {
+                        _position += i;
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
-                    else return false;
+                    else return InternalNumberResult.NeedMoreData;
                 }
 
                 nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
+                {
+                    _position += i;
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+                }
             }
+            return InternalNumberResult.OperationIncomplete;
+        }
 
-            Debug.Assert(nextByte >= '0' && nextByte <= '9');
-
-            if (nextByte == '0')
+        private InternalNumberResult ConsumeZero(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
+        {
+            i++;
+            byte nextByte = default;
+            if (i < data.Length)
             {
-                i++;
-                if (i < data.Length)
-                {
-                    nextByte = data[i];
-                    if (delimiters.IndexOf(nextByte) != -1)
-                        goto Done;
-
-                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
-                }
-                else
-                {
-                    if (IsLastSpan)
-                        goto Done;
-                    else return false;
-                }
+                nextByte = data[i];
+                if (delimiters.IndexOf(nextByte) >= 0)
+                    return InternalNumberResult.Success;
             }
             else
             {
-                i++;
-                for (; i < data.Length; i++)
-                {
-                    nextByte = data[i];
-                    if ((uint)(nextByte - '0') > '9' - '0')
-                        break;
-                }
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                        goto Done;
-                    else return false;
-                }
-                if (delimiters.IndexOf(nextByte) != -1)
-                    goto Done;
-                if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+                if (IsLastSpan)
+                    return InternalNumberResult.Success;
+                else return InternalNumberResult.NeedMoreData;
+            }
+            nextByte = data[i];
+            if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+            {
+                _position += i;
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
             }
 
-            Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
+            return InternalNumberResult.OperationIncomplete;
+        }
 
-            if (nextByte == '.')
+        private InternalNumberResult ConsumeIntegerDigits(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters)
+        {
+            byte nextByte = default;
+            for (; i < data.Length; i++)
             {
-                i++;
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
-                    }
-                    else return false;
-                }
                 nextByte = data[i];
                 if ((uint)(nextByte - '0') > '9' - '0')
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
-                i++;
-                for (; i < data.Length; i++)
-                {
-                    nextByte = data[i];
-                    if ((uint)(nextByte - '0') > '9' - '0')
-                        break;
-                }
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                        goto Done;
-                    else return false;
-                }
-                if (delimiters.IndexOf(nextByte) != -1)
-                    goto Done;
-                if (nextByte != 'E' && nextByte != 'e')
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitEValueNotFound, nextByte);
+                    break;
             }
+            if (i >= data.Length)
+            {
+                if (IsLastSpan)
+                    return InternalNumberResult.Success;
+                else return InternalNumberResult.NeedMoreData;
+            }
+            if (delimiters.IndexOf(nextByte) >= 0)
+                return InternalNumberResult.Success;
 
-            Debug.Assert(nextByte == 'E' || nextByte == 'e');
-            i++;
+            return InternalNumberResult.OperationIncomplete;
+        }
 
+        private InternalNumberResult ConsumeDecimalDigits(ref ReadOnlySpan<byte> data, ref int i, ReadOnlySpan<byte> delimiters, byte nextByte)
+        {
             if (i >= data.Length)
             {
                 if (IsLastSpan)
                 {
+                    _position += i;
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                 }
-                else return false;
+                else return InternalNumberResult.NeedMoreData;
+            }
+            nextByte = data[i];
+            if ((uint)(nextByte - '0') > '9' - '0')
+            {
+                _position += i;
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+            }
+            i++;
+
+            return ConsumeIntegerDigits(ref data, ref i, delimiters);
+        }
+
+        private InternalNumberResult ConsumeSign(ref ReadOnlySpan<byte> data, ref int i, byte nextByte)
+        {
+            if (i >= data.Length)
+            {
+                if (IsLastSpan)
+                {
+                    _position += i;
+                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
+                }
+                else return InternalNumberResult.NeedMoreData;
             }
 
             nextByte = data[i];
@@ -1675,110 +1463,67 @@ namespace System.Text.JsonLab
                 {
                     if (IsLastSpan)
                     {
+                        _position += i;
                         ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
                     }
-                    else return false;
+                    else return InternalNumberResult.NeedMoreData;
                 }
                 nextByte = data[i];
             }
 
             if ((uint)(nextByte - '0') > '9' - '0')
+            {
+                _position += i;
                 ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
-
-            i++;
-            for (; i < data.Length; i++)
-            {
-                nextByte = data[i];
-                if ((uint)(nextByte - '0') > '9' - '0')
-                    break;
             }
 
-            if (i < data.Length)
-            {
-                if (delimiters.IndexOf(nextByte) == -1)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
-                }
-            }
-            else if (!IsLastSpan)
-            {
-                return false;
-            }
-
-        Done:
-            number = data.Slice(0, i);
-            return true;
+            return InternalNumberResult.OperationIncomplete;
         }
 
         // https://tools.ietf.org/html/rfc7159#section-6
-        private bool TryGetNumberLookForEnd(ReadOnlySpan<byte> data, out ReadOnlySpan<byte> number)
+        private bool TryGetNumber(ReadOnlySpan<byte> data, out int consumed)
         {
             Debug.Assert(data.Length > 0);
 
             ReadOnlySpan<byte> delimiters = JsonConstants.Delimiters;
-
-            number = default;
+            consumed = 0;
 
             int i = 0;
+
+            InternalNumberResult signResult = ConsumeNegativeSign(ref data, ref i);
+            if (signResult == InternalNumberResult.NeedMoreData)
+                return false;
+
+            Debug.Assert(signResult == InternalNumberResult.OperationIncomplete);
+
             byte nextByte = data[i];
-
-            if (nextByte == '-')
-            {
-                i++;
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
-                    }
-                    else return false;
-                }
-
-                nextByte = data[i];
-                if ((uint)(nextByte - '0') > '9' - '0')
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
-            }
-
             Debug.Assert(nextByte >= '0' && nextByte <= '9');
 
             if (nextByte == '0')
             {
-                i++;
-                if (i < data.Length)
-                {
-                    nextByte = data[i];
-                    if (delimiters.IndexOf(nextByte) != -1)
-                        goto Done;
+                InternalNumberResult result = ConsumeZero(ref data, ref i, delimiters);
+                if (result == InternalNumberResult.NeedMoreData)
+                    return false;
+                if (result == InternalNumberResult.Success)
+                    goto Done;
 
-                    if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
-                }
-                else
-                {
-                    if (IsLastSpan)
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
-                    else return false;
-                }
+                nextByte = data[i];
             }
             else
             {
                 i++;
-                for (; i < data.Length; i++)
-                {
-                    nextByte = data[i];
-                    if ((uint)(nextByte - '0') > '9' - '0')
-                        break;
-                }
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
-                    else return false;
-                }
-                if (delimiters.IndexOf(nextByte) != -1)
+                InternalNumberResult result = ConsumeIntegerDigits(ref data, ref i, delimiters);
+                if (result == InternalNumberResult.NeedMoreData)
+                    return false;
+                if (result == InternalNumberResult.Success)
                     goto Done;
+
+                nextByte = data[i];
                 if (nextByte != '.' && nextByte != 'E' && nextByte != 'e')
+                {
+                    _position += i;
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitComponentNotFound, nextByte);
+                }
             }
 
             Debug.Assert(nextByte == '.' || nextByte == 'E' || nextByte == 'e');
@@ -1786,116 +1531,77 @@ namespace System.Text.JsonLab
             if (nextByte == '.')
             {
                 i++;
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
-                    }
-                    else return false;
-                }
-                nextByte = data[i];
-                if ((uint)(nextByte - '0') > '9' - '0')
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
-                i++;
-                for (; i < data.Length; i++)
-                {
-                    nextByte = data[i];
-                    if ((uint)(nextByte - '0') > '9' - '0')
-                        break;
-                }
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
-                    else return false;
-                }
-                if (delimiters.IndexOf(nextByte) != -1)
+                InternalNumberResult result = ConsumeDecimalDigits(ref data, ref i, delimiters, nextByte);
+                if (result == InternalNumberResult.NeedMoreData)
+                    return false;
+                if (result == InternalNumberResult.Success)
                     goto Done;
+
+                nextByte = data[i];
                 if (nextByte != 'E' && nextByte != 'e')
+                {
+                    _position += i;
                     ThrowJsonReaderException(ref this, ExceptionResource.ExpectedNextDigitEValueNotFound, nextByte);
+                }
             }
 
             Debug.Assert(nextByte == 'E' || nextByte == 'e');
             i++;
 
-            if (i >= data.Length)
-            {
-                if (IsLastSpan)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
-                }
-                else return false;
-            }
+            signResult = ConsumeSign(ref data, ref i, nextByte);
+            if (signResult == InternalNumberResult.NeedMoreData)
+                return false;
 
-            nextByte = data[i];
-            if (nextByte == '+' || nextByte == '-')
-            {
-                i++;
-                if (i >= data.Length)
-                {
-                    if (IsLastSpan)
-                    {
-                        ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFoundEndOfData, nextByte);
-                    }
-                    else return false;
-                }
-                nextByte = data[i];
-            }
-
-            if ((uint)(nextByte - '0') > '9' - '0')
-                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedDigitNotFound, nextByte);
+            Debug.Assert(signResult == InternalNumberResult.OperationIncomplete);
 
             i++;
-            for (; i < data.Length; i++)
-            {
-                nextByte = data[i];
-                if ((uint)(nextByte - '0') > '9' - '0')
-                    break;
-            }
-
-            if (i < data.Length)
-            {
-                if (delimiters.IndexOf(nextByte) == -1)
-                {
-                    ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
-                }
-            }
-            else if (!IsLastSpan)
-            {
+            InternalNumberResult resultExponent = ConsumeIntegerDigits(ref data, ref i, delimiters);
+            if (resultExponent == InternalNumberResult.NeedMoreData)
                 return false;
+            if (resultExponent == InternalNumberResult.Success)
+                goto Done;
+            if (resultExponent == InternalNumberResult.OperationIncomplete)
+            {
+                _position += i;
+                ThrowJsonReaderException(ref this, ExceptionResource.ExpectedEndOfDigitNotFound, nextByte);
             }
 
         Done:
-            number = data.Slice(0, i);
+            ValueSpan = data.Slice(0, i);
+            consumed = i;
             return true;
         }
 
         public string GetValueAsString()
         {
+            //TODO: Proper exception message
+            if (TokenType != JsonTokenType.String && TokenType != JsonTokenType.PropertyName)
+                ThrowInvalidCastException();
+
+            ReadOnlySpan<byte> value = IsValueMultiSegment ? ValueSequence.ToArray() : ValueSpan;
             //TODO: Perform additional validation and unescaping if necessary
-            return Encodings.Utf8.ToString(Value);
+            return Encodings.Utf8.ToString(value);
         }
 
         public int GetValueAsInt32()
         {
-            if (Utf8Parser.TryParse(Value, out int value, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out int value, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return value;
                 }
             }
-            //TODO: Proper error message
+            //TODO: Proper exception message
             ThrowInvalidCastException();
             return default;
         }
 
         public long GetValueAsInt64()
         {
-            if (Utf8Parser.TryParse(Value, out long value, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out long value, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return value;
                 }
@@ -1907,11 +1613,11 @@ namespace System.Text.JsonLab
         public float GetValueAsSingle()
         {
             //TODO: We know whether this is true or not ahead of time
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out float value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1919,9 +1625,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out float value, out int bytesConsumed, 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out float value, out int bytesConsumed, 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1933,11 +1639,11 @@ namespace System.Text.JsonLab
 
         public double GetValueAsDouble()
         {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out double value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1945,9 +1651,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out double value, out int bytesConsumed, standardFormat: 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out double value, out int bytesConsumed, standardFormat: 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1959,11 +1665,11 @@ namespace System.Text.JsonLab
 
         public decimal GetValueAsDecimal()
         {
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed))
+                if (Utf8Parser.TryParse(ValueSpan, out decimal value, out int bytesConsumed))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1971,9 +1677,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (Utf8Parser.TryParse(Value, out decimal value, out int bytesConsumed, standardFormat: 'e'))
+                if (Utf8Parser.TryParse(ValueSpan, out decimal value, out int bytesConsumed, standardFormat: 'e'))
                 {
-                    if (Value.Length == bytesConsumed)
+                    if (ValueSpan.Length == bytesConsumed)
                     {
                         return value;
                     }
@@ -1985,29 +1691,29 @@ namespace System.Text.JsonLab
 
         public object GetValueAsNumber()
         {
-            if (Utf8Parser.TryParse(Value, out int intVal, out int bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out int intVal, out int bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return intVal;
                 }
             }
 
-            if (Utf8Parser.TryParse(Value, out long longVal, out bytesConsumed))
+            if (Utf8Parser.TryParse(ValueSpan, out long longVal, out bytesConsumed))
             {
-                if (Value.Length == bytesConsumed)
+                if (ValueSpan.Length == bytesConsumed)
                 {
                     return longVal;
                 }
             }
 
-            if (Value.IndexOfAny((byte)'e', (byte)'E') == -1)
+            if (ValueSpan.IndexOfAny((byte)'e', (byte)'E') == -1)
             {
-                return NumberAsObject(Value);
+                return NumberAsObject(ValueSpan);
             }
             else
             {
-                return NumberAsObject(Value, standardFormat: 'e');
+                return NumberAsObject(ValueSpan, standardFormat: 'e');
             }
         }
 

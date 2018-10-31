@@ -103,13 +103,12 @@ namespace System.Text.JsonLab.Tests
             var json = new Utf8JsonReader(sequenceMultiple);
             while (json.Read()) ;
             Assert.Equal(sequenceMultiple.Length, json.Consumed);
-            json.Dispose();
 
             var stream = new MemoryStream(sequenceMultiple.ToArray());
             var jsonStream = new Utf8JsonReaderStream(stream);
             while (jsonStream.Read()) ;
             Assert.Equal(sequenceMultiple.Length, jsonStream.Consumed);
-            json.Dispose();
+            jsonStream.Dispose();
         }
     }
 }

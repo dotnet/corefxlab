@@ -34,7 +34,7 @@ namespace System.Text.JsonLab
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        var name = new Utf8String(reader.Value);
+                        var name = new Utf8String(reader.ValueSpan);
                         reader.Read(); // Move to the value token
                         var type = reader.TokenType;
                         var current = stack.Peek();
@@ -42,7 +42,7 @@ namespace System.Text.JsonLab
                             switch (type)
                             {
                             case JsonTokenType.String:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value));
+                                current._properties[property] = new JsonValue(new Utf8String(reader.ValueSpan));
                                 break;
                             case JsonTokenType.StartObject: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 var newObj = new JsonDynamicObject(properties);
@@ -59,7 +59,7 @@ namespace System.Text.JsonLab
                                     current._properties[property] = new JsonValue(type);
                                     break;
                             case JsonTokenType.Number:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value), type);
+                                current._properties[property] = new JsonValue(new Utf8String(reader.ValueSpan), type);
                                     break;
                             case JsonTokenType.StartArray:
                                 throw new NotImplementedException("array support not implemented yet.");

@@ -301,7 +301,7 @@ namespace System.Text.JsonLab.Tests
                     value.StringValue = ReadUtf8String(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed);
+                    CustomParser.TryParseDecimal(jsonReader.ValueSpan, out decimal num, out int consumed);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:
@@ -412,7 +412,7 @@ namespace System.Text.JsonLab.Tests
 
         private static byte[] ReadUtf8String(ref Utf8JsonReader jsonReader)
         {
-            return jsonReader.Value.ToArray();
+            return jsonReader.ValueSpan.ToArray();
         }
     }
 }

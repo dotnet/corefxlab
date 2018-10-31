@@ -118,11 +118,13 @@ namespace System.Text.JsonLab.Tests
                         break;
                 }
             }
-            json.Dispose();
+            Assert.Equal(json.Consumed, json.CurrentState.Consumed);
+            Assert.Equal(json.Position, json.CurrentState.Position);
             return (json.CurrentState, builder.ToString());
         }
 
-        //[Fact] //TODO: Fix and re-enable
+        // (Expected a '"' to indicate end of string, but instead reached end of data. LineNumber: 12940 | BytePosition: 6.)
+        [Fact(Skip = "This needs to be fixed and re-enabled or removed. Fails specficially on Unix.")]
         public void ReadFromPipeUsingSpan()
         {
             string actual = "";
@@ -213,6 +215,8 @@ namespace System.Text.JsonLab.Tests
                     leftOver = default;
                 }
                 totalConsumed += json.Consumed;
+                Assert.Equal(json.Consumed, json.CurrentState.Consumed);
+                Assert.Equal(json.Position, json.CurrentState.Position);
                 if (pooledArray != null)    // TODO: Will this work if data spans more than two segments?
                     ArrayPool<byte>.Shared.Return(pooledArray);
 

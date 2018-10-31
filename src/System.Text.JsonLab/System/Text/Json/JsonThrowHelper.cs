@@ -79,6 +79,7 @@ namespace System.Text.JsonLab
         private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
             string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Length));
+            message += $" LineNumber: {json._lineNumber} | BytePosition: {json._position}.";
             throw new JsonReaderException(message, json._lineNumber, json._position);
         }
 

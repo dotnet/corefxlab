@@ -21,7 +21,7 @@ namespace System.Text.JsonLab
         const int StreamSegmentSize = 4_096;
 
         public JsonTokenType TokenType => _jsonReader.TokenType;
-        public ReadOnlySpan<byte> Value => _jsonReader.Value;
+        public ReadOnlySpan<byte> Value => _jsonReader.ValueSpan;
         public long Consumed => _consumed + _jsonReader.Consumed;
 
         public Utf8JsonReaderStream(Stream jsonStream)
