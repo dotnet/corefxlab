@@ -108,7 +108,7 @@ namespace System.Text.JsonLab.Tests
         private static (JsonReaderState, string) ProcessData(ReadOnlySequence<byte> ros, bool isFinalBlock, JsonReaderState state = default)
         {
             var builder = new StringBuilder();
-            var json = new Utf8JsonReader(ros, isFinalBlock, state);
+            var json = new JsonUtf8Reader(ros, isFinalBlock, state);
             while (json.Read())
             {
                 switch (json.TokenType)
@@ -118,7 +118,7 @@ namespace System.Text.JsonLab.Tests
                         break;
                 }
             }
-            Assert.Equal(json.Consumed, json.CurrentState.Consumed);
+            Assert.Equal(json.BytesConsumed, json.CurrentState.BytesConsumed);
             Assert.Equal(json.Position, json.CurrentState.Position);
             return (json.CurrentState, builder.ToString());
         }
@@ -180,7 +180,7 @@ namespace System.Text.JsonLab.Tests
             var builder = new StringBuilder();
             ReadOnlySpan<byte> leftOver = default;
             byte[] pooledArray = null;
-            Utf8JsonReader json = default;
+            JsonUtf8Reader json = default;
             long totalConsumed = 0;
             foreach (ReadOnlyMemory<byte> mem in ros)
             {
@@ -194,7 +194,7 @@ namespace System.Text.JsonLab.Tests
                 leftOver.CopyTo(bufferSpan);
                 span.CopyTo(bufferSpan.Slice(leftOver.Length));
 
-                json = new Utf8JsonReader(bufferSpan, isFinalBlock, state);
+                json = new JsonUtf8Reader(bufferSpan, isFinalBlock, state);
 
                 while (json.Read())
                 {
@@ -206,16 +206,16 @@ namespace System.Text.JsonLab.Tests
                     }
                 }
 
-                if (json.Consumed < bufferSpan.Length)
+                if (json.BytesConsumed < bufferSpan.Length)
                 {
-                    leftOver = bufferSpan.Slice((int)json.Consumed);
+                    leftOver = bufferSpan.Slice((int)json.BytesConsumed);
                 }
                 else
                 {
                     leftOver = default;
                 }
-                totalConsumed += json.Consumed;
-                Assert.Equal(json.Consumed, json.CurrentState.Consumed);
+                totalConsumed += json.BytesConsumed;
+                Assert.Equal(json.BytesConsumed, json.CurrentState.BytesConsumed);
                 Assert.Equal(json.Position, json.CurrentState.Position);
                 if (pooledArray != null)    // TODO: Will this work if data spans more than two segments?
                     ArrayPool<byte>.Shared.Return(pooledArray);

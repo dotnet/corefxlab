@@ -791,7 +791,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedBytePosition, ex.BytePosition);
+                    Assert.Equal(expectedBytePosition, ex.LineBytePosition);
                 }
             }
         }
@@ -845,7 +845,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedBytePosition, ex.BytePosition);
+                    Assert.Equal(expectedBytePosition, ex.LineBytePosition);
                 }
             }
         }
@@ -873,7 +873,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedBytePosition, ex.BytePosition);
+                    Assert.Equal(expectedBytePosition, ex.LineBytePosition);
                 }
             }
         }
@@ -958,7 +958,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedBytePosition, ex.BytePosition);
+                    Assert.Equal(expectedBytePosition, ex.LineBytePosition);
                 }
 
                 ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -988,9 +988,9 @@ namespace System.Text.JsonLab.Tests
                         string secondSegmentString = Encodings.Utf8.ToString(secondMem.Span);
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.BytePosition} | index: {i} | option: {option}";
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {option}";
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                        Assert.True(expectedBytePosition == ex.BytePosition, errorMessage);
+                        Assert.True(expectedBytePosition == ex.LineBytePosition, errorMessage);
                         jsonMultiSegment.Dispose();
                     }
                 }
@@ -1077,7 +1077,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedBytePosition, ex.BytePosition);
+                    Assert.Equal(expectedBytePosition, ex.LineBytePosition);
                 }
 
                 for (int i = 0; i < dataUtf8.Length; i++)
@@ -1106,9 +1106,9 @@ namespace System.Text.JsonLab.Tests
                         string secondSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.BytePosition} | index: {i} | option: {option}";
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {option}";
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
-                        Assert.True(expectedBytePosition == ex.BytePosition, errorMessage);
+                        Assert.True(expectedBytePosition == ex.LineBytePosition, errorMessage);
                     }
                 }
             }
@@ -1580,7 +1580,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.BytePosition);
+                Assert.Equal(expectedPosition, ex.LineBytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1610,7 +1610,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.BytePosition);
+                    Assert.Equal(expectedPosition, ex.LineBytePosition);
                     jsonMultiSegment.Dispose();
                 }
             }
@@ -1673,7 +1673,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.BytePosition);
+                Assert.Equal(expectedPosition, ex.LineBytePosition);
             }
 
             for (int i = 0; i < dataUtf8.Length; i++)
@@ -1710,7 +1710,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.BytePosition);
+                    Assert.Equal(expectedPosition, ex.LineBytePosition);
                 }
             }
         }
@@ -1785,7 +1785,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.BytePosition);
+                Assert.Equal(expectedPosition, ex.LineBytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1810,7 +1810,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.BytePosition);
+                    Assert.Equal(expectedPosition, ex.LineBytePosition);
                     jsonMultiSegment.Dispose();
                 }
             }
@@ -1886,7 +1886,7 @@ namespace System.Text.JsonLab.Tests
             catch (JsonReaderException ex)
             {
                 Assert.Equal(expectedlineNumber, ex.LineNumber);
-                Assert.Equal(expectedPosition, ex.BytePosition);
+                Assert.Equal(expectedPosition, ex.LineBytePosition);
             }
 
             ReadOnlyMemory<byte> dataMemory = dataUtf8;
@@ -1912,7 +1912,7 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     Assert.Equal(expectedlineNumber, ex.LineNumber);
-                    Assert.Equal(expectedPosition, ex.BytePosition);
+                    Assert.Equal(expectedPosition, ex.LineBytePosition);
                 }
             }
         }

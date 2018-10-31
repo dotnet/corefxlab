@@ -8,7 +8,7 @@ namespace System.Text.JsonLab
 {
     public ref struct Utf8JsonReaderSequence
     {
-        private Utf8JsonReader _jsonReader;
+        private JsonUtf8Reader _jsonReader;
         private Span<byte> _span;
         private readonly bool _isFinalBlock;
         private ReadOnlySequence<byte>.Enumerator _enumerator;
@@ -33,7 +33,7 @@ namespace System.Text.JsonLab
             _span = _span.Slice(0, currentSpan.Length);
 
             _isFinalBlock = data.IsSingleSegment;
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock);
+            _jsonReader = new JsonUtf8Reader(_span, _isFinalBlock);
         }
 
         public Utf8JsonReaderSequence(in ReadOnlySequence<byte> data, bool isFinalBlock, JsonReaderState state = default)
@@ -52,7 +52,7 @@ namespace System.Text.JsonLab
             _span = _span.Slice(0, _span.Length);
 
             _isFinalBlock = isFinalBlock;
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, state);
+            _jsonReader = new JsonUtf8Reader(_span, _isFinalBlock, state);
         }
 
         public bool Read()
@@ -79,9 +79,9 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> currentSpan = _enumerator.Current.Span;
 
             ReadOnlySpan<byte> leftOver = default;
-            if (_jsonReader.Consumed != _span.Length)
+            if (_jsonReader.BytesConsumed != _span.Length)
             {
-                leftOver = _span.Slice((int)_jsonReader.Consumed);
+                leftOver = _span.Slice((int)_jsonReader.BytesConsumed);
             }
 
             int bufferSize = leftOver.Length + currentSpan.Length;
@@ -96,7 +96,7 @@ namespace System.Text.JsonLab
             currentSpan.CopyTo(_span.Slice(leftOver.Length));
             _span = _span.Slice(0, bufferSize);
 
-            _jsonReader = new Utf8JsonReader(_span, _isFinalBlock, _jsonReader.CurrentState);
+            _jsonReader = new JsonUtf8Reader(_span, _isFinalBlock, _jsonReader.CurrentState);
             return _jsonReader.Read();
         }
 

@@ -74,7 +74,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void SingleSegmentSequence()
         {
-            var json = new Utf8JsonReader(_sequenceSingle);
+            var json = new JsonUtf8Reader(_sequenceSingle);
             while (json.Read()) ;
         }
 
@@ -103,15 +103,15 @@ namespace System.Text.JsonLab.Benchmarks
                 {
                     data = data.Slice(consumed, numBytes);
                 }
-                var json = new Utf8JsonReader(data, isFinalBlock, jsonState);
+                var json = new JsonUtf8Reader(data, isFinalBlock, jsonState);
 
                 while (json.Read()) ;
 
-                if (json.Consumed == 0)
+                if (json.BytesConsumed == 0)
                     numBytes++;
                 else
                     numBytes = numberOfBytes;
-                consumed += (int)json.Consumed;
+                consumed += (int)json.BytesConsumed;
                 jsonState = json.CurrentState;
                 if (consumed >= _dataUtf8.Length - numberOfBytes)
                     isFinalBlock = true;
@@ -128,7 +128,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Arguments(8_000)]
         public void MultiSegmentSequence(int segmentSize)
         {
-            var json = new Utf8JsonReader(_sequences[segmentSize]);
+            var json = new JsonUtf8Reader(_sequences[segmentSize]);
             while (json.Read()) ;
         }
 
@@ -153,7 +153,7 @@ namespace System.Text.JsonLab.Benchmarks
 
                 bool isFinalBlock = bufferSpan.Length == 0;
 
-                var json = new Utf8JsonReader(bufferSpan, isFinalBlock, state);
+                var json = new JsonUtf8Reader(bufferSpan, isFinalBlock, state);
                 while (json.Read()) ;
 
                 if (isFinalBlock)
@@ -161,9 +161,9 @@ namespace System.Text.JsonLab.Benchmarks
 
                 state = json.CurrentState;
 
-                if (json.Consumed != bufferSpan.Length)
+                if (json.BytesConsumed != bufferSpan.Length)
                 {
-                    ReadOnlySpan<byte> leftover = bufferSpan.Slice((int)json.Consumed);
+                    ReadOnlySpan<byte> leftover = bufferSpan.Slice((int)json.BytesConsumed);
                     previous = leftover.Length;
                     leftover.CopyTo(buffer);
                 }

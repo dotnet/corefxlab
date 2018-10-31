@@ -70,13 +70,13 @@ namespace System.Text.JsonLab
             GetJsonReaderException(ref json, resource, nextByte, bytes);
         }
 
-        public static void ThrowJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
+        public static void ThrowJsonReaderException(ref JsonUtf8Reader json, ExceptionResource resource = ExceptionResource.Default, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
         {
             GetJsonReaderException(ref json, resource, nextByte, bytes);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void GetJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
+        private static void GetJsonReaderException(ref JsonUtf8Reader json, ExceptionResource resource, byte nextByte, ReadOnlySpan<byte> bytes)
         {
             string message = GetResourceString(ref json, resource, (char)nextByte, Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Length));
             message += $" LineNumber: {json._lineNumber} | BytePosition: {json._position}.";
@@ -147,7 +147,7 @@ namespace System.Text.JsonLab
 
         // This function will convert an ExceptionResource enum value to the resource string.
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static string GetResourceString(ref Utf8JsonReader json, ExceptionResource resource, char character, string characters)
+        private static string GetResourceString(ref JsonUtf8Reader json, ExceptionResource resource, char character, string characters)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), resource),
                 "The enum value is not defined, please check the ExceptionResource Enum.");
