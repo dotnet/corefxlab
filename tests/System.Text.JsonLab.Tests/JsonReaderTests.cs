@@ -111,7 +111,7 @@ namespace System.Text.JsonLab.Tests
             //Assert.Equal(expectedStr, actualStrStream);
 
             // Json payload contains numbers that are too large for .NET (need BigInteger+)
-            if (type != TestCaseType.FullSchema1)
+            if (type != TestCaseType.FullSchema1 && type != TestCaseType.BasicLargeNum)
             {
                 object jsonValues = JsonLabReturnObjectHelper(dataUtf8);
                 string s = ObjectToString(jsonValues);
@@ -466,13 +466,13 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
                     var json = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), isFinalBlock: false)
                     {
-                        Options = option
+                        Options = new JsonReaderOptions(commentHandling)
                     };
                     while (json.Read()) ;
 
@@ -483,7 +483,7 @@ namespace System.Text.JsonLab.Tests
                     {
                         json = new JsonUtf8Reader(dataUtf8.AsSpan((int)consumed, (int)j), isFinalBlock: false, jsonState)
                         {
-                            Options = option
+                            Options = new JsonReaderOptions(commentHandling)
                         };
                         while (json.Read()) ;
 
@@ -491,7 +491,7 @@ namespace System.Text.JsonLab.Tests
                         Assert.Equal(consumedInner, json.CurrentState.BytesConsumed);
                         json = new JsonUtf8Reader(dataUtf8.AsSpan((int)(consumed + consumedInner)), isFinalBlock: true, json.CurrentState)
                         {
-                            Options = option
+                            Options = new JsonReaderOptions(commentHandling)
                         };
                         while (json.Read()) ;
                         Assert.Equal(dataUtf8.Length - consumedInner - consumed, json.BytesConsumed);
@@ -622,22 +622,23 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
-        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.Default, "nam\\\"e, ah\\\"son, ")]
+        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.CommentHandling.Default, "nam\\\"e, ah\\\"son, ")]
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
-            JsonReaderOptions.Default,
+            JsonReaderOptions.CommentHandling.Default,
             "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\\r\\n String\\r\\n, \\tMul\\r\\ntiline String, \\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
 
-        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.AllowComments, "nam\\\"e, ah\\\"son, ")]
+        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.CommentHandling.AllowComments, "nam\\\"e, ah\\\"son, ")]
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
-            JsonReaderOptions.AllowComments,
+            JsonReaderOptions.CommentHandling.AllowComments,
             "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\\r\\n String\\r\\n, \\tMul\\r\\ntiline String, \\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
 
-        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.SkipComments, "nam\\\"e, ah\\\"son, ")]
+        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", JsonReaderOptions.CommentHandling.SkipComments, "nam\\\"e, ah\\\"son, ")]
         [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\\r\\n String\\r\\n\",\"\\tMul\\r\\ntiline String\",\"\\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
-            JsonReaderOptions.SkipComments,
+            JsonReaderOptions.CommentHandling.SkipComments,
             "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\\r\\n String\\r\\n, \\tMul\\r\\ntiline String, \\\"somequote\\\"\\tMu\\\"\\\"l\\r\\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
-        public static void TestJsonReaderUtf8SpecialString(string jsonString, JsonReaderOptions option, string expectedStr)
+        public static void TestJsonReaderUtf8SpecialString(string jsonString, JsonReaderOptions.CommentHandling commentHandling, string expectedStr)
         {
+            JsonReaderOptions option = new JsonReaderOptions(commentHandling);
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length, option);
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
@@ -665,13 +666,13 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 for (int i = 0; i < dataUtf8.Length; i++)
                 {
                     var json = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), false)
                     {
-                        Options = option
+                        Options = new JsonReaderOptions(commentHandling)
                     };
                     while (json.Read()) ;
 
@@ -679,7 +680,7 @@ namespace System.Text.JsonLab.Tests
                     Assert.Equal(consumed, json.CurrentState.BytesConsumed);
                     json = new JsonUtf8Reader(dataUtf8.AsSpan((int)consumed), true, json.CurrentState)
                     {
-                        Options = option
+                        Options = new JsonReaderOptions(commentHandling)
                     };
                     while (json.Read()) ;
                     Assert.Equal(dataUtf8.Length - consumed, json.BytesConsumed);
@@ -709,11 +710,11 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 var json = new JsonUtf8Reader(dataUtf8.AsSpan(0, splitLocation), false)
                 {
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
                 while (json.Read()) ;
                 Assert.Equal(consumed, json.BytesConsumed);
@@ -721,7 +722,7 @@ namespace System.Text.JsonLab.Tests
 
                 json = new JsonUtf8Reader(dataUtf8.AsSpan((int)json.BytesConsumed), true, json.CurrentState)
                 {
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
                 while (json.Read()) ;
                 Assert.Equal(dataUtf8.Length - consumed, json.BytesConsumed);
@@ -781,12 +782,12 @@ namespace System.Text.JsonLab.Tests
         public static void InvalidJsonSplitRemainsInvalid(string jsonString, int splitLocation, int consumed, int expectedlineNumber, int expectedBytePosition)
         {
             //TODO: Test multi-segment json payload
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
                 var json = new JsonUtf8Reader(dataUtf8.AsSpan(0, splitLocation), false)
                 {
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
                 while (json.Read()) ;
                 Assert.Equal(consumed, json.BytesConsumed);
@@ -794,7 +795,7 @@ namespace System.Text.JsonLab.Tests
 
                 json = new JsonUtf8Reader(dataUtf8.AsSpan((int)json.BytesConsumed), true, json.CurrentState)
                 {
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
                 try
                 {
@@ -841,12 +842,12 @@ namespace System.Text.JsonLab.Tests
             //TODO: Test multi-segment json payload
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 var json = new JsonUtf8Reader(dataUtf8, false)
                 {
                     MaxDepth = maxDepth,
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
 
                 try
@@ -869,11 +870,11 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 var json = new JsonUtf8Reader(dataUtf8, false)
                 {
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
 
                 try
@@ -952,12 +953,12 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 var json = new JsonUtf8Reader(dataUtf8)
                 {
                     MaxDepth = maxDepth,
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
 
                 try
@@ -982,7 +983,7 @@ namespace System.Text.JsonLab.Tests
                     var jsonMultiSegment = new JsonUtf8Reader(sequence)
                     {
                         MaxDepth = maxDepth,
-                        Options = option
+                        Options = new JsonReaderOptions(commentHandling)
                     };
 
                     try
@@ -992,12 +993,12 @@ namespace System.Text.JsonLab.Tests
                     }
                     catch (JsonReaderException ex)
                     {
-                        string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {option}";
+                        string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {commentHandling}";
                         string firstSegmentString = Encodings.Utf8.ToString(dataMemory.Slice(0, i).Span);
                         string secondSegmentString = Encodings.Utf8.ToString(secondMem.Span);
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {option}";
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {commentHandling}";
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedBytePosition == ex.LineBytePosition, errorMessage);
                     }
@@ -1068,12 +1069,12 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
 
-            foreach (JsonReaderOptions option in Enum.GetValues(typeof(JsonReaderOptions)))
+            foreach (JsonReaderOptions.CommentHandling commentHandling in Enum.GetValues(typeof(JsonReaderOptions.CommentHandling)))
             {
                 var json = new JsonUtf8Reader(dataUtf8)
                 {
                     MaxDepth = maxDepth,
-                    Options = option
+                    Options = new JsonReaderOptions(commentHandling)
                 };
 
                 try
@@ -1094,7 +1095,7 @@ namespace System.Text.JsonLab.Tests
                         var jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), isFinalBlock: false)
                         {
                             MaxDepth = maxDepth,
-                            Options = option
+                            Options = new JsonReaderOptions(commentHandling)
                         };
                         while (jsonSlice.Read()) ;
 
@@ -1105,7 +1106,7 @@ namespace System.Text.JsonLab.Tests
                         jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan((int)consumed), isFinalBlock: true, jsonState)
                         {
                             MaxDepth = maxDepth,
-                            Options = option
+                            Options = new JsonReaderOptions(commentHandling)
                         };
                         while (jsonSlice.Read()) ;
 
@@ -1113,12 +1114,12 @@ namespace System.Text.JsonLab.Tests
                     }
                     catch (JsonReaderException ex)
                     {
-                        string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {option}";
+                        string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {commentHandling}";
                         string firstSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(0, i));
                         string secondSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
-                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {option}";
+                        errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {commentHandling}";
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedBytePosition == ex.LineBytePosition, errorMessage);
                     }
@@ -1165,7 +1166,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.AllowComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
             };
 
             bool foundComment = false;
@@ -1199,7 +1200,7 @@ namespace System.Text.JsonLab.Tests
 
                 var jsonMultiSegment = new JsonUtf8Reader(sequence)
                 {
-                    Options = JsonReaderOptions.AllowComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                 };
 
                 foundComment = false;
@@ -1265,7 +1266,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.AllowComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
             };
 
             bool foundComment = false;
@@ -1293,7 +1294,7 @@ namespace System.Text.JsonLab.Tests
             {
                 var jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), isFinalBlock: false)
                 {
-                    Options = JsonReaderOptions.AllowComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                 };
 
                 foundComment = false;
@@ -1319,7 +1320,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(consumed, jsonSlice.CurrentState.BytesConsumed);
                 jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(consumed), isFinalBlock: true, jsonSlice.CurrentState)
                 {
-                    Options = JsonReaderOptions.AllowComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                 };
 
                 if (!foundComment)
@@ -1387,7 +1388,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.SkipComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
             };
 
             JsonTokenType prevTokenType = JsonTokenType.None;
@@ -1416,7 +1417,7 @@ namespace System.Text.JsonLab.Tests
 
                 var jsonMultiSegment = new JsonUtf8Reader(sequence)
                 {
-                    Options = JsonReaderOptions.SkipComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
                 };
                 prevTokenType = JsonTokenType.None;
                 while (jsonMultiSegment.Read())
@@ -1475,7 +1476,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.SkipComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
             };
 
             JsonTokenType prevTokenType = JsonTokenType.None;
@@ -1498,7 +1499,7 @@ namespace System.Text.JsonLab.Tests
             {
                 var jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), isFinalBlock: false)
                 {
-                    Options = JsonReaderOptions.SkipComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
                 };
 
                 prevTokenType = JsonTokenType.None;
@@ -1519,7 +1520,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.Equal(prevConsumed, jsonSlice.CurrentState.BytesConsumed);
                 jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(prevConsumed), isFinalBlock: true, jsonSlice.CurrentState)
                 {
-                    Options = JsonReaderOptions.SkipComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
                 };
 
                 while (jsonSlice.Read())
@@ -1785,7 +1786,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.AllowComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
             };
 
             try
@@ -1809,7 +1810,7 @@ namespace System.Text.JsonLab.Tests
 
                 var jsonMultiSegment = new JsonUtf8Reader(sequence)
                 {
-                    Options = JsonReaderOptions.AllowComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                 };
 
                 try
@@ -1888,7 +1889,7 @@ namespace System.Text.JsonLab.Tests
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             var json = new JsonUtf8Reader(dataUtf8)
             {
-                Options = JsonReaderOptions.AllowComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
             };
 
             try
@@ -1907,7 +1908,7 @@ namespace System.Text.JsonLab.Tests
             {
                 var jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan(0, i), isFinalBlock: false)
                 {
-                    Options = JsonReaderOptions.AllowComments
+                    Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                 };
 
                 try
@@ -1917,7 +1918,7 @@ namespace System.Text.JsonLab.Tests
                     Assert.Equal(jsonSlice.BytesConsumed, jsonSlice.CurrentState.BytesConsumed);
                     jsonSlice = new JsonUtf8Reader(dataUtf8.AsSpan((int)jsonSlice.BytesConsumed), isFinalBlock: true, jsonSlice.CurrentState)
                     {
-                        Options = JsonReaderOptions.AllowComments
+                        Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.AllowComments)
                     };
 
                     while (jsonSlice.Read()) ;
@@ -2130,13 +2131,13 @@ namespace System.Text.JsonLab.Tests
             {
                 if (json.TokenType == JsonTokenType.PropertyName)
                 {
-                    key = json.GetValueAsString();
+                    json.TryGetValueAsString(out key);
                 }
                 if (json.TokenType == JsonTokenType.Number)
                 {
                     if (key.StartsWith("int"))
                     {
-                        int numberInt = json.GetValueAsInt32();
+                        json.TryGetValueAsInt32(out int numberInt);
                         if (count >= ints.Count)
                             count = 0;
                         Assert.Equal(ints[count], numberInt);
@@ -2144,7 +2145,7 @@ namespace System.Text.JsonLab.Tests
                     }
                     else if (key.StartsWith("long"))
                     {
-                        long numberLong = json.GetValueAsInt64();
+                        json.TryGetValueAsInt64(out long numberLong);
                         if (count >= longs.Count)
                             count = 0;
                         Assert.Equal(longs[count], numberLong);
@@ -2152,7 +2153,7 @@ namespace System.Text.JsonLab.Tests
                     }
                     else if (key.StartsWith("float"))
                     {
-                        float numberFloat = json.GetValueAsSingle();
+                        json.TryGetValueAsSingle(out float numberFloat);
                         if (count >= floats.Count)
                             count = 0;
 
@@ -2163,7 +2164,7 @@ namespace System.Text.JsonLab.Tests
                     }
                     else if (key.StartsWith("double"))
                     {
-                        double numberDouble = json.GetValueAsDouble();
+                        json.TryGetValueAsDouble(out double numberDouble);
                         if (count >= doubles.Count)
                             count = 0;
 
@@ -2174,7 +2175,7 @@ namespace System.Text.JsonLab.Tests
                     }
                     else if (key.StartsWith("decimal"))
                     {
-                        decimal numberDecimal = json.GetValueAsDecimal();
+                        json.TryGetValueAsDecimal(out decimal numberDecimal);
                         if (count >= decimals.Count)
                             count = 0;
                         Assert.Equal(decimals[count], numberDecimal);
@@ -2203,16 +2204,9 @@ namespace System.Text.JsonLab.Tests
             {
                 if (json.TokenType == JsonTokenType.Number)
                 {
-                    try
-                    {
-                        int value = json.GetValueAsInt32();
-                        Assert.True(false, "Expected InvalidCastException when trying to read invalid int32.");
-                    }
-                    catch (InvalidCastException)
-                    {
-                        double value = json.GetValueAsDouble();
-                        Assert.Equal(expected, value);
-                    }
+                    Assert.False(json.TryGetValueAsInt32(out int value));
+                    Assert.True(json.TryGetValueAsDouble(out double doubleValue));
+                    Assert.Equal(expected, doubleValue);
                 }
             }
 
@@ -2235,16 +2229,9 @@ namespace System.Text.JsonLab.Tests
             {
                 if (json.TokenType == JsonTokenType.Number)
                 {
-                    try
-                    {
-                        long value = json.GetValueAsInt64();
-                        Assert.True(false, "Expected InvalidCastException when trying to read invalid int64.");
-                    }
-                    catch (InvalidCastException)
-                    {
-                        double value = json.GetValueAsDouble();
-                        Assert.Equal(expected, value);
-                    }
+                    Assert.False(json.TryGetValueAsInt64(out long value));
+                    Assert.True(json.TryGetValueAsDouble(out double doubleValue));
+                    Assert.Equal(expected, doubleValue);
                 }
             }
 

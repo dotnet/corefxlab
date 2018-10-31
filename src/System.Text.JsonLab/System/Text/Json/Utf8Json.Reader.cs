@@ -404,7 +404,7 @@ namespace System.Text.JsonLab
                 if (CurrentDepth <= StackFreeMaxDepth)
                     _utf8Json._state._containerMask = (_utf8Json._state._containerMask << 1) | 1;
                 else
-                    _utf8Json._state._stack.Push(JsonTokenType.StartObject);
+                    _utf8Json._state._stack.Push((byte)JsonTokenType.StartObject);
 
                 _utf8Json._state._tokenType = JsonTokenType.StartObject;
                 _utf8Json._state._inObject = true;
@@ -422,7 +422,7 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    _utf8Json._state._inObject = _utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
+                    _utf8Json._state._inObject = (JsonTokenType)_utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
                 }
 
                 _utf8Json._state._currentDepth--;
@@ -440,7 +440,7 @@ namespace System.Text.JsonLab
                 if (CurrentDepth <= StackFreeMaxDepth)
                     _utf8Json._state._containerMask = _utf8Json._state._containerMask << 1;
                 else
-                    _utf8Json._state._stack.Push(JsonTokenType.StartArray);
+                    _utf8Json._state._stack.Push((byte)JsonTokenType.StartArray);
 
                 _utf8Json._state._tokenType = JsonTokenType.StartArray;
                 _utf8Json._state._inObject = false;
@@ -458,7 +458,7 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    _utf8Json._state._inObject = _utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
+                    _utf8Json._state._inObject = (JsonTokenType)_utf8Json._state._stack.Pop() != JsonTokenType.StartArray;
                 }
 
                 _utf8Json._state._currentDepth--;
@@ -519,9 +519,9 @@ namespace System.Text.JsonLab
                         }
                     }
 
-                    if (_utf8Json._readerOptions != JsonReaderOptions.Default)
+                    if (_utf8Json._readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
                     {
-                        if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
+                        if (_utf8Json._readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                         {
                             if (_utf8Json._state._tokenType == JsonTokenType.Comment || _buffer[_consumed] == JsonConstants.Solidus)
                             {
@@ -663,10 +663,10 @@ namespace System.Text.JsonLab
                 _consumed++;
                 _utf8Json._state._position++;
 
-                if (_utf8Json._readerOptions != JsonReaderOptions.Default)
+                if (_utf8Json._readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
                 {
                     //TODO: Re-evaluate use of InternalResult enum for the common case
-                    if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
+                    if (_utf8Json._readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                     {
                         if (marker == JsonConstants.Solidus)
                         {
@@ -678,12 +678,12 @@ namespace System.Text.JsonLab
                         {
                             _consumed--;
                             _utf8Json._state._position--;
-                            _utf8Json._state._tokenType = _utf8Json._state._stack.Pop();
+                            _utf8Json._state._tokenType = (JsonTokenType)_utf8Json._state._stack.Pop();
                             if (ReadSingleSegment())
                                 return InternalResult.Success;
                             else
                             {
-                                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
+                                _utf8Json._state._stack.Push((byte)_utf8Json._state._tokenType);
                                 return InternalResult.FailureRollback;
                             }
                         }
@@ -829,9 +829,9 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    if (_utf8Json._readerOptions != JsonReaderOptions.Default)
+                    if (_utf8Json._readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
                     {
-                        if (_utf8Json._readerOptions == JsonReaderOptions.AllowComments)
+                        if (_utf8Json._readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                         {
                             if (marker == JsonConstants.Solidus)
                             {
@@ -1019,7 +1019,7 @@ namespace System.Text.JsonLab
                 _utf8Json._state._position = 0;
                 _utf8Json._state._lineNumber++;
             Done:
-                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
+                _utf8Json._state._stack.Push((byte)_utf8Json._state._tokenType);
                 _utf8Json._state._tokenType = JsonTokenType.Comment;
                 _consumed += 2 + Value.Length;
                 return true;
@@ -1048,7 +1048,7 @@ namespace System.Text.JsonLab
                 }
 
                 Debug.Assert(idx >= 1);
-                _utf8Json._state._stack.Push(_utf8Json._state._tokenType);
+                _utf8Json._state._stack.Push((byte)_utf8Json._state._tokenType);
                 Value = localCopy.Slice(0, idx - 1);
                 _utf8Json._state._tokenType = JsonTokenType.Comment;
                 _consumed += 4 + Value.Length;

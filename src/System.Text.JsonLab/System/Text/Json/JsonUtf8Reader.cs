@@ -145,38 +145,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="jsonData">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="jsonData"/> into characters.</param>
-        public JsonUtf8Reader(ReadOnlySpan<byte> jsonData)
-        {
-            _containerMask = 0;
-            CurrentDepth = 0;
-            _inObject = false;
-            _stack = null;
-            TokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-
-            _isFinalBlock = true;
-
-            _buffer = jsonData;
-            _totalConsumed = 0;
-            _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            ValueSpan = ReadOnlySpan<byte>.Empty;
-            ValueSequence = ReadOnlySequence<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = new JsonReaderOptions(JsonReaderOptions.CommentHandling.Default);
-
-            _nextPosition = default;
-            _currentPosition = default;
-            _data = default;
-            _isLastSegment = true;
-            _isSingleSegment = true;
-
-            _isValueMultiSegment = false;
-        }
-
-        public JsonUtf8Reader(ReadOnlySpan<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
+        public JsonUtf8Reader(ReadOnlySpan<byte> jsonData, bool isFinalBlock = true, JsonReaderState state = default)
         {
             if (!state.IsDefault)
             {
@@ -221,60 +190,7 @@ namespace System.Text.JsonLab
             _isValueMultiSegment = false;
         }
 
-        public JsonUtf8Reader(in ReadOnlySequence<byte> jsonData)
-        {
-            _containerMask = 0;
-            CurrentDepth = 0;
-            _inObject = false;
-            _stack = null;
-            TokenType = JsonTokenType.None;
-            _lineNumber = 1;
-            _position = 0;
-
-            _isFinalBlock = true;
-
-            _buffer = jsonData.First.Span;
-            _totalConsumed = 0;
-            _consumed = 0;
-            TokenStartIndex = _consumed;
-            _maxDepth = StackFreeMaxDepth;
-            ValueSpan = ReadOnlySpan<byte>.Empty;
-            ValueSequence = ReadOnlySequence<byte>.Empty;
-            _isSingleValue = true;
-            _readerOptions = new JsonReaderOptions(JsonReaderOptions.CommentHandling.Default);
-
-            _data = jsonData;
-
-            if (jsonData.IsSingleSegment)
-            {
-                _isLastSegment = true;
-                _nextPosition = default;
-                _currentPosition = default;
-                _isSingleSegment = true;
-            }
-            else
-            {
-                _nextPosition = jsonData.Start;
-                if (_buffer.Length == 0)
-                {
-                    while (jsonData.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
-                    {
-                        if (memory.Length != 0)
-                        {
-                            _buffer = memory.Span;
-                            break;
-                        }
-                    }
-                }
-                _currentPosition = _nextPosition;
-                _isLastSegment = !jsonData.TryGet(ref _nextPosition, out _, advance: true);
-                _isSingleSegment = false;
-            }
-
-            _isValueMultiSegment = false;
-        }
-
-        public JsonUtf8Reader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock, JsonReaderState state = default)
+        public JsonUtf8Reader(in ReadOnlySequence<byte> jsonData, bool isFinalBlock = true, JsonReaderState state = default)
         {
             if (!state.IsDefault)
             {

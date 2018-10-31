@@ -890,10 +890,12 @@ namespace System.Text.JsonLab.Tests
                         root = valueSpan[0] == 't';
                         break;
                     case JsonTokenType.Number:
-                        root = json.GetValueAsNumber();
+                        json.TryGetValueAsDouble(out double valueDouble);
+                        root = valueDouble;
                         break;
                     case JsonTokenType.String:
-                        root = json.GetValueAsString();
+                        json.TryGetValueAsString(out string valueString);
+                        root = valueString;
                         break;
                     case JsonTokenType.Null:
                         break;
@@ -969,7 +971,7 @@ namespace System.Text.JsonLab.Tests
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        key = json.GetValueAsString();
+                        json.TryGetValueAsString(out key);
                         dictionary.Add(key, null);
                         break;
                     case JsonTokenType.True:
@@ -985,25 +987,25 @@ namespace System.Text.JsonLab.Tests
                         }
                         break;
                     case JsonTokenType.Number:
-                        value = json.GetValueAsNumber();
+                        json.TryGetValueAsDouble(out double valueDouble);
                         if (dictionary.TryGetValue(key, out _))
                         {
-                            dictionary[key] = value;
+                            dictionary[key] = valueDouble;
                         }
                         else
                         {
-                            dictionary.Add(key, value);
+                            dictionary.Add(key, valueDouble);
                         }
                         break;
                     case JsonTokenType.String:
-                        value = json.GetValueAsString();
+                        json.TryGetValueAsString(out string valueString);
                         if (dictionary.TryGetValue(key, out _))
                         {
-                            dictionary[key] = value;
+                            dictionary[key] = valueString;
                         }
                         else
                         {
-                            dictionary.Add(key, value);
+                            dictionary.Add(key, valueString);
                         }
                         break;
                     case JsonTokenType.Null:
@@ -1163,12 +1165,12 @@ namespace System.Text.JsonLab.Tests
                         arrayList.Add(value);
                         break;
                     case JsonTokenType.Number:
-                        value = json.GetValueAsNumber();
-                        arrayList.Add(value);
+                        json.TryGetValueAsDouble(out double doubleValue);
+                        arrayList.Add(doubleValue);
                         break;
                     case JsonTokenType.String:
-                        value = json.GetValueAsString();
-                        arrayList.Add(value);
+                        json.TryGetValueAsString(out string valueString);
+                        arrayList.Add(valueString);
                         break;
                     case JsonTokenType.Null:
                         value = null;

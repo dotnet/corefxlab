@@ -29,7 +29,7 @@ namespace System.Text.JsonLab
             _state._lineNumber = 1;
             _state._isSingleValue = true;
 
-            _readerOptions = JsonReaderOptions.Default;
+            _readerOptions = new JsonReaderOptions(JsonReaderOptions.CommentHandling.Default);
             _maxDepth = StackFreeMaxDepth;
         }
 
@@ -46,7 +46,7 @@ namespace System.Text.JsonLab
             if (_state._position < 0)
                 ThrowArgumentException("Invalid position. Position must be positive.");
 
-            _readerOptions = JsonReaderOptions.Default;
+            _readerOptions = new JsonReaderOptions(JsonReaderOptions.CommentHandling.Default);
             _maxDepth = StackFreeMaxDepth;
         }
 
@@ -61,8 +61,8 @@ namespace System.Text.JsonLab
             set
             {
                 _readerOptions = value;
-                if (_readerOptions == JsonReaderOptions.AllowComments && _state._stack == null)
-                    _state._stack = new Stack<JsonTokenType>();
+                if (_readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments && _state._stack == null)
+                    _state._stack = new Stack<byte>();
             }
         }
 
@@ -78,7 +78,7 @@ namespace System.Text.JsonLab
                     ThrowArgumentException("Max depth must be positive.");
                 _maxDepth = value;
                 if (_maxDepth > StackFreeMaxDepth)
-                    _state._stack = new Stack<JsonTokenType>();
+                    _state._stack = new Stack<byte>();
             }
         }
     }

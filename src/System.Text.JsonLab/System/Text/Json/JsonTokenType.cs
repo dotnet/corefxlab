@@ -4,7 +4,7 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonTokenType : byte
+    public enum JsonTokenType
     {
         None,
         StartObject,
