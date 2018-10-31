@@ -292,6 +292,7 @@ namespace System.Text.JsonLab.Tests
                         numberOfBytes++;
                     else
                         numberOfBytes = numBytes[i];
+
                     consumed += (int)utf8JsonReader.BytesConsumed;
                     Assert.Equal(utf8JsonReader.BytesConsumed, utf8JsonReader.CurrentState.BytesConsumed);
                     jsonState = utf8JsonReader.CurrentState;
