@@ -78,7 +78,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         [Arguments(1)]
         [Arguments(10)]
         [Arguments(100)]
@@ -119,20 +119,20 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        //[Arguments(1)]
-        //[Arguments(10)]
-        //[Arguments(100)]
-        //[Arguments(1_000)]
-        //[Arguments(2_000)]
+        [Arguments(1)]
+        [Arguments(10)]
+        [Arguments(100)]
+        [Arguments(1_000)]
+        [Arguments(2_000)]
         [Arguments(4_000)]
-        //[Arguments(8_000)]
+        [Arguments(8_000)]
         public void MultiSegmentSequence(int segmentSize)
         {
             var json = new Utf8JsonReader(_sequences[segmentSize]);
             while (json.Read()) ;
         }
 
-        //[Benchmark]
+        [Benchmark]
         [Arguments(1_000)]
         [Arguments(2_000)]
         [Arguments(4_000)]
@@ -175,7 +175,7 @@ namespace System.Text.JsonLab.Benchmarks
             ArrayPool<byte>.Shared.Return(buffer);
         }
 
-        //[Benchmark]
+        [Benchmark]
         [Arguments(1_000)]
         [Arguments(2_000)]
         [Arguments(4_000)]

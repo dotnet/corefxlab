@@ -96,18 +96,21 @@ namespace System.Text.JsonLab
                 _lineNumber = _lineNumber,
                 _position = _position,
                 _isSingleValue = _isSingleValue,
-                _sequencePosition = GetPosition(),
+                _sequencePosition = Position,
                 _consumed = Consumed,
             };
 
-        private SequencePosition GetPosition()
+        public SequencePosition Position
         {
-            if (_currentPosition.GetObject() == null)
-                return default;
+            get
+            {
+                if (_currentPosition.GetObject() == null)
+                    return default;
 
-            SequencePosition position = _data.GetPosition(Consumed);
-            return position;
-            // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+                SequencePosition position = _data.GetPosition(Consumed);
+                return position;
+                // TODO: This fails - return _data.GetPosition(_consumed - _leftOverLength, _currentPosition);
+            }
         }
 
         /// <summary>
@@ -201,7 +204,7 @@ namespace System.Text.JsonLab
             _isFinalBlock = isFinalBlock;
 
             _buffer = jsonData;
-            _totalConsumed = state._consumed;
+            _totalConsumed = 0;
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
@@ -299,7 +302,7 @@ namespace System.Text.JsonLab
             _isFinalBlock = isFinalBlock;
 
             _buffer = jsonData.First.Span;
-            _totalConsumed = state._consumed;
+            _totalConsumed = 0;
             _consumed = 0;
             TokenStartIndex = _consumed;
             _maxDepth = StackFreeMaxDepth;
@@ -1210,8 +1213,6 @@ namespace System.Text.JsonLab
         // https://tools.ietf.org/html/rfc8259#section-7
         private void ValidateEscaping_AndHex(ReadOnlySpan<byte> data)
         {
-            Debug.Assert(data[data.Length - 1] != JsonConstants.Quote);
-
             bool nextCharEscaped = false;
             for (int i = 0; i < data.Length; i++)
             {
@@ -1573,8 +1574,13 @@ namespace System.Text.JsonLab
 
         public string GetValueAsString()
         {
+            //TODO: Proper exception message
+            if (TokenType != JsonTokenType.String && TokenType != JsonTokenType.PropertyName)
+                ThrowInvalidCastException();
+
+            ReadOnlySpan<byte> value = IsValueMultiSegment ? ValueSequence.ToArray() : ValueSpan;
             //TODO: Perform additional validation and unescaping if necessary
-            return Encodings.Utf8.ToString(ValueSpan);
+            return Encodings.Utf8.ToString(value);
         }
 
         public int GetValueAsInt32()
@@ -1586,7 +1592,7 @@ namespace System.Text.JsonLab
                     return value;
                 }
             }
-            //TODO: Proper error message
+            //TODO: Proper exception message
             ThrowInvalidCastException();
             return default;
         }
