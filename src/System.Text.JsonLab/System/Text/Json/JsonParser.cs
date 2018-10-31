@@ -21,7 +21,7 @@ namespace System.Text.JsonLab
         public JsonObject Parse()
         {
             var database = new CustomDb(_pool, DbRow.Size + _utf8Json.Length);
-            var stack = new CustomStack(Utf8JsonReader.StackFreeMaxDepth * StackRow.Size);
+            var stack = new CustomStack(JsonUtf8Reader.StackFreeMaxDepth * StackRow.Size);
             var json = new Utf8Json();
             var reader = json.GetReader(_utf8Json);
 

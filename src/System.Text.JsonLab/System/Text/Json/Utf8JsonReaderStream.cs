@@ -10,7 +10,7 @@ namespace System.Text.JsonLab
 {
     public ref struct Utf8JsonReaderStream
     {
-        private Utf8JsonReader _jsonReader;
+        private JsonUtf8Reader _jsonReader;
         private Span<byte> _buffer;
         private Stream _stream;
         private byte[] _pooledArray;
@@ -22,7 +22,7 @@ namespace System.Text.JsonLab
 
         public JsonTokenType TokenType => _jsonReader.TokenType;
         public ReadOnlySpan<byte> Value => _jsonReader.ValueSpan;
-        public long Consumed => _consumed + _jsonReader.Consumed;
+        public long Consumed => _consumed + _jsonReader.BytesConsumed;
 
         public Utf8JsonReaderStream(Stream jsonStream)
         {
@@ -35,7 +35,7 @@ namespace System.Text.JsonLab
             _stream = jsonStream;
 
             _isFinalBlock = numberOfBytes == 0;
-            _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock);
+            _jsonReader = new JsonUtf8Reader(_buffer, _isFinalBlock);
             _consumed = 0;
         }
 
@@ -55,14 +55,14 @@ namespace System.Text.JsonLab
 
             do
             {
-                _consumed += _jsonReader.Consumed;
-                int leftOver = _buffer.Length - (int)_jsonReader.Consumed;
+                _consumed += _jsonReader.BytesConsumed;
+                int leftOver = _buffer.Length - (int)_jsonReader.BytesConsumed;
                 int amountToRead = StreamSegmentSize;
                 if (leftOver > 0)
                 {
                     _stream.Position -= leftOver;
 
-                    if (_jsonReader.Consumed == 0)
+                    if (_jsonReader.BytesConsumed == 0)
                     {
                         if (leftOver > 1_000_000_000)
                             JsonThrowHelper.ThrowArgumentException("Cannot fit left over data from the previous chunk and the next chunk of data into a 2 GB buffer.");
@@ -81,7 +81,7 @@ namespace System.Text.JsonLab
 
                 _buffer = _pooledArray.AsSpan(0, numberOfBytes);
 
-                _jsonReader = new Utf8JsonReader(_buffer, _isFinalBlock, _jsonReader.CurrentState);
+                _jsonReader = new JsonUtf8Reader(_buffer, _isFinalBlock, _jsonReader.CurrentState);
                 result = _jsonReader.Read();
             } while (!result && !_isFinalBlock);
 

@@ -28,7 +28,7 @@ namespace System.Text.JsonLab
             var properties = new Dictionary<JsonProperty, JsonValue>(expectedNumberOfProperties);
             stack.Push(new JsonDynamicObject(properties));
 
-            var reader = new Utf8JsonReader(utf8);
+            var reader = new JsonUtf8Reader(utf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)

@@ -4,11 +4,20 @@
 
 namespace System.Text.JsonLab
 {
-    [Flags]
-    public enum JsonReaderOptions
+    public struct JsonReaderOptions
     {
-        Default = 0b0000,       // Don't allow comments, treat as invalid json if found
-        AllowComments = 0b0001, // Allow comments but don't skip them
-        SkipComments = 0b0011,  // Allow and Skip comments
+        public JsonReaderOptions(CommentHandling commentHandling)
+        {
+            _commentHandling = commentHandling;
+        }
+
+        internal CommentHandling _commentHandling;
+
+        public enum CommentHandling
+        {
+            Default = 0,       // Don't allow comments, treat as invalid json if found
+            AllowComments = 1, // Allow comments but don't skip them
+            SkipComments = 2,  // Allow and Skip comments
+        }
     }
 }

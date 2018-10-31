@@ -143,7 +143,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        public static void SetKeyValues(ref Utf8JsonReader json, Dictionary<string, object> dictionary, ref string key, ref object value)
+        public static void SetKeyValues(ref JsonUtf8Reader json, Dictionary<string, object> dictionary, ref string key, ref object value)
         {
             while (json.Read())
             {
@@ -245,7 +245,7 @@ namespace System.Text.JsonLab.Tests
                 return false;
             }
 
-            var reader = new Utf8JsonReader(payload);
+            var reader = new JsonUtf8Reader(payload);
 
             CheckRead(ref reader);
             EnsureObjectStart(ref reader);
@@ -329,7 +329,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static int? ReadAsInt32(ref Utf8JsonReader reader, string propertyName)
+        public static int? ReadAsInt32(ref JsonUtf8Reader reader, string propertyName)
         {
             reader.Read();
 
@@ -371,7 +371,7 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
-        public static bool CheckRead(ref Utf8JsonReader reader)
+        public static bool CheckRead(ref JsonUtf8Reader reader)
         {
             if (!reader.Read())
             {
@@ -407,7 +407,7 @@ namespace System.Text.JsonLab.Tests
             return tokenType.ToString();
         }
 
-        public static void EnsureObjectStart(ref Utf8JsonReader reader)
+        public static void EnsureObjectStart(ref JsonUtf8Reader reader)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -442,7 +442,7 @@ namespace System.Text.JsonLab.Tests
                 return false;
             }
 
-            var reader = new Utf8JsonReader(payload);
+            var reader = new JsonUtf8Reader(payload);
             CheckRead(ref reader);
             EnsureObjectStart(ref reader);
 
@@ -545,7 +545,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
+        public static unsafe string ReadAsString(ref JsonUtf8Reader reader, string propertyName)
         {
             reader.Read();
 
@@ -591,10 +591,10 @@ namespace System.Text.JsonLab.Tests
 
         public static void JsonLabEmptyLoopHelper(byte[] data)
         {
-            var json = new Utf8JsonReader(data)
+            var json = new JsonUtf8Reader(data)
             {
                 MaxDepth = 32,
-                Options = JsonReaderOptions.SkipComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
             };
 
             while (json.Read())
@@ -631,7 +631,7 @@ namespace System.Text.JsonLab.Tests
             var reader = new Utf8Json()
             {
                 MaxDepth = 32,
-                Options = JsonReaderOptions.SkipComments
+                Options = new JsonReaderOptions(JsonReaderOptions.CommentHandling.SkipComments)
             };
 
             Utf8Json.Reader json = reader.GetReader(data);
@@ -675,7 +675,7 @@ namespace System.Text.JsonLab.Tests
             return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
         }
 
-        public static byte[] HeapableJsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static byte[] HeapableJsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
             var json = new Utf8Json()
@@ -692,10 +692,10 @@ namespace System.Text.JsonLab.Tests
             return result;
         }
 
-        public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = default)
         {
             ReadOnlySequence<byte> sequence = CreateSegments(data);
-            var reader = new Utf8JsonReader(sequence)
+            var reader = new JsonUtf8Reader(sequence)
             {
                 Options = options
             };
@@ -763,7 +763,7 @@ namespace System.Text.JsonLab.Tests
             return outputArray;
         }
 
-        public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref Utf8JsonReader json)
+        public static byte[] JsonLabReaderLoop(int inpuDataLength, out int length, ref JsonUtf8Reader json)
         {
             byte[] outputArray = new byte[inpuDataLength];
             Span<byte> destination = outputArray;
@@ -875,7 +875,7 @@ namespace System.Text.JsonLab.Tests
             return outputArray;
         }
 
-        public static object JsonLabReaderLoop(ref Utf8JsonReader json)
+        public static object JsonLabReaderLoop(ref JsonUtf8Reader json)
         {
             object root = null;
 
@@ -890,10 +890,12 @@ namespace System.Text.JsonLab.Tests
                         root = valueSpan[0] == 't';
                         break;
                     case JsonTokenType.Number:
-                        root = json.GetValueAsNumber();
+                        json.TryGetValueAsDouble(out double valueDouble);
+                        root = valueDouble;
                         break;
                     case JsonTokenType.String:
-                        root = json.GetValueAsString();
+                        json.TryGetValueAsString(out string valueString);
+                        root = valueString;
                         break;
                     case JsonTokenType.Null:
                         break;
@@ -955,7 +957,7 @@ namespace System.Text.JsonLab.Tests
             return root;
         }
 
-        public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref Utf8JsonReader json)
+        public static Dictionary<string, object> JsonLabReaderDictionaryLoop(ref JsonUtf8Reader json)
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
@@ -969,7 +971,7 @@ namespace System.Text.JsonLab.Tests
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        key = json.GetValueAsString();
+                        json.TryGetValueAsString(out key);
                         dictionary.Add(key, null);
                         break;
                     case JsonTokenType.True:
@@ -985,25 +987,25 @@ namespace System.Text.JsonLab.Tests
                         }
                         break;
                     case JsonTokenType.Number:
-                        value = json.GetValueAsNumber();
+                        json.TryGetValueAsDouble(out double valueDouble);
                         if (dictionary.TryGetValue(key, out _))
                         {
-                            dictionary[key] = value;
+                            dictionary[key] = valueDouble;
                         }
                         else
                         {
-                            dictionary.Add(key, value);
+                            dictionary.Add(key, valueDouble);
                         }
                         break;
                     case JsonTokenType.String:
-                        value = json.GetValueAsString();
+                        json.TryGetValueAsString(out string valueString);
                         if (dictionary.TryGetValue(key, out _))
                         {
-                            dictionary[key] = value;
+                            dictionary[key] = valueString;
                         }
                         else
                         {
-                            dictionary.Add(key, value);
+                            dictionary.Add(key, valueString);
                         }
                         break;
                     case JsonTokenType.Null:
@@ -1145,7 +1147,7 @@ namespace System.Text.JsonLab.Tests
             return dictionary;
         }
 
-        public static List<object> JsonLabReaderListLoop(ref Utf8JsonReader json)
+        public static List<object> JsonLabReaderListLoop(ref JsonUtf8Reader json)
         {
             List<object> arrayList = new List<object>();
 
@@ -1163,12 +1165,12 @@ namespace System.Text.JsonLab.Tests
                         arrayList.Add(value);
                         break;
                     case JsonTokenType.Number:
-                        value = json.GetValueAsNumber();
-                        arrayList.Add(value);
+                        json.TryGetValueAsDouble(out double doubleValue);
+                        arrayList.Add(doubleValue);
                         break;
                     case JsonTokenType.String:
-                        value = json.GetValueAsString();
-                        arrayList.Add(value);
+                        json.TryGetValueAsString(out string valueString);
+                        arrayList.Add(valueString);
                         break;
                     case JsonTokenType.Null:
                         value = null;
@@ -1241,7 +1243,7 @@ namespace System.Text.JsonLab.Tests
             return arrayList;
         }
 
-        public static byte[] HeapableJsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static byte[] HeapableJsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = default)
         {
             var json = new Utf8Json()
             {
@@ -1251,9 +1253,9 @@ namespace System.Text.JsonLab.Tests
             return JsonLabReaderLoop(data.Length, out length, ref reader);
         }
 
-        public static byte[] JsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static byte[] JsonLabReturnBytesHelper(byte[] data, out int length, JsonReaderOptions options = default)
         {
-            var reader = new Utf8JsonReader(data)
+            var reader = new JsonUtf8Reader(data)
             {
                 Options = options
             };
@@ -1270,16 +1272,16 @@ namespace System.Text.JsonLab.Tests
             return result;
         }
 
-        public static object JsonLabReturnObjectHelper(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static object JsonLabReturnObjectHelper(byte[] data, JsonReaderOptions options = default)
         {
-            var reader = new Utf8JsonReader(data)
+            var reader = new JsonUtf8Reader(data)
             {
                 Options = options
             };
             return JsonLabReaderLoop(ref reader);
         }
 
-        public static object JsonLabReturnObjectHelperHeapable(byte[] data, JsonReaderOptions options = JsonReaderOptions.Default)
+        public static object JsonLabReturnObjectHelperHeapable(byte[] data, JsonReaderOptions options = default)
         {
             var reader = new Utf8Json()
             {

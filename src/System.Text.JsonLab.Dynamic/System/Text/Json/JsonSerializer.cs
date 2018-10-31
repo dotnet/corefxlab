@@ -24,7 +24,7 @@ namespace System.Text.JsonLab
 
             T instance = Create<T>.CreateInstanceOfType(utf8);
 
-            var reader = new Utf8JsonReader(utf8);
+            var reader = new JsonUtf8Reader(utf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)

@@ -10,14 +10,14 @@ namespace System.Text.JsonLab
 {
     internal ref struct CustomStack
     {
-        private static byte[] _initStack = new byte[Utf8JsonReader.StackFreeMaxDepth * StackRow.Size];
+        private static byte[] _initStack = new byte[JsonUtf8Reader.StackFreeMaxDepth * StackRow.Size];
         private byte[] _rentedBuffer;
         private Span<byte> _stackSpace;
         private int _topOfStack;
 
         public CustomStack(int initialSize)
         {
-            _rentedBuffer = initialSize <= Utf8JsonReader.StackFreeMaxDepth * StackRow.Size
+            _rentedBuffer = initialSize <= JsonUtf8Reader.StackFreeMaxDepth * StackRow.Size
                 ? _initStack
                 : ArrayPool<byte>.Shared.Rent(initialSize);
             _stackSpace = _rentedBuffer;
@@ -26,7 +26,7 @@ namespace System.Text.JsonLab
 
         public void Dispose()
         {
-            if (_rentedBuffer.Length > Utf8JsonReader.StackFreeMaxDepth * StackRow.Size)
+            if (_rentedBuffer.Length > JsonUtf8Reader.StackFreeMaxDepth * StackRow.Size)
                 ArrayPool<byte>.Shared.Return(_rentedBuffer);
             _stackSpace = Span<byte>.Empty;
             _topOfStack = 0;

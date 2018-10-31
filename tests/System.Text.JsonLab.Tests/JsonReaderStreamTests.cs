@@ -100,9 +100,9 @@ namespace System.Text.JsonLab.Tests
             buffers[numberOfSegments - 1][segmentSize - 1] = (byte)' ';
 
             ReadOnlySequence<byte> sequenceMultiple = BufferFactory.Create(buffers);
-            var json = new Utf8JsonReader(sequenceMultiple);
+            var json = new JsonUtf8Reader(sequenceMultiple);
             while (json.Read()) ;
-            Assert.Equal(sequenceMultiple.Length, json.Consumed);
+            Assert.Equal(sequenceMultiple.Length, json.BytesConsumed);
 
             var stream = new MemoryStream(sequenceMultiple.ToArray());
             var jsonStream = new Utf8JsonReaderStream(stream);

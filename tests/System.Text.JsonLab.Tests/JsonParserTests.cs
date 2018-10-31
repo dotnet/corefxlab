@@ -272,7 +272,7 @@ namespace System.Text.JsonLab.Tests
                 return json;
             }
 
-            var jsonReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonString));
+            var jsonReader = new JsonUtf8Reader(Encoding.UTF8.GetBytes(jsonString));
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {
@@ -292,7 +292,7 @@ namespace System.Text.JsonLab.Tests
             return json;
         }
 
-        private static Value GetValue(ref Utf8JsonReader jsonReader)
+        private static Value GetValue(ref JsonUtf8Reader jsonReader)
         {
             var value = new Value { Type = MapValueType(jsonReader.TokenType) };
             switch (value.Type)
@@ -345,7 +345,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        private static Object ReadObject(ref Utf8JsonReader jsonReader)
+        private static Object ReadObject(ref JsonUtf8Reader jsonReader)
         {
             // NOTE: We should be sitting on a StartObject token.
             Assert.Equal(JsonTokenType.StartObject, jsonReader.TokenType);
@@ -378,7 +378,7 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json object was started but never ended.");
         }
 
-        private static Array ReadArray(ref Utf8JsonReader jsonReader)
+        private static Array ReadArray(ref JsonUtf8Reader jsonReader)
         {
             // NOTE: We should be sitting on a StartArray token.
             Assert.Equal(JsonTokenType.StartArray, jsonReader.TokenType);
@@ -410,7 +410,7 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json array was started but never ended.");
         }
 
-        private static byte[] ReadUtf8String(ref Utf8JsonReader jsonReader)
+        private static byte[] ReadUtf8String(ref JsonUtf8Reader jsonReader)
         {
             return jsonReader.ValueSpan.ToArray();
         }

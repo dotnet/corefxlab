@@ -9,7 +9,7 @@ using static System.Text.JsonLab.JsonThrowHelper;
 
 namespace System.Text.JsonLab
 {
-    public ref partial struct Utf8JsonReader
+    public ref partial struct JsonUtf8Reader
     {
         private bool GetNextSpan()
         {
@@ -90,9 +90,9 @@ namespace System.Text.JsonLab
                     }
                 }
 
-                if (_readerOptions != JsonReaderOptions.Default)
+                if (_readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
                 {
-                    if (_readerOptions == JsonReaderOptions.AllowComments)
+                    if (_readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                     {
                         if (TokenType == JsonTokenType.Comment || _buffer[_consumed] == JsonConstants.Solidus)
                         {
@@ -262,10 +262,10 @@ namespace System.Text.JsonLab
         /// </summary>
         private InternalResult ConsumeNextTokenMultiSegment(byte marker)
         {
-            if (_readerOptions != JsonReaderOptions.Default)
+            if (_readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
             {
                 //TODO: Re-evaluate use of InternalResult enum for the common case
-                if (_readerOptions == JsonReaderOptions.AllowComments)
+                if (_readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                 {
                     if (marker == JsonConstants.Solidus)
                     {
@@ -273,12 +273,12 @@ namespace System.Text.JsonLab
                     }
                     if (TokenType == JsonTokenType.Comment)
                     {
-                        TokenType = _stack.Pop();
+                        TokenType = (JsonTokenType)_stack.Pop();
                         if (ReadMultiSegment())
                             return InternalResult.Success;
                         else
                         {
-                            _stack.Push(TokenType);
+                            _stack.Push((byte)TokenType);
                             return InternalResult.FailureRollback;
                         }
                     }
@@ -405,9 +405,9 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_readerOptions != JsonReaderOptions.Default)
+                if (_readerOptions._commentHandling != JsonReaderOptions.CommentHandling.Default)
                 {
-                    if (_readerOptions == JsonReaderOptions.AllowComments)
+                    if (_readerOptions._commentHandling == JsonReaderOptions.CommentHandling.AllowComments)
                     {
                         if (marker == JsonConstants.Solidus)
                         {
@@ -696,7 +696,7 @@ namespace System.Text.JsonLab
             {
                 ValueSpan = localCopy.Slice(0, idx);
             }
-            _stack.Push(TokenType);
+            _stack.Push((byte)TokenType);
             TokenType = JsonTokenType.Comment;
             _consumed += leftOver + idx;
             return true;
@@ -800,7 +800,7 @@ namespace System.Text.JsonLab
                 ValueSpan = i <= 1 ? default : localCopy.Slice(0, i - 1);
             }
 
-            _stack.Push(TokenType);
+            _stack.Push((byte)TokenType);
             TokenType = JsonTokenType.Comment;
             _consumed += i + 1 + leftOver;
             if (lastLineFeedIndex == -1)
