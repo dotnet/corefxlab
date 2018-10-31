@@ -259,7 +259,7 @@ namespace System.Text.JsonLab.Tests
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        ReadOnlySpan<byte> memberName = reader.ValueSpan;
+                        ReadOnlySpan<byte> memberName = reader.IsValueMultiSegment ? reader.ValueSequence.ToArray() : reader.ValueSpan;
 
                         if (memberName.SequenceEqual(TypePropertyNameUtf8))
                         {
@@ -338,11 +338,13 @@ namespace System.Text.JsonLab.Tests
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
             }
 
-            if (reader.ValueSpan.IsEmpty)
+            ReadOnlySpan<byte> valueSpan = reader.IsValueMultiSegment ? reader.ValueSequence.ToArray() : reader.ValueSpan;
+
+            if (valueSpan.IsEmpty)
             {
                 return null;
             }
-            if (!Utf8Parser.TryParse(reader.ValueSpan, out int value, out _))
+            if (!Utf8Parser.TryParse(valueSpan, out int value, out _))
             {
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
             }
@@ -453,7 +455,7 @@ namespace System.Text.JsonLab.Tests
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        ReadOnlySpan<byte> memberName = reader.ValueSpan;
+                        ReadOnlySpan<byte> memberName = reader.IsValueMultiSegment ? reader.ValueSequence.ToArray() : reader.ValueSpan;
 
                         if (memberName.SequenceEqual(ProtocolPropertyNameUtf8))
                         {
@@ -552,14 +554,16 @@ namespace System.Text.JsonLab.Tests
                 throw new InvalidDataException($"Expected '{propertyName}' to be of type String.");
             }
 
-            if (reader.ValueSpan.IsEmpty) return "";
+            ReadOnlySpan<byte> value = reader.IsValueMultiSegment ? reader.ValueSequence.ToArray() : reader.ValueSpan;
+
+            if (value.IsEmpty) return "";
 
 #if NETCOREAPP2_2
             return Encoding.UTF8.GetString(reader.Value);
 #else
-            fixed (byte* bytes = &MemoryMarshal.GetReference(reader.ValueSpan))
+            fixed (byte* bytes = &MemoryMarshal.GetReference(value))
             {
-                return Encoding.UTF8.GetString(bytes, reader.ValueSpan.Length);
+                return Encoding.UTF8.GetString(bytes, value.Length);
             }
 #endif
         }

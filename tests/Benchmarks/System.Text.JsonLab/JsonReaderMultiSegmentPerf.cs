@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace System.Text.JsonLab.Benchmarks
 {
     // Since there are 15 tests here (5 * 3), setting low values for the warmupCount and targetCount
-    //[SimpleJob(warmupCount: 3, targetCount: 5)]
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
     [MemoryDiagnoser]
     public class JsonReaderMultiSegmentPerf
     {
