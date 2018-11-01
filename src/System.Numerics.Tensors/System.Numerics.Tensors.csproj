@@ -8,33 +8,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\System.Buffers.Experimental\System\Range.cs" Link="System\Range.cs" />
-    <Compile Update="System\Numerics\Tensors\TensorArithmetic.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TensorArithmetic.tt</DependentUpon>
-    </Compile>
-    <Compile Update="System\Numerics\Tensors\Tensor.Operations.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Tensor.Operations.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="System\Numerics\Tensors\TensorArithmetic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TensorArithmetic.cs</LastGenOutput>
-    </None>
-    <None Update="System\Numerics\Tensors\Tensor.Operations.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Tensor.Operations.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <!-- explictly pin the System.Memory version to a shipped version so consumers can easily use Tensors -->
     <PackageReference Include="System.Memory" Version="4.5.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- enable the TextTemplating extension -->
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>

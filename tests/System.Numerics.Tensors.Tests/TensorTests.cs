@@ -1267,7 +1267,7 @@ namespace System.Numerics.Tensors.Tests
                     { 12, 14, 16 },
                 });
 
-            var actual = left + right;
+            var actual = TensorOperations.Add(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
 
@@ -1291,7 +1291,7 @@ namespace System.Numerics.Tensors.Tests
                     { 4, 5, 6 },
                 });
 
-            var actual = tensor + 1;
+            var actual = TensorOperations.Add(tensor, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
 
@@ -1310,7 +1310,7 @@ namespace System.Numerics.Tensors.Tests
 
             var expected = tensor;
 
-            var actual = +tensor;
+            var actual = TensorOperations.UnaryPlus(tensor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(false, ReferenceEquals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
@@ -1341,7 +1341,7 @@ namespace System.Numerics.Tensors.Tests
                     { -6, -6, -6},
                 });
 
-            var actual = left - right;
+            var actual = TensorOperations.Subtract(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1363,7 +1363,7 @@ namespace System.Numerics.Tensors.Tests
                     { 2, 3, 4 },
                 });
 
-            var actual = tensor - 1;
+            var actual = TensorOperations.Subtract(tensor, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1386,7 +1386,7 @@ namespace System.Numerics.Tensors.Tests
                     {-3, -4, -5}
                 });
 
-            var actual = -tensor;
+            var actual = TensorOperations.UnaryMinus(tensor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(false, ReferenceEquals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
@@ -1412,7 +1412,8 @@ namespace System.Numerics.Tensors.Tests
 
             var expectedTensor = expectedResult;
 
-            var actual = ++tensor;
+            tensor = TensorOperations.Increment(tensor);
+            var actual = tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
             Assert.Equal(true, ReferenceEquals(tensor, actual));
@@ -1447,7 +1448,8 @@ namespace System.Numerics.Tensors.Tests
                     {4, 5, 6}
                 }); ;
 
-            var actual = tensor++;
+            var actual = tensor;
+            tensor = TensorOperations.Increment(tensor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
             Assert.Equal(false, ReferenceEquals(tensor, actual));
@@ -1475,7 +1477,8 @@ namespace System.Numerics.Tensors.Tests
 
             var expectedTensor = expectedResult;
 
-            var actual = --tensor;
+            tensor = TensorOperations.Decrement(tensor);
+            var actual = tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
             Assert.Equal(true, ReferenceEquals(tensor, actual));
@@ -1509,7 +1512,8 @@ namespace System.Numerics.Tensors.Tests
                     {2, 3, 4}
                 }); ;
 
-            var actual = tensor--;
+            var actual = tensor;
+            tensor = TensorOperations.Decrement(tensor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
             Assert.Equal(false, ReferenceEquals(tensor, actual));
@@ -1540,7 +1544,7 @@ namespace System.Numerics.Tensors.Tests
                     {9, 16, 25}
                 });
 
-            var actual = left * right;
+            var actual = TensorOperations.Multiply(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1563,7 +1567,7 @@ namespace System.Numerics.Tensors.Tests
                     {6, 8, 10}
                 });
 
-            var actual = tensor * 2;
+            var actual = TensorOperations.Multiply(tensor, 2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1593,7 +1597,7 @@ namespace System.Numerics.Tensors.Tests
                     {3, 4, 5}
                 });
 
-            var actual = dividend / divisor;
+            var actual = TensorOperations.Divide(dividend, divisor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(dividendConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1616,7 +1620,7 @@ namespace System.Numerics.Tensors.Tests
                     {3, 4, 5}
                 });
 
-            var actual = tensor / 2;
+            var actual = TensorOperations.Divide(tensor, 2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1646,7 +1650,7 @@ namespace System.Numerics.Tensors.Tests
                     {3, 4, 5}
                 });
 
-            var actual = dividend % divisor;
+            var actual = TensorOperations.Modulo(dividend, divisor);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(dividendConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1669,7 +1673,7 @@ namespace System.Numerics.Tensors.Tests
                     {1, 0, 1}
                 });
 
-            var actual = tensor % 2;
+            var actual = TensorOperations.Modulo(tensor, 2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1699,7 +1703,7 @@ namespace System.Numerics.Tensors.Tests
                     {2, 4, 8}
                 });
 
-            var actual = left & right;
+            var actual = TensorOperations.And(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1722,7 +1726,7 @@ namespace System.Numerics.Tensors.Tests
                     {4, 4, 20}
                 });
 
-            var actual = left & 20;
+            var actual = TensorOperations.And(left, 20);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1752,7 +1756,7 @@ namespace System.Numerics.Tensors.Tests
                     {7, 14, 31}
                 });
 
-            var actual = left | right;
+            var actual = TensorOperations.Or(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1775,7 +1779,7 @@ namespace System.Numerics.Tensors.Tests
                     {3, 5, 5}
                 });
 
-            var actual = left | 1;
+            var actual = TensorOperations.Or(left, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1805,7 +1809,7 @@ namespace System.Numerics.Tensors.Tests
                     {5, 10, 23}
                 });
 
-            var actual = left ^ right;
+            var actual = TensorOperations.Xor(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1828,7 +1832,7 @@ namespace System.Numerics.Tensors.Tests
                     {2, 5, 4}
                 });
 
-            var actual = left ^ 1;
+            var actual = TensorOperations.Xor(left, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1851,7 +1855,7 @@ namespace System.Numerics.Tensors.Tests
                     {6, 8, 10}
                 });
 
-            var actual = left << 1;
+            var actual = TensorOperations.LeftShift(left, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1874,7 +1878,7 @@ namespace System.Numerics.Tensors.Tests
                     {1, 2, 2}
                 });
 
-            var actual = left >> 1;
+            var actual = TensorOperations.RightShift(left, 1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(tensorConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1902,7 +1906,7 @@ namespace System.Numerics.Tensors.Tests
                     {false, false, true}
                 }.ToTensor();
 
-            var actual = Tensor.Equals(left, right);
+            var actual = TensorOperations.Equals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -1930,7 +1934,7 @@ namespace System.Numerics.Tensors.Tests
                     {true, true, false}
                 }.ToTensor();
 
-            var actual = Tensor.NotEquals(left, right);
+            var actual = TensorOperations.NotEquals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
             Assert.Equal(leftConstructor.IsReversedStride, actual.IsReversedStride);
         }
@@ -2019,7 +2023,7 @@ namespace System.Numerics.Tensors.Tests
                     {110, 290, 470, 650},
                     {125, 341, 557, 773},
                 });
-            var actual = Tensor.Contract(left, right, new[] { 0, 1 }, new[] { 1, 2 });
+            var actual = TensorOperations.Contract(left, right, new[] { 0, 1 }, new[] { 1, 2 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             // contract a 3*2*2 with a 4*3*2 tensor, summing on (3)*2*(2) and 4*(3*2) to produce a 2*4 tensor
@@ -2029,7 +2033,7 @@ namespace System.Numerics.Tensors.Tests
                     {101, 263, 425, 587},
                     {131, 365, 599, 833},
                 });
-            actual = Tensor.Contract(left, right, new[] { 0, 2 }, new[] { 1, 2 });
+            actual = TensorOperations.Contract(left, right, new[] { 0, 2 }, new[] { 1, 2 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
@@ -2061,13 +2065,13 @@ namespace System.Numerics.Tensors.Tests
                 });
 
             // contract a 2*3 with a 3*2 tensor, summing on 2*(3) and (3)*2 to produce a 2*2 tensor
-            var actual = Tensor.Contract(left, right, new[] { 1 }, new[] { 0 });
+            var actual = TensorOperations.Contract(left, right, new[] { 1 }, new[] { 0 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             // contract a 1*2*3*1 with a 3*2 tensor, summing on 1*2*(3)*1 and (3)*2 to produce a 1*2*1*2 tensor
             var reshapedLeft = left.Reshape(new int[] { 1, 2, 3, 1 });
             var reshapedExpected = expected.Reshape(new int[] { 1, 2, 1, 2 });
-            actual = Tensor.Contract(reshapedLeft, right, new[] { 2 }, new[] { 0 });
+            actual = TensorOperations.Contract(reshapedLeft, right, new[] { 2 }, new[] { 0 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, reshapedExpected));
 
         }
@@ -2096,12 +2100,12 @@ namespace System.Numerics.Tensors.Tests
                     {0,3,6},
                 });
 
-            Assert.Throws<ArgumentException>(() => Tensor.Contract(left, right, new int[] { }, new[] { 1 }));
+            Assert.Throws<ArgumentException>(() => TensorOperations.Contract(left, right, new int[] { }, new[] { 1 }));
 
             // reshape to include dimension of length 1.
             var leftReshaped = left.Reshape(new[] { 1, (int)left.Length });
 
-            var actual = Tensor.Contract(leftReshaped, right, new[] { 0 }, new[] { 1 });
+            var actual = TensorOperations.Contract(leftReshaped, right, new[] { 0 }, new[] { 1 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 

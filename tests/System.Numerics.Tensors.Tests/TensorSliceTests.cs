@@ -158,7 +158,7 @@ namespace System.Numerics.Tensors.Tests
         public void SliceIncrement(TensorConstructor constructor)
         {
             var slice = Get3DSlice(constructor);
-            var incremented = Tensor.Increment(slice);
+            var incremented = TensorOperations.Increment(slice);
 
             var expected = new[, ,]
             {
