@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 
 namespace TensorSamples
 {
     partial class WrapNativeMemory
     {
-        public class NativeMemory<T> : OwnedMemory<T>
+        public class NativeMemory<T> : MemoryManager<T>
         {
             private bool disposed = false;
             private int refCount = 0;
@@ -39,24 +38,25 @@ namespace TensorSamples
                 return new NativeMemory<T>(memory, length);
             }
 
-            public override bool IsDisposed => disposed;
+            public bool IsDisposed => disposed;
 
-            public override int Length => length;
+            public unsafe override Span<T> GetSpan() => new Span<T>((void*)memory, length);
 
-            public unsafe override Span<T> Span => new Span<T>((void*)memory, length);
+            protected bool IsRetained => refCount > 0;
 
-            protected override bool IsRetained => refCount > 0;
-
-            public override MemoryHandle Pin()
+            public override unsafe MemoryHandle Pin(int elementIndex = 0)
             {
-                unsafe
+                if ((uint)elementIndex > length)
                 {
-                    Retain();
-                    return new MemoryHandle(this, (void*)memory);
+                    throw new ArgumentOutOfRangeException(nameof(elementIndex));
                 }
+
+                Retain();
+                void* pointer = Unsafe.Add<T>((void*)memory, elementIndex);
+                return new MemoryHandle(pointer, default, this);
             }
 
-            public override bool Release()
+            public bool Release()
             {
                 int newRefCount = Interlocked.Decrement(ref refCount);
 
@@ -68,7 +68,7 @@ namespace TensorSamples
                 return newRefCount != 0;
             }
 
-            public override void Retain()
+            public void Retain()
             {
                 if (disposed)
                 {
@@ -76,6 +76,11 @@ namespace TensorSamples
                 }
 
                 Interlocked.Increment(ref refCount);
+            }
+
+            public override void Unpin()
+            {
+                Release();
             }
 
             protected override void Dispose(bool disposing)
@@ -100,9 +105,9 @@ namespace TensorSamples
         }
 
         [DllImport("TensorSamples.native.dll")]
-        extern private static unsafe double FreeBuffer(IntPtr buffer);
+        private static extern unsafe IntPtr AllocateBuffer(int sizeInBytes);
 
         [DllImport("TensorSamples.native.dll")]
-        extern private static unsafe IntPtr AllocateBuffer(int sizeInBytes);
+        private static extern unsafe double FreeBuffer(IntPtr buffer);
     }
 }

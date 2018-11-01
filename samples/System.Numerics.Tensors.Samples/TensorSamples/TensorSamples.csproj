@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\tools\common.props" />
 
   <PropertyGroup>
@@ -6,6 +6,10 @@
     <TargetFrameworks>netcoreapp2.0;net45</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TensorSamples.native\TensorSamples.native.vcxproj">
