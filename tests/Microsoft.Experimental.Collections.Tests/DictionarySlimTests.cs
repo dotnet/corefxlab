@@ -10,17 +10,17 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Experimental.Collections.Tests
 {
-    public class RefDictionaryTests
+    public class DictionarySlimTests
     {
         ITestOutputHelper _output;
-        public RefDictionaryTests(ITestOutputHelper output)
+        public DictionarySlimTests(ITestOutputHelper output)
         {
             _output = output;
         }
         [Fact]
         public void SingleEntry()
         {
-            var d = new RefDictionary<ulong, int>();
+            var d = new DictionarySlim<ulong, int>();
             d[7]++;
             d[7] += 3;
             Assert.Equal(4, d[7]);
@@ -29,7 +29,7 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void ContainKey()
         {
-            var d = new RefDictionary<ulong, int>();
+            var d = new DictionarySlim<ulong, int>();
             d[7] = 9;
             d[10] = 10;
             Assert.True(d.ContainsKey(7));
@@ -40,7 +40,7 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void GetValueOrDefault()
         {
-            var d = new RefDictionary<ulong, int>();
+            var d = new DictionarySlim<ulong, int>();
             d[7] = 9;
             d[10] = 11;
             Assert.Equal(9, d.GetValueOrDefault(7));
@@ -50,7 +50,7 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void Keys()
         {
-            var d = new RefDictionary<int, int>();
+            var d = new DictionarySlim<int, int>();
             d[7] = 9;
             d[10] = 10;
             Assert.True(d.Keys.OrderBy(i => i).SequenceEqual(new[] { 7, 10 }));
@@ -59,17 +59,17 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void Values()
         {
-            var d = new RefDictionary<int, int>();
+            var d = new DictionarySlim<int, int>();
             d[7] = 9;
             d[10] = 10;
             Assert.True(d.Values.OrderBy(i => i).SequenceEqual(new[] { 9, 10 }));
         }
 
         [Fact]
-        public void RefDictionaryVersusDictionary()
+        public void DictionarySlimVersusDictionary()
         {
             var rand = new Random(1123);
-            var rd = new RefDictionary<ulong, int>();
+            var rd = new DictionarySlim<ulong, int>();
             var d = new Dictionary<ulong, int>();
             var size = 1000;
 

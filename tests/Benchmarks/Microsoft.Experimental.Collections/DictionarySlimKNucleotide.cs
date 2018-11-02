@@ -15,7 +15,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Microsoft.Experimental.Collections.Benchmarks
 {
-    public class RefDictionaryKNucleotide
+    public class DictionarySlimKNucleotide
     {
         [Params(250_000, 2_500_000)]
         public int Size { get; set; }
@@ -30,9 +30,9 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             new KNucleotideDictionary().Main(Size);
         }
         [Benchmark]
-        public void RefDictionary()
+        public void DictionarySlim()
         {
-            new KNucleotideRefDictionary().Main(Size);
+            new KNucleotideDictionarySlim().Main(Size);
         }
     }
 
@@ -148,7 +148,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 
@@ -350,7 +350,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 
@@ -511,7 +511,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
         }
     }
 
-    public class KNucleotideRefDictionary
+    public class KNucleotideDictionarySlim
     {
         private const int BLOCK_SIZE = 1024 * 1024 * 8;
         private List<byte[]> threeBlocks = new List<byte[]>();
@@ -553,7 +553,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
         private void LoadThreeData(int size)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.RefDictionaryKNucleotideFiles.input" + size + ".txt";
+            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
             {
 
@@ -612,14 +612,14 @@ namespace Microsoft.Experimental.Collections.Benchmarks
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Check(RefDictionary<long, int> dict, ref long rollingKey, byte nb, long mask)
+        private static void Check(DictionarySlim<long, int> dict, ref long rollingKey, byte nb, long mask)
         {
             if (nb == 255) return;
             rollingKey = ((rollingKey & mask) << 2) | nb;
             dict[rollingKey]++;
         }
 
-        private Task<string> Count(int l, long mask, Func<RefDictionary<long, int>, string> summary)
+        private Task<string> Count(int l, long mask, Func<DictionarySlim<long, int>, string> summary)
         {
             return Task.Run(() =>
             {
@@ -627,7 +627,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
                 var firstBlock = threeBlocks[0];
                 var start = threeStart;
                 while (--l > 0) rollingKey = (rollingKey << 2) | firstBlock[start++];
-                var dict = new RefDictionary<long, int>(1024);
+                var dict = new DictionarySlim<long, int>(1024);
                 
                 for (int i = start; i < firstBlock.Length; i++)
                     Check(dict, ref rollingKey, firstBlock[i], mask);
@@ -648,7 +648,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             });
         }
 
-        private string WriteFrequencies(RefDictionary<long, int> freq, int fragmentLength)
+        private string WriteFrequencies(DictionarySlim<long, int> freq, int fragmentLength)
         {
             var sb = new StringBuilder();
             double percent = 100.0 / freq.Sum(i => i.Value);
@@ -668,7 +668,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             return sb.ToString();
         }
 
-        private string WriteCount(RefDictionary<long, int> dictionary, string fragment)
+        private string WriteCount(DictionarySlim<long, int> dictionary, string fragment)
         {
             long key = 0;
             for (int i = 0; i < fragment.Length; ++i)

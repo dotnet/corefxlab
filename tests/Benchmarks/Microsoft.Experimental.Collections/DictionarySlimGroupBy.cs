@@ -10,9 +10,9 @@ using BenchmarkDotNet.Attributes;
 
 namespace Microsoft.Experimental.Collections.Benchmarks
 {
-    public class RefDictionaryGroupBy
+    public class DictionarySlimGroupBy
     {
-        [Params(250_000, 2_500_000, 25_000_000)]
+        [Params(2_500, 25_000, 250_000)]
         public int Size { get; set; }
         private const int AggCount = 250;
         private ulong[] _keys;
@@ -37,7 +37,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
         }
 
         [Benchmark]
-        public void RefDictionary()
+        public void DictionarySlim()
         {
             var x = _keys.GroupByRef(i => i / 10).Select(g => g.Max()).Min();
         }
@@ -56,7 +56,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
         public static IEnumerable<IGrouping<TKey, TSource>> GroupByRef<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) where TKey : IEquatable<TKey>
         {
-            var dict = new RefDictionary<TKey, Grouping<TKey, TSource>>();
+            var dict = new DictionarySlim<TKey, Grouping<TKey, TSource>>();
             foreach (var t in source)
             {
                 var k = keySelector(t);

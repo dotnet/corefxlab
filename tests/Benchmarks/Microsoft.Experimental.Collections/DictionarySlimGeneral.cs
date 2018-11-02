@@ -9,14 +9,14 @@ using BenchmarkDotNet.Attributes;
 namespace Microsoft.Experimental.Collections.Benchmarks
 {
     [MemoryDiagnoser]
-    public class RefDictionaryGeneral
+    public class DictionarySlimGeneral
     {
         [Params(10_000_000, 20_000_000, 30_000_000)]
         public int Size { get; set; }
         private const int AggCount = 250;
 
         private ulong[] _keys;
-        private RefDictionary<ulong, int> _refDict;
+        private DictionarySlim<ulong, int> _refDict;
         private Dictionary<ulong, int> _dict;
 
         [GlobalSetup]
@@ -32,10 +32,10 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             }
         }
 
-        [IterationSetup(Targets = new[] { nameof(LoadRefDictionary) })]
-        public void CreateRefDictionary()
+        [IterationSetup(Targets = new[] { nameof(LoadDictionarySlim) })]
+        public void CreateDictionarySlim()
         {
-            _refDict = new RefDictionary<ulong, int>(Size / AggCount);
+            _refDict = new DictionarySlim<ulong, int>(Size / AggCount);
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadDictionary) })]
@@ -45,7 +45,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
         }
 
         [Benchmark]
-        public void LoadRefDictionary()
+        public void LoadDictionarySlim()
         {
             for (int i = 0; i < _keys.Length; i++)
             {

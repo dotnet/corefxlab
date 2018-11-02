@@ -23,8 +23,8 @@
     <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="System.Buffers\SpanLiteralExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Microsoft.Experimental.Collections\RefDictionaryKNucleotideFiles\input250000.txt" />
-    <EmbeddedResource Include="Microsoft.Experimental.Collections\RefDictionaryKNucleotideFiles\input2500000.txt" />
+    <EmbeddedResource Include="Microsoft.Experimental.Collections\DictionarySlimKNucleotideFiles\input250000.txt" />
+    <EmbeddedResource Include="Microsoft.Experimental.Collections\DictionarySlimKNucleotideFiles\input2500000.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
