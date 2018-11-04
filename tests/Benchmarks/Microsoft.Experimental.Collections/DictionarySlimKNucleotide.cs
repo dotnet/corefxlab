@@ -38,6 +38,8 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 
     public class KNucleotideHack
     {
+        // Incrementor uses reflection to access methods and data internal to
+        // Dictionary to provide an Increment method.
         class Incrementor : IDisposable
         {
             static FieldInfo bucketsField = typeof(Dictionary<long, int>).GetField(
@@ -72,17 +74,19 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Increment(long key)
+            public unsafe void Increment(long key)
             {
                 int hashCode = key.GetHashCode() & 0x7FFFFFFF;
+                int* p;
+                int i;
                 int targetBucket = hashCode % buckets.Length;
-                for (int i = buckets[targetBucket] - 1; (uint)i < (uint)buckets.Length;
-                    i = Marshal.ReadInt32(entries, i * 24 + 4))
+                for (i = buckets[targetBucket] - 1; (uint)i < (uint)buckets.Length;
+                        i = *(p + 1))
                 {
-                    if (Marshal.ReadInt64(entries, i * 24 + 8) == key)
+                    p = (int*)entries + i * 6;
+                    if (*((long*)(p + 2)) == key)
                     {
-                        Marshal.WriteInt32(entries, i * 24 + 16,
-                            Marshal.ReadInt32(entries, i * 24 + 16) + 1);
+                        (*(p + 4))++;
                         return;
                     }
                 }
@@ -93,12 +97,13 @@ namespace Microsoft.Experimental.Collections.Benchmarks
                     Sync();
                     targetBucket = hashCode % buckets.Length;
                 }
-                int index = count++;
-                Marshal.WriteInt32(entries, index * 24, hashCode);
-                Marshal.WriteInt32(entries, index * 24 + 4, buckets[targetBucket] - 1);
-                Marshal.WriteInt64(entries, index * 24 + 8, key);
-                Marshal.WriteInt32(entries, index * 24 + 16, 1);
-                buckets[targetBucket] = index + 1;
+                i = count++;
+                p = (int*)entries + i * 6;
+                *p = hashCode;
+                *(p + 1) = buckets[targetBucket] - 1;
+                *((long*)(p + 2)) = key;
+                *(p + 4) = 1;
+                buckets[targetBucket] = i + 1;
             }
 
             public void Dispose()
@@ -222,7 +227,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
                 var firstBlock = threeBlocks[0];
                 var start = threeStart;
                 while (--l > 0) rollingKey = (rollingKey << 2) | firstBlock[start++];
-                var dict = new Dictionary<long, int>(1024);
+                var dict = new Dictionary<long, int>(1327);
                 using (var incrementor = new Incrementor(dict))
                 {
                     for (int i = start; i < firstBlock.Length; i++)

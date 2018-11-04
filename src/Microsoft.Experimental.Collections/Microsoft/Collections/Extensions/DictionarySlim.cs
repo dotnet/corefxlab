@@ -9,9 +9,16 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Experimental.Collections
 {
+    /// <summary>
+    /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized for value types in three ways:
+    /// 1) It allows access to the value by ref.
+    /// 2) It does not store the hash code (assumes it is cheap to equate values).
+    /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
+    /// </summary>
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
-        const int DefaultPrimeSize = 11;
+        const int DefaultPrimeSize = 3;
+        // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
 
@@ -30,11 +37,11 @@ namespace Microsoft.Experimental.Collections
 
         public DictionarySlim(int capacity)
         {
-            capacity = HashHelpers.GetPrime(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
         }
 
+        // Drop sign bit to ensure non negative index
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetBucketIndex(TKey key) => (key.GetHashCode() & 0x7FFFFFFF) % _buckets.Length;
 
@@ -246,14 +253,16 @@ namespace System.Collections
                     return prime;
             }
 
+
+            throw new Exception("need to do something here : " + min);
             //outside of our predefined table. 
             //compute the hard way. 
-            for (int i = (min | 1); i < int.MaxValue; i += 2)
-            {
-                if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-                    return i;
-            }
-            return min;
+            //for (int i = (min | 1); i < int.MaxValue; i += 2)
+            //{
+            //    if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+            //        return i;
+            //}
+            //return min;
         }
 
         // Returns size of hashtable to grow to.
@@ -263,11 +272,11 @@ namespace System.Collections
 
             // Allow the hashtables to grow to maximum possible size (~2G elements) before encountering capacity overflow.
             // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
-            if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
-            {
-                Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
-                return MaxPrimeArrayLength;
-            }
+            //if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
+            //{
+            //    Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
+            //    return MaxPrimeArrayLength;
+            //}
 
             return GetPrime(newSize);
         }
