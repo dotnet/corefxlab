@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
@@ -17,6 +18,7 @@ namespace Microsoft.Experimental.Collections.Tests
         {
             _output = output;
         }
+
         [Fact]
         public void SingleEntry()
         {
@@ -66,6 +68,52 @@ namespace Microsoft.Experimental.Collections.Tests
         }
 
         [Fact]
+        public void RemoveNonExistent()
+        {
+            var d = new DictionarySlim<int, int>();
+            Assert.False(d.Remove(0));
+        }        
+
+        [Fact]
+        public void RemoveSimple()
+        {
+            var d = new DictionarySlim<int, int>();
+            d[0] = 0;
+            Assert.True(d.Remove(0));
+            Assert.Equal(0, d.Count);
+        }
+
+        [Fact]
+        public void RemoveOneOfTwo()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            Assert.True(d.Remove('a'));
+            Assert.Equal(d['b'], 1);
+            Assert.Equal(1, d.Count);
+        }
+
+        [Fact]
+        public void RemoveSlotReused()
+        {
+            var d = new DictionarySlim<Collider, int>();
+            d[C(0)] = 0;
+            d[C(1)] = 1;
+            d[C(2)] = 2;
+            Assert.True(d.Remove(C(0)));
+            _output.WriteLine("{0} {1}", d.Capacity, d.Count);
+            var capacity = d.Capacity;
+
+            d[C(0)] = 3;
+            _output.WriteLine("{0} {1}", d.Capacity, d.Count);
+            Assert.Equal(d[C(0)], 3);
+            Assert.Equal(3, d.Count);
+            Assert.Equal(capacity, d.Capacity);
+
+        }               
+
+        [Fact]
         public void DictionarySlimVersusDictionary()
         {
             var rand = new Random(1123);
@@ -86,7 +134,89 @@ namespace Microsoft.Experimental.Collections.Tests
                     d[k] = v;
             }
 
-            Assert.True(d.OrderBy(i => i.Key).SequenceEqual(rd.OrderBy(i => i.Key)));
+            Assert.Equal(d.Count, rd.Count);
+            Assert.Equal(d.OrderBy(i => i.Key), (rd.OrderBy(i => i.Key)));
+            Assert.Equal(d.OrderBy(i => i.Value), (rd.OrderBy(i => i.Value)));
         }
+
+        [Fact]
+        public void DictionarySlimVersusDictionary_AllCollisions()
+        {
+            //while(!System.Diagnostics.Debugger.IsAttached) System.Threading.Thread.Sleep(500);
+            var rand = new Random(333);
+            var rd = new DictionarySlim<Collider, int>();
+            var d = new Dictionary<Collider, int>();
+            var size = rand.Next(1234);
+
+            for (int i = 0; i < size; i++)
+            {
+                if (rand.Next(5) != 0)
+                {
+                    var k = C(rand.Next(100) + 23);
+                    var v = rand.Next();
+
+                    rd[k] += v;
+
+                    if (d.TryGetValue(k, out int t))
+                        d[k] = t + v;
+                    else
+                        d[k] = v;
+                }
+
+                if (rand.Next(3) == 0 && d.Count > 0)
+                {
+                    var el = GetRandomElement(d);
+                    Assert.True(rd.Remove(el));
+                    Assert.True(d.Remove(el));
+                }
+            }
+
+            Assert.Equal(d.Count, rd.Count);
+            Assert.Equal(d.OrderBy(i => i.Key), (rd.OrderBy(i => i.Key)));
+            Assert.Equal(d.OrderBy(i => i.Value), (rd.OrderBy(i => i.Value)));
+        }  
+
+        private TKey GetRandomElement<TKey, TValue>(IDictionary<TKey, TValue> d)
+        {
+            int index = 0;
+            var rand = new Random(42);
+            foreach(var entry in d)
+            {
+                if (rand.Next(d.Count) == 0 || index == d.Count - 1)
+                {
+                    return entry.Key;
+                }
+
+                index++;
+            }
+
+            throw new InvalidOperationException(); 
+        }             
+
+        [DebuggerStepThrough]
+        internal Collider C(int val) => new Collider(val);
     }
+}
+
+[DebuggerDisplay("{key}")]
+internal struct Collider : IEquatable<Collider>, IComparable<Collider>
+{
+    int key;
+
+    [DebuggerStepThrough]
+    internal Collider(int key)
+    {
+        this.key = key;
+    }
+    
+    internal int Key => key;
+
+    [DebuggerStepThrough]
+    public override int GetHashCode() => 42;
+
+    public override bool Equals(object obj) => obj.GetType() == typeof(Collider) && Equals((Collider)obj);
+
+    public bool Equals(Collider that) => that.Key == Key;
+
+    public int CompareTo(Collider that) => key.CompareTo(that.key);
 }

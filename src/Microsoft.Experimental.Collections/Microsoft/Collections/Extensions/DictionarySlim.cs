@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Experimental.Collections
@@ -15,17 +16,21 @@ namespace Microsoft.Experimental.Collections
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
     /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
+    [DebuggerDisplay("Count = {Count}")]    
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
         const int DefaultPrimeSize = 3;
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
+        // 0-based index into _entries of head of free chain: -1 means empty
+        private int _freeList = -1; 
 
         private struct Entry
         {
             public TKey key;
             public TValue value;
+            // 0-based index of next entry in chain: -1 means empty
             public int next;
         }
 
@@ -50,6 +55,8 @@ namespace Microsoft.Experimental.Collections
         private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
 
         public int Count { get; private set; }
+
+        public int Capacity { get => _entries.Length; }
 
         public bool ContainsKey(TKey key)
         {
@@ -85,6 +92,40 @@ namespace Microsoft.Experimental.Collections
             return default;
         }
 
+        public bool Remove(TKey key)
+        {
+            int bucketIndex = GetBucketIndex(key);
+            int entryIndex = GetEntryIndex(bucketIndex);
+            
+            int lastIndex = -1;
+            while (entryIndex != -1)
+            {
+                if (_entries[entryIndex].key.Equals(key))
+                {
+                    if (lastIndex != -1)
+                    {   // Fixup preceding element in chain to point to next (if any)
+                        _entries[lastIndex].next = _entries[entryIndex].next;
+                    }
+                    else
+                    {   // Fixup bucket to new head (if any)
+                        _buckets[bucketIndex] = _entries[entryIndex].next + 1;
+                    }
+
+                    _entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
+
+                    _entries[entryIndex].next = _freeList; // New head of free list
+                    _freeList = entryIndex;
+
+                    Count--;
+                    return true;
+                }
+                lastIndex = entryIndex;
+                entryIndex = _entries[entryIndex].next;
+            }
+
+            return false;
+        }
+
         public ref TValue this[TKey key]
         {
             get
@@ -102,17 +143,26 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = entries[entryIndex].next;
                 }
 
-                if (Count == entries.Length)
+                if (_freeList != -1)
                 {
-                    entries = Resize();
-                    bucketIndex = GetBucketIndex(key);
-                    // entry indexes were not changed by Resize
+                    entryIndex = _freeList;
+                    _freeList = entries[_freeList].next;
+                }
+                else 
+                {
+                    if (Count == entries.Length)
+                    {
+                        entries = Resize();
+                        bucketIndex = GetBucketIndex(key);
+                        // entry indexes were not changed by Resize
+                    }
+                    entryIndex = Count;
                 }
 
-                entryIndex = Count++;
                 entries[entryIndex].key = key;
-                entries[entryIndex].next = _buckets[bucketIndex] - 1;
+                entries[entryIndex].next = _buckets[bucketIndex] - 1; 
                 _buckets[bucketIndex] = entryIndex + 1;
+                Count++;
                 return ref entries[entryIndex].value;
             }
         }
@@ -168,29 +218,45 @@ namespace Microsoft.Experimental.Collections
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
             private int _index;
+            private int _found;
+
+            private readonly HashSet<int> _freeEntries;
 
             internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
                 _index = 0;
+                _found = 0;
                 Current = default;
+
+                _freeEntries = new HashSet<int>();
+                int free = dictionary._freeList;
+                while (free != -1)
+                {
+                    _freeEntries.Add(free);
+                    free = dictionary._entries[free].next;
+                }
             }
 
             public bool MoveNext()
             {
-                if (_index < _dictionary.Count)
+                while (_index < _dictionary._entries.Length && _found < _dictionary.Count)
                 {
+                    if (_freeEntries.Contains(_index))
+                    {
+                        _index++;
+                        continue;
+                    }
                     Current = new KeyValuePair<TKey, TValue>(
                         _dictionary._entries[_index].key,
                         _dictionary._entries[_index++].value);
+                    _found++;
                     return true;
                 }
-                else
-                {
-                    Current = default;
-                    return false;
-                }
-            }
+
+                Current = default;
+                return false;
+             }
 
             public KeyValuePair<TKey, TValue> Current { get; private set; }
             object IEnumerator.Current => Current;
