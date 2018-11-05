@@ -136,11 +136,12 @@ namespace Microsoft.Experimental.Collections
 
                 while (entryIndex != -1)
                 {
-                    if (entries[entryIndex].key.Equals(key))
+                    ref Entry candidate = ref entries[entryIndex];
+                    if (candidate.key.Equals(key))
                     {
-                        return ref entries[entryIndex].value;
+                        return ref candidate.value;
                     }
-                    entryIndex = entries[entryIndex].next;
+                    entryIndex = candidate.next;
                 }
 
                 if (_freeList != -1)
@@ -159,11 +160,14 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = Count;
                 }
 
-                entries[entryIndex].key = key;
-                entries[entryIndex].next = _buckets[bucketIndex] - 1; 
-                _buckets[bucketIndex] = entryIndex + 1;
+                ref Entry entry = ref entries[entryIndex];
+                entry.key = key;
+
+                ref int bucket = ref _buckets[bucketIndex];
+                entry.next = bucket - 1; 
+                bucket = entryIndex + 1;
                 Count++;
-                return ref entries[entryIndex].value;
+                return ref entry.value;
             }
         }
 
