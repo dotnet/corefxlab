@@ -37,6 +37,7 @@ namespace Microsoft.Experimental.Collections
 
         public DictionarySlim(int capacity)
         {
+            capacity = HashHelpers.GetPrime(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
         }
