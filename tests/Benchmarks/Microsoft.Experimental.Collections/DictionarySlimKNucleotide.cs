@@ -19,12 +19,12 @@ namespace Microsoft.Experimental.Collections.Benchmarks
     {
         [Params(250_000, 2_500_000)]
         public int Size { get; set; }
-        [Benchmark]
-        public void Hack()
-        {
-            new KNucleotideHack().Main(Size);
-        }
         [Benchmark(Baseline = true)]
+        public void Hack9()
+        {
+            new KNucleotideHack9().Main(Size);
+        }
+        [Benchmark]
         public void Dictionary()
         {
             new KNucleotideDictionary().Main(Size);
@@ -36,7 +36,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
         }
     }
 
-    public class KNucleotideHack
+    public class KNucleotideHack9
     {
         // Incrementor uses reflection to access methods and data internal to
         // Dictionary to provide an Increment method.
@@ -77,16 +77,16 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             public unsafe void Increment(long key)
             {
                 int hashCode = key.GetHashCode() & 0x7FFFFFFF;
-                int* p;
+                int * p;
                 int i;
                 int targetBucket = hashCode % buckets.Length;
                 for (i = buckets[targetBucket] - 1; (uint)i < (uint)buckets.Length;
-                        i = *(p + 1))
+                        i = *(p+1))
                 {
-                    p = (int*)entries + i * 6;
-                    if (*((long*)(p + 2)) == key)
+                    p = (int *)entries + i * 6;
+                    if (*((long *)(p+2)) == key)
                     {
-                        (*(p + 4))++;
+                        (*(p+4))++;
                         return;
                     }
                 }
@@ -98,11 +98,11 @@ namespace Microsoft.Experimental.Collections.Benchmarks
                     targetBucket = hashCode % buckets.Length;
                 }
                 i = count++;
-                p = (int*)entries + i * 6;
+                p = (int *)entries + i * 6;
                 *p = hashCode;
-                *(p + 1) = buckets[targetBucket] - 1;
-                *((long*)(p + 2)) = key;
-                *(p + 4) = 1;
+                *(p+1) = buckets[targetBucket] - 1;
+                *((long *)(p+2)) = key;
+                *(p+4) = 1;
                 buckets[targetBucket] = i + 1;
             }
 
@@ -227,7 +227,7 @@ namespace Microsoft.Experimental.Collections.Benchmarks
                 var firstBlock = threeBlocks[0];
                 var start = threeStart;
                 while (--l > 0) rollingKey = (rollingKey << 2) | firstBlock[start++];
-                var dict = new Dictionary<long, int>(1327);
+                var dict = new Dictionary<long, int>(1024);
                 using (var incrementor = new Incrementor(dict))
                 {
                     for (int i = start; i < firstBlock.Length; i++)
