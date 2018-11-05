@@ -47,14 +47,14 @@ namespace Microsoft.Experimental.Collections
         private int GetBucketIndex(TKey key) => (key.GetHashCode() & 0x7FFFFFFF) % _buckets.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetEntryIndex(TKey key) => _buckets[GetBucketIndex(key)] - 1;
+        private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
 
         public int Count { get; private set; }
 
         public bool ContainsKey(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex(key);
+            int entryIndex = GetEntryIndex(GetBucketIndex(key));
 
             while (entryIndex != -1)
             {
@@ -71,7 +71,7 @@ namespace Microsoft.Experimental.Collections
         public TValue GetValueOrDefault(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex(key);
+            int entryIndex = GetEntryIndex(GetBucketIndex(key));
 
             while (entryIndex != -1)
             {
@@ -90,7 +90,8 @@ namespace Microsoft.Experimental.Collections
             get
             {
                 Entry[] entries = _entries;
-                int entryIndex = GetEntryIndex(key);
+                int bucketIndex = GetBucketIndex(key);
+                int entryIndex = GetEntryIndex(bucketIndex);
 
                 while (entryIndex != -1)
                 {
@@ -101,13 +102,17 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = entries[entryIndex].next;
                 }
 
-                if (Count == entries.Length) entries = Resize();
+                if (Count == entries.Length)
+                {
+                    entries = Resize();
+                    bucketIndex = GetBucketIndex(key);
+                    // entry indexes were not changed by Resize
+                }
 
                 entryIndex = Count++;
                 entries[entryIndex].key = key;
-                int bucket = GetBucketIndex(key);
-                entries[entryIndex].next = _buckets[bucket] - 1;
-                _buckets[bucket] = entryIndex + 1;
+                entries[entryIndex].next = _buckets[bucketIndex] - 1;
+                _buckets[bucketIndex] = entryIndex + 1;
                 return ref entries[entryIndex].value;
             }
         }
