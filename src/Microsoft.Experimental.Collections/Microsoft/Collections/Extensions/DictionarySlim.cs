@@ -173,8 +173,8 @@ namespace Microsoft.Experimental.Collections
 
         private Entry[] Resize()
         {
-            var count = Count;
-            var newSize = HashHelpers.ExpandPrime(count);
+            int count = Count;
+            int newSize = HashHelpers.ExpandPrime(count);
             var entries = new Entry[newSize];
             Array.Copy(_entries, 0, entries, 0, count);
             _entries = entries;
@@ -195,7 +195,7 @@ namespace Microsoft.Experimental.Collections
         {
             get
             {
-                var entries = _entries;
+                Entry[] entries = _entries;
                 for (int i = 0; i < Count; i++)
                 {
                     yield return entries[i].key;
@@ -207,7 +207,7 @@ namespace Microsoft.Experimental.Collections
         {
             get
             {
-                var entries = _entries;
+                Entry[] entries = _entries;
                 for (int i = 0; i < Count; i++)
                 {
                     yield return entries[i].value;
