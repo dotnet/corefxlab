@@ -195,6 +195,96 @@ namespace Microsoft.Experimental.Collections.Tests
 
         [DebuggerStepThrough]
         internal Collider C(int val) => new Collider(val);
+
+        internal class CollisionKey : IEquatable<CollisionKey>
+        {
+            public int Value { get; }
+
+            public CollisionKey(int v)
+            {
+                Value = v;
+            }
+
+            public bool Equals(CollisionKey o)
+            {
+                return Value == o.Value;
+            }
+
+            public override bool Equals(object o)
+            {
+                return o is CollisionKey ck && Value == ck.Value;
+            }
+
+            public override int GetHashCode()
+            {
+                return 23;
+            }
+        }
+
+        [Fact]
+        public void Collision()
+        {
+            var d = new DictionarySlim<CollisionKey, int>();
+            d[new CollisionKey(5)] = 3;
+            d[new CollisionKey(7)] = 9;
+            d[new CollisionKey(10)] = 11;
+            Assert.Equal(3, d.GetValueOrDefault(new CollisionKey(5)));
+            Assert.Equal(9, d.GetValueOrDefault(new CollisionKey(7)));
+            Assert.Equal(11, d.GetValueOrDefault(new CollisionKey(10)));
+            d[new CollisionKey(23)]++;
+            d[new CollisionKey(23)] += 3;
+            Assert.Equal(4, d[new CollisionKey(23)]);
+        }
+
+        internal class UsedKey : IEquatable<UsedKey>
+        {
+            public int Value { get; }
+            public int EqualsCount { get; private set; }
+            public int GetHashCodeCount { get; private set; }
+
+            public UsedKey(int v)
+            {
+                Value = v;
+            }
+
+            public bool Equals(UsedKey o)
+            {
+                EqualsCount++;
+                return Value == o.Value;
+            }
+
+            public override bool Equals(object o)
+            {
+                return o is UsedKey ck && Value == ck.Value;
+            }
+
+            public override int GetHashCode()
+            {
+                GetHashCodeCount++;
+                return Value;
+            }
+        }
+
+        [Fact]
+        public void UsedIEquatable()
+        {
+            var d = new DictionarySlim<UsedKey, int>();
+            var key = new UsedKey(5);
+            d[key]++;
+            Assert.Equal(1, key.GetHashCodeCount);
+            Assert.Equal(0, key.EqualsCount);
+        }
+
+        [Fact]
+        public void UsedIEquatable2()
+        {
+            var d = new DictionarySlim<UsedKey, int>();
+            var key = new UsedKey(5);
+            d[key]++;
+            d[key]++;
+            Assert.Equal(2, key.GetHashCodeCount);
+            Assert.Equal(1, key.EqualsCount);
+        }
     }
 }
 
