@@ -11,12 +11,12 @@ using System.Runtime.CompilerServices;
 namespace Microsoft.Experimental.Collections
 {
     /// <summary>
-    /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized for value types in three ways:
+    /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized in three ways:
     /// 1) It allows access to the value by ref.
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
     /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
-    [DebuggerDisplay("Count = {Count}")]    
+    [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
         const int DefaultPrimeSize = 3;
@@ -24,7 +24,7 @@ namespace Microsoft.Experimental.Collections
         private int[] _buckets;
         private Entry[] _entries;
         // 0-based index into _entries of head of free chain: -1 means empty
-        private int _freeList = -1; 
+        private int _freeList = -1;
 
         private struct Entry
         {
