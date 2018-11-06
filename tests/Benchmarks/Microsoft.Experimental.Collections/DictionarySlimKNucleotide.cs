@@ -17,22 +17,51 @@ namespace Microsoft.Experimental.Collections.Benchmarks
 {
     public class DictionarySlimKNucleotide
     {
-        [Params(250_000, 2_500_000)]
+        [Params(250_000, 2_500_000, 25_000_000)]
         public int Size { get; set; }
+
+        public string Filename => Path.Combine(Path.GetTempPath(),
+            "corefxlab_dictionaryslim_input" + Size + ".txt");
+
+        [GlobalSetup]
+        public void CreateValuesList()
+        {
+            if (!File.Exists(Filename))
+            {
+                using (var fs = File.Create(Filename))
+                {
+                    DictionarySlimFasta.Create(Size, fs);
+                }
+            }
+        }
+
+        string[] _results;
+
+        [GlobalCleanup]
+        public void CheckResults()
+        {
+            var result = string.Join("j", _results.Select(i => i.Replace('\n', 'n').Replace('\r', 'r')));
+            var expected = Size == 250_000 ? "A 30.298rnT 30.157rnC 19.793rnG 19.752rnjAA 9.177rnTA 9.137rnAT 9.136rnTT 9.094rnAC 6.000rnCA 5.999rnGA 5.986rnAG 5.985rnTC 5.970rnCT 5.970rnGT 5.957rnTG 5.956rnCC 3.915rnCG 3.910rnGC 3.908rnGG 3.902rnj14717	GGTj4463	GGTAj472	GGTATTj9	GGTATTTTAATTj9	GGTATTTTAATTTATAGT"
+                         : Size == 2_500_000 ? "A 30.297rnT 30.151rnC 19.798rnG 19.755rnjAA 9.177rnTA 9.133rnAT 9.131rnTT 9.091rnCA 6.002rnAC 6.001rnAG 5.987rnGA 5.984rnCT 5.971rnTC 5.971rnGT 5.957rnTG 5.956rnCC 3.917rnGC 3.910rnCG 3.909rnGG 3.903rnj147166	GGTj44658	GGTAj4736	GGTATTj89	GGTATTTTAATTj89	GGTATTTTAATTTATAGT"
+                         : Size == 25_000_000 ? "A 30.295rnT 30.151rnC 19.800rnG 19.754rnjAA 9.177rnTA 9.132rnAT 9.131rnTT 9.091rnCA 6.002rnAC 6.001rnAG 5.987rnGA 5.984rnCT 5.971rnTC 5.971rnGT 5.957rnTG 5.956rnCC 3.917rnGC 3.911rnCG 3.909rnGG 3.902rnj1471758	GGTj446535	GGTAj47336	GGTATTj893	GGTATTTTAATTj893	GGTATTTTAATTTATAGT"
+                         : "?";
+            if (result != expected) throw new Exception("Incorrect result: " + result);
+        }
+
         [Benchmark(Baseline = true)]
         public void Hack9()
         {
-            new KNucleotideHack9().Main(Size);
+            _results = new KNucleotideHack9().Main(Size, Filename);
         }
         [Benchmark]
         public void Dictionary()
         {
-            new KNucleotideDictionary().Main(Size);
+            _results = new KNucleotideDictionary().Main(Size, Filename);
         }
         [Benchmark]
         public void DictionarySlim()
         {
-            new KNucleotideDictionarySlim().Main(Size);
+            _results = new KNucleotideDictionarySlim().Main(Size, Filename);
         }
     }
 
@@ -151,10 +180,9 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             }
         }
 
-        private void LoadThreeData(int size)
+        private void LoadThreeData(int size, string filename)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
 
                 // find three sequence
@@ -278,14 +306,14 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             return string.Concat(n.ToString(), "\t", fragment);
         }
 
-        public string[] Main(int size)
+        public string[] Main(int size, string filename)
         {
             tonum['c'] = 1; tonum['C'] = 1;
             tonum['g'] = 2; tonum['G'] = 2;
             tonum['t'] = 3; tonum['T'] = 3;
             tonum['\n'] = 255; tonum['>'] = 255; tonum[255] = 255;
 
-            LoadThreeData(size);
+            LoadThreeData(size, filename);
 
             Parallel.ForEach(threeBlocks, bytes =>
             {
@@ -353,10 +381,9 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             }
         }
 
-        private void LoadThreeData(int size)
+        private void LoadThreeData(int size, string filename)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
 
                 // find three sequence
@@ -481,14 +508,14 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             return string.Concat(n.ToString(), "\t", fragment);
         }
 
-        public string[] Main(int size)
+        public string[] Main(int size, string filename)
         {
             tonum['c'] = 1; tonum['C'] = 1;
             tonum['g'] = 2; tonum['G'] = 2;
             tonum['t'] = 3; tonum['T'] = 3;
             tonum['\n'] = 255; tonum['>'] = 255; tonum[255] = 255;
 
-            LoadThreeData(size);
+            LoadThreeData(size, filename);
 
             Parallel.ForEach(threeBlocks, bytes =>
             {
@@ -556,10 +583,9 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             }
         }
 
-        private void LoadThreeData(int size)
+        private void LoadThreeData(int size, string filename)
         {
-            var file = "Benchmarks.Microsoft.Experimental.Collections.DictionarySlimKNucleotideFiles.input" + size + ".txt";
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file))
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
 
                 // find three sequence
@@ -682,14 +708,14 @@ namespace Microsoft.Experimental.Collections.Benchmarks
             return string.Concat(v.ToString(), "\t", fragment);
         }
 
-        public string[] Main(int size)
+        public string[] Main(int size, string filename)
         {
             tonum['c'] = 1; tonum['C'] = 1;
             tonum['g'] = 2; tonum['G'] = 2;
             tonum['t'] = 3; tonum['T'] = 3;
             tonum['\n'] = 255; tonum['>'] = 255; tonum[255] = 255;
 
-            LoadThreeData(size);
+            LoadThreeData(size, filename);
 
             Parallel.ForEach(threeBlocks, bytes =>
             {
