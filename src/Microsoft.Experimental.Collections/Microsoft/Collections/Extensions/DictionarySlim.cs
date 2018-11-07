@@ -49,7 +49,7 @@ namespace Microsoft.Experimental.Collections
 
         // Drop sign bit to ensure non negative index
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetBucketIndex(TKey key) => (key.GetHashCode() & 0x7FFFFFFF) % _buckets.Length;
+        private uint GetHashCode(TKey key) => (uint)key.GetHashCode();//key.GetHashCode() & 0x7FFFFFFF;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
@@ -61,7 +61,7 @@ namespace Microsoft.Experimental.Collections
         public bool ContainsKey(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex(GetBucketIndex(key));
+            int entryIndex = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
 
             while (entryIndex != -1)
             {
@@ -78,7 +78,7 @@ namespace Microsoft.Experimental.Collections
         public TValue GetValueOrDefault(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex(GetBucketIndex(key));
+            int entryIndex = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
 
             while (entryIndex != -1)
             {
@@ -94,33 +94,34 @@ namespace Microsoft.Experimental.Collections
 
         public bool Remove(TKey key)
         {
-            int bucketIndex = GetBucketIndex(key);
+            Entry[] entries = _entries;
+            int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
             int entryIndex = GetEntryIndex(bucketIndex);
             
             int lastIndex = -1;
             while (entryIndex != -1)
             {
-                if (_entries[entryIndex].key.Equals(key))
+                if (entries[entryIndex].key.Equals(key))
                 {
                     if (lastIndex != -1)
                     {   // Fixup preceding element in chain to point to next (if any)
-                        _entries[lastIndex].next = _entries[entryIndex].next;
+                        entries[lastIndex].next = entries[entryIndex].next;
                     }
                     else
                     {   // Fixup bucket to new head (if any)
-                        _buckets[bucketIndex] = _entries[entryIndex].next + 1;
+                        _buckets[bucketIndex] = entries[entryIndex].next + 1;
                     }
 
-                    _entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
+                    entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
 
-                    _entries[entryIndex].next = _freeList; // New head of free list
+                    entries[entryIndex].next = _freeList; // New head of free list
                     _freeList = entryIndex;
 
                     Count--;
                     return true;
                 }
                 lastIndex = entryIndex;
-                entryIndex = _entries[entryIndex].next;
+                entryIndex = entries[entryIndex].next;
             }
 
             return false;
@@ -131,16 +132,15 @@ namespace Microsoft.Experimental.Collections
             get
             {
                 Entry[] entries = _entries;
-                int bucketIndex = GetBucketIndex(key);
+                int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
                 int entryIndex = GetEntryIndex(bucketIndex);
 
-                while (entryIndex != -1)
+                for(int i = entryIndex; i != -1; i = entries[i].next)
                 {
-                    if (entries[entryIndex].key.Equals(key))
+                    if (entries[i].key.Equals(key))
                     {
-                        return ref entries[entryIndex].value;
+                        return ref entries[i].value;
                     }
-                    entryIndex = entries[entryIndex].next;
                 }
 
                 if (_freeList != -1)
@@ -148,19 +148,19 @@ namespace Microsoft.Experimental.Collections
                     entryIndex = _freeList;
                     _freeList = entries[_freeList].next;
                 }
-                else 
+                else
                 {
                     if (Count == entries.Length)
                     {
                         entries = Resize();
-                        bucketIndex = GetBucketIndex(key);
+                        bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
                         // entry indexes were not changed by Resize
                     }
                     entryIndex = Count;
                 }
 
                 entries[entryIndex].key = key;
-                entries[entryIndex].next = _buckets[bucketIndex] - 1; 
+                entries[entryIndex].next = _buckets[bucketIndex] - 1;
                 _buckets[bucketIndex] = entryIndex + 1;
                 Count++;
                 return ref entries[entryIndex].value;
@@ -175,14 +175,14 @@ namespace Microsoft.Experimental.Collections
             Array.Copy(_entries, 0, entries, 0, count);
             _entries = entries;
 
-            int[] newBuckets = new int[newSize];
-            _buckets = newBuckets;
-            for (int i = 0; i < count;)
+            var newBuckets = new int[newSize];
+            while (count-- > 0)
             {
-                int bucketIndex = GetBucketIndex(entries[i].key);
-                entries[i].next = newBuckets[bucketIndex] - 1;
-                newBuckets[bucketIndex] = ++i;
+                int bucketIndex = (int)(GetHashCode(entries[count].key) % (uint)newBuckets.Length);
+                entries[count].next = newBuckets[bucketIndex] - 1;
+                newBuckets[bucketIndex] = count + 1;
             }
+            _buckets = newBuckets;
 
             return entries;
         }
