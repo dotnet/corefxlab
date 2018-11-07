@@ -16,6 +16,7 @@ namespace Microsoft.Experimental.Collections
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
     /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
+    [DebuggerTypeProxy(typeof(Extensions.DictionarySlimDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
@@ -266,9 +267,34 @@ namespace Microsoft.Experimental.Collections
     }
 }
 
-namespace System.Collections
+namespace Microsoft.Experimental.Collections.Extensions
 {
     using System.Diagnostics;
+    using System.Linq;
+    using Microsoft.Experimental.Collections;
+
+    internal sealed class DictionarySlimDebugView<K, V> where K : IEquatable<K>
+    {
+        private readonly DictionarySlim<K, V> _dict;
+
+        public DictionarySlimDebugView(DictionarySlim<K, V> dictionary)
+        {
+            _dict = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public KeyValuePair<K, V>[] Items
+        {
+            get
+            {
+                return _dict.ToArray();
+            }
+        }
+    }
+}
+
+namespace System.Collections
+{
     internal static partial class HashHelpers
     {
         public const int HashCollisionThreshold = 100;
