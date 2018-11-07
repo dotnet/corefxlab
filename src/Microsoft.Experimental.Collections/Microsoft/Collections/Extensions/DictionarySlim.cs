@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace Microsoft.Experimental.Collections
 {
@@ -57,7 +58,7 @@ namespace Microsoft.Experimental.Collections
 
         public int Count { get; private set; }
 
-        public int Capacity { get => _entries.Length; }
+        public int Capacity => _entries.Length;
 
         public bool ContainsKey(TKey key)
         {
@@ -174,7 +175,6 @@ namespace Microsoft.Experimental.Collections
             int newSize = HashHelpers.ExpandPrime(count);
             var entries = new Entry[newSize];
             Array.Copy(_entries, 0, entries, 0, count);
-            _entries = entries;
 
             var newBuckets = new int[newSize];
             while (count-- > 0)
@@ -183,7 +183,9 @@ namespace Microsoft.Experimental.Collections
                 entries[count].next = newBuckets[bucketIndex] - 1;
                 newBuckets[bucketIndex] = count + 1;
             }
+
             _buckets = newBuckets;
+            _entries = entries;
 
             return entries;
         }
@@ -269,10 +271,6 @@ namespace Microsoft.Experimental.Collections
 
 namespace Microsoft.Experimental.Collections.Extensions
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using Microsoft.Experimental.Collections;
-
     internal sealed class DictionarySlimDebugView<K, V> where K : IEquatable<K>
     {
         private readonly DictionarySlim<K, V> _dict;
