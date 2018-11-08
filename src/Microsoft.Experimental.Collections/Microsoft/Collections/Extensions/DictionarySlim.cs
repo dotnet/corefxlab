@@ -137,7 +137,7 @@ namespace Microsoft.Experimental.Collections
                 int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
                 int entryIndex = GetEntryIndex(bucketIndex);
 
-                for(int i = entryIndex; i != -1; i = entries[i].next)
+                for(int i = entryIndex; (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
                     if (entries[i].key.Equals(key))
                     {
