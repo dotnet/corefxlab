@@ -51,7 +51,7 @@ namespace Microsoft.Experimental.Collections
 
         // Drop sign bit to ensure non negative index
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private uint GetHashCode(TKey key) => (uint)key.GetHashCode();//key.GetHashCode() & 0x7FFFFFFF;
+        private uint GetHashCode(TKey key) => (uint)key.GetHashCode();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
@@ -116,7 +116,7 @@ namespace Microsoft.Experimental.Collections
 
                     entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
 
-                    entries[entryIndex].next = _freeList; // New head of free list
+                    entries[entryIndex].next = -3 - _freeList; // New head of free list
                     _freeList = entryIndex;
 
                     Count--;
@@ -148,7 +148,7 @@ namespace Microsoft.Experimental.Collections
                 if (_freeList != -1)
                 {
                     entryIndex = _freeList;
-                    _freeList = entries[_freeList].next;
+                    _freeList = -3 - entries[_freeList].next;
                 }
                 else
                 {
@@ -190,27 +190,25 @@ namespace Microsoft.Experimental.Collections
             return entries;
         }
 
-        public IEnumerable<TKey> Keys
-        {
-            get
-            {
-                Entry[] entries = _entries;
-                for (int i = 0; i < Count; i++)
-                {
-                    yield return entries[i].key;
-                }
-            }
-        }
+        public KeyEnumerable Keys => new KeyEnumerable(this);
 
-        public IEnumerable<TValue> Values
+        public ValueEnumerable Values => new ValueEnumerable(this);
+
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
-            get
+            Entry[] entries = _entries;
+            int i = 0;
+            int count = Count;
+            while (count > 0)
             {
-                Entry[] entries = _entries;
-                for (int i = 0; i < Count; i++)
+                if (entries[i].next > -2)
                 {
-                    yield return entries[i].value;
+                    count--;
+                    array[index++] = new KeyValuePair<TKey, TValue>(
+                        entries[i].key,
+                        entries[i].value);
                 }
+                i++;
             }
         }
 
@@ -220,51 +218,181 @@ namespace Microsoft.Experimental.Collections
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
-            private int _index;
-            private int _found;
-
-            private readonly HashSet<int> _freeEntries;
+            private int _index, _count;
 
             internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
                 _index = 0;
-                _found = 0;
+                _count = _dictionary.Count;
                 Current = default;
-
-                _freeEntries = new HashSet<int>();
-                int free = dictionary._freeList;
-                while (free != -1)
-                {
-                    _freeEntries.Add(free);
-                    free = dictionary._entries[free].next;
-                }
             }
 
             public bool MoveNext()
             {
-                while (_index < _dictionary._entries.Length && _found < _dictionary.Count)
+                if(_count == 0)
                 {
-                    if (_freeEntries.Contains(_index))
-                    {
-                        _index++;
-                        continue;
-                    }
-                    Current = new KeyValuePair<TKey, TValue>(
-                        _dictionary._entries[_index].key,
-                        _dictionary._entries[_index++].value);
-                    _found++;
-                    return true;
+                    Current = default;
+                    return false;
                 }
+                _count--;
 
-                Current = default;
-                return false;
-             }
+                while (_dictionary._entries[_index].next < -1) _index++;
+
+                Current = new KeyValuePair<TKey, TValue>(
+                    _dictionary._entries[_index].key,
+                    _dictionary._entries[_index++].value);
+                return true;
+            }
 
             public KeyValuePair<TKey, TValue> Current { get; private set; }
             object IEnumerator.Current => Current;
-            void IEnumerator.Reset() => _index = 0;
+            void IEnumerator.Reset()
+            {
+                _index = 0;
+                _count = _dictionary.Count;
+            }
             public void Dispose() { }
+        }
+
+        public struct KeyEnumerable : IEnumerable<TKey>
+        {
+            private readonly DictionarySlim<TKey, TValue> _dictionary;
+            
+            internal KeyEnumerable(DictionarySlim<TKey, TValue> dictionary)
+            {
+                _dictionary = dictionary;
+            }
+
+            public void CopyTo(TKey[] array, int index)
+            {
+                Entry[] entries = _dictionary._entries;
+                int i = 0;
+                int count = _dictionary.Count;
+                while (count > 0)
+                {
+                    if (entries[i].next > -2)
+                    {
+                        count--;
+                        array[index++] = entries[i].key;
+                    }
+                    i++;
+                }
+            }
+
+            public IEnumerator<TKey> GetEnumerator() => new KeyEnumerator(_dictionary);
+            IEnumerator IEnumerable.GetEnumerator() => new KeyEnumerator(_dictionary);
+        }
+
+        public struct KeyEnumerator : IEnumerator<TKey>
+        {
+            private readonly DictionarySlim<TKey, TValue> _dictionary;
+            private int _index, _count;
+
+            internal KeyEnumerator(DictionarySlim<TKey, TValue> dictionary)
+            {
+                _dictionary = dictionary;
+                _index = 0;
+                _count = _dictionary.Count;
+                Current = default;
+            }
+
+            public TKey Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (_count == 0)
+                {
+                    Current = default;
+                    return false;
+                }
+                _count--;
+
+                while (_dictionary._entries[_index].next < -1) _index++;
+
+                Current = _dictionary._entries[_index++].key;
+                return true;
+            }
+
+            public void Reset()
+            {
+                _index = 0;
+                _count = _dictionary.Count;
+            }
+        }
+
+        public struct ValueEnumerable : IEnumerable<TValue>
+        {
+            private readonly DictionarySlim<TKey, TValue> _dictionary;
+
+            internal ValueEnumerable(DictionarySlim<TKey, TValue> dictionary)
+            {
+                _dictionary = dictionary;
+            }
+
+            public void CopyTo(TValue[] array, int index)
+            {
+                Entry[] entries = _dictionary._entries;
+                int i = 0;
+                int count = _dictionary.Count;
+                while (count > 0)
+                {
+                    if (entries[i].next > -2)
+                    {
+                        count--;
+                        array[index++] = entries[i].value;
+                    }
+                    i++;
+                }
+            }
+
+            public IEnumerator<TValue> GetEnumerator() => new ValueEnumerator(_dictionary);
+            IEnumerator IEnumerable.GetEnumerator() => new ValueEnumerator(_dictionary);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            private readonly DictionarySlim<TKey, TValue> _dictionary;
+            private int _index, _count;
+
+            internal ValueEnumerator(DictionarySlim<TKey, TValue> dictionary)
+            {
+                _dictionary = dictionary;
+                _index = 0;
+                _count = _dictionary.Count;
+                Current = default;
+            }
+
+            public TValue Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (_count == 0)
+                {
+                    Current = default;
+                    return false;
+                }
+                _count--;
+
+                while (_dictionary._entries[_index].next < -1) _index++;
+
+                Current = _dictionary._entries[_index++].value;
+                return true;
+            }
+
+            public void Reset()
+            {
+                _index = 0;
+                _count = _dictionary.Count;
+            }
         }
     }
 }
@@ -349,16 +477,14 @@ namespace System.Collections
                     return prime;
             }
 
-
-            throw new Exception("need to do something here : " + min);
-            //outside of our predefined table. 
+            //outside of our predefined table.
             //compute the hard way. 
-            //for (int i = (min | 1); i < int.MaxValue; i += 2)
-            //{
-            //    if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-            //        return i;
-            //}
-            //return min;
+            for (int i = (min | 1); i < int.MaxValue; i += 2)
+            {
+                if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+                    return i;
+            }
+            return min;
         }
 
         // Returns size of hashtable to grow to.
