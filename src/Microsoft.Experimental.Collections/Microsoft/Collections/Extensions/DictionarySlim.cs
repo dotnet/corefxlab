@@ -135,9 +135,9 @@ namespace Microsoft.Experimental.Collections
             {
                 Entry[] entries = _entries;
                 int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
-                int entryIndex = GetEntryIndex(bucketIndex);
 
-                for(int i = entryIndex; (uint)i < (uint)entries.Length; i = entries[i].next)
+                for (int i = GetEntryIndex(bucketIndex);
+                        (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
                     if (entries[i].key.Equals(key))
                     {
@@ -145,28 +145,35 @@ namespace Microsoft.Experimental.Collections
                     }
                 }
 
-                if (_freeList != -1)
-                {
-                    entryIndex = _freeList;
-                    _freeList = -3 - entries[_freeList].next;
-                }
-                else
-                {
-                    if (Count == entries.Length)
-                    {
-                        entries = Resize();
-                        bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
-                        // entry indexes were not changed by Resize
-                    }
-                    entryIndex = Count;
-                }
-
-                entries[entryIndex].key = key;
-                entries[entryIndex].next = _buckets[bucketIndex] - 1;
-                _buckets[bucketIndex] = entryIndex + 1;
-                Count++;
-                return ref entries[entryIndex].value;
+                return ref AddKey(key, entries, bucketIndex);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private ref TValue AddKey(TKey key, Entry[] entries, int bucketIndex)
+        {
+            int entryIndex;
+            if (_freeList != -1)
+            {
+                entryIndex = _freeList;
+                _freeList = -3 - entries[_freeList].next;
+            }
+            else
+            {
+                if (Count == entries.Length)
+                {
+                    entries = Resize();
+                    bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
+                    // entry indexes were not changed by Resize
+                }
+                entryIndex = Count;
+            }
+
+            entries[entryIndex].key = key;
+            entries[entryIndex].next = _buckets[bucketIndex] - 1;
+            _buckets[bucketIndex] = entryIndex + 1;
+            Count++;
+            return ref entries[entryIndex].value;
         }
 
         private Entry[] Resize()

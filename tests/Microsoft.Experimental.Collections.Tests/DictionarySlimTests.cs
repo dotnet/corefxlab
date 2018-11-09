@@ -311,18 +311,18 @@ namespace Microsoft.Experimental.Collections.Tests
             Assert.Equal(4, d[C(23)]);
         }
 
-        internal class UsedKey : IEquatable<UsedKey>
+        internal class KeyUseTracking : IEquatable<KeyUseTracking>
         {
             public int Value { get; }
             public int EqualsCount { get; private set; }
             public int GetHashCodeCount { get; private set; }
 
-            public UsedKey(int v)
+            public KeyUseTracking(int v)
             {
                 Value = v;
             }
 
-            public bool Equals(UsedKey o)
+            public bool Equals(KeyUseTracking o)
             {
                 EqualsCount++;
                 return Value == o.Value;
@@ -330,7 +330,7 @@ namespace Microsoft.Experimental.Collections.Tests
 
             public override bool Equals(object o)
             {
-                return o is UsedKey ck && Value == ck.Value;
+                return o is KeyUseTracking ck && Value == ck.Value;
             }
 
             public override int GetHashCode()
@@ -343,8 +343,8 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void UsedIEquatable()
         {
-            var d = new DictionarySlim<UsedKey, int>();
-            var key = new UsedKey(5);
+            var d = new DictionarySlim<KeyUseTracking, int>();
+            var key = new KeyUseTracking(5);
             d[key]++;
             Assert.Equal(1, key.GetHashCodeCount);
             Assert.Equal(0, key.EqualsCount);
@@ -353,8 +353,8 @@ namespace Microsoft.Experimental.Collections.Tests
         [Fact]
         public void UsedIEquatable2()
         {
-            var d = new DictionarySlim<UsedKey, int>();
-            var key = new UsedKey(5);
+            var d = new DictionarySlim<KeyUseTracking, int>();
+            var key = new KeyUseTracking(5);
             d[key]++;
             d[key]++;
             Assert.Equal(2, key.GetHashCodeCount);
