@@ -13,7 +13,7 @@ namespace Microsoft.Experimental.Collections
 {
     /// <summary>
     /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized in three ways:
-    /// 1) It allows access to the value by ref.
+    /// 1) It allows access to the value by ref replacing the common TryGetValue and Add pattern.
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
     /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
@@ -21,7 +21,8 @@ namespace Microsoft.Experimental.Collections
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
-        const int DefaultPrimeSize = 3;
+        private static readonly int[] InitialBuckets = new int[1];
+        private static readonly Entry[] InitialEntries = new Entry[1];
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
@@ -38,8 +39,8 @@ namespace Microsoft.Experimental.Collections
 
         public DictionarySlim()
         {
-            _buckets = new int[DefaultPrimeSize];
-            _entries = new Entry[DefaultPrimeSize];
+            _buckets = InitialBuckets;
+            _entries = InitialEntries;
         }
 
         public DictionarySlim(int capacity)
@@ -63,15 +64,12 @@ namespace Microsoft.Experimental.Collections
         public bool ContainsKey(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
 
-            while (entryIndex != -1)
+            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
+                    (uint)i < (uint)entries.Length; i = entries[i].next)
             {
-                if (entries[entryIndex].key.Equals(key))
-                {
+                if (key.Equals(entries[i].key))
                     return true;
-                }
-                entryIndex = entries[entryIndex].next;
             }
 
             return false;
@@ -80,15 +78,12 @@ namespace Microsoft.Experimental.Collections
         public TValue GetValueOrDefault(TKey key)
         {
             Entry[] entries = _entries;
-            int entryIndex = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
 
-            while (entryIndex != -1)
+            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
+                    (uint)i < (uint)entries.Length; i = entries[i].next)
             {
-                if (entries[entryIndex].key.Equals(key))
-                {
-                    return entries[entryIndex].value;
-                }
-                entryIndex = entries[entryIndex].next;
+                if (key.Equals(entries[i].key))
+                    return entries[i].value;
             }
 
             return default;
@@ -99,7 +94,7 @@ namespace Microsoft.Experimental.Collections
             Entry[] entries = _entries;
             int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
             int entryIndex = GetEntryIndex(bucketIndex);
-            
+
             int lastIndex = -1;
             while (entryIndex != -1)
             {
@@ -139,19 +134,18 @@ namespace Microsoft.Experimental.Collections
                 for (int i = GetEntryIndex(bucketIndex);
                         (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
-                    if (entries[i].key.Equals(key))
-                    {
+                    if (key.Equals(entries[i].key))
                         return ref entries[i].value;
-                    }
                 }
 
-                return ref AddKey(key, entries, bucketIndex);
+                return ref AddKey(key, bucketIndex);
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private ref TValue AddKey(TKey key, Entry[] entries, int bucketIndex)
+        private ref TValue AddKey(TKey key, int bucketIndex)
         {
+            Entry[] entries = _entries;
             int entryIndex;
             if (_freeList != -1)
             {
@@ -160,7 +154,7 @@ namespace Microsoft.Experimental.Collections
             }
             else
             {
-                if (Count == entries.Length)
+                if (Count == entries.Length || entries.Length == 1)
                 {
                     entries = Resize();
                     bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
@@ -237,14 +231,16 @@ namespace Microsoft.Experimental.Collections
 
             public bool MoveNext()
             {
-                if(_count == 0)
+                if (_count == 0)
                 {
                     Current = default;
                     return false;
                 }
+
                 _count--;
 
-                while (_dictionary._entries[_index].next < -1) _index++;
+                while (_dictionary._entries[_index].next < -1)
+                    _index++;
 
                 Current = new KeyValuePair<TKey, TValue>(
                     _dictionary._entries[_index].key,
@@ -265,7 +261,7 @@ namespace Microsoft.Experimental.Collections
         public struct KeyEnumerable : IEnumerable<TKey>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
-            
+
             internal KeyEnumerable(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
@@ -280,8 +276,8 @@ namespace Microsoft.Experimental.Collections
                 {
                     if (entries[i].next > -2)
                     {
-                        count--;
                         array[index++] = entries[i].key;
+                        count--;
                     }
                     i++;
                 }
@@ -317,9 +313,11 @@ namespace Microsoft.Experimental.Collections
                     Current = default;
                     return false;
                 }
+
                 _count--;
 
-                while (_dictionary._entries[_index].next < -1) _index++;
+                while (_dictionary._entries[_index].next < -1)
+                    _index++;
 
                 Current = _dictionary._entries[_index++].key;
                 return true;
@@ -350,8 +348,8 @@ namespace Microsoft.Experimental.Collections
                 {
                     if (entries[i].next > -2)
                     {
-                        count--;
                         array[index++] = entries[i].value;
+                        count--;
                     }
                     i++;
                 }
@@ -387,9 +385,11 @@ namespace Microsoft.Experimental.Collections
                     Current = default;
                     return false;
                 }
+
                 _count--;
 
-                while (_dictionary._entries[_index].next < -1) _index++;
+                while (_dictionary._entries[_index].next < -1)
+                    _index++;
 
                 Current = _dictionary._entries[_index++].value;
                 return true;
