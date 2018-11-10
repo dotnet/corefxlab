@@ -36,7 +36,9 @@ namespace Microsoft.Experimental.Collections
         {
             public TKey key;
             public TValue value;
-            // 0-based index of next entry in chain: -1 means empty , < -1 means in free list
+            // 0-based index of next entry in chain: -1 means end of chain
+            // also encodes whether this entry _itself_ is part of the free list by changing sign and subtracting 3,
+            // so -2 means end of free list, -3 means index 0 but on free list, -4 means index 1 but on free list, etc.
             public int next;
         }
 
@@ -226,7 +228,7 @@ namespace Microsoft.Experimental.Collections
             int count = Count;
             while (count > 0)
             {
-                if (entries[i].next > -2)
+                if (entries[i].next > -2) // part of free list?
                 {
                     count--;
                     array[index++] = new KeyValuePair<TKey, TValue>(
@@ -298,7 +300,7 @@ namespace Microsoft.Experimental.Collections
                 int count = _dictionary.Count;
                 while (count > 0)
                 {
-                    if (entries[i].next > -2)
+                    if (entries[i].next > -2)  // part of free list?
                     {
                         array[index++] = entries[i].key;
                         count--;
@@ -370,7 +372,7 @@ namespace Microsoft.Experimental.Collections
                 int count = _dictionary.Count;
                 while (count > 0)
                 {
-                    if (entries[i].next > -2)
+                    if (entries[i].next > -2)  // part of free list?
                     {
                         array[index++] = entries[i].value;
                         count--;

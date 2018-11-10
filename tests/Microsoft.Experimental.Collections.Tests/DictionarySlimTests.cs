@@ -185,10 +185,11 @@ namespace Microsoft.Experimental.Collections.Tests
         public void KeysCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d['a'] = 1;
+            d['b'] = 2;
             var a = new char[3];
             d.Keys.CopyTo(a, 1);
+            Assert.Equal('\0', a[0]);
             Assert.Equal('a', a[1]);
             Assert.Equal('b', a[2]);
         }
@@ -197,24 +198,26 @@ namespace Microsoft.Experimental.Collections.Tests
         public void ValuesCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d['a'] = 1;
+            d['b'] = 2;
             var a = new int[3];
             d.Values.CopyTo(a, 1);
-            Assert.Equal(0, a[1]);
-            Assert.Equal(1, a[2]);
+            Assert.Equal(0, a[0]);
+            Assert.Equal(1, a[1]);
+            Assert.Equal(2, a[2]);
         }
 
         [Fact]
         public void KeysThreeRemoveOneCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
             d.Remove('b');
             var a = new char[3];
             d.Keys.CopyTo(a, 1);
+            Assert.Equal('\0', a[0]);
             Assert.Equal('a', a[1]);
             Assert.Equal('c', a[2]);
         }
@@ -223,28 +226,47 @@ namespace Microsoft.Experimental.Collections.Tests
         public void ValuesThreeRemoveOneCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
             d.Remove('b');
             var a = new int[3];
             d.Values.CopyTo(a, 1);
-            Assert.Equal(0, a[1]);
-            Assert.Equal(2, a[2]);
+            Assert.Equal(0, a[0]);
+            Assert.Equal(1, a[1]);
+            Assert.Equal(3, a[2]);
         }
 
         [Fact]
         public void CopyToThreeRemoveOne()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
             Assert.True(d.Remove('b'));
             var a = new KeyValuePair<char, int>[3];
             d.CopyTo(a, 1);
-            Assert.Equal(KeyValuePair.Create('a', 0), a[1]);
-            Assert.Equal(KeyValuePair.Create('c', 2), a[2]);
+            Assert.Equal(KeyValuePair.Create('\0', 0), a[0]);
+            Assert.Equal(KeyValuePair.Create('a', 1), a[1]);
+            Assert.Equal(KeyValuePair.Create('c', 3), a[2]);
+        }
+
+        [Fact]
+        public void CopyToThreeRemoveTwo()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
+            Assert.True(d.Remove('b'));
+            Assert.True(d.Remove('c'));
+            d['d'] = 4;
+            var a = new KeyValuePair<char, int>[3];
+            d.CopyTo(a, 1);
+            Assert.Equal(KeyValuePair.Create('\0', 0), a[0]);
+            Assert.Equal(KeyValuePair.Create('a', 1), a[1]);
+            Assert.Equal(KeyValuePair.Create('d', 4), a[2]);
         }
 
         [Fact]
