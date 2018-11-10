@@ -239,6 +239,7 @@ namespace Microsoft.Experimental.Collections
             }
         }
 
+        public Enumerator GetEnumerator() => new Enumerator(this); // avoid boxing
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
@@ -309,7 +310,8 @@ namespace Microsoft.Experimental.Collections
                 }
             }
 
-            public IEnumerator<TKey> GetEnumerator() => new Enumerator(_dictionary);
+            public Enumerator GetEnumerator() => new Enumerator(_dictionary); // avoid boxing
+            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => new Enumerator(_dictionary);
             IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
 
             public struct Enumerator : IEnumerator<TKey>
@@ -381,7 +383,8 @@ namespace Microsoft.Experimental.Collections
                 }
             }
 
-            public IEnumerator<TValue> GetEnumerator() => new Enumerator(_dictionary);
+            public Enumerator GetEnumerator() => new Enumerator(_dictionary); // avoid boxing
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(_dictionary);
             IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
 
             public struct Enumerator : IEnumerator<TValue>
