@@ -25,7 +25,7 @@ namespace Microsoft.Experimental.Collections
         // Array.Empty would give divide by zero in modulo operation. So we use static one element arrays.
         // The first add will cause a resize replacing these with real arrays of three elements.
         // Arrays are wrapped in a class to avoid being duplicated for each <TKey, TValue>
-        private static readonly int[] InitialBuckets = DummySizeOneIntArray.Value;
+        private static readonly int[] InitialBuckets = HashHelpers.DictionarySlimSizeOneIntArray;
         private static readonly Entry[] InitialEntries = new Entry[1];
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
@@ -39,10 +39,6 @@ namespace Microsoft.Experimental.Collections
             public TValue value;
             // 0-based index of next entry in chain: -1 means empty , < -1 means in free list
             public int next;
-        }
-        private static class DummySizeOneIntArray
-        {
-            internal static readonly int[] Value = new int[1];
         }
 
         public DictionarySlim()
@@ -459,6 +455,8 @@ namespace System.Collections
 {
     internal static partial class HashHelpers
     {
+        internal static readonly int[] DictionarySlimSizeOneIntArray = new int[1];
+        
         public const int HashCollisionThreshold = 100;
 
         // This is the maximum prime smaller than Array.MaxArrayLength
