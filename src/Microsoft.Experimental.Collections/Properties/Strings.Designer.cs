@@ -313,6 +313,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection&apos;s state is no longer correct..
+        /// </summary>
+        internal static string InvalidOperation_ConcurrentOperationsNotSupported {
+            get {
+                return ResourceManager.GetString("InvalidOperation_ConcurrentOperationsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Queue empty..
         /// </summary>
         internal static string InvalidOperation_EmptyQueue {

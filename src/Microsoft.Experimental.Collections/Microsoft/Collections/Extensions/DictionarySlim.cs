@@ -75,7 +75,7 @@ namespace Microsoft.Experimental.Collections
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
-                    throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                    throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
                 }
                 collisionCount++;
             }
@@ -96,7 +96,7 @@ namespace Microsoft.Experimental.Collections
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
-                    throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                    throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
                 }
                 collisionCount++;
             }
@@ -155,7 +155,7 @@ namespace Microsoft.Experimental.Collections
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
-                        throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                        throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
                     }
                     collisionCount++;
                 }
