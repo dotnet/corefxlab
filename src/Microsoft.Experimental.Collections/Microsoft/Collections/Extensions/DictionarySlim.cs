@@ -25,8 +25,8 @@ namespace Microsoft.Experimental.Collections
         // Array.Empty would give divide by zero in modulo operation. So we use static one element arrays.
         // The first add will cause a resize replacing these with real arrays of three elements.
         // Arrays are wrapped in a class to avoid being duplicated for each <TKey, TValue>
-        private static readonly int[] InitialBuckets = DummySizeOneArray<int>.Value;
-        private static readonly Entry[] InitialEntries = DummySizeOneArray<Entry>.Value;
+        private static readonly int[] InitialBuckets = DummySizeOneIntArray.Value;
+        private static readonly Entry[] InitialEntries = new Entry[1];
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
@@ -37,12 +37,12 @@ namespace Microsoft.Experimental.Collections
         {
             public TKey key;
             public TValue value;
-            // 0-based index of next entry in chain: -1 means empty
+            // 0-based index of next entry in chain: -1 means empty , < -1 means in free list
             public int next;
         }
-        private static class DummySizeOneArray<T>
+        private static class DummySizeOneIntArray
         {
-            internal static readonly T[] Value = new T[1];
+            internal static readonly int[] Value = new int[1];
         }
 
         public DictionarySlim()
@@ -312,50 +312,50 @@ namespace Microsoft.Experimental.Collections
                 }
             }
 
-            public IEnumerator<TKey> GetEnumerator() => new KeyEnumerator(_dictionary);
-            IEnumerator IEnumerable.GetEnumerator() => new KeyEnumerator(_dictionary);
-        }
+            public IEnumerator<TKey> GetEnumerator() => new Enumerator(_dictionary);
+            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
 
-        public struct KeyEnumerator : IEnumerator<TKey>
-        {
-            private readonly DictionarySlim<TKey, TValue> _dictionary;
-            private int _index, _count;
-
-            internal KeyEnumerator(DictionarySlim<TKey, TValue> dictionary)
+            public struct Enumerator : IEnumerator<TKey>
             {
-                _dictionary = dictionary;
-                _index = 0;
-                _count = _dictionary.Count;
-                Current = default;
-            }
+                private readonly DictionarySlim<TKey, TValue> _dictionary;
+                private int _index, _count;
 
-            public TKey Current { get; private set; }
-
-            object IEnumerator.Current => Current;
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (_count == 0)
+                internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
+                    _dictionary = dictionary;
+                    _index = 0;
+                    _count = _dictionary.Count;
                     Current = default;
-                    return false;
                 }
 
-                _count--;
+                public TKey Current { get; private set; }
 
-                while (_dictionary._entries[_index].next < -1)
-                    _index++;
+                object IEnumerator.Current => Current;
 
-                Current = _dictionary._entries[_index++].key;
-                return true;
-            }
+                public void Dispose() { }
 
-            public void Reset()
-            {
-                _index = 0;
-                _count = _dictionary.Count;
+                public bool MoveNext()
+                {
+                    if (_count == 0)
+                    {
+                        Current = default;
+                        return false;
+                    }
+
+                    _count--;
+
+                    while (_dictionary._entries[_index].next < -1)
+                        _index++;
+
+                    Current = _dictionary._entries[_index++].key;
+                    return true;
+                }
+
+                public void Reset()
+                {
+                    _index = 0;
+                    _count = _dictionary.Count;
+                }
             }
         }
 
@@ -384,50 +384,50 @@ namespace Microsoft.Experimental.Collections
                 }
             }
 
-            public IEnumerator<TValue> GetEnumerator() => new ValueEnumerator(_dictionary);
-            IEnumerator IEnumerable.GetEnumerator() => new ValueEnumerator(_dictionary);
-        }
+            public IEnumerator<TValue> GetEnumerator() => new Enumerator(_dictionary);
+            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
 
-        public struct ValueEnumerator : IEnumerator<TValue>
-        {
-            private readonly DictionarySlim<TKey, TValue> _dictionary;
-            private int _index, _count;
-
-            internal ValueEnumerator(DictionarySlim<TKey, TValue> dictionary)
+            public struct Enumerator : IEnumerator<TValue>
             {
-                _dictionary = dictionary;
-                _index = 0;
-                _count = _dictionary.Count;
-                Current = default;
-            }
+                private readonly DictionarySlim<TKey, TValue> _dictionary;
+                private int _index, _count;
 
-            public TValue Current { get; private set; }
-
-            object IEnumerator.Current => Current;
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (_count == 0)
+                internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
+                    _dictionary = dictionary;
+                    _index = 0;
+                    _count = _dictionary.Count;
                     Current = default;
-                    return false;
                 }
 
-                _count--;
+                public TValue Current { get; private set; }
 
-                while (_dictionary._entries[_index].next < -1)
-                    _index++;
+                object IEnumerator.Current => Current;
 
-                Current = _dictionary._entries[_index++].value;
-                return true;
-            }
+                public void Dispose() { }
 
-            public void Reset()
-            {
-                _index = 0;
-                _count = _dictionary.Count;
+                public bool MoveNext()
+                {
+                    if (_count == 0)
+                    {
+                        Current = default;
+                        return false;
+                    }
+
+                    _count--;
+
+                    while (_dictionary._entries[_index].next < -1)
+                        _index++;
+
+                    Current = _dictionary._entries[_index++].value;
+                    return true;
+                }
+
+                public void Reset()
+                {
+                    _index = 0;
+                    _count = _dictionary.Count;
+                }
             }
         }
     }
