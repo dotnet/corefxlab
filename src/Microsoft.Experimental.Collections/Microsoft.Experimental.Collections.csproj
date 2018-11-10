@@ -5,6 +5,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageTags>collections system microsoft multivaluedictionary</PackageTags>
     <VersionPrefix>1.0.4</VersionPrefix>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
