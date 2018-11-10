@@ -40,10 +40,10 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         [GlobalCleanup]
         public void CheckResults()
         {
-            var result = string.Join("j", _results.Select(i => i.Replace('\n', 'n').Replace('\r', 'r')));
-            var expected = Size == 250_000 ? "A 30.298rnT 30.157rnC 19.793rnG 19.752rnjAA 9.177rnTA 9.137rnAT 9.136rnTT 9.094rnAC 6.000rnCA 5.999rnGA 5.986rnAG 5.985rnTC 5.970rnCT 5.970rnGT 5.957rnTG 5.956rnCC 3.915rnCG 3.910rnGC 3.908rnGG 3.902rnj14717	GGTj4463	GGTAj472	GGTATTj9	GGTATTTTAATTj9	GGTATTTTAATTTATAGT"
-                         : Size == 2_500_000 ? "A 30.297rnT 30.151rnC 19.798rnG 19.755rnjAA 9.177rnTA 9.133rnAT 9.131rnTT 9.091rnCA 6.002rnAC 6.001rnAG 5.987rnGA 5.984rnCT 5.971rnTC 5.971rnGT 5.957rnTG 5.956rnCC 3.917rnGC 3.910rnCG 3.909rnGG 3.903rnj147166	GGTj44658	GGTAj4736	GGTATTj89	GGTATTTTAATTj89	GGTATTTTAATTTATAGT"
-                         : Size == 25_000_000 ? "A 30.295rnT 30.151rnC 19.800rnG 19.754rnjAA 9.177rnTA 9.132rnAT 9.131rnTT 9.091rnCA 6.002rnAC 6.001rnAG 5.987rnGA 5.984rnCT 5.971rnTC 5.971rnGT 5.957rnTG 5.956rnCC 3.917rnGC 3.911rnCG 3.909rnGG 3.902rnj1471758	GGTj446535	GGTAj47336	GGTATTj893	GGTATTTTAATTj893	GGTATTTTAATTTATAGT"
+            var result = string.Join("j", _results.Select(i => i.Replace('\n', 'n').Replace("\r", "")));
+            var expected = Size == 250_000 ? "A 30.298nT 30.157nC 19.793nG 19.752njAA 9.177nTA 9.137nAT 9.136nTT 9.094nAC 6.000nCA 5.999nGA 5.986nAG 5.985nTC 5.970nCT 5.970nGT 5.957nTG 5.956nCC 3.915nCG 3.910nGC 3.908nGG 3.902nj14717	GGTj4463	GGTAj472	GGTATTj9	GGTATTTTAATTj9	GGTATTTTAATTTATAGT"
+                         : Size == 2_500_000 ? "A 30.297nT 30.151nC 19.798nG 19.755njAA 9.177nTA 9.133nAT 9.131nTT 9.091nCA 6.002nAC 6.001nAG 5.987nGA 5.984nCT 5.971nTC 5.971nGT 5.957nTG 5.956nCC 3.917nGC 3.910nCG 3.909nGG 3.903nj147166	GGTj44658	GGTAj4736	GGTATTj89	GGTATTTTAATTj89	GGTATTTTAATTTATAGT"
+                         : Size == 25_000_000 ? "A 30.295nT 30.151nC 19.800nG 19.754njAA 9.177nTA 9.132nAT 9.131nTT 9.091nCA 6.002nAC 6.001nAG 5.987nGA 5.984nCT 5.971nTC 5.971nGT 5.957nTG 5.956nCC 3.917nGC 3.911nCG 3.909nGG 3.902nj1471758	GGTj446535	GGTAj47336	GGTATTj893	GGTATTTTAATTj893	GGTATTTTAATTTATAGT"
                          : "?";
             if (result != expected) throw new Exception("Incorrect result: " + result);
         }
