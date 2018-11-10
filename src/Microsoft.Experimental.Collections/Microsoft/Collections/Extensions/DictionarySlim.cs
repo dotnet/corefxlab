@@ -21,9 +21,12 @@ namespace Microsoft.Experimental.Collections
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
-        // Initial shared empty buckets and entries. The first add with cause a resize replacing these.
-        private static readonly int[] InitialBuckets = new int[1];
-        private static readonly Entry[] InitialEntries = new Entry[1];
+        // We want to initialize without allocating arrays. We also want to avoid null checks.
+        // Array.Empty would give divide by zero in modulo operation. So we use static one element arrays.
+        // The first add will cause a resize replacing these with real arrays of three elements.
+        // Arrays are wrapped in a class to avoid being duplicated for each <TKey, TValue>
+        private static readonly int[] InitialBuckets = DummySizeOneArray<int>.Value;
+        private static readonly Entry[] InitialEntries = DummySizeOneArray<Entry>.Value;
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
@@ -36,6 +39,10 @@ namespace Microsoft.Experimental.Collections
             public TValue value;
             // 0-based index of next entry in chain: -1 means empty
             public int next;
+        }
+        private static class DummySizeOneArray<T>
+        {
+            internal static readonly T[] Value = new T[1];
         }
 
         public DictionarySlim()
