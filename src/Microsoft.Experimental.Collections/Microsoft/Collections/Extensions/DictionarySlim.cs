@@ -21,6 +21,7 @@ namespace Microsoft.Experimental.Collections
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
+        // Initial shared empty buckets and entries. The first add with cause a resize replacing these.
         private static readonly int[] InitialBuckets = new int[1];
         private static readonly Entry[] InitialEntries = new Entry[1];
         // 1-based index into _entries; 0 means empty
@@ -64,12 +65,19 @@ namespace Microsoft.Experimental.Collections
         public bool ContainsKey(TKey key)
         {
             Entry[] entries = _entries;
-
+            int collisionCount = 0;
             for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
                     return true;
+                if (collisionCount >= entries.Length)
+                {
+                    // The chain of entries forms a loop; which means a concurrent update has happened.
+                    // Break out of the loop and throw, rather than looping forever.
+                    throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                }
+                collisionCount++;
             }
 
             return false;
@@ -78,12 +86,19 @@ namespace Microsoft.Experimental.Collections
         public TValue GetValueOrDefault(TKey key)
         {
             Entry[] entries = _entries;
-
+            int collisionCount = 0;
             for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
                     return entries[i].value;
+                if (collisionCount >= entries.Length)
+                {
+                    // The chain of entries forms a loop; which means a concurrent update has happened.
+                    // Break out of the loop and throw, rather than looping forever.
+                    throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                }
+                collisionCount++;
             }
 
             return default;
@@ -130,12 +145,19 @@ namespace Microsoft.Experimental.Collections
             {
                 Entry[] entries = _entries;
                 int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
-
+                int collisionCount = 0;
                 for (int i = GetEntryIndex(bucketIndex);
                         (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
                     if (key.Equals(entries[i].key))
                         return ref entries[i].value;
+                    if (collisionCount >= entries.Length)
+                    {
+                        // The chain of entries forms a loop; which means a concurrent update has happened.
+                        // Break out of the loop and throw, rather than looping forever.
+                        throw new Exception("ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported()");
+                    }
+                    collisionCount++;
                 }
 
                 return ref AddKey(key, bucketIndex);
