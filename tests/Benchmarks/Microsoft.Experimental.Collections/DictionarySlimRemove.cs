@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Xunit;
 using BenchmarkDotNet.Attributes;
 
-namespace Microsoft.Experimental.Collections.Benchmarks
+namespace Microsoft.Collections.Extensions.Benchmarks
 {
     [MemoryDiagnoser]
     public class DictionarySlimRemove

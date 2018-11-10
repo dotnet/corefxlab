@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 
-namespace Microsoft.Experimental.Collections.Benchmarks
+namespace Microsoft.Collections.Extensions.Benchmarks
 {
     public class DictionarySlimKNucleotide
     {

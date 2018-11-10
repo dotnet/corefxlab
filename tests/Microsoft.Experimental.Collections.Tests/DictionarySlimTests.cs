@@ -9,7 +9,7 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Microsoft.Experimental.Collections.Tests
+namespace Microsoft.Collections.Extensions.Tests
 {
     public class DictionarySlimTests
     {

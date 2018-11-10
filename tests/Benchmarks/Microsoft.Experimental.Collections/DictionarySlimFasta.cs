@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Microsoft.Experimental.Collections.Benchmarks
+namespace Microsoft.Collections.Extensions.Benchmarks
 {
     /* The Computer Language Benchmarks Game
      https://salsa.debian.org/benchmarksgame-team/benchmarksgame/

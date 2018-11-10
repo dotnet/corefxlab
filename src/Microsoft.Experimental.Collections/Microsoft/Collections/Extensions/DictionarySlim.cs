@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Linq;
 
-namespace Microsoft.Experimental.Collections
+namespace Microsoft.Collections.Extensions
 {
     /// <summary>
     /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized in three ways:
@@ -433,7 +433,7 @@ namespace Microsoft.Experimental.Collections
     }
 }
 
-namespace Microsoft.Experimental.Collections.Extensions
+namespace Microsoft.Collections.Extensions
 {
     internal sealed class DictionarySlimDebugView<K, V> where K : IEquatable<K>
     {
