@@ -55,7 +55,6 @@ namespace Microsoft.Collections.Extensions
             _entries = new Entry[capacity];
         }
 
-        // Drop sign bit to ensure non negative index
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private uint GetHashCode(TKey key) => (uint)key.GetHashCode();
 
