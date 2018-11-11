@@ -15,6 +15,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace Microsoft.Collections.Extensions.Benchmarks
 {
+    [GcConcurrent(true)]
+    [GcServer(true)]
     public class DictionarySlimKNucleotide
     {
         [Params(250_000)] // , 2_500_000, 25_000_000)] // uncomment for slower benchmarks
