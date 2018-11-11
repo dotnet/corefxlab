@@ -285,7 +285,7 @@ namespace Microsoft.Collections.Extensions
             public void Dispose() { }
         }
 
-        public struct KeyEnumerable : IEnumerable<TKey>
+        public struct KeyEnumerable : ICollection<TKey>, IReadOnlyCollection<TKey>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
 
@@ -293,6 +293,18 @@ namespace Microsoft.Collections.Extensions
             {
                 _dictionary = dictionary;
             }
+
+            public int Count => _dictionary.Count;
+
+            public bool IsReadOnly => true;
+
+            void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+
+            void ICollection<TKey>.Clear() => throw new NotSupportedException(Strings.ReadOnly_Modification);
+
+            public bool Contains(TKey item) => _dictionary.ContainsKey(item);
+
+            bool ICollection<TKey>.Remove(TKey item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
             public void CopyTo(TKey[] array, int index)
             {
@@ -358,7 +370,7 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
-        public struct ValueEnumerable : IEnumerable<TValue>
+        public struct ValueEnumerable : ICollection<TValue>, IReadOnlyCollection<TValue>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
 
@@ -366,6 +378,18 @@ namespace Microsoft.Collections.Extensions
             {
                 _dictionary = dictionary;
             }
+
+            public int Count => _dictionary.Count;
+
+            public bool IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException(Strings.ReadOnly_Modification);
+
+            bool ICollection<TValue>.Contains(TValue item) => throw new NotSupportedException(); // performance antipattern
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
             public void CopyTo(TValue[] array, int index)
             {

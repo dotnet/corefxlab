@@ -208,6 +208,55 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void KeysICollection()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
+            d.Remove('c');
+            ICollection<char> keys = d.Keys;
+            Assert.Equal(2, keys.Count);
+            Assert.True(keys.IsReadOnly);
+            var arr = new char[2];
+            keys.CopyTo(arr, 0);
+            Array.Sort(arr);
+            Assert.Equal(new List<char> { 'a', 'b' }, arr);
+            Assert.Throws<NotSupportedException>(() => keys.Add('z'));
+            Assert.Throws<NotSupportedException>(() => keys.Remove('a'));
+            Assert.Throws<NotSupportedException>(() => keys.Clear());
+            Assert.True(keys.Contains('a'));
+            Assert.False(keys.Contains('z'));
+
+            IReadOnlyCollection<char> roKeys = d.Keys;
+            Assert.Equal(2, roKeys.Count);
+        }
+
+        [Fact]
+        public void ValuesICollection()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 1;
+            d['b'] = 2;
+            d['c'] = 3;
+            d.Remove('c');            
+            ICollection<int> values = d.Values;
+            Assert.Equal(2,  values.Count);
+            Assert.True(values.IsReadOnly);
+            var arr = new int[2];
+            values.CopyTo(arr, 0);         
+            Array.Sort(arr);
+            Assert.Equal(new List<int> { 1, 2 }, arr);
+            Assert.Throws<NotSupportedException>(() => values.Add(3));
+            Assert.Throws<NotSupportedException>(() => values.Remove(1));
+            Assert.Throws<NotSupportedException>(() => values.Clear());
+            Assert.Throws<NotSupportedException>(() => values.Contains(1));
+
+            IReadOnlyCollection<int> roValues = d.Values;
+            Assert.Equal(2, roValues.Count);
+        }
+
+        [Fact]
         public void KeysThreeRemoveOneCopyTo()
         {
             var d = new DictionarySlim<char, int>();
