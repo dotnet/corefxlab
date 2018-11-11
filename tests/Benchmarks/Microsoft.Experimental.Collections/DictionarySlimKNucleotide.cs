@@ -17,7 +17,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
 {
     public class DictionarySlimKNucleotide
     {
-        [Params(250_000, 2_500_000, 25_000_000)]
+        [Params(250_000)] // , 2_500_000, 25_000_000)] // uncomment for slower benchmarks
         public int Size { get; set; }
 
         public string Filename => Path.Combine(Path.GetTempPath(),
