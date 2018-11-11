@@ -229,12 +229,13 @@ namespace Microsoft.Collections.Extensions
             int count = Count;
             while (count > 0)
             {
-                if (entries[i].next > -2) // part of free list?
+                Entry entry = entries[i];
+                if (entry.next > -2) // part of free list?
                 {
                     count--;
                     array[index++] = new KeyValuePair<TKey, TValue>(
-                        entries[i].key,
-                        entries[i].value);
+                        entry.key,
+                        entry.value);
                 }
                 i++;
             }
@@ -314,9 +315,10 @@ namespace Microsoft.Collections.Extensions
                 int count = _dictionary.Count;
                 while (count > 0)
                 {
-                    if (entries[i].next > -2)  // part of free list?
+                    Entry entry = entries[i];
+                    if (entry.next > -2)  // part of free list?
                     {
-                        array[index++] = entries[i].key;
+                        array[index++] = entry.key;
                         count--;
                     }
                     i++;
