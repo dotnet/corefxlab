@@ -15,7 +15,7 @@ namespace Microsoft.Collections.Extensions
     /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized in three ways:
     /// 1) It allows access to the value by ref replacing the common TryGetValue and Add pattern.
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
-    /// 3) It does not accept an equality comparer(assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
+    /// 3) It does not accept an equality comparer (assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
     [DebuggerTypeProxy(typeof(Extensions.DictionarySlimDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
@@ -460,28 +460,16 @@ namespace System.Collections
     internal static partial class HashHelpers
     {
         internal static readonly int[] DictionarySlimSizeOneIntArray = new int[1];
-        
-        public const int HashCollisionThreshold = 100;
 
         // This is the maximum prime smaller than Array.MaxArrayLength
         public const int MaxPrimeArrayLength = 0x7FEFFFFD;
 
         public const int HashPrime = 101;
 
-        // Table of prime numbers to use as hash table sizes. 
+        // Table of prime numbers to use as hash table sizes.
         // A typical resize algorithm would pick the smallest prime number in this array
-        // that is larger than twice the previous capacity. 
-        // Suppose our Hashtable currently has capacity x and enough elements are added 
-        // such that a resize needs to occur. Resizing first computes 2x then finds the 
-        // first prime in the table greater than 2x, i.e. if primes are ordered 
-        // p_1, p_2, ..., p_i, ..., it finds p_n such that p_n-1 < 2x < p_n. 
-        // Doubling is important for preserving the asymptotic complexity of the 
-        // hashtable operations such as add.  Having a prime guarantees that double 
-        // hashing does not lead to infinite loops.  IE, your hash function will be 
-        // h1(key) + i*h2(key), 0 <= i < size.  h2 and the size must be relatively prime.
-        // We prefer the low computation costs of higher prime numbers over the increased
-        // memory allocation of a fixed prime number i.e. when right sizing a HashSet.
-        public static readonly int[] primes = {
+        // that is larger than twice the previous capacity.
+        private static readonly int[] primes = {
             3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
             1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
             17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
@@ -515,8 +503,8 @@ namespace System.Collections
                     return prime;
             }
 
-            //outside of our predefined table.
-            //compute the hard way. 
+            // outside of our predefined table.
+            // compute the hard way.
             for (int i = (min | 1); i < int.MaxValue; i += 2)
             {
                 if (IsPrime(i) && ((i - 1) % HashPrime != 0))

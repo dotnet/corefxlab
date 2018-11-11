@@ -49,20 +49,11 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public void Hack9()
-        {
-            _results = new KNucleotideHack9().Main(Size, Filename);
-        }
+        public void Hack9() => _results = new KNucleotideHack9().Main(Size, Filename);
         [Benchmark]
-        public void Dictionary()
-        {
-            _results = new KNucleotideDictionary().Main(Size, Filename);
-        }
+        public void Dictionary() => _results = new KNucleotideDictionary().Main(Size, Filename);
         [Benchmark]
-        public void DictionarySlim()
-        {
-            _results = new KNucleotideDictionarySlim().Main(Size, Filename);
-        }
+        public void DictionarySlim() => _results = new KNucleotideDictionarySlim().Main(Size, Filename);
     }
 
     public class KNucleotideHack9
