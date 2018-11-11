@@ -31,6 +31,7 @@ namespace Microsoft.Collections.Extensions
         private Entry[] _entries;
         // 0-based index into _entries of head of free chain: -1 means empty
         private int _freeList = -1;
+        private int _count;
 
         private struct Entry
         {
@@ -61,7 +62,7 @@ namespace Microsoft.Collections.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
 
-        public int Count { get; private set; }
+        public int Count => _count;
 
         public int Capacity => _entries.Length;
 
@@ -133,7 +134,7 @@ namespace Microsoft.Collections.Extensions
                     entries[entryIndex].next = -3 - _freeList; // New head of free list
                     _freeList = entryIndex;
 
-                    Count--;
+                    _count--;
                     return true;
                 }
                 lastIndex = entryIndex;
@@ -180,25 +181,25 @@ namespace Microsoft.Collections.Extensions
             }
             else
             {
-                if (Count == entries.Length || entries.Length == 1)
+                if (_count == entries.Length || entries.Length == 1)
                 {
                     entries = Resize();
                     bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
                     // entry indexes were not changed by Resize
                 }
-                entryIndex = Count;
+                entryIndex = _count;
             }
 
             entries[entryIndex].key = key;
             entries[entryIndex].next = _buckets[bucketIndex] - 1;
             _buckets[bucketIndex] = entryIndex + 1;
-            Count++;
+            _count++;
             return ref entries[entryIndex].value;
         }
 
         private Entry[] Resize()
         {
-            int count = Count;
+            int count = _count;
             int newSize = HashHelpers.ExpandPrime(count);
             var entries = new Entry[newSize];
             Array.Copy(_entries, 0, entries, 0, count);
@@ -225,7 +226,7 @@ namespace Microsoft.Collections.Extensions
         {
             Entry[] entries = _entries;
             int i = 0;
-            int count = Count;
+            int count = _count;
             while (count > 0)
             {
                 Entry entry = entries[i];
@@ -253,7 +254,7 @@ namespace Microsoft.Collections.Extensions
             {
                 _dictionary = dictionary;
                 _index = 0;
-                _count = _dictionary.Count;
+                _count = _dictionary._count;
                 Current = default;
             }
 
@@ -281,7 +282,7 @@ namespace Microsoft.Collections.Extensions
             void IEnumerator.Reset()
             {
                 _index = 0;
-                _count = _dictionary.Count;
+                _count = _dictionary._count;
             }
             public void Dispose() { }
         }
@@ -295,7 +296,7 @@ namespace Microsoft.Collections.Extensions
                 _dictionary = dictionary;
             }
 
-            public int Count => _dictionary.Count;
+            public int Count => _dictionary._count;
 
             public bool IsReadOnly => true;
 
@@ -311,7 +312,7 @@ namespace Microsoft.Collections.Extensions
             {
                 Entry[] entries = _dictionary._entries;
                 int i = 0;
-                int count = _dictionary.Count;
+                int count = _dictionary._count;
                 while (count > 0)
                 {
                     Entry entry = entries[i];
@@ -337,7 +338,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     _dictionary = dictionary;
                     _index = 0;
-                    _count = _dictionary.Count;
+                    _count = _dictionary._count;
                     Current = default;
                 }
 
@@ -367,7 +368,7 @@ namespace Microsoft.Collections.Extensions
                 public void Reset()
                 {
                     _index = 0;
-                    _count = _dictionary.Count;
+                    _count = _dictionary._count;
                 }
             }
         }
@@ -381,7 +382,7 @@ namespace Microsoft.Collections.Extensions
                 _dictionary = dictionary;
             }
 
-            public int Count => _dictionary.Count;
+            public int Count => _dictionary._count;
 
             public bool IsReadOnly => true;
 
@@ -397,7 +398,7 @@ namespace Microsoft.Collections.Extensions
             {
                 Entry[] entries = _dictionary._entries;
                 int i = 0;
-                int count = _dictionary.Count;
+                int count = _dictionary._count;
                 while (count > 0)
                 {
                     if (entries[i].next > -2)  // part of free list?
@@ -422,7 +423,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     _dictionary = dictionary;
                     _index = 0;
-                    _count = _dictionary.Count;
+                    _count = _dictionary._count;
                     Current = default;
                 }
 
@@ -452,7 +453,7 @@ namespace Microsoft.Collections.Extensions
                 public void Reset()
                 {
                     _index = 0;
-                    _count = _dictionary.Count;
+                    _count = _dictionary._count;
                 }
             }
         }
