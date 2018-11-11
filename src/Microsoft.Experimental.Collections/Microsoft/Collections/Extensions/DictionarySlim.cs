@@ -58,7 +58,7 @@ namespace Microsoft.Collections.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private uint GetHashCode(TKey key) => (uint)key.GetHashCode();
+        private static uint GetHashCode(TKey key) => (uint)key.GetHashCode();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
