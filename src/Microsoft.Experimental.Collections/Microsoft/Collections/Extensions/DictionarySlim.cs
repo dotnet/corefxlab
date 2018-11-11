@@ -70,7 +70,7 @@ namespace Microsoft.Collections.Extensions
         {
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
+            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)_buckets.Length));
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -91,7 +91,7 @@ namespace Microsoft.Collections.Extensions
         {
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)entries.Length));
+            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)_buckets.Length));
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -111,7 +111,7 @@ namespace Microsoft.Collections.Extensions
         public bool Remove(TKey key)
         {
             Entry[] entries = _entries;
-            int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
+            int bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
             int entryIndex = GetEntryIndex(bucketIndex);
 
             int lastIndex = -1;
@@ -149,7 +149,7 @@ namespace Microsoft.Collections.Extensions
             get
             {
                 Entry[] entries = _entries;
-                int bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
+                int bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
                 int collisionCount = 0;
                 for (int i = GetEntryIndex(bucketIndex);
                         (uint)i < (uint)entries.Length; i = entries[i].next)
@@ -184,7 +184,7 @@ namespace Microsoft.Collections.Extensions
                 if (Count == entries.Length || entries.Length == 1)
                 {
                     entries = Resize();
-                    bucketIndex = (int)(GetHashCode(key) % (uint)entries.Length);
+                    bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
                     // entry indexes were not changed by Resize
                 }
                 entryIndex = Count;
