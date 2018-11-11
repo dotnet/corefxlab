@@ -32,6 +32,7 @@ namespace Microsoft.Collections.Extensions
         // 0-based index into _entries of head of free chain: -1 means empty
         private int _freeList = -1;
 
+        [DebuggerDisplay("({key}, {value})->{next}")]
         private struct Entry
         {
             public TKey key;

@@ -478,8 +478,11 @@ internal struct Collider : IEquatable<Collider>, IComparable<Collider>
     public bool Equals(Collider that) => that.Key == Key;
 
     public int CompareTo(Collider that) => key.CompareTo(that.key);
+
+    public override string ToString() => Convert.ToString(key);
 }
 
+[DebuggerDisplay("{Value}")]
 internal class KeyUseTracking : IEquatable<KeyUseTracking>
 {
     public int Value { get; }
