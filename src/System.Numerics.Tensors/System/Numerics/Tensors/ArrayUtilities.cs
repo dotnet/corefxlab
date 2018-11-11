@@ -6,19 +6,9 @@ using System.Diagnostics;
 
 namespace System.Numerics.Tensors
 {
-    internal static class EmptyArray<T>
-    {
-        public static readonly T[] Value = new T[0];
-    }
-
     internal static class ArrayUtilities
     {
-        public  const int StackallocMax = 16;
-
-        public static T[] Empty<T>()
-        {
-            return EmptyArray<T>.Value;
-        }
+        public const int StackallocMax = 16;
 
         public static long GetProduct(ReadOnlySpan<int> dimensions, int startIndex = 0)
         {
@@ -133,26 +123,6 @@ namespace System.Numerics.Tensors
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
         /// <returns></returns>
-        public static int GetIndex(int[] strides, int[] indices, int startFromDimension = 0)
-        {
-            Debug.Assert(strides.Length == indices.Length);
-
-            int index = 0;
-            for (int i = startFromDimension; i < indices.Length; i++)
-            {
-                index += strides[i] * indices[i];
-            }
-
-            return index;
-        }
-
-        /// <summary>
-        /// Calculates the 1-d index for n-d indices in layout specified by strides.
-        /// </summary>
-        /// <param name="strides"></param>
-        /// <param name="indices"></param>
-        /// <param name="startFromDimension"></param>
-        /// <returns></returns>
         public static int GetIndex(int[] strides, ReadOnlySpan<int> indices, int startFromDimension = 0)
         {
             Debug.Assert(strides.Length == indices.Length);
@@ -166,19 +136,6 @@ namespace System.Numerics.Tensors
             return index;
         }
 
-        /// <summary>
-        /// Calculates the 1-d index for 2-d indices in layout specified by strides.
-        /// </summary>
-        /// <param name="strides"></param>
-        /// <param name="index0"></param>
-        /// <param name="index1"></param>
-        /// <returns></returns>
-        public static int GetIndex(int[] strides, int index0, int index1)
-        {
-            Debug.Assert(strides.Length == 2);
-            return strides[0] * index0 + strides[1] * index1;
-        }
-        
         /// <summary>
         /// Calculates the n-d indices from the 1-d index in a layout specificed by strides
         /// </summary>

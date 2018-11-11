@@ -146,6 +146,5 @@ namespace System.Numerics.Tensors
         {
             return new CompressedSparseTensor<T>(array, reverseStride);
         }
-
     }
 }
