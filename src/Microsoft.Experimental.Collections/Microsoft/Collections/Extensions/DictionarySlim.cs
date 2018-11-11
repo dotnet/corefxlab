@@ -57,12 +57,6 @@ namespace Microsoft.Collections.Extensions
             _entries = new Entry[capacity];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint GetHashCode(TKey key) => (uint)key.GetHashCode();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetEntryIndex(int bucketIndex) => _buckets[bucketIndex] - 1;
-
         public int Count => _count;
 
         public int Capacity => _entries.Length;
@@ -71,7 +65,7 @@ namespace Microsoft.Collections.Extensions
         {
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)_buckets.Length));
+            for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -92,7 +86,7 @@ namespace Microsoft.Collections.Extensions
         {
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = GetEntryIndex((int)(GetHashCode(key) % (uint)_buckets.Length));
+            for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -112,8 +106,8 @@ namespace Microsoft.Collections.Extensions
         public bool Remove(TKey key)
         {
             Entry[] entries = _entries;
-            int bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
-            int entryIndex = GetEntryIndex(bucketIndex);
+            int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
+            int entryIndex = _buckets[bucketIndex] - 1;
 
             int lastIndex = -1;
             while (entryIndex != -1)
@@ -150,9 +144,9 @@ namespace Microsoft.Collections.Extensions
             get
             {
                 Entry[] entries = _entries;
-                int bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
                 int collisionCount = 0;
-                for (int i = GetEntryIndex(bucketIndex);
+                int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
+                for (int i = _buckets[bucketIndex] - 1;
                         (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
                     if (key.Equals(entries[i].key))
@@ -185,7 +179,7 @@ namespace Microsoft.Collections.Extensions
                 if (_count == entries.Length || entries.Length == 1)
                 {
                     entries = Resize();
-                    bucketIndex = (int)(GetHashCode(key) % (uint)_buckets.Length);
+                    bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
                     // entry indexes were not changed by Resize
                 }
                 entryIndex = _count;
@@ -208,7 +202,7 @@ namespace Microsoft.Collections.Extensions
             var newBuckets = new int[newSize];
             while (count-- > 0)
             {
-                int bucketIndex = (int)(GetHashCode(entries[count].key) % (uint)newBuckets.Length);
+                int bucketIndex = (int)((uint)entries[count].key.GetHashCode() % (uint)newBuckets.Length);
                 entries[count].next = newBuckets[bucketIndex] - 1;
                 newBuckets[bucketIndex] = count + 1;
             }
