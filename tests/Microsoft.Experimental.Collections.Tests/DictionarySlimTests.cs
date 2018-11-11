@@ -72,7 +72,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<int, int>();
             Assert.False(d.Remove(0));
-        }        
+        }
 
         [Fact]
         public void RemoveSimple()
@@ -111,6 +111,25 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(3, d.Count);
             Assert.Equal(capacity, d.Capacity);
 
+        }
+
+        [Fact]
+        public void RemoveReleasesReferences()
+        {
+            var d = new DictionarySlim<KeyUseTracking, KeyUseTracking>();
+
+            Func<WeakReference<KeyUseTracking>> a = () => {
+                var kut = new KeyUseTracking(0);
+                var wr = new WeakReference<KeyUseTracking>(kut);
+                d[kut] = kut;
+
+                d.Remove(kut);
+                return wr;
+            };
+            var ret = a();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            Assert.False(ret.TryGetTarget(out _));
         }
 
         [Fact]
@@ -239,12 +258,12 @@ namespace Microsoft.Collections.Extensions.Tests
             d['a'] = 1;
             d['b'] = 2;
             d['c'] = 3;
-            d.Remove('c');            
+            d.Remove('c');
             ICollection<int> values = d.Values;
             Assert.Equal(2,  values.Count);
             Assert.True(values.IsReadOnly);
             var arr = new int[2];
-            values.CopyTo(arr, 0);         
+            values.CopyTo(arr, 0);
             Array.Sort(arr);
             Assert.Equal(new List<int> { 1, 2 }, arr);
             Assert.Throws<NotSupportedException>(() => values.Add(3));
@@ -378,7 +397,7 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(d.Count, rd.Count);
             Assert.Equal(d.OrderBy(i => i.Key), (rd.OrderBy(i => i.Key)));
             Assert.Equal(d.OrderBy(i => i.Value), (rd.OrderBy(i => i.Value)));
-        }  
+        }
 
         private TKey GetRandomElement<TKey, TValue>(IDictionary<TKey, TValue> d)
         {
@@ -394,8 +413,8 @@ namespace Microsoft.Collections.Extensions.Tests
                 index++;
             }
 
-            throw new InvalidOperationException(); 
-        }             
+            throw new InvalidOperationException();
+        }
 
         [DebuggerStepThrough]
         internal Collider C(int val) => new Collider(val);
@@ -448,7 +467,7 @@ internal struct Collider : IEquatable<Collider>, IComparable<Collider>
     {
         this.key = key;
     }
-    
+
     internal int Key => key;
 
     [DebuggerStepThrough]
