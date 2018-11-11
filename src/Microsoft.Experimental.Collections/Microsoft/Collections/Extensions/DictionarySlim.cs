@@ -117,15 +117,16 @@ namespace Microsoft.Collections.Extensions
             int lastIndex = -1;
             while (entryIndex != -1)
             {
-                if (entries[entryIndex].key.Equals(key))
+                Entry candidate = entries[entryIndex];
+                if (candidate.key.Equals(key))
                 {
                     if (lastIndex != -1)
                     {   // Fixup preceding element in chain to point to next (if any)
-                        entries[lastIndex].next = entries[entryIndex].next;
+                        entries[lastIndex].next = candidate.next;
                     }
                     else
                     {   // Fixup bucket to new head (if any)
-                        _buckets[bucketIndex] = entries[entryIndex].next + 1;
+                        _buckets[bucketIndex] = candidate.next + 1;
                     }
 
                     entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
@@ -137,7 +138,7 @@ namespace Microsoft.Collections.Extensions
                     return true;
                 }
                 lastIndex = entryIndex;
-                entryIndex = entries[entryIndex].next;
+                entryIndex = candidate.next;
             }
 
             return false;
