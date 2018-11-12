@@ -244,20 +244,21 @@ namespace Microsoft.Collections.Extensions
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
             private int _index, _count;
+            private KeyValuePair<TKey, TValue> _current;
 
             internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
                 _index = 0;
                 _count = _dictionary._count;
-                Current = default;
+                _current = default;
             }
 
             public bool MoveNext()
             {
                 if (_count == 0)
                 {
-                    Current = default;
+                    _current = default;
                     return false;
                 }
 
@@ -266,19 +267,22 @@ namespace Microsoft.Collections.Extensions
                 while (_dictionary._entries[_index].next < -1)
                     _index++;
 
-                Current = new KeyValuePair<TKey, TValue>(
+                _current = new KeyValuePair<TKey, TValue>(
                     _dictionary._entries[_index].key,
                     _dictionary._entries[_index++].value);
                 return true;
             }
 
-            public KeyValuePair<TKey, TValue> Current { get; private set; }
-            object IEnumerator.Current => Current;
+            public KeyValuePair<TKey, TValue> Current => _current;
+
+            object IEnumerator.Current => _current;
+
             void IEnumerator.Reset()
             {
                 _index = 0;
                 _count = _dictionary._count;
             }
+
             public void Dispose() { }
         }
 
@@ -328,18 +332,19 @@ namespace Microsoft.Collections.Extensions
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
                 private int _index, _count;
+                private TKey _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
                     _dictionary = dictionary;
                     _index = 0;
                     _count = _dictionary._count;
-                    Current = default;
+                    _current = default;
                 }
 
-                public TKey Current { get; private set; }
+                public TKey Current => _current;
 
-                object IEnumerator.Current => Current;
+                object IEnumerator.Current => _current;
 
                 public void Dispose() { }
 
@@ -347,7 +352,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     if (_count == 0)
                     {
-                        Current = default;
+                        _current = default;
                         return false;
                     }
 
@@ -356,7 +361,7 @@ namespace Microsoft.Collections.Extensions
                     while (_dictionary._entries[_index].next < -1)
                         _index++;
 
-                    Current = _dictionary._entries[_index++].key;
+                    _current = _dictionary._entries[_index++].key;
                     return true;
                 }
 
@@ -413,18 +418,19 @@ namespace Microsoft.Collections.Extensions
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
                 private int _index, _count;
+                private TValue _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
                     _dictionary = dictionary;
                     _index = 0;
                     _count = _dictionary._count;
-                    Current = default;
+                    _current = default;
                 }
 
-                public TValue Current { get; private set; }
+                public TValue Current => _current;
 
-                object IEnumerator.Current => Current;
+                object IEnumerator.Current => _current;
 
                 public void Dispose() { }
 
@@ -432,7 +438,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     if (_count == 0)
                     {
-                        Current = default;
+                        _current = default;
                         return false;
                     }
 
@@ -441,7 +447,7 @@ namespace Microsoft.Collections.Extensions
                     while (_dictionary._entries[_index].next < -1)
                         _index++;
 
-                    Current = _dictionary._entries[_index++].value;
+                    _current = _dictionary._entries[_index++].value;
                     return true;
                 }
 
