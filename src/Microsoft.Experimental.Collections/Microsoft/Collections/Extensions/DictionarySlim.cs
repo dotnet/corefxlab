@@ -213,9 +213,9 @@ namespace Microsoft.Collections.Extensions
             return entries;
         }
 
-        public KeyEnumerable Keys => new KeyEnumerable(this);
+        public KeyCollection Keys => new KeyCollection(this);
 
-        public ValueEnumerable Values => new ValueEnumerable(this);
+        public ValueCollection Values => new ValueCollection(this);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
@@ -286,11 +286,11 @@ namespace Microsoft.Collections.Extensions
             public void Dispose() { }
         }
 
-        public struct KeyEnumerable : ICollection<TKey>, IReadOnlyCollection<TKey>
+        public struct KeyCollection : ICollection<TKey>, IReadOnlyCollection<TKey>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
 
-            internal KeyEnumerable(DictionarySlim<TKey, TValue> dictionary)
+            internal KeyCollection(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
             }
@@ -373,11 +373,11 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
-        public struct ValueEnumerable : ICollection<TValue>, IReadOnlyCollection<TValue>
+        public struct ValueCollection : ICollection<TValue>, IReadOnlyCollection<TValue>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
 
-            internal ValueEnumerable(DictionarySlim<TKey, TValue> dictionary)
+            internal ValueCollection(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
             }
