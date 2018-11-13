@@ -297,7 +297,7 @@ namespace Microsoft.Collections.Extensions
 
             public int Count => _dictionary._count;
 
-            public bool IsReadOnly => true;
+            bool ICollection<TKey>.IsReadOnly => true;
 
             void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
@@ -384,7 +384,7 @@ namespace Microsoft.Collections.Extensions
 
             public int Count => _dictionary._count;
 
-            public bool IsReadOnly => true;
+            bool ICollection<TValue>.IsReadOnly => true;
 
             void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
 
