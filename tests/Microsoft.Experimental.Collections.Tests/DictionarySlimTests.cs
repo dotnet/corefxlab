@@ -130,7 +130,18 @@ namespace Microsoft.Collections.Extensions.Tests
             d['a'] = 0;
             d['b'] = 1;
             Assert.True(d.Remove('a'));
-            Assert.Equal(d['b'], 1);
+            Assert.Equal(1, d['b']);
+            Assert.Equal(1, d.Count);
+        }
+
+        [Fact]
+        public void RemoveSecondOfTwo()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            Assert.True(d.Remove('b'));
+            Assert.Equal(0, d['a']);
             Assert.Equal(1, d.Count);
         }
 
@@ -150,7 +161,6 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(d[C(0)], 3);
             Assert.Equal(3, d.Count);
             Assert.Equal(capacity, d.Capacity);
-
         }
 
         [Fact]

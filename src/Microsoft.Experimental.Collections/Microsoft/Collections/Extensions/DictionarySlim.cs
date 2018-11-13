@@ -26,12 +26,10 @@ namespace Microsoft.Collections.Extensions
         // The first add will cause a resize replacing these with real arrays of three elements.
         // Arrays are wrapped in a class to avoid being duplicated for each <TKey, TValue>
         private static readonly Entry[] InitialEntries = new Entry[1];
+        private int _count;
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
-        // 0-based index into _entries of head of free chain: -1 means empty
-        private int _freeList = -1;
-        private int _count;
 
         [DebuggerDisplay("({key}, {value})->{next}")]
         private struct Entry
@@ -39,8 +37,6 @@ namespace Microsoft.Collections.Extensions
             public TKey key;
             public TValue value;
             // 0-based index of next entry in chain: -1 means end of chain
-            // also encodes whether this entry _itself_ is part of the free list by changing sign and subtracting 3,
-            // so -2 means end of free list, -3 means index 0 but on free list, -4 means index 1 but on free list, etc.
             public int next;
         }
 
@@ -66,12 +62,12 @@ namespace Microsoft.Collections.Extensions
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = _buckets[key.GetHashCode() & (_buckets.Length-1)] - 1;
+            for (int i = _buckets[key.GetHashCode() & (_buckets.Length - 1)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
                     return true;
-                if (collisionCount >= entries.Length)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
@@ -102,7 +98,7 @@ namespace Microsoft.Collections.Extensions
                     value = entries[i].value;
                     return true;
                 }
-                if (collisionCount >= entries.Length)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
@@ -128,21 +124,39 @@ namespace Microsoft.Collections.Extensions
                 Entry candidate = entries[entryIndex];
                 if (candidate.key.Equals(key))
                 {
-                    if (lastIndex != -1)
-                    {   // Fixup preceding element in chain to point to next (if any)
-                        entries[lastIndex].next = candidate.next;
-                    }
-                    else
-                    {   // Fixup bucket to new head (if any)
+                    if (lastIndex == -1)
+                    {
+                        // Fixup bucket to new head (if any)
                         _buckets[bucketIndex] = candidate.next + 1;
                     }
+                    else
+                    {
+                        // Fixup preceding element in chain to point to next (if any)
+                        entries[lastIndex].next = candidate.next;
+                    }
 
-                    entries[entryIndex] = default;
+                    // move last item to this index and fix link to it
+                    if (entryIndex != --_count)
+                    {
+                        entries[entryIndex] = entries[_count];
 
-                    entries[entryIndex].next = -3 - _freeList; // New head of free list
-                    _freeList = entryIndex;
+                        bucketIndex = entries[entryIndex].key.GetHashCode() & (_buckets.Length - 1);
+                        lastIndex = _buckets[bucketIndex] - 1;
 
-                    _count--;
+                        if (lastIndex == _count)
+                        {
+                            // Fixup bucket to this index
+                            _buckets[bucketIndex] = entryIndex + 1;
+                        }
+                        else
+                        {
+                            // Find preceding element in chain and point to this index
+                            while (entries[lastIndex].next != _count)
+                                lastIndex = entries[lastIndex].next;
+                            entries[lastIndex].next = entryIndex;
+                        }
+                    }
+                    entries[_count] = default;
                     return true;
                 }
                 lastIndex = entryIndex;
@@ -165,7 +179,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     if (key.Equals(entries[i].key))
                         return ref entries[i].value;
-                    if (collisionCount >= entries.Length)
+                    if (collisionCount == entries.Length)
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
@@ -182,36 +196,27 @@ namespace Microsoft.Collections.Extensions
         private ref TValue AddKey(TKey key, int bucketIndex)
         {
             Entry[] entries = _entries;
-            int entryIndex;
-            if (_freeList != -1)
+
+            if (_count == entries.Length || entries.Length == 1)
             {
-                entryIndex = _freeList;
-                _freeList = -3 - entries[_freeList].next;
-            }
-            else
-            {
-                if (_count == entries.Length || entries.Length == 1)
+                if (entries.Length == 1)
                 {
-                    if (entries.Length == 1)
-                    {
-                        _buckets = new int[4];
-                        entries = new Entry[4];
-                        _entries = entries;
-                    }
-                    else
-                    {
-                        entries = Resize();
-                    }
-                    bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
-                    // entry indexes were not changed by Resize
+                    _buckets = new int[4];
+                    entries = new Entry[4];
+                    _entries = entries;
                 }
-                entryIndex = _count;
+                else
+                {
+                    entries = Resize();
+                }
+                bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
+                // entry indexes were not changed by Resize
             }
 
+            int entryIndex = _count++;
             entries[entryIndex].key = key;
             entries[entryIndex].next = _buckets[bucketIndex] - 1;
             _buckets[bucketIndex] = entryIndex + 1;
-            _count++;
             return ref entries[entryIndex].value;
         }
 
@@ -242,19 +247,11 @@ namespace Microsoft.Collections.Extensions
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
             Entry[] entries = _entries;
-            int i = 0;
-            int count = _count;
-            while (count > 0)
+            for (int i = 0; i < _count; i++)
             {
-                Entry entry = entries[i];
-                if (entry.next > -2) // part of free list?
-                {
-                    count--;
-                    array[index++] = new KeyValuePair<TKey, TValue>(
-                        entry.key,
-                        entry.value);
-                }
-                i++;
+                array[index++] = new KeyValuePair<TKey, TValue>(
+                    entries[i].key,
+                    entries[i].value);
             }
         }
 
@@ -267,29 +264,22 @@ namespace Microsoft.Collections.Extensions
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
             private int _index;
-            private int _count;
             private KeyValuePair<TKey, TValue> _current;
 
             internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
                 _index = 0;
-                _count = _dictionary._count;
                 _current = default;
             }
 
             public bool MoveNext()
             {
-                if (_count == 0)
+                if (_index == _dictionary._count)
                 {
                     _current = default;
                     return false;
                 }
-
-                _count--;
-
-                while (_dictionary._entries[_index].next < -1)
-                    _index++;
 
                 _current = new KeyValuePair<TKey, TValue>(
                     _dictionary._entries[_index].key,
@@ -304,7 +294,6 @@ namespace Microsoft.Collections.Extensions
             void IEnumerator.Reset()
             {
                 _index = 0;
-                _count = _dictionary._count;
             }
 
             public void Dispose() { }
@@ -337,17 +326,9 @@ namespace Microsoft.Collections.Extensions
             public void CopyTo(TKey[] array, int index)
             {
                 Entry[] entries = _dictionary._entries;
-                int i = 0;
-                int count = _dictionary._count;
-                while (count > 0)
+                for (int i = 0; i < _dictionary._count; i++)
                 {
-                    Entry entry = entries[i];
-                    if (entry.next > -2)  // part of free list?
-                    {
-                        array[index++] = entry.key;
-                        count--;
-                    }
-                    i++;
+                    array[index++] = entries[i].key;
                 }
             }
 
@@ -359,14 +340,12 @@ namespace Microsoft.Collections.Extensions
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
                 private int _index;
-                private int _count;
                 private TKey _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
                     _dictionary = dictionary;
                     _index = 0;
-                    _count = _dictionary._count;
                     _current = default;
                 }
 
@@ -378,16 +357,11 @@ namespace Microsoft.Collections.Extensions
 
                 public bool MoveNext()
                 {
-                    if (_count == 0)
+                    if (_index == _dictionary._count)
                     {
                         _current = default;
                         return false;
                     }
-
-                    _count--;
-
-                    while (_dictionary._entries[_index].next < -1)
-                        _index++;
 
                     _current = _dictionary._entries[_index++].key;
                     return true;
@@ -396,7 +370,6 @@ namespace Microsoft.Collections.Extensions
                 public void Reset()
                 {
                     _index = 0;
-                    _count = _dictionary._count;
                 }
             }
         }
@@ -429,16 +402,9 @@ namespace Microsoft.Collections.Extensions
             public void CopyTo(TValue[] array, int index)
             {
                 Entry[] entries = _dictionary._entries;
-                int i = 0;
-                int count = _dictionary._count;
-                while (count > 0)
+                for (int i = 0; i < _dictionary._count; i++)
                 {
-                    if (entries[i].next > -2)  // part of free list?
-                    {
-                        array[index++] = entries[i].value;
-                        count--;
-                    }
-                    i++;
+                    array[index++] = entries[i].value;
                 }
             }
 
@@ -450,14 +416,12 @@ namespace Microsoft.Collections.Extensions
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
                 private int _index;
-                private int _count;
                 private TValue _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
                 {
                     _dictionary = dictionary;
                     _index = 0;
-                    _count = _dictionary._count;
                     _current = default;
                 }
 
@@ -469,16 +433,11 @@ namespace Microsoft.Collections.Extensions
 
                 public bool MoveNext()
                 {
-                    if (_count == 0)
+                    if (_index == _dictionary._count)
                     {
                         _current = default;
                         return false;
                     }
-
-                    _count--;
-
-                    while (_dictionary._entries[_index].next < -1)
-                        _index++;
 
                     _current = _dictionary._entries[_index++].value;
                     return true;
@@ -487,7 +446,6 @@ namespace Microsoft.Collections.Extensions
                 public void Reset()
                 {
                     _index = 0;
-                    _count = _dictionary._count;
                 }
             }
         }
