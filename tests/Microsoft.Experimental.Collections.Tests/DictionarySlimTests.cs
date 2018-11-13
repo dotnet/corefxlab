@@ -50,6 +50,46 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void TryGetValue_Present()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 9;
+            d['b'] = 11;
+            int value;
+            Assert.Equal(true, d.TryGetValue('a', out value));
+            Assert.Equal(9, value);
+            Assert.Equal(true, d.TryGetValue('b', out value));
+            Assert.Equal(11, value);
+        }
+
+        [Fact]
+        public void TryGetValue_Missing()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 9;
+            d['b'] = 11;
+            d.Remove('b');
+            int value;
+            Assert.Equal(false, d.TryGetValue('z', out value));
+            Assert.Equal(default(int), value);
+            Assert.Equal(false, d.TryGetValue('b', out value));
+            Assert.Equal(default(int), value);
+        }
+
+        [Fact]
+        public void TryGetValue_RefTypeValue()
+        {
+            var d = new DictionarySlim<int, string>();
+            d[1] = "a";
+            d[2] = "b";
+            string value;
+            Assert.Equal(true, d.TryGetValue(1, out value));
+            Assert.Equal("a", value);
+            Assert.Equal(false, d.TryGetValue(99, out value));
+            Assert.Equal(null, value);
+        }        
+
+        [Fact]
         public void Keys()
         {
             var d = new DictionarySlim<char, int>();

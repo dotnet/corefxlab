@@ -84,13 +84,22 @@ namespace Microsoft.Collections.Extensions
 
         public TValue GetValueOrDefault(TKey key)
         {
+            bool result = TryGetValue(key, out TValue value);
+            return value;
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
             Entry[] entries = _entries;
             int collisionCount = 0;
             for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
-                    return entries[i].value;
+                {
+                    value = entries[i].value;
+                    return true;
+                }
                 if (collisionCount >= entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
@@ -100,7 +109,8 @@ namespace Microsoft.Collections.Extensions
                 collisionCount++;
             }
 
-            return default;
+            value = default(TValue);
+            return false;
         }
 
         public bool Remove(TKey key)
