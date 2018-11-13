@@ -675,7 +675,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         private string WriteFrequencies(DictionarySlim<long, int> freq, int fragmentLength)
         {
             var sb = new StringBuilder();
-            double percent = 100.0 / freq.Sum(i => i.Value);
+            double percent = 100.0 / freq.Values.Sum();
             foreach (var kv in freq.OrderByDescending(i => i.Value))
             {
                 var keyChars = new char[fragmentLength];
