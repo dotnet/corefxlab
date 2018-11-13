@@ -697,7 +697,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             long key = 0;
             for (int i = 0; i < fragment.Length; ++i)
                 key = (key << 2) | tonum[fragment[i]];
-            var v = dictionary.GetValueOrDefault(key);
+            dictionary.TryGetValue(key, out int v);
             return string.Concat(v.ToString(), "\t", fragment);
         }
 
