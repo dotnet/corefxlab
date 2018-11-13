@@ -6,8 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Collections.Extensions
 {
@@ -52,7 +52,7 @@ namespace Microsoft.Collections.Extensions
 
         public DictionarySlim(int capacity)
         {
-            capacity = HashHelpers.GetPrime(capacity);
+            capacity = HashHelpers.PowerOf2(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
         }
@@ -63,10 +63,10 @@ namespace Microsoft.Collections.Extensions
 
         public bool ContainsKey(TKey key)
         {
-            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
+            if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
+            for (int i = _buckets[key.GetHashCode() & (_buckets.Length-1)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -91,10 +91,10 @@ namespace Microsoft.Collections.Extensions
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
+            if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
             int collisionCount = 0;
-            for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
+            for (int i = _buckets[key.GetHashCode() & (_buckets.Length - 1)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
@@ -111,15 +111,15 @@ namespace Microsoft.Collections.Extensions
                 collisionCount++;
             }
 
-            value = default(TValue);
+            value = default;
             return false;
         }
 
         public bool Remove(TKey key)
         {
-            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
+            if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
-            int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
+            int bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
             int entryIndex = _buckets[bucketIndex] - 1;
 
             int lastIndex = -1;
@@ -137,7 +137,7 @@ namespace Microsoft.Collections.Extensions
                         _buckets[bucketIndex] = candidate.next + 1;
                     }
 
-                    entries[entryIndex] = default; // could use RuntimeHelpers.IsReferenceOrContainsReferences
+                    entries[entryIndex] = default;
 
                     entries[entryIndex].next = -3 - _freeList; // New head of free list
                     _freeList = entryIndex;
@@ -156,10 +156,10 @@ namespace Microsoft.Collections.Extensions
         {
             get
             {
-                if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
+                if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
                 Entry[] entries = _entries;
                 int collisionCount = 0;
-                int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
+                int bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
                 for (int i = _buckets[bucketIndex] - 1;
                         (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
@@ -192,8 +192,17 @@ namespace Microsoft.Collections.Extensions
             {
                 if (_count == entries.Length || entries.Length == 1)
                 {
-                    entries = Resize();
-                    bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
+                    if (entries.Length == 1)
+                    {
+                        _buckets = new int[4];
+                        entries = new Entry[4];
+                        _entries = entries;
+                    }
+                    else
+                    {
+                        entries = Resize();
+                    }
+                    bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
                     // entry indexes were not changed by Resize
                 }
                 entryIndex = _count;
@@ -209,14 +218,13 @@ namespace Microsoft.Collections.Extensions
         private Entry[] Resize()
         {
             int count = _count;
-            int newSize = HashHelpers.ExpandPrime(count);
-            var entries = new Entry[newSize];
+            var entries = new Entry[count * 2];
             Array.Copy(_entries, 0, entries, 0, count);
 
-            var newBuckets = new int[newSize];
+            var newBuckets = new int[count * 2];
             while (count-- > 0)
             {
-                int bucketIndex = (int)((uint)entries[count].key.GetHashCode() % (uint)newBuckets.Length);
+                int bucketIndex = entries[count].key.GetHashCode() & (newBuckets.Length - 1);
                 entries[count].next = newBuckets[bucketIndex] - 1;
                 newBuckets[bucketIndex] = count + 1;
             }
@@ -251,7 +259,8 @@ namespace Microsoft.Collections.Extensions
         }
 
         public Enumerator GetEnumerator() => new Enumerator(this); // avoid boxing
-        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => new Enumerator(this);
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() =>
+            new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
@@ -314,13 +323,16 @@ namespace Microsoft.Collections.Extensions
 
             bool ICollection<TKey>.IsReadOnly => true;
 
-            void ICollection<TKey>.Add(TKey item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            void ICollection<TKey>.Add(TKey item) =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            void ICollection<TKey>.Clear() => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            void ICollection<TKey>.Clear() =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
-            bool ICollection<TKey>.Remove(TKey item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            bool ICollection<TKey>.Remove(TKey item) =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public void CopyTo(TKey[] array, int index)
             {
@@ -402,13 +414,17 @@ namespace Microsoft.Collections.Extensions
 
             bool ICollection<TValue>.IsReadOnly => true;
 
-            void ICollection<TValue>.Add(TValue item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            void ICollection<TValue>.Add(TValue item) =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            void ICollection<TValue>.Clear() => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            void ICollection<TValue>.Clear() =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            bool ICollection<TValue>.Contains(TValue item) => ThrowHelper.ThrowNotSupportedException(); // performance antipattern
+            bool ICollection<TValue>.Contains(TValue item) =>
+                ThrowHelper.ThrowNotSupportedException(); // performance antipattern
 
-            bool ICollection<TValue>.Remove(TValue item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
+            bool ICollection<TValue>.Remove(TValue item) =>
+                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public void CopyTo(TValue[] array, int index)
             {

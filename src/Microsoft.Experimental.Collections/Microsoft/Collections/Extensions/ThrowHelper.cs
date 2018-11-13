@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Collections.Extensions
@@ -17,7 +16,7 @@ namespace Microsoft.Collections.Extensions
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        internal static void ThrowKeyArgumenNullException()
+        internal static void ThrowKeyArgumentNullException()
         {
             throw new ArgumentNullException("key");
         }
