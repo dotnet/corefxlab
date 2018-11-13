@@ -17,7 +17,7 @@ namespace Microsoft.Collections.Extensions
     /// 2) It does not store the hash code (assumes it is cheap to equate values).
     /// 3) It does not accept an equality comparer (assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
     /// </summary>
-    [DebuggerTypeProxy(typeof(Extensions.DictionarySlimDebugView<,>))]
+    [DebuggerTypeProxy(typeof(DictionarySlimDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
     {
@@ -63,6 +63,7 @@ namespace Microsoft.Collections.Extensions
 
         public bool ContainsKey(TKey key)
         {
+            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
             Entry[] entries = _entries;
             int collisionCount = 0;
             for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
@@ -74,7 +75,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
-                    throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
+                    ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                 }
                 collisionCount++;
             }
@@ -90,6 +91,7 @@ namespace Microsoft.Collections.Extensions
 
         public bool TryGetValue(TKey key, out TValue value)
         {
+            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
             Entry[] entries = _entries;
             int collisionCount = 0;
             for (int i = _buckets[(int)((uint)key.GetHashCode() % (uint)_buckets.Length)] - 1;
@@ -104,7 +106,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
-                    throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
+                    ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                 }
                 collisionCount++;
             }
@@ -115,6 +117,7 @@ namespace Microsoft.Collections.Extensions
 
         public bool Remove(TKey key)
         {
+            if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
             Entry[] entries = _entries;
             int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
             int entryIndex = _buckets[bucketIndex] - 1;
@@ -153,6 +156,7 @@ namespace Microsoft.Collections.Extensions
         {
             get
             {
+                if (key == null) ThrowHelper.ThrowKeyArgumenNullException();
                 Entry[] entries = _entries;
                 int collisionCount = 0;
                 int bucketIndex = (int)((uint)key.GetHashCode() % (uint)_buckets.Length);
@@ -165,7 +169,7 @@ namespace Microsoft.Collections.Extensions
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
-                        throw new InvalidOperationException(Strings.InvalidOperation_ConcurrentOperationsNotSupported);
+                        ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                     }
                     collisionCount++;
                 }
@@ -310,13 +314,13 @@ namespace Microsoft.Collections.Extensions
 
             bool ICollection<TKey>.IsReadOnly => true;
 
-            void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            void ICollection<TKey>.Add(TKey item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            void ICollection<TKey>.Clear() => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            void ICollection<TKey>.Clear() => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
-            bool ICollection<TKey>.Remove(TKey item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            bool ICollection<TKey>.Remove(TKey item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public void CopyTo(TKey[] array, int index)
             {
@@ -398,13 +402,13 @@ namespace Microsoft.Collections.Extensions
 
             bool ICollection<TValue>.IsReadOnly => true;
 
-            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            void ICollection<TValue>.Add(TValue item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            void ICollection<TValue>.Clear() => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            void ICollection<TValue>.Clear() => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            bool ICollection<TValue>.Contains(TValue item) => throw new NotSupportedException(); // performance antipattern
+            bool ICollection<TValue>.Contains(TValue item) => ThrowHelper.ThrowNotSupportedException(); // performance antipattern
 
-            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException(Strings.ReadOnly_Modification);
+            bool ICollection<TValue>.Remove(TValue item) => ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
             public void CopyTo(TValue[] array, int index)
             {
@@ -475,11 +479,11 @@ namespace Microsoft.Collections.Extensions
 
     internal sealed class DictionarySlimDebugView<K, V> where K : IEquatable<K>
     {
-        private readonly DictionarySlim<K, V> _dict;
+        private readonly DictionarySlim<K, V> _dictionary;
 
         public DictionarySlimDebugView(DictionarySlim<K, V> dictionary)
         {
-            _dict = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+            _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -487,7 +491,7 @@ namespace Microsoft.Collections.Extensions
         {
             get
             {
-                return _dict.ToArray();
+                return _dictionary.ToArray();
             }
         }
     }
