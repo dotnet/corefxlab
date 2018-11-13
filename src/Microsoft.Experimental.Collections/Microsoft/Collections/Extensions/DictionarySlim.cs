@@ -253,7 +253,8 @@ namespace Microsoft.Collections.Extensions
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
-            private int _index, _count;
+            private int _index;
+            private int _count;
             private KeyValuePair<TKey, TValue> _current;
 
             internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
@@ -341,7 +342,8 @@ namespace Microsoft.Collections.Extensions
             public struct Enumerator : IEnumerator<TKey>
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
-                private int _index, _count;
+                private int _index;
+                private int _count;
                 private TKey _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
@@ -427,7 +429,8 @@ namespace Microsoft.Collections.Extensions
             public struct Enumerator : IEnumerator<TValue>
             {
                 private readonly DictionarySlim<TKey, TValue> _dictionary;
-                private int _index, _count;
+                private int _index;
+                private int _count;
                 private TValue _current;
 
                 internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
