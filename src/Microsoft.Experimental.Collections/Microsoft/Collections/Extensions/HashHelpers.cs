@@ -13,7 +13,8 @@ namespace Microsoft.Collections.Extensions
 
         internal static int PowerOf2(int v)
         {
-            int i = 4;
+            if ((v & (v - 1)) == 0) return v;
+            int i = 2;
             while (i < v) i <<= 1;
             return i;
         }

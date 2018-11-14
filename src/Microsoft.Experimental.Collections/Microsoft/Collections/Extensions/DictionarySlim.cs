@@ -48,6 +48,7 @@ namespace Microsoft.Collections.Extensions
 
         public DictionarySlim(int capacity)
         {
+            if (capacity < 1) ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
             capacity = HashHelpers.PowerOf2(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
@@ -196,16 +197,7 @@ namespace Microsoft.Collections.Extensions
 
             if (_count == entries.Length || entries.Length == 1)
             {
-                if (entries.Length == 1)
-                {
-                    _buckets = new int[4];
-                    entries = new Entry[4];
-                    _entries = entries;
-                }
-                else
-                {
-                    entries = Resize();
-                }
+                entries = Resize();
                 bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
                 // entry indexes were not changed by Resize
             }
@@ -220,10 +212,10 @@ namespace Microsoft.Collections.Extensions
         private Entry[] Resize()
         {
             int count = _count;
-            var entries = new Entry[count * 2];
+            var entries = new Entry[_entries.Length * 2];
             Array.Copy(_entries, 0, entries, 0, count);
 
-            var newBuckets = new int[count * 2];
+            var newBuckets = new int[entries.Length];
             while (count-- > 0)
             {
                 int bucketIndex = entries[count].key.GetHashCode() & (newBuckets.Length - 1);

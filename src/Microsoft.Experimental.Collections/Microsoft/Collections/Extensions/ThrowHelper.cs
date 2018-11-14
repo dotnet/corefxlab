@@ -22,6 +22,12 @@ namespace Microsoft.Collections.Extensions
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static void ThrowCapacityArgumentOutOfRangeException()
+        {
+            throw new ArgumentNullException("capacity");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static bool ThrowNotSupportedException_ReadOnly_Modification()
         {
             throw new NotSupportedException(Strings.ReadOnly_Modification);
