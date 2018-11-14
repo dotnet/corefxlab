@@ -62,18 +62,19 @@ namespace Microsoft.Collections.Extensions
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
-            int collisionCount = entries.Length;
+            int collisionCount = 0;
             for (int i = _buckets[key.GetHashCode() & (_buckets.Length - 1)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
                 if (key.Equals(entries[i].key))
                     return true;
-                if (collisionCount-- == 0)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
                     ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                 }
+                collisionCount++;
             }
 
             return false;
@@ -89,7 +90,7 @@ namespace Microsoft.Collections.Extensions
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
             Entry[] entries = _entries;
-            int collisionCount = entries.Length;
+            int collisionCount = 0;
             for (int i = _buckets[key.GetHashCode() & (_buckets.Length - 1)] - 1;
                     (uint)i < (uint)entries.Length; i = entries[i].next)
             {
@@ -98,12 +99,13 @@ namespace Microsoft.Collections.Extensions
                     value = entries[i].value;
                     return true;
                 }
-                if (collisionCount-- == 0)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
                     ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                 }
+                collisionCount++;
             }
 
             value = default;
@@ -171,19 +173,20 @@ namespace Microsoft.Collections.Extensions
             {
                 if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
                 Entry[] entries = _entries;
-                int collisionCount = entries.Length;
+                int collisionCount = 0;
                 int bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
                 for (int i = _buckets[bucketIndex] - 1;
                         (uint)i < (uint)entries.Length; i = entries[i].next)
                 {
                     if (key.Equals(entries[i].key))
                         return ref entries[i].value;
-                    if (collisionCount-- == 0)
+                    if (collisionCount == entries.Length)
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
                         ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                     }
+                    collisionCount++;
                 }
 
                 return ref AddKey(key, bucketIndex);
