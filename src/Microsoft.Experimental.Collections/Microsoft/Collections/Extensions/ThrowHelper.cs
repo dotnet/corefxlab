@@ -24,7 +24,7 @@ namespace Microsoft.Collections.Extensions
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void ThrowCapacityArgumentOutOfRangeException()
         {
-            throw new ArgumentNullException("capacity");
+            throw new ArgumentOutOfRangeException("capacity");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
