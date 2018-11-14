@@ -15,31 +15,57 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         [Params(2_500, 25_000, 250_000)]
         public int Size { get; set; }
         private const int AggCount = 250;
-        private ulong[] _keys;
-        
+
+        struct KeyWithHashCode : IEquatable<KeyWithHashCode>
+        {
+            internal ulong Key;
+            internal int HashCode;
+            internal KeyWithHashCode(ulong i)
+            {
+                Key = i;
+                HashCode = System.HashCode.Combine(i);
+            }
+            public override bool Equals(object obj)
+            {
+                return obj is KeyWithHashCode k && k.Key == Key;
+            }
+
+            public bool Equals(KeyWithHashCode other)
+            {
+                return other.Key == Key;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode;
+            }
+        }
+
+        private KeyWithHashCode[] _keys;
+
         [GlobalSetup]
         public void CreateValuesList()
         {
-            var rand = new Random(11231992);
+            var rand = new Random(5737262);
 
-            _keys = new ulong[Size];
+            _keys = new KeyWithHashCode[Size];
 
             for (int i = 0; i < _keys.Length; i++)
             {
-                _keys[i] = (ulong)rand.Next(Size / AggCount);
+                _keys[i] = new KeyWithHashCode((ulong)rand.Next(Size / AggCount));
             }
         }
 
         [Benchmark(Baseline = true)]
         public void GroupBy()
         {
-            var x = _keys.GroupBy(i => i / 10).Select(g => g.Max()).Min();
+            var x = _keys.GroupBy(i => i.Key / 10).Select(g => g.Max(i => i.HashCode)).Min();
         }
 
         [Benchmark]
         public void DictionarySlim()
         {
-            var x = _keys.GroupByRef(i => i / 10).Select(g => g.Max()).Min();
+            var x = _keys.GroupByRef(i => i.Key / 10).Select(g => g.Max(i => i.HashCode)).Min();
         }
     }
 

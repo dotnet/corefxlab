@@ -9,65 +9,44 @@ using BenchmarkDotNet.Attributes;
 namespace Microsoft.Collections.Extensions.Benchmarks
 {
     [MemoryDiagnoser]
-    public class DictionarySlimGeneral
+    public class DictionarySlimString
     {
-        [Params(10_000_000, 20_000_000, 30_000_000)]
+        [Params(1_000_000, 5_000_000, 10_000_000)]
         public int Size { get; set; }
         private const int AggCount = 250;
 
-        struct KeyWithHashCode : IEquatable<KeyWithHashCode>
-        {
-            internal ulong Key;
-            internal int HashCode;
-            internal KeyWithHashCode(ulong i)
-            {
-                Key = i;
-                HashCode = System.HashCode.Combine(i);
-            }
-            public override bool Equals(object obj)
-            {
-                return obj is KeyWithHashCode k && k.Key == Key;
-            }
-
-            public bool Equals(KeyWithHashCode other)
-            {
-                return other.Key == Key;
-            }
-
-            public override int GetHashCode()
-            {
-                return HashCode;
-            }
-        }
-
-
-        private KeyWithHashCode[] _keys;
-        private DictionarySlim<KeyWithHashCode, int> _refDict;
-        private Dictionary<KeyWithHashCode, int> _dict;
+        private string[] _keys;
+        private DictionarySlim<string, int> _refDict;
+        private Dictionary<string, int> _dict;
 
         [GlobalSetup]
         public void CreateValuesList()
         {
             var rand = new Random(11231992);
 
-            _keys = new KeyWithHashCode[Size];
+            _keys = new string[Size];
+
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
             for (int i = 0; i < _keys.Length; i++)
             {
-                _keys[i] = new KeyWithHashCode((ulong)rand.Next(Size/AggCount));
+                var stringChars = new char[rand.Next(9)+1];
+                for (int j = 0; j < stringChars.Length; j++)
+                    stringChars[j] = chars[rand.Next(chars.Length)];
+                _keys[i] = new string(stringChars);
             }
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadDictionarySlim) })]
         public void CreateDictionarySlim()
         {
-            _refDict = new DictionarySlim<KeyWithHashCode, int>(Size / AggCount);
+            _refDict = new DictionarySlim<string, int>(Size / AggCount);
         }
 
         [IterationSetup(Targets = new[] { nameof(LoadDictionary) })]
         public void CreateDictionary()
         {
-            _dict = new Dictionary<KeyWithHashCode, int>(Size / AggCount);
+            _dict = new Dictionary<string, int>(Size / AggCount);
         }
 
         [Benchmark]
@@ -76,7 +55,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             for (int i = 0; i < _keys.Length; i++)
             {
                 var k = _keys[i];
-                _refDict[k] += k.HashCode;
+                _refDict[k] += i;
             }
         }
 
@@ -87,9 +66,9 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             {
                 var k = _keys[i];
                 if (_dict.TryGetValue(k, out int t))
-                    _dict[k] = t + k.HashCode;
+                    _dict[k] = t + i;
                 else
-                    _dict[k] = k.HashCode;
+                    _dict[k] = i;
             }
         }
     }
