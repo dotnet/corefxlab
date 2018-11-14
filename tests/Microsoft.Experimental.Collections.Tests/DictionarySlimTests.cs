@@ -20,6 +20,38 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void ConstructCapacityLessThan2()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(1));
+        }
+
+        [Fact]
+        public void ConstructCapacity2()
+        {
+            var d = new DictionarySlim<ulong, int>(2);
+            Assert.Equal(0, d.Count);
+            Assert.Equal(2, d.Capacity);
+        }
+
+        [Fact]
+        public void ConstructCapacity3()
+        {
+            var d = new DictionarySlim<ulong, int>(3);
+            Assert.Equal(0, d.Count);
+            Assert.Equal(4, d.Capacity);
+        }
+
+        [Fact]
+        public void ConstructCapacity11()
+        {
+            var d = new DictionarySlim<ulong, int>(11);
+            Assert.Equal(0, d.Count);
+            Assert.Equal(16, d.Capacity);
+        }
+
+        [Fact]
         public void SingleEntry()
         {
             var d = new DictionarySlim<ulong, int>();
@@ -55,8 +87,7 @@ namespace Microsoft.Collections.Extensions.Tests
             var d = new DictionarySlim<char, int>();
             d['a'] = 9;
             d['b'] = 11;
-            int value;
-            Assert.Equal(true, d.TryGetValue('a', out value));
+            Assert.Equal(true, d.TryGetValue('a', out int value));
             Assert.Equal(9, value);
             Assert.Equal(true, d.TryGetValue('b', out value));
             Assert.Equal(11, value);
@@ -69,11 +100,10 @@ namespace Microsoft.Collections.Extensions.Tests
             d['a'] = 9;
             d['b'] = 11;
             d.Remove('b');
-            int value;
-            Assert.Equal(false, d.TryGetValue('z', out value));
-            Assert.Equal(default(int), value);
+            Assert.Equal(false, d.TryGetValue('z', out int value));
+            Assert.Equal(default, value);
             Assert.Equal(false, d.TryGetValue('b', out value));
-            Assert.Equal(default(int), value);
+            Assert.Equal(default, value);
         }
 
         [Fact]
@@ -82,12 +112,11 @@ namespace Microsoft.Collections.Extensions.Tests
             var d = new DictionarySlim<int, string>();
             d[1] = "a";
             d[2] = "b";
-            string value;
-            Assert.Equal(true, d.TryGetValue(1, out value));
+            Assert.Equal(true, d.TryGetValue(1, out string value));
             Assert.Equal("a", value);
             Assert.Equal(false, d.TryGetValue(99, out value));
             Assert.Equal(null, value);
-        }        
+        }
 
         [Fact]
         public void Keys()
@@ -135,6 +164,77 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void RemoveThenAdd()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            d['c'] = 2;
+            Assert.True(d.Remove('b'));
+            d['d'] = 3;
+            Assert.Equal(3, d.Count);
+            Assert.Equal(new[] {'a', 'c', 'd' }, d.OrderBy(i => i.Key).Select(i => i.Key));
+            Assert.Equal(new[] { 0, 2, 3 }, d.OrderBy(i => i.Key).Select(i => i.Value));
+        }
+
+        [Fact]
+        public void RemoveThenAddAndAddBack()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            d['c'] = 2;
+            Assert.True(d.Remove('b'));
+            d['d'] = 3;
+            d['b'] = 7;
+            Assert.Equal(4, d.Count);
+            Assert.Equal(new[] { 'a', 'b', 'c', 'd' }, d.OrderBy(i => i.Key).Select(i => i.Key));
+            Assert.Equal(new[] { 0, 7, 2, 3 }, d.OrderBy(i => i.Key).Select(i => i.Value));
+        }
+
+        [Fact]
+        public void RemoveEnd()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            d['c'] = 2;
+            Assert.True(d.Remove('c'));
+            Assert.Equal(2, d.Count);
+            Assert.Equal(new[] { 'a', 'b' }, d.OrderBy(i => i.Key).Select(i => i.Key));
+            Assert.Equal(new[] { 0, 1 }, d.OrderBy(i => i.Key).Select(i => i.Value));
+        }
+
+        [Fact]
+        public void RemoveEndTwice()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            d['c'] = 2;
+            Assert.True(d.Remove('c'));
+            Assert.True(d.Remove('b'));
+            Assert.Equal(1, d.Count);
+            Assert.Equal(new[] { 'a' }, d.OrderBy(i => i.Key).Select(i => i.Key));
+            Assert.Equal(new[] { 0 }, d.OrderBy(i => i.Key).Select(i => i.Value));
+        }
+
+        [Fact]
+        public void RemoveEndTwiceThenAdd()
+        {
+            var d = new DictionarySlim<char, int>();
+            d['a'] = 0;
+            d['b'] = 1;
+            d['c'] = 2;
+            Assert.True(d.Remove('c'));
+            Assert.True(d.Remove('b'));
+            d['c'] = 7;
+            Assert.Equal(2, d.Count);
+            Assert.Equal(new[] { 'a', 'c' }, d.OrderBy(i => i.Key).Select(i => i.Key));
+            Assert.Equal(new[] { 0, 7 }, d.OrderBy(i => i.Key).Select(i => i.Value));
+        }
+
+        [Fact]
         public void RemoveSecondOfTwo()
         {
             var d = new DictionarySlim<char, int>();
@@ -168,14 +268,15 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<KeyUseTracking, KeyUseTracking>();
 
-            Func<WeakReference<KeyUseTracking>> a = () => {
+            WeakReference<KeyUseTracking> a()
+            {
                 var kut = new KeyUseTracking(0);
                 var wr = new WeakReference<KeyUseTracking>(kut);
                 d[kut] = kut;
 
                 d.Remove(kut);
                 return wr;
-            };
+            }
             var ret = a();
             GC.Collect();
             GC.WaitForPendingFinalizers();
