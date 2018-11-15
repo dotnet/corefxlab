@@ -261,6 +261,7 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(d[C(0)], 3);
             Assert.Equal(3, d.Count);
             Assert.Equal(capacity, d.Capacity);
+
         }
 
         [Fact]
