@@ -73,7 +73,7 @@ namespace Microsoft.Collections.Extensions
             {
                 if (key.Equals(entries[i].key))
                     return true;
-                if (collisionCount >= entries.Length)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
@@ -104,7 +104,7 @@ namespace Microsoft.Collections.Extensions
                     value = entries[i].value;
                     return true;
                 }
-                if (collisionCount >= entries.Length)
+                if (collisionCount == entries.Length)
                 {
                     // The chain of entries forms a loop; which means a concurrent update has happened.
                     // Break out of the loop and throw, rather than looping forever.
@@ -167,7 +167,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     if (key.Equals(entries[i].key))
                         return ref entries[i].value;
-                    if (collisionCount >= entries.Length)
+                    if (collisionCount == entries.Length)
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
@@ -194,16 +194,7 @@ namespace Microsoft.Collections.Extensions
             {
                 if (_count == entries.Length || entries.Length == 1)
                 {
-                    if (entries.Length == 1)
-                    {
-                        _buckets = new int[4];
-                        entries = new Entry[4];
-                        _entries = entries;
-                    }
-                    else
-                    {
-                        entries = Resize();
-                    }
+                    entries = Resize();
                     bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
                     // entry indexes were not changed by Resize
                 }
