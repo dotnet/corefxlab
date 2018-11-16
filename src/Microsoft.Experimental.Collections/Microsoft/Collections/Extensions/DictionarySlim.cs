@@ -128,6 +128,7 @@ namespace Microsoft.Collections.Extensions
             int entryIndex = _buckets[bucketIndex] - 1;
 
             int lastIndex = -1;
+            int collisionCount = 0;
             while (entryIndex != -1)
             {
                 Entry candidate = entries[entryIndex];
@@ -152,6 +153,14 @@ namespace Microsoft.Collections.Extensions
                 }
                 lastIndex = entryIndex;
                 entryIndex = candidate.next;
+
+                if (collisionCount == entries.Length)
+                {
+                    // The chain of entries forms a loop; which means a concurrent update has happened.
+                    // Break out of the loop and throw, rather than looping forever.
+                    ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
+                }
+                collisionCount++;
             }
 
             return false;
