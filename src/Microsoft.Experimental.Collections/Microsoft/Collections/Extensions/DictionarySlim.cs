@@ -53,7 +53,10 @@ namespace Microsoft.Collections.Extensions
 
         public DictionarySlim(int capacity)
         {
-            if (capacity < 2) ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
+            if (capacity < 0)
+                ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
+            if (capacity < 2)
+                capacity = 2;
             capacity = HashHelpers.PowerOf2(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];

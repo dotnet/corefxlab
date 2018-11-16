@@ -20,11 +20,25 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void ConstructCapacityLessThan2()
+        public void ConstructCapacityNegative()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new DictionarySlim<ulong, int>(1));
+        }
+
+        [Fact]
+        public void ConstructCapacity0()
+        {
+            var d = new DictionarySlim<ulong, int>(0);
+            Assert.Equal(0, d.Count);
+            Assert.Equal(2, d.Capacity);
+        }
+
+        [Fact]
+        public void ConstructCapacity1()
+        {
+            var d = new DictionarySlim<ulong, int>(1);
+            Assert.Equal(0, d.Count);
+            Assert.Equal(2, d.Capacity);
         }
 
         [Fact]
