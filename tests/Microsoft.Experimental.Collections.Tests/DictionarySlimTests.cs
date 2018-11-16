@@ -379,6 +379,27 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void CopyTo_Null()
+        {
+            var d = new DictionarySlim<char, int>();
+            Assert.Throws<ArgumentNullException>(() => d.CopyTo(null, 0));
+        }
+
+        [Fact]
+        public void CopyToKeys_Null()
+        {
+            var d = new DictionarySlim<char, int>();
+            Assert.Throws<ArgumentNullException>(() => d.Keys.CopyTo(null, 0));
+        }
+
+        [Fact]
+        public void CopyToValues_Null()
+        {
+            var d = new DictionarySlim<char, int>();
+            Assert.Throws<ArgumentNullException>(() => d.Values.CopyTo(null, 0));
+        }
+
+        [Fact]
         public void KeysICollection()
         {
             var d = new DictionarySlim<char, int>();

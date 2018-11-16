@@ -32,7 +32,7 @@ namespace Microsoft.Collections.Extensions
         // 1-based index into _entries; 0 means empty
         private int[] _buckets;
         private Entry[] _entries;
-        
+
 
         [DebuggerDisplay("({key}, {value})->{next}")]
         private struct Entry
@@ -234,6 +234,10 @@ namespace Microsoft.Collections.Extensions
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
+            // Let the runtime validate the index
+
             Entry[] entries = _entries;
             int i = 0;
             int count = _count;
@@ -329,6 +333,10 @@ namespace Microsoft.Collections.Extensions
 
             public void CopyTo(TKey[] array, int index)
             {
+                if (array == null)
+                    throw new ArgumentNullException("array");
+                // Let the runtime validate the index
+
                 Entry[] entries = _dictionary._entries;
                 int i = 0;
                 int count = _dictionary._count;
@@ -421,6 +429,10 @@ namespace Microsoft.Collections.Extensions
 
             public void CopyTo(TValue[] array, int index)
             {
+                if (array == null)
+                    throw new ArgumentNullException("array");
+                // Let the runtime validate the index
+
                 Entry[] entries = _dictionary._entries;
                 int i = 0;
                 int count = _dictionary._count;
