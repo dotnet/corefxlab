@@ -331,7 +331,7 @@ namespace Microsoft.Collections.Extensions
             bool ICollection<TKey>.Remove(TKey item) =>
                 ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            public void CopyTo(TKey[] array, int index)
+            void ICollection<TKey>.CopyTo(TKey[] array, int index)
             {
                 if (array == null)
                     throw new ArgumentNullException("array");
@@ -394,7 +394,7 @@ namespace Microsoft.Collections.Extensions
                     return true;
                 }
 
-                public void Reset()
+                void IEnumerator.Reset()
                 {
                     _index = 0;
                     _count = _dictionary._count;
@@ -427,7 +427,7 @@ namespace Microsoft.Collections.Extensions
             bool ICollection<TValue>.Remove(TValue item) =>
                 ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
 
-            public void CopyTo(TValue[] array, int index)
+            void ICollection<TValue>.CopyTo(TValue[] array, int index)
             {
                 if (array == null)
                     throw new ArgumentNullException("array");
@@ -489,7 +489,7 @@ namespace Microsoft.Collections.Extensions
                     return true;
                 }
 
-                public void Reset()
+                void IEnumerator.Reset()
                 {
                     _index = 0;
                     _count = _dictionary._count;

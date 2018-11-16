@@ -359,7 +359,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d['a'] = 1;
             d['b'] = 2;
             var a = new char[3];
-            d.Keys.CopyTo(a, 1);
+            ((ICollection<char>)d.Keys).CopyTo(a, 1);
             Assert.Equal('\0', a[0]);
             Assert.Equal('a', a[1]);
             Assert.Equal('b', a[2]);
@@ -372,7 +372,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d['a'] = 1;
             d['b'] = 2;
             var a = new int[3];
-            d.Values.CopyTo(a, 1);
+            ((ICollection<int>)d.Values).CopyTo(a, 1);
             Assert.Equal(0, a[0]);
             Assert.Equal(1, a[1]);
             Assert.Equal(2, a[2]);
@@ -389,14 +389,14 @@ namespace Microsoft.Collections.Extensions.Tests
         public void CopyToKeys_Null()
         {
             var d = new DictionarySlim<char, int>();
-            Assert.Throws<ArgumentNullException>(() => d.Keys.CopyTo(null, 0));
+            Assert.Throws<ArgumentNullException>(() => ((ICollection<char>)d.Keys).CopyTo(null, 0));
         }
 
         [Fact]
         public void CopyToValues_Null()
         {
             var d = new DictionarySlim<char, int>();
-            Assert.Throws<ArgumentNullException>(() => d.Values.CopyTo(null, 0));
+            Assert.Throws<ArgumentNullException>(() => ((ICollection<int>)d.Values).CopyTo(null, 0));
         }
 
         [Fact]
@@ -457,7 +457,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d['c'] = 3;
             d.Remove('b');
             var a = new char[3];
-            d.Keys.CopyTo(a, 1);
+            ((ICollection<char>)d.Keys).CopyTo(a, 1);
             Assert.Equal('\0', a[0]);
             Assert.Equal('a', a[1]);
             Assert.Equal('c', a[2]);
@@ -472,7 +472,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d['c'] = 3;
             d.Remove('b');
             var a = new int[3];
-            d.Values.CopyTo(a, 1);
+            ((ICollection<int>)d.Values).CopyTo(a, 1);
             Assert.Equal(0, a[0]);
             Assert.Equal(1, a[1]);
             Assert.Equal(3, a[2]);
