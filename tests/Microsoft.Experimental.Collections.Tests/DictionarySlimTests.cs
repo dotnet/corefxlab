@@ -65,6 +65,17 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(16, d.Capacity);
         }
 
+        // [Fact] // Test too slow
+        public void ResizeToCapacity()
+        {
+            var d = new DictionarySlim<uint, byte>();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                for (uint i = 0; i < uint.MaxValue; i++)
+                    d[i] = (byte)1;
+            });
+        }
+
         [Fact]
         public void SingleEntry()
         {

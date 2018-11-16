@@ -223,7 +223,11 @@ namespace Microsoft.Collections.Extensions
         private Entry[] Resize()
         {
             int count = _count;
-            var entries = new Entry[_entries.Length * 2];
+            int newSize = _entries.Length * 2;
+            if ((uint)newSize > (uint)int.MaxValue) // uint cast handles overflow
+                throw new InvalidOperationException(Strings.Arg_HTCapacityOverflow);
+
+            var entries = new Entry[newSize];
             Array.Copy(_entries, 0, entries, 0, count);
 
             var newBuckets = new int[entries.Length];

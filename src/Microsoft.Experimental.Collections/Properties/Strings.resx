@@ -130,7 +130,7 @@
     <value>Non-negative number required.</value>
   </data>
   <data name="Arg_HTCapacityOverflow" xml:space="preserve">
-    <value>Hashtable's capacity overflowed and went negative. Check load factor, capacity and the current size of the table.</value>
+    <value>Capacity has overflowed.</value>
   </data>
   <data name="CopyTo_ArgumentsTooSmall" xml:space="preserve">
     <value>Destination array is not long enough to copy all the items in the collection. Check array index and length.</value>
