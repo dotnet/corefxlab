@@ -88,12 +88,6 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
-        public TValue GetValueOrDefault(TKey key)
-        {
-            bool result = TryGetValue(key, out TValue value);
-            return value;
-        }
-
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();

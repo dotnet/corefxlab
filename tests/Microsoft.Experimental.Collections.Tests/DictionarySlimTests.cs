@@ -97,16 +97,6 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void GetValueOrDefault()
-        {
-            var d = new DictionarySlim<ulong, int>();
-            d[7] = 9;
-            d[10] = 11;
-            Assert.Equal(9, d.GetValueOrDefault(7));
-            Assert.Equal(11, d.GetValueOrDefault(10));
-        }
-
-        [Fact]
         public void TryGetValue_Present()
         {
             var d = new DictionarySlim<char, int>();
@@ -624,9 +614,9 @@ namespace Microsoft.Collections.Extensions.Tests
             d[C(5)] = 3;
             d[C(7)] = 9;
             d[C(10)] = 11;
-            Assert.Equal(3, d.GetValueOrDefault(C(5)));
-            Assert.Equal(9, d.GetValueOrDefault(C(7)));
-            Assert.Equal(11, d.GetValueOrDefault(C(10)));
+            Assert.Equal(3, d[C(5)]);
+            Assert.Equal(9, d[C(7)]);
+            Assert.Equal(11, d[C(10)]);
             d[C(23)]++;
             d[C(23)] += 3;
             Assert.Equal(4, d[C(23)]);
