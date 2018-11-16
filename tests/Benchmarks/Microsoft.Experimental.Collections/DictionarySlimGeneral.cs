@@ -76,7 +76,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             for (int i = 0; i < _keys.Length; i++)
             {
                 var k = _keys[i];
-                _refDict[k] += k.HashCode;
+                _refDict.GetOrAddValueRef(k) += k.HashCode;
             }
         }
 

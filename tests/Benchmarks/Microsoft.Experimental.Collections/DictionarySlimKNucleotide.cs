@@ -640,7 +640,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         {
             if (nb == 255) return;
             rollingKey = ((rollingKey & mask) << 2) | nb;
-            dict[rollingKey]++;
+            dict.GetOrAddValueRef(rollingKey)++;
         }
 
         private Task<string> Count(int l, long mask, Func<DictionarySlim<long, int>, string> summary)

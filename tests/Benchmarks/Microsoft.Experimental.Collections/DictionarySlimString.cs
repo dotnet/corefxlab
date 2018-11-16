@@ -55,7 +55,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             for (int i = 0; i < _keys.Length; i++)
             {
                 var k = _keys[i];
-                _refDict[k] += i;
+                _refDict.GetOrAddValueRef(k) += i;
             }
         }
 

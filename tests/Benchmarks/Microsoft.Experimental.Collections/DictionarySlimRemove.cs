@@ -48,7 +48,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         {
             _dictSlim = new DictionarySlim<int, int>();
             for (int i = 0; i < Size; i++)
-                _dictSlim[i * 7] = -i;
+                _dictSlim.GetOrAddValueRef(i * 7) = -i;
         }
 
         [IterationSetup(Targets = new[] { nameof(RemoveDictionary) })]

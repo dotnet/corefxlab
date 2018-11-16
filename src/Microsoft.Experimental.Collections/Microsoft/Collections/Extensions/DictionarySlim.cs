@@ -160,30 +160,28 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
-        public ref TValue this[TKey key]
+        // Not safe for concurrent _reads_ (at least, if either of them add)
+        public ref TValue GetOrAddValueRef(TKey key)
         {
-            get
+            if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
+            Entry[] entries = _entries;
+            int collisionCount = 0;
+            int bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
+            for (int i = _buckets[bucketIndex] - 1;
+                    (uint)i < (uint)entries.Length; i = entries[i].next)
             {
-                if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
-                Entry[] entries = _entries;
-                int collisionCount = 0;
-                int bucketIndex = key.GetHashCode() & (_buckets.Length - 1);
-                for (int i = _buckets[bucketIndex] - 1;
-                        (uint)i < (uint)entries.Length; i = entries[i].next)
+                if (key.Equals(entries[i].key))
+                    return ref entries[i].value;
+                if (collisionCount == entries.Length)
                 {
-                    if (key.Equals(entries[i].key))
-                        return ref entries[i].value;
-                    if (collisionCount == entries.Length)
-                    {
-                        // The chain of entries forms a loop; which means a concurrent update has happened.
-                        // Break out of the loop and throw, rather than looping forever.
-                        ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
-                    }
-                    collisionCount++;
+                    // The chain of entries forms a loop; which means a concurrent update has happened.
+                    // Break out of the loop and throw, rather than looping forever.
+                    ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
                 }
-
-                return ref AddKey(key, bucketIndex);
+                collisionCount++;
             }
+
+            return ref AddKey(key, bucketIndex);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

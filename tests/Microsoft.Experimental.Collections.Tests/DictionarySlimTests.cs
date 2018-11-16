@@ -72,7 +72,7 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Throws<InvalidOperationException>(() =>
             {
                 for (uint i = 0; i < uint.MaxValue; i++)
-                    d[i] = (byte)1;
+                    d.GetOrAddValueRef(i) = (byte)1;
             });
         }
 
@@ -80,17 +80,17 @@ namespace Microsoft.Collections.Extensions.Tests
         public void SingleEntry()
         {
             var d = new DictionarySlim<ulong, int>();
-            d[7]++;
-            d[7] += 3;
-            Assert.Equal(4, d[7]);
+            d.GetOrAddValueRef(7)++;
+            d.GetOrAddValueRef(7) += 3;
+            Assert.Equal(4, d.GetOrAddValueRef(7));
         }
 
         [Fact]
         public void ContainKey()
         {
             var d = new DictionarySlim<ulong, int>();
-            d[7] = 9;
-            d[10] = 10;
+            d.GetOrAddValueRef(7) = 9;
+            d.GetOrAddValueRef(10) = 10;
             Assert.True(d.ContainsKey(7));
             Assert.True(d.ContainsKey(10));
             Assert.False(d.ContainsKey(1));
@@ -100,8 +100,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void TryGetValue_Present()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 9;
-            d['b'] = 11;
+            d.GetOrAddValueRef('a') = 9;
+            d.GetOrAddValueRef('b') = 11;
             Assert.Equal(true, d.TryGetValue('a', out int value));
             Assert.Equal(9, value);
             Assert.Equal(true, d.TryGetValue('b', out value));
@@ -112,8 +112,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void TryGetValue_Missing()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 9;
-            d['b'] = 11;
+            d.GetOrAddValueRef('a') = 9;
+            d.GetOrAddValueRef('b') = 11;
             d.Remove('b');
             Assert.Equal(false, d.TryGetValue('z', out int value));
             Assert.Equal(default, value);
@@ -125,8 +125,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void TryGetValue_RefTypeValue()
         {
             var d = new DictionarySlim<int, string>();
-            d[1] = "a";
-            d[2] = "b";
+            d.GetOrAddValueRef(1) = "a";
+            d.GetOrAddValueRef(2) = "b";
             Assert.Equal(true, d.TryGetValue(1, out string value));
             Assert.Equal("a", value);
             Assert.Equal(false, d.TryGetValue(99, out value));
@@ -137,8 +137,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void Keys()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 9;
-            d['b'] = 10;
+            d.GetOrAddValueRef('a') = 9;
+            d.GetOrAddValueRef('b') = 10;
             Assert.Equal(d.Keys, new[] { 'a', 'b' });
         }
 
@@ -146,8 +146,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void Values()
         {
             var d = new DictionarySlim<int, int>();
-            d['a'] = 9;
-            d['b'] = 10;
+            d.GetOrAddValueRef('a') = 9;
+            d.GetOrAddValueRef('b') = 10;
             Assert.Equal(d.Values, new[] { 9, 10 });
         }
 
@@ -162,7 +162,7 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveSimple()
         {
             var d = new DictionarySlim<int, int>();
-            d[0] = 0;
+            d.GetOrAddValueRef(0) = 0;
             Assert.True(d.Remove(0));
             Assert.Equal(0, d.Count);
         }
@@ -171,10 +171,10 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveOneOfTwo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
             Assert.True(d.Remove('a'));
-            Assert.Equal(1, d['b']);
+            Assert.Equal(1, d.GetOrAddValueRef('b'));
             Assert.Equal(1, d.Count);
         }
 
@@ -182,11 +182,11 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveThenAdd()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
+            d.GetOrAddValueRef('c') = 2;
             Assert.True(d.Remove('b'));
-            d['d'] = 3;
+            d.GetOrAddValueRef('d') = 3;
             Assert.Equal(3, d.Count);
             Assert.Equal(new[] {'a', 'c', 'd' }, d.OrderBy(i => i.Key).Select(i => i.Key));
             Assert.Equal(new[] { 0, 2, 3 }, d.OrderBy(i => i.Key).Select(i => i.Value));
@@ -196,12 +196,12 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveThenAddAndAddBack()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
+            d.GetOrAddValueRef('c') = 2;
             Assert.True(d.Remove('b'));
-            d['d'] = 3;
-            d['b'] = 7;
+            d.GetOrAddValueRef('d') = 3;
+            d.GetOrAddValueRef('b') = 7;
             Assert.Equal(4, d.Count);
             Assert.Equal(new[] { 'a', 'b', 'c', 'd' }, d.OrderBy(i => i.Key).Select(i => i.Key));
             Assert.Equal(new[] { 0, 7, 2, 3 }, d.OrderBy(i => i.Key).Select(i => i.Value));
@@ -211,9 +211,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveEnd()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
+            d.GetOrAddValueRef('c') = 2;
             Assert.True(d.Remove('c'));
             Assert.Equal(2, d.Count);
             Assert.Equal(new[] { 'a', 'b' }, d.OrderBy(i => i.Key).Select(i => i.Key));
@@ -224,9 +224,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveEndTwice()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
+            d.GetOrAddValueRef('c') = 2;
             Assert.True(d.Remove('c'));
             Assert.True(d.Remove('b'));
             Assert.Equal(1, d.Count);
@@ -238,12 +238,12 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveEndTwiceThenAdd()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
-            d['c'] = 2;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
+            d.GetOrAddValueRef('c') = 2;
             Assert.True(d.Remove('c'));
             Assert.True(d.Remove('b'));
-            d['c'] = 7;
+            d.GetOrAddValueRef('c') = 7;
             Assert.Equal(2, d.Count);
             Assert.Equal(new[] { 'a', 'c' }, d.OrderBy(i => i.Key).Select(i => i.Key));
             Assert.Equal(new[] { 0, 7 }, d.OrderBy(i => i.Key).Select(i => i.Value));
@@ -253,10 +253,10 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveSecondOfTwo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
             Assert.True(d.Remove('b'));
-            Assert.Equal(0, d['a']);
+            Assert.Equal(0, d.GetOrAddValueRef('a'));
             Assert.Equal(1, d.Count);
         }
 
@@ -264,16 +264,16 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveSlotReused()
         {
             var d = new DictionarySlim<Collider, int>();
-            d[C(0)] = 0;
-            d[C(1)] = 1;
-            d[C(2)] = 2;
+            d.GetOrAddValueRef(C(0)) = 0;
+            d.GetOrAddValueRef(C(1)) = 1;
+            d.GetOrAddValueRef(C(2)) = 2;
             Assert.True(d.Remove(C(0)));
             _output.WriteLine("{0} {1}", d.Capacity, d.Count);
             var capacity = d.Capacity;
 
-            d[C(0)] = 3;
+            d.GetOrAddValueRef(C(0)) = 3;
             _output.WriteLine("{0} {1}", d.Capacity, d.Count);
-            Assert.Equal(d[C(0)], 3);
+            Assert.Equal(d.GetOrAddValueRef(C(0)), 3);
             Assert.Equal(3, d.Count);
             Assert.Equal(capacity, d.Capacity);
 
@@ -288,7 +288,7 @@ namespace Microsoft.Collections.Extensions.Tests
             {
                 var kut = new KeyUseTracking(0);
                 var wr = new WeakReference<KeyUseTracking>(kut);
-                d[kut] = kut;
+                d.GetOrAddValueRef(kut) = kut;
 
                 d.Remove(kut);
                 return wr;
@@ -303,7 +303,7 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveEnumerate()
         {
             var d = new DictionarySlim<int, int>();
-            d[0] = 0;
+            d.GetOrAddValueRef(0) = 0;
             Assert.True(d.Remove(0));
             Assert.Empty(d);
             Assert.Empty(d.Keys);
@@ -314,8 +314,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void RemoveOneOfTwoEnumerate()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
             Assert.True(d.Remove('a'));
             Assert.Equal(KeyValuePair.Create('b', 1), d.Single());
             Assert.Equal('b', d.Keys.Single());
@@ -327,12 +327,12 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<int, int>();
             int i = 0;
-            d[++i] = -i;
-            d[++i] = -i;
-            d[++i] = -i;
-            d[++i] = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
             while (d.Count < d.Capacity)
-                d[++i] = -i;
+                d.GetOrAddValueRef(++i) = -i;
             Assert.Equal(d.Count, d.Count());
             Assert.Equal(d.Count, d.Keys.Count());
             Assert.Equal(d.Count, d.Values.Count());
@@ -343,12 +343,12 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<int, int>();
             int i = 0;
-            d[++i] = -i;
-            d[++i] = -i;
-            d[++i] = -i;
-            d[++i] = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
+            d.GetOrAddValueRef(++i) = -i;
             while (d.Count < d.Capacity)
-                d[++i] = -i;
+                d.GetOrAddValueRef(++i) = -i;
             Assert.True(d.Remove(i));
             Assert.Equal(d.Count, d.Count());
             Assert.Equal(d.Count, d.Keys.Count());
@@ -359,8 +359,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void CopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 0;
-            d['b'] = 1;
+            d.GetOrAddValueRef('a') = 0;
+            d.GetOrAddValueRef('b') = 1;
             var a = new KeyValuePair<char, int>[3];
             d.CopyTo(a, 1);
             Assert.Equal(KeyValuePair.Create('a', 0), a[1]);
@@ -371,8 +371,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void KeysCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
             var a = new char[3];
             ((ICollection<char>)d.Keys).CopyTo(a, 1);
             Assert.Equal('\0', a[0]);
@@ -384,8 +384,8 @@ namespace Microsoft.Collections.Extensions.Tests
         public void ValuesCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
             var a = new int[3];
             ((ICollection<int>)d.Values).CopyTo(a, 1);
             Assert.Equal(0, a[0]);
@@ -418,9 +418,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void KeysICollection()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             d.Remove('c');
             ICollection<char> keys = d.Keys;
             Assert.Equal(2, keys.Count);
@@ -443,9 +443,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void ValuesICollection()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             d.Remove('c');
             ICollection<int> values = d.Values;
             Assert.Equal(2,  values.Count);
@@ -467,9 +467,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void KeysThreeRemoveOneCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             d.Remove('b');
             var a = new char[3];
             ((ICollection<char>)d.Keys).CopyTo(a, 1);
@@ -482,9 +482,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void ValuesThreeRemoveOneCopyTo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             d.Remove('b');
             var a = new int[3];
             ((ICollection<int>)d.Values).CopyTo(a, 1);
@@ -497,9 +497,9 @@ namespace Microsoft.Collections.Extensions.Tests
         public void CopyToThreeRemoveOne()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             Assert.True(d.Remove('b'));
             var a = new KeyValuePair<char, int>[3];
             d.CopyTo(a, 1);
@@ -512,12 +512,12 @@ namespace Microsoft.Collections.Extensions.Tests
         public void CopyToThreeRemoveTwo()
         {
             var d = new DictionarySlim<char, int>();
-            d['a'] = 1;
-            d['b'] = 2;
-            d['c'] = 3;
+            d.GetOrAddValueRef('a') = 1;
+            d.GetOrAddValueRef('b') = 2;
+            d.GetOrAddValueRef('c') = 3;
             Assert.True(d.Remove('b'));
             Assert.True(d.Remove('c'));
-            d['d'] = 4;
+            d.GetOrAddValueRef('d') = 4;
             var a = new KeyValuePair<char, int>[3];
             d.CopyTo(a, 1);
             Assert.Equal(KeyValuePair.Create('\0', 0), a[0]);
@@ -538,7 +538,7 @@ namespace Microsoft.Collections.Extensions.Tests
                 var k = (ulong)rand.Next(100) + 23;
                 var v = rand.Next();
 
-                rd[k] += v;
+                rd.GetOrAddValueRef(k) += v;
 
                 if (d.TryGetValue(k, out int t))
                     d[k] = t + v;
@@ -566,7 +566,7 @@ namespace Microsoft.Collections.Extensions.Tests
                     var k = C(rand.Next(100) + 23);
                     var v = rand.Next();
 
-                    rd[k] += v;
+                    rd.GetOrAddValueRef(k) += v;
 
                     if (d.TryGetValue(k, out int t))
                         d[k] = t + v;
@@ -611,15 +611,15 @@ namespace Microsoft.Collections.Extensions.Tests
         public void Collision()
         {
             var d = new DictionarySlim<Collider, int>();
-            d[C(5)] = 3;
-            d[C(7)] = 9;
-            d[C(10)] = 11;
-            Assert.Equal(3, d[C(5)]);
-            Assert.Equal(9, d[C(7)]);
-            Assert.Equal(11, d[C(10)]);
-            d[C(23)]++;
-            d[C(23)] += 3;
-            Assert.Equal(4, d[C(23)]);
+            d.GetOrAddValueRef(C(5)) = 3;
+            d.GetOrAddValueRef(C(7)) = 9;
+            d.GetOrAddValueRef(C(10)) = 11;
+            Assert.Equal(3, d.GetOrAddValueRef(C(5)));
+            Assert.Equal(9, d.GetOrAddValueRef(C(7)));
+            Assert.Equal(11, d.GetOrAddValueRef(C(10)));
+            d.GetOrAddValueRef(C(23))++;
+            d.GetOrAddValueRef(C(23)) += 3;
+            Assert.Equal(4, d.GetOrAddValueRef(C(23)));
         }
 
         [Fact]
@@ -627,7 +627,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<KeyUseTracking, int>();
             var key = new KeyUseTracking(5);
-            d[key]++;
+            d.GetOrAddValueRef(key)++;
             Assert.Equal(2, key.GetHashCodeCount);
             Assert.Equal(0, key.EqualsCount);
         }
@@ -637,8 +637,8 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<KeyUseTracking, int>();
             var key = new KeyUseTracking(5);
-            d[key]++;
-            d[key]++;
+            d.GetOrAddValueRef(key)++;
+            d.GetOrAddValueRef(key)++;
             Assert.Equal(3, key.GetHashCodeCount);
             Assert.Equal(1, key.EqualsCount);
         }

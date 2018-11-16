@@ -86,7 +86,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
             foreach (var t in source)
             {
                 var k = keySelector(t);
-                ref var g = ref dict[k];
+                ref var g = ref dict.GetOrAddValueRef(k);
                 if (g == null) g = new Grouping<TKey, TSource>(k);
                 g.Add(t);
             }
