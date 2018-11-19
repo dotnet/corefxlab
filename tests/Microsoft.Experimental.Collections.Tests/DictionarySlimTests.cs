@@ -134,24 +134,6 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void Keys()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 9;
-            d.GetOrAddValueRef('b') = 10;
-            Assert.Equal(d.Keys, new[] { 'a', 'b' });
-        }
-
-        [Fact]
-        public void Values()
-        {
-            var d = new DictionarySlim<int, int>();
-            d.GetOrAddValueRef('a') = 9;
-            d.GetOrAddValueRef('b') = 10;
-            Assert.Equal(d.Values, new[] { 9, 10 });
-        }
-
-        [Fact]
         public void RemoveNonExistent()
         {
             var d = new DictionarySlim<int, int>();
@@ -306,8 +288,6 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef(0) = 0;
             Assert.True(d.Remove(0));
             Assert.Empty(d);
-            Assert.Empty(d.Keys);
-            Assert.Empty(d.Values);
         }
 
         [Fact]
@@ -318,8 +298,6 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef('b') = 1;
             Assert.True(d.Remove('a'));
             Assert.Equal(KeyValuePair.Create('b', 1), d.Single());
-            Assert.Equal('b', d.Keys.Single());
-            Assert.Equal(1, d.Values.Single());
         }
 
         [Fact]
@@ -334,8 +312,6 @@ namespace Microsoft.Collections.Extensions.Tests
             while (d.Count < d.Capacity)
                 d.GetOrAddValueRef(++i) = -i;
             Assert.Equal(d.Count, d.Count());
-            Assert.Equal(d.Count, d.Keys.Count());
-            Assert.Equal(d.Count, d.Values.Count());
         }
 
         [Fact]
@@ -351,8 +327,6 @@ namespace Microsoft.Collections.Extensions.Tests
                 d.GetOrAddValueRef(++i) = -i;
             Assert.True(d.Remove(i));
             Assert.Equal(d.Count, d.Count());
-            Assert.Equal(d.Count, d.Keys.Count());
-            Assert.Equal(d.Count, d.Values.Count());
         }
 
         private KeyValuePair<TKey, TValue> P<TKey, TValue>(TKey key, TValue value) => new KeyValuePair<TKey, TValue>(key, value);
@@ -378,47 +352,6 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void EnumerateReset_Keys()
-        {
-            var d = new DictionarySlim<int, int>();
-            d.GetOrAddValueRef(1) = 10;
-            d.GetOrAddValueRef(2) = 20;
-            IEnumerator<int> keys = d.Keys.GetEnumerator();
-            Assert.Equal(0, keys.Current);
-            Assert.Equal(true, keys.MoveNext());
-            Assert.Equal(1, keys.Current);
-            keys.Reset();
-            Assert.Equal(0, keys.Current);
-            Assert.Equal(true, keys.MoveNext());
-            Assert.Equal(true, keys.MoveNext());
-            Assert.Equal(2, keys.Current);
-            Assert.Equal(false, keys.MoveNext());
-            keys.Reset();
-            Assert.Equal(0, keys.Current);
-        }
-
-
-        [Fact]
-        public void EnumerateReset_Values()
-        {
-            var d = new DictionarySlim<int, int>();
-            d.GetOrAddValueRef(1) = 10;
-            d.GetOrAddValueRef(2) = 20;
-            IEnumerator<int> values = d.Values.GetEnumerator();
-            Assert.Equal(0, values.Current);
-            Assert.Equal(true, values.MoveNext());
-            Assert.Equal(10, values.Current);
-            values.Reset();
-            Assert.Equal(0, values.Current);
-            Assert.Equal(true, values.MoveNext());
-            Assert.Equal(true, values.MoveNext());
-            Assert.Equal(20, values.Current);
-            Assert.Equal(false, values.MoveNext());
-            values.Reset();
-            Assert.Equal(0, values.Current);
-        }
-
-        [Fact]
         public void CopyTo()
         {
             var d = new DictionarySlim<char, int>();
@@ -431,50 +364,10 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void KeysCopyTo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            var a = new char[3];
-            ((ICollection<char>)d.Keys).CopyTo(a, 1);
-            Assert.Equal('\0', a[0]);
-            Assert.Equal('a', a[1]);
-            Assert.Equal('b', a[2]);
-        }
-
-        [Fact]
-        public void ValuesCopyTo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            var a = new int[3];
-            ((ICollection<int>)d.Values).CopyTo(a, 1);
-            Assert.Equal(0, a[0]);
-            Assert.Equal(1, a[1]);
-            Assert.Equal(2, a[2]);
-        }
-
-        [Fact]
         public void CopyTo_Null()
         {
             var d = new DictionarySlim<char, int>();
             Assert.Throws<ArgumentNullException>(() => d.CopyTo(null, 0));
-        }
-
-        [Fact]
-        public void CopyToKeys_Null()
-        {
-            var d = new DictionarySlim<char, int>();
-            Assert.Throws<ArgumentNullException>(() => ((ICollection<char>)d.Keys).CopyTo(null, 0));
-        }
-
-        [Fact]
-        public void CopyToValues_Null()
-        {
-            var d = new DictionarySlim<char, int>();
-            Assert.Throws<ArgumentNullException>(() => ((ICollection<int>)d.Values).CopyTo(null, 0));
         }
 
         [Fact]
@@ -491,86 +384,6 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(false, d.ContainsKey(1));
             Assert.Equal(false, d.ContainsKey(2));
             Assert.Equal(1, d.Capacity);
-        }
-
-        [Fact]
-        public void KeysICollection()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            d.Remove('c');
-            ICollection<char> keys = d.Keys;
-            Assert.Equal(2, keys.Count);
-            Assert.True(keys.IsReadOnly);
-            var arr = new char[2];
-            keys.CopyTo(arr, 0);
-            Array.Sort(arr);
-            Assert.Equal(new List<char> { 'a', 'b' }, arr);
-            Assert.Throws<NotSupportedException>(() => keys.Add('z'));
-            Assert.Throws<NotSupportedException>(() => keys.Remove('a'));
-            Assert.Throws<NotSupportedException>(() => keys.Clear());
-            Assert.True(keys.Contains('a'));
-            Assert.False(keys.Contains('z'));
-
-            IReadOnlyCollection<char> roKeys = d.Keys;
-            Assert.Equal(2, roKeys.Count);
-        }
-
-        [Fact]
-        public void ValuesICollection()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            d.Remove('c');
-            ICollection<int> values = d.Values;
-            Assert.Equal(2,  values.Count);
-            Assert.True(values.IsReadOnly);
-            var arr = new int[2];
-            values.CopyTo(arr, 0);
-            Array.Sort(arr);
-            Assert.Equal(new List<int> { 1, 2 }, arr);
-            Assert.Throws<NotSupportedException>(() => values.Add(3));
-            Assert.Throws<NotSupportedException>(() => values.Remove(1));
-            Assert.Throws<NotSupportedException>(() => values.Clear());
-            Assert.Throws<NotSupportedException>(() => values.Contains(1));
-
-            IReadOnlyCollection<int> roValues = d.Values;
-            Assert.Equal(2, roValues.Count);
-        }
-
-        [Fact]
-        public void KeysThreeRemoveOneCopyTo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            d.Remove('b');
-            Assert.Equal(2, d.Count);
-            var a = new char[3];
-            ((ICollection<char>)d.Keys).CopyTo(a, 1);
-            Assert.Equal('\0', a[0]);
-            Assert.Equal('a', a[1]);
-            Assert.Equal('c', a[2]);
-        }
-
-        [Fact]
-        public void ValuesThreeRemoveOneCopyTo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            d.Remove('b');
-            var a = new int[3];
-            ((ICollection<int>)d.Values).CopyTo(a, 1);
-            Assert.Equal(0, a[0]);
-            Assert.Equal(1, a[1]);
-            Assert.Equal(3, a[2]);
         }
 
         [Fact]
