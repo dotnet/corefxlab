@@ -310,6 +310,7 @@ namespace Microsoft.Collections.Extensions
             {
                 _index = 0;
                 _count = _dictionary._count;
+                _current = default;
             }
 
             public void Dispose() { }
@@ -406,6 +407,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     _index = 0;
                     _count = _dictionary._count;
+                    _current = default;
                 }
             }
         }
@@ -501,6 +503,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     _index = 0;
                     _count = _dictionary._count;
+                    _current = default;
                 }
             }
         }
