@@ -64,9 +64,6 @@ namespace Microsoft.Collections.Extensions
 
         public int Count => _count;
 
-        // in this implementation, never goes below 1
-        public int Capacity => _entries.Length;
-
         // Invalidates all enumerators
         public void Clear()
         {

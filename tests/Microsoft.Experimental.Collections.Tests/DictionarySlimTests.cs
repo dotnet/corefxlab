@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,7 +31,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<ulong, int>(0);
             Assert.Equal(0, d.Count);
-            Assert.Equal(2, d.Capacity);
+            Assert.Equal(2, d.GetCapacity());
         }
 
         [Fact]
@@ -38,7 +39,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<ulong, int>(1);
             Assert.Equal(0, d.Count);
-            Assert.Equal(2, d.Capacity);
+            Assert.Equal(2, d.GetCapacity());
         }
 
         [Fact]
@@ -46,7 +47,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<ulong, int>(2);
             Assert.Equal(0, d.Count);
-            Assert.Equal(2, d.Capacity);
+            Assert.Equal(2, d.GetCapacity());
         }
 
         [Fact]
@@ -54,7 +55,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<ulong, int>(3);
             Assert.Equal(0, d.Count);
-            Assert.Equal(4, d.Capacity);
+            Assert.Equal(4, d.GetCapacity());
         }
 
         [Fact]
@@ -62,7 +63,7 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             var d = new DictionarySlim<ulong, int>(11);
             Assert.Equal(0, d.Count);
-            Assert.Equal(16, d.Capacity);
+            Assert.Equal(16, d.GetCapacity());
         }
 
         // [Fact] // Test too slow
@@ -250,14 +251,14 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef(C(1)) = 1;
             d.GetOrAddValueRef(C(2)) = 2;
             Assert.True(d.Remove(C(0)));
-            _output.WriteLine("{0} {1}", d.Capacity, d.Count);
-            var capacity = d.Capacity;
+            _output.WriteLine("{0} {1}", d.GetCapacity(), d.Count);
+            var capacity = d.GetCapacity();
 
             d.GetOrAddValueRef(C(0)) = 3;
-            _output.WriteLine("{0} {1}", d.Capacity, d.Count);
+            _output.WriteLine("{0} {1}", d.GetCapacity(), d.Count);
             Assert.Equal(d.GetOrAddValueRef(C(0)), 3);
             Assert.Equal(3, d.Count);
-            Assert.Equal(capacity, d.Capacity);
+            Assert.Equal(capacity, d.GetCapacity());
 
         }
 
@@ -309,7 +310,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef(++i) = -i;
             d.GetOrAddValueRef(++i) = -i;
             d.GetOrAddValueRef(++i) = -i;
-            while (d.Count < d.Capacity)
+            while (d.Count < d.GetCapacity())
                 d.GetOrAddValueRef(++i) = -i;
             Assert.Equal(d.Count, d.Count());
         }
@@ -323,7 +324,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef(++i) = -i;
             d.GetOrAddValueRef(++i) = -i;
             d.GetOrAddValueRef(++i) = -i;
-            while (d.Count < d.Capacity)
+            while (d.Count < d.GetCapacity())
                 d.GetOrAddValueRef(++i) = -i;
             Assert.True(d.Remove(i));
             Assert.Equal(d.Count, d.Count());
@@ -374,16 +375,16 @@ namespace Microsoft.Collections.Extensions.Tests
         public void Clear()
         {
             var d = new DictionarySlim<int, int>();
-            Assert.Equal(1, d.Capacity);
+            Assert.Equal(1, d.GetCapacity());
             d.GetOrAddValueRef(1) = 10;
             d.GetOrAddValueRef(2) = 20;
             Assert.Equal(2, d.Count);
-            Assert.Equal(2, d.Capacity);
+            Assert.Equal(2, d.GetCapacity());
             d.Clear();
             Assert.Equal(0, d.Count);
             Assert.Equal(false, d.ContainsKey(1));
             Assert.Equal(false, d.ContainsKey(2));
-            Assert.Equal(1, d.Capacity);
+            Assert.Equal(1, d.GetCapacity());
         }
 
         [Fact]
@@ -534,6 +535,20 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef(key)++;
             Assert.Equal(3, key.GetHashCodeCount);
             Assert.Equal(1, key.EqualsCount);
+        }
+    }
+
+    internal static class DictionarySlimExtensions
+    {
+        // Capacity is not exposed publicly, but is valuable in tests to help
+        // ensure everything is working as expected internally
+        public static int GetCapacity<TKey, TValue>(this DictionarySlim<TKey, TValue> dict) where TKey : IEquatable<TKey>
+        {
+            FieldInfo fi = typeof(DictionarySlim<TKey, TValue>).GetField("_entries", BindingFlags.NonPublic | BindingFlags.Instance);
+            Object entries = fi.GetValue(dict);
+
+            PropertyInfo pi = typeof(Array).GetProperty("Length");
+            return (int)pi.GetValue(entries);
         }
     }
 }
