@@ -355,6 +355,69 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(d.Count, d.Values.Count());
         }
 
+        private KeyValuePair<TKey, TValue> P<TKey, TValue>(TKey key, TValue value) => new KeyValuePair<TKey, TValue>(key, value);
+
+        [Fact]
+        public void EnumerateReset()
+        {
+            var d = new DictionarySlim<int, int>();
+            d.GetOrAddValueRef(1) = 10;
+            d.GetOrAddValueRef(2) = 20;
+            IEnumerator<KeyValuePair<int, int>> e = d.GetEnumerator();
+            Assert.Equal(P(0, 0), e.Current);
+            Assert.Equal(true, e.MoveNext());
+            Assert.Equal(P(1, 10), e.Current);
+            e.Reset();
+            Assert.Equal(P(0, 0), e.Current);
+            Assert.Equal(true, e.MoveNext());
+            Assert.Equal(true, e.MoveNext());
+            Assert.Equal(P(2, 20), e.Current);
+            Assert.Equal(false, e.MoveNext());
+            e.Reset();
+            Assert.Equal(P(0, 0), e.Current);
+        }
+
+        [Fact]
+        public void EnumerateReset_Keys()
+        {
+            var d = new DictionarySlim<int, int>();
+            d.GetOrAddValueRef(1) = 10;
+            d.GetOrAddValueRef(2) = 20;
+            IEnumerator<int> keys = d.Keys.GetEnumerator();
+            Assert.Equal(0, keys.Current);
+            Assert.Equal(true, keys.MoveNext());
+            Assert.Equal(1, keys.Current);
+            keys.Reset();
+            Assert.Equal(0, keys.Current);
+            Assert.Equal(true, keys.MoveNext());
+            Assert.Equal(true, keys.MoveNext());
+            Assert.Equal(2, keys.Current);
+            Assert.Equal(false, keys.MoveNext());
+            keys.Reset();
+            Assert.Equal(0, keys.Current);
+        }
+
+
+        [Fact]
+        public void EnumerateReset_Values()
+        {
+            var d = new DictionarySlim<int, int>();
+            d.GetOrAddValueRef(1) = 10;
+            d.GetOrAddValueRef(2) = 20;
+            IEnumerator<int> values = d.Values.GetEnumerator();
+            Assert.Equal(0, values.Current);
+            Assert.Equal(true, values.MoveNext());
+            Assert.Equal(10, values.Current);
+            values.Reset();
+            Assert.Equal(0, values.Current);
+            Assert.Equal(true, values.MoveNext());
+            Assert.Equal(true, values.MoveNext());
+            Assert.Equal(20, values.Current);
+            Assert.Equal(false, values.MoveNext());
+            values.Reset();
+            Assert.Equal(0, values.Current);
+        }
+
         [Fact]
         public void CopyTo()
         {
@@ -471,6 +534,7 @@ namespace Microsoft.Collections.Extensions.Tests
             d.GetOrAddValueRef('b') = 2;
             d.GetOrAddValueRef('c') = 3;
             d.Remove('b');
+            Assert.Equal(2, d.Count);
             var a = new char[3];
             ((ICollection<char>)d.Keys).CopyTo(a, 1);
             Assert.Equal('\0', a[0]);
