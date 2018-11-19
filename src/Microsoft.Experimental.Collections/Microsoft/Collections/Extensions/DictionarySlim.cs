@@ -56,7 +56,7 @@ namespace Microsoft.Collections.Extensions
             if (capacity < 0)
                 ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
             if (capacity < 2)
-                capacity = 2;
+                capacity = 2; // 1 would indicate the dummy array
             capacity = HashHelpers.PowerOf2(capacity);
             _buckets = new int[capacity];
             _entries = new Entry[capacity];
@@ -64,7 +64,17 @@ namespace Microsoft.Collections.Extensions
 
         public int Count => _count;
 
+        // in this implementation, never goes below 1
         public int Capacity => _entries.Length;
+
+        // Invalidates all enumerators
+        public void Clear()
+        {
+            _count = 0;
+            _freeList = -1;
+            _buckets = HashHelpers.DictionarySlimSizeOneIntArray;
+            _entries = InitialEntries;
+        }
 
         public bool ContainsKey(TKey key)
         {
@@ -161,6 +171,7 @@ namespace Microsoft.Collections.Extensions
         }
 
         // Not safe for concurrent _reads_ (at least, if either of them add)
+        // For concurrent reads, prefer TryGetValue(key, out value)
         public ref TValue GetOrAddValueRef(TKey key)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();

@@ -415,6 +415,22 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void Clear()
+        {
+            var d = new DictionarySlim<int, int>();
+            Assert.Equal(1, d.Capacity);
+            d.GetOrAddValueRef(1) = 10;
+            d.GetOrAddValueRef(2) = 20;
+            Assert.Equal(2, d.Count);
+            Assert.Equal(2, d.Capacity);
+            d.Clear();
+            Assert.Equal(0, d.Count);
+            Assert.Equal(false, d.ContainsKey(1));
+            Assert.Equal(false, d.ContainsKey(2));
+            Assert.Equal(1, d.Capacity);
+        }
+
+        [Fact]
         public void KeysICollection()
         {
             var d = new DictionarySlim<char, int>();
