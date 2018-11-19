@@ -269,7 +269,7 @@ namespace Microsoft.Collections.Extensions
         public Enumerator GetEnumerator() => new Enumerator(this);
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> if the key does not already exist.
+        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> if the key does not already exist as an O(1) operation.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
         /// <param name="value">The value to be added, if the key does not already exist.</param>
@@ -278,7 +278,7 @@ namespace Microsoft.Collections.Extensions
         public TValue GetOrAdd(TKey key, TValue value) => GetOrAdd(key, () => value);
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> by using the specified function, if the key does not already exist.
+        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> by using the specified function, if the key does not already exist as an O(1) operation.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
         /// <param name="valueFactory">The function used to generate a value for the key.</param>
@@ -350,7 +350,7 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Moves the element at the specified fromIndex to the specified toIndex while re-arranging the elements in between as an O(n) operation.
+        /// Moves the element at the specified fromIndex to the specified toIndex while re-arranging the elements in between.
         /// </summary>
         /// <param name="fromIndex">The zero-based index of the element to move.</param>
         /// <param name="toIndex">The zero-based index to move the element to.</param>
@@ -392,7 +392,7 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Moves the specified number of elements at the specified fromIndex to the specified toIndex while re-arranging the elements in between as an O(n) operation.
+        /// Moves the specified number of elements at the specified fromIndex to the specified toIndex while re-arranging the elements in between.
         /// </summary>
         /// <param name="fromIndex">The zero-based index of the elements to move.</param>
         /// <param name="toIndex">The zero-based index to move the elements to.</param>
@@ -634,7 +634,7 @@ namespace Microsoft.Collections.Extensions
         public bool TryAdd(TKey key, TValue value) => TryInsert(null, key, value, InsertionBehavior.None);
 
         /// <summary>
-        /// Gets the value associated with the specified key.
+        /// Gets the value associated with the specified key as an O(1) operation.
         /// </summary>
         /// <param name="key">The key of the value to get.</param>
         /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
