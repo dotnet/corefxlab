@@ -11,14 +11,27 @@ namespace Microsoft.Collections.Extensions
 {
     public partial class OrderedDictionary<TKey, TValue>
     {
+        /// <summary>
+        /// Represents the collection of values in a <see cref="OrderedDictionary{TKey, TValue}" />. This class cannot be inherited.
+        /// </summary>
         [DebuggerTypeProxy(typeof(DictionaryValueCollectionDebugView<,>))]
         [DebuggerDisplay("Count = {Count}")]
         public sealed class ValueCollection : IList<TValue>, IReadOnlyList<TValue>
         {
             private readonly OrderedDictionary<TKey, TValue> _orderedDictionary;
 
+            /// <summary>
+            /// Gets the number of elements contained in the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.
+            /// </summary>
+            /// <returns>The number of elements contained in the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.</returns>
             public int Count => _orderedDictionary.Count;
 
+            /// <summary>
+            /// Gets the value at the specified index as an O(1) operation.
+            /// </summary>
+            /// <param name="index">The zero-based index of the value to get.</param>
+            /// <returns>The value at the specified index.</returns>
+            /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.ValueCollection.Count" />.</exception>
             public TValue this[int index] => _orderedDictionary[index];
 
             TValue IList<TValue>.this[int index]
@@ -34,6 +47,10 @@ namespace Microsoft.Collections.Extensions
                 _orderedDictionary = orderedDictionary;
             }
 
+            /// <summary>
+            /// Returns an enumerator that iterates through the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.
+            /// </summary>
+            /// <returns>A <see cref="OrderedDictionary{TKey, TValue}.ValueCollection.Enumerator" /> for the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.</returns>
             public Enumerator GetEnumerator() => new Enumerator(_orderedDictionary);
 
             IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => GetEnumerator();
@@ -90,6 +107,9 @@ namespace Microsoft.Collections.Extensions
 
             bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException(Strings.NotSupported_ValueCollectionSet);
 
+            /// <summary>
+            /// Enumerates the elements of a <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.
+            /// </summary>
             public struct Enumerator : IEnumerator<TValue>
             {
                 private readonly OrderedDictionary<TKey, TValue> _orderedDictionary;
@@ -97,6 +117,10 @@ namespace Microsoft.Collections.Extensions
                 private int _index;
                 private TValue _current;
 
+                /// <summary>
+                /// Gets the element at the current position of the enumerator.
+                /// </summary>
+                /// <returns>The element in the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" /> at the current position of the enumerator.</returns>
                 public TValue Current => _current;
 
                 object IEnumerator.Current => _current;
@@ -109,10 +133,18 @@ namespace Microsoft.Collections.Extensions
                     _current = default;
                 }
 
+                /// <summary>
+                /// Releases all resources used by the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection.Enumerator" />.
+                /// </summary>
                 public void Dispose()
                 {
                 }
 
+                /// <summary>
+                /// Advances the enumerator to the next element of the <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" />.
+                /// </summary>
+                /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+                /// <exception cref="InvalidOperationException">The collection was modified after the enumerator was created.</exception>
                 public bool MoveNext()
                 {
                     if (_version != _orderedDictionary._version)

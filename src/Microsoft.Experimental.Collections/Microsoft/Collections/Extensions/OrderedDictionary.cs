@@ -49,41 +49,88 @@ namespace Microsoft.Collections.Extensions
         private KeyCollection _keys;
         private ValueCollection _values;
 
+        /// <summary>
+        /// Gets the number of key/value pairs contained in the <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
+        /// <returns>The number of key/value pairs contained in the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
         public int Count => _count;
 
+        /// <summary>
+        /// Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of keys for the dictionary.
+        /// </summary>
+        /// <returns>The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of keys for the current <see cref="OrderedDictionary{TKey, TValue}" /> and to provide hash values for the keys.</returns>
         public IEqualityComparer<TKey> Comparer => _comparer ?? EqualityComparer<TKey>.Default;
 
+        /// <summary>
+        /// Gets a collection containing the keys in the <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
+        /// <returns>An <see cref="OrderedDictionary{TKey, TValue}.KeyCollection" /> containing the keys in the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
         public KeyCollection Keys => _keys ?? (_keys = new KeyCollection(this));
 
+        /// <summary>
+        /// Gets a collection containing the values in the <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
+        /// <returns>An <see cref="OrderedDictionary{TKey, TValue}.ValueCollection" /> containing the values in the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
         public ValueCollection Values => _values ?? (_values = new ValueCollection(this));
 
+        /// <summary>
+        /// Gets or sets the value associated with the specified key as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the value to get or set.</param>
+        /// <returns>The value associated with the specified key. If the specified key is not found, a get operation throws a <see cref="KeyNotFoundException" />, and a set operation creates a new element with the specified key.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
+        /// <exception cref="KeyNotFoundException">The property is retrieved and <paramref name="key" /> does not exist in the collection.</exception>
         public TValue this[TKey key]
         {
             get => GetValue(key);
             set => SetValue(key, value);
         }
 
+        /// <summary>
+        /// Gets or sets the value at the specified index as an O(1) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns>The value at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public TValue this[int index]
         {
             get => GetAt(index);
             set => SetAt(index, value);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that is empty, has the default initial capacity, and uses the default equality comparer for the key type.
+        /// </summary>
         public OrderedDictionary()
             : this(0, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that is empty, has the specified initial capacity, and uses the default equality comparer for the key type.
+        /// </summary>
+        /// <param name="capacity">The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> can contain.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>
         public OrderedDictionary(int capacity)
             : this(capacity, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that is empty, has the default initial capacity, and uses the specified <see cref="IEqualityComparer{T}" />.
+        /// </summary>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}" /> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}" /> for the type of the key.</param>
         public OrderedDictionary(IEqualityComparer<TKey> comparer)
             : this(0, comparer)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that is empty, has the specified initial capacity, and uses the specified <see cref="IEqualityComparer{T}" />.
+        /// </summary>
+        /// <param name="capacity">The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> can contain.</param>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}" /> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}" /> for the type of the key.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>
         public OrderedDictionary(int capacity, IEqualityComparer<TKey> comparer)
         {
             if (capacity < 0)
@@ -103,11 +150,24 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that contains elements copied from the specified <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> and uses the default equality comparer for the key type.
+        /// </summary>
+        /// <param name="collection">The <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> whose elements are copied to the new <see cref="OrderedDictionary{TKey, TValue}" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="collection" /> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
         public OrderedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
             : this(collection, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that contains elements copied from the specified <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> and uses the specified <see cref="IEqualityComparer{T}" />.
+        /// </summary>
+        /// <param name="collection">The <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> whose elements are copied to the new <see cref="OrderedDictionary{TKey, TValue}" />.</param>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}" /> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}" /> for the type of the key.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="collection" /> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
         public OrderedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer)
             : this((collection as ICollection<KeyValuePair<TKey, TValue>>)?.Count ?? 0, comparer)
         {
@@ -122,8 +182,18 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Adds the specified key and value to the dictionary as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the element to add.</param>
+        /// <param name="value">The value of the element to add. The value can be null for reference types.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
+        /// <exception cref="ArgumentException">An element with the same key already exists in the <see cref="OrderedDictionary{TKey, TValue}" />.</exception>
         public void Add(TKey key, TValue value) => TryInsert(null, key, value, InsertionBehavior.ThrowOnExisting);
 
+        /// <summary>
+        /// Removes all keys and values from the <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
         public void Clear()
         {
             if (_count > 0)
@@ -134,8 +204,20 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Determines whether the <see cref="OrderedDictionary{TKey, TValue}" /> contains the specified key as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key to locate in the <see cref="OrderedDictionary{TKey, TValue}" />.</param>
+        /// <returns>true if the <see cref="OrderedDictionary{TKey, TValue}" /> contains an element with the specified key; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public bool ContainsKey(TKey key) => IndexOf(key) >= 0;
 
+        /// <summary>
+        /// Resizes the internal data structure if necessary to ensure no additional resizing to support the specified capacity.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> must be able to contain.</param>
+        /// <returns>The capacity of the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>
         public int EnsureCapacity(int capacity)
         {
             if (capacity < 0)
@@ -153,8 +235,21 @@ namespace Microsoft.Collections.Extensions
             return newSize;
         }
 
+        /// <summary>
+        /// Gets the value at the specified index as an O(1) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get.</param>
+        /// <returns>The value at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public TValue GetAt(int index) => GetAt(index, out _);
 
+        /// <summary>
+        /// Gets the value and key at the specified index as an O(1) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get.</param>
+        /// <param name="key">When this method returns, contains the key at the specified index. This parameter is passed uninitialized.</param>
+        /// <returns>The value at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public TValue GetAt(int index, out TKey key)
         {
             if ((uint)index >= (uint)Count)
@@ -167,10 +262,28 @@ namespace Microsoft.Collections.Extensions
             return entry.Value;
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
+        /// <returns>An <see cref="OrderedDictionary{TKey, TValue}.Enumerator" /> structure for the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
         public Enumerator GetEnumerator() => new Enumerator(this);
 
+        /// <summary>
+        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> if the key does not already exist.
+        /// </summary>
+        /// <param name="key">The key of the element to add.</param>
+        /// <param name="value">The value to be added, if the key does not already exist.</param>
+        /// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public TValue GetOrAdd(TKey key, TValue value) => GetOrAdd(key, () => value);
 
+        /// <summary>
+        /// Adds a key/value pair to the <see cref="OrderedDictionary{TKey, TValue}" /> by using the specified function, if the key does not already exist.
+        /// </summary>
+        /// <param name="key">The key of the element to add.</param>
+        /// <param name="valueFactory">The function used to generate a value for the key.</param>
+        /// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value for the key as returned by valueFactory if the key was not in the dictionary.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.-or-<paramref name="valueFactory"/> is null.</exception>
         public TValue GetOrAdd(TKey key, Func<TValue> valueFactory)
         {
             if (valueFactory == null)
@@ -192,6 +305,13 @@ namespace Microsoft.Collections.Extensions
             return value;
         }
 
+        /// <summary>
+        /// Gets the value associated with the specified key as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the value to get.</param>
+        /// <returns>The value associated with the specified key. If the specified key is not found, throws a <see cref="KeyNotFoundException" /></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
+        /// <exception cref="KeyNotFoundException"><paramref name="key" /> does not exist in the collection.</exception>
         public TValue GetValue(TKey key)
         {
             int index = IndexOf(key);
@@ -202,8 +322,23 @@ namespace Microsoft.Collections.Extensions
             return _entries[index].Value;
         }
 
+        /// <summary>
+        /// Returns the zero-based index of the element with the specified key within the <see cref="OrderedDictionary{TKey, TValue}" /> as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the element to locate.</param>
+        /// <returns>The zero-based index of the element with the specified key within the <see cref="OrderedDictionary{TKey, TValue}" />, if found; otherwise, –1.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public int IndexOf(TKey key) => IndexOf(key, out _);
 
+        /// <summary>
+        /// Inserts the specified key/value pair into the <see cref="OrderedDictionary{TKey, TValue}" /> at the specified index as an O(n) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the key/value pair to insert.</param>
+        /// <param name="key">The key of the element to insert.</param>
+        /// <param name="value">The value of the element to insert.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
+        /// <exception cref="ArgumentException">An element with the same key already exists in the <see cref="OrderedDictionary{TKey, TValue}" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public void Insert(int index, TKey key, TValue value)
         {
             if ((uint)index > (uint)Count)
@@ -214,6 +349,18 @@ namespace Microsoft.Collections.Extensions
             TryInsert(index, key, value, InsertionBehavior.ThrowOnExisting);
         }
 
+        /// <summary>
+        /// Moves the element at the specified fromIndex to the specified toIndex while re-arranging the elements in between as an O(n) operation.
+        /// </summary>
+        /// <param name="fromIndex">The zero-based index of the element to move.</param>
+        /// <param name="toIndex">The zero-based index to move the element to.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="fromIndex"/> is less than 0.
+        /// -or-
+        /// <paramref name="fromIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />
+        /// -or-
+        /// <paramref name="toIndex"/> is less than 0.
+        /// -or-
+        /// <paramref name="toIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" /></exception>
         public void Move(int fromIndex, int toIndex)
         {
             if ((uint)fromIndex >= (uint)Count)
@@ -244,6 +391,24 @@ namespace Microsoft.Collections.Extensions
             ++_version;
         }
 
+        /// <summary>
+        /// Moves the specified number of elements at the specified fromIndex to the specified toIndex while re-arranging the elements in between as an O(n) operation.
+        /// </summary>
+        /// <param name="fromIndex">The zero-based index of the elements to move.</param>
+        /// <param name="toIndex">The zero-based index to move the elements to.</param>
+        /// <param name="count">The number of elements to move.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="fromIndex"/> is less than 0.
+        /// -or-
+        /// <paramref name="fromIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.
+        /// -or-
+        /// <paramref name="toIndex"/> is less than 0.
+        /// -or-
+        /// <paramref name="toIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.
+        /// -or-
+        /// <paramref name="count"/> is less than 0.</exception>
+        /// <exception cref="ArgumentException"><paramref name="fromIndex"/> + <paramref name="count"/> is greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.
+        /// -or-
+        /// <paramref name="toIndex"/> + <paramref name="count"/> is greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public void MoveRange(int fromIndex, int toIndex, int count)
         {
             if (count == 1)
@@ -316,8 +481,21 @@ namespace Microsoft.Collections.Extensions
             ++_version;
         }
 
+        /// <summary>
+        /// Removes the value with the specified key from the <see cref="OrderedDictionary{TKey, TValue}" /> as an O(n) operation.
+        /// </summary>
+        /// <param name="key">The key of the element to remove.</param>
+        /// <returns>true if the element is successfully found and removed; otherwise, false. This method returns false if <paramref name="key" /> is not found in the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public bool Remove(TKey key) => Remove(key, out _);
 
+        /// <summary>
+        /// Removes the value with the specified key from the <see cref="OrderedDictionary{TKey, TValue}" /> and returns the value as an O(n) operation.
+        /// </summary>
+        /// <param name="key">The key of the element to remove.</param>
+        /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
+        /// <returns>true if the element is successfully found and removed; otherwise, false. This method returns false if <paramref name="key" /> is not found in the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public bool Remove(TKey key, out TValue value)
         {
             int index = IndexOf(key);
@@ -331,6 +509,11 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Removes the value at the specified index from the <see cref="OrderedDictionary{TKey, TValue}" /> as an O(n) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public void RemoveAt(int index)
         {
             int count = Count;
@@ -354,6 +537,12 @@ namespace Microsoft.Collections.Extensions
             ++_version;
         }
 
+        /// <summary>
+        /// Sets the value at the specified index as an O(1) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to set.</param>
+        /// <param name="value">The value to set.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public void SetAt(int index, TValue value)
         {
             if ((uint)index >= (uint)Count)
@@ -364,6 +553,14 @@ namespace Microsoft.Collections.Extensions
             _entries[index].Value = value;
         }
 
+        /// <summary>
+        /// Sets the value and key at the specified index as an O(1) operation.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to set.</param>
+        /// <param name="key">The key of the value to set.</param>
+        /// <param name="value">The value to set.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
+        /// <exception cref="ArgumentException">An element with the same key already exists not at the specified index in the <see cref="OrderedDictionary{TKey, TValue}" />.</exception>
         public void SetAt(int index, TKey key, TValue value)
         {
             if ((uint)index >= (uint)Count)
@@ -395,10 +592,23 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Sets the value associated with the specified key as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the value to set.</param>
+        /// <param name="value">The value to set.</param>
         public void SetValue(TKey key, TValue value) => TryInsert(null, key, value, InsertionBehavior.OverwriteExisting);
 
+        /// <summary>
+        /// Sets the capacity of an <see cref="OrderedDictionary{TKey, TValue}" /> object to the actual number of elements it contains, rounded up to a nearby, implementation-specific value.
+        /// </summary>
         public void TrimExcess() => TrimExcess(Count);
 
+        /// <summary>
+        /// Sets the capacity of an <see cref="OrderedDictionary{TKey, TValue}" /> object to the specified capacity, rounded up to a nearby, implementation-specific value.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> must be able to contain.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public void TrimExcess(int capacity)
         {
             if (capacity < Count)
@@ -414,8 +624,22 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Tries to add the specified key and value to the dictionary as an O(1) operation.
+        /// </summary>
+        /// <param name="key">The key of the element to add.</param>
+        /// <param name="value">The value of the element to add. The value can be null for reference types.</param>
+        /// <returns>true if the element was added to the <see cref="OrderedDictionary{TKey, TValue}" />; false if the <see cref="OrderedDictionary{TKey, TValue}" /> already contained an element with the specified key.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public bool TryAdd(TKey key, TValue value) => TryInsert(null, key, value, InsertionBehavior.None);
 
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key of the value to get.</param>
+        /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
+        /// <returns>true if the <see cref="OrderedDictionary{TKey, TValue}" /> contains an element with the specified key; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public bool TryGetValue(TKey key, out TValue value)
         {
             int index = IndexOf(key);
@@ -687,6 +911,9 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
+        /// <summary>
+        /// Enumerates the elements of a <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </summary>
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly OrderedDictionary<TKey, TValue> _orderedDictionary;
@@ -694,6 +921,10 @@ namespace Microsoft.Collections.Extensions
             private int _index;
             private KeyValuePair<TKey, TValue> _current;
 
+            /// <summary>
+            /// Gets the element at the current position of the enumerator.
+            /// </summary>
+            /// <returns>The element in the <see cref="OrderedDictionary{TKey, TValue}" /> at the current position of the enumerator.</returns>
             public KeyValuePair<TKey, TValue> Current => _current;
 
             object IEnumerator.Current => _current;
@@ -705,10 +936,18 @@ namespace Microsoft.Collections.Extensions
                 _index = 0;
             }
 
+            /// <summary>
+            /// Releases all resources used by the <see cref="OrderedDictionary{TKey, TValue}.Enumerator" />.
+            /// </summary>
             public void Dispose()
             {
             }
 
+            /// <summary>
+            /// Advances the enumerator to the next element of the <see cref="OrderedDictionary{TKey, TValue}" />.
+            /// </summary>
+            /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+            /// <exception cref="InvalidOperationException">The collection was modified after the enumerator was created.</exception>
             public bool MoveNext()
             {
                 if (_version != _orderedDictionary._version)
