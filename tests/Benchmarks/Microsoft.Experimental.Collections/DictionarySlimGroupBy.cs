@@ -90,7 +90,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
                 if (g == null) g = new Grouping<TKey, TSource>(k);
                 g.Add(t);
             }
-            return dict.Values;
+            return dict.Select(x => x.Value);
         }
     }
 }

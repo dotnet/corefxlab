@@ -20,7 +20,7 @@ namespace Microsoft.Collections.Extensions
     /// The MultiValueDictionary can also be viewed as a IReadOnlyDictionary&lt;TKey,IReadOnlyCollection&lt;TValue&gt;t&gt;
     /// where the <see cref="IReadOnlyCollection{TValue}" /> is abstracted from the view of the programmer.
     /// 
-    /// For a read-only MultiValueDictionary, see <see cref="ILookup{TKey, TValue}" />.
+    /// For a read-only MultiValueDictionary, see <see cref="System.Linq.ILookup{TKey, TValue}" />.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>

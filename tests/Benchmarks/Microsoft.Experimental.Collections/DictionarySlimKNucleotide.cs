@@ -652,7 +652,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
                 var start = threeStart;
                 while (--l > 0) rollingKey = (rollingKey << 2) | firstBlock[start++];
                 var dict = new DictionarySlim<long, int>(1024);
-                
+
                 for (int i = start; i < firstBlock.Length; i++)
                     Check(dict, ref rollingKey, firstBlock[i], mask);
 
@@ -667,7 +667,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
                 var lastBlock = threeBlocks[lastBlockId];
                 for (int i = 0; i < threeEnd; i++)
                     Check(dict, ref rollingKey, lastBlock[i], mask);
-                
+
                 return summary(dict);
             });
         }
@@ -675,7 +675,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         private string WriteFrequencies(DictionarySlim<long, int> freq, int fragmentLength)
         {
             var sb = new StringBuilder();
-            double percent = 100.0 / freq.Values.Sum();
+            double percent = 100.0 / freq.Select(x => x.Value).Sum();
             foreach (var kv in freq.OrderByDescending(i => i.Value))
             {
                 var keyChars = new char[fragmentLength];

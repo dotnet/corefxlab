@@ -1,0 +1,786 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Experimental.Collections</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Collections.Extensions.DictionarySlim`2">
+             <summary>
+             A lightweight Dictionary with three principal differences compared to <see cref="T:System.Collections.Generic.Dictionary`2"/>
+            
+             1) It is possible to do "get or add" in a single lookup using <see cref="M:Microsoft.Collections.Extensions.DictionarySlim`2.GetOrAddValueRef(`0)"/>. For
+             values that are value types, this also saves a copy of the value.
+             2) It assumes it is cheap to equate values.
+             3) It assumes the keys implement <see cref="T:System.IEquatable`1"/> or else Equals() and they are cheap and sufficient.
+             </summary>
+             <remarks>
+             1) This avoids having to do separate lookups (<see cref="M:System.Collections.Generic.Dictionary`2.TryGetValue(`0,`1@)"/>
+             followed by <see cref="M:System.Collections.Generic.Dictionary`2.Add(`0,`1)"/>.
+             There is not currently an API exposed to get a value by ref without adding if the key is not present.
+             2) This means it can save space by not storing hash codes.
+             3) This means it can avoid storing a comparer, and avoid the likely virtual call to a comparer.
+             </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.#ctor">
+            <summary>
+            Construct with default capacity.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.#ctor(System.Int32)">
+            <summary>
+            Construct with at least the specified capacity for
+            entries before resizing must occur.
+            </summary>
+            <param name="capacity">Requested minimum capacity</param>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.DictionarySlim`2.Count">
+            <summary>
+            Count of entries in the dictionary.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.Clear">
+            <summary>
+            Clears the dictionary. Note that this invalidates any active enumerators.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.ContainsKey(`0)">
+            <summary>
+            Looks for the specified key in the dictionary.
+            </summary>
+            <param name="key">Key to look for</param>
+            <returns>true if the key is present, otherwise false</returns>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value if present for the specified key.
+            </summary>
+            <param name="key">Key to look for</param>
+            <param name="value">Value found, otherwise default(TValue)</param>
+            <returns>true if the key is present, otherwise false</returns>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.Remove(`0)">
+            <summary>
+            Removes the entry if present with the specified key.
+            </summary>
+            <param name="key">Key to look for</param>
+            <returns>true if the key is present, false if it is not</returns>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.GetOrAddValueRef(`0)">
+            <summary>
+            Gets the value for the specified key, or, if the key is not present,
+            adds an entry and returns the value by ref. This makes it possible to
+            add or update a value in a single look up operation.
+            </summary>
+            <param name="key">Key to look for</param>
+            <returns>Reference to the new or existing value</returns>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.GetEnumerator">
+            <summary>
+            Gets an enumerator over the dictionary
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator">
+            <summary>
+            Gets an enumerator over the dictionary
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an enumerator over the dictionary
+            </summary>
+        </member>
+        <member name="T:Microsoft.Collections.Extensions.DictionarySlim`2.Enumerator">
+            <summary>
+            Enumerator
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.Enumerator.MoveNext">
+            <summary>
+            Move to next
+            </summary>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.DictionarySlim`2.Enumerator.Current">
+            <summary>
+            Get current value
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.DictionarySlim`2.Enumerator.Dispose">
+            <summary>
+            Dispose the enumerator
+            </summary>
+        </member>
+        <member name="T:Microsoft.Collections.Extensions.MultiValueDictionary`2">
+            <summary>
+            A MultiValueDictionary can be viewed as a <see cref="T:System.Collections.IDictionary" /> that allows multiple 
+            values for any given unique key. While the MultiValueDictionary API is 
+            mostly the same as that of a regular <see cref="T:System.Collections.IDictionary" />, there is a distinction
+            in that getting the value for a key returns a <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> of values
+            rather than a single value associated with that key. Additionally, 
+            there is functionality to allow adding or removing more than a single
+            value at once. 
+            
+            The MultiValueDictionary can also be viewed as a IReadOnlyDictionary&lt;TKey,IReadOnlyCollection&lt;TValue&gt;t&gt;
+            where the <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> is abstracted from the view of the programmer.
+            
+            For a read-only MultiValueDictionary, see <see cref="T:System.Linq.ILookup`2" />.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+        </member>
+        <member name="F:Microsoft.Collections.Extensions.MultiValueDictionary`2._dictionary">
+            <summary>
+            The private dictionary that this class effectively wraps around
+            </summary>
+        </member>
+        <member name="F:Microsoft.Collections.Extensions.MultiValueDictionary`2.NewCollectionFactory">
+            <summary>
+            The function to construct a new <see cref="T:System.Collections.Generic.ICollection`1"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Microsoft.Collections.Extensions.MultiValueDictionary`2._version">
+            <summary>
+            The current version of this MultiValueDictionary used to determine MultiValueDictionary modification
+            during enumeration
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the default initial capacity, and uses the default
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that is 
+            empty, has the specified initial capacity, and uses the default <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>
+            for <typeparamref name="TKey"/>.
+            </summary>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">capacity must be >= 0</exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class 
+            that is empty, has the default initial capacity, and uses the 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class 
+            that is empty, has the specified initial capacity, and uses the 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Capacity must be >= 0</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt; and uses the 
+            default <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for the <typeparamref name="TKey"/> type.
+            </summary>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt; and uses the 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the default initial capacity, and uses the default
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Int32)">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the specified initial capacity, and uses the default
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Capacity must be >= 0</exception>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the default initial capacity, and uses the specified
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the specified initial capacity, and uses the specified
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Capacity must be >= 0</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt;
+            and uses the default <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for the <typeparamref name="TKey"/> type.
+            The internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt;
+            and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for the <typeparamref name="TKey"/> type.
+            The internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><typeparamref name="TValueCollection"/> must not have
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Func{``0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the default initial capacity, and uses the default
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Int32,System.Func{``0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the specified initial capacity, and uses the default
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param> 
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Capacity must be >= 0</exception>
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEqualityComparer{`0},System.Func{``0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the default initial capacity, and uses the specified
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param> 
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Int32,System.Collections.Generic.IEqualityComparer{`0},System.Func{``0})">
+            <summary>
+            Creates a new new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> 
+            class that is empty, has the specified initial capacity, and uses the specified
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for <typeparamref name="TKey"/>. The 
+            internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="capacity">Initial number of keys that the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> will allocate space for</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param> 
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Capacity must be >= 0</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}},System.Func{``0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt;
+            and uses the default <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for the <typeparamref name="TKey"/> type.
+            The internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param> 
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Create``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.IReadOnlyCollection{`1}}},System.Collections.Generic.IEqualityComparer{`0},System.Func{``0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> class that contains 
+            elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt;
+            and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for the <typeparamref name="TKey"/> type.
+            The internal dictionary will use instances of the <typeparamref name="TValueCollection"/>
+            class as its collection type.
+            </summary>
+            <typeparam name="TValueCollection">
+            The collection type that this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />
+            will contain in its internal dictionary.
+            </typeparam>
+            <param name="enumerable">IEnumerable to copy elements into this from</param>
+            <param name="comparer">Specified comparer to use for the <typeparamref name="TKey"/>s</param>
+            <param name="collectionFactory">A function to create a new <see cref="T:System.Collections.Generic.ICollection`1"/> to use
+            in the internal dictionary store of this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.</param> 
+            <returns>A new <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" /> with the specified
+            parameters.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="collectionFactory"/> must create collections with
+            IsReadOnly set to true by default.</exception>
+            <exception cref="T:System.ArgumentNullException">enumerable must be non-null</exception>
+            <remarks>If <paramref name="comparer"/> is set to null, then the default <see cref="T:System.Collections.IEqualityComparer" /> for <typeparamref name="TKey"/> is used.</remarks>
+            <remarks>
+            Note that <typeparamref name="TValueCollection"/> must implement <see cref="T:System.Collections.Generic.ICollection`1"/>
+            in addition to being constructable through new(). The collection returned from the constructor
+            must also not have IsReadOnly set to True by default.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds the specified <typeparamref name="TKey"/> and <typeparamref name="TValue"/> to the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the element to add.</param>
+            <param name="value">The <typeparamref name="TValue"/> of the element to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <c>null</c>.</exception>
+            <remarks>
+            Unlike the Add for <see cref="T:System.Collections.IDictionary" />, the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> Add will not
+            throw any exceptions. If the given <typeparamref name="TKey"/> is already in the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>,
+            then <typeparamref name="TValue"/> will be added to <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> associated with <paramref name="key"/>
+            </remarks>
+            <remarks>
+            A call to this Add method will always invalidate any currently running enumeration regardless
+            of whether the Add method actually modified the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2" />.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.AddRange(`0,System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            Adds a number of key-value pairs to this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>, where
+            the key for each value is <paramref name="key"/>, and the value for a pair
+            is an element from <paramref name="values"/>
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of all entries to add</param>
+            <param name="values">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of values to add</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> and <paramref name="values"/> must be non-null</exception>
+            <remarks>
+            A call to this AddRange method will always invalidate any currently running enumeration regardless
+            of whether the AddRange method actually modified the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Remove(`0)">
+            <summary>
+            Removes every <typeparamref name="TValue"/> associated with the given <typeparamref name="TKey"/>
+            from the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the elements to remove</param>
+            <returns><c>true</c> if the removal was successful; otherwise <c>false</c></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Remove(`0,`1)">
+            <summary>
+            Removes the first instance (if any) of the given <typeparamref name="TKey"/>-<typeparamref name="TValue"/> 
+            pair from this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>. 
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the element to remove</param>
+            <param name="value">The <typeparamref name="TValue"/> of the element to remove</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+            <returns><c>true</c> if the removal was successful; otherwise <c>false</c></returns>
+            <remarks>
+            If the <typeparamref name="TValue"/> being removed is the last one associated with its <typeparamref name="TKey"/>, then that 
+            <typeparamref name="TKey"/> will be removed from the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> and its 
+            associated <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> will be freed as if a call to <see cref="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Remove(`0)"/>
+            had been made.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Contains(`0,`1)">
+            <summary>
+            Determines if the given <typeparamref name="TKey"/>-<typeparamref name="TValue"/> 
+            pair exists within this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the element.</param>
+            <param name="value">The <typeparamref name="TValue"/> of the element.</param>
+            <returns><c>true</c> if found; otherwise <c>false</c></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.ContainsValue(`1)">
+            <summary>
+            Determines if the given <typeparamref name="TValue"/> exists within this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <param name="value">A <typeparamref name="TValue"/> to search the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> for</param>
+            <returns><c>true</c> if the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> contains the <paramref name="value"/>; otherwise <c>false</c></returns>      
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Clear">
+            <summary>
+            Removes every <typeparamref name="TKey"/> and <typeparamref name="TValue"/> from this 
+            <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines if the given <typeparamref name="TKey"/> exists within this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> and has
+            at least one <typeparamref name="TValue"/> associated with it.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> to search the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> for</param>
+            <returns><c>true</c> if the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> contains the requested <typeparamref name="TKey"/>;
+            otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.MultiValueDictionary`2.Keys">
+            <summary>
+            Gets each <typeparamref name="TKey"/> in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> that
+            has one or more associated <typeparamref name="TValue"/>.
+            </summary>
+            <value>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing each <typeparamref name="TKey"/> 
+            in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> that has one or more associated 
+            <typeparamref name="TValue"/>.
+            </value>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.TryGetValue(`0,System.Collections.Generic.IReadOnlyCollection{`1}@)">
+            <summary>
+            Attempts to get the <typeparamref name="TValue"/> associated with the given
+            <typeparamref name="TKey"/> and place it into <paramref name="value"/>.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the element to retrieve</param>
+            <param name="value">
+            When this method returns, contains the <typeparamref name="TValue"/> associated with the specified
+            <typeparamref name="TKey"/> if it is found; otherwise contains the default value of <typeparamref name="TValue"/>.
+            </param>
+            <returns>
+            <c>true</c> if the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> contains an element with the specified 
+            <typeparamref name="TKey"/>; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.MultiValueDictionary`2.Values">
+            <summary>
+            Gets an enumerable of <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> from this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>,
+            where each <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> is the collection of every <typeparamref name="TValue"/> associated
+            with a <typeparamref name="TKey"/> present in the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>. 
+            </summary>
+            <value>An IEnumerable of each <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> in this 
+            <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/></value>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.MultiValueDictionary`2.Item(`0)">
+            <summary>
+            Get every <typeparamref name="TValue"/> associated with the given <typeparamref name="TKey"/>. If 
+            <paramref name="key"/> is not found in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>, will 
+            throw a <see cref="T:System.Collections.Generic.KeyNotFoundException"/>.
+            </summary>
+            <param name="key">The <typeparamref name="TKey"/> of the elements to retrieve.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException"><paramref name="key"/> does not have any associated 
+            <typeparamref name="TValue"/>s in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.</exception>
+            <value>
+            An <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> containing every <typeparamref name="TValue"/>
+            associated with <paramref name="key"/>.
+            </value>
+            <remarks>
+            Note that the <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> returned will change alongside any changes 
+            to the <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/> 
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Collections.Extensions.MultiValueDictionary`2.Count">
+            <summary>
+            Returns the number of <typeparamref name="TKey"/>s with one or more associated <typeparamref name="TValue"/>
+            in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <value>The number of <typeparamref name="TKey"/>s in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.</value>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.GetEnumerator">
+            <summary>
+            Get an Enumerator over the <typeparamref name="TKey"/>-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>
+            pairs in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.
+            </summary>
+            <returns>an Enumerator over the <typeparamref name="TKey"/>-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>
+            pairs in this <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Collections.Extensions.MultiValueDictionary`2.Enumerator">
+            <summary>
+            The Enumerator class for a <see cref="T:Microsoft.Collections.Extensions.MultiValueDictionary`2"/>
+            that iterates over <typeparamref name="TKey"/>-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>
+            pairs.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Enumerator.#ctor(Microsoft.Collections.Extensions.MultiValueDictionary{`0,`1})">
+            <summary>
+            Constructor for the enumerator
+            </summary>
+            <param name="multiValueDictionary">A MultiValueDictionary to iterate over</param>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Enumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Enumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+        </member>
+        <member name="M:Microsoft.Collections.Extensions.MultiValueDictionary`2.Enumerator.Dispose">
+            <summary>
+            Frees resources associated with this Enumerator
+            </summary>
+        </member>
+        <member name="T:Microsoft.Collections.Extensions.MultiValueDictionary`2.InnerCollectionView">
+            <summary>
+            An inner class that functions as a view of an ICollection within a MultiValueDictionary
+            </summary>
+        </member>
+        <member name="T:System.Strings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:System.Strings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:System.Strings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:System.Strings.Arg_HTCapacityOverflow">
+            <summary>
+              Looks up a localized string similar to Hashtable&apos;s capacity overflowed and went negative. Check load factor, capacity and the current size of the table..
+            </summary>
+        </member>
+        <member name="P:System.Strings.ArgumentOutOfRange_Count">
+            <summary>
+              Looks up a localized string similar to Count must be positive and count must refer to a location within the string/array/collection..
+            </summary>
+        </member>
+        <member name="P:System.Strings.ArgumentOutOfRange_Index">
+            <summary>
+              Looks up a localized string similar to Index was out of range. Must be non-negative and less than the size of the collection..
+            </summary>
+        </member>
+        <member name="P:System.Strings.ArgumentOutOfRange_ListInsert">
+            <summary>
+              Looks up a localized string similar to Index must be within the bounds of the List..
+            </summary>
+        </member>
+        <member name="P:System.Strings.ArgumentOutOfRange_NeedNonNegNum">
+            <summary>
+              Looks up a localized string similar to Non-negative number required..
+            </summary>
+        </member>
+        <member name="P:System.Strings.CopyTo_ArgumentsTooSmall">
+            <summary>
+              Looks up a localized string similar to Destination array is not long enough to copy all the items in the collection. Check array index and length..
+            </summary>
+        </member>
+        <member name="P:System.Strings.Create_TValueCollectionReadOnly">
+            <summary>
+              Looks up a localized string similar to The specified TValueCollection creates collections that have IsReadOnly set to true by default. TValueCollection must be a mutable ICollection..
+            </summary>
+        </member>
+        <member name="P:System.Strings.InvalidOperation_ConcurrentOperationsNotSupported">
+            <summary>
+              Looks up a localized string similar to Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection&apos;s state is no longer correct..
+            </summary>
+        </member>
+        <member name="P:System.Strings.InvalidOperation_EnumEnded">
+            <summary>
+              Looks up a localized string similar to Enumeration already finished..
+            </summary>
+        </member>
+        <member name="P:System.Strings.InvalidOperation_EnumFailedVersion">
+            <summary>
+              Looks up a localized string similar to Collection was modified; enumeration operation may not execute..
+            </summary>
+        </member>
+        <member name="P:System.Strings.InvalidOperation_EnumNotStarted">
+            <summary>
+              Looks up a localized string similar to Enumeration has not started. Call MoveNext..
+            </summary>
+        </member>
+        <member name="P:System.Strings.InvalidOperation_EnumOpCantHappen">
+            <summary>
+              Looks up a localized string similar to Enumeration has either not started or has already finished..
+            </summary>
+        </member>
+        <member name="P:System.Strings.ReadOnly_Modification">
+            <summary>
+              Looks up a localized string similar to The collection is read-only.
+            </summary>
+        </member>
+    </members>
+</doc>

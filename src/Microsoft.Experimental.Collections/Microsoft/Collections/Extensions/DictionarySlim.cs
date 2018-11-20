@@ -12,11 +12,20 @@ using System.Runtime.CompilerServices;
 namespace Microsoft.Collections.Extensions
 {
     /// <summary>
-    /// DictionarySlim<TKey, TValue> is similar to Dictionary<TKey, TValue> but optimized in three ways:
-    /// 1) It allows access to the value by ref replacing the common TryGetValue and Add pattern.
-    /// 2) It does not store the hash code (assumes it is cheap to equate values).
-    /// 3) It does not accept an equality comparer (assumes Object.GetHashCode() and Object.Equals() or overridden implementation are cheap and sufficient).
+    /// A lightweight Dictionary with three principal differences compared to <see cref="Dictionary{TKey, TValue}"/>
+    ///
+    /// 1) It is possible to do "get or add" in a single lookup using <see cref="GetOrAddValueRef(TKey)"/>. For
+    /// values that are value types, this also saves a copy of the value.
+    /// 2) It assumes it is cheap to equate values.
+    /// 3) It assumes the keys implement <see cref="IEquatable{TKey}"/> or else Equals() and they are cheap and sufficient.
     /// </summary>
+    /// <remarks>
+    /// 1) This avoids having to do separate lookups (<see cref="Dictionary{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
+    /// followed by <see cref="Dictionary{TKey, TValue}.Add(TKey, TValue)"/>.
+    /// There is not currently an API exposed to get a value by ref without adding if the key is not present.
+    /// 2) This means it can save space by not storing hash codes.
+    /// 3) This means it can avoid storing a comparer, and avoid the likely virtual call to a comparer.
+    /// </remarks>
     [DebuggerTypeProxy(typeof(DictionarySlimDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     public class DictionarySlim<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : IEquatable<TKey>
@@ -45,12 +54,20 @@ namespace Microsoft.Collections.Extensions
             public int next;
         }
 
+        /// <summary>
+        /// Construct with default capacity.
+        /// </summary>
         public DictionarySlim()
         {
             _buckets = HashHelpers.SizeOneIntArray;
             _entries = InitialEntries;
         }
 
+        /// <summary>
+        /// Construct with at least the specified capacity for
+        /// entries before resizing must occur.
+        /// </summary>
+        /// <param name="capacity">Requested minimum capacity</param>
         public DictionarySlim(int capacity)
         {
             if (capacity < 0)
@@ -62,12 +79,14 @@ namespace Microsoft.Collections.Extensions
             _entries = new Entry[capacity];
         }
 
+        /// <summary>
+        /// Count of entries in the dictionary.
+        /// </summary>
         public int Count => _count;
 
-        // in this implementation, never goes below 1
-        public int Capacity => _entries.Length;
-
-        // Invalidates all enumerators
+        /// <summary>
+        /// Clears the dictionary. Note that this invalidates any active enumerators.
+        /// </summary>
         public void Clear()
         {
             _count = 0;
@@ -76,6 +95,11 @@ namespace Microsoft.Collections.Extensions
             _entries = InitialEntries;
         }
 
+        /// <summary>
+        /// Looks for the specified key in the dictionary.
+        /// </summary>
+        /// <param name="key">Key to look for</param>
+        /// <returns>true if the key is present, otherwise false</returns>
         public bool ContainsKey(TKey key)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
@@ -98,6 +122,12 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Gets the value if present for the specified key.
+        /// </summary>
+        /// <param name="key">Key to look for</param>
+        /// <param name="value">Value found, otherwise default(TValue)</param>
+        /// <returns>true if the key is present, otherwise false</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
@@ -124,6 +154,11 @@ namespace Microsoft.Collections.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Removes the entry if present with the specified key.
+        /// </summary>
+        /// <param name="key">Key to look for</param>
+        /// <returns>true if the key is present, false if it is not</returns>
         public bool Remove(TKey key)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
@@ -172,6 +207,13 @@ namespace Microsoft.Collections.Extensions
 
         // Not safe for concurrent _reads_ (at least, if either of them add)
         // For concurrent reads, prefer TryGetValue(key, out value)
+        /// <summary>
+        /// Gets the value for the specified key, or, if the key is not present,
+        /// adds an entry and returns the value by ref. This makes it possible to
+        /// add or update a value in a single look up operation.
+        /// </summary>
+        /// <param name="key">Key to look for</param>
+        /// <returns>Reference to the new or existing value</returns>
         public ref TValue GetOrAddValueRef(TKey key)
         {
             if (key == null) ThrowHelper.ThrowKeyArgumentNullException();
@@ -248,38 +290,25 @@ namespace Microsoft.Collections.Extensions
             return entries;
         }
 
-        public KeyCollection Keys => new KeyCollection(this);
-
-        public ValueCollection Values => new ValueCollection(this);
-
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
-        {
-            if (array == null)
-                throw new ArgumentNullException("array");
-            // Let the runtime validate the index
-
-            Entry[] entries = _entries;
-            int i = 0;
-            int count = _count;
-            while (count > 0)
-            {
-                Entry entry = entries[i];
-                if (entry.next > -2) // part of free list?
-                {
-                    count--;
-                    array[index++] = new KeyValuePair<TKey, TValue>(
-                        entry.key,
-                        entry.value);
-                }
-                i++;
-            }
-        }
-
+        /// <summary>
+        /// Gets an enumerator over the dictionary
+        /// </summary>
         public Enumerator GetEnumerator() => new Enumerator(this); // avoid boxing
+
+        /// <summary>
+        /// Gets an enumerator over the dictionary
+        /// </summary>
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() =>
             new Enumerator(this);
+
+        /// <summary>
+        /// Gets an enumerator over the dictionary
+        /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
+        /// <summary>
+        /// Enumerator
+        /// </summary>
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly DictionarySlim<TKey, TValue> _dictionary;
@@ -295,6 +324,9 @@ namespace Microsoft.Collections.Extensions
                 _current = default;
             }
 
+            /// <summary>
+            /// Move to next
+            /// </summary>
             public bool MoveNext()
             {
                 if (_count == 0)
@@ -314,6 +346,9 @@ namespace Microsoft.Collections.Extensions
                 return true;
             }
 
+            /// <summary>
+            /// Get current value
+            /// </summary>
             public KeyValuePair<TKey, TValue> Current => _current;
 
             object IEnumerator.Current => _current;
@@ -325,199 +360,10 @@ namespace Microsoft.Collections.Extensions
                 _current = default;
             }
 
+            /// <summary>
+            /// Dispose the enumerator
+            /// </summary>
             public void Dispose() { }
-        }
-
-        public struct KeyCollection : ICollection<TKey>, IReadOnlyCollection<TKey>
-        {
-            private readonly DictionarySlim<TKey, TValue> _dictionary;
-
-            internal KeyCollection(DictionarySlim<TKey, TValue> dictionary)
-            {
-                _dictionary = dictionary;
-            }
-
-            public int Count => _dictionary._count;
-
-            bool ICollection<TKey>.IsReadOnly => true;
-
-            void ICollection<TKey>.Add(TKey item) =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            void ICollection<TKey>.Clear() =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            public bool Contains(TKey item) => _dictionary.ContainsKey(item);
-
-            bool ICollection<TKey>.Remove(TKey item) =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            void ICollection<TKey>.CopyTo(TKey[] array, int index)
-            {
-                if (array == null)
-                    throw new ArgumentNullException("array");
-                // Let the runtime validate the index
-
-                Entry[] entries = _dictionary._entries;
-                int i = 0;
-                int count = _dictionary._count;
-                while (count > 0)
-                {
-                    Entry entry = entries[i];
-                    if (entry.next > -2)  // part of free list?
-                    {
-                        array[index++] = entry.key;
-                        count--;
-                    }
-                    i++;
-                }
-            }
-
-            public Enumerator GetEnumerator() => new Enumerator(_dictionary); // avoid boxing
-            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => new Enumerator(_dictionary);
-            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
-
-            public struct Enumerator : IEnumerator<TKey>
-            {
-                private readonly DictionarySlim<TKey, TValue> _dictionary;
-                private int _index;
-                private int _count;
-                private TKey _current;
-
-                internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
-                {
-                    _dictionary = dictionary;
-                    _index = 0;
-                    _count = _dictionary._count;
-                    _current = default;
-                }
-
-                public TKey Current => _current;
-
-                object IEnumerator.Current => _current;
-
-                public void Dispose() { }
-
-                public bool MoveNext()
-                {
-                    if (_count == 0)
-                    {
-                        _current = default;
-                        return false;
-                    }
-
-                    _count--;
-
-                    while (_dictionary._entries[_index].next < -1)
-                        _index++;
-
-                    _current = _dictionary._entries[_index++].key;
-                    return true;
-                }
-
-                void IEnumerator.Reset()
-                {
-                    _index = 0;
-                    _count = _dictionary._count;
-                    _current = default;
-                }
-            }
-        }
-
-        public struct ValueCollection : ICollection<TValue>, IReadOnlyCollection<TValue>
-        {
-            private readonly DictionarySlim<TKey, TValue> _dictionary;
-
-            internal ValueCollection(DictionarySlim<TKey, TValue> dictionary)
-            {
-                _dictionary = dictionary;
-            }
-
-            public int Count => _dictionary._count;
-
-            bool ICollection<TValue>.IsReadOnly => true;
-
-            void ICollection<TValue>.Add(TValue item) =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            void ICollection<TValue>.Clear() =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            bool ICollection<TValue>.Contains(TValue item) =>
-                ThrowHelper.ThrowNotSupportedException(); // performance antipattern
-
-            bool ICollection<TValue>.Remove(TValue item) =>
-                ThrowHelper.ThrowNotSupportedException_ReadOnly_Modification();
-
-            void ICollection<TValue>.CopyTo(TValue[] array, int index)
-            {
-                if (array == null)
-                    throw new ArgumentNullException("array");
-                // Let the runtime validate the index
-
-                Entry[] entries = _dictionary._entries;
-                int i = 0;
-                int count = _dictionary._count;
-                while (count > 0)
-                {
-                    if (entries[i].next > -2)  // part of free list?
-                    {
-                        array[index++] = entries[i].value;
-                        count--;
-                    }
-                    i++;
-                }
-            }
-
-            public Enumerator GetEnumerator() => new Enumerator(_dictionary); // avoid boxing
-            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(_dictionary);
-            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_dictionary);
-
-            public struct Enumerator : IEnumerator<TValue>
-            {
-                private readonly DictionarySlim<TKey, TValue> _dictionary;
-                private int _index;
-                private int _count;
-                private TValue _current;
-
-                internal Enumerator(DictionarySlim<TKey, TValue> dictionary)
-                {
-                    _dictionary = dictionary;
-                    _index = 0;
-                    _count = _dictionary._count;
-                    _current = default;
-                }
-
-                public TValue Current => _current;
-
-                object IEnumerator.Current => _current;
-
-                public void Dispose() { }
-
-                public bool MoveNext()
-                {
-                    if (_count == 0)
-                    {
-                        _current = default;
-                        return false;
-                    }
-
-                    _count--;
-
-                    while (_dictionary._entries[_index].next < -1)
-                        _index++;
-
-                    _current = _dictionary._entries[_index++].value;
-                    return true;
-                }
-
-                void IEnumerator.Reset()
-                {
-                    _index = 0;
-                    _count = _dictionary._count;
-                    _current = default;
-                }
-            }
         }
     }
 
