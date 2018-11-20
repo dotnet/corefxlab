@@ -2,19 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Text.ValueBuilder.Tests
 {
     public class VariantTests
     {
-        [Fact]
-        public void Size()
-        {
-            Assert.Equal(32, Marshal.SizeOf<Variant>());
-        }
-
         [Theory,
             InlineData(0),
             InlineData(int.MaxValue),
