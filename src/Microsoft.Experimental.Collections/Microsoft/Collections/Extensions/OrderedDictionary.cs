@@ -201,6 +201,7 @@ namespace Microsoft.Collections.Extensions
                 Array.Clear(_buckets, 0, _buckets.Length);
                 Array.Clear(_entries, 0, _count);
                 _count = 0;
+                ++_version;
             }
         }
 
@@ -326,7 +327,7 @@ namespace Microsoft.Collections.Extensions
         /// Returns the zero-based index of the element with the specified key within the <see cref="OrderedDictionary{TKey, TValue}" /> as an O(1) operation.
         /// </summary>
         /// <param name="key">The key of the element to locate.</param>
-        /// <returns>The zero-based index of the element with the specified key within the <see cref="OrderedDictionary{TKey, TValue}" />, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the element with the specified key within the <see cref="OrderedDictionary{TKey, TValue}" />, if found; otherwise, -1.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
         public int IndexOf(TKey key) => IndexOf(key, out _);
 
@@ -354,13 +355,15 @@ namespace Microsoft.Collections.Extensions
         /// </summary>
         /// <param name="fromIndex">The zero-based index of the element to move.</param>
         /// <param name="toIndex">The zero-based index to move the element to.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="fromIndex"/> is less than 0.
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="fromIndex"/> is less than 0.
         /// -or-
         /// <paramref name="fromIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />
         /// -or-
         /// <paramref name="toIndex"/> is less than 0.
         /// -or-
-        /// <paramref name="toIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" /></exception>
+        /// <paramref name="toIndex"/> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />
+        /// </exception>
         public void Move(int fromIndex, int toIndex)
         {
             if ((uint)fromIndex >= (uint)Count)

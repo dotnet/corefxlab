@@ -23,7 +23,7 @@ namespace Microsoft.Collections.Extensions
             /// <summary>
             /// Gets the number of elements contained in the <see cref="OrderedDictionary{TKey, TValue}.KeyCollection" />.
             /// </summary>
-            /// <returns>The number of elements contained in the <see cref="OrderedDictionary{TKey, TValue}.KeyCollection" />. Retrieving the value of this property is an O(1) operation.</returns>
+            /// <returns>The number of elements contained in the <see cref="OrderedDictionary{TKey, TValue}.KeyCollection" />.</returns>
             public int Count => _orderedDictionary.Count;
 
             /// <summary>
