@@ -291,35 +291,6 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Copy the content of the dictionary, as <see cref="KeyValuePair{TKey, TValue}"/>,
-        /// to the specified array starting the specified index in the array.
-        /// </summary>
-        /// <param name="array">Array to copy into</param>
-        /// <param name="index">Index to start at</param>
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
-        {
-            if (array == null)
-                throw new ArgumentNullException("array");
-            // Let the runtime validate the index
-
-            Entry[] entries = _entries;
-            int i = 0;
-            int count = _count;
-            while (count > 0)
-            {
-                Entry entry = entries[i];
-                if (entry.next > -2) // part of free list?
-                {
-                    count--;
-                    array[index++] = new KeyValuePair<TKey, TValue>(
-                        entry.key,
-                        entry.value);
-                }
-                i++;
-            }
-        }
-
-        /// <summary>
         /// Gets an enumerator over the dictionary
         /// </summary>
         public Enumerator GetEnumerator() => new Enumerator(this); // avoid boxing

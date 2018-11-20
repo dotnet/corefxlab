@@ -353,25 +353,6 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void CopyTo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 0;
-            d.GetOrAddValueRef('b') = 1;
-            var a = new KeyValuePair<char, int>[3];
-            d.CopyTo(a, 1);
-            Assert.Equal(KeyValuePair.Create('a', 0), a[1]);
-            Assert.Equal(KeyValuePair.Create('b', 1), a[2]);
-        }
-
-        [Fact]
-        public void CopyTo_Null()
-        {
-            var d = new DictionarySlim<char, int>();
-            Assert.Throws<ArgumentNullException>(() => d.CopyTo(null, 0));
-        }
-
-        [Fact]
         public void Clear()
         {
             var d = new DictionarySlim<int, int>();
@@ -385,38 +366,6 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal(false, d.ContainsKey(1));
             Assert.Equal(false, d.ContainsKey(2));
             Assert.Equal(1, d.GetCapacity());
-        }
-
-        [Fact]
-        public void CopyToThreeRemoveOne()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            Assert.True(d.Remove('b'));
-            var a = new KeyValuePair<char, int>[3];
-            d.CopyTo(a, 1);
-            Assert.Equal(KeyValuePair.Create('\0', 0), a[0]);
-            Assert.Equal(KeyValuePair.Create('a', 1), a[1]);
-            Assert.Equal(KeyValuePair.Create('c', 3), a[2]);
-        }
-
-        [Fact]
-        public void CopyToThreeRemoveTwo()
-        {
-            var d = new DictionarySlim<char, int>();
-            d.GetOrAddValueRef('a') = 1;
-            d.GetOrAddValueRef('b') = 2;
-            d.GetOrAddValueRef('c') = 3;
-            Assert.True(d.Remove('b'));
-            Assert.True(d.Remove('c'));
-            d.GetOrAddValueRef('d') = 4;
-            var a = new KeyValuePair<char, int>[3];
-            d.CopyTo(a, 1);
-            Assert.Equal(KeyValuePair.Create('\0', 0), a[0]);
-            Assert.Equal(KeyValuePair.Create('a', 1), a[1]);
-            Assert.Equal(KeyValuePair.Create('d', 4), a[2]);
         }
 
         [Fact]
