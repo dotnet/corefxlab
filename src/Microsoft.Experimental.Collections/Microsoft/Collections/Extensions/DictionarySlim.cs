@@ -47,7 +47,7 @@ namespace Microsoft.Collections.Extensions
 
         public DictionarySlim()
         {
-            _buckets = HashHelpers.DictionarySlimSizeOneIntArray;
+            _buckets = HashHelpers.SizeOneIntArray;
             _entries = InitialEntries;
         }
 
@@ -72,7 +72,7 @@ namespace Microsoft.Collections.Extensions
         {
             _count = 0;
             _freeList = -1;
-            _buckets = HashHelpers.DictionarySlimSizeOneIntArray;
+            _buckets = HashHelpers.SizeOneIntArray;
             _entries = InitialEntries;
         }
 
