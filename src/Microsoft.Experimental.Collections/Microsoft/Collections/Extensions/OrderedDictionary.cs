@@ -56,9 +56,9 @@ namespace Microsoft.Collections.Extensions
         public int Count => _count;
 
         /// <summary>
-        /// Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of keys for the dictionary.
+        /// Gets the <see cref="IEqualityComparer{TKey}" /> that is used to determine equality of keys for the dictionary.
         /// </summary>
-        /// <returns>The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of keys for the current <see cref="OrderedDictionary{TKey, TValue}" /> and to provide hash values for the keys.</returns>
+        /// <returns>The <see cref="IEqualityComparer{TKey}" /> generic interface implementation that is used to determine equality of keys for the current <see cref="OrderedDictionary{TKey, TValue}" /> and to provide hash values for the keys.</returns>
         public IEqualityComparer<TKey> Comparer => _comparer ?? EqualityComparer<TKey>.Default;
 
         /// <summary>
@@ -162,10 +162,10 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that contains elements copied from the specified <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> and uses the specified <see cref="IEqualityComparer{T}" />.
+        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class that contains elements copied from the specified <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> and uses the specified <see cref="IEqualityComparer{TKey}" />.
         /// </summary>
         /// <param name="collection">The <see cref="IEnumerable{KeyValuePair{TKey, TValue}}" /> whose elements are copied to the new <see cref="OrderedDictionary{TKey, TValue}" />.</param>
-        /// <param name="comparer">The <see cref="IEqualityComparer{T}" /> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}" /> for the type of the key.</param>
+        /// <param name="comparer">The <see cref="IEqualityComparer{TKey}" /> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{TKey}" /> for the type of the key.</param>
         /// <exception cref="ArgumentNullException"><paramref name="collection" /> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
         public OrderedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer)
