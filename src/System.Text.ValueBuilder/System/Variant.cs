@@ -58,12 +58,7 @@ namespace System
                 || (typeof(T) == typeof(uint) && Type == VariantType.UInt32)
                 || (typeof(T) == typeof(ulong) && Type == VariantType.UInt64))
             {
-                // The JIT is able to generate more efficient code when including the
-                // code for CastTo<T>() directly.
-                fixed (void* u = &_union)
-                {
-                    value = *(T*)u;
-                }
+                value = CastTo<T>();
                 success = true;
             }
 
@@ -71,12 +66,9 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe T CastTo<T>() where T : unmanaged
+        private T CastTo<T>() where T : unmanaged
         {
-            fixed (void* u = &_union)
-            {
-                return *(T*)u;
-            }
+            return Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
         }
 
         // We have explicit constructors for each of the supported types for performance
