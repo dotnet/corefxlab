@@ -321,5 +321,47 @@ namespace System.Security.Cryptography.Tests.Asn1
                     () => writer.WriteBitString(Asn1Tag.EndOfContents, new byte[1]));
             }
         }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public static void WriteAfterDispose(bool empty)
+        {
+            using (AsnWriter writer = new AsnWriter(AsnEncodingRules.DER))
+            {
+                if (!empty)
+                {
+                    writer.WriteNull();
+                }
+
+                writer.Dispose();
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteBitString(ReadOnlySpan<byte>.Empty));
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteBitString(ReadOnlySpan<byte>.Empty, 1));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "unusedBitCount",
+                    () => writer.WriteBitString(ReadOnlySpan<byte>.Empty, 9));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteBitString(Asn1Tag.Boolean, ReadOnlySpan<byte>.Empty));
+
+                Asn1Tag tag = new Asn1Tag(TagClass.ContextSpecific, 11);
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteBitString(tag, ReadOnlySpan<byte>.Empty));
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteBitString(tag, ReadOnlySpan<byte>.Empty, 1));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "unusedBitCount",
+                    () => writer.WriteBitString(tag, ReadOnlySpan<byte>.Empty, 9));
+            }
+        }
     }
 }

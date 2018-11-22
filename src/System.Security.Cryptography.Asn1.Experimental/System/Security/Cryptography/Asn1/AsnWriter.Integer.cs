@@ -307,6 +307,8 @@ namespace System.Security.Cryptography.Asn1
 
         private void WriteIntegerCore(Asn1Tag tag, ReadOnlySpan<byte> value)
         {
+            CheckDisposed();
+
             if (value.IsEmpty)
             {
                 throw new CryptographicException(SR.Cryptography_Der_Invalid_Encoding);

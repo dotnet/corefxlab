@@ -26,6 +26,9 @@ namespace System.Security.Cryptography.Asn1
         {
             if (oid == null)
                 throw new ArgumentNullException(nameof(oid));
+
+            CheckDisposed();
+
             if (oid.Value == null)
                 throw new CryptographicException(SR.Argument_InvalidOidValue);
 
@@ -89,6 +92,10 @@ namespace System.Security.Cryptography.Asn1
         {
             if (oid == null)
                 throw new ArgumentNullException(nameof(oid));
+
+            CheckUniversalTag(tag, UniversalTagNumber.ObjectIdentifier);
+            CheckDisposed();
+
             if (oid.Value == null)
                 throw new CryptographicException(SR.Argument_InvalidOidValue);
 
@@ -149,6 +156,8 @@ namespace System.Security.Cryptography.Asn1
         // T-REC-X.690-201508 sec 8.19
         private void WriteObjectIdentifierCore(Asn1Tag tag, ReadOnlySpan<char> oidValue)
         {
+            CheckDisposed();
+
             // T-REC-X.690-201508 sec 8.19.4
             // The first character is in { 0, 1, 2 }, the second will be a '.', and a third (digit)
             // will also exist.

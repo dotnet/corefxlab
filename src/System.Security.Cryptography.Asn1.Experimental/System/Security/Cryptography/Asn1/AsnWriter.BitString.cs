@@ -63,8 +63,6 @@ namespace System.Security.Cryptography.Asn1
         // T-REC-X.690-201508 sec 8.6
         private void WriteBitStringCore(Asn1Tag tag, ReadOnlySpan<byte> bitString, int unusedBitCount)
         {
-            CheckDisposed();
-
             // T-REC-X.690-201508 sec 8.6.2.2
             if (unusedBitCount < 0 || unusedBitCount > 7)
             {
@@ -73,6 +71,8 @@ namespace System.Security.Cryptography.Asn1
                     unusedBitCount,
                     SR.Cryptography_Asn_UnusedBitCountRange);
             }
+
+            CheckDisposed();
 
             // T-REC-X.690-201508 sec 8.6.2.3
             if (bitString.Length == 0 && unusedBitCount != 0)

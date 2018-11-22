@@ -175,6 +175,8 @@ namespace System.Security.Cryptography.Asn1
 
         internal ReadOnlySpan<byte> EncodeAsSpan()
         {
+            CheckDisposed();
+
             if ((_nestingStack?.Count ?? 0) != 0)
             {
                 throw new InvalidOperationException(SR.Cryptography_AsnWriter_EncodeUnbalancedStack);

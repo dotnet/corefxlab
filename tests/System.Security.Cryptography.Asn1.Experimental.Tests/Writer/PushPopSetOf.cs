@@ -601,5 +601,22 @@ namespace System.Security.Cryptography.Tests.Asn1
                     () => writer.PushSetOf(Asn1Tag.EndOfContents));
             }
         }
+
+        [Theory]
+        [InlineData(PublicEncodingRules.BER)]
+        [InlineData(PublicEncodingRules.CER)]
+        [InlineData(PublicEncodingRules.DER)]
+        public static void PushSequence_PopSetOf(PublicEncodingRules ruleSet)
+        {
+            using (AsnWriter writer = new AsnWriter((AsnEncodingRules)ruleSet))
+            {
+                Asn1Tag tag = new Asn1Tag(TagClass.ContextSpecific, 3);
+
+                writer.PushSequence(tag);
+
+                Assert.Throws<InvalidOperationException>(
+                    () => writer.PopSetOf(tag));
+            }
+        }
     }
 }

@@ -275,5 +275,17 @@ namespace System.Security.Cryptography.Tests.Asn1
             base.VerifyWrite_CERSegmented_Span_CustomPrimitiveTag(input, contentByteCount);
 
         // UTF8 has no non-encodable values.
+        
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public new void WriteAfterDispose_Span(bool empty) =>
+            base.WriteAfterDispose_Span(empty);
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public new void WriteAfterDispose_String(bool empty) =>
+            base.WriteAfterDispose_String(empty);
     }
 }

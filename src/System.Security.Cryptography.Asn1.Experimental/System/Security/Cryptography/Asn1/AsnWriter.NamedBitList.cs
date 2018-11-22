@@ -68,6 +68,8 @@ namespace System.Security.Cryptography.Asn1
             if (enumValue == null)
                 throw new ArgumentNullException(nameof(enumValue));
 
+            CheckUniversalTag(tag, UniversalTagNumber.BitString);
+
             WriteNamedBitList(tag, enumValue.GetType(), enumValue);
         }
 
@@ -88,6 +90,8 @@ namespace System.Security.Cryptography.Asn1
         /// <exception cref="ObjectDisposedException">The writer has been Disposed.</exception>
         public void WriteNamedBitList<TEnum>(Asn1Tag tag, TEnum enumValue) where TEnum : struct
         {
+            CheckUniversalTag(tag, UniversalTagNumber.BitString);
+
             WriteNamedBitList(tag, typeof(TEnum), enumValue);
         }
 

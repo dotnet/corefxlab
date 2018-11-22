@@ -216,5 +216,57 @@ namespace System.Security.Cryptography.Tests.Asn1
                 Verify(writer, hex);
             }
         }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public static void WriteAfterDispose(bool empty)
+        {
+            using (AsnWriter writer = new AsnWriter(AsnEncodingRules.DER))
+            {
+                if (!empty)
+                {
+                    writer.WriteNull();
+                }
+
+                writer.Dispose();
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteUtcTime(DateTimeOffset.Now));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "value",
+                    () => writer.WriteUtcTime(DateTimeOffset.Now, 1999));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "value",
+                    () => writer.WriteUtcTime(DateTimeOffset.Now, 8999));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteUtcTime(Asn1Tag.Integer, DateTimeOffset.Now));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteUtcTime(Asn1Tag.Integer, DateTimeOffset.Now, 1999));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteUtcTime(Asn1Tag.Integer, DateTimeOffset.Now, 8999));
+
+                Asn1Tag tag = new Asn1Tag(TagClass.Application, 3);
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteUtcTime(tag, DateTimeOffset.Now));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "value",
+                    () => writer.WriteUtcTime(tag, DateTimeOffset.Now, 1999));
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    "value",
+                    () => writer.WriteUtcTime(tag, DateTimeOffset.Now, 8999));
+            }
+        }
     }
 }

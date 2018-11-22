@@ -161,5 +161,33 @@ namespace System.Security.Cryptography.Tests.Asn1
                     () => writer.WriteOctetString(Asn1Tag.EndOfContents, new byte[1]));
             }
         }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public static void WriteAfterDispose(bool empty)
+        {
+            using (AsnWriter writer = new AsnWriter(AsnEncodingRules.DER))
+            {
+                if (!empty)
+                {
+                    writer.WriteNull();
+                }
+
+                writer.Dispose();
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteOctetString(ReadOnlySpan<byte>.Empty));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteOctetString(Asn1Tag.Integer, ReadOnlySpan<byte>.Empty));
+
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteOctetString(
+                        new Asn1Tag(TagClass.Private, 3),
+                        ReadOnlySpan<byte>.Empty));
+            }
+        }
     }
 }

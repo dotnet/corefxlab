@@ -233,5 +233,115 @@ namespace System.Security.Cryptography.Tests.Asn1
                         (object)StringSplitOptions.RemoveEmptyEntries));
             }
         }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public static void WriteAfterDispose(bool empty)
+        {
+            using (AsnWriter writer = new AsnWriter(AsnEncodingRules.DER))
+            {
+                if (!empty)
+                {
+                    writer.WriteNull();
+                }
+
+                writer.Dispose();
+
+                // Type not enum
+                Assert.Throws<ArgumentException>(
+                    "enumType",
+                    () => writer.WriteNamedBitList(false));
+
+                // Type not enum
+                Assert.Throws<ArgumentException>(
+                    "enumType",
+                    () => writer.WriteNamedBitList((object)"hi"));
+
+                Assert.Throws<ArgumentNullException>(
+                    "enumValue",
+                    () => writer.WriteNamedBitList((object)null));
+
+                // valid input
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteNamedBitList(ReadNamedBitList.LongFlags.Mid));
+
+                // Type is not [Flags]
+                Assert.Throws<ArgumentException>(
+                    "tEnum",
+                    () => writer.WriteNamedBitList(ReadEnumerated.UIntBacked.Fluff));
+
+                // valid input
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteNamedBitList((object)ReadNamedBitList.ULongFlags.Mid));
+
+                // Unboxed type is [Flags]
+                Assert.Throws<ArgumentException>(
+                    "tEnum",
+                    () => writer.WriteNamedBitList((object)ReadEnumerated.SByteBacked.Fluff));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, false));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, (object)"hi"));
+
+                Assert.Throws<ArgumentNullException>(
+                    "enumValue",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, (object)null));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, ReadNamedBitList.LongFlags.Mid));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, ReadEnumerated.UIntBacked.Fluff));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, (object)ReadNamedBitList.ULongFlags.Mid));
+
+                Assert.Throws<ArgumentException>(
+                    "tag",
+                    () => writer.WriteNamedBitList(Asn1Tag.Integer, (object)ReadEnumerated.SByteBacked.Fluff));
+
+                Asn1Tag tag = new Asn1Tag(TagClass.Private, 6);
+
+                // Type not enum
+                Assert.Throws<ArgumentException>(
+                    "enumType",
+                    () => writer.WriteNamedBitList(tag, false));
+
+                // Type not enum
+                Assert.Throws<ArgumentException>(
+                    "enumType",
+                    () => writer.WriteNamedBitList(tag, (object)"hi"));
+
+                Assert.Throws<ArgumentNullException>(
+                    "enumValue",
+                    () => writer.WriteNamedBitList(tag, (object)null));
+
+                // valid input
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteNamedBitList(tag, ReadNamedBitList.LongFlags.Mid));
+
+                // Type is [Flags]
+                Assert.Throws<ArgumentException>(
+                    "tEnum",
+                    () => writer.WriteNamedBitList(tag, ReadEnumerated.UIntBacked.Fluff));
+
+                // valid input
+                Assert.Throws<ObjectDisposedException>(
+                    () => writer.WriteNamedBitList(tag, (object)ReadNamedBitList.ULongFlags.Mid));
+
+                // Unboxed type is not [Flags]
+                Assert.Throws<ArgumentException>(
+                    "tEnum",
+                    () => writer.WriteNamedBitList(tag, (object)ReadEnumerated.SByteBacked.Fluff));
+            }
+        }
     }
 }
