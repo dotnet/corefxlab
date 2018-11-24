@@ -24,7 +24,7 @@ namespace System.Buffers.Native
         int _bufferCount;
         bool[] _rented;
 
-        public static NativeMemoryPool Shared => s_shared;
+        public static new NativeMemoryPool Shared => s_shared;
 
         public NativeMemoryPool(int bufferSize, int bufferCount = 10)
         {
