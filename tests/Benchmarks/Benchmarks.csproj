@@ -5,6 +5,10 @@
     <OutputType>Exe</OutputType>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
     <NoWarn>$(NoWarn);CS0618</NoWarn>
+    <!-- Some packages restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.1' -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+    <!-- Some assemblies do not have strong name -->
+    <NoWarn>$(NoWarn);CS8002</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -21,7 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\System.Buffers.Primitives.Tests\BufferSegment.cs" Link="System.Buffers\BufferSegment.cs" />
-    <Compile Include="..\System.Buffers.Primitives.Tests\BufferUtilities.cs" Link="System.Buffers\BufferUtilities.cs" />
     <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="System.Buffers\SpanLiteralExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
