@@ -2409,7 +2409,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData(100_000, 1_000_000)]
         [InlineData(1_000_000, 1_000_000)]
         [InlineData(10_000_000, 1_000_000)]
-        //[InlineData(1_000_000_000, 1_000_000)] // Too large, causes intermittent OOM
+        //[InlineData(1_000_000_000, 1_000_000)] // Too large, causes intermittent OOM, reserved for outerloop
         public void MultiSegmentSequenceMaxTokenSize(int tokenSize, int segmentSize)
         {
             var random = new Random(42);
@@ -2464,7 +2464,7 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData(250)]   // 1 MB
-        [InlineData(250_000)]    // 1 GB
+        //[InlineData(250_000)]    // 1 GB, allocating 1 GB for a test is too high for inner loop (reserved for outerloop)
         //[InlineData(2_500_000)] // 10 GB, takes too long to run (~7 minutes)
         public void MultiSegmentSequenceLarge(int numberOfSegments)
         {
