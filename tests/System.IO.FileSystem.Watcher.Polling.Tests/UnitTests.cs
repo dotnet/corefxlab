@@ -11,7 +11,7 @@ public partial class PollingFileSystemWatcherUnitTests
 {
     private const int MillisecondsTimeout = 1000;
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_ctor_Defaults()
     {
         string path = Environment.CurrentDirectory;
@@ -24,7 +24,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_ctor_OptionalParams()
     {
         string currentDir = Directory.GetCurrentDirectory();
@@ -37,7 +37,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_ctor_Null()
     {
         // Not valid
@@ -48,12 +48,11 @@ public partial class PollingFileSystemWatcherUnitTests
         using (var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory, options: null)) { }
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_ctor_PathDoesNotExist()
     {
         Assert.Throws<ArgumentException>(() => new PollingFileSystemWatcher(@"Z:\RandomPath\sdsdljdkkjdfsdlcjfskdcvnj"));
     }
-
 
     [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Created_File()
@@ -328,7 +327,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_MultipleDispose()
     {
         var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory);
@@ -336,7 +335,7 @@ public partial class PollingFileSystemWatcherUnitTests
         watcher.Dispose();
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_DisposeBeforeStart()
     {
         var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory);
@@ -344,7 +343,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Throws<ObjectDisposedException>(() => watcher.Start());
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_DisposeAfterStart()
     {
         var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory);
@@ -352,7 +351,7 @@ public partial class PollingFileSystemWatcherUnitTests
         watcher.Dispose();
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_MultipleDisposeWithWaitHandle()
     {
         ManualResetEvent resetEvent = new ManualResetEvent(false);
@@ -366,7 +365,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.False(isSuccessful);
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_DisposeBeforeStartWithWaitHandle()
     {
         ManualResetEvent resetEvent = new ManualResetEvent(false);
@@ -375,7 +374,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Throws<ObjectDisposedException>(() => watcher.Start());
     }
 
-    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
+    [Fact]
     public static void FileSystemWatcher_DisposeAfterStartWithWaitHandle()
     {
         ManualResetEvent resetEvent = new ManualResetEvent(false);

@@ -47,7 +47,7 @@ public class PollingFileSystemWatcherSerializableTests
         watcher.Dispose();
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripBeforeStartedDoesNotAutomaticallyStartTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -82,7 +82,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripBeforeStartedTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -118,7 +118,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripAfterStartedTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -154,7 +154,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripAfterStartedDoesNotAffectOriginalTest()
     {
         string currentDir = Utility.GetRandomDirectory();
