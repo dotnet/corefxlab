@@ -167,26 +167,20 @@ namespace System.IO
         /// </summary>
         public void Dispose()
         {
-            lock (_timer)
-            {
-                _disposed = true;
-                _timer.Dispose();
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            _disposed = true;
+            _timer.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public bool Dispose(WaitHandle notifyObject)
         {
-            lock (_timer)
-            {
-                _disposed = true;
-                bool isSuccess = _timer.Dispose(notifyObject);
-                Dispose(true);
-                GC.SuppressFinalize(this);
+            _disposed = true;
+            bool isSuccess = _timer.Dispose(notifyObject);
+            Dispose(true);
+            GC.SuppressFinalize(this);
 
-                return isSuccess;
-            }
+            return isSuccess;
         }
 
         protected virtual void Dispose(bool disposing)
