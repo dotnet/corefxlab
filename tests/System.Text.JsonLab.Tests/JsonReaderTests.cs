@@ -2375,7 +2375,6 @@ namespace System.Text.JsonLab.Tests
         [InlineData(10_000, 1)]
         [InlineData(100_000, 1)]
         [InlineData(1_000_000, 1)]
-        [InlineData(10_000_000, 1)]
         [InlineData(10_000, 7)]
         [InlineData(100_000, 7)]
         [InlineData(1_000_000, 7)]
@@ -2396,12 +2395,14 @@ namespace System.Text.JsonLab.Tests
         public void MultiSegmentSequenceMaxTokenSize(int tokenSize, int segmentSize)
         {
             var random = new Random(42);
+            byte[] dataUtf8 = new byte[tokenSize];
+            byte[] expected = new byte[tokenSize];
+
             for (int i = 0; i < 5; i++)
             {
                 int splitIndex = random.Next(3, 1_000);
-
-                byte[] dataUtf8 = new byte[tokenSize];
                 System.Array.Fill<byte>(dataUtf8, 97);  // 'a'
+                System.Array.Clear(expected, 0, expected.Length);
 
                 dataUtf8[0] = 91;   // '['
                 dataUtf8[1] = 34;   // '"'
@@ -2411,11 +2412,11 @@ namespace System.Text.JsonLab.Tests
                 dataUtf8[tokenSize - 2] = 34; // '"'
                 dataUtf8[tokenSize - 1] = 93; // ']'
 
-                byte[] expectedFirstValue = new byte[splitIndex - 3];
-                System.Array.Fill<byte>(expectedFirstValue, 97);  // 'a'
+                Span<byte> expectedFirstValue = expected.AsSpan(0, splitIndex - 3);
+                expectedFirstValue.Fill(97);  // 'a'
 
-                byte[] expectedSecondValue = new byte[tokenSize - (7 + expectedFirstValue.Length)];  // adding 7 since we have 7 format characters: ["...","..."]
-                System.Array.Fill<byte>(expectedSecondValue, 97);  // 'a'
+                Span<byte> expectedSecondValue = expected.AsSpan(splitIndex - 4, tokenSize - (7 + expectedFirstValue.Length));  // adding 7 since we have 7 format characters: ["...","..."]
+                expectedSecondValue.Fill(97);  // 'a'
 
                 bool first = true;
 
