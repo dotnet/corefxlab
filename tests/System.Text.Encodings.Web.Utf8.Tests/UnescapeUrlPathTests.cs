@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using Xunit;
 
 namespace System.Text.Encodings.Web.Utf8.Tests
@@ -16,11 +17,11 @@ namespace System.Text.Encodings.Web.Utf8.Tests
             var input = GetBytes(raw);
             var destination = new Span<byte>(new byte[input.Length]);
 
-            var len = UrlEncoder.Decode(input, destination);
-            Assert.True(len <= input.Length);
+            Assert.Equal(OperationStatus.Done, UrlDecoder.Utf8.Decode(input, destination, out int consumed, out int written));
+            Assert.True(written <= input.Length);
 
-            var unescaped = destination.Slice(0, len);
-            Assert.False(unescaped == input.Slice(0, len));
+            var unescaped = destination.Slice(0, written);
+            Assert.False(unescaped == input.Slice(0, written));
 
             var outputDecoded = Encoding.UTF8.GetString(unescaped.ToArray());
             Assert.Equal(expected, outputDecoded);
@@ -34,7 +35,7 @@ namespace System.Text.Encodings.Web.Utf8.Tests
 
             try
             {
-                UrlEncoder.Decode(input, destination);
+                UrlDecoder.Utf8.Decode(input, destination, out _, out _);
                 Assert.True(false);
             }
             catch (Exception ex)

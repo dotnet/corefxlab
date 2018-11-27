@@ -16,10 +16,10 @@ namespace System.Text.Encodings.Web.Utf8.Tests
         {
             var input = GetBytes(raw).ToArray();
 
-            var len = UrlEncoder.DecodeInPlace(input);
-            Assert.True(len <= input.Length);
+            Assert.Equal(OperationStatus.Done, UrlDecoder.Utf8.DecodeInPlace(input, input.Length, out int written));
+            Assert.True(written <= input.Length);
 
-            var outputDecoded = Encoding.UTF8.GetString(input, 0, len);
+            var outputDecoded = Encoding.UTF8.GetString(input, 0, written);
             Assert.Equal(expected, outputDecoded);
         }
     }

@@ -8,10 +8,9 @@ namespace System.Text.Encodings.Web.Utf8
 {
     public class UrlEncoder
     {
-        static bool[] IsAllowed = new bool[0x7F + 1];
+        static readonly bool[] IsAllowed = new bool[0x7F + 1];
 
-        [Obsolete("Use UrlEncoder.Utf8.Encode")]
-        public static bool TryEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
+        internal static bool TryEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
         {
             written = 0;
             for (int inputIndex = 0; inputIndex < input.Length; inputIndex++)
@@ -51,8 +50,7 @@ namespace System.Text.Encodings.Web.Utf8
         /// <param name="source">The byte span represents a UTF8 encoding url path.</param>
         /// <param name="destination">The byte span where unescaped url path is copied to.</param>
         /// <returns>The length of the byte sequence of the unescaped url path.</returns>
-        [Obsolete("Use UrlDecoder.Utf8.Decode")]
-        public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
+        internal static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
             if (destination.Length < source.Length)
             {
@@ -75,8 +73,7 @@ namespace System.Text.Encodings.Web.Utf8
         /// The unescape is done in place, which means after decoding the result is the subset of 
         /// the input span.
         /// </remarks>
-        [Obsolete("Use UrlDecoder.Utf8.DecodeInPlace")]
-        public static int DecodeInPlace(Span<byte> buffer)
+        internal static int DecodeInPlace(Span<byte> buffer)
         {
             // the slot to read the input
             var sourceIndex = 0;
