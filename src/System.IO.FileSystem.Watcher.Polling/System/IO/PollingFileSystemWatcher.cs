@@ -97,9 +97,9 @@ namespace System.IO
             {
                 // Ignore `.Current`
             }
-            var changes = enumerator.Changes;
+            FileChangeList changes = enumerator.Changes;
 
-            foreach (var value in _state)
+            foreach (FileState value in _state)
             {
                 if (value._version != _version)
                 {
@@ -144,7 +144,7 @@ namespace System.IO
 
             _state.Values[index]._version = _version;
 
-            var previousState = _state.Values[index];
+            FileState previousState = _state.Values[index];
             if (file.LastWriteTimeUtc != previousState.LastWriteTimeUtc || file.Length != previousState.Length)
             {
                 changes.AddChanged(directory, previousState.Path);
@@ -167,20 +167,26 @@ namespace System.IO
         /// </summary>
         public void Dispose()
         {
-            _disposed = true;
-            _timer.Dispose();
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            lock (_timer)
+            {
+                _disposed = true;
+                _timer.Dispose();
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
         }
 
         public bool Dispose(WaitHandle notifyObject)
         {
-            _disposed = true;
-            var isSuccess = _timer.Dispose(notifyObject);
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            lock (_timer)
+            {
+                _disposed = true;
+                bool isSuccess = _timer.Dispose(notifyObject);
+                Dispose(true);
+                GC.SuppressFinalize(this);
 
-            return isSuccess;
+                return isSuccess;
+            }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -191,7 +197,7 @@ namespace System.IO
         {
             try
             {
-                var changes = ComputeChangesAndUpdateState();
+                FileChangeList changes = ComputeChangesAndUpdateState();
 
                 if (!changes.IsEmpty)
                 {
