@@ -16,7 +16,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData(100_000)]
         [InlineData(1_000_000)]
         [InlineData(10_000_000)]
-        [InlineData(1_000_000_000)]
+        // [InlineData(1_000_000_000)] // Allocating 1 GB for a test is too high for inner loop (reserved for outerloop)
         public void StreamMaxTokenSize(int tokenSize)
         {
             byte[] dataUtf8 = new byte[tokenSize];
@@ -32,7 +32,7 @@ namespace System.Text.JsonLab.Tests
             json.Dispose();
         }
 
-        [Fact]
+        [Fact(Skip = "Allocating 1.5 GB for a test is too high for inner loop (reserved for outerloop).")]
         public void StreamTokenSizeOverflow()
         {
             int tokenSize = 1_500_000_000; // 1.5GB
@@ -58,7 +58,7 @@ namespace System.Text.JsonLab.Tests
 
         [Theory]
         [InlineData(250)]   // 1 MB
-        [InlineData(250_000)]    // 1 GB
+        //[InlineData(250_000)]    // 1 GB, allocating 1 GB for a test is too high for inner loop (reserved for outerloop)
         //[InlineData(2_500_000)] // 10 GB, takes too long to run (~7 minutes)
         public void MultiSegmentSequenceLarge(int numberOfSegments)
         {
