@@ -32,14 +32,7 @@ namespace Microsoft.Collections.Extensions
             /// <param name="index">The zero-based index of the key to get.</param>
             /// <returns>The key at the specified index.</returns>
             /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.KeyCollection.Count" />.</exception>
-            public TKey this[int index]
-            {
-                get
-                {
-                    _orderedDictionary.GetAt(index, out TKey key);
-                    return key;
-                }
-            }
+            public TKey this[int index] => ((IList<KeyValuePair<TKey, TValue>>)_orderedDictionary)[index].Key;
 
             TKey IList<TKey>.this[int index]
             {
