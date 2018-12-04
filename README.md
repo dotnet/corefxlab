@@ -33,9 +33,6 @@ Currently, this repo contains the following experimental components:
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
-* **System.Devices.Gpio**.
-This experimental package (will eventually) allow projects to access GPIO pins for the Raspberry Pi 3 (Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9). See more information about the features at [gpio.md](docs/specs/gpio.md).
-
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
 This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
@@ -75,6 +72,9 @@ design decisions as well as introductions to usage can be found in the old blog 
 
 * **System.CommandLine**.
 The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](archived_projects/src/System.CommandLine/README.md) for more information.
+
+* **System.Devices.Gpio**.
+This experimental package for accessing GPIO pins on the Raspberry Pi 3 (Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9) has been moved to the [dotnet/iot repo](https://github.com/dotnet/iot/).  The original prototype from corefxlab has been archived and will eventually be removed. 
 
 * **System.Drawing.Graphics**.
 A prototype of .NET Framework's System.Drawing.Graphics on [LibGD](https://en.wikipedia.org/wiki/GD_Graphics_Library) (instead of using [GDIPlus](https://en.wikipedia.org/wiki/Graphics_Device_Interface)).  Some background information can be found [here](https://blogs.msdn.microsoft.com/dotnet/2017/01/19/net-core-image-processing/).  See the [README.txt](archived_projects/src/System.Drawing.Graphics/README.txt) for more information on building the archived project.
