@@ -11,15 +11,6 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriter
-    {
-        public static Utf8JsonWriter<TBufferWriter> Create<TBufferWriter>(TBufferWriter bufferWriter, bool prettyPrint = false)
-            where TBufferWriter : IBufferWriter<byte>
-        {
-            return new Utf8JsonWriter<TBufferWriter>(bufferWriter, prettyPrint);
-        }
-    }
-
     public ref struct Utf8JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;
