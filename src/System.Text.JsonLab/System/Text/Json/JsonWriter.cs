@@ -11,6 +11,524 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
+    public struct JsonWriterOptions
+    {
+        // Or Minified, Minimzed, PrettyPrinted,
+        public bool Formatted { get; set; }
+
+        public bool SkipValidation { get; set; }
+
+        internal bool SlowPath => Formatted || !SkipValidation;
+    }
+
+    internal struct BitStack
+    {
+        // We are using a ulong to represent our nested state, so we can only
+        // go 64 levels deep without having to allocate.
+        private const int AllocationFreeMaxDepth = sizeof(ulong) * 8;
+
+        private const int DefaultInitialArraySize = 2;
+
+        private int[] _array;
+
+        // This ulong container represents a tiny stack to track the state during nested transitions.
+        // The first bit represents the state of the current depth (1 == object, 0 == array).
+        // Each subsequent bit is the parent / containing type (object or array). Since this
+        // reader does a linear scan, we only need to keep a single path as we go through the data.
+        // This is primarily used as an optimization to avoid having to allocate an object for
+        // depths up to 64 (which is the default max depth).
+        private ulong _allocationFreeContainer;
+
+        private int _currentDepth;
+
+        public int CurrentDepth => _currentDepth;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void PushTrue()
+        {
+            if (_currentDepth < AllocationFreeMaxDepth)
+            {
+                _allocationFreeContainer = (_allocationFreeContainer << 1) | 1;
+            }
+            else
+            {
+                PushToArray(true);
+            }
+            _currentDepth++;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void PushFalse()
+        {
+            if (_currentDepth < AllocationFreeMaxDepth)
+            {
+                _allocationFreeContainer = _allocationFreeContainer << 1;
+            }
+            else
+            {
+                PushToArray(false);
+            }
+            _currentDepth++;
+        }
+
+        // Allocate the bit array lazily only when it is absolutely necessary
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void PushToArray(bool value)
+        {
+            if (_array == null)
+            {
+                _array = new int[DefaultInitialArraySize];
+            }
+
+            int index = _currentDepth - AllocationFreeMaxDepth;
+
+            Debug.Assert(index >= 0, $"Set - Negative - index: {index}, arrayLength: {_array.Length}");
+
+            // Maximum possible array length if bitLength was int.MaxValue (i.e. 67_108_864)
+            Debug.Assert(_array.Length <= int.MaxValue / 32 + 1, $"index: {index}, arrayLength: {_array.Length}");
+
+            int elementIndex = Div32Rem(index, out int extraBits);
+
+            // Grow the array when setting a bit if it isn't big enough
+            // This way the caller doesn't have to check.
+            if (elementIndex >= _array.Length)
+            {
+                // This multiplication can overflow, so cast to uint first.
+                Debug.Assert(index >= 0 && index > (int)((uint)_array.Length * 32 - 1), $"Only grow when necessary - index: {index}, arrayLength: {_array.Length}");
+                DoubleArray(elementIndex);
+            }
+
+            Debug.Assert(elementIndex < _array.Length, $"Set - index: {index}, elementIndex: {elementIndex}, arrayLength: {_array.Length}, extraBits: {extraBits}");
+
+            int newValue = _array[elementIndex];
+            if (value)
+            {
+                newValue |= 1 << extraBits;
+            }
+            else
+            {
+                newValue &= ~(1 << extraBits);
+            }
+            _array[elementIndex] = newValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Pop()
+        {
+            _currentDepth--;
+            bool inObject = false;
+            if (_currentDepth < AllocationFreeMaxDepth)
+            {
+                _allocationFreeContainer >>= 1;
+                inObject = (_allocationFreeContainer & 1) != 0;
+            }
+            else if (_currentDepth == AllocationFreeMaxDepth)
+            {
+                inObject = (_allocationFreeContainer & 1) != 0;
+            }
+            else
+            {
+                inObject = PopFromArray();
+            }
+            return inObject;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private bool PopFromArray()
+        {
+            int index = _currentDepth - AllocationFreeMaxDepth - 1;
+            Debug.Assert(_array != null);
+            Debug.Assert(index >= 0, $"Get - Negative - index: {index}, arrayLength: {_array.Length}");
+
+            int elementIndex = Div32Rem(index, out int extraBits);
+
+            Debug.Assert(elementIndex < _array.Length, $"Get - index: {index}, elementIndex: {elementIndex}, arrayLength: {_array.Length}, extraBits: {extraBits}");
+
+            return (_array[elementIndex] & (1 << extraBits)) != 0;
+        }
+
+        private void DoubleArray(int minSize)
+        {
+            Debug.Assert(_array.Length < int.MaxValue / 2, $"Array too large - arrayLength: {_array.Length}");
+            Debug.Assert(minSize >= 0 && minSize >= _array.Length);
+
+            int nextDouble = Math.Max(minSize + 1, _array.Length * 2);
+            Debug.Assert(nextDouble > minSize);
+
+            Array.Resize(ref _array, nextDouble);
+        }
+
+        public void SetFirstBit()
+        {
+            Debug.Assert(_currentDepth == 0, "Only call SetFirstBit when depth is 0");
+            _currentDepth++;
+            _allocationFreeContainer = 1;
+        }
+
+        public void ResetFirstBit()
+        {
+            Debug.Assert(_currentDepth == 0, "Only call ResetFirstBit when depth is 0");
+            _currentDepth++;
+            _allocationFreeContainer = 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int Div32Rem(int number, out int remainder)
+        {
+            uint quotient = (uint)number / 32;
+            remainder = number & (32 - 1);   // equivalent to number % 32, since 32 is a power of 2
+            return (int)quotient;
+        }
+    }
+
+    public ref struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    {
+        private readonly JsonWriterOptions _options;
+        private BufferWriter<TBufferWriter> _bufferWriter;
+        private JsonTokenType _tokenType;
+        private bool _inObject;
+        private BitStack _bitStack;
+
+        // The highest order bit of _indent is used to discern whether we are writing the first item in a list or not.
+        // if (_indent >> 31) == 1, add a list separator before writing the item
+        // else, no list separator is needed since we are writing the first item.
+        private int _indent;
+
+        private const int RemoveFlagsBitMask = 0x7FFFFFFF;
+
+        /// <summary>
+        /// Constructs a JSON writer with a specified <paramref name="bufferWriter"/>.
+        /// </summary>
+        /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
+        /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
+        public Utf8JsonWriter2(TBufferWriter bufferWriter, JsonWriterOptions options = default)
+        {
+            _bufferWriter = new BufferWriter<TBufferWriter>(bufferWriter);
+            _options = options;
+            _indent = 0;
+            _tokenType = JsonTokenType.None;
+            _inObject = false;
+            _bitStack = default;
+        }
+
+        public void Flush() => _bufferWriter.Flush();
+
+        public void WriteStartArray()
+        {
+            WriteStart(JsonConstants.OpenBracket);
+            _tokenType = JsonTokenType.StartArray;
+        }
+
+        public void WriteStartObject()
+        {
+            WriteStart(JsonConstants.OpenBrace);
+            _tokenType = JsonTokenType.StartObject;
+        }
+
+        private void WriteStart(byte token)
+        {
+            if (_options.SlowPath)
+            {
+                WriteStartSlow(token);
+            }
+            else
+            {
+                WriteStartFast(token);
+            }
+
+            _indent &= RemoveFlagsBitMask;
+            _indent++;
+        }
+
+        private void WriteStartFast(byte token)
+        {
+            int bytesNeeded = 1;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+                _bufferWriter.Ensure(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                byteBuffer[0] = JsonConstants.ListSeperator;
+                byteBuffer[1] = token;
+                _bufferWriter.Advance(bytesNeeded);
+            }
+            else
+            {
+                _bufferWriter.Ensure(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                byteBuffer[0] = token;
+                _bufferWriter.Advance(bytesNeeded);
+            }
+        }
+
+        private void WriteStartSlow(byte token)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateStart(token);
+                }
+                WriteStartFormatted(token);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateStart(token);
+                WriteStartFast(token);
+            }
+        }
+
+        private void ValidateStart(byte token)
+        {
+            if (_inObject)
+            {
+                Debug.Assert(_tokenType != JsonTokenType.None && _tokenType != JsonTokenType.StartArray);
+                if (_tokenType != JsonTokenType.PropertyName)
+                {
+                    JsonThrowHelper.ThrowFormatException(token);    //TODO: Add resouce message
+                }
+            }
+            else
+            {
+                Debug.Assert(_tokenType != JsonTokenType.StartObject);
+                if (_tokenType == JsonTokenType.PropertyName)
+                {
+                    JsonThrowHelper.ThrowFormatException(token);    //TODO: Add resouce message
+                }
+            }
+
+            if (token == JsonConstants.OpenBracket)
+            {
+                _bitStack.PushFalse();
+                _inObject = false;
+            }
+            else
+            {
+                Debug.Assert(token == JsonConstants.OpenBrace);
+                _bitStack.PushTrue();
+                _inObject = true;
+            }
+        }
+
+        private void WriteStartFormatted(byte token)
+        {
+            int indent = _indent & RemoveFlagsBitMask;
+
+            if (indent > int.MaxValue / 2 - 1)  // 1_073_741_822
+            {
+                // TODO: Create JsonWriterException with proper error messages
+                throw new FormatException("Depth too large.");
+            }
+
+            int bytesNeeded = 1 + indent * 2;
+
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            if (_tokenType != JsonTokenType.None)
+            {
+                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length;
+            }
+
+            _bufferWriter.Ensure(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+            int idx = 0;
+
+            if (_indent < 0)
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            if (_tokenType != JsonTokenType.None)
+            {
+                // \r\n versus \n, depending on OS
+                if (JsonWriterHelper.NewLineUtf8.Length == 2)
+                {
+                    byteBuffer[idx++] = JsonConstants.CarriageReturn;
+                }
+
+                byteBuffer[idx++] = JsonConstants.LineFeed;
+            }
+
+            while (indent-- > 0)
+            {
+                byteBuffer[idx++] = JsonConstants.Space;
+                byteBuffer[idx++] = JsonConstants.Space;
+            }
+
+            byteBuffer[idx] = token;
+            _bufferWriter.Advance(bytesNeeded);
+        }
+
+        public void WriteStartArray(ReadOnlySpan<byte> name)
+        {
+
+        }
+
+        public void WriteStartObject(ReadOnlySpan<byte> name)
+        {
+
+        }
+
+        public void WriteEndArray()
+        {
+            WriteEnd(JsonConstants.CloseBracket);
+            _tokenType = JsonTokenType.EndArray;
+        }
+
+        public void WriteEndObject()
+        {
+            WriteEnd(JsonConstants.CloseBrace);
+            _tokenType = JsonTokenType.EndObject;
+        }
+
+        private void WriteEnd(byte token)
+        {
+            _indent |= 1 << 31;
+            _indent--;
+
+            if (_options.SlowPath)
+            {
+                WriteEndSlow(token);
+            }
+            else
+            {
+                WriteEndFast(token);
+            }
+        }
+
+        private void WriteEndFast(byte token)
+        {
+            _bufferWriter.Ensure(1);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
+            byteBuffer[0] = token;
+            _bufferWriter.Advance(1);
+        }
+
+        private void WriteEndSlow(byte token)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateEnd(token);
+                }
+                WriteEndFormatted(token);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateEnd(token);
+                WriteEndFast(token);
+            }
+        }
+
+        private void ValidateEnd(byte token)
+        {
+            if (_bitStack.CurrentDepth <= 0)
+            {
+                JsonThrowHelper.ThrowFormatException(token);    //TODO: Add resouce message
+            }
+
+            if (token == JsonConstants.CloseBracket)
+            {
+                if (_inObject)
+                {
+                    Debug.Assert(_tokenType != JsonTokenType.None);
+                    JsonThrowHelper.ThrowFormatException(token);    //TODO: Add resouce message
+                }
+            }
+            else
+            {
+                Debug.Assert(token == JsonConstants.CloseBrace);
+
+                if (!_inObject)
+                {
+                    JsonThrowHelper.ThrowFormatException(token);    //TODO: Add resouce message
+                }
+            }
+
+            _inObject = _bitStack.Pop();
+        }
+
+        private void WriteEndFormatted(byte token)
+        {
+            // Do not format/indent empty JSON object/array.
+            if (token == JsonConstants.CloseBrace && _tokenType == JsonTokenType.StartObject)
+            {
+                WriteEndFast(token);
+            }
+            else if (token == JsonConstants.CloseBracket && _tokenType == JsonTokenType.StartArray)
+            {
+                WriteEndFast(token);
+            }
+            else
+            {
+                // Necessary if WriteEndX is called without a corressponding WriteStartX first.
+                // Checking for int.MaxValue because int.MinValue - 1 = int.MaxValue
+                if (_indent == int.MaxValue)
+                {
+                    _indent = 0;
+                }
+
+                int indent = _indent & RemoveFlagsBitMask;
+
+                // For new line (\r\n or \n), indentation (based on depth) and end token ('}' or ']').
+                int bytesNeeded = JsonWriterHelper.NewLineUtf8.Length + indent * 2 + 1;
+
+                _bufferWriter.Ensure(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                int idx = 0;
+
+                // \r\n versus \n, depending on OS
+                if (JsonWriterHelper.NewLineUtf8.Length == 2)
+                {
+                    byteBuffer[idx++] = JsonConstants.CarriageReturn;
+                }
+
+                byteBuffer[idx++] = JsonConstants.LineFeed;
+
+                while (indent-- > 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.Space;
+                    byteBuffer[idx++] = JsonConstants.Space;
+                }
+
+                byteBuffer[idx] = token;
+                _bufferWriter.Advance(bytesNeeded);
+            }
+        }
+
+        public void WriteNull(ReadOnlySpan<byte> propertyName)
+        {
+
+        }
+
+        public void WriteBoolean(ReadOnlySpan<byte> propertyName, bool value)
+        {
+
+        }
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, long value)
+        {
+
+        }
+
+        public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        {
+
+        }
+    }
+
     public ref struct Utf8JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;

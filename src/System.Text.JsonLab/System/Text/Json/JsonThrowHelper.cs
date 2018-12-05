@@ -32,6 +32,17 @@ namespace System.Text.JsonLab
             return new ArgumentException("Invalid or incomplete UTF-8 string");
         }
 
+        public static void ThrowFormatException(byte token)
+        {
+            throw GetFormatException(token);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static FormatException GetFormatException(byte token)
+        {
+            return new FormatException(token.ToString());
+        }
+
         public static void ThrowFormatException()
         {
             throw GetFormatException();

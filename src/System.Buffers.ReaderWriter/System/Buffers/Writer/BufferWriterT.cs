@@ -30,7 +30,7 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Flush()
         {
-            var buffered = _buffered;
+            int buffered = _buffered;
             if (buffered > 0)
             {
                 _buffered = 0;

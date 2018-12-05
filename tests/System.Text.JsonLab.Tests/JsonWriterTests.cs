@@ -80,6 +80,227 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void InvalidJsonMismatch(bool formatted, bool skipValidation)
+        {
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+            
+            var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) {}
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            // TODO: Need write value
+            /*jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }*/
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteEndArray();
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            // TODO: Needs WritePropertyName
+            /*jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteEndArray();
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }*/
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteEndArray();
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteStartArray();
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }
+
+            // TODO: Needs WritePropertyName
+            /*jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            try
+            {
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteStartObject();
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (FormatException) { }*/
+        }
+
+        private static void WriterDidNotThrow(bool skipValidation)
+        {
+            if (skipValidation)
+            {
+                Assert.True(true, "Did not expect FormatException to be thrown since validation was skipped.");
+            }
+            else
+            {
+                Assert.True(false, "Expected FormatException to be thrown when validation is enabled.");
+            }
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteHelloWorldWithOptions(bool formatted, bool skipValidation)
+        {
+            string expectedStr = GetStartEndExpectedString(prettyPrint: formatted, isUtf8: true);
+
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+
+            var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+
+            jsonUtf8.WriteStartArray();
+            jsonUtf8.WriteStartObject();
+            jsonUtf8.WriteEndObject();
+            jsonUtf8.WriteEndArray();
+            jsonUtf8.Flush();
+
+            ArraySegment<byte> arraySegment = output.Formatted;
+            string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+            Assert.Equal(expectedStr, actualStr);
+        }
+
+        private static string GetStartEndExpectedString(bool prettyPrint, bool isUtf8)
+        {
+            MemoryStream ms = new MemoryStream();
+            StreamWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter stringWriter = new StringWriter(sb);
+
+            TextWriter writer = isUtf8 ? streamWriter : (TextWriter)stringWriter;
+
+            var json = new Newtonsoft.Json.JsonTextWriter(writer)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
+            };
+
+            json.WriteStartArray();
+            json.WriteStartObject();
+            json.WriteEnd();
+            json.WriteEnd();
+
+            json.Flush();
+
+            return isUtf8 ? Encoding.UTF8.GetString(ms.ToArray()) : sb.ToString();
+        }
+
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void WriteBasicJsonUtf8(bool prettyPrint)
