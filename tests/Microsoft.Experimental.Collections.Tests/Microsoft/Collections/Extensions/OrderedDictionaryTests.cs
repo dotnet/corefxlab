@@ -27,11 +27,8 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary.IndexOf(key));
                 Assert.Equal(i, dictionary[key]);
-                Assert.Equal(i, dictionary.GetValue(key));
                 Assert.Equal(i, dictionary[i]);
-                Assert.Equal(i, dictionary.GetAt(i));
-                Assert.Equal(i, dictionary.GetAt(i, out string foundKey));
-                Assert.Equal(key, foundKey);
+                Assert.Equal(key, dictionary.Keys[i]);
                 Assert.True(dictionary.TryGetValue(key, out int value));
                 Assert.Equal(i, value);
             }
@@ -137,30 +134,6 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void GetValue_ReturnsValue_WhenContainsKey()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            for (int i = 0; i < s_defaultCount; ++i)
-            {
-                Assert.Equal(i, dictionary.GetValue(i.ToString()));
-            }
-        }
-
-        [Fact]
-        public void GetValue_ThrowsKeyNotFoundException_WhenNotContainsKey()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<KeyNotFoundException>(() => dictionary.GetValue(s_defaultCount.ToString()));
-        }
-
-        [Fact]
-        public void GetValue_ThrowsArgumentNullException_WhenKeyIsNull()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentNullException>(() => dictionary.GetValue(null));
-        }
-
-        [Fact]
         public void IndexIndexerGetter_ReturnsValue_WhenIndexIsValid()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
@@ -182,43 +155,6 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
             Assert.Throws<ArgumentOutOfRangeException>(() => dictionary[s_defaultCount]);
-        }
-
-        [Fact]
-        public void GetAt_ReturnsValue_WhenIndexIsValid()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            for (int i = 0; i < s_defaultCount; ++i)
-            {
-                Assert.Equal(i, dictionary.GetAt(i));
-            }
-        }
-
-        [Fact]
-        public void GetAt_ReturnsValueAndKey_WhenIndexIsValid()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            for (int i = 0; i < s_defaultCount; ++i)
-            {
-                Assert.Equal(i, dictionary.GetAt(i, out string key));
-                Assert.Equal(i.ToString(), key);
-            }
-        }
-
-        [Fact]
-        public void GetAt_ThrowsArgumentOutOfRangeException_WhenIndexIsLessThanZero()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(-1, out _));
-        }
-
-        [Fact]
-        public void GetAt_ThrowsArgumentOutOfRangeException_WhenIndexIsCount()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(s_defaultCount));
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(s_defaultCount, out _));
         }
 
         [Fact]
@@ -275,11 +211,8 @@ namespace Microsoft.Collections.Extensions.Tests
                     Assert.True(dictionary.ContainsKey(key));
                     Assert.Equal(i, dictionary.IndexOf(key));
                     Assert.Equal(i, dictionary[key]);
-                    Assert.Equal(i, dictionary.GetValue(key));
                     Assert.Equal(i, dictionary[i]);
-                    Assert.Equal(i, dictionary.GetAt(i));
-                    Assert.Equal(i, dictionary.GetAt(i, out string foundKey));
-                    Assert.Equal(key, foundKey);
+                    Assert.Equal(key, dictionary.Keys[i]);
                     Assert.True(dictionary.TryGetValue(key, out int value));
                     Assert.Equal(i, value);
                 }
@@ -288,7 +221,6 @@ namespace Microsoft.Collections.Extensions.Tests
                     Assert.False(dictionary.ContainsKey(key));
                     Assert.Equal(-1, dictionary.IndexOf(key));
                     Assert.Throws<KeyNotFoundException>(() => dictionary[key]);
-                    Assert.Throws<KeyNotFoundException>(() => dictionary.GetValue(key));
                     Assert.False(dictionary.TryGetValue(key, out int value));
                     Assert.Equal(0, value);
                 }
@@ -297,18 +229,14 @@ namespace Microsoft.Collections.Extensions.Tests
                     Assert.True(dictionary.ContainsKey(key));
                     Assert.Equal(i - 1, dictionary.IndexOf(key));
                     Assert.Equal(i, dictionary[key]);
-                    Assert.Equal(i, dictionary.GetValue(key));
                     Assert.Equal(i, dictionary[i - 1]);
-                    Assert.Equal(i, dictionary.GetAt(i - 1));
-                    Assert.Equal(i, dictionary.GetAt(i - 1, out string foundKey));
-                    Assert.Equal(key, foundKey);
+                    Assert.Equal(key, dictionary.Keys[i - 1]);
                     Assert.True(dictionary.TryGetValue(key, out int value));
                     Assert.Equal(i, value);
                 }
             }
             Assert.Throws<ArgumentOutOfRangeException>(() => dictionary[s_defaultCount - 1]);
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(s_defaultCount - 1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.GetAt(s_defaultCount - 1, out _));
+            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.Keys[s_defaultCount - 1]);
             Assert.Equal(dictionary.Select(p => p.Key), dictionary.Keys);
             Assert.Equal(dictionary.Select(p => p.Value), dictionary.Values);
         }
@@ -369,32 +297,25 @@ namespace Microsoft.Collections.Extensions.Tests
                 string key = i.ToString();
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary[key]);
-                Assert.Equal(i, dictionary.GetValue(key));
                 Assert.True(dictionary.TryGetValue(key, out int value));
                 Assert.Equal(i, value);
                 if (i < 2)
                 {
                     Assert.Equal(i, dictionary.IndexOf(key));
                     Assert.Equal(i, dictionary[i]);
-                    Assert.Equal(i, dictionary.GetAt(i));
-                    Assert.Equal(i, dictionary.GetAt(i, out string foundKey));
-                    Assert.Equal(key, foundKey);
+                    Assert.Equal(key, dictionary.Keys[i]);
                 }
                 else if (i == 2)
                 {
                     Assert.Equal(i + 1, dictionary.IndexOf(key));
                     Assert.Equal(s_defaultCount, dictionary[i]);
-                    Assert.Equal(s_defaultCount, dictionary.GetAt(i));
-                    Assert.Equal(s_defaultCount, dictionary.GetAt(i, out string foundKey));
-                    Assert.Equal(s_defaultCount.ToString(), foundKey);
+                    Assert.Equal(s_defaultCount.ToString(), dictionary.Keys[i]);
                 }
                 else
                 {
                     Assert.Equal(i == s_defaultCount ? 2 : i + 1, dictionary.IndexOf(key));
                     Assert.Equal(i - 1, dictionary[i]);
-                    Assert.Equal(i - 1, dictionary.GetAt(i));
-                    Assert.Equal(i - 1, dictionary.GetAt(i, out string foundKey));
-                    Assert.Equal((i - 1).ToString(), foundKey);
+                    Assert.Equal((i - 1).ToString(), dictionary.Keys[i]);
                 }
             }
             Assert.Equal(dictionary.Select(p => p.Key), dictionary.Keys);
@@ -577,26 +498,19 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary.IndexOf(key));
                 Assert.True(dictionary.TryGetValue(key, out int value));
-                string foundKey;
                 if (i == 3)
                 {
                     Assert.Equal(s_defaultCount, dictionary[key]);
-                    Assert.Equal(s_defaultCount, dictionary.GetValue(key));
                     Assert.Equal(s_defaultCount, dictionary[i]);
-                    Assert.Equal(s_defaultCount, dictionary.GetAt(i));
                     Assert.Equal(s_defaultCount, value);
-                    Assert.Equal(s_defaultCount, dictionary.GetAt(i, out foundKey));
                 }
                 else
                 {
                     Assert.Equal(i, dictionary[key]);
-                    Assert.Equal(i, dictionary.GetValue(key));
                     Assert.Equal(i, dictionary[i]);
-                    Assert.Equal(i, dictionary.GetAt(i));
                     Assert.Equal(i, value);
-                    Assert.Equal(i, dictionary.GetAt(i, out foundKey));
                 }
-                Assert.Equal(key, foundKey);
+                Assert.Equal(key, dictionary.Keys[i]);
             }
             Assert.Equal(dictionary.Select(p => p.Key), dictionary.Keys);
             Assert.Equal(dictionary.Select(p => p.Value), dictionary.Values);
@@ -615,29 +529,6 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
             Assert.Throws<ArgumentNullException>(() => dictionary[null] = s_defaultCount);
-        }
-
-        [Fact]
-        public void SetValue_Succeeds_WhenContainsKey()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            dictionary.SetValue("3", s_defaultCount);
-            ValidateDefaultOrderedDictionaryWith3sValueEqualToDefaultCount(dictionary);
-        }
-
-        [Fact]
-        public void SetValue_Succeeds_WhenNotContainsKey()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            dictionary.SetValue(s_defaultCount.ToString(), s_defaultCount);
-            ValidateDefaultOrderedDictionaryIsContiguous(dictionary, s_defaultCount + 1);
-        }
-
-        [Fact]
-        public void SetValue_ThrowsArgumentNullException_WhenKeyIsNull()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentNullException>(() => dictionary.SetValue(null, s_defaultCount));
         }
 
         [Fact]
@@ -665,34 +556,10 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void SetAt_Succeeds_WhenIndexIsValid()
+        public void IListIndexerSetter_ReplacesExistingEntry_WhenIndexIsValidAndKeyIsNotContained()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            dictionary.SetAt(3, s_defaultCount);
-            ValidateDefaultOrderedDictionaryWith3sValueEqualToDefaultCount(dictionary);
-        }
-
-        [Fact]
-        public void SetAt_ThrowsArgumentOutOfRangeException_WhenIndexIsLessThanZero()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.SetAt(-1, s_defaultCount));
-            ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
-        }
-
-        [Fact]
-        public void SetAt_ThrowsArgumentOutOfRangeException_WhenIndexIsCount()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.SetAt(s_defaultCount, s_defaultCount));
-            ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
-        }
-
-        [Fact]
-        public void SetAt_ReplacesExistingEntry_WhenIndexIsValidAndKeyIsNotContained()
-        {
-            OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            dictionary.SetAt(2, "-1", -1);
+            ((IList<KeyValuePair<string, int>>)dictionary)[2] = KeyValuePair.Create("-1", -1);
             Assert.Equal(s_defaultCount, dictionary.Count);
             Assert.False(dictionary.ContainsKey("2"));
             Assert.True(dictionary.ContainsKey("-1"));
@@ -712,10 +579,10 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void SetAt_ReplacesExistingEntry_WhenIndexIsValidAndKeyIsContainedAtIndex()
+        public void IListIndexerSetter_ReplacesExistingEntry_WhenIndexIsValidAndKeyIsContainedAtIndex()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            dictionary.SetAt(2, "2", -1);
+            ((IList<KeyValuePair<string, int>>)dictionary)[2] = KeyValuePair.Create("2", -1);
             Assert.Equal(s_defaultCount, dictionary.Count);
             Assert.True(dictionary.ContainsKey("2"));
             for (int i = 0; i < s_defaultCount; ++i)
@@ -733,51 +600,50 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
-        public void SetAt_ThrowsArgumentException_WhenIndexIsValidAndKeyIsContainedAtDifferentIndex()
+        public void IListIndexerSetter_ThrowsArgumentException_WhenIndexIsValidAndKeyIsContainedAtDifferentIndex()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentException>(() => dictionary.SetAt(3, "2", -1));
+            Assert.Throws<ArgumentException>(() => ((IList<KeyValuePair<string, int>>)dictionary)[3] = KeyValuePair.Create("2", -1));
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
         }
 
         [Fact]
-        public void SetAtOverload_ThrowsArgumentOutOfRangeException_WhenIndexIsLessThanZero()
+        public void IListIndexerSetter_ThrowsArgumentOutOfRangeException_WhenIndexIsLessThanZero()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.SetAt(-1, "2", -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ((IList<KeyValuePair<string, int>>)dictionary)[-1] = KeyValuePair.Create("2", -1));
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
         }
 
         [Fact]
-        public void SetAtOverload_ThrowsArgumentOutOfRangeException_WhenIndexIsCount()
+        public void IListIndexerSetter_ThrowsArgumentOutOfRangeException_WhenIndexIsCount()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.SetAt(s_defaultCount, "2", -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ((IList<KeyValuePair<string, int>>)dictionary)[s_defaultCount] = KeyValuePair.Create("2", -1));
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
         }
 
         [Fact]
-        public void SetAt_ThrowsArgumentNullException_WhenKeyIsNull()
+        public void IListIndexerSetter_ThrowsArgumentNullException_WhenKeyIsNull()
         {
             OrderedDictionary<string, int> dictionary = GetDefaultOrderedDictionary();
-            Assert.Throws<ArgumentNullException>(() => dictionary.SetAt(2, null, -1));
+            Assert.Throws<ArgumentNullException>(() => ((IList<KeyValuePair<string, int>>)dictionary)[2] = KeyValuePair.Create((string)null, -1));
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
         }
 
         [Fact]
-        public void SetAt_ReplacesEqualKey_WhenIndexIsValidAndKeyIsContainedAtIndex()
+        public void IListIndexerSetter_ReplacesEqualKey_WhenIndexIsValidAndKeyIsContainedAtIndex()
         {
             OrderedDictionary<string, char> dictionary = new OrderedDictionary<string, char>(StringComparer.OrdinalIgnoreCase);
             for (char c = 'A'; c <= 'Z'; ++c)
             {
                 dictionary.Add(c.ToString(), c);
             }
-            dictionary.SetAt(2, "c", 'c');
+            ((IList<KeyValuePair<string, char>>)dictionary)[2] = KeyValuePair.Create("c", 'c');
             Assert.Equal(2, dictionary.IndexOf("c"));
             Assert.Equal(2, dictionary.IndexOf("C"));
-            char value = dictionary.GetAt(2, out string key);
-            Assert.Equal("c", key);
-            Assert.Equal('c', value);
+            Assert.Equal("c", dictionary.Keys[2]);
+            Assert.Equal('c', dictionary[2]);
         }
 
         [Fact]
@@ -1366,11 +1232,8 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary.IndexOf(key));
                 Assert.Equal(c, dictionary[key]);
-                Assert.Equal(c, dictionary.GetValue(key));
                 Assert.Equal(c, dictionary[i]);
-                Assert.Equal(c, dictionary.GetAt(i));
-                Assert.Equal(c, dictionary.GetAt(i, out string foundKey));
-                Assert.Equal(key, foundKey);
+                Assert.Equal(key, dictionary.Keys[i]);
                 Assert.True(dictionary.TryGetValue(key, out char value));
                 Assert.Equal(c, value);
             }
@@ -1383,11 +1246,8 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary.IndexOf(key));
                 Assert.Equal(upperC, dictionary[key]);
-                Assert.Equal(upperC, dictionary.GetValue(key));
                 Assert.Equal(upperC, dictionary[i]);
-                Assert.Equal(upperC, dictionary.GetAt(i));
-                Assert.Equal(upperC, dictionary.GetAt(i, out string foundKey));
-                Assert.Equal(upperC.ToString(), foundKey);
+                Assert.Equal(upperC.ToString(), dictionary.Keys[i]);
                 Assert.True(dictionary.TryGetValue(key, out char value));
                 Assert.Equal(upperC, value);
             }
@@ -1414,13 +1274,12 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(-i));
                 Assert.Equal(-1, dictionary.IndexOf(i));
                 Assert.Equal(i - 1, dictionary.IndexOf(-i));
-                Assert.Throws<KeyNotFoundException>(() => dictionary.GetValue(i));
-                Assert.Equal(value, dictionary.GetValue(-i));
+                Assert.Throws<KeyNotFoundException>(() => dictionary[key: i]);
+                Assert.Equal(value, dictionary[key: -i]);
                 // Resolves to the index indexer
                 Assert.Equal(value, dictionary[i - 1]);
-                Assert.Equal(value, dictionary.GetAt(i - 1));
-                Assert.Equal(value, dictionary.GetAt(i - 1, out int key));
-                Assert.Equal(-i, key);
+                Assert.Equal(value, dictionary[index: i - 1]);
+                Assert.Equal(-i, dictionary.Keys[i - 1]);
                 Assert.False(dictionary.TryGetValue(i, out string foundValue));
                 Assert.Null(foundValue);
                 Assert.True(dictionary.TryGetValue(-i, out foundValue));
@@ -1449,11 +1308,8 @@ namespace Microsoft.Collections.Extensions.Tests
                 Assert.True(dictionary.ContainsKey(key));
                 Assert.Equal(i, dictionary.IndexOf(key));
                 Assert.Equal(i, dictionary[key]);
-                Assert.Equal(i, dictionary.GetValue(key));
                 Assert.Equal(i, dictionary[i]);
-                Assert.Equal(i, dictionary.GetAt(i));
-                Assert.Equal(i, dictionary.GetAt(i, out string foundKey));
-                Assert.Equal(key, foundKey);
+                Assert.Equal(key, dictionary.Keys[i]);
                 Assert.True(dictionary.TryGetValue(key, out int value));
                 Assert.Equal(i, value);
             }

@@ -82,8 +82,16 @@ namespace Microsoft.Collections.Extensions
         /// <exception cref="KeyNotFoundException">The property is retrieved and <paramref name="key" /> does not exist in the collection.</exception>
         public TValue this[TKey key]
         {
-            get => GetValue(key);
-            set => SetValue(key, value);
+            get
+            {
+                int index = IndexOf(key);
+                if (index < 0)
+                {
+                    throw new KeyNotFoundException(string.Format(Strings.Arg_KeyNotFoundWithKey, key.ToString()));
+                }
+                return _entries[index].Value;
+            }
+            set => TryInsert(null, key, value, InsertionBehavior.OverwriteExisting);
         }
 
         /// <summary>
@@ -94,8 +102,24 @@ namespace Microsoft.Collections.Extensions
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
         public TValue this[int index]
         {
-            get => GetAt(index);
-            set => SetAt(index, value);
+            get
+            {
+                if ((uint)index >= (uint)Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
+                }
+
+                return _entries[index].Value;
+            }
+            set
+            {
+                if ((uint)index >= (uint)Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
+                }
+
+                _entries[index].Value = value;
+            }
         }
 
         /// <summary>
@@ -237,33 +261,6 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Gets the value at the specified index as an O(1) operation.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to get.</param>
-        /// <returns>The value at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
-        public TValue GetAt(int index) => GetAt(index, out _);
-
-        /// <summary>
-        /// Gets the value and key at the specified index as an O(1) operation.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to get.</param>
-        /// <param name="key">When this method returns, contains the key at the specified index. This parameter is passed uninitialized.</param>
-        /// <returns>The value at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
-        public TValue GetAt(int index, out TKey key)
-        {
-            if ((uint)index >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
-            }
-
-            Entry entry = _entries[index];
-            key = entry.Key;
-            return entry.Value;
-        }
-
-        /// <summary>
         /// Returns an enumerator that iterates through the <see cref="OrderedDictionary{TKey, TValue}" />.
         /// </summary>
         /// <returns>An <see cref="OrderedDictionary{TKey, TValue}.Enumerator" /> structure for the <see cref="OrderedDictionary{TKey, TValue}" />.</returns>
@@ -304,23 +301,6 @@ namespace Microsoft.Collections.Extensions
                 value = _entries[index].Value;
             }
             return value;
-        }
-
-        /// <summary>
-        /// Gets the value associated with the specified key as an O(1) operation.
-        /// </summary>
-        /// <param name="key">The key of the value to get.</param>
-        /// <returns>The value associated with the specified key. If the specified key is not found, throws a <see cref="KeyNotFoundException" /></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key" /> is null.</exception>
-        /// <exception cref="KeyNotFoundException"><paramref name="key" /> does not exist in the collection.</exception>
-        public TValue GetValue(TKey key)
-        {
-            int index = IndexOf(key);
-            if (index < 0)
-            {
-                throw new KeyNotFoundException(string.Format(Strings.Arg_KeyNotFoundWithKey, key.ToString()));
-            }
-            return _entries[index].Value;
         }
 
         /// <summary>
@@ -541,68 +521,6 @@ namespace Microsoft.Collections.Extensions
         }
 
         /// <summary>
-        /// Sets the value at the specified index as an O(1) operation.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to set.</param>
-        /// <param name="value">The value to set.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
-        public void SetAt(int index, TValue value)
-        {
-            if ((uint)index >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
-            }
-
-            _entries[index].Value = value;
-        }
-
-        /// <summary>
-        /// Sets the value and key at the specified index as an O(1) operation.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to set.</param>
-        /// <param name="key">The key of the value to set.</param>
-        /// <param name="value">The value to set.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than 0.-or-<paramref name="index" /> is equal to or greater than <see cref="OrderedDictionary{TKey, TValue}.Count" />.</exception>
-        /// <exception cref="ArgumentException">An element with the same key already exists not at the specified index in the <see cref="OrderedDictionary{TKey, TValue}" />.</exception>
-        public void SetAt(int index, TKey key, TValue value)
-        {
-            if ((uint)index >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
-            }
-
-            int foundIndex = IndexOf(key, out uint hashCode);
-            // key does not exist in dictionary thus replace entry at index
-            if (foundIndex < 0)
-            {
-                RemoveEntryFromBucket(index);
-                Entry entry = new Entry { HashCode = hashCode, Key = key, Value = value };
-                AddEntryToBucket(ref entry, index, _buckets);
-                _entries[index] = entry;
-                ++_version;
-            }
-            // key already exists in dictionary at the specified index thus just replace the key and value as hashCode remains the same
-            else if (foundIndex == index)
-            {
-                ref Entry entry = ref _entries[index];
-                entry.Key = key;
-                entry.Value = value;
-            }
-            // key already exists in dictionary but not at the specified index thus throw exception as this method shouldn't affect the indices of other entries
-            else
-            {
-                throw new ArgumentException(string.Format(Strings.Argument_AddingDuplicateWithKey, key.ToString()));
-            }
-        }
-
-        /// <summary>
-        /// Sets the value associated with the specified key as an O(1) operation.
-        /// </summary>
-        /// <param name="key">The key of the value to set.</param>
-        /// <param name="value">The value to set.</param>
-        public void SetValue(TKey key, TValue value) => TryInsert(null, key, value, InsertionBehavior.OverwriteExisting);
-
-        /// <summary>
         /// Sets the capacity of an <see cref="OrderedDictionary{TKey, TValue}" /> object to the actual number of elements it contains, rounded up to a nearby, implementation-specific value.
         /// </summary>
         public void TrimExcess() => TrimExcess(Count);
@@ -660,10 +578,45 @@ namespace Microsoft.Collections.Extensions
         {
             get
             {
-                TValue value = GetAt(index, out TKey key);
-                return new KeyValuePair<TKey, TValue>(key, value);
+                if ((uint)index >= (uint)Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
+                }
+
+                Entry entry = _entries[index];
+                return new KeyValuePair<TKey, TValue>(entry.Key, entry.Value);
             }
-            set => SetAt(index, value.Key, value.Value);
+            set
+            {
+                if ((uint)index >= (uint)Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.ArgumentOutOfRange_Index);
+                }
+
+                TKey key = value.Key;
+                int foundIndex = IndexOf(key, out uint hashCode);
+                // key does not exist in dictionary thus replace entry at index
+                if (foundIndex < 0)
+                {
+                    RemoveEntryFromBucket(index);
+                    Entry entry = new Entry { HashCode = hashCode, Key = key, Value = value.Value };
+                    AddEntryToBucket(ref entry, index, _buckets);
+                    _entries[index] = entry;
+                    ++_version;
+                }
+                // key already exists in dictionary at the specified index thus just replace the key and value as hashCode remains the same
+                else if (foundIndex == index)
+                {
+                    ref Entry entry = ref _entries[index];
+                    entry.Key = key;
+                    entry.Value = value.Value;
+                }
+                // key already exists in dictionary but not at the specified index thus throw exception as this method shouldn't affect the indices of other entries
+                else
+                {
+                    throw new ArgumentException(string.Format(Strings.Argument_AddingDuplicateWithKey, key.ToString()));
+                }
+            }
         }
 
         KeyValuePair<TKey, TValue> IReadOnlyList<KeyValuePair<TKey, TValue>>.this[int index] => ((IList<KeyValuePair<TKey, TValue>>)this)[index];
