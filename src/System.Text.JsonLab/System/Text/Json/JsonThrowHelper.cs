@@ -43,6 +43,39 @@ namespace System.Text.JsonLab
             return new FormatException(token.ToString());
         }
 
+        public static void ThrowJsonWriterException(string message)
+        {
+            throw GetJsonWriterException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static JsonWriterException GetJsonWriterException(string message)
+        {
+            return new JsonWriterException(message);
+        }
+
+        public static void ThrowJsonWriterException(byte token)
+        {
+            throw GetJsonWriterException(token);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static JsonWriterException GetJsonWriterException(byte token)
+        {
+            return new JsonWriterException(token.ToString());
+        }
+
+        public static void ThrowJsonWriterException(byte token, JsonTokenType tokenType)
+        {
+            throw GetJsonWriterException(token, tokenType);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static JsonWriterException GetJsonWriterException(byte token, JsonTokenType tokenType)
+        {
+            return new JsonWriterException(token.ToString());
+        }
+
         public static void ThrowFormatException()
         {
             throw GetFormatException();
