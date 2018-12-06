@@ -9,8 +9,8 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    //[SimpleJob(warmupCount: 3, targetCount: 5)]
-    [MemoryDiagnoser]
+    [SimpleJob(warmupCount: 5, targetCount: 10)]
+    //[MemoryDiagnoser]
     //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
     {
@@ -31,7 +31,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(false)]
         public bool Formatted;
 
-        [Params(true)]
+        [Params(false)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -97,7 +97,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         //[Benchmark]
-        public void WriterSystemTextJsonHelloWorld2()
+        public void WriteBoolStrings()
         {
             _arrayFormatterWrapper.Clear();
 
@@ -110,23 +110,85 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
 
             json.WriteStartObject();
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
-            json.WriteString("message", "Hello, World!");
+
+            json.WriteBoolean("message", true);
+            json.WriteBoolean("message", false);
+            json.WriteBoolean("message", true);
+            json.WriteBoolean("message", false);
+            json.WriteBoolean("message", true);
+            json.WriteBoolean("message", false);
+            json.WriteBoolean("message", true);
+            json.WriteBoolean("message", false);
+            json.WriteBoolean("message", true);
+            json.WriteBoolean("message", false);
+
             json.WriteEndObject();
-
-
-            //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
+            json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
+        public void WriteBoolSpanChars()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var option = new JsonWriterOptions
+            {
+                Formatted = Formatted,
+                SkipValidation = SkipValidation
+            };
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+
+            ReadOnlySpan<char> spanChar = "message";
+
+            json.WriteStartObject();
+
+            json.WriteBoolean(spanChar, true);
+            json.WriteBoolean(spanChar, false);
+            json.WriteBoolean(spanChar, true);
+            json.WriteBoolean(spanChar, false);
+            json.WriteBoolean(spanChar, true);
+            json.WriteBoolean(spanChar, false);
+            json.WriteBoolean(spanChar, true);
+            json.WriteBoolean(spanChar, false);
+            json.WriteBoolean(spanChar, true);
+            json.WriteBoolean(spanChar, false);
+
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        //[Benchmark]
+        public void WriteBoolSpanBytes()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var option = new JsonWriterOptions
+            {
+                Formatted = Formatted,
+                SkipValidation = SkipValidation
+            };
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+
+            json.WriteStartObject();
+
+            json.WriteBoolean(Message, true);
+            json.WriteBoolean(Message, false);
+            json.WriteBoolean(Message, true);
+            json.WriteBoolean(Message, false);
+            json.WriteBoolean(Message, true);
+            json.WriteBoolean(Message, false);
+            json.WriteBoolean(Message, true);
+            json.WriteBoolean(Message, false);
+            json.WriteBoolean(Message, true);
+            json.WriteBoolean(Message, false);
+
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        //[Benchmark]
         public void WriterSystemTextJsonHelloWorld2UTF8()
         {
             _arrayFormatterWrapper.Clear();
@@ -156,7 +218,7 @@ namespace System.Text.JsonLab.Benchmarks
             //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
@@ -354,26 +416,8 @@ namespace System.Text.JsonLab.Benchmarks
 
                 json.WriteStartObject();
                 json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-                json.WriteEnd();
+                json.WriteValue(true);
+                json.WriteEndObject();
             }
         }
 
@@ -381,9 +425,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(output);
 
-            json.WriteBeginObject();
+            json.WriteBeginArray();
             json.WritePropertyName("message");
-            json.WriteString("Hello, World!");
+            json.WriteBoolean(true);
             json.WriteEndObject();
         }
 
