@@ -11,7 +11,7 @@ namespace System.Text.JsonLab.Benchmarks
 {
     [SimpleJob(warmupCount: 5, targetCount: 10)]
     //[MemoryDiagnoser]
-    //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
     {
         private static readonly byte[] Message = Encoding.UTF8.GetBytes("message");
@@ -31,7 +31,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(false)]
         public bool Formatted;
 
-        [Params(false)]
+        [Params(true)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -188,7 +188,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterSystemTextJsonHelloWorld2UTF8()
         {
             _arrayFormatterWrapper.Clear();
@@ -202,23 +202,22 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
 
             json.WriteStartObject();
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
-            json.WriteString(Message, HelloWorld);
+            json.WriteNumber(Message, 1234567);
+            json.WriteNumber(Message, 123456);
+            json.WriteNumber(Message, 12345);
+            json.WriteNumber(Message, 12345678);
+            json.WriteNumber(Message, 1234);
+            json.WriteNumber(Message, 123);
+            json.WriteNumber(Message, 123456789);
+            json.WriteNumber(Message, 12);
+            json.WriteNumber(Message, 1);
+            json.WriteNumber(Message, 1234567890);
             json.WriteEndObject();
-
 
             //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
