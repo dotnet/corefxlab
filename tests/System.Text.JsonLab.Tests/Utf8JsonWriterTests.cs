@@ -717,6 +717,129 @@ namespace System.Text.JsonLab.Tests
             //Assert.Equal(expectedStr, actualStr);
         }
 
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteGuidsValueWithOptions(bool formatted, bool skipValidation)
+        {
+            var random = new Random(42);
+            const int numberOfItems = 1_000;
+
+            var guids = new Guid[numberOfItems];
+            for (int i = 0; i < numberOfItems; i++)
+                guids[i] = Guid.NewGuid();
+
+            string expectedStr = GetGuidsExpectedString(prettyPrint: formatted, guids);
+
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+
+            string keyString = "message";
+            ReadOnlySpan<char> keyUtf16 = keyString;
+            ReadOnlySpan<byte> keyUtf8 = Encoding.UTF8.GetBytes(keyString);
+
+
+            for (int i = 0; i < 3; i++)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+
+                jsonUtf8.WriteStartObject();
+
+                switch (i)
+                {
+                    case 0:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyString, guids[j]);
+                        break;
+                    case 1:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyUtf16, guids[j]);
+                        break;
+                    case 2:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyUtf8, guids[j]);
+                        break;
+                }
+
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.Flush();
+
+                ArraySegment<byte> arraySegment = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+                Assert.Equal(expectedStr, actualStr);
+            }
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteDatesValueWithOptions(bool formatted, bool skipValidation)
+        {
+            var random = new Random(42);
+            const int numberOfItems = 1_000;
+
+            var start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;
+
+            var dates = new DateTime[numberOfItems];
+            for (int i = 0; i < numberOfItems; i++)
+                dates[i] = start.AddDays(random.Next(range));
+
+            string expectedStr = GetDatesExpectedString(prettyPrint: formatted, dates);
+
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+
+            string keyString = "message";
+            ReadOnlySpan<char> keyUtf16 = keyString;
+            ReadOnlySpan<byte> keyUtf8 = Encoding.UTF8.GetBytes(keyString);
+
+
+            for (int i = 0; i < 3; i++)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+
+                jsonUtf8.WriteStartObject();
+
+                switch (i)
+                {
+                    case 0:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyString, dates[j]);
+                        break;
+                    case 1:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyUtf16, dates[j]);
+                        break;
+                    case 2:
+                        for (int j = 0; j < numberOfItems; j++)
+                            jsonUtf8.WriteString(keyUtf8, dates[j]);
+                        break;
+                }
+
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.Flush();
+
+                ArraySegment<byte> arraySegment = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+                Assert.Equal(expectedStr, actualStr);
+            }
+        }
+
         // TODO: Move to outerloop
         [Theory]
         [InlineData(true, true)]
@@ -937,6 +1060,57 @@ namespace System.Text.JsonLab.Tests
                 json.WritePropertyName("message");
                 json.WriteValue(decimals[i]);
             }
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        private static string GetGuidsExpectedString(bool prettyPrint, Guid[] guids)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new Newtonsoft.Json.JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
+            };
+
+            json.WriteStartObject();
+
+            for (int i = 0; i < guids.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(guids[i]);
+            }
+
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        private static string GetDatesExpectedString(bool prettyPrint, DateTime[] dates)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new Newtonsoft.Json.JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None,
+                DateFormatString = "G"
+            };
+
+            json.WriteStartObject();
+
+            for (int i = 0; i < dates.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(dates[i]);
+            }
+
             json.WriteEnd();
 
             json.Flush();
