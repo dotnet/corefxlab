@@ -11,45 +11,6 @@ namespace System.Text.JsonLab.Tests
 {
     public class Utf8JsonWriterTests
     {
-        [Fact]
-        public void TestNewtonsoft()
-        {
-            MemoryStream ms = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
-
-            var json = new Newtonsoft.Json.JsonTextWriter(streamWriter)
-            {
-                Formatting = Newtonsoft.Json.Formatting.None
-            };
-
-            json.WriteStartObject();
-            json.WritePropertyName("numbers");
-            json.WriteStartArray();
-            json.WriteValue(1);
-            json.WriteValue(2);
-            json.WriteValue(3);
-            json.WriteValue(4);
-            json.WriteValue(5);
-            json.WriteEnd();
-            json.WritePropertyName("age");
-            json.WriteValue(30);
-            json.WritePropertyName("nested");
-            json.WriteStartArray();
-            json.WriteStartObject();
-            json.WriteEnd();
-            json.WriteStartObject();
-            json.WritePropertyName("oops");
-            json.WriteValue("wow");
-            json.WriteEnd();
-            json.WriteEnd();
-            json.WriteEnd();
-
-            json.Flush();
-
-            string output = Encoding.UTF8.GetString(ms.ToArray());
-            Assert.Equal("", output);
-        }
-
         [Theory]
         [InlineData(true, true)]
         [InlineData(true, false)]
