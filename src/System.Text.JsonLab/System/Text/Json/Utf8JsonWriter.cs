@@ -49,6 +49,10 @@ namespace System.Text.JsonLab
 
         public void Flush(bool isFinalBlock = true)
         {
+            //TODO: Fix exception message and check other potential conditions for invalid end.
+            if (isFinalBlock && !_options.SkipValidation && CurrentDepth != 0)
+                JsonThrowHelper.ThrowJsonWriterException("Invalid end of JSON.");
+
             _bufferWriter.Flush();
         }
 

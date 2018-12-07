@@ -9,9 +9,9 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(warmupCount: 3, targetCount: 5)]
+    [SimpleJob(warmupCount: 5, targetCount: 10)]
     //[MemoryDiagnoser]
-    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
     {
         private static readonly byte[] Message = Encoding.UTF8.GetBytes("message");
@@ -27,13 +27,15 @@ namespace System.Text.JsonLab.Benchmarks
 
         private int[] _data;
         private byte[] _output;
-        private byte[] _byteBuffer;
-        private int _idx;
+        private long[] _longs;
 
-        [Params(10, 20)]
-        public int _indent;
+        //private byte[] _byteBuffer;
+        //private int _idx;
 
-        [Params(true)]
+        //[Params(10, 20)]
+        //public int _indent;
+
+        [Params(false)]
         public bool Formatted;
 
         [Params(true)]
@@ -57,10 +59,26 @@ namespace System.Text.JsonLab.Benchmarks
 
             // To pass an initialBuffer to Utf8Json:
             // _output = new byte[BufferSize];
-            _output = null;
+            _output = new byte[21 * 1_000 + 4];
 
-            _idx = 0;
-            _byteBuffer = new byte[_indent];
+            //_idx = 0;
+            //_byteBuffer = new byte[_indent];
+
+            var random = new Random(42);
+            const int numberOfItems = 10;
+
+            _longs = new long[numberOfItems];
+            _longs[0] = 0;
+            _longs[1] = long.MaxValue;
+            _longs[2] = long.MinValue;
+            _longs[3] = 12345678901;
+            _longs[4] = -12345678901;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                long value = random.Next(int.MinValue, int.MaxValue);
+                value += value < 0 ? int.MinValue : int.MaxValue;
+                _longs[i] = value;
+            }
         }
 
         //[Benchmark]
@@ -102,6 +120,98 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteAttribute("message", "Hello, World!");
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+        }
+
+        [Benchmark(Baseline = true)]
+        public void WriteArray()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var option = new JsonWriterOptions
+            {
+                Formatted = Formatted,
+                SkipValidation = SkipValidation
+            };
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+
+            json.WriteStartObject();
+            json.WriteArray(Message, _longs);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
+        public void WriteArrayLoop()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var option = new JsonWriterOptions
+            {
+                Formatted = Formatted,
+                SkipValidation = SkipValidation
+            };
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+
+            json.WriteStartObject();
+            json.WriteStartArray(Message);
+            for (int i = 0; i < _longs.Length; i++)
+                json.WriteValue(_longs[i]);
+            json.WriteEndArray();
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
+        public void WriteArrayUtf8Json()
+        {
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(_output);
+
+            json.WriteBeginObject();
+            json.WritePropertyName("message");
+            for (var i = 0; i < _longs.Length - 1; i++)
+            {
+                json.WriteInt64(_longs[i]);
+                json.WriteValueSeparator();
+            }
+            if (_longs.Length > 0)
+                json.WriteInt64(_longs[_longs.Length - 1]);
+            json.WriteEndArray();
+            json.WriteEndObject();
+        }
+
+        //[Benchmark]
+        public void WriteArrayUtf8Json_2()
+        {
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(_output);
+
+            json.WriteBeginObject();
+            json.WritePropertyName("message");
+            json.WriteBeginArray();
+            for (int i = 0; i < _longs.Length; i++)
+                json.WriteInt64(_longs[i]);
+            json.WriteEndArray();
+            json.WriteEndObject();
+        }
+
+        //[Benchmark]
+        public void WriteArrayNewtonsoft()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                json.WritePropertyName("message");
+                json.WriteStartArray();
+                for (var i = 0; i < _longs.Length; i++)
+                {
+                    json.WriteValue(_longs[i]);
+                }
+                json.WriteEnd();
+                json.WriteEnd();
+            }
         }
 
         //[Benchmark]
@@ -227,32 +337,32 @@ namespace System.Text.JsonLab.Benchmarks
             //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
         }
 
+        ////[Benchmark(Baseline = true)]
+        //public void Loop()
+        //{
+        //    var indent = _indent;
+        //    var idx = _idx;
+        //    while (indent > 0)
+        //    {
+        //        _byteBuffer[idx++] = (byte)' ';
+        //        _byteBuffer[idx++] = (byte)' ';
+        //        indent -= 2;
+        //    }
+        //}
+
+        ////[Benchmark]
+        //public void Fill()
+        //{
+        //    var indent = _indent;
+        //    var idx = _idx;
+        //    _byteBuffer.AsSpan(idx, indent).Fill((byte)' ');
+        //    idx += indent;
+        //}
+
         //[Benchmark(Baseline = true)]
-        public void Loop()
-        {
-            var indent = _indent;
-            var idx = _idx;
-            while (indent > 0)
-            {
-                _byteBuffer[idx++] = (byte)' ';
-                _byteBuffer[idx++] = (byte)' ';
-                indent -= 2;
-            }
-        }
-
-        //[Benchmark]
-        public void Fill()
-        {
-            var indent = _indent;
-            var idx = _idx;
-            _byteBuffer.AsSpan(idx, indent).Fill((byte)' ');
-            idx += indent;
-        }
-
-        [Benchmark(Baseline = true)]
         public void Compromise()
         {
-            Helper2(_indent, 0, _byteBuffer);
+            //Helper2(_indent, 0, _byteBuffer);
 
             /*var indent = _indent;
             var idx = _idx;
@@ -290,10 +400,10 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void Compromise_new()
         {
-            Helper(_byteBuffer.AsSpan(0, _indent));
+            //Helper(_byteBuffer.AsSpan(0, _indent));
         }
 
         private static void Helper(Span<byte> byteBuffer)

@@ -184,7 +184,20 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static JsonWriterException GetJsonWriterException(byte token, JsonTokenType tokenType)
         {
+            // TODO: Fix exception message
             return new JsonWriterException(token.ToString());
+        }
+
+        public static void ThrowJsonWriterException(JsonTokenType tokenType)
+        {
+            throw GetJsonWriterException(tokenType);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static JsonWriterException GetJsonWriterException(JsonTokenType tokenType)
+        {
+            // TODO: Fix exception message
+            return new JsonWriterException("");
         }
 
         public static void ThrowFormatException()

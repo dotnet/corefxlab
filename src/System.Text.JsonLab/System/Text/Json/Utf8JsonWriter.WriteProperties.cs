@@ -1830,6 +1830,149 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
+        // TODO: Add tests
+        public void WriteBytesUnchecked(string propertyName, ReadOnlySpan<byte> utf8Bytes)
+            => WriteBytesUnchecked(propertyName.AsSpan(), utf8Bytes);
+
+        public void WriteBytesUnchecked(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            JsonWriterHelper.ValidatePropertyAndValue(propertyName, utf8Bytes);
+
+            WriteBytesWithEncodingProperty(MemoryMarshal.AsBytes(propertyName), utf8Bytes);
+        }
+
+        private void WriteBytesWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            if (_options.SlowPath)
+                WriteBytesSlowWithEncodingProperty(propertyName, utf8Bytes);
+            else
+                WriteBytesFastWithEncodingProperty(propertyName, utf8Bytes);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.None;
+        }
+
+        private void WriteBytesFastWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - utf8Bytes.Length - 4 >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":utf8Bytes'
+            int bytesNeeded = propertyName.Length / 2 * 3 + utf8Bytes.Length + 4;
+
+            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+
+            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            idx += utf8Bytes.Length;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteBytesSlowWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingPropertyWithEncoding(propertyName);
+                }
+                WriteBytesFormattedWithEncodingProperty(propertyName, utf8Bytes);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingPropertyWithEncoding(propertyName);
+                WriteBytesFastWithEncodingProperty(propertyName, utf8Bytes);
+            }
+        }
+
+        private void WriteBytesFormattedWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - utf8Bytes.Length - 5 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": utf8Bytes'
+            int bytesNeeded = propertyName.Length / 2 * 3 + utf8Bytes.Length + 5 + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            idx += utf8Bytes.Length;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteBytesUnchecked(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            if (_options.SlowPath)
+                WriteBytesSlow(propertyName, utf8Bytes);
+            else
+                WriteBytesFast(propertyName, utf8Bytes);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.None;
+        }
+
+        private void WriteBytesFast(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - utf8Bytes.Length - 4 >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":utf8Bytes'
+            int bytesNeeded = propertyName.Length + utf8Bytes.Length + 4;
+
+            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+
+            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            idx += utf8Bytes.Length;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteBytesSlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingProperty(propertyName);
+                }
+                WriteBytesFormatted(propertyName, utf8Bytes);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingProperty(propertyName);
+                WriteBytesFast(propertyName, utf8Bytes);
+            }
+        }
+
+        private void WriteBytesFormatted(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - utf8Bytes.Length - 5 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": utf8Bytes'
+            int bytesNeeded = propertyName.Length + utf8Bytes.Length + 5 + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            idx += utf8Bytes.Length;
+
+            _bufferWriter.Advance(idx);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidatePropertyNameAndDepth(ReadOnlySpan<char> propertyName)
         {
