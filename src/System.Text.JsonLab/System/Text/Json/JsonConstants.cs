@@ -58,5 +58,11 @@ namespace System.Text.JsonLab
         public const int MaxDepth = (int.MaxValue - 2_000_001_000) / 2;  // 73_741_323 (to account for double space indentation), leaving 1_000 buffer for "JSONifying"
         public const int MaxTokenSize = 1_000_000_000; // 1 GB
         public const int MaxCharacterTokenSize = 1_000_000_000 / 3; // 333 million characters, i.e. 333 MB
+
+        public const int MaximumInt64Length = 20;   // 19 + sign (i.e. -9223372036854775808)
+        public const int MaximumUInt64Length = 20;  // i.e. 18446744073709551615
+        public const int MaximumDoubleLength = 32;  // TODO: Should it be 22?
+        public const int MaximumSingleLength = 32;  // TODO: Should it be 13?
+        public const int MaximumDecimalLength = 32; // TODO: Should it be 31?
     }
 }

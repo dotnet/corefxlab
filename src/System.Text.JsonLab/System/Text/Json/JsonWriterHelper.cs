@@ -13,6 +13,12 @@ namespace System.Text.JsonLab
     {
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
 
+        public static ReadOnlySpan<byte> EscapeStringValue(ReadOnlySpan<byte> value)
+        {
+            //TODO: Add escaping logic.
+            return value;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int WriteIndentation(Span<byte> buffer)
         {
@@ -186,6 +192,17 @@ namespace System.Text.JsonLab
             }
 
             return TryFormatInt64MultipleDigits(value, destination, out bytesWritten);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryFormatUInt64Default(ulong value, Span<byte> destination, out int bytesWritten)
+        {
+            if (value < 10)
+            {
+                return TryFormatUInt32SingleDigit((uint)value, destination, out bytesWritten);
+            }
+
+            return TryFormatUInt64MultipleDigits(value, destination, out bytesWritten);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

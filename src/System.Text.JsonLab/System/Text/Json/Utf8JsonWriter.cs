@@ -525,10 +525,10 @@ namespace System.Text.JsonLab
         private void WriteNullFastWithEncoding(ReadOnlySpan<byte> propertyName)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 8 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.NullValue.Length >= 0);
 
             // Calculated based on the following: ',"encoded propertyName":null'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 8;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.NullValue.Length;
 
             Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
@@ -563,10 +563,10 @@ namespace System.Text.JsonLab
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 9 - indent - JsonWriterHelper.NewLineUtf8.Length >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.NullValue.Length - indent - JsonWriterHelper.NewLineUtf8.Length >= 0);
 
             // Calculated based on the following: ',\r\n  "encoded propertyName": null'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 9 + indent + JsonWriterHelper.NewLineUtf8.Length;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.NullValue.Length + indent + JsonWriterHelper.NewLineUtf8.Length;
 
             Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
@@ -592,10 +592,10 @@ namespace System.Text.JsonLab
         private void WriteNullFast(ReadOnlySpan<byte> propertyName)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 8 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.NullValue.Length >= 0);
 
             // Calculated based on the following: ',"propertyName":null'
-            int bytesNeeded = propertyName.Length + 8;
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.NullValue.Length;
 
             Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
 
@@ -630,10 +630,10 @@ namespace System.Text.JsonLab
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 9 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.NullValue.Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
 
             // Calculated based on the following: ',\r\n  "propertyName": null'
-            int bytesNeeded = propertyName.Length + 9 + JsonWriterHelper.NewLineUtf8.Length + indent;
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.NullValue.Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
             Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
@@ -666,10 +666,10 @@ namespace System.Text.JsonLab
         private void WriteBooleanFastWithEncoding(ReadOnlySpan<byte> propertyName, bool value)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 9 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.FalseValue.Length >= 0);
 
             // Calculated based on the following: ',"encoded propertyName":true' OR ',"encoded propertyName":false'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 9;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.FalseValue.Length;
 
             ReadOnlySpan<byte> valueSpan = JsonConstants.FalseValue;
             _tokenType = JsonTokenType.False;
@@ -714,10 +714,10 @@ namespace System.Text.JsonLab
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 10 - indent - JsonWriterHelper.NewLineUtf8.Length >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.FalseValue.Length - indent - JsonWriterHelper.NewLineUtf8.Length >= 0);
 
             // Calculated based on the following: ',\r\n  "encoded propertyName": true' OR ',\r\n  "encoded propertyName": false'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 10 + indent + JsonWriterHelper.NewLineUtf8.Length;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.FalseValue.Length + indent + JsonWriterHelper.NewLineUtf8.Length;
 
             ReadOnlySpan<byte> valueSpan = JsonConstants.FalseValue;
             _tokenType = JsonTokenType.False;
@@ -752,10 +752,10 @@ namespace System.Text.JsonLab
         private void WriteBooleanFast(ReadOnlySpan<byte> propertyName, bool value)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 9 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.FalseValue.Length >= 0);
 
             // Calculated based on the following: ',"propertyName":true' OR ',"propertyName":false'
-            int bytesNeeded = propertyName.Length + 9;
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.FalseValue.Length;
 
             ReadOnlySpan<byte> valueSpan = JsonConstants.FalseValue;
             _tokenType = JsonTokenType.False;
@@ -800,10 +800,10 @@ namespace System.Text.JsonLab
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 10 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.FalseValue.Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
 
             // Calculated based on the following: ',\r\n  "propertyName": true' OR ',\r\n  "propertyName": false'
-            int bytesNeeded = propertyName.Length + 10 + JsonWriterHelper.NewLineUtf8.Length + indent;
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.FalseValue.Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
             ReadOnlySpan<byte> valueSpan = JsonConstants.FalseValue;
             _tokenType = JsonTokenType.False;
@@ -823,17 +823,17 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, int value)
+        public void WriteNumber(string propertyName, long value)
             => WriteNumber(propertyName.AsSpan(), value);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, int value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, long value)
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
             WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
             if (_options.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
@@ -844,13 +844,13 @@ namespace System.Text.JsonLab
             _tokenType = JsonTokenType.Number;
         }
 
-        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 15 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.MaximumInt64Length >= 0);
 
             // Calculated based on the following: ',"encoded propertyName":number'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 15;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumInt64Length;
 
             Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
@@ -864,7 +864,7 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
-        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
             Debug.Assert(_options.Formatted || !_options.SkipValidation);
 
@@ -884,15 +884,15 @@ namespace System.Text.JsonLab
             }
         }
 
-        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 16 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.MaximumInt64Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
 
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 16 + JsonWriterHelper.NewLineUtf8.Length + indent;
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
             Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
@@ -906,7 +906,7 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, int value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, long value)
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
@@ -919,13 +919,13 @@ namespace System.Text.JsonLab
             _tokenType = JsonTokenType.Number;
         }
 
-        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, long value)
         {
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 15 >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.MaximumInt64Length >= 0);
 
             // Calculated based on the following: ',"propertyName":number'
-            int bytesNeeded = propertyName.Length + 15;
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumInt64Length;
 
             Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
 
@@ -939,7 +939,7 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
-        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, long value)
         {
             Debug.Assert(_options.Formatted || !_options.SkipValidation);
 
@@ -959,15 +959,15 @@ namespace System.Text.JsonLab
             }
         }
 
-        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, int value)
+        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, long value)
         {
             int indent = Indentation;
 
             // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 16 - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.MaximumInt64Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
 
             // Calculated based on the following: ',\r\n  "propertyName": number'
-            int bytesNeeded = propertyName.Length + 16 + JsonWriterHelper.NewLineUtf8.Length + indent;
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
             Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
@@ -981,11 +981,625 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
+        public void WriteNumber(string propertyName, int value)
+            => WriteNumber(propertyName, (long)value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, int value)
+            => WriteNumber(propertyName, (long)value);
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, int value)
+            => WriteNumber(propertyName, (long)value);
+
+        public void WriteNumber(string propertyName, uint value)
+            => WriteNumber(propertyName, (ulong)value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, uint value)
+            => WriteNumber(propertyName, (ulong)value);
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, uint value)
+            => WriteNumber(propertyName, (ulong)value);
+
+        public void WriteNumber(string propertyName, ulong value)
+            => WriteNumber(propertyName.AsSpan(), value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, ulong value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+        }
+
+        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            if (_options.SlowPath)
+                WriteNumberSlowWithEncoding(propertyName, value);
+            else
+                WriteNumberFastWithEncoding(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.MaximumUInt64Length >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumUInt64Length;
+
+            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingPropertyWithEncoding(propertyName);
+                }
+                WriteNumberFormattedWithEncoding(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingPropertyWithEncoding(propertyName);
+                WriteNumberFastWithEncoding(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.MaximumUInt64Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumUInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            if (_options.SlowPath)
+                WriteNumberSlow(propertyName, value);
+            else
+                WriteNumberFast(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.MaximumUInt64Length >= 0);
+
+            // Calculated based on the following: ',"propertyName":number'
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumUInt64Length;
+
+            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingProperty(propertyName);
+                }
+                WriteNumberFormatted(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingProperty(propertyName);
+                WriteNumberFast(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, ulong value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.MaximumUInt64Length - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "propertyName": number'
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumUInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(string propertyName, double value)
+            => WriteNumber(propertyName.AsSpan(), value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, double value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+        }
+
+        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, double value)
+        {
+            if (_options.SlowPath)
+                WriteNumberSlowWithEncoding(propertyName, value);
+            else
+                WriteNumberFastWithEncoding(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, double value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.MaximumDoubleLength >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumDoubleLength;
+
+            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, double value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingPropertyWithEncoding(propertyName);
+                }
+                WriteNumberFormattedWithEncoding(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingPropertyWithEncoding(propertyName);
+                WriteNumberFastWithEncoding(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, double value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.MaximumDoubleLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumDoubleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, double value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            if (_options.SlowPath)
+                WriteNumberSlow(propertyName, value);
+            else
+                WriteNumberFast(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, double value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.MaximumDoubleLength >= 0);
+
+            // Calculated based on the following: ',"propertyName":number'
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumDoubleLength;
+
+            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, double value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingProperty(propertyName);
+                }
+                WriteNumberFormatted(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingProperty(propertyName);
+                WriteNumberFast(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, double value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.MaximumDoubleLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "propertyName": number'
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumDoubleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(string propertyName, float value)
+            => WriteNumber(propertyName.AsSpan(), value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, float value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+        }
+
+        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, float value)
+        {
+            if (_options.SlowPath)
+                WriteNumberSlowWithEncoding(propertyName, value);
+            else
+                WriteNumberFastWithEncoding(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, float value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.MaximumSingleLength >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumSingleLength;
+
+            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, float value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingPropertyWithEncoding(propertyName);
+                }
+                WriteNumberFormattedWithEncoding(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingPropertyWithEncoding(propertyName);
+                WriteNumberFastWithEncoding(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, float value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.MaximumSingleLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumSingleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, float value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            if (_options.SlowPath)
+                WriteNumberSlow(propertyName, value);
+            else
+                WriteNumberFast(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, float value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.MaximumSingleLength >= 0);
+
+            // Calculated based on the following: ',"propertyName":number'
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumSingleLength;
+
+            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, float value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingProperty(propertyName);
+                }
+                WriteNumberFormatted(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingProperty(propertyName);
+                WriteNumberFast(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, float value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.MaximumSingleLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "propertyName": number'
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumSingleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(string propertyName, decimal value)
+            => WriteNumber(propertyName.AsSpan(), value);
+
+        public void WriteNumber(ReadOnlySpan<char> propertyName, decimal value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+        }
+
+        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            if (_options.SlowPath)
+                WriteNumberSlowWithEncoding(propertyName, value);
+            else
+                WriteNumberFastWithEncoding(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFastWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 4 - JsonConstants.MaximumDecimalLength >= 0);
+
+            // Calculated based on the following: ',"encoded propertyName":number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumDecimalLength;
+
+            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingPropertyWithEncoding(propertyName);
+                }
+                WriteNumberFormattedWithEncoding(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingPropertyWithEncoding(propertyName);
+                WriteNumberFastWithEncoding(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormattedWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 5 - JsonConstants.MaximumDecimalLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "encoded propertyName": number'
+            int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumDecimalLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            JsonWriterHelper.ValidateProperty(propertyName);
+
+            if (_options.SlowPath)
+                WriteNumberSlow(propertyName, value);
+            else
+                WriteNumberFast(propertyName, value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteNumberFast(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 4 - JsonConstants.MaximumDecimalLength >= 0);
+
+            // Calculated based on the following: ',"propertyName":number'
+            int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumDecimalLength;
+
+            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+
+            if (_options.Formatted)
+            {
+                if (!_options.SkipValidation)
+                {
+                    ValidateWritingProperty(propertyName);
+                }
+                WriteNumberFormatted(propertyName, value);
+            }
+            else
+            {
+                Debug.Assert(!_options.SkipValidation);
+                ValidateWritingProperty(propertyName);
+                WriteNumberFast(propertyName, value);
+            }
+        }
+
+        private void WriteNumberFormatted(ReadOnlySpan<byte> propertyName, decimal value)
+        {
+            int indent = Indentation;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - propertyName.Length - 5 - JsonConstants.MaximumDecimalLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
+
+            // Calculated based on the following: ',\r\n  "propertyName": number'
+            int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumDecimalLength + JsonWriterHelper.NewLineUtf8.Length + indent;
+
+            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+
+            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            Debug.Assert(result);
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+        }
+
         private void WriteStringWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
         {
             //TODO: Add ReadOnlySpan<char> overload to this check
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = EscapeStringValue(value);
+                value = JsonWriterHelper.EscapeStringValue(value);
 
             if (_options.SlowPath)
                 WriteStringSlowWithEncodingPropertyValue(propertyName, value);
@@ -1089,7 +1703,7 @@ namespace System.Text.JsonLab
         {
             //TODO: Add ReadOnlySpan<char> overload to this check
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = EscapeStringValue(value);
+                value = JsonWriterHelper.EscapeStringValue(value);
 
             if (_options.SlowPath)
                 WriteStringSlowWithEncodingProperty(propertyName, value);
@@ -1162,7 +1776,7 @@ namespace System.Text.JsonLab
         {
             //TODO: Add ReadOnlySpan<char> overload to this check
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = EscapeStringValue(value);
+                value = JsonWriterHelper.EscapeStringValue(value);
 
             if (_options.SlowPath)
                 WriteStringSlowWithEncodingValue(propertyName, value);
@@ -1272,6 +1886,7 @@ namespace System.Text.JsonLab
 
             WriteStringWithEncodingProperty(MemoryMarshal.AsBytes(propertyName), value);
         }
+
         public void WriteString(ReadOnlySpan<byte> propertyName, string value)
             => WriteString(propertyName, value.AsSpan());
 
@@ -1289,7 +1904,7 @@ namespace System.Text.JsonLab
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
             {
                 //TODO: Add escaping.
-                value = EscapeStringValue(value);
+                value = JsonWriterHelper.EscapeStringValue(value);
             }
 
             if (_options.SlowPath)
@@ -1299,12 +1914,6 @@ namespace System.Text.JsonLab
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
-        }
-
-        private static ReadOnlySpan<byte> EscapeStringValue(ReadOnlySpan<byte> value)
-        {
-            //TODO: Add escaping logic.
-            return value;
         }
 
         private void WriteStringFast(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)

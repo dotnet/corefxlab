@@ -463,9 +463,9 @@ namespace System.Text.JsonLab.Tests
         [InlineData(true, false, 12345)]
         [InlineData(false, true, 12345)]
         [InlineData(false, false, 12345)]
-        public void WriteNumberValueWithOptions(bool formatted, bool skipValidation, int value)
+        public void WriteIntegerValueWithOptions(bool formatted, bool skipValidation, int value)
         {
-            string expectedStr = GetNumberExpectedString(prettyPrint: formatted, value);
+            string expectedStr = GetIntegerExpectedString(prettyPrint: formatted, value);
 
             var options = new JsonWriterOptions
             {
@@ -501,6 +501,220 @@ namespace System.Text.JsonLab.Tests
 
                 Assert.True(expectedStr == actualStr, $"Case: {i}, | Expected: {expectedStr}, | Actual: {actualStr}, | Value: {value}");
             }
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteNumbersWithOptions(bool formatted, bool skipValidation)
+        {
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+
+            var random = new Random(42);
+            const int numberOfItems = 1_000;
+
+            var ints = new int[numberOfItems];
+            ints[0] = 0;
+            ints[1] = int.MaxValue;
+            ints[2] = int.MinValue;
+            ints[3] = 12345;
+            ints[4] = -12345;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                ints[i] = random.Next(int.MinValue, int.MaxValue);
+            }
+
+            var uints = new uint[numberOfItems];
+            uints[0] = uint.MaxValue;
+            uints[1] = uint.MinValue;
+            uints[2] = 3294967295;
+            for (int i = 3; i < numberOfItems; i++)
+            {
+                uint thirtyBits = (uint)random.Next(1 << 30);
+                uint twoBits = (uint)random.Next(1 << 2);
+                uint fullRange = (thirtyBits << 2) | twoBits;
+                uints[i] = fullRange;
+            }
+
+            var longs = new long[numberOfItems];
+            longs[0] = 0;
+            longs[1] = long.MaxValue;
+            longs[2] = long.MinValue;
+            longs[3] = 12345678901;
+            longs[4] = -12345678901;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                long value = random.Next(int.MinValue, int.MaxValue);
+                value += value < 0 ? int.MinValue : int.MaxValue;
+                longs[i] = value;
+            }
+
+            var ulongs = new ulong[numberOfItems];
+            ulongs[0] = ulong.MaxValue;
+            ulongs[1] = ulong.MinValue;
+            ulongs[2] = 10446744073709551615;
+            for (int i = 3; i < numberOfItems; i++)
+            {
+
+            }
+
+            var doubles = new double[numberOfItems * 2];
+            doubles[0] = 0.00;
+            doubles[1] = double.MaxValue;
+            doubles[2] = double.MinValue;
+            doubles[3] = 12.345e1;
+            doubles[4] = -123.45e1;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                var value = random.NextDouble();
+                if (value < 0.5)
+                {
+                    doubles[i] = random.NextDouble() * double.MinValue;
+                }
+                else
+                {
+                    doubles[i] = random.NextDouble() * double.MaxValue;
+                }
+            }
+
+            for (int i = numberOfItems; i < numberOfItems * 2; i++)
+            {
+                var value = random.NextDouble();
+                if (value < 0.5)
+                {
+                    doubles[i] = random.NextDouble() * -1_000_000;
+                }
+                else
+                {
+                    doubles[i] = random.NextDouble() * 1_000_000;
+                }
+            }
+
+            var floats = new float[numberOfItems];
+            floats[0] = 0.00f;
+            floats[1] = float.MaxValue;
+            floats[2] = float.MinValue;
+            floats[3] = 12.345e1f;
+            floats[4] = -123.45e1f;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                double mantissa = (random.NextDouble() * 2.0) - 1.0;
+                double exponent = Math.Pow(2.0, random.Next(-126, 128));
+                floats[i] = (float)(mantissa * exponent);
+            }
+
+            var decimals = new decimal[numberOfItems * 2];
+            decimals[0] = (decimal)0.00;
+            decimals[1] = decimal.MaxValue;
+            decimals[2] = decimal.MinValue;
+            decimals[3] = (decimal)12.345e1;
+            decimals[4] = (decimal)-123.45e1;
+            for (int i = 5; i < numberOfItems; i++)
+            {
+                var value = random.NextDouble();
+                if (value < 0.5)
+                {
+                    decimals[i] = (decimal)(random.NextDouble() * -78E14);
+                }
+                else
+                {
+                    decimals[i] = (decimal)(random.NextDouble() * 78E14);
+                }
+            }
+
+            for (int i = numberOfItems; i < numberOfItems * 2; i++)
+            {
+                var value = random.NextDouble();
+                if (value < 0.5)
+                {
+                    decimals[i] = (decimal)(random.NextDouble() * -1_000_000);
+                }
+                else
+                {
+                    decimals[i] = (decimal)(random.NextDouble() * 1_000_000);
+                }
+            }
+
+            string expectedStr = GetNumbersExpectedString(prettyPrint: formatted, ints, uints, longs, ulongs, floats, doubles, decimals);
+
+            for (int j = 0; j < 3; j++)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+
+                string keyString = "message";
+                ReadOnlySpan<char> keyUtf16 = keyString;
+                ReadOnlySpan<byte> keyUtf8 = Encoding.UTF8.GetBytes(keyString);
+
+                jsonUtf8.WriteStartObject();
+
+                switch (j)
+                {
+                    case 0:
+                        for (int i = 0; i < floats.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, floats[i]);
+                        for (int i = 0; i < ints.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, ints[i]);
+                        for (int i = 0; i < uints.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, uints[i]);
+                        for (int i = 0; i < doubles.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, doubles[i]);
+                        for (int i = 0; i < longs.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, longs[i]);
+                        for (int i = 0; i < ulongs.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, ulongs[i]);
+                        for (int i = 0; i < decimals.Length; i++)
+                            jsonUtf8.WriteNumber(keyString, decimals[i]);
+                        break;
+                    case 1:
+                        for (int i = 0; i < floats.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, floats[i]);
+                        for (int i = 0; i < ints.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, ints[i]);
+                        for (int i = 0; i < uints.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, uints[i]);
+                        for (int i = 0; i < doubles.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, doubles[i]);
+                        for (int i = 0; i < longs.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, longs[i]);
+                        for (int i = 0; i < ulongs.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, ulongs[i]);
+                        for (int i = 0; i < decimals.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf16, decimals[i]);
+                        break;
+                    case 2:
+                        for (int i = 0; i < floats.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, floats[i]);
+                        for (int i = 0; i < ints.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, ints[i]);
+                        for (int i = 0; i < uints.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, uints[i]);
+                        for (int i = 0; i < doubles.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, doubles[i]);
+                        for (int i = 0; i < longs.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, longs[i]);
+                        for (int i = 0; i < ulongs.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, ulongs[i]);
+                        for (int i = 0; i < decimals.Length; i++)
+                            jsonUtf8.WriteNumber(keyUtf8, decimals[i]);
+                        break;
+                }
+
+                jsonUtf8.WriteEndObject();
+                jsonUtf8.Flush();
+
+                ArraySegment<byte> arraySegment = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+            }
+
+            // TODO: The output doesn't match what JSON.NET does.
+            //Assert.Equal(expectedStr, actualStr);
         }
 
         // TODO: Move to outerloop
@@ -656,7 +870,7 @@ namespace System.Text.JsonLab.Tests
             return Encoding.UTF8.GetString(ms.ToArray());
         }
 
-        private static string GetNumberExpectedString(bool prettyPrint, int value)
+        private static string GetIntegerExpectedString(bool prettyPrint, int value)
         {
             MemoryStream ms = new MemoryStream();
             TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
@@ -669,6 +883,60 @@ namespace System.Text.JsonLab.Tests
             json.WriteStartObject();
             json.WritePropertyName("message");
             json.WriteValue(value);
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        private static string GetNumbersExpectedString(bool prettyPrint, int[] ints, uint[] uints, long[] longs, ulong[] ulongs, float[] floats, double[] doubles, decimal[] decimals)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new Newtonsoft.Json.JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
+            };
+
+            json.WriteStartObject();
+
+            for (int i = 0; i < floats.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(floats[i]);
+            }
+            for (int i = 0; i < ints.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(ints[i]);
+            }
+            for (int i = 0; i < uints.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(uints[i]);
+            }
+            for (int i = 0; i < doubles.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(doubles[i]);
+            }
+            for (int i = 0; i < longs.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(longs[i]);
+            }
+            for (int i = 0; i < ulongs.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(ulongs[i]);
+            }
+            for (int i = 0; i < decimals.Length; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue(decimals[i]);
+            }
             json.WriteEnd();
 
             json.Flush();
