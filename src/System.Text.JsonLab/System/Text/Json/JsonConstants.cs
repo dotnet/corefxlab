@@ -53,5 +53,10 @@ namespace System.Text.JsonLab
         public static ReadOnlySpan<byte> EscapableChars => new byte[] { Quote, (byte)'n', (byte)'r', (byte)'t', Solidus, (byte)'u', (byte)'b', (byte)'f' };
 
         #endregion Common values
+
+        public const int RemoveFlagsBitMask = 0x7FFFFFFF;
+        public const int MaxDepth = (int.MaxValue - 2_000_001_000) / 2;  // 73_741_323 (to account for double space indentation), leaving 1_000 buffer for "JSONifying"
+        public const int MaxTokenSize = 1_000_000_000; // 1 GB
+        public const int MaxCharacterTokenSize = 1_000_000_000 / 3; // 333 million characters, i.e. 333 MB
     }
 }

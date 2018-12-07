@@ -503,6 +503,59 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
+        // TODO: Move to outerloop
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteLargeKeyValue(bool formatted, bool skipValidation)
+        {
+            var options = new JsonWriterOptions
+            {
+                Formatted = formatted,
+                SkipValidation = skipValidation
+            };
+
+            Span<byte> key = new byte[1_000_000_001];
+            key.Fill((byte)'a');
+            Span<byte> value = new byte[1_000_000_001];
+            value.Fill((byte)'b');
+
+            WriteTooLargeHelper(options, key, value);
+            WriteTooLargeHelper(options, key.Slice(0, 1_000_000_000), value);
+            WriteTooLargeHelper(options, key, value.Slice(0, 1_000_000_000));
+            WriteTooLargeHelper(options, key.Slice(0, 1_000_000_000 / 3), value.Slice(0, 1_000_000_000 / 3), noThrow: true);
+        }
+
+        private static void WriteTooLargeHelper(JsonWriterOptions options, ReadOnlySpan<byte> key, ReadOnlySpan<byte> value, bool noThrow = false)
+        {
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+            var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+
+            jsonUtf8.WriteStartObject();
+
+            try
+            {
+                jsonUtf8.WriteString(key, value);
+
+                if (!noThrow)
+                {
+                    Assert.True(false, $"Expected ArgumentException for data too large wasn't thrown. KeyLength: {key.Length} | ValueLength: {value.Length}");
+                }
+            }
+            catch (ArgumentException)
+            {
+                if (noThrow)
+                {
+                    Assert.True(false, $"Expected writing large key/value to succeed. KeyLength: {key.Length} | ValueLength: {value.Length}");
+                }
+            }
+
+            jsonUtf8.WriteEndObject();
+            jsonUtf8.Flush();
+        }
+
         private static string GetHelloWorldExpectedString(bool prettyPrint)
         {
             MemoryStream ms = new MemoryStream();

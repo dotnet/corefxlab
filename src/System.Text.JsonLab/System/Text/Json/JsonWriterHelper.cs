@@ -14,6 +14,75 @@ namespace System.Text.JsonLab
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteIndentation(Span<byte> buffer)
+        {
+            Debug.Assert(buffer.Length % 2 == 0);
+
+            if (buffer.Length < 8)
+            {
+                int i = 0;
+                while (i < buffer.Length)
+                {
+                    buffer[i++] = JsonConstants.Space;
+                    buffer[i++] = JsonConstants.Space;
+                }
+            }
+            else
+            {
+                buffer.Fill(JsonConstants.Space);
+            }
+            return buffer.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateProperty(ReadOnlySpan<byte> propertyName)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateProperty(ReadOnlySpan<char> propertyName)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
         {
             // We can mutate the 'value' parameter since it's a copy-by-value local.

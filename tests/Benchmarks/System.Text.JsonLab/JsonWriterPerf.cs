@@ -9,7 +9,7 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(warmupCount: 5, targetCount: 10)]
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
     //[MemoryDiagnoser]
     [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
@@ -27,8 +27,13 @@ namespace System.Text.JsonLab.Benchmarks
 
         private int[] _data;
         private byte[] _output;
+        private byte[] _byteBuffer;
+        private int _idx;
 
-        [Params(false)]
+        [Params(10, 20)]
+        public int _indent;
+
+        [Params(true)]
         public bool Formatted;
 
         [Params(true)]
@@ -53,6 +58,9 @@ namespace System.Text.JsonLab.Benchmarks
             // To pass an initialBuffer to Utf8Json:
             // _output = new byte[BufferSize];
             _output = null;
+
+            _idx = 0;
+            _byteBuffer = new byte[_indent];
         }
 
         //[Benchmark]
@@ -188,8 +196,8 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
-        public void WriterSystemTextJsonHelloWorld2UTF8()
+        //[Benchmark]
+        public void WriterCoreNumbers()
         {
             _arrayFormatterWrapper.Clear();
 
@@ -202,17 +210,131 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
 
             json.WriteStartObject();
-            json.WriteNumber(Message, 1234567);
-            json.WriteNumber(Message, 123456);
-            json.WriteNumber(Message, 12345);
-            json.WriteNumber(Message, 12345678);
-            json.WriteNumber(Message, 1234);
-            json.WriteNumber(Message, 123);
-            json.WriteNumber(Message, 123456789);
-            json.WriteNumber(Message, 12);
-            json.WriteNumber(Message, 1);
-            json.WriteNumber(Message, 1234567890);
+            json.WriteNumber("message", 1234567);
+            json.WriteNumber("message", 123456);
+            json.WriteNumber("message", 12345);
+            json.WriteNumber("message", 12345678);
+            json.WriteNumber("message", 1234);
+            json.WriteNumber("message", 123);
+            json.WriteNumber("message", 123456789);
+            json.WriteNumber("message", 12);
+            json.WriteNumber("message", 1);
+            json.WriteNumber("message", 1234567890);
             json.WriteEndObject();
+
+            json.Flush();
+
+            //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
+        }
+
+        //[Benchmark(Baseline = true)]
+        public void Loop()
+        {
+            var indent = _indent;
+            var idx = _idx;
+            while (indent > 0)
+            {
+                _byteBuffer[idx++] = (byte)' ';
+                _byteBuffer[idx++] = (byte)' ';
+                indent -= 2;
+            }
+        }
+
+        //[Benchmark]
+        public void Fill()
+        {
+            var indent = _indent;
+            var idx = _idx;
+            _byteBuffer.AsSpan(idx, indent).Fill((byte)' ');
+            idx += indent;
+        }
+
+        [Benchmark(Baseline = true)]
+        public void Compromise()
+        {
+            Helper2(_indent, 0, _byteBuffer);
+
+            /*var indent = _indent;
+            var idx = _idx;
+            if (indent < 8)
+            {
+                while (indent > 0)
+                {
+                    _byteBuffer[idx++] = (byte)' ';
+                    _byteBuffer[idx++] = (byte)' ';
+                    indent -= 2;
+                }
+            }
+            else
+            {
+                _byteBuffer.AsSpan(idx, indent).Fill((byte)' ');
+                idx += indent;
+            }*/
+        }
+
+        private static void Helper2(int indent, int i, Span<byte> byteBuffer)
+        {
+            if (indent < 8)
+            {
+                while (indent > 0)
+                {
+                    byteBuffer[i++] = (byte)' ';
+                    byteBuffer[i++] = (byte)' ';
+                    indent -= 2;
+                }
+            }
+            else
+            {
+                byteBuffer.Slice(i, indent).Fill((byte)' ');
+                i += indent;
+            }
+        }
+
+        [Benchmark]
+        public void Compromise_new()
+        {
+            Helper(_byteBuffer.AsSpan(0, _indent));
+        }
+
+        private static void Helper(Span<byte> byteBuffer)
+        {
+            int i = 0;
+            if (byteBuffer.Length < 8)
+            {
+                while (i < byteBuffer.Length)
+                {
+                    byteBuffer[i++] = (byte)' ';
+                    byteBuffer[i++] = (byte)' ';
+                }
+            }
+            else
+            {
+                byteBuffer.Fill((byte)' ');
+                i += byteBuffer.Length;
+            }
+        }
+
+        //[Benchmark]
+        public void WriterCoreNumbersUtf8()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var option = new JsonWriterOptions
+            {
+                Formatted = Formatted,
+                SkipValidation = SkipValidation
+            };
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+
+            ReadOnlySpan<byte> key = new byte[] { (byte)'a' };
+
+            json.WriteStartObject();
+            for (int i = 0; i < 1_000; i++)
+                json.WriteNumber(key, 1);
+            json.WriteEndObject();
+
+            json.Flush();
 
             //WriterSystemTextJsonHelloWorldUtf82(option, _arrayFormatterWrapper);
         }
@@ -223,7 +345,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
         }
 
-        //[Benchmark]
+        //[Benchmark(Baseline = true)]
         public void WriterUtf8JsonHelloWorld()
         {
             WriterUtf8JsonHelloWorldHelper(_output);
@@ -415,7 +537,25 @@ namespace System.Text.JsonLab.Benchmarks
 
                 json.WriteStartObject();
                 json.WritePropertyName("message");
-                json.WriteValue(true);
+                json.WriteValue(1234567);
+                json.WritePropertyName("message");
+                json.WriteValue(123456);
+                json.WritePropertyName("message");
+                json.WriteValue(12345);
+                json.WritePropertyName("message");
+                json.WriteValue(12345678);
+                json.WritePropertyName("message");
+                json.WriteValue(1234);
+                json.WritePropertyName("message");
+                json.WriteValue(123);
+                json.WritePropertyName("message");
+                json.WriteValue(123456789);
+                json.WritePropertyName("message");
+                json.WriteValue(12);
+                json.WritePropertyName("message");
+                json.WriteValue(1);
+                json.WritePropertyName("message");
+                json.WriteValue(1234567890);
                 json.WriteEndObject();
             }
         }
@@ -424,10 +564,123 @@ namespace System.Text.JsonLab.Benchmarks
         {
             global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(output);
 
-            json.WriteBeginArray();
+            /*byte[] message = global::Utf8Json.JsonWriter.GetEncodedPropertyName("message");
+
+            byte[] rawBytes = new byte[(message.Length + 1) * 10 + 2 + 55 + 9];
+
+            rawBytes[0] = (byte)'{';
+            Array.Copy(message, 0, rawBytes, 1, message.Length);
+            rawBytes[10] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 11, message.Length);
+            rawBytes[20] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 21, message.Length);
+            rawBytes[30] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 31, message.Length);
+            rawBytes[40] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 41, message.Length);
+            rawBytes[50] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 51, message.Length);
+            rawBytes[60] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 61, message.Length);
+            rawBytes[70] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 71, message.Length);
+            rawBytes[80] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 81, message.Length);
+            rawBytes[90] = (byte)':';
+            Array.Copy(message, 0, rawBytes, 91, message.Length);
+            rawBytes[100] = (byte)':';
+            rawBytes[rawBytes.Length - 1] = (byte)'}';
+
+            json.WriteRaw(rawBytes);*/
+
+            /*json.WriteBeginObject();
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234567);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123456);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12345);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12345678);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123456789);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234567890);
+            json.WriteEndObject();*/
+
+            /*json.WriteBeginArray();
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234567);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123456);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12345);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12345678);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(123456789);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(12);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1);
+            json.WriteRaw(message);
+            json.WriteNameSeparator();
+            json.WriteInt32(1234567890);
+            json.WriteEndObject();*/
+
+            /*json.WriteBeginArray();
             json.WritePropertyName("message");
-            json.WriteBoolean(true);
-            json.WriteEndObject();
+            json.WriteInt32(1234567);
+            json.WritePropertyName("message");
+            json.WriteInt32(123456);
+            json.WritePropertyName("message");
+            json.WriteInt32(12345);
+            json.WritePropertyName("message");
+            json.WriteInt32(12345678);
+            json.WritePropertyName("message");
+            json.WriteInt32(1234);
+            json.WritePropertyName("message");
+            json.WriteInt32(123);
+            json.WritePropertyName("message");
+            json.WriteInt32(123456789);
+            json.WritePropertyName("message");
+            json.WriteInt32(12);
+            json.WritePropertyName("message");
+            json.WriteInt32(1);
+            json.WritePropertyName("message");
+            json.WriteInt32(1234567890);
+            json.WriteEndObject();*/
         }
 
         private static void WriterSystemTextJsonArrayOnlyUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
