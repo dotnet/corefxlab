@@ -11,7 +11,23 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
-        private BufferWriter<TBufferWriter> _bufferWriter;
+        private TBufferWriter _output;
+        private int _buffered;
+        private Span<byte> _buffer;
+
+        public long BytesWritten
+        {
+            get
+            {
+                Debug.Assert(BytesCommitted <= long.MaxValue - _buffered);
+                return BytesCommitted + _buffered;
+            }
+        }
+
+        public long BytesCommitted { get; private set; }
+
+
+        //private BufferWriter<TBufferWriter> _bufferWriter;
         private int _maxDepth;
         private bool _inObject;
         private bool _isNotPrimitive;
@@ -25,9 +41,9 @@ namespace System.Text.JsonLab
         // else, no list separator is needed since we are writing the first item.
         private int _currentDepth;
 
-        public long BytesWritten => _bufferWriter.BytesWritten;
+        //public long BytesWritten => _bufferWriter.BytesWritten;
 
-        public long BytesCommitted => _bufferWriter.BytesCommitted;
+        //public long BytesCommitted => _bufferWriter.BytesCommitted;
 
         private int Indentation => CurrentDepth * 2;
 
@@ -37,8 +53,8 @@ namespace System.Text.JsonLab
 
         public JsonWriterState CurrentState => new JsonWriterState
         {
-            _bytesWritten = _bufferWriter.BytesWritten,
-            _bytesCommitted = _bufferWriter.BytesCommitted,
+            _bytesWritten = BytesWritten,
+            _bytesCommitted = BytesCommitted,
             _maxDepth = _maxDepth,
             _inObject = _inObject,
             _isNotPrimitive = _isNotPrimitive,
@@ -55,7 +71,12 @@ namespace System.Text.JsonLab
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
         public Utf8JsonWriter2(TBufferWriter bufferWriter, JsonWriterState state = default)
         {
-            _bufferWriter = new BufferWriter<TBufferWriter>(bufferWriter);
+            _output = bufferWriter;
+            _buffered = 0;
+            BytesCommitted = 0;
+            _buffer = _output.GetSpan();
+
+            //_bufferWriter = new BufferWriter<TBufferWriter>(bufferWriter);
             _maxDepth = state._maxDepth == 0 ? JsonWriterState.DefaultMaxDepth : state._maxDepth;   // If max depth is not set, revert to the default depth.
             _inObject = state._inObject;
             _isNotPrimitive = state._isNotPrimitive;
@@ -67,19 +88,54 @@ namespace System.Text.JsonLab
             _currentDepth = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Flush()
+        {
+            BytesCommitted += _buffered;
+            _output.Advance(_buffered);
+            _buffered = 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Advance(int count)
+        {
+            Debug.Assert(count >= 0 && _buffered <= int.MaxValue - count);
+
+            _buffered += count;
+            _buffer = _buffer.Slice(count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Ensure(int count)
+        {
+            Debug.Assert(count >= 0);
+
+            if (_buffer.Length < count)
+                EnsureMore(count);
+
+            Debug.Assert(_buffer.Length >= count);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void EnsureMore(int count)
+        {
+            Flush();
+            _buffer = _output.GetSpan(count);
+        }
+
         public void Flush(bool isFinalBlock = true)
         {
             //TODO: Fix exception message and check other potential conditions for invalid end.
             if (isFinalBlock && !_writerOptions.SkipValidation && CurrentDepth != 0)
                 JsonThrowHelper.ThrowJsonWriterException("Invalid end of JSON.");
 
-            _bufferWriter.Flush();
+            Flush();
         }
 
         public void Dispose()
         {
             Flush();
-            if (_bufferWriter._output is StreamFormatter streamFormatter)
+            if (_output is StreamFormatter streamFormatter)
                 streamFormatter.Dispose();
         }
 
@@ -119,14 +175,14 @@ namespace System.Text.JsonLab
                 Span<byte> byteBuffer = GetSpan(bytesNeeded);
                 byteBuffer[0] = JsonConstants.ListSeperator;
                 byteBuffer[1] = token;
-                _bufferWriter.Advance(bytesNeeded);
+                Advance(bytesNeeded);
             }
             else
             {
                 bytesNeeded--;
                 Span<byte> byteBuffer = GetSpan(bytesNeeded);
                 byteBuffer[0] = token;
-                _bufferWriter.Advance(bytesNeeded);
+                Advance(bytesNeeded);
             }
         }
 
@@ -204,7 +260,7 @@ namespace System.Text.JsonLab
 
             Debug.Assert(idx == bytesNeeded);
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteStartArray(ReadOnlySpan<byte> propertyName)
@@ -246,7 +302,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = token;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStartSlow(ReadOnlySpan<byte> propertyName, byte token)
@@ -297,7 +353,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = token;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteStartArray(string propertyName)
@@ -356,7 +412,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = token;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStartSlowWithEncoding(ReadOnlySpan<byte> propertyName, byte token)
@@ -410,7 +466,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = token;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteEndArray()
@@ -440,7 +496,7 @@ namespace System.Text.JsonLab
         {
             Span<byte> byteBuffer = GetSpan(1);
             byteBuffer[0] = token;
-            _bufferWriter.Advance(1);
+            Advance(1);
         }
 
         private void WriteEndSlow(byte token)
@@ -514,8 +570,8 @@ namespace System.Text.JsonLab
                 // For new line (\r\n or \n), indentation (based on depth) and end token ('}' or ']').
                 int bytesNeeded = JsonWriterHelper.NewLineUtf8.Length + 1 + indent;
 
-                _bufferWriter.Ensure(bytesNeeded);
-                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                Ensure(bytesNeeded);
+                Span<byte> byteBuffer = _buffer;
 
                 int idx = 0;
 
@@ -527,16 +583,16 @@ namespace System.Text.JsonLab
 
                 Debug.Assert(idx == bytesNeeded);
 
-                _bufferWriter.Advance(idx);
+                Advance(idx);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Span<byte> GetSpan(int bytesNeeded)
         {
-            _bufferWriter.Ensure(bytesNeeded);
-            Debug.Assert(_bufferWriter.Buffer.Length >= bytesNeeded);
-            return _bufferWriter.Buffer;
+            Ensure(bytesNeeded);
+            Debug.Assert(_buffer.Length >= bytesNeeded);
+            return _buffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

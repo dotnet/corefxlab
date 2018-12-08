@@ -31,7 +31,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNullSlow()
@@ -69,7 +69,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteValue(bool value)
@@ -105,7 +105,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteValueSlow(long value)
@@ -147,7 +147,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteValue(uint value)

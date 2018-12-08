@@ -61,7 +61,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.CloseBracket;
 
-                _bufferWriter.Advance(idx);
+                Advance(idx);
             }
             else
             {
@@ -118,7 +118,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values)

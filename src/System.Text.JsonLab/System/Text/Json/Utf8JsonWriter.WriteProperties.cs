@@ -46,7 +46,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNullSlowWithEncoding(ReadOnlySpan<byte> propertyName)
@@ -84,7 +84,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNull(ReadOnlySpan<byte> propertyName)
@@ -113,7 +113,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNullSlow(ReadOnlySpan<byte> propertyName)
@@ -151,7 +151,7 @@ namespace System.Text.JsonLab
             JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteBoolean(string propertyName, bool value)
@@ -197,7 +197,7 @@ namespace System.Text.JsonLab
             valueSpan.CopyTo(byteBuffer.Slice(idx));
             idx += valueSpan.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteBooleanSlowWithEncoding(ReadOnlySpan<byte> propertyName, bool value)
@@ -245,7 +245,7 @@ namespace System.Text.JsonLab
             valueSpan.CopyTo(byteBuffer.Slice(idx));
             idx += valueSpan.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteBoolean(ReadOnlySpan<byte> propertyName, bool value)
@@ -283,7 +283,7 @@ namespace System.Text.JsonLab
             valueSpan.CopyTo(byteBuffer.Slice(idx));
             idx += valueSpan.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteBooleanSlow(ReadOnlySpan<byte> propertyName, bool value)
@@ -331,7 +331,7 @@ namespace System.Text.JsonLab
             valueSpan.CopyTo(byteBuffer.Slice(idx));
             idx += valueSpan.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(string propertyName, long value)
@@ -368,11 +368,11 @@ namespace System.Text.JsonLab
             bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
-            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            //bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, long value)
@@ -414,7 +414,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(ReadOnlySpan<byte> propertyName, long value)
@@ -443,11 +443,11 @@ namespace System.Text.JsonLab
             bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
-            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            //bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, long value)
@@ -489,7 +489,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(string propertyName, int value)
@@ -548,7 +548,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
@@ -590,7 +590,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(ReadOnlySpan<byte> propertyName, ulong value)
@@ -623,7 +623,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, ulong value)
@@ -665,7 +665,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(string propertyName, double value)
@@ -703,7 +703,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, double value)
@@ -742,7 +742,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(ReadOnlySpan<byte> propertyName, double value)
@@ -772,7 +772,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, double value)
@@ -811,7 +811,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(string propertyName, float value)
@@ -849,7 +849,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, float value)
@@ -888,7 +888,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(ReadOnlySpan<byte> propertyName, float value)
@@ -918,7 +918,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, float value)
@@ -957,7 +957,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(string propertyName, decimal value)
@@ -995,7 +995,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
@@ -1034,7 +1034,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteNumber(ReadOnlySpan<byte> propertyName, decimal value)
@@ -1064,7 +1064,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, decimal value)
@@ -1103,7 +1103,7 @@ namespace System.Text.JsonLab
             Debug.Assert(result);
             idx += bytesWritten;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
@@ -1144,7 +1144,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlowWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
@@ -1207,7 +1207,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
@@ -1240,7 +1240,7 @@ namespace System.Text.JsonLab
             idx += escapedValue.Length;
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlowWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
@@ -1280,7 +1280,7 @@ namespace System.Text.JsonLab
             idx += escapedValue.Length;
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringWithEncodingValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
@@ -1321,7 +1321,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlowWithEncodingValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
@@ -1369,7 +1369,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteString(string propertyName, string value)
@@ -1418,7 +1418,7 @@ namespace System.Text.JsonLab
                 value = JsonWriterHelper.EscapeStringValue(value);
             }
 
-            if (_writerOptions.SlowPath)
+            if (!_writerOptions.SlowPath)
                 WriteStringSlow(propertyName, value);
             else
                 WriteStringFast(propertyName, value);
@@ -1435,14 +1435,29 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":"value"'
             int bytesNeeded = propertyName.Length + escapedValue.Length + 6;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            if (_currentDepth >= 0)
+                bytesNeeded--;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            escapedValue.CopyTo(byteBuffer.Slice(idx));
+            Ensure(bytesNeeded);
+
+            int idx = 0;
+
+            if (_currentDepth < 0)
+                _buffer[idx++] = JsonConstants.ListSeperator;
+
+            _buffer[idx++] = JsonConstants.Quote;
+            propertyName.CopyTo(_buffer.Slice(idx));
+            idx += propertyName.Length;
+            _buffer[idx++] = JsonConstants.Quote;
+
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            _buffer[idx++] = JsonConstants.Quote;
+            escapedValue.CopyTo(_buffer.Slice(idx));
             idx += escapedValue.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
@@ -1494,7 +1509,7 @@ namespace System.Text.JsonLab
             idx += escapedValue.Length;
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteString(string propertyName, DateTime value)
@@ -1536,7 +1551,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlowWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value)
@@ -1579,7 +1594,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteString(ReadOnlySpan<byte> propertyName, DateTime value)
@@ -1613,7 +1628,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, DateTime value)
@@ -1656,7 +1671,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteString(string propertyName, DateTimeOffset value)
@@ -1707,7 +1722,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlowWithEncoding(ReadOnlySpan<byte> propertyName, Guid value)
@@ -1750,7 +1765,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteString(ReadOnlySpan<byte> propertyName, Guid value)
@@ -1784,7 +1799,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, Guid value)
@@ -1827,7 +1842,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         // TODO: Add tests
@@ -1865,7 +1880,7 @@ namespace System.Text.JsonLab
             utf8Bytes.CopyTo(byteBuffer.Slice(idx));
             idx += utf8Bytes.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteBytesSlowWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
@@ -1903,7 +1918,7 @@ namespace System.Text.JsonLab
             utf8Bytes.CopyTo(byteBuffer.Slice(idx));
             idx += utf8Bytes.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         public void WriteBytesUnchecked(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
@@ -1932,7 +1947,7 @@ namespace System.Text.JsonLab
             utf8Bytes.CopyTo(byteBuffer.Slice(idx));
             idx += utf8Bytes.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         private void WriteBytesSlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
@@ -1970,7 +1985,7 @@ namespace System.Text.JsonLab
             utf8Bytes.CopyTo(byteBuffer.Slice(idx));
             idx += utf8Bytes.Length;
 
-            _bufferWriter.Advance(idx);
+            Advance(idx);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

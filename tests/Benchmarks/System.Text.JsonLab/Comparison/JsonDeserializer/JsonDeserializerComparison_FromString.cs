@@ -24,8 +24,8 @@ namespace JsonBenchmarks
         [IterationSetup(Target = nameof(Utf8Json_))]
         public void SerializeUtf8Json() => serialized = Utf8Json.JsonSerializer.ToJsonString(value);
 
-        [IterationSetup(Target = nameof(YSharp))]
-        public void SerializeYSharp() => serialized = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+        //[IterationSetup(Target = nameof(YSharp))]
+        //public void SerializeYSharp() => serialized = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 
         [IterationSetup(Target = nameof(FastJson))]
         public void SerializeFastJson() => serialized = fastJSON.JSON.ToJSON(value);
@@ -63,13 +63,13 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark]
-        public T YSharp()
-        {
-            T deserialized = new System.Text.Json.JsonParser().Parse<T>(serialized);
-            ((IVerifiable)deserialized).TouchEveryProperty();
-            return deserialized;
-        }
+        //[Benchmark]
+        //public T YSharp()
+        //{
+        //    T deserialized = new System.Text.Json.JsonParser().Parse<T>(serialized);
+        //    ((IVerifiable)deserialized).TouchEveryProperty();
+        //    return deserialized;
+        //}
 
         [Benchmark]
         public T FastJson()
