@@ -12,7 +12,7 @@ namespace System.Text.JsonLab
     {
         public void WriteNull()
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNullSlow();
             else
                 WriteNullFast();
@@ -36,11 +36,11 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlow()
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingValue();
                 }
@@ -48,7 +48,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingValue();
                 WriteNullFast();
             }
@@ -82,7 +82,7 @@ namespace System.Text.JsonLab
 
         public void WriteValue(long value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
             else
                 WriteValueFast(value);
@@ -110,11 +110,11 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(long value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingValue();
                 }
@@ -122,7 +122,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingValue();
                 WriteValueFast(value);
             }

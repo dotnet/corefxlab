@@ -20,7 +20,7 @@ namespace System.Text.JsonLab
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteArraySlow(propertyName, values);
             else
                 WriteArrayFast(propertyName, values);
@@ -81,11 +81,11 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingValue();
                 }
@@ -93,7 +93,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingValue();
                 WriteArrayFast(propertyName, values);
             }

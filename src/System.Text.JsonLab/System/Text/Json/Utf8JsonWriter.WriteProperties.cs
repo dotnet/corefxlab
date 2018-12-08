@@ -24,7 +24,7 @@ namespace System.Text.JsonLab
 
         private void WriteNullWithEncoding(ReadOnlySpan<byte> propertyName)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNullSlowWithEncoding(propertyName);
             else
                 WriteNullFastWithEncoding(propertyName);
@@ -51,11 +51,11 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlowWithEncoding(ReadOnlySpan<byte> propertyName)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -63,7 +63,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNullFastWithEncoding(propertyName);
             }
@@ -91,7 +91,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNullSlow(propertyName);
             else
                 WriteNullFast(propertyName);
@@ -118,11 +118,11 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlow(ReadOnlySpan<byte> propertyName)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -130,7 +130,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNullFast(propertyName);
             }
@@ -166,7 +166,7 @@ namespace System.Text.JsonLab
 
         private void WriteBooleanWithEncoding(ReadOnlySpan<byte> propertyName, bool value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteBooleanSlowWithEncoding(propertyName, value);
             else
                 WriteBooleanFastWithEncoding(propertyName, value);
@@ -202,11 +202,11 @@ namespace System.Text.JsonLab
 
         private void WriteBooleanSlowWithEncoding(ReadOnlySpan<byte> propertyName, bool value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -214,7 +214,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteBooleanFastWithEncoding(propertyName, value);
             }
@@ -252,7 +252,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteBooleanSlow(propertyName, value);
             else
                 WriteBooleanFast(propertyName, value);
@@ -288,11 +288,11 @@ namespace System.Text.JsonLab
 
         private void WriteBooleanSlow(ReadOnlySpan<byte> propertyName, bool value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -300,7 +300,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteBooleanFast(propertyName, value);
             }
@@ -346,7 +346,7 @@ namespace System.Text.JsonLab
 
         private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
             else
                 WriteNumberFastWithEncoding(propertyName, value);
@@ -377,11 +377,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, long value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -389,7 +389,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNumberFastWithEncoding(propertyName, value);
             }
@@ -421,7 +421,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlow(propertyName, value);
             else
                 WriteNumberFast(propertyName, value);
@@ -452,11 +452,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, long value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -464,7 +464,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNumberFast(propertyName, value);
             }
@@ -522,7 +522,7 @@ namespace System.Text.JsonLab
 
         private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
             else
                 WriteNumberFastWithEncoding(propertyName, value);
@@ -553,11 +553,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -565,7 +565,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNumberFastWithEncoding(propertyName, value);
             }
@@ -597,7 +597,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlow(propertyName, value);
             else
                 WriteNumberFast(propertyName, value);
@@ -628,11 +628,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, ulong value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -640,7 +640,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNumberFast(propertyName, value);
             }
@@ -680,7 +680,7 @@ namespace System.Text.JsonLab
 
         private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, double value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
             else
                 WriteNumberFastWithEncoding(propertyName, value);
@@ -708,11 +708,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, double value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -720,7 +720,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNumberFastWithEncoding(propertyName, value);
             }
@@ -749,7 +749,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlow(propertyName, value);
             else
                 WriteNumberFast(propertyName, value);
@@ -777,11 +777,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, double value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -789,7 +789,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNumberFast(propertyName, value);
             }
@@ -826,7 +826,7 @@ namespace System.Text.JsonLab
 
         private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, float value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
             else
                 WriteNumberFastWithEncoding(propertyName, value);
@@ -854,11 +854,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, float value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -866,7 +866,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNumberFastWithEncoding(propertyName, value);
             }
@@ -895,7 +895,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlow(propertyName, value);
             else
                 WriteNumberFast(propertyName, value);
@@ -923,11 +923,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, float value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -935,7 +935,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNumberFast(propertyName, value);
             }
@@ -972,7 +972,7 @@ namespace System.Text.JsonLab
 
         private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlowWithEncoding(propertyName, value);
             else
                 WriteNumberFastWithEncoding(propertyName, value);
@@ -1000,11 +1000,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1012,7 +1012,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteNumberFastWithEncoding(propertyName, value);
             }
@@ -1041,7 +1041,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteNumberSlow(propertyName, value);
             else
                 WriteNumberFast(propertyName, value);
@@ -1069,11 +1069,11 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ReadOnlySpan<byte> propertyName, decimal value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1081,7 +1081,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteNumberFast(propertyName, value);
             }
@@ -1112,7 +1112,7 @@ namespace System.Text.JsonLab
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
                 value = JsonWriterHelper.EscapeStringValue(value);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlowWithEncodingPropertyValue(propertyName, value);
             else
                 WriteStringFastWithEncodingPropertyValue(propertyName, value);
@@ -1149,11 +1149,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1161,7 +1161,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteStringFastWithEncodingPropertyValue(propertyName, escapedValue);
             }
@@ -1216,7 +1216,7 @@ namespace System.Text.JsonLab
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
                 value = JsonWriterHelper.EscapeStringValue(value);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlowWithEncodingProperty(propertyName, value);
             else
                 WriteStringFastWithEncodingProperty(propertyName, value);
@@ -1245,11 +1245,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1257,7 +1257,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteStringFastWithEncodingProperty(propertyName, escapedValue);
             }
@@ -1289,7 +1289,7 @@ namespace System.Text.JsonLab
             if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
                 value = JsonWriterHelper.EscapeStringValue(value);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlowWithEncodingValue(propertyName, value);
             else
                 WriteStringFastWithEncodingValue(propertyName, value);
@@ -1326,11 +1326,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1338,7 +1338,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteStringFastWithEncodingValue(propertyName, escapedValue);
             }
@@ -1418,7 +1418,7 @@ namespace System.Text.JsonLab
                 value = JsonWriterHelper.EscapeStringValue(value);
             }
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlow(propertyName, value);
             else
                 WriteStringFast(propertyName, value);
@@ -1447,11 +1447,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1459,7 +1459,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteStringFast(propertyName, escapedValue);
             }
@@ -1509,7 +1509,7 @@ namespace System.Text.JsonLab
 
         private void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlowWithEncoding(propertyName, value);
             else
                 WriteStringFastWithEncoding(propertyName, value);
@@ -1541,11 +1541,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1553,7 +1553,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteStringFastWithEncoding(propertyName, value);
             }
@@ -1586,7 +1586,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlow(propertyName, value);
             else
                 WriteStringFast(propertyName, value);
@@ -1618,11 +1618,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1630,7 +1630,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteStringFast(propertyName, value);
             }
@@ -1680,7 +1680,7 @@ namespace System.Text.JsonLab
 
         private void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, Guid value)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlowWithEncoding(propertyName, value);
             else
                 WriteStringFastWithEncoding(propertyName, value);
@@ -1712,11 +1712,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncoding(ReadOnlySpan<byte> propertyName, Guid value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1724,7 +1724,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteStringFastWithEncoding(propertyName, value);
             }
@@ -1757,7 +1757,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlow(propertyName, value);
             else
                 WriteStringFast(propertyName, value);
@@ -1789,11 +1789,11 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ReadOnlySpan<byte> propertyName, Guid value)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1801,7 +1801,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteStringFast(propertyName, value);
             }
@@ -1843,7 +1843,7 @@ namespace System.Text.JsonLab
 
         private void WriteBytesWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteBytesSlowWithEncodingProperty(propertyName, utf8Bytes);
             else
                 WriteBytesFastWithEncodingProperty(propertyName, utf8Bytes);
@@ -1870,11 +1870,11 @@ namespace System.Text.JsonLab
 
         private void WriteBytesSlowWithEncodingProperty(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingPropertyWithEncoding(propertyName);
                 }
@@ -1882,7 +1882,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingPropertyWithEncoding(propertyName);
                 WriteBytesFastWithEncodingProperty(propertyName, utf8Bytes);
             }
@@ -1910,7 +1910,7 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(propertyName);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteBytesSlow(propertyName, utf8Bytes);
             else
                 WriteBytesFast(propertyName, utf8Bytes);
@@ -1937,11 +1937,11 @@ namespace System.Text.JsonLab
 
         private void WriteBytesSlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> utf8Bytes)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingProperty(propertyName);
                 }
@@ -1949,7 +1949,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingProperty(propertyName);
                 WriteBytesFast(propertyName, utf8Bytes);
             }

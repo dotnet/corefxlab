@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Writer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -12,10 +11,13 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
-        private readonly JsonWriterOptions _options;
         private BufferWriter<TBufferWriter> _bufferWriter;
-        private JsonTokenType _tokenType;
+        private int _maxDepth;
         private bool _inObject;
+        private bool _isNotPrimitive;
+        private JsonTokenType _tokenType;
+        private JsonTokenType _previousTokenType;
+        private readonly JsonWriterOptions _writerOptions;
         private BitStack _bitStack;
 
         // The highest order bit of _currentDepth is used to discern whether we are writing the first item in a list or not.
@@ -23,7 +25,9 @@ namespace System.Text.JsonLab
         // else, no list separator is needed since we are writing the first item.
         private int _currentDepth;
 
-        public int BytesWritten { get; private set; }
+        public long BytesWritten => _bufferWriter.BytesWritten;
+
+        public long BytesCommitted => _bufferWriter.BytesCommitted;
 
         private int Indentation => CurrentDepth * 2;
 
@@ -31,29 +35,52 @@ namespace System.Text.JsonLab
 
         public JsonTokenType TokenType => _tokenType;
 
+        public JsonWriterState CurrentState => new JsonWriterState
+        {
+            _bytesWritten = _bufferWriter.BytesWritten,
+            _bytesCommitted = _bufferWriter.BytesCommitted,
+            _maxDepth = _maxDepth,
+            _inObject = _inObject,
+            _isNotPrimitive = _isNotPrimitive,
+            _tokenType = _tokenType,
+            _previousTokenType = _previousTokenType,
+            _writerOptions = _writerOptions,
+            _bitStack = _bitStack,
+        };
+
         /// <summary>
         /// Constructs a JSON writer with a specified <paramref name="bufferWriter"/>.
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public Utf8JsonWriter2(TBufferWriter bufferWriter, JsonWriterOptions options = default)
+        public Utf8JsonWriter2(TBufferWriter bufferWriter, JsonWriterState state = default)
         {
             _bufferWriter = new BufferWriter<TBufferWriter>(bufferWriter);
-            _options = options;
+            _maxDepth = state._maxDepth == 0 ? JsonWriterState.DefaultMaxDepth : state._maxDepth;   // If max depth is not set, revert to the default depth.
+            _inObject = state._inObject;
+            _isNotPrimitive = state._isNotPrimitive;
+            _tokenType = state._tokenType;
+            _previousTokenType = state._previousTokenType;
+            _writerOptions = state._writerOptions;
+            _bitStack = state._bitStack;
+
             _currentDepth = 0;
-            BytesWritten = 0;
-            _tokenType = JsonTokenType.None;
-            _inObject = false;
-            _bitStack = default;
         }
 
         public void Flush(bool isFinalBlock = true)
         {
             //TODO: Fix exception message and check other potential conditions for invalid end.
-            if (isFinalBlock && !_options.SkipValidation && CurrentDepth != 0)
+            if (isFinalBlock && !_writerOptions.SkipValidation && CurrentDepth != 0)
                 JsonThrowHelper.ThrowJsonWriterException("Invalid end of JSON.");
 
             _bufferWriter.Flush();
+        }
+
+        public void Dispose()
+        {
+            Flush();
+            if (_bufferWriter._output is StreamFormatter streamFormatter)
+                streamFormatter.Dispose();
         }
 
         public void WriteStartArray()
@@ -74,7 +101,7 @@ namespace System.Text.JsonLab
             if (CurrentDepth >= JsonConstants.MaxDepth)
                 JsonThrowHelper.ThrowJsonWriterException("Depth too large.");
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStartSlow(token);
             else
                 WriteStartFast(token);
@@ -105,11 +132,11 @@ namespace System.Text.JsonLab
 
         private void WriteStartSlow(byte token)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateStart(token);
                 }
@@ -117,7 +144,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateStart(token);
                 WriteStartFast(token);
             }
@@ -198,7 +225,7 @@ namespace System.Text.JsonLab
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStartSlow(propertyName, token);
             else
                 WriteStartFast(propertyName, token);
@@ -224,11 +251,11 @@ namespace System.Text.JsonLab
 
         private void WriteStartSlow(ReadOnlySpan<byte> propertyName, byte token)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateStart(propertyName, token);
                 }
@@ -236,7 +263,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateStart(propertyName, token);
                 WriteStartFast(propertyName, token);
             }
@@ -295,7 +322,7 @@ namespace System.Text.JsonLab
 
         private void WriteStartArrayWithEncoding(ReadOnlySpan<byte> propertyName)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStartSlowWithEncoding(propertyName, JsonConstants.OpenBracket);
             else
                 WriteStartFastWithEncoding(propertyName, JsonConstants.OpenBracket);
@@ -307,7 +334,7 @@ namespace System.Text.JsonLab
 
         private void WriteStartObjectWithEncoding(ReadOnlySpan<byte> propertyName)
         {
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStartSlowWithEncoding(propertyName, JsonConstants.OpenBrace);
             else
                 WriteStartFastWithEncoding(propertyName, JsonConstants.OpenBrace);
@@ -334,11 +361,11 @@ namespace System.Text.JsonLab
 
         private void WriteStartSlowWithEncoding(ReadOnlySpan<byte> propertyName, byte token)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateStartWithEncoding(propertyName, token);
                 }
@@ -346,7 +373,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateStartWithEncoding(propertyName, token);
                 WriteStartFastWithEncoding(propertyName, token);
             }
@@ -403,7 +430,7 @@ namespace System.Text.JsonLab
             _currentDepth |= 1 << 31;
             _currentDepth--;
 
-            if (_options.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteEndSlow(token);
             else
                 WriteEndFast(token);
@@ -418,11 +445,11 @@ namespace System.Text.JsonLab
 
         private void WriteEndSlow(byte token)
         {
-            Debug.Assert(_options.Formatted || !_options.SkipValidation);
+            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
-            if (_options.Formatted)
+            if (_writerOptions.Formatted)
             {
-                if (!_options.SkipValidation)
+                if (!_writerOptions.SkipValidation)
                 {
                     ValidateEnd(token);
                 }
@@ -430,7 +457,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Debug.Assert(!_options.SkipValidation);
+                Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateEnd(token);
                 WriteEndFast(token);
             }

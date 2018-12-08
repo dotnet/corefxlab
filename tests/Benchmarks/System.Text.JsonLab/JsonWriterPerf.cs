@@ -3,17 +3,28 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(warmupCount: 5, targetCount: 10)]
-    //[MemoryDiagnoser]
+    //[Config(typeof(JustDisassembly))]
+    //[SimpleJob(warmupCount: 3, targetCount: 5)]
+    [MemoryDiagnoser]
     //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
     {
+        /*public class JustDisassembly : ManualConfig
+        {
+            public JustDisassembly()
+            {
+                Add(Job.Dry);
+            }
+        }*/
+
         private static readonly byte[] Message = Encoding.UTF8.GetBytes("message");
         private static readonly byte[] HelloWorld = Encoding.UTF8.GetBytes("Hello, World!");
         private static readonly byte[] ExtraArray = Encoding.UTF8.GetBytes("ExtraArray");
@@ -28,12 +39,20 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
         private long[] _longs;
+        private string _filePathCore;
+        private string _filePathCoreUtf16;
+        private string _filePathNewtonsoft;
+
+        private Memory<byte> _memory;
 
         //private byte[] _byteBuffer;
         //private int _idx;
 
         //[Params(10, 20)]
         //public int _indent;
+
+        [Params(/*1, 10,*/ 100_000)]
+        public int Size;
 
         [Params(false)]
         public bool Formatted;
@@ -79,6 +98,38 @@ namespace System.Text.JsonLab.Benchmarks
                 value += value < 0 ? int.MinValue : int.MaxValue;
                 _longs[i] = value;
             }
+
+            _filePathCore = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCore";
+            _filePathCoreUtf16 = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreUtf16";
+            _filePathNewtonsoft = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputNewtonsoft";
+            if (Formatted)
+            {
+                _filePathNewtonsoft = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputNewtonsoftFormatted";
+                if (SkipValidation)
+                {
+                    _filePathCore = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreFormattedSkip";
+                    _filePathCoreUtf16 = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreFormattedSkipUtf16";
+                }
+                else
+                {
+                    _filePathCore = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreFormatted";
+                    _filePathCoreUtf16 = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreFormattedUtf16";
+                }
+            }
+            else
+            {
+                if (SkipValidation)
+                {
+                    _filePathCore = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreSkip";
+                    _filePathCoreUtf16 = @"E:\GitHub\Fork\corefxlab\src\System.Text.JsonLab\bin\Release\netcoreapp2.1\outputCoreSkipUtf16";
+                }
+            }
+
+            _filePathCore += Size + ".json";
+            _filePathCoreUtf16 += Size + ".json";
+            _filePathNewtonsoft += Size + ".json";
+
+            _memory = new byte[100_000_000];
         }
 
         //[Benchmark]
@@ -122,18 +173,71 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectEnd();
         }
 
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
+        public void WriteNewtonsoft()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < Size; i++)
+                {
+                    json.WritePropertyName("message");
+                    json.WriteValue("Hello, World!");
+                }
+                json.WriteEnd();
+            }
+        }
+
+        [Benchmark]
+        public void WriteNetCoreUtf8()
+        {
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromMemory(_memory, state);
+            json.WriteStartObject();
+            for (int i = 0; i < Size; i++)
+                json.WriteString(Message, HelloWorld);
+            json.WriteEndObject();
+            json.Flush();
+
+            //_memoryStream.Write(_memory.Span.Slice(0, (int)json.BytesCommitted));
+
+            /*Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromStream(_memoryStream, state);
+            json.WriteStartObject();
+            for (int i = 0; i < Size; i++)
+                json.WriteString(Message, HelloWorld);
+            json.WriteEndObject();
+
+            json.Dispose();*/
+        }
+
+        //[Benchmark]
+        public void WriteNetCoreUtf16()
+        {
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromStream(_memoryStream, state);
+            json.WriteStartObject();
+            for (int i = 0; i < Size; i++)
+                json.WriteString("message", "Hello, World!");
+            json.WriteEndObject();
+
+            json.Dispose();
+        }
+
+        //[Benchmark(Baseline = true)]
         public void WriteArray()
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
             json.WriteArray(Message, _longs);
@@ -141,18 +245,14 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriteArrayLoop()
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
             json.WriteStartArray(Message);
@@ -163,7 +263,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriteArrayUtf8Json()
         {
             global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter(_output);
@@ -219,13 +319,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
 
@@ -249,13 +345,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             ReadOnlySpan<char> spanChar = "message";
 
@@ -281,13 +373,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
 
@@ -311,13 +399,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
             json.WriteNumber("message", 1234567);
@@ -429,13 +513,9 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _arrayFormatterWrapper.Clear();
 
-            var option = new JsonWriterOptions
-            {
-                Formatted = Formatted,
-                SkipValidation = SkipValidation
-            };
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
 
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, option);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             ReadOnlySpan<byte> key = new byte[] { (byte)'a' };
 
@@ -620,9 +700,9 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        private static void WriterSystemTextJsonHelloWorldUtf82(JsonWriterOptions options, ArrayFormatterWrapper output)
+        private static void WriterSystemTextJsonHelloWorldUtf82(JsonWriterState state, ArrayFormatterWrapper output)
         {
-            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, options);
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
 
             json.WriteStartObject();
             json.WriteStartObject();

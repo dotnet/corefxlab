@@ -3,11 +3,24 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.IO;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriter
+    public static class Utf8JsonWriter2
     {
+        public static Utf8JsonWriter2<IBufferWriter<byte>> CreateFromStream(Stream stream, JsonWriterState state)
+        {
+            var writer = new StreamFormatter(stream);
+            return new Utf8JsonWriter2<IBufferWriter<byte>>(writer, state);
+        }
+
+        public static Utf8JsonWriter2<IBufferWriter<byte>> CreateFromMemory(Memory<byte> memory, JsonWriterState state)
+        {
+            var writer = new MemoryFormatter(memory);
+            return new Utf8JsonWriter2<IBufferWriter<byte>>(writer, state);
+        }
+
         // TODO: Either implement the escaping helpers from scratch or leverage the upcoming System.Text.Encodings.Web.TextEncoder APIs
         public static OperationStatus EscapeString(string value, Span<byte> destination, out int consumed, out int bytesWritten)
         {
