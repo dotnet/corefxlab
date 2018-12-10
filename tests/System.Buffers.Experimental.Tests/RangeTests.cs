@@ -4,6 +4,7 @@
 
 using Xunit;
 using System.Linq;
+using System.Buffers.Experimental;
 
 namespace System.Buffers.Tests
 {
