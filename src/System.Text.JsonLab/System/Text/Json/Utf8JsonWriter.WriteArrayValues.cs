@@ -21,26 +21,31 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
             if (_writerOptions.SlowPath)
-                WriteArraySlow(propertyName, values);
+                WriteArraySlow(ref propertyName, ref values);
             else
-                WriteArrayFast(propertyName, values);
+                WriteArrayFast(ref propertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
         }
 
-        private void WriteArrayFast(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
+        private void WriteArrayFast(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
         {
             if (values.Length > 0 && values.Length < (int.MaxValue - 2) / (JsonConstants.MaximumInt64Length + 1))
             {
                 // Calculated based on the following: '[number0,number1,...,numberN]'
                 int bytesNeeded = 2 + values.Length * (1 + JsonConstants.MaximumInt64Length);
 
-                Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+                if (_currentDepth >= 0)
+                    bytesNeeded--;
 
-                byteBuffer[idx++] = JsonConstants.OpenBracket;
+                Ensure(bytesNeeded);
 
-                bool result = JsonWriterHelper.TryFormatInt64Default(values[0], byteBuffer.Slice(idx), out int bytesWritten);
+                WritePropertyName(ref propertyName, bytesNeeded, out int idx);
+
+                _buffer[idx++] = JsonConstants.OpenBracket;
+
+                bool result = JsonWriterHelper.TryFormatInt64Default(values[0], _buffer.Slice(idx), out int bytesWritten);
                 // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
                 // See: https://github.com/dotnet/corefx/issues/25425
                 // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -49,9 +54,9 @@ namespace System.Text.JsonLab
 
                 for (int i = 1; i < values.Length; i++)
                 {
-                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                    _buffer[idx++] = JsonConstants.ListSeperator;
 
-                    result = JsonWriterHelper.TryFormatInt64Default(values[i], byteBuffer.Slice(idx), out bytesWritten);
+                    result = JsonWriterHelper.TryFormatInt64Default(values[i], _buffer.Slice(idx), out bytesWritten);
                     // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
                     // See: https://github.com/dotnet/corefx/issues/25425
                     // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -59,19 +64,19 @@ namespace System.Text.JsonLab
                     idx += bytesWritten;
                 }
 
-                byteBuffer[idx++] = JsonConstants.CloseBracket;
+                _buffer[idx++] = JsonConstants.CloseBracket;
 
                 Advance(idx);
             }
             else
             {
-                WriteArrayFastIterate(propertyName, values);
+                WriteArrayFastIterate(ref propertyName, ref values);
             }
         }
 
-        private void WriteArrayFastIterate(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
+        private void WriteArrayFastIterate(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
         {
-            WriteStartFast(propertyName, JsonConstants.OpenBracket);
+            WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             for (int i = 0; i < values.Length; i++)
             {
                 WriteValueFast(values[i]);
@@ -79,7 +84,7 @@ namespace System.Text.JsonLab
             WriteEndFast(JsonConstants.CloseBracket);
         }
 
-        private void WriteArraySlow(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
+        private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
         {
             Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
 
@@ -89,17 +94,17 @@ namespace System.Text.JsonLab
                 {
                     ValidateWritingValue();
                 }
-                WriteArrayFormatted(propertyName, values);
+                WriteArrayFormatted(ref propertyName, ref values);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingValue();
-                WriteArrayFast(propertyName, values);
+                WriteArrayFast(ref propertyName, ref values);
             }
         }
 
-        private void WriteArrayFormatted(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
+        private void WriteArrayFormatted(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
         {
             int indent = Indentation;
 

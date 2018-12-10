@@ -254,7 +254,7 @@ namespace System.Text.JsonLab
                 byteBuffer[idx++] = JsonConstants.ListSeperator;
 
             if (_tokenType != JsonTokenType.None)
-                WriteNewLine(byteBuffer, ref idx);
+                WriteNewLine(ref byteBuffer, ref idx);
 
             idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
 

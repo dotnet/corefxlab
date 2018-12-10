@@ -41,7 +41,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidateProperty(ReadOnlySpan<byte> propertyName)
+        public static void ValidateProperty(ref ReadOnlySpan<byte> propertyName)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize)
@@ -49,7 +49,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidateProperty(ReadOnlySpan<char> propertyName)
+        public static void ValidateProperty(ref ReadOnlySpan<char> propertyName)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxCharacterTokenSize)

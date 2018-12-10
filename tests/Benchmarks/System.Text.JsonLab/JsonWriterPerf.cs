@@ -55,7 +55,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(/*1, 10,*/ 100_000)]
         public int Size;
 
-        [Params(false)]
+        [Params(true)]
         public bool Formatted;
 
         [Params(true)]
@@ -321,7 +321,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Dispose();
         }
 
-        [Benchmark (Baseline = true)]
+        //[Benchmark (Baseline = true)]
         public void CtorWithIBufferWriterStruct()
         {
             _arrayFormatterWrapper.Clear();
@@ -349,7 +349,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Dispose();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriteStart()
         {
             _arrayFormatterWrapper.Clear();
@@ -359,7 +359,32 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             for (int i = 0; i < 1000; i++)
-                json.WriteEndObject();
+                json.WriteStartObject("message");
+            /*json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();*/
+
+            json.Dispose();
+        }
+
+        [Benchmark]
+        public void WriteStartUtf8()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
+
+            for (int i = 0; i < 1000; i++)
+                json.WriteStartObject(Message);
             /*json.WriteStartObject();
             json.WriteStartObject();
             json.WriteStartObject();
