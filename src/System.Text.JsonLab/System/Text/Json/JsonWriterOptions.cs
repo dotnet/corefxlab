@@ -4,19 +4,13 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonTokenType : byte
+    public struct JsonWriterOptions
     {
-        None,
-        StartObject,
-        EndObject,
-        StartArray,
-        EndArray,
-        PropertyName,
-        String,
-        Number,
-        True,
-        False,
-        Null,
-        Comment,
+        // Or Minified, Minimzed, PrettyPrinted,
+        public bool Formatted { get; set; }
+
+        public bool SkipValidation { get; set; }
+
+        internal bool SlowPath => Formatted || !SkipValidation;
     }
 }

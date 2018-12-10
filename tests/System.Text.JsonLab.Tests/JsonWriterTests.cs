@@ -13,7 +13,7 @@ namespace System.Text.JsonLab.Tests
     {
         private const int ExtraArraySize = 500;
 
-        [Fact]
+        /*[Fact]
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
@@ -63,7 +63,7 @@ namespace System.Text.JsonLab.Tests
         [InlineData(false)]
         public void WriteHelloWorldJsonUtf8(bool prettyPrint)
         {
-            string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: true);
+            string expectedStr = GetHelloWorldExpectedString(prettyPrint);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
             var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
@@ -77,9 +77,9 @@ namespace System.Text.JsonLab.Tests
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
 
             Assert.Equal(expectedStr, actualStr);
-        }
+        }*/
 
-        [Theory]
+        /*[Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void WriteBasicJsonUtf8(bool prettyPrint)
@@ -128,34 +128,9 @@ namespace System.Text.JsonLab.Tests
             }
 
             return data;
-        }
+        }*/
 
-        private static string GetHelloWorldExpectedString(bool prettyPrint, bool isUtf8)
-        {
-            MemoryStream ms = new MemoryStream();
-            StreamWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
-
-            StringBuilder sb = new StringBuilder();
-            StringWriter stringWriter = new StringWriter(sb);
-
-            TextWriter writer = isUtf8 ? streamWriter : (TextWriter)stringWriter;
-
-            var json = new Newtonsoft.Json.JsonTextWriter(writer)
-            {
-                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
-            };
-
-            json.WriteStartObject();
-            json.WritePropertyName("message");
-            json.WriteValue("Hello, World!");
-            json.WriteEnd();
-
-            json.Flush();
-
-            return isUtf8 ? Encoding.UTF8.GetString(ms.ToArray()) : sb.ToString();
-        }
-
-        private static string GetExpectedString(bool prettyPrint, bool isUtf8, int[] data)
+        /*private static string GetExpectedString(bool prettyPrint, bool isUtf8, int[] data)
         {
             MemoryStream ms = new MemoryStream();
             StreamWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
@@ -206,6 +181,6 @@ namespace System.Text.JsonLab.Tests
             json.Flush();
 
             return isUtf8 ? Encoding.UTF8.GetString(ms.ToArray()) : sb.ToString();
-        }
+        }*/
     }
 }

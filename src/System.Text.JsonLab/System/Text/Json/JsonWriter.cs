@@ -11,19 +11,10 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriter
-    {
-        public static Utf8JsonWriter<TBufferWriter> Create<TBufferWriter>(TBufferWriter bufferWriter, bool prettyPrint = false)
-            where TBufferWriter : IBufferWriter<byte>
-        {
-            return new Utf8JsonWriter<TBufferWriter>(bufferWriter, prettyPrint);
-        }
-    }
-
     public ref struct Utf8JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;
-        private BufferWriter<TBufferWriter> _bufferWriter;
+        private Buffers.Writer.BufferWriter<TBufferWriter> _bufferWriter;
 
         // The highest order bit of _indent is used to discern whether we are writing the first item in a list or not.
         // if (_indent >> 31) == 1, add a list separator before writing the item
@@ -169,6 +160,9 @@ namespace System.Text.JsonLab
         private void WriteStartUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - 1 - indent * 2 >= 0);
 
             int bytesNeeded = 1 + indent * 2;
 

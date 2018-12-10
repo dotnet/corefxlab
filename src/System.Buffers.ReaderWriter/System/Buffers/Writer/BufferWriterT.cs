@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -30,7 +31,7 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Flush()
         {
-            var buffered = _buffered;
+            int buffered = _buffered;
             if (buffered > 0)
             {
                 _buffered = 0;
@@ -52,6 +53,7 @@ namespace System.Buffers.Writer
             {
                 EnsureMore(count);
             }
+            Debug.Assert(_span.Length >= count);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

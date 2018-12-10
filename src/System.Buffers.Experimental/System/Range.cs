@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace System
+namespace System.Buffers.Experimental
 {
     // TODO: consider allowing Last > First. Ennumeration will count down.
     public readonly struct Range : IEnumerable<int>

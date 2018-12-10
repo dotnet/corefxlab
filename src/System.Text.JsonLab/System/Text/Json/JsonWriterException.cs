@@ -4,19 +4,10 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonTokenType : byte
+    public sealed class JsonWriterException : Exception
     {
-        None,
-        StartObject,
-        EndObject,
-        StartArray,
-        EndArray,
-        PropertyName,
-        String,
-        Number,
-        True,
-        False,
-        Null,
-        Comment,
+        public JsonWriterException(string message) : base(message)
+        {
+        }
     }
 }
