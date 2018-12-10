@@ -271,6 +271,13 @@ namespace System.Text.JsonLab
                     JsonThrowHelper.ThrowJsonWriterException(_tokenType);    //TODO: Add resource message
                 }
             }
+            else
+            {
+                if (!_isNotPrimitive && _tokenType != JsonTokenType.None)
+                {
+                    JsonThrowHelper.ThrowJsonWriterException(_tokenType);    //TODO: Add resource message
+                }
+            }
         }
     }
 }

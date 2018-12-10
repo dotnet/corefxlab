@@ -160,6 +160,7 @@ namespace System.Text.JsonLab
 
             _currentDepth &= JsonConstants.RemoveFlagsBitMask;
             _currentDepth++;
+            _isNotPrimitive = true;
         }
 
         private void WriteStartFast(byte token)
@@ -215,7 +216,7 @@ namespace System.Text.JsonLab
             else
             {
                 Debug.Assert(_tokenType != JsonTokenType.StartObject);
-                if (_tokenType == JsonTokenType.PropertyName)
+                if (_tokenType == JsonTokenType.PropertyName || (_tokenType != JsonTokenType.None && !_isNotPrimitive))
                 {
                     JsonThrowHelper.ThrowJsonWriterException(token, _tokenType);    //TODO: Add resource message
                 }

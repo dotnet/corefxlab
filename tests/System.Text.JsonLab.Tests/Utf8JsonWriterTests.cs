@@ -192,12 +192,123 @@ namespace System.Text.JsonLab.Tests
             catch (JsonWriterException) { }
         }
 
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void InvalidJsonPrimitive(bool formatted, bool skipValidation)
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = formatted, SkipValidation = skipValidation });
+
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+
+            var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteValue(12345);
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteStartArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteStartObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteStartArray("property name");
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteStartObject("property name");
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteString("property name", "value");
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteEndArray();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+
+            jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+            try
+            {
+                jsonUtf8.WriteValue(12345);
+                jsonUtf8.WriteEndObject();
+                WriterDidNotThrow(skipValidation);
+            }
+            catch (JsonWriterException) { }
+        }
+
         private static void WriterDidNotThrow(bool skipValidation)
         {
             if (skipValidation)
-                Assert.True(true, "Did not expect FormatException to be thrown since validation was skipped.");
+                Assert.True(true, "Did not expect JsonWriterException to be thrown since validation was skipped.");
             else
-                Assert.True(false, "Expected FormatException to be thrown when validation is enabled.");
+                Assert.True(false, "Expected JsonWriterException to be thrown when validation is enabled.");
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void WriteSingleValueWithOptions(bool formatted, bool skipValidation)
+        {
+            string expectedStr = "123456789012345";
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = formatted, SkipValidation = skipValidation });
+
+            for (int i = 0; i < 3; i++)
+            {
+                var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+                var jsonUtf8 = new Utf8JsonWriter2<ArrayFormatterWrapper>(output, state);
+
+                jsonUtf8.WriteValue(123456789012345);
+
+                jsonUtf8.Flush();
+
+                ArraySegment<byte> arraySegment = output.Formatted;
+                string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+                Assert.True(expectedStr == actualStr, $"Case: {i}, | Expected: {expectedStr}, | Actual: {actualStr}");
+            }
         }
 
         [Theory]
