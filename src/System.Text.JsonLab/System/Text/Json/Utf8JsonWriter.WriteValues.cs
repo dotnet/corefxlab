@@ -26,9 +26,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',null'
             int bytesNeeded = 1 + JsonConstants.NullValue.Length;
 
-            WriteValue(bytesNeeded, out int idx);
+            Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
 
-            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -64,9 +64,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  null'
             int bytesNeeded = 1 + JsonConstants.NullValue.Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            WriteValueFormatted(bytesNeeded, indent, out int idx);
+            Span<byte> byteBuffer = WriteValueFormatted(bytesNeeded, indent, out int idx);
 
-            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -96,9 +96,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',number'
             int bytesNeeded = 1 + JsonConstants.MaximumInt64Length;
 
-            WriteValue(bytesNeeded, out int idx);
+            Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -138,9 +138,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  number'
             int bytesNeeded = 1 + JsonWriterHelper.NewLineUtf8.Length + indent + JsonConstants.MaximumInt64Length;
 
-            WriteValueFormatted(bytesNeeded, indent, out int idx);
+            Span<byte> byteBuffer = WriteValueFormatted(bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -222,21 +222,23 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteValue(int bytesNeeded, out int idx)
+        private Span<byte> WriteValue(int bytesNeeded, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Ensure(bytesNeeded);
+            Span<byte> byteBuffer = GetSpan(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-                _buffer[idx++] = JsonConstants.ListSeperator;
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+            return byteBuffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteValueFormatted(int bytesNeeded, int indent, out int idx)
+        private Span<byte> WriteValueFormatted(int bytesNeeded, int indent, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
@@ -244,17 +246,19 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Ensure(bytesNeeded);
+            Span<byte> byteBuffer = GetSpan(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-               _buffer[idx++] = JsonConstants.ListSeperator;
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
 
             if (_tokenType != JsonTokenType.None)
-                WriteNewLine(ref idx);
+                WriteNewLine(byteBuffer, ref idx);
 
-            idx += JsonWriterHelper.WriteIndentation(_buffer.Slice(idx, indent));
+            idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
+
+            return byteBuffer;
         }
 
         private void ValidateWritingValue()
