@@ -90,7 +90,7 @@ namespace Microsoft.Collections.Extensions
                 ref BidirectionalDictionaryEntry<T> entry = ref newEntries[i];
                 if (entry.Next >= -1)
                 {
-                    AddEntryToBucket(ref entry, i, newBuckets);
+                    AddEntryToBucket(newBuckets, ref entry, i);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace Microsoft.Collections.Extensions
             entries = newEntries;
         }
 
-        public static void AddEntryToBucket(ref BidirectionalDictionaryEntry<T> entry, int entryIndex, int[] buckets)
+        public static void AddEntryToBucket(int[] buckets, ref BidirectionalDictionaryEntry<T> entry, int entryIndex)
         {
             ref int b = ref buckets[(int)(entry.HashCode % (uint)buckets.Length)];
             entry.Next = b - 1;
@@ -218,7 +218,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
-                TryInsert(firstKey, value, true);
+                TryInsert(firstKey, value, false);
             }
         }
 
@@ -349,7 +349,7 @@ namespace Microsoft.Collections.Extensions
             {
                 throw new ArgumentNullException(nameof(secondKey));
             }
-            return TryInsert(firstKey, secondKey, false);
+            return TryInsert(firstKey, secondKey, true);
         }
 
         /// <summary>
@@ -518,6 +518,7 @@ namespace Microsoft.Collections.Extensions
                 }
                 if (i == j)
                 {
+                    // HashCode is the same so just replace the value
                     secondKeyEntries[j].Key = secondKey;
                 }
                 else
@@ -530,7 +531,7 @@ namespace Microsoft.Collections.Extensions
                 ref BidirectionalDictionaryEntry<TSecond> entry = ref BidirectionalDictionaryEntry<TSecond>.RemoveEntryFromBucket(secondKeyBuckets, secondKeyEntries, i);
                 entry.HashCode = secondKeyHashCode;
                 entry.Key = secondKey;
-                BidirectionalDictionaryEntry<TSecond>.AddEntryToBucket(ref entry, i, secondKeyBuckets);
+                BidirectionalDictionaryEntry<TSecond>.AddEntryToBucket(secondKeyBuckets, ref entry, i);
             }
             else
             {
@@ -567,12 +568,12 @@ namespace Microsoft.Collections.Extensions
                 }
                 firstKeyEntry.HashCode = firstKeyHashCode;
                 firstKeyEntry.Key = firstKey;
-                BidirectionalDictionaryEntry<TFirst>.AddEntryToBucket(ref firstKeyEntry, index, firstKeyBuckets);
+                BidirectionalDictionaryEntry<TFirst>.AddEntryToBucket(firstKeyBuckets, ref firstKeyEntry, index);
                 
                 ref BidirectionalDictionaryEntry<TSecond> secondKeyEntry = ref secondKeyEntries[index];
                 secondKeyEntry.HashCode = secondKeyHashCode;
                 secondKeyEntry.Key = secondKey;
-                BidirectionalDictionaryEntry<TSecond>.AddEntryToBucket(ref secondKeyEntry, index, secondKeyBuckets);
+                BidirectionalDictionaryEntry<TSecond>.AddEntryToBucket(secondKeyBuckets, ref secondKeyEntry, index);
                 ++shared.Version;
             }
             return true;
@@ -690,6 +691,7 @@ namespace Microsoft.Collections.Extensions
                     if (entry.Next >= -1)
                     {
                         _current = new KeyValuePair<TFirst, TSecond>(entry.Key, _bidirectionalDictionary._secondKeyEntries[_index].Key);
+                        ++_index;
                         return true;
                     }
                     ++_index;

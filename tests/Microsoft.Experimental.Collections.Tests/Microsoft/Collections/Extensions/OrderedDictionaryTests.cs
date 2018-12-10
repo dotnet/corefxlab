@@ -933,7 +933,7 @@ namespace Microsoft.Collections.Extensions.Tests
             List<KeyValuePair<string, int>> collection = Enumerable.Range(0, s_defaultCount).Select(i => KeyValuePair.Create(i.ToString(), i)).ToList();
             OrderedDictionary<string, int> dictionary = new OrderedDictionary<string, int>(collection);
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
-            new OrderedDictionary<string, int>(collection, StringComparer.OrdinalIgnoreCase);
+            dictionary = new OrderedDictionary<string, int>(collection, StringComparer.OrdinalIgnoreCase);
             ValidateDefaultOrderedDictionaryIsContiguous(dictionary);
         }
 
