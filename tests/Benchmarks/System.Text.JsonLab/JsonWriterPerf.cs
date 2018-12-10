@@ -12,9 +12,9 @@ using System.Text.Formatting;
 namespace System.Text.JsonLab.Benchmarks
 {
     //[Config(typeof(JustDisassembly))]
-    //[SimpleJob(warmupCount: 3, targetCount: 5)]
-    [MemoryDiagnoser]
-    //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
+    //[MemoryDiagnoser]
+    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     public class JsonWriterPerf
     {
         /*public class JustDisassembly : ManualConfig
@@ -33,6 +33,7 @@ namespace System.Text.JsonLab.Benchmarks
         private const int BufferSize = 1024 + (ExtraArraySize * 64);
 
         private ArrayFormatterWrapper _arrayFormatterWrapper;
+        private ArrayFormatter _arrayFormatter;
         private MemoryStream _memoryStream;
         private StreamWriter _streamWriter;
 
@@ -75,6 +76,7 @@ namespace System.Text.JsonLab.Benchmarks
             _memoryStream = new MemoryStream(buffer);
             _streamWriter = new StreamWriter(_memoryStream, new UTF8Encoding(false), BufferSize, true);
             _arrayFormatterWrapper = new ArrayFormatterWrapper(BufferSize, SymbolTable.InvariantUtf8);
+            _arrayFormatter = new ArrayFormatter(BufferSize, SymbolTable.InvariantUtf8);
 
             // To pass an initialBuffer to Utf8Json:
             // _output = new byte[BufferSize];
@@ -139,10 +141,48 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
-        //[Benchmark]
+        //[Benchmark(Baseline = true)]
         public void WriterNewtonsoftBasic()
         {
-            WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
+            Span<int> data = _data.AsSpan(0, 10);
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                json.WritePropertyName("age");
+                json.WriteValue(42);
+                json.WritePropertyName("first");
+                json.WriteValue("John");
+                json.WritePropertyName("last");
+                json.WriteValue("Smith");
+                json.WritePropertyName("phoneNumbers");
+                json.WriteStartArray();
+                json.WriteValue("425-000-1212");
+                json.WriteValue("425-000-1213");
+                json.WriteEnd();
+                json.WritePropertyName("address");
+                json.WriteStartObject();
+                json.WritePropertyName("street");
+                json.WriteValue("1 Microsoft Way");
+                json.WritePropertyName("city");
+                json.WriteValue("Redmond");
+                json.WritePropertyName("zip");
+                json.WriteValue(98052);
+                json.WriteEnd();
+
+                json.WritePropertyName("ExtraArray");
+                json.WriteStartArray();
+                for (var i = 0; i < data.Length; i++)
+                {
+                    json.WriteValue(data[i]);
+                }
+                json.WriteEnd();
+
+                json.WriteEnd();
+            }
+
+            //WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
         }
 
         //[Benchmark]
@@ -190,7 +230,239 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
+        public void WriteNetCore()
+        {
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromStream(_memoryStream, state);
+
+            //_arrayFormatterWrapper.Clear();
+
+            //var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            //var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteEndObject();
+            //json.Flush();
+
+            json.Dispose();
+        }
+
+        //[Benchmark]
+        public void CtorWithMemory()
+        {
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromMemory(_memory, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteEndObject();
+
+            json.Dispose();
+        }
+
+        //[Benchmark]
+        public void CtorWithStream()
+        {
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            Utf8JsonWriter2<Buffers.IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromStream(_memoryStream, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteEndObject();
+
+            json.Dispose();
+        }
+
+        [Benchmark (Baseline = true)]
+        public void CtorWithIBufferWriterStruct()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteEndObject();
+
+            json.Dispose();
+        }
+
+        //[Benchmark]
+        public void WriteStart()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
+
+            for (int i = 0; i < 1000; i++)
+                json.WriteEndObject();
+            /*json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();
+            json.WriteStartObject();*/
+
+            json.Dispose();
+        }
+
+        //[Benchmark]
+        public void CtorWithIBufferWriterClass()
+        {
+            _arrayFormatter.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatter>(_arrayFormatter, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteEndObject();
+
+            json.Dispose();
+        }
+
+        //[Benchmark(Baseline = true)]
+        public void CallOnStructIBW()
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
+
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+
+            //_arrayFormatterWrapper.NoopApi(1);
+            //_arrayFormatterWrapper.NoopApi(2);
+            //_arrayFormatterWrapper.NoopApi(3);
+            //_arrayFormatterWrapper.NoopApi(4);
+            //_arrayFormatterWrapper.NoopApi(5);
+            //_arrayFormatterWrapper.NoopApi(6);
+            //_arrayFormatterWrapper.NoopApi(7);
+            //_arrayFormatterWrapper.NoopApi(8);
+            //_arrayFormatterWrapper.NoopApi(9);
+            //_arrayFormatterWrapper.NoopApi(10);
+        }
+
+        //[Benchmark]
+        public void CallOnClassIBW()
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Formatted = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2<ArrayFormatter>(_arrayFormatter, state);
+
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+            json.NoopApi();
+
+            //_arrayFormatter.NoopApi(1);
+            //_arrayFormatter.NoopApi(2);
+            //_arrayFormatter.NoopApi(3);
+            //_arrayFormatter.NoopApi(4);
+            //_arrayFormatter.NoopApi(5);
+            //_arrayFormatter.NoopApi(6);
+            //_arrayFormatter.NoopApi(7);
+            //_arrayFormatter.NoopApi(8);
+            //_arrayFormatter.NoopApi(9);
+            //_arrayFormatter.NoopApi(10);
+        }
+
+        //[Benchmark]
         public void WriteNetCoreUtf8()
         {
             _memoryStream.Seek(0, SeekOrigin.Begin);

@@ -94,6 +94,44 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Fact]
+        public void TestingPipeWriterGetSpan()
+        {
+            PipeWriter writer = _pipe.Writer;
+
+            Span<byte> span = writer.GetSpan(0);
+            Assert.True(0 < span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(1_000_000);
+            Assert.True(1_000_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(4_000);
+            Assert.True(4_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(5_000);
+            Assert.True(5_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(8_000);
+            Assert.True(8_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(17_000);
+            Assert.True(17_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(1_000_000_000);
+            Assert.True(1_000_000_000 <= span.Length, $"{span.Length}");
+
+            span = writer.GetSpan(2_000_000_000);
+            Assert.True(2_000_000_000 <= span.Length, $"{span.Length}");
+
+            try
+            {
+                span = writer.GetSpan(-1);
+                Assert.True(false, "Expected ArgumentOutOfRangeException not thrown when asking for a negative length span.");
+            }
+            catch (ArgumentOutOfRangeException)
+            { }
+        }
+
+        [Fact]
         public void WriteToPipeUsingPipeWriter()
         {
             string actual = "";

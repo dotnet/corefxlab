@@ -26,8 +26,6 @@ namespace System.Text.JsonLab
 
         public long BytesCommitted { get; private set; }
 
-
-        //private BufferWriter<TBufferWriter> _bufferWriter;
         private int _maxDepth;
         private bool _inObject;
         private bool _isNotPrimitive;
@@ -40,10 +38,6 @@ namespace System.Text.JsonLab
         // if (_currentDepth >> 31) == 1, add a list separator before writing the item
         // else, no list separator is needed since we are writing the first item.
         private int _currentDepth;
-
-        //public long BytesWritten => _bufferWriter.BytesWritten;
-
-        //public long BytesCommitted => _bufferWriter.BytesCommitted;
 
         private int Indentation => CurrentDepth * 2;
 
@@ -76,7 +70,6 @@ namespace System.Text.JsonLab
             BytesCommitted = 0;
             _buffer = _output.GetSpan();
 
-            //_bufferWriter = new BufferWriter<TBufferWriter>(bufferWriter);
             _maxDepth = state._maxDepth == 0 ? JsonWriterState.DefaultMaxDepth : state._maxDepth;   // If max depth is not set, revert to the default depth.
             _inObject = state._inObject;
             _isNotPrimitive = state._isNotPrimitive;
@@ -88,12 +81,10 @@ namespace System.Text.JsonLab
             _currentDepth = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Flush()
+        public void NoopApi()
         {
-            BytesCommitted += _buffered;
-            _output.Advance(_buffered);
-            _buffered = 0;
+            _output.GetSpan();
+            _output.Advance(0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,6 +121,14 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonWriterException("Invalid end of JSON.");
 
             Flush();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Flush()
+        {
+            BytesCommitted += _buffered;
+            _output.Advance(_buffered);
+            _buffered = 0;
         }
 
         public void Dispose()
@@ -172,16 +171,16 @@ namespace System.Text.JsonLab
             int bytesNeeded = 2;
             if (_currentDepth < 0)
             {
-                Span<byte> byteBuffer = GetSpan(bytesNeeded);
-                byteBuffer[0] = JsonConstants.ListSeperator;
-                byteBuffer[1] = token;
+                Ensure(bytesNeeded);
+                _buffer[0] = JsonConstants.ListSeperator;
+                _buffer[1] = token;
                 Advance(bytesNeeded);
             }
             else
             {
                 bytesNeeded--;
-                Span<byte> byteBuffer = GetSpan(bytesNeeded);
-                byteBuffer[0] = token;
+                Ensure(bytesNeeded);
+                _buffer[0] = token;
                 Advance(bytesNeeded);
             }
         }
@@ -244,19 +243,19 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Span<byte> byteBuffer = GetSpan(bytesNeeded);
+            Ensure(bytesNeeded);
 
             int idx = 0;
 
             if (_currentDepth < 0)
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                _buffer[idx++] = JsonConstants.ListSeperator;
 
             if (_tokenType != JsonTokenType.None)
-                WriteNewLine(byteBuffer, ref idx);
+                WriteNewLine(ref idx);
 
-            idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
+            idx += JsonWriterHelper.WriteIndentation(_buffer.Slice(idx, indent));
 
-            byteBuffer[idx++] = token;
+            _buffer[idx++] = token;
 
             Debug.Assert(idx == bytesNeeded);
 
@@ -298,9 +297,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":[' OR ',"propertyName":{'
             int bytesNeeded = propertyName.Length + 5;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = token;
+            _buffer[idx++] = token;
 
             Advance(idx);
         }
@@ -349,9 +348,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": [' OR ',\r\n  "propertyName": {'
             int bytesNeeded = propertyName.Length + 6 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = token;
+            _buffer[idx++] = token;
 
             Advance(idx);
         }
@@ -408,9 +407,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":[' OR ',"encoded propertyName":{'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = token;
+            _buffer[idx++] = token;
 
             Advance(idx);
         }
@@ -462,9 +461,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": [' OR ',\r\n  "encoded propertyName": {'
             int bytesNeeded = propertyName.Length / 2 * 3 + 6 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = token;
+            _buffer[idx++] = token;
 
             Advance(idx);
         }
@@ -494,8 +493,8 @@ namespace System.Text.JsonLab
 
         private void WriteEndFast(byte token)
         {
-            Span<byte> byteBuffer = GetSpan(1);
-            byteBuffer[0] = token;
+            Ensure(1);
+            _buffer[0] = token;
             Advance(1);
         }
 
@@ -571,15 +570,14 @@ namespace System.Text.JsonLab
                 int bytesNeeded = JsonWriterHelper.NewLineUtf8.Length + 1 + indent;
 
                 Ensure(bytesNeeded);
-                Span<byte> byteBuffer = _buffer;
 
                 int idx = 0;
 
-                WriteNewLine(byteBuffer, ref idx);
+                WriteNewLine(ref idx);
 
-                idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
+                idx += JsonWriterHelper.WriteIndentation(_buffer.Slice(idx, indent));
 
-                byteBuffer[idx++] = token;
+                _buffer[idx++] = token;
 
                 Debug.Assert(idx == bytesNeeded);
 
@@ -587,22 +585,22 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Span<byte> GetSpan(int bytesNeeded)
         {
             Ensure(bytesNeeded);
             Debug.Assert(_buffer.Length >= bytesNeeded);
             return _buffer;
-        }
+        }*/
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteNewLine(Span<byte> byteBuffer, ref int idx)
+        private void WriteNewLine(ref int idx)
         {
             // Write '\r\n' OR '\n', depending on OS
             if (JsonWriterHelper.NewLineUtf8.Length == 2)
-                byteBuffer[idx++] = JsonConstants.CarriageReturn;
+                _buffer[idx++] = JsonConstants.CarriageReturn;
 
-            byteBuffer[idx++] = JsonConstants.LineFeed;
+            _buffer[idx++] = JsonConstants.LineFeed;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

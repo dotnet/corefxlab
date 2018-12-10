@@ -36,11 +36,11 @@ namespace System.Text.JsonLab
                 // Calculated based on the following: '[number0,number1,...,numberN]'
                 int bytesNeeded = 2 + values.Length * (1 + JsonConstants.MaximumInt64Length);
 
-                Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+                WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-                byteBuffer[idx++] = JsonConstants.OpenBracket;
+                _buffer[idx++] = JsonConstants.OpenBracket;
 
-                bool result = JsonWriterHelper.TryFormatInt64Default(values[0], byteBuffer.Slice(idx), out int bytesWritten);
+                bool result = JsonWriterHelper.TryFormatInt64Default(values[0], _buffer.Slice(idx), out int bytesWritten);
                 // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
                 // See: https://github.com/dotnet/corefx/issues/25425
                 // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -49,9 +49,9 @@ namespace System.Text.JsonLab
 
                 for (int i = 1; i < values.Length; i++)
                 {
-                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                    _buffer[idx++] = JsonConstants.ListSeperator;
 
-                    result = JsonWriterHelper.TryFormatInt64Default(values[i], byteBuffer.Slice(idx), out bytesWritten);
+                    result = JsonWriterHelper.TryFormatInt64Default(values[i], _buffer.Slice(idx), out bytesWritten);
                     // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
                     // See: https://github.com/dotnet/corefx/issues/25425
                     // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -59,7 +59,7 @@ namespace System.Text.JsonLab
                     idx += bytesWritten;
                 }
 
-                byteBuffer[idx++] = JsonConstants.CloseBracket;
+                _buffer[idx++] = JsonConstants.CloseBracket;
 
                 Advance(idx);
             }
@@ -109,9 +109,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  number'
             int bytesNeeded = 1 + JsonWriterHelper.NewLineUtf8.Length + indent + JsonConstants.MaximumInt64Length;
 
-            Span<byte> byteBuffer = WriteValueFormatted(bytesNeeded, indent, out int idx);
+            WriteValueFormatted(bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(values[0], byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(values[0], _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);

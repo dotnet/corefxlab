@@ -36,11 +36,6 @@ namespace System.Text.JsonLab
             if (sizeHint == 0)
                 return span;
 
-            /*for (int i = 0; i < 1_000_000; i++)
-            {
-                span = _memory.Span;
-            }*/
-
             return span.Slice(0, sizeHint);
         }
     }

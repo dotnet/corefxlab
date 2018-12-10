@@ -41,9 +41,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":null'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.NullValue.Length;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -79,9 +79,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": null'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.NullValue.Length + indent + JsonWriterHelper.NewLineUtf8.Length;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -108,9 +108,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":null'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.NullValue.Length;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -146,9 +146,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": null'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.NullValue.Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
+            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
             idx += JsonConstants.NullValue.Length;
 
             Advance(idx);
@@ -192,9 +192,9 @@ namespace System.Text.JsonLab
                 _tokenType = JsonTokenType.True;
             }
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            valueSpan.CopyTo(byteBuffer.Slice(idx));
+            valueSpan.CopyTo(_buffer.Slice(idx));
             idx += valueSpan.Length;
 
             Advance(idx);
@@ -240,9 +240,9 @@ namespace System.Text.JsonLab
                 _tokenType = JsonTokenType.True;
             }
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            valueSpan.CopyTo(byteBuffer.Slice(idx));
+            valueSpan.CopyTo(_buffer.Slice(idx));
             idx += valueSpan.Length;
 
             Advance(idx);
@@ -278,9 +278,9 @@ namespace System.Text.JsonLab
                 _tokenType = JsonTokenType.True;
             }
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            valueSpan.CopyTo(byteBuffer.Slice(idx));
+            valueSpan.CopyTo(_buffer.Slice(idx));
             idx += valueSpan.Length;
 
             Advance(idx);
@@ -326,9 +326,9 @@ namespace System.Text.JsonLab
                 _tokenType = JsonTokenType.True;
             }
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            valueSpan.CopyTo(byteBuffer.Slice(idx));
+            valueSpan.CopyTo(_buffer.Slice(idx));
             idx += valueSpan.Length;
 
             Advance(idx);
@@ -363,9 +363,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumInt64Length;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             //bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -405,9 +405,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -438,9 +438,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":number'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumInt64Length;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             //bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -480,9 +480,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": number'
             int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -539,9 +539,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumUInt64Length;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -581,9 +581,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumUInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -614,9 +614,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":number'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumUInt64Length;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -656,9 +656,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": number'
             int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumUInt64Length + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = JsonWriterHelper.TryFormatUInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = JsonWriterHelper.TryFormatUInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
@@ -697,9 +697,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumDoubleLength;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -736,9 +736,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumDoubleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -766,9 +766,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":number'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumDoubleLength;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -805,9 +805,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": number'
             int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumDoubleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -843,9 +843,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumSingleLength;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -882,9 +882,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumSingleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -912,9 +912,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":number'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumSingleLength;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -951,9 +951,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": number'
             int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumSingleLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -989,9 +989,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 4 + JsonConstants.MaximumDecimalLength;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -1028,9 +1028,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": number'
             int bytesNeeded = propertyName.Length / 2 * 3 + 5 + JsonConstants.MaximumDecimalLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -1058,9 +1058,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":number'
             int bytesNeeded = propertyName.Length + 4 + JsonConstants.MaximumDecimalLength;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -1097,9 +1097,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": number'
             int bytesNeeded = propertyName.Length + 5 + JsonConstants.MaximumDecimalLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
@@ -1129,11 +1129,11 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":"encoded value"'
             int bytesNeeded = propertyName.Length / 2 * 3 + escapedValue.Length / 2 * 3 + 6;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1142,7 +1142,7 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == escapedValue.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1192,11 +1192,11 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": "encoded value"'
             int bytesNeeded = propertyName.Length / 2 * 3 + escapedValue.Length / 2 * 3 + 7 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1205,7 +1205,7 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == escapedValue.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1233,12 +1233,12 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":"value"'
             int bytesNeeded = propertyName.Length / 2 * 3 + escapedValue.Length + 6;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            escapedValue.CopyTo(byteBuffer.Slice(idx));
+            _buffer[idx++] = JsonConstants.Quote;
+            escapedValue.CopyTo(_buffer.Slice(idx));
             idx += escapedValue.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1273,12 +1273,12 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": "value"'
             int bytesNeeded = propertyName.Length / 2 * 3 + escapedValue.Length + 7 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            escapedValue.CopyTo(byteBuffer.Slice(idx));
+            _buffer[idx++] = JsonConstants.Quote;
+            escapedValue.CopyTo(_buffer.Slice(idx));
             idx += escapedValue.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1306,11 +1306,11 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":"encoded value"'
             int bytesNeeded = propertyName.Length + escapedValue.Length / 2 * 3 + 6;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1319,7 +1319,7 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == escapedValue.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1354,11 +1354,11 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": "encoded value"'
             int bytesNeeded = propertyName.Length + escapedValue.Length / 2 * 3 + 7 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1367,7 +1367,7 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == escapedValue.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1502,12 +1502,12 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": "value"'
             int bytesNeeded = propertyName.Length + 7 + JsonWriterHelper.NewLineUtf8.Length + indent + escapedValue.Length;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            escapedValue.CopyTo(byteBuffer.Slice(idx));
+            _buffer[idx++] = JsonConstants.Quote;
+            escapedValue.CopyTo(_buffer.Slice(idx));
             idx += escapedValue.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1541,15 +1541,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":"DateTime"'
             int bytesNeeded = propertyName.Length / 2 * 3 + 6 + JsonConstants.MaximumDateTimeLength;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1584,15 +1584,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": "DateTime"'
             int bytesNeeded = propertyName.Length / 2 * 3 + 7 + JsonConstants.MaximumDateTimeLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1618,15 +1618,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":"DateTime"'
             int bytesNeeded = propertyName.Length + 6 + JsonConstants.MaximumDateTimeLength;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1661,15 +1661,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": "DateTime"'
             int bytesNeeded = propertyName.Length + 7 + JsonConstants.MaximumDateTimeLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1712,15 +1712,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":"Guid"'
             int bytesNeeded = propertyName.Length / 2 * 3 + 6 + JsonConstants.MaximumGuidLength;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1755,15 +1755,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": "Guid"'
             int bytesNeeded = propertyName.Length / 2 * 3 + 7 + JsonConstants.MaximumGuidLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1789,15 +1789,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"propertyName":"Guid"'
             int bytesNeeded = propertyName.Length + 6 + JsonConstants.MaximumGuidLength;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1832,15 +1832,15 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "propertyName": "Guid"'
             int bytesNeeded = propertyName.Length + 7 + JsonConstants.MaximumGuidLength + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
+            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
             Debug.Assert(result);
             idx += bytesWritten;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }
@@ -1875,9 +1875,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":utf8Bytes'
             int bytesNeeded = propertyName.Length / 2 * 3 + utf8Bytes.Length + 4;
 
-            Span<byte> byteBuffer = WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
+            WritePropertyNameEncoded(propertyName, bytesNeeded, out int idx);
 
-            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            utf8Bytes.CopyTo(_buffer.Slice(idx));
             idx += utf8Bytes.Length;
 
             Advance(idx);
@@ -1913,9 +1913,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": utf8Bytes'
             int bytesNeeded = propertyName.Length / 2 * 3 + utf8Bytes.Length + 5 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameEncodedAndFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            utf8Bytes.CopyTo(_buffer.Slice(idx));
             idx += utf8Bytes.Length;
 
             Advance(idx);
@@ -1942,9 +1942,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',"encoded propertyName":utf8Bytes'
             int bytesNeeded = propertyName.Length + utf8Bytes.Length + 4;
 
-            Span<byte> byteBuffer = WritePropertyName(propertyName, bytesNeeded, out int idx);
+            WritePropertyName(propertyName, bytesNeeded, out int idx);
 
-            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            utf8Bytes.CopyTo(_buffer.Slice(idx));
             idx += utf8Bytes.Length;
 
             Advance(idx);
@@ -1980,9 +1980,9 @@ namespace System.Text.JsonLab
             // Calculated based on the following: ',\r\n  "encoded propertyName": utf8Bytes'
             int bytesNeeded = propertyName.Length + utf8Bytes.Length + 5 + JsonWriterHelper.NewLineUtf8.Length + indent;
 
-            Span<byte> byteBuffer = WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
+            WritePropertyNameFormatted(propertyName, bytesNeeded, indent, out int idx);
 
-            utf8Bytes.CopyTo(byteBuffer.Slice(idx));
+            utf8Bytes.CopyTo(_buffer.Slice(idx));
             idx += utf8Bytes.Length;
 
             Advance(idx);
@@ -1997,21 +1997,21 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> WritePropertyNameEncoded(ReadOnlySpan<byte> propertyName, int bytesNeeded, out int idx)
+        private void WritePropertyNameEncoded(ReadOnlySpan<byte> propertyName, int bytesNeeded, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Span<byte> byteBuffer = GetSpan(bytesNeeded);
+            Ensure(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                _buffer[idx++] = JsonConstants.ListSeperator;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -2020,15 +2020,13 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == propertyName.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            return byteBuffer;
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> WritePropertyNameEncodedAndFormatted(ReadOnlySpan<byte> propertyName, int bytesNeeded, int indent, out int idx)
+        private void WritePropertyNameEncodedAndFormatted(ReadOnlySpan<byte> propertyName, int bytesNeeded, int indent, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
@@ -2036,21 +2034,21 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Span<byte> byteBuffer = GetSpan(bytesNeeded);
+            Ensure(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                _buffer[idx++] = JsonConstants.ListSeperator;
 
             if (_tokenType != JsonTokenType.None)
-                WriteNewLine(byteBuffer, ref idx);
+                WriteNewLine(ref idx);
 
-            idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
+            idx += JsonWriterHelper.WriteIndentation(_buffer.Slice(idx, indent));
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -2059,39 +2057,35 @@ namespace System.Text.JsonLab
             Debug.Assert(consumed == propertyName.Length);
             idx += written;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
-            byteBuffer[idx++] = JsonConstants.Space;
-
-            return byteBuffer;
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+            _buffer[idx++] = JsonConstants.Space;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> WritePropertyName(ReadOnlySpan<byte> propertyName, int bytesNeeded, out int idx)
+        private void WritePropertyName(ReadOnlySpan<byte> propertyName, int bytesNeeded, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Span<byte> byteBuffer = GetSpan(bytesNeeded);
+            Ensure(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                _buffer[idx++] = JsonConstants.ListSeperator;
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            propertyName.CopyTo(byteBuffer.Slice(idx));
+            _buffer[idx++] = JsonConstants.Quote;
+            propertyName.CopyTo(_buffer.Slice(idx));
             idx += propertyName.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            return byteBuffer;
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> WritePropertyNameFormatted(ReadOnlySpan<byte> propertyName, int bytesNeeded, int indent, out int idx)
+        private void WritePropertyNameFormatted(ReadOnlySpan<byte> propertyName, int bytesNeeded, int indent, out int idx)
         {
             if (_currentDepth >= 0)
                 bytesNeeded--;
@@ -2099,27 +2093,25 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Span<byte> byteBuffer = GetSpan(bytesNeeded);
+            Ensure(bytesNeeded);
 
             idx = 0;
 
             if (_currentDepth < 0)
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                _buffer[idx++] = JsonConstants.ListSeperator;
 
             if (_tokenType != JsonTokenType.None)
-                WriteNewLine(byteBuffer, ref idx);
+                WriteNewLine(ref idx);
 
-            idx += JsonWriterHelper.WriteIndentation(byteBuffer.Slice(idx, indent));
+            idx += JsonWriterHelper.WriteIndentation(_buffer.Slice(idx, indent));
 
-            byteBuffer[idx++] = JsonConstants.Quote;
-            propertyName.CopyTo(byteBuffer.Slice(idx));
+            _buffer[idx++] = JsonConstants.Quote;
+            propertyName.CopyTo(_buffer.Slice(idx));
             idx += propertyName.Length;
-            byteBuffer[idx++] = JsonConstants.Quote;
+            _buffer[idx++] = JsonConstants.Quote;
 
-            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
-            byteBuffer[idx++] = JsonConstants.Space;
-
-            return byteBuffer;
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+            _buffer[idx++] = JsonConstants.Space;
         }
     }
 }
