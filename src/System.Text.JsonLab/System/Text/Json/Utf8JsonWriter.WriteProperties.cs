@@ -1418,7 +1418,7 @@ namespace System.Text.JsonLab
                 value = JsonWriterHelper.EscapeStringValue(value);
             }
 
-            if (!_writerOptions.SlowPath)
+            if (_writerOptions.SlowPath)
                 WriteStringSlow(propertyName, value);
             else
                 WriteStringFast(propertyName, value);
