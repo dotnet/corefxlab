@@ -124,7 +124,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonWriterOrArgumentException(ReadOnlySpan<byte> propertyName, int indent)
         {
-            if ((indent & JsonConstants.RemoveFlagsBitMask) >= JsonConstants.MaxDepth)
+            if ((indent & JsonConstants.RemoveFlagsBitMask) >= JsonConstants.MaxPossibleDepth)
             {
                 ThrowJsonWriterException("Depth too large.");
             }
@@ -143,7 +143,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void GetJsonWriterOrArgumentException(ReadOnlySpan<char> propertyName, int indent)
         {
-            if ((indent & JsonConstants.RemoveFlagsBitMask) >= JsonConstants.MaxDepth)
+            if ((indent & JsonConstants.RemoveFlagsBitMask) >= JsonConstants.MaxPossibleDepth)
             {
                 ThrowJsonWriterException("Depth too large.");
             }

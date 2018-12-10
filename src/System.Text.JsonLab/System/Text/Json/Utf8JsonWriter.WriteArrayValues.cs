@@ -17,7 +17,7 @@ namespace System.Text.JsonLab
         public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
             if (_writerOptions.SlowPath)

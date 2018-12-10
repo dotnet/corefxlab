@@ -6,7 +6,7 @@ namespace System.Text.JsonLab
 {
     public struct JsonWriterState
     {
-        internal const int DefaultMaxDepth = JsonConstants.MaxDepth;
+        internal const int DefaultMaxDepth = JsonConstants.MaxPossibleDepth;
 
         internal long _bytesWritten;
         internal long _bytesCommitted;
@@ -14,7 +14,6 @@ namespace System.Text.JsonLab
         internal bool _inObject;
         internal bool _isNotPrimitive;
         internal JsonTokenType _tokenType;
-        internal JsonTokenType _previousTokenType;
         internal JsonWriterOptions _writerOptions;
         internal BitStack _bitStack;
 
@@ -34,7 +33,6 @@ namespace System.Text.JsonLab
             _inObject = default;
             _isNotPrimitive = default;
             _tokenType = default;
-            _previousTokenType = default;
             _writerOptions = options;
 
             // Only allocate if the user writes a JSON payload beyond the depth that the _allocationFreeContainer can handle.

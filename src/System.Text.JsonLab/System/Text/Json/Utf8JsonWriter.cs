@@ -30,7 +30,6 @@ namespace System.Text.JsonLab
         private bool _inObject;
         private bool _isNotPrimitive;
         private JsonTokenType _tokenType;
-        private JsonTokenType _previousTokenType;
         private readonly JsonWriterOptions _writerOptions;
         private BitStack _bitStack;
 
@@ -53,7 +52,6 @@ namespace System.Text.JsonLab
             _inObject = _inObject,
             _isNotPrimitive = _isNotPrimitive,
             _tokenType = _tokenType,
-            _previousTokenType = _previousTokenType,
             _writerOptions = _writerOptions,
             _bitStack = _bitStack,
         };
@@ -74,7 +72,6 @@ namespace System.Text.JsonLab
             _inObject = state._inObject;
             _isNotPrimitive = state._isNotPrimitive;
             _tokenType = state._tokenType;
-            _previousTokenType = state._previousTokenType;
             _writerOptions = state._writerOptions;
             _bitStack = state._bitStack;
 
@@ -153,7 +150,7 @@ namespace System.Text.JsonLab
         private void WriteStart(byte token)
         {
             // TODO: Use throw helper with proper error messages
-            if (CurrentDepth >= JsonConstants.MaxDepth)
+            if (CurrentDepth >= JsonConstants.MaxPossibleDepth)
                 JsonThrowHelper.ThrowJsonWriterException("Depth too large.");
 
             if (_writerOptions.SlowPath)
@@ -277,7 +274,7 @@ namespace System.Text.JsonLab
         private void WriteStart(ReadOnlySpan<byte> propertyName, byte token)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
             if (_writerOptions.SlowPath)

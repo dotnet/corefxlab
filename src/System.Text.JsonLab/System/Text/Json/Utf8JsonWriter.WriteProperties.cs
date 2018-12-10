@@ -1992,7 +1992,7 @@ namespace System.Text.JsonLab
         private void ValidatePropertyNameAndDepth(ReadOnlySpan<char> propertyName)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || CurrentDepth >= JsonConstants.MaxDepth)
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
         }
 
