@@ -49,10 +49,26 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateValue(ref ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ValidateProperty(ref ReadOnlySpan<char> propertyName)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateValue(ref ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (value.Length > JsonConstants.MaxCharacterTokenSize)
                 JsonThrowHelper.ThrowArgumentException("Argument too large.");
         }
 
