@@ -8,18 +8,18 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriter2
+    public static class Utf8JsonWriterHelpers
     {
-        public static Utf8JsonWriter2<IBufferWriter<byte>> CreateFromStream(Stream stream, JsonWriterState state)
+        public static Utf8JsonWriter2 CreateFromStream(Stream stream, JsonWriterState state)
         {
             var writer = new StreamFormatter(stream);
-            return new Utf8JsonWriter2<IBufferWriter<byte>>(writer, state);
+            return new Utf8JsonWriter2(writer, state);
         }
 
-        public static Utf8JsonWriter2<IBufferWriter<byte>> CreateFromMemory(Memory<byte> memory, JsonWriterState state)
+        public static Utf8JsonWriter2 CreateFromMemory(Memory<byte> memory, JsonWriterState state)
         {
             var writer = new MemoryFormatter(memory);
-            return new Utf8JsonWriter2<IBufferWriter<byte>>(writer, state);
+            return new Utf8JsonWriter2(writer, state);
         }
 
         // TODO: Either implement the escaping helpers from scratch or leverage the upcoming System.Text.Encodings.Web.TextEncoder APIs

@@ -194,7 +194,7 @@ namespace System.Text.JsonLab.Tests
 
         private static (JsonWriterState, long) WriteData(Memory<byte> memory, bool isFinalBlock, JsonWriterState state = default)
         {
-            Utf8JsonWriter2<IBufferWriter<byte>> json = Utf8JsonWriter2.CreateFromMemory(memory, state);
+            Utf8JsonWriter2 json = Utf8JsonWriterHelpers.CreateFromMemory(memory, state);
 
             json.WriteStartObject();
             json.WriteNumber("age", 30, suppressEscaping: true);
@@ -222,7 +222,7 @@ namespace System.Text.JsonLab.Tests
 
         private static (JsonWriterState, long) WriteData(PipeWriter writer, bool isFinalBlock, JsonWriterState state = default)
         {
-            var json = new Utf8JsonWriter2<IBufferWriter<byte>>(writer, state);
+            var json = new Utf8JsonWriter2(writer, state);
 
             json.WriteStartObject();
             json.WriteNumber("age", 30, suppressEscaping: true);

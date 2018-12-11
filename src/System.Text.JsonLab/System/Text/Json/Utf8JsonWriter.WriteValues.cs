@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    public ref partial struct Utf8JsonWriter2
     {
         public void WriteNullValue()
         {
@@ -505,7 +505,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = value;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(value, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[value.Length];
                 escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
             }
@@ -605,7 +605,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = utf8Text;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(utf8Text, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(utf8Text, _buffer, out _, out _);
                 unsafe
                 {
                     byte* ptr = stackalloc byte[utf8Text.Length];
@@ -893,7 +893,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = value;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(value, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[value.Length];
                 escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
             }
@@ -985,7 +985,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = utf8Text;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(utf8Text, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(utf8Text, _buffer, out _, out _);
                 unsafe
                 {
                     byte* ptr = stackalloc byte[utf8Text.Length];

@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    public ref partial struct Utf8JsonWriter2
     {
-        private TBufferWriter _output;
+        private IBufferWriter<byte> _output;
         private int _buffered;
         private Span<byte> _buffer;
 
@@ -57,7 +57,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public Utf8JsonWriter2(TBufferWriter bufferWriter, JsonWriterState state = default)
+        public Utf8JsonWriter2(IBufferWriter<byte> bufferWriter, JsonWriterState state = default)
         {
             _output = bufferWriter;
             _buffered = 0;
@@ -267,7 +267,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedSpan = propertyName;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(propertyName, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[propertyName.Length];
                 escapedSpan = new ReadOnlySpan<byte>(ptr, propertyName.Length);
             }
@@ -382,7 +382,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedSpan = propertyName;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(propertyName, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[propertyName.Length];
                 escapedSpan = new ReadOnlySpan<byte>(ptr, propertyName.Length);
             }
@@ -409,7 +409,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedSpan = propertyName;
             if (!suppressEscaping)
             {
-                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                Utf8JsonWriterHelpers.EscapeString(propertyName, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[propertyName.Length];
                 escapedSpan = new ReadOnlySpan<byte>(ptr, propertyName.Length);
             }

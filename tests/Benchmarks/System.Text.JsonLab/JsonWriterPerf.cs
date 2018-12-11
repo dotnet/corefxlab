@@ -246,19 +246,19 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
-            json.WriteNumber("age", 42);
-            json.WriteString("first", "John");
-            json.WriteString("last", "Smith");
-            json.WriteStartArray("phoneNumbers");
-            json.WriteStringValue("425-000-1212");
-            json.WriteStringValue("425-000-1213");
+            json.WriteNumber("age", 42, suppressEscaping: true);
+            json.WriteString("first", "John", suppressEscaping: true);
+            json.WriteString("last", "Smith", suppressEscaping: true);
+            json.WriteStartArray("phoneNumbers", suppressEscaping: true);
+            json.WriteStringValue("425-000-1212", suppressEscaping: true);
+            json.WriteStringValue("425-000-1213", suppressEscaping: true);
             json.WriteEndArray();
-            json.WriteStartObject("address");
-            json.WriteString("street", "1 Microsoft Way");
-            json.WriteString("city", "Redmond");
-            json.WriteNumber("zip", 98052);
+            json.WriteStartObject("address", suppressEscaping: true);
+            json.WriteString("street", "1 Microsoft Way", suppressEscaping: true);
+            json.WriteString("city", "Redmond", suppressEscaping: true);
+            json.WriteNumber("zip", 98052, suppressEscaping: true);
             json.WriteEndObject();
-            json.WriteArray(ExtraArray, _data.AsSpan(0, 10));
+            json.WriteArray(ExtraArray, _data.AsSpan(0, 10), suppressEscaping: true);
             json.WriteEndObject();
             //json.Flush();
 
@@ -359,7 +359,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             for (int i = 0; i < 1000; i++)
-                json.WriteStartObject("message");
+                json.WriteStartObject("message", suppressEscaping: true);
             /*json.WriteStartObject();
             json.WriteStartObject();
             json.WriteStartObject();
@@ -384,7 +384,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2<ArrayFormatterWrapper>(_arrayFormatterWrapper, state);
 
             for (int i = 0; i < 1000; i++)
-                json.WriteStartObject(Message);
+                json.WriteStartObject(Message, suppressEscaping: true);
             /*json.WriteStartObject();
             json.WriteStartObject();
             json.WriteStartObject();
