@@ -10,16 +10,27 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<int> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<int> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -88,9 +99,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<int> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -124,16 +135,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -201,9 +223,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -237,16 +259,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -314,9 +347,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<uint> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -350,16 +383,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<ulong> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<ulong> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -427,9 +471,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<ulong> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -463,16 +507,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<decimal> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<decimal> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -533,9 +588,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<decimal> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -569,16 +624,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<double> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<double> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -639,9 +705,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<double> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -675,16 +741,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<float> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<float> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -745,9 +822,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<float> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -781,16 +858,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<Guid> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<Guid> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -855,9 +943,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<Guid> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -891,16 +979,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTime> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTime> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -965,9 +1064,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<DateTime> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -1001,16 +1100,27 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTimeOffset> values)
+        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTimeOffset> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
 
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteArraySlow(ref propertyName, ref values);
+                WriteArraySlow(ref escapedPropertyName, ref values);
             else
-                WriteArrayFast(ref propertyName, ref values);
+                WriteArrayFast(ref escapedPropertyName, ref values);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.EndArray;
@@ -1075,9 +1185,9 @@ namespace System.Text.JsonLab
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<DateTimeOffset> values)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {

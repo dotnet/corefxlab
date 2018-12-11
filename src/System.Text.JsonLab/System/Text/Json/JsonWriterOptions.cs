@@ -6,11 +6,10 @@ namespace System.Text.JsonLab
 {
     public struct JsonWriterOptions
     {
-        // Or Minified, Minimzed, PrettyPrinted,
-        public bool Formatted { get; set; }
+        public bool Indented { get; set; }
 
         public bool SkipValidation { get; set; }
 
-        internal bool SlowPath => Formatted || !SkipValidation;
+        internal bool SlowPath => Indented || !SkipValidation;
     }
 }

@@ -12,22 +12,30 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
-        public void WriteNull(string propertyName)
-            => WriteNull(propertyName.AsSpan());
+        public void WriteNull(string propertyName, bool suppressEscaping = false)
+            => WriteNull(propertyName.AsSpan(), suppressEscaping);
 
-        public void WriteNull(ReadOnlySpan<char> propertyName)
+        public void WriteNull(ReadOnlySpan<char> propertyName, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNullWithEncoding(MemoryMarshal.AsBytes(propertyName));
+            WriteNullWithEncoding(MemoryMarshal.AsBytes(propertyName), suppressEscaping);
         }
 
-        private void WriteNullWithEncoding(ReadOnlySpan<byte> propertyName)
+        private unsafe void WriteNullWithEncoding(ReadOnlySpan<byte> propertyName, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNullSlowWithEncoding(ref propertyName);
+                WriteNullSlowWithEncoding(ref escapedValue);
             else
-                WriteNullFastWithEncoding(ref propertyName);
+                WriteNullFastWithEncoding(ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Null;
@@ -56,20 +64,20 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlowWithEncoding(ref ReadOnlySpan<byte> propertyName)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNullFormattedWithEncoding(ref propertyName);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNullFastWithEncoding(ref propertyName);
             }
         }
@@ -92,14 +100,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNull(ReadOnlySpan<byte> propertyName)
+        public void WriteNull(ReadOnlySpan<byte> propertyName, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNullSlow(ref propertyName);
+                WriteNullSlow(ref escapedValue);
             else
-                WriteNullFast(ref propertyName);
+                WriteNullFast(ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Null;
@@ -128,20 +147,20 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlow(ref ReadOnlySpan<byte> propertyName)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNullFormatted(ref propertyName);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNullFast(ref propertyName);
             }
         }
@@ -164,22 +183,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteBoolean(string propertyName, bool value)
-            => WriteBoolean(propertyName.AsSpan(), value);
+        public void WriteBoolean(string propertyName, bool value, bool suppressEscaping = false)
+            => WriteBoolean(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteBoolean(ReadOnlySpan<char> propertyName, bool value)
+        public void WriteBoolean(ReadOnlySpan<char> propertyName, bool value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteBooleanWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteBooleanWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteBooleanWithEncoding(ReadOnlySpan<byte> propertyName, bool value)
+        private unsafe void WriteBooleanWithEncoding(ReadOnlySpan<byte> propertyName, bool value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteBooleanSlowWithEncoding(ref propertyName, value);
+                WriteBooleanSlowWithEncoding(ref escapedValue, value);
             else
-                WriteBooleanFastWithEncoding(ref propertyName, value);
+                WriteBooleanFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
         }
@@ -217,20 +244,20 @@ namespace System.Text.JsonLab
 
         private void WriteBooleanSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, bool value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteBooleanFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteBooleanFastWithEncoding(ref propertyName, value);
             }
         }
@@ -263,14 +290,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteBoolean(ReadOnlySpan<byte> propertyName, bool value)
+        public void WriteBoolean(ReadOnlySpan<byte> propertyName, bool value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteBooleanSlow(ref propertyName, value);
+                WriteBooleanSlow(ref escapedValue, value);
             else
-                WriteBooleanFast(ref propertyName, value);
+                WriteBooleanFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
         }
@@ -308,20 +346,20 @@ namespace System.Text.JsonLab
 
         private void WriteBooleanSlow(ref ReadOnlySpan<byte> propertyName, bool value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteBooleanFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteBooleanFast(ref propertyName, value);
             }
         }
@@ -354,22 +392,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, long value)
-            => WriteNumber(propertyName.AsSpan(), value);
+        public void WriteNumber(string propertyName, long value, bool suppressEscaping = false)
+            => WriteNumber(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, long value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, long value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, long value)
+        private unsafe void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, long value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlowWithEncoding(ref propertyName, value);
+                WriteNumberSlowWithEncoding(ref escapedValue, value);
             else
-                WriteNumberFastWithEncoding(ref propertyName, value);
+                WriteNumberFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -402,20 +448,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, long value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFastWithEncoding(ref propertyName, value);
             }
         }
@@ -442,14 +488,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, long value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, long value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlow(ref propertyName, value);
+                WriteNumberSlow(ref escapedValue, value);
             else
-                WriteNumberFast(ref propertyName, value);
+                WriteNumberFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -482,20 +539,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ref ReadOnlySpan<byte> propertyName, long value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFast(ref propertyName, value);
             }
         }
@@ -522,40 +579,48 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, int value)
-            => WriteNumber(propertyName, (long)value);
+        public void WriteNumber(string propertyName, int value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (long)value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, int value)
-            => WriteNumber(propertyName, (long)value);
+        public void WriteNumber(ReadOnlySpan<char> propertyName, int value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (long)value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, int value)
-            => WriteNumber(propertyName, (long)value);
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, int value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (long)value, suppressEscaping);
 
-        public void WriteNumber(string propertyName, uint value)
-            => WriteNumber(propertyName, (ulong)value);
+        public void WriteNumber(string propertyName, uint value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (ulong)value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, uint value)
-            => WriteNumber(propertyName, (ulong)value);
+        public void WriteNumber(ReadOnlySpan<char> propertyName, uint value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (ulong)value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, uint value)
-            => WriteNumber(propertyName, (ulong)value);
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, uint value, bool suppressEscaping = false)
+            => WriteNumber(propertyName, (ulong)value, suppressEscaping);
 
-        public void WriteNumber(string propertyName, ulong value)
-            => WriteNumber(propertyName.AsSpan(), value);
+        public void WriteNumber(string propertyName, ulong value, bool suppressEscaping = false)
+            => WriteNumber(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, ulong value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, ulong value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, ulong value)
+        private unsafe void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, ulong value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlowWithEncoding(ref propertyName, value);
+                WriteNumberSlowWithEncoding(ref escapedValue, value);
             else
-                WriteNumberFastWithEncoding(ref propertyName, value);
+                WriteNumberFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -588,20 +653,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, ulong value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFastWithEncoding(ref propertyName, value);
             }
         }
@@ -628,14 +693,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, ulong value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, ulong value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlow(ref propertyName, value);
+                WriteNumberSlow(ref escapedValue, value);
             else
-                WriteNumberFast(ref propertyName, value);
+                WriteNumberFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -668,20 +744,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ref ReadOnlySpan<byte> propertyName, ulong value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFast(ref propertyName, value);
             }
         }
@@ -708,22 +784,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, double value)
-            => WriteNumber(propertyName.AsSpan(), value);
+        public void WriteNumber(string propertyName, double value, bool suppressEscaping = false)
+            => WriteNumber(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, double value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, double value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, double value)
+        private unsafe void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, double value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlowWithEncoding(ref propertyName, value);
+                WriteNumberSlowWithEncoding(ref escapedValue, value);
             else
-                WriteNumberFastWithEncoding(ref propertyName, value);
+                WriteNumberFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -753,20 +837,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, double value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFastWithEncoding(ref propertyName, value);
             }
         }
@@ -790,14 +874,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, double value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, double value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlow(ref propertyName, value);
+                WriteNumberSlow(ref escapedValue, value);
             else
-                WriteNumberFast(ref propertyName, value);
+                WriteNumberFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -827,20 +922,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ref ReadOnlySpan<byte> propertyName, double value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFast(ref propertyName, value);
             }
         }
@@ -864,22 +959,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, float value)
-            => WriteNumber(propertyName.AsSpan(), value);
+        public void WriteNumber(string propertyName, float value, bool suppressEscaping = false)
+            => WriteNumber(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, float value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, float value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, float value)
+        private unsafe void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, float value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlowWithEncoding(ref propertyName, value);
+                WriteNumberSlowWithEncoding(ref escapedValue, value);
             else
-                WriteNumberFastWithEncoding(ref propertyName, value);
+                WriteNumberFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -909,20 +1012,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, float value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFastWithEncoding(ref propertyName, value);
             }
         }
@@ -946,14 +1049,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, float value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, float value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlow(ref propertyName, value);
+                WriteNumberSlow(ref escapedValue, value);
             else
-                WriteNumberFast(ref propertyName, value);
+                WriteNumberFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -983,20 +1097,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ref ReadOnlySpan<byte> propertyName, float value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFast(ref propertyName, value);
             }
         }
@@ -1020,22 +1134,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(string propertyName, decimal value)
-            => WriteNumber(propertyName.AsSpan(), value);
+        public void WriteNumber(string propertyName, decimal value, bool suppressEscaping = false)
+            => WriteNumber(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteNumber(ReadOnlySpan<char> propertyName, decimal value)
+        public void WriteNumber(ReadOnlySpan<char> propertyName, decimal value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteNumberWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, decimal value)
+        private unsafe void WriteNumberWithEncoding(ReadOnlySpan<byte> propertyName, decimal value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlowWithEncoding(ref propertyName, value);
+                WriteNumberSlowWithEncoding(ref escapedValue, value);
             else
-                WriteNumberFastWithEncoding(ref propertyName, value);
+                WriteNumberFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1065,20 +1187,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, decimal value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFastWithEncoding(ref propertyName, value);
             }
         }
@@ -1102,14 +1224,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumber(ReadOnlySpan<byte> propertyName, decimal value)
+        public void WriteNumber(ReadOnlySpan<byte> propertyName, decimal value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteNumberSlow(ref propertyName, value);
+                WriteNumberSlow(ref escapedValue, value);
             else
-                WriteNumberFast(ref propertyName, value);
+                WriteNumberFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1139,20 +1272,20 @@ namespace System.Text.JsonLab
 
         private void WriteNumberSlow(ref ReadOnlySpan<byte> propertyName, decimal value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteNumberFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteNumberFast(ref propertyName, value);
             }
         }
@@ -1176,16 +1309,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        private void WriteStringWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        private unsafe void WriteStringWithEncodingPropertyValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping)
         {
-            //TODO: Add ReadOnlySpan<char> overload to this check
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = JsonWriterHelper.EscapeStringValue(value);
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* propertyPtr = stackalloc byte[propertyName.Length];
+                escapedPropertyName = new ReadOnlySpan<byte>(propertyPtr, propertyName.Length);
+
+                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                byte* valuePtr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(valuePtr, value.Length);
+            }
 
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncodingPropertyValue(ref propertyName, ref value);
+                WriteStringSlowWithEncodingPropertyValue(ref escapedPropertyName, ref escapedValue);
             else
-                WriteStringFastWithEncodingPropertyValue(ref propertyName, ref value);
+                WriteStringFastWithEncodingPropertyValue(ref escapedPropertyName, ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -1224,36 +1366,21 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingPropertyValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormattedWithEncodingPropertyValue(ref propertyName, ref escapedValue);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFastWithEncodingPropertyValue(ref propertyName, ref escapedValue);
-            }
-        }
-
-        private void ValidateWritingPropertyWithEncoding(ref ReadOnlySpan<byte> propertyName)
-        {
-            // TODO: Add "char" like escape check
-            if (JsonWriterHelper.IndexOfAnyEscape(propertyName) != -1)
-            {
-                //JsonThrowHelper.ThrowJsonWriterException("Property name must be properly escaped."); //TODO: Fix message
-            }
-
-            if (!_inObject)
-            {
-                Debug.Assert(_tokenType != JsonTokenType.StartObject);
-                JsonThrowHelper.ThrowJsonWriterException("Cannot add a property within an array.");    //TODO: Add resouce message
             }
         }
 
@@ -1285,16 +1412,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        private void WriteStringWithEncodingProperty(ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
+        private unsafe void WriteStringWithEncodingProperty(ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value, bool suppressEscaping)
         {
-            //TODO: Add ReadOnlySpan<char> overload to this check
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = JsonWriterHelper.EscapeStringValue(value);
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* propertyPtr = stackalloc byte[propertyName.Length];
+                escapedPropertyName = new ReadOnlySpan<byte>(propertyPtr, propertyName.Length);
+
+                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                byte* valuePtr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(valuePtr, value.Length);
+            }
 
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncodingProperty(ref propertyName, ref value);
+                WriteStringSlowWithEncodingProperty(ref escapedPropertyName, ref escapedValue);
             else
-                WriteStringFastWithEncodingProperty(ref propertyName, ref value);
+                WriteStringFastWithEncodingProperty(ref escapedPropertyName, ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -1325,20 +1461,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingProperty(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormattedWithEncodingProperty(ref propertyName, ref escapedValue);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFastWithEncodingProperty(ref propertyName, ref escapedValue);
             }
         }
@@ -1363,16 +1499,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        private void WriteStringWithEncodingValue(ref ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        private unsafe void WriteStringWithEncodingValue(ref ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping)
         {
-            //TODO: Add ReadOnlySpan<char> overload to this check
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = JsonWriterHelper.EscapeStringValue(value);
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* propertyPtr = stackalloc byte[propertyName.Length];
+                escapedPropertyName = new ReadOnlySpan<byte>(propertyPtr, propertyName.Length);
+
+                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                byte* valuePtr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(valuePtr, value.Length);
+            }
 
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncodingValue(ref propertyName, ref value);
+                WriteStringSlowWithEncodingValue(ref escapedPropertyName, ref escapedValue);
             else
-                WriteStringFastWithEncodingValue(ref propertyName, ref value);
+                WriteStringFastWithEncodingValue(ref escapedPropertyName, ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -1411,20 +1556,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncodingValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormattedWithEncodingValue(ref propertyName, ref escapedValue);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFastWithEncodingValue(ref propertyName, ref escapedValue);
             }
         }
@@ -1457,56 +1602,68 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteString(string propertyName, string value)
-            => WriteString(propertyName.AsSpan(), value.AsSpan());
+        public void WriteString(string propertyName, string value, bool suppressEscaping = false)
+            => WriteString(propertyName.AsSpan(), value.AsSpan(), suppressEscaping);
 
-        public void WriteString(string propertyName, ReadOnlySpan<char> value)
-            => WriteString(propertyName.AsSpan(), value);
+        public void WriteString(string propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
+            => WriteString(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteString(string propertyName, ReadOnlySpan<byte> value)
-            => WriteString(propertyName.AsSpan(), value);
+        public void WriteString(string propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
+            => WriteString(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, string value)
-            => WriteString(propertyName, value.AsSpan());
+        public void WriteString(ReadOnlySpan<char> propertyName, string value, bool suppressEscaping = false)
+            => WriteString(propertyName, value.AsSpan(), suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value)
+        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
 
-            WriteStringWithEncodingPropertyValue(MemoryMarshal.AsBytes(propertyName), MemoryMarshal.AsBytes(value));
+            WriteStringWithEncodingPropertyValue(MemoryMarshal.AsBytes(propertyName), MemoryMarshal.AsBytes(value), suppressEscaping);
         }
 
-        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> value)
+        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
 
-            WriteStringWithEncodingProperty(MemoryMarshal.AsBytes(propertyName), ref value);
+            WriteStringWithEncodingProperty(MemoryMarshal.AsBytes(propertyName), ref value, suppressEscaping);
         }
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, string value)
-            => WriteString(propertyName, value.AsSpan());
+        public void WriteString(ReadOnlySpan<byte> propertyName, string value, bool suppressEscaping = false)
+            => WriteString(propertyName, value.AsSpan(), suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<char> value)
+        public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
 
-            WriteStringWithEncodingValue(ref propertyName, MemoryMarshal.AsBytes(value));
+            WriteStringWithEncodingValue(ref propertyName, MemoryMarshal.AsBytes(value), suppressEscaping);
         }
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
 
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
             {
-                //TODO: Add escaping.
-                value = JsonWriterHelper.EscapeStringValue(value);
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedPropertyName = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+                Utf8JsonWriter2.EscapeString(value, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[value.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
+                }
             }
 
             if (_writerOptions.SlowPath)
-                WriteStringSlow(ref propertyName, ref value);
+                WriteStringSlow(ref escapedPropertyName, ref escapedValue);
             else
-                WriteStringFast(ref propertyName, ref value);
+                WriteStringFast(ref escapedPropertyName, ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -1537,33 +1694,21 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormatted(ref propertyName, ref escapedValue);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFast(ref propertyName, ref escapedValue);
-            }
-        }
-
-        private void ValidateWritingProperty(ref ReadOnlySpan<byte> propertyName)
-        {
-            if (JsonWriterHelper.IndexOfAnyEscape(propertyName) != -1)
-                JsonThrowHelper.ThrowJsonWriterException("Property name must be properly escaped."); //TODO: Fix message
-
-            if (!_inObject)
-            {
-                Debug.Assert(_tokenType != JsonTokenType.StartObject);
-                JsonThrowHelper.ThrowJsonWriterException("Cannot add a property within an array.");    //TODO: Add resouce message
             }
         }
 
@@ -1587,22 +1732,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteString(string propertyName, DateTime value)
-            => WriteString(propertyName.AsSpan(), value);
+        public void WriteString(string propertyName, DateTime value, bool suppressEscaping = false)
+            => WriteString(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, DateTime value)
+        public void WriteString(ReadOnlySpan<char> propertyName, DateTime value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value)
+        private unsafe void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncoding(ref propertyName, value);
+                WriteStringSlowWithEncoding(ref escapedValue, value);
             else
-                WriteStringFastWithEncoding(ref propertyName, value);
+                WriteStringFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1636,20 +1789,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFastWithEncoding(ref propertyName, value);
             }
         }
@@ -1677,14 +1830,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, DateTime value)
+        public void WriteString(ReadOnlySpan<byte> propertyName, DateTime value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteStringSlow(ref propertyName, value);
+                WriteStringSlow(ref escapedValue, value);
             else
-                WriteStringFast(ref propertyName, value);
+                WriteStringFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1718,20 +1882,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ref ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFast(ref propertyName, value);
             }
         }
@@ -1759,31 +1923,39 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteString(string propertyName, DateTimeOffset value)
-            => WriteString(propertyName, value.DateTime);
+        public void WriteString(string propertyName, DateTimeOffset value, bool suppressEscaping = false)
+            => WriteString(propertyName, value.DateTime, suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, DateTimeOffset value)
-            => WriteString(propertyName, value.DateTime);
+        public void WriteString(ReadOnlySpan<char> propertyName, DateTimeOffset value, bool suppressEscaping = false)
+            => WriteString(propertyName, value.DateTime, suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, DateTimeOffset value)
-            => WriteString(propertyName, value.DateTime);
+        public void WriteString(ReadOnlySpan<byte> propertyName, DateTimeOffset value, bool suppressEscaping = false)
+            => WriteString(propertyName, value.DateTime, suppressEscaping);
 
-        public void WriteString(string propertyName, Guid value)
-            => WriteString(propertyName.AsSpan(), value);
+        public void WriteString(string propertyName, Guid value, bool suppressEscaping = false)
+            => WriteString(propertyName.AsSpan(), value, suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, Guid value)
+        public void WriteString(ReadOnlySpan<char> propertyName, Guid value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value);
+            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
         }
 
-        private void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, Guid value)
+        private unsafe void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, Guid value, bool suppressEscaping)
         {
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[propertyName.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+            }
+
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncoding(ref propertyName, value);
+                WriteStringSlowWithEncoding(ref escapedValue, value);
             else
-                WriteStringFastWithEncoding(ref propertyName, value);
+                WriteStringFastWithEncoding(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1817,20 +1989,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, Guid value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingPropertyWithEncoding(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormattedWithEncoding(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingPropertyWithEncoding(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFastWithEncoding(ref propertyName, value);
             }
         }
@@ -1858,14 +2030,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteString(ReadOnlySpan<byte> propertyName, Guid value)
+        public void WriteString(ReadOnlySpan<byte> propertyName, Guid value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> escapedValue = propertyName;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriter2.EscapeString(propertyName, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[propertyName.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                }
+            }
+
             if (_writerOptions.SlowPath)
-                WriteStringSlow(ref propertyName, value);
+                WriteStringSlow(ref escapedValue, value);
             else
-                WriteStringFast(ref propertyName, value);
+                WriteStringFast(ref escapedValue, value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
@@ -1899,20 +2082,20 @@ namespace System.Text.JsonLab
 
         private void WriteStringSlow(ref ReadOnlySpan<byte> propertyName, Guid value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
-                    ValidateWritingProperty(ref propertyName);
+                    ValidateWritingProperty();
                 }
                 WriteStringFormatted(ref propertyName, value);
             }
             else
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty(ref propertyName);
+                ValidateWritingProperty();
                 WriteStringFast(ref propertyName, value);
             }
         }
@@ -1944,7 +2127,7 @@ namespace System.Text.JsonLab
         private void ValidatePropertyNameAndDepth(ref ReadOnlySpan<char> propertyName)
         {
             // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || CurrentDepth >= JsonConstants.MaxPossibleDepth)
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
         }
 
@@ -2058,6 +2241,15 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Space;
 
             return byteBuffer;
+        }
+
+        private void ValidateWritingProperty()
+        {
+            if (!_inObject)
+            {
+                Debug.Assert(_tokenType != JsonTokenType.StartObject);
+                JsonThrowHelper.ThrowJsonWriterException("Cannot add a property within an array or as the first JSON token.");    //TODO: Add resouce message
+            }
         }
     }
 }

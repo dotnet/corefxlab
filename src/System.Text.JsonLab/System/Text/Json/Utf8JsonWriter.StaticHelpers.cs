@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
 {
@@ -87,6 +88,7 @@ namespace System.Text.JsonLab
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static OperationStatus EscapeString(ReadOnlySpan<byte> value, Span<byte> destination, out int consumed, out int bytesWritten)
         {
             throw new NotImplementedException();
