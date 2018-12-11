@@ -1145,13 +1145,15 @@ namespace System.Text.JsonLab.Tests
             {
                 var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
 
-                Utf8JsonWriter2 json = Utf8JsonWriterHelpers.CreateFromStream(memoryStream, state);
+                var json = new Utf8JsonWriter2(buffer, state);
                 json.WriteStartObject();
                 for (int i = 0; i < 10; i++)
                     json.WriteString("message", "Hello, World!", suppressEscaping: true);
                 json.WriteEndObject();
 
-                json.Dispose();
+                json.Flush();
+
+                memoryStream.Write(buffer.AsSpan(0, (int)json.BytesCommitted));
 
                 actualString = Encoding.UTF8.GetString(memoryStream.ToArray());
             }

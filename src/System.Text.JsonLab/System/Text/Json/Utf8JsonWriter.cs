@@ -59,10 +59,26 @@ namespace System.Text.JsonLab
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
         public Utf8JsonWriter2(IBufferWriter<byte> bufferWriter, JsonWriterState state = default)
         {
-            _output = bufferWriter;
+            _output = bufferWriter ?? throw new ArgumentNullException(nameof(bufferWriter));
             _buffered = 0;
             BytesCommitted = 0;
             _buffer = _output.GetSpan();
+
+            _inObject = state._inObject;
+            _isNotPrimitive = state._isNotPrimitive;
+            _tokenType = state._tokenType;
+            _writerOptions = state._writerOptions;
+            _bitStack = state._bitStack;
+
+            _currentDepth = 0;
+        }
+
+        public Utf8JsonWriter2(Span<byte> outputSpan, JsonWriterState state = default)
+        {
+            _output = null;
+            _buffered = 0;
+            BytesCommitted = 0;
+            _buffer = outputSpan;
 
             _inObject = state._inObject;
             _isNotPrimitive = state._isNotPrimitive;
@@ -97,6 +113,8 @@ namespace System.Text.JsonLab
         private void EnsureMore(int count)
         {
             Flush();
+            if (_output == null)
+                throw new ArgumentException("The output span provided is too small.");
             _buffer = _output.GetSpan(count);
         }
 
@@ -113,15 +131,11 @@ namespace System.Text.JsonLab
         private void Flush()
         {
             BytesCommitted += _buffered;
-            _output.Advance(_buffered);
+            if (_output == null)
+                _buffer = _buffer.Slice(_buffered);
+            else
+                _output.Advance(_buffered);
             _buffered = 0;
-        }
-
-        public void Dispose()
-        {
-            Flush();
-            if (_output is StreamFormatter streamFormatter)
-                streamFormatter.Dispose();
         }
 
         public void WriteStartArray()
@@ -276,21 +290,6 @@ namespace System.Text.JsonLab
                 WriteStartSlow(ref escapedSpan, token);
             else
                 WriteStartFast(ref escapedSpan, token);
-
-            _currentDepth &= JsonConstants.RemoveFlagsBitMask;
-            _currentDepth++;
-        }
-
-        private void WriteStart(ref ReadOnlySpan<byte> propertyName, byte token)
-        {
-            // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
-                JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
-
-            if (_writerOptions.SlowPath)
-                WriteStartSlow(ref propertyName, token);
-            else
-                WriteStartFast(ref propertyName, token);
 
             _currentDepth &= JsonConstants.RemoveFlagsBitMask;
             _currentDepth++;

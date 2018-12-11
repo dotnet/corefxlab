@@ -53,7 +53,7 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Fact]
-        public void WriteToPipeUsingMemory()
+        public void WriteToPipeUsingSpan()
         {
             string actual = "";
             var taskReader = Task.Run(async () =>
@@ -194,7 +194,7 @@ namespace System.Text.JsonLab.Tests
 
         private static (JsonWriterState, long) WriteData(Memory<byte> memory, bool isFinalBlock, JsonWriterState state = default)
         {
-            Utf8JsonWriter2 json = Utf8JsonWriterHelpers.CreateFromMemory(memory, state);
+            var json = new Utf8JsonWriter2(memory.Span, state);
 
             json.WriteStartObject();
             json.WriteNumber("age", 30, suppressEscaping: true);
