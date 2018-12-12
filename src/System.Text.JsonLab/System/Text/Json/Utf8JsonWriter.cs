@@ -11,6 +11,8 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2
     {
+        private const int MinimumSizeThreshold = 256;
+
         private IBufferWriter<byte> _output;
         private int _buffered;
         private Span<byte> _buffer;
@@ -105,17 +107,31 @@ namespace System.Text.JsonLab
 
             if (_buffer.Length < count)
                 EnsureMore(count);
-
-            Debug.Assert(_buffer.Length >= count);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EnsureMore(int count)
         {
             Flush();
+
             if (_output == null)
-                throw new ArgumentException("The output span provided is too small.");
-            _buffer = _output.GetSpan(count);
+            {
+                if (count < MinimumSizeThreshold)
+                {
+                    throw new ArgumentException("The output span provided is too small.");
+                }
+            }
+            else
+            {
+                _buffer = _output.GetSpan(count);
+
+                if (_buffer.Length < count && count < MinimumSizeThreshold)
+                {
+                    throw new ArgumentException("The IBufferWriter could not provide a span that is large enough to continue.");
+                }
+
+                Debug.Assert(_buffer.Length >= Math.Min(count, MinimumSizeThreshold));
+            }
         }
 
         public void Flush(bool isFinalBlock = true)
@@ -132,9 +148,14 @@ namespace System.Text.JsonLab
         {
             BytesCommitted += _buffered;
             if (_output == null)
+            {
+                Debug.Assert(_buffer.Length >= _buffered);
                 _buffer = _buffer.Slice(_buffered);
+            }
             else
+            {
                 _output.Advance(_buffered);
+            }
             _buffered = 0;
         }
 

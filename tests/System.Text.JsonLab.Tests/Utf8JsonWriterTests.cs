@@ -375,6 +375,55 @@ namespace System.Text.JsonLab.Tests
         [InlineData(true, false)]
         [InlineData(false, true)]
         [InlineData(false, false)]
+        public void WriteCustomStringsWithOptions(bool formatted, bool skipValidation)
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
+
+            var output = new ArrayFormatterWrapper(10, SymbolTable.InvariantUtf8);
+            var jsonUtf8 = new Utf8JsonWriter2(output, state);
+
+            jsonUtf8.WriteStartObject();
+
+            for (int i = 0; i < 1_000; i++)
+                jsonUtf8.WriteString("message", "Hello, World!", suppressEscaping: true);
+
+            jsonUtf8.WriteEndObject();
+            jsonUtf8.Flush();
+
+            ArraySegment<byte> arraySegment = output.Formatted;
+            string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+            Assert.Equal(GetCustomExpectedString(formatted), actualStr);
+        }
+
+        private static string GetCustomExpectedString(bool prettyPrint)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new Newtonsoft.Json.JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
+            };
+
+            json.WriteStartObject();
+            for (int i = 0; i < 1_000; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue("Hello, World!");
+            }
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
         public void WriteStartEndWithOptions(bool formatted, bool skipValidation)
         {
             string expectedStr = GetStartEndExpectedString(prettyPrint: formatted);

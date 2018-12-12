@@ -1614,11 +1614,248 @@ namespace System.Text.JsonLab
         public void WriteString(ReadOnlySpan<char> propertyName, string value, bool suppressEscaping = false)
             => WriteString(propertyName, value.AsSpan(), suppressEscaping);
 
-        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
+        public void WriteString_old(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
 
             WriteStringWithEncodingPropertyValue(MemoryMarshal.AsBytes(propertyName), MemoryMarshal.AsBytes(value), suppressEscaping);
+        }
+
+        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
+        {
+            JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
+
+            WriteStringWithEncodingPropertyValue_new(MemoryMarshal.AsBytes(propertyName), MemoryMarshal.AsBytes(value), suppressEscaping);
+        }
+
+        private unsafe void WriteStringWithEncodingPropertyValue_new(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping)
+        {
+            ReadOnlySpan<byte> escapedPropertyName = propertyName;
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                Utf8JsonWriterHelpers.EscapeString(propertyName, _buffer, out _, out _);
+                byte* propertyPtr = stackalloc byte[propertyName.Length];
+                escapedPropertyName = new ReadOnlySpan<byte>(propertyPtr, propertyName.Length);
+
+                Utf8JsonWriterHelpers.EscapeString(value, _buffer, out _, out _);
+                byte* valuePtr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(valuePtr, value.Length);
+            }
+
+            if (_writerOptions.SlowPath)
+                WriteStringSlowWithEncodingPropertyValue(ref escapedPropertyName, ref escapedValue);
+            else
+                WriteStringFastWithEncodingPropertyValue(ref escapedPropertyName, ref escapedValue);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.String;
+        }
+
+        private void WriteStringFastWithEncodingPropertyValue_new(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while ((uint)_buffer.Length <= (uint)idx)
+                {
+                    AdvanceAndUpdate(idx);
+                    idx = 0;
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            while ((uint)_buffer.Length <= (uint)idx)
+            {
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            int partialConsumed = 0;
+            while (true)
+            {
+                OperationStatus status = Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                idx += written;
+                if (status == OperationStatus.Done)
+                {
+                    break;
+                }
+                partialConsumed += consumed;
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+
+            while ((uint)_buffer.Length <= (uint)idx)
+            {
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            while ((uint)_buffer.Length <= (uint)idx)
+            {
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            while ((uint)_buffer.Length <= (uint)idx)
+            {
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            partialConsumed = 0;
+            while (true)
+            {
+                OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                idx += written;
+                if (status == OperationStatus.Done)
+                {
+                    break;
+                }
+                partialConsumed += consumed;
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+
+            while ((uint)_buffer.Length <= (uint)idx)
+            {
+                AdvanceAndUpdate(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            Advance(idx);
+        }
+
+        private void WriteStringFastWithEncodingPropertyValue_new_goto(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> escapedValue)
+        {
+            int idx = 0;
+        Check1:
+            if (_currentDepth < 0)
+            {
+                if ((uint)_buffer.Length <= (uint)idx)
+                {
+                    goto NeedsMoreData1;
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+        Check2:
+            if ((uint)_buffer.Length <= (uint)idx)
+            {
+                goto NeedsMoreData2;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            int partialConsumed = 0;
+        Check3:
+            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+            idx += written;
+            if (status != OperationStatus.Done)
+            {
+                partialConsumed += consumed;
+                goto NeedsMoreData3;
+            }
+
+        Check4:
+            if ((uint)_buffer.Length <= (uint)idx)
+            {
+                goto NeedsMoreData4;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+        Check5:
+            if ((uint)_buffer.Length <= (uint)idx)
+            {
+                goto NeedsMoreData5;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+        Check6:
+            if ((uint)_buffer.Length <= (uint)idx)
+            {
+                goto NeedsMoreData6;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            partialConsumed = 0;
+        Check7:
+            status = Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out consumed, out written);
+            idx += written;
+            if (status != OperationStatus.Done)
+            {
+                partialConsumed += consumed;
+                goto NeedsMoreData7;
+            }
+
+        Check8:
+            if ((uint)_buffer.Length <= (uint)idx)
+            {
+                goto NeedsMoreData8;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            Advance(idx);
+            return;
+
+        NeedsMoreData1:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check1;
+
+        NeedsMoreData2:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check2;
+
+        NeedsMoreData3:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check3;
+
+        NeedsMoreData4:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check4;
+
+        NeedsMoreData5:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check5;
+
+        NeedsMoreData6:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check6;
+
+        NeedsMoreData7:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check7;
+
+        NeedsMoreData8:
+            AdvanceAndUpdate(idx);
+            idx = 0;
+            goto Check8;
+        }
+
+        private void AdvanceAndUpdate(int idx)
+        {
+            Advance(idx);
+            int previousSpanLength = _buffer.Length;
+            EnsureMore(6);
+            if (_buffer.Length <= previousSpanLength)
+            {
+                EnsureMore(4096);
+                if (_buffer.Length <= previousSpanLength)
+                {
+                    throw new OutOfMemoryException();
+                }
+            }
         }
 
         public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
