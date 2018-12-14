@@ -46,7 +46,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -171,7 +171,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -295,7 +295,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -419,7 +419,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -543,7 +543,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -660,7 +660,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -777,7 +777,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -894,7 +894,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -1015,7 +1015,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -1136,7 +1136,7 @@ namespace System.Text.JsonLab
                 if (_currentDepth >= 0)
                     bytesNeeded--;
 
-                Ensure(bytesNeeded);
+                CheckSizeAndGrow(bytesNeeded);
 
                 WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 

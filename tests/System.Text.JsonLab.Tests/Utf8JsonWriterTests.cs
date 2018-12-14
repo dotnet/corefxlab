@@ -6,6 +6,8 @@ using Xunit;
 using System.Text.Formatting;
 using System.Buffers.Text;
 using System.IO;
+using Newtonsoft.Json;
+using System.Xml;
 
 namespace System.Text.JsonLab.Tests
 {
@@ -284,13 +286,28 @@ namespace System.Text.JsonLab.Tests
                 Assert.True(false, "Expected JsonWriterException to be thrown when validation is enabled.");
         }
 
+        private static readonly byte[] First = Encoding.UTF8.GetBytes("first");
+        private static readonly byte[] John = Encoding.UTF8.GetBytes("John");
+
         [Theory]
-        [InlineData(true, true)]
-        [InlineData(true, false)]
+        //[InlineData(true, true)]
+        //[InlineData(true, false)]
         [InlineData(false, true)]
-        [InlineData(false, false)]
+        //[InlineData(false, false)]
         public void WriteSingleValueWithOptions(bool formatted, bool skipValidation)
         {
+            var _arrayFormatterWrapper = new ArrayFormatterWrapper(10000, SymbolTable.InvariantUtf8);
+
+            var state1 = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state1);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString(First, John, suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+
             string expectedStr = "123456789012345";
 
             var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });

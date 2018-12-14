@@ -101,16 +101,16 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Ensure(int count)
+        private void CheckSizeAndGrow(int count)
         {
             Debug.Assert(count >= 0);
 
             if (_buffer.Length < count)
-                EnsureMore(count);
+                GrowSpan(count);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void EnsureMore(int count)
+        private void GrowSpan(int count)
         {
             Flush();
 
@@ -327,7 +327,7 @@ namespace System.Text.JsonLab
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             WritePropertyName(ref propertyName, bytesNeeded, out int idx);
 
@@ -467,7 +467,7 @@ namespace System.Text.JsonLab
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             WritePropertyNameEncoded(ref propertyName, bytesNeeded, out int idx);
 
@@ -635,7 +635,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Span<byte> GetSpan(int bytesNeeded)
         {
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
             Debug.Assert(_buffer.Length >= bytesNeeded);
             return _buffer;
         }

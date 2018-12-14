@@ -52,12 +52,15 @@ namespace System.Text.JsonLab
         // Explicitly skipping ReverseSolidus since that is handled separately
         public static ReadOnlySpan<byte> EscapableChars => new byte[] { Quote, (byte)'n', (byte)'r', (byte)'t', Solidus, (byte)'u', (byte)'b', (byte)'f' };
 
+        public static ReadOnlySpan<byte> ForbiddenBytes => new byte[] { (byte)'\\', (byte)'/', (byte)'"', (byte)'\'', (byte)'&', (byte)'+', (byte)'<', (byte)'>', (byte)'`' };
+        public static ReadOnlySpan<char> ForbiddenChars => new char[] { '\\', '/', '"', '\'', '&', '+', '<', '>', '`' };
+
         #endregion Common values
 
         public const int RemoveFlagsBitMask = 0x7FFFFFFF;
         public const int MaxWriterDepth = 1_000;
-        public const int MaxTokenSize = 1_000_000_000; // 1 GB
-        public const int MaxCharacterTokenSize = 1_000_000_000 / 3; // 333 million characters, i.e. 333 MB
+        public const int MaxTokenSize = 2_000_000_000 / 6;  // 357_913_941 bytes
+        public const int MaxCharacterTokenSize = 2_000_000_000 / 6; // 357_913_941 characters
 
         public const int MaximumInt64Length = 20;   // 19 + sign (i.e. -9223372036854775808)
         public const int MaximumUInt64Length = 20;  // i.e. 18446744073709551615

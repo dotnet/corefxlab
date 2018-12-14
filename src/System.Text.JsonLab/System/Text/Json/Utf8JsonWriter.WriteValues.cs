@@ -174,16 +174,25 @@ namespace System.Text.JsonLab
 
         private void WriteValueFast(long value)
         {
-            // Calculated based on the following: ',number'
-            int bytesNeeded = 1 + JsonConstants.MaximumInt64Length;
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                if (_buffer.Length <= 0)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
 
-            Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
-
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
+            int bytesWritten;
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
-            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
+            // Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten);
+            while (!JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out bytesWritten))
+            {
+                AdvanceAndGrow(idx, JsonConstants.MaximumInt64Length);
+                idx = 0;
+            }
             idx += bytesWritten;
 
             Advance(idx);
@@ -530,7 +539,7 @@ namespace System.Text.JsonLab
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
 
@@ -912,7 +921,7 @@ namespace System.Text.JsonLab
             // Calculated based on the following: '/*encoded value*/'
             int bytesNeeded = escapedValue.Length / 2 * 3 + 4;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -949,7 +958,7 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -1007,7 +1016,7 @@ namespace System.Text.JsonLab
             // Calculated based on the following: '/*value*/'
             int bytesNeeded = escapedValue.Length + 4;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -1038,7 +1047,7 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
