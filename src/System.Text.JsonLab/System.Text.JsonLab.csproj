@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Buffers" Version="$(SystemBuffersVersion)" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="System.ValueTuple" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>

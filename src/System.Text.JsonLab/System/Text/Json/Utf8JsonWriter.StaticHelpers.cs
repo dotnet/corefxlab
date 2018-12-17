@@ -304,7 +304,7 @@ namespace System.Text.JsonLab
 
             //    byte[] utf8Intermediary = ArrayPool<byte>.Shared.Rent(destination.Length);
             //    Span<byte> utf8Scratch = utf8Intermediary;
-            //    OperationStatus status = Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(value), utf8Scratch, out int encodingConsumed, out int encodingWritten);
+            //    OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(value), utf8Scratch, out int encodingConsumed, out int encodingWritten);
 
             //    if (status != OperationStatus.Done)
             //    {

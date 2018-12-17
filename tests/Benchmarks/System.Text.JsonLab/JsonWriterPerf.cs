@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
@@ -13,8 +15,21 @@ namespace System.Text.JsonLab.Benchmarks
     //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
     [MemoryDiagnoser]
     [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    [Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
     {
+        private class ConfigWithCustomEnvVars : ManualConfig
+        {
+            private const string JitNoInline = "COMPlus_TieredCompilation";
+
+            public ConfigWithCustomEnvVars()
+            {
+                Add(Job.Core
+                    .With(new[] { new EnvironmentVariable(JitNoInline, "0") })
+                    .WithId("Tiered disabled"));
+            }
+        }
+
         private static readonly byte[] Message = Encoding.UTF8.GetBytes("message");
         private static readonly byte[] HelloWorld = Encoding.UTF8.GetBytes("Hello, World!");
         private static readonly byte[] ExtraArray = Encoding.UTF8.GetBytes("ExtraArray");
@@ -78,8 +93,8 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
-        public void WriterSystemTextJsonValues()
+        [Benchmark(Baseline = true)]
+        public void WriterSystemTextJsonValues_withReturn()
         {
             _arrayFormatterWrapper.Clear();
 
@@ -90,6 +105,32 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteStartArray();
             for (int i = 0; i < 100; i++)
                 json.WriteNumberValue(12345);
+            json.WriteEndArray();
+            json.Flush();
+
+            //using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            //{
+            //    json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+            //    json.WriteStartArray();
+            //    for (int i = 0; i < 100; i++)
+            //        json.WriteValue(12345);
+            //    json.WriteEndArray();
+            //}
+        }
+
+        [Benchmark]
+        public void WriterSystemTextJsonValues_withMethod()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartArray();
+            for (int i = 0; i < 100; i++)
+                json.WriteNumberValue_withMethod(12345);
             json.WriteEndArray();
             json.Flush();
 
@@ -151,6 +192,23 @@ namespace System.Text.JsonLab.Benchmarks
             ////json.WriteArray(ExtraArray, _data.AsSpan(0, 10), suppressEscaping: true);
             //json.WriteEndObject();
             //json.Flush();
+        }
+
+        //[Benchmark]
+        public void WriterSystemTextJsonBasicNewtonsoft()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < 100; i++)
+                {
+                    json.WritePropertyName("first");
+                    json.WriteValue("John");
+                }
+                json.WriteEndObject();
+            }
         }
 
         //[Benchmark (Baseline = true)]

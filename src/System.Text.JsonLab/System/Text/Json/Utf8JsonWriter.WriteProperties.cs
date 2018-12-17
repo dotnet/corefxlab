@@ -1387,7 +1387,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1529,7 +1529,7 @@ namespace System.Text.JsonLab
 
             _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1577,7 +1577,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -1592,7 +1592,29 @@ namespace System.Text.JsonLab
         }
 
         public void WriteString(string propertyName, string value, bool suppressEscaping = false)
-            => WriteString(propertyName.AsSpan(), value.AsSpan(), suppressEscaping);
+        {
+            value = Encodings.Web.JavaScriptEncoder.Default.Encode(value);
+            if (!suppressEscaping)
+                propertyName = Encodings.Web.JavaScriptEncoder.Default.Encode(propertyName);
+            WriteString(propertyName.AsSpan(), value.AsSpan());
+        }
+
+        public void WriteString(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value)
+        {
+            JsonWriterHelper.ValidatePropertyAndValue(propertyName, value);
+            WriteStringWithEncodingPropertyValue(propertyName, value);
+        }
+
+        private void WriteStringWithEncodingPropertyValue(ReadOnlySpan<char> escapedPropertyName, ReadOnlySpan<char> escapedValue)
+        {
+            if (_writerOptions.SlowPath)
+                WriteStringSlowWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
+            else
+                WriteStringFastWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.String;
+        }
 
         public void WriteString(string propertyName, ReadOnlySpan<char> value, bool suppressEscaping = false)
             => WriteString(propertyName.AsSpan(), value, suppressEscaping);
@@ -1629,9 +1651,9 @@ namespace System.Text.JsonLab
                 escapedValue = Utf8JsonWriterHelpers.GetEscapedSpan(value, idx);
 
             if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
+                WriteStringSlowWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(value));
             else
-                WriteStringFastWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
+                WriteStringFastWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(value));
 
 
             _currentDepth |= 1 << 31;
@@ -1661,7 +1683,7 @@ namespace System.Text.JsonLab
             int partialConsumed = 0;
             while (true)
             {
-                OperationStatus status = Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
                 idx += written;
                 if (status == OperationStatus.Done)
                 {
@@ -1696,7 +1718,7 @@ namespace System.Text.JsonLab
             partialConsumed = 0;
             while (true)
             {
-                OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
                 idx += written;
                 if (status == OperationStatus.Done)
                 {
@@ -1740,7 +1762,7 @@ namespace System.Text.JsonLab
             int partialConsumed = 0;
             while (true)
             {
-                OperationStatus status = Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(propertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
                 idx += written;
                 if (status == OperationStatus.Done)
                 {
@@ -1775,7 +1797,7 @@ namespace System.Text.JsonLab
             partialConsumed = 0;
             while (true)
             {
-                OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
                 idx += written;
                 if (status == OperationStatus.Done)
                 {
@@ -1812,6 +1834,7 @@ namespace System.Text.JsonLab
 
         private void AdvanceAndGrow(int alreadyWritten)
         {
+            Debug.Assert(alreadyWritten >= 0);
             Advance(alreadyWritten);
             GrowAndEnsure();
         }
@@ -2428,7 +2451,7 @@ namespace System.Text.JsonLab
 
             _buffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, _buffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(propertyName, _buffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -2465,7 +2488,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(propertyName, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(propertyName, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)

@@ -166,13 +166,13 @@ namespace System.Text.JsonLab
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
             else
-                WriteValueFast(value);
+                WriteValueFast_withReturn(value);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
         }
 
-        private void WriteValueFast(long value)
+        private void WriteValueFast_withReturn(long value)
         {
             int idx = 0;
             if (_currentDepth < 0)
@@ -198,6 +198,46 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
+        public void WriteNumberValue_withMethod(int value)
+            => WriteNumberValue_withMethod((long)value);
+
+        public void WriteNumberValue_withMethod(long value)
+        {
+            if (_writerOptions.SlowPath)
+                WriteValueSlow(value);
+            else
+                WriteValueFast_withMethod(value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteValueFast_withMethod(long value)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                if (_buffer.Length <= 0)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            int bytesWritten;
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten);
+            while (!JsonWriterHelper.TryFormatInt64Default_withMethod(value, _buffer.Slice(idx), out bytesWritten))
+            {
+                AdvanceAndGrow(idx, JsonConstants.MaximumInt64Length);
+                idx = 0;
+            }
+            idx += bytesWritten;
+
+            Advance(idx);
+        }
+
         private void WriteValueSlow(long value)
         {
             Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
@@ -214,7 +254,7 @@ namespace System.Text.JsonLab
             {
                 Debug.Assert(!_writerOptions.SkipValidation);
                 ValidateWritingValue();
-                WriteValueFast(value);
+                WriteValueFast_withReturn(value);
             }
         }
 
@@ -545,7 +585,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -593,7 +633,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -930,7 +970,7 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Solidus;
             byteBuffer[idx++] = (byte)'*'; // TODO: Replace with JsonConstants.Asterisk
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -972,7 +1012,7 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Solidus;
             byteBuffer[idx++] = (byte)'*'; // TODO: Replace with JsonConstants.Asterisk
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
