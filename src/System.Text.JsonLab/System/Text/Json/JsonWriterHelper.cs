@@ -42,6 +42,42 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWriteIndentation(Span<byte> buffer, int indent, out int bytesWritten)
+        {
+            Debug.Assert(indent % 2 == 0);
+
+            if (buffer.Length >= indent)
+            {
+                if (indent < 8)
+                {
+                    int i = 0;
+                    while (i < indent)
+                    {
+                        buffer[i++] = JsonConstants.Space;
+                        buffer[i++] = JsonConstants.Space;
+                    }
+                }
+                else
+                {
+                    buffer.Slice(0, indent).Fill(JsonConstants.Space);
+                }
+                bytesWritten = indent;
+                return true;
+            }
+            else
+            {
+                int i = 0;
+                while (i < buffer.Length - 1)
+                {
+                    buffer[i++] = JsonConstants.Space;
+                    buffer[i++] = JsonConstants.Space;
+                }
+                bytesWritten = i;
+                return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ValidateProperty(ref ReadOnlySpan<byte> propertyName)
         {
             // TODO: Use throw helper with proper error messages
@@ -99,6 +135,14 @@ namespace System.Text.JsonLab
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ValidatePropertyAndValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxTokenSize)

@@ -36,8 +36,10 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static readonly byte[] First = Encoding.UTF8.GetBytes("first");
         private static readonly byte[] John = Encoding.UTF8.GetBytes("John");
+        private static readonly byte[] FirNst = Encoding.UTF8.GetBytes("fir\nst");
+        private static readonly byte[] JohNn = Encoding.UTF8.GetBytes("Joh\nn");
 
-        private const int ExtraArraySize = 10;
+        private const int ExtraArraySize = 100;
         private const int BufferSize = 1024 + (ExtraArraySize * 64);
 
         private ArrayFormatterWrapper _arrayFormatterWrapper;
@@ -52,7 +54,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(false)]
         public bool Formatted;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -93,7 +95,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public void WriterSystemTextJsonValues_withReturn()
         {
             _arrayFormatterWrapper.Clear();
@@ -119,7 +121,7 @@ namespace System.Text.JsonLab.Benchmarks
             //}
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonValues_withMethod()
         {
             _arrayFormatterWrapper.Clear();
@@ -146,7 +148,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         //[Benchmark]
-        public void WriterSystemTextJsonBasic()
+        public void WriterSystemTextJsonBasicUnescaped()
         {
             _arrayFormatterWrapper.Clear();
 
@@ -157,6 +159,22 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteStartObject();
             for (int i = 0; i < 100; i++)
                 json.WriteString("first", "John", suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        //[Benchmark]
+        public void WriterSystemTextJsonBasic()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString("fir\nst", "Joh\nn");
             json.WriteEndObject();
             json.Flush();
 
@@ -195,6 +213,23 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         //[Benchmark]
+        public void WriterSystemTextJsonBasicNewtonsoftUnescape()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < 100; i++)
+                {
+                    json.WritePropertyName("first", escape: false);
+                    json.WriteValue("John");
+                }
+                json.WriteEndObject();
+            }
+        }
+
+        //[Benchmark]
         public void WriterSystemTextJsonBasicNewtonsoft()
         {
             using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
@@ -204,8 +239,8 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteStartObject();
                 for (int i = 0; i < 100; i++)
                 {
-                    json.WritePropertyName("first");
-                    json.WriteValue("John");
+                    json.WritePropertyName("fir\nst");
+                    json.WriteValue("Joh\nn");
                 }
                 json.WriteEndObject();
             }
@@ -235,14 +270,32 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteBeginObject();
             for (int i = 0; i < 100; i++)
             {
-                json.WritePropertyName("first");
-                json.WriteString("John");
+                json.WritePropertyName("fir\nst");
+                json.WriteString("Joh\nn");
             }
             json.WriteEndObject();
         }
 
-        //[Benchmark(Baseline = true)]
-        public void WriterSystemTextJsonBasicUtf8()
+        //[Benchmark]
+        public void Utf8JsonWriteStringRaw()
+        {
+            global::Utf8Json.JsonWriter json = new global::Utf8Json.JsonWriter();
+
+            byte[] first = global::Utf8Json.JsonWriter.GetEncodedPropertyName("fir\nst");
+            byte[] john = global::Utf8Json.JsonWriter.GetEncodedPropertyName("Joh\nn");
+
+            json.WriteBeginObject();
+            for (int i = 0; i < 100; i++)
+            {
+                json.WriteRaw(first);
+                json.WriteNameSeparator();
+                json.WriteRaw(john);
+            }
+            json.WriteEndObject();
+        }
+
+        //[Benchmark]
+        public void WriterSystemTextJsonBasicUtf8Unescaped()
         {
             _arrayFormatterWrapper.Clear();
 
@@ -253,6 +306,38 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteStartObject();
             for (int i = 0; i < 100; i++)
                 json.WriteString(First, John, suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
+        public void WriterSystemTextJsonBasicUtf8UnescapedOverhead()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString(First, John, suppressEscaping: false);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        //[Benchmark]
+        public void WriterSystemTextJsonBasicUtf8()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString(FirNst, JohNn);
             json.WriteEndObject();
             json.Flush();
 

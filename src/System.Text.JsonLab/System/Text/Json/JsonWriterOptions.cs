@@ -6,10 +6,38 @@ namespace System.Text.JsonLab
 {
     public struct JsonWriterOptions
     {
-        public bool Indented { get; set; }
+        private int _optionsMask;
 
-        public bool SkipValidation { get; set; }
+        public bool Indented
+        {
+            get
+            {
+                return (_optionsMask & 1) != 0;
+            }
+            set
+            {
+                if (value)
+                    _optionsMask |= 1;
+                else
+                    _optionsMask &= ~1;
+            }
+        }
 
-        internal bool SlowPath => Indented || !SkipValidation;
+        public bool SkipValidation
+        {
+            get
+            {
+                return (_optionsMask & 2) != 0;
+            }
+            set
+            {
+                if (value)
+                    _optionsMask |= 2;
+                else
+                    _optionsMask &= ~2;
+            }
+        }
+
+        internal bool SlowPath => _optionsMask != 2; // Equivalent to: Indented || !SkipValidation;
     }
 }

@@ -9,19 +9,12 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriterHelpers
+    public static partial class Utf8JsonWriterHelpers
     {
         // TODO: Either implement the escaping helpers from scratch or leverage the upcoming System.Text.Encodings.Web.TextEncoder APIs
         public static OperationStatus EscapeString(string value, Span<byte> destination, out int consumed, out int bytesWritten)
         {
             throw new NotImplementedException();
-        }
-
-        private static int DivRem(int a, int b, out int result)
-        {
-            int div = a / b;
-            result = a - (div * b);
-            return div;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58,53 +51,6 @@ namespace System.Text.JsonLab
             buffer[0] = (char)('0' + value);
         }
 
-        internal static OperationStatus EscapeStringInternal(ReadOnlySpan<byte> value, Span<byte> destination, int indexOfFirstByteToEscape, out int consumed, out int bytesWritten)
-        {
-            Debug.Assert(indexOfFirstByteToEscape >= 0 && indexOfFirstByteToEscape < value.Length);
-
-            int bytesToCopy = Math.Min(indexOfFirstByteToEscape, destination.Length);
-            value.Slice(0, bytesToCopy).CopyTo(destination);
-            bytesWritten = indexOfFirstByteToEscape;
-            consumed = indexOfFirstByteToEscape;
-
-            while (consumed < value.Length)
-            {
-                byte val = value[consumed];
-                if (NeedsEscaping(val))
-                {
-                    if (destination.Length - bytesWritten < 6)
-                    {
-                        goto NotEnoughSpace;
-                    }
-
-                    destination[bytesWritten++] = (byte)'\\';
-                    destination[bytesWritten++] = (byte)'u';
-                    SequenceValidity status = Utf8Utility.PeekFirstSequence(value.Slice(consumed), out int numBytesConsumed, out UnicodeScalar scalarValue);
-                    if (status != SequenceValidity.WellFormed)
-                    {
-                        JsonThrowHelper.ThrowJsonWriterException("Invalid UTF-8 string.");
-                    }
-                    WriteDigits((uint)scalarValue.Value, destination.Slice(bytesWritten, 4));
-                    bytesWritten += 4;
-                    consumed += numBytesConsumed;
-                }
-                else
-                {
-                    if (destination.Length - bytesWritten < 1)
-                    {
-                        goto NotEnoughSpace;
-                    }
-                    destination[bytesWritten] = value[consumed];
-                    bytesWritten++;
-                    consumed++;
-                }
-            }
-            return OperationStatus.Done;
-
-        NotEnoughSpace:
-            return OperationStatus.DestinationTooSmall;
-        }
-
         internal static void EscapeStringInternal(ReadOnlySpan<byte> value, Span<byte> destination, int indexOfFirstByteToEscape, out int bytesWritten)
         {
             Debug.Assert(indexOfFirstByteToEscape >= 0 && indexOfFirstByteToEscape < value.Length);
@@ -136,22 +82,6 @@ namespace System.Text.JsonLab
                     consumed++;
                 }
             }
-        }
-
-        internal static ReadOnlySpan<char> GetEscapedSpan(ReadOnlySpan<char> value, int idx)
-        {
-            char[] array = new char[idx + 6 * (value.Length - idx)];
-            Span<char> span = array;
-            EscapeStringInternal(value, span, idx, out int bytesWritten);
-            return span.Slice(0, bytesWritten);
-        }
-
-        internal static ReadOnlySpan<byte> GetEscapedSpan(ReadOnlySpan<byte> value, int idx)
-        {
-            byte[] array = new byte[idx + 6 * (value.Length - idx)];
-            Span<byte> span = array;
-            EscapeStringInternal(value, span, idx, out int bytesWritten);
-            return span.Slice(0, bytesWritten);
         }
 
         internal static void EscapeStringInternal(ReadOnlySpan<char> value, Span<char> destination, int indexOfFirstByteToEscape, out int bytesWritten)
@@ -195,101 +125,46 @@ namespace System.Text.JsonLab
             }
         }
 
-        internal static OperationStatus EscapeStringInternal(ReadOnlySpan<char> value, Span<char> destination, int indexOfFirstByteToEscape, out int consumed, out int bytesWritten)
-        {
-            Debug.Assert(indexOfFirstByteToEscape >= 0 && indexOfFirstByteToEscape < value.Length);
-
-            int bytesToCopy = Math.Min(indexOfFirstByteToEscape, destination.Length);
-            value.Slice(0, bytesToCopy).CopyTo(destination);
-            bytesWritten = indexOfFirstByteToEscape;
-            consumed = indexOfFirstByteToEscape;
-
-            while (consumed < value.Length)
-            {
-                char val = value[consumed];
-                if (NeedsEscaping(val))
-                {
-                    if (destination.Length - bytesWritten < 6)
-                    {
-                        goto NotEnoughSpace;
-                    }
-
-                    destination[bytesWritten++] = '\\';
-                    destination[bytesWritten++] = 'u';
-
-                    int scalar = val;
-                    consumed++;
-                    if (InRange(scalar, 0xD800, 0xDFFF))
-                    {
-                        consumed++;
-                        if (value.Length <= consumed || scalar >= 0xDC00)
-                        {
-                            JsonThrowHelper.ThrowJsonWriterException("Invalid UTF-16 string ending in an invalid surrogate pair.");
-                        }
-                        int highSurrogate = (scalar - 0xD800) * 0x400;
-                        int lowSurrogate = value[consumed] - 0xDc00;
-                        scalar = highSurrogate + lowSurrogate;
-                    }
-                    WriteDigits((uint)scalar, destination.Slice(bytesWritten, 4));
-                    bytesWritten += 4;
-                }
-                else
-                {
-                    if (destination.Length - bytesWritten < 1)
-                    {
-                        goto NotEnoughSpace;
-                    }
-                    destination[bytesWritten] = value[consumed];
-                    bytesWritten++;
-                    consumed++;
-                }
-            }
-            return OperationStatus.Done;
-
-        NotEnoughSpace:
-            return OperationStatus.DestinationTooSmall;
-        }
-
         private static bool InRange(int ch, int start, int end)
         {
             return (uint)(ch - start) <= (uint)(end - start);
         }
 
-        internal static bool NeedsEscaping(ReadOnlySpan<byte> value, out int index)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int NeedsEscaping(ref ReadOnlySpan<byte> value)
         {
-            for (index = 0; index < value.Length; index++)
+            for (int index = 0; index < value.Length; index++)
             {
                 byte val = value[index];
                 if (NeedsEscaping(val))
                 {
-                    return true;
+                    return index;
                 }
             }
-
-            index = -1;
-            return false;
+            return -1;
         }
 
-        internal static bool NeedsEscaping(ReadOnlySpan<char> value, out int index)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int NeedsEscaping(ref ReadOnlySpan<char> value)
         {
-            for (index = 0; index < value.Length; index++)
+            for (int index = 0; index < value.Length; index++)
             {
                 char val = value[index];
                 if (NeedsEscaping(val))
                 {
-                    return true;
+                    return index;
                 }
             }
-
-            index = -1;
-            return false;
+            return -1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool NeedsEscaping(byte value)
         {
             return !InRange(value, ' ', '~') || JsonConstants.ForbiddenBytes.IndexOf(value) != -1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool NeedsEscaping(char value)
         {
             return !InRange(value, ' ', '~') || JsonConstants.ForbiddenChars.IndexOf(value) != -1;

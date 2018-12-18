@@ -54,6 +54,8 @@ namespace System.Text.JsonLab
             _bitStack = _bitStack,
         };
 
+        private static readonly JsonEscapingHelper s_singleton = JsonEscapingHelper.CreateNew();
+
         /// <summary>
         /// Constructs a JSON writer with a specified <paramref name="bufferWriter"/>.
         /// </summary>
@@ -648,6 +650,28 @@ namespace System.Text.JsonLab
                 byteBuffer[idx++] = JsonConstants.CarriageReturn;
 
             byteBuffer[idx++] = JsonConstants.LineFeed;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteNewLine(ref int idx)
+        {
+            // Write '\r\n' OR '\n', depending on OS
+            if (JsonWriterHelper.NewLineUtf8.Length == 2)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    AdvanceAndGrow(idx);
+                    idx = 0;
+                }
+                _buffer[idx++] = JsonConstants.CarriageReturn;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.LineFeed;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
