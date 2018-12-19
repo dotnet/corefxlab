@@ -1476,6 +1476,21 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void Insert_Succeeds_WhenThereAreCollisions()
+        {
+            OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
+            dictionary.Add(1, "1");
+            dictionary.Insert(0, 4, "4"); // should be in the same bucket
+            dictionary.Insert(0, 7, "7");
+            Assert.Equal("7", dictionary[index: 0]);
+            Assert.Equal("4", dictionary[index: 1]);
+            Assert.Equal("1", dictionary[index: 2]);
+            Assert.Equal("7", dictionary[key: 7]);
+            Assert.Equal("1", dictionary[key: 1]);
+            Assert.Equal("4", dictionary[key: 4]);
+        }
+
+        [Fact]
         public void OrderedDictionaryVersusDictionary_AllCollisions()
         {
             Random rand = new Random(333);

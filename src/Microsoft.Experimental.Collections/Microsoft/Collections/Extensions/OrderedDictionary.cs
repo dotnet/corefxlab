@@ -529,12 +529,12 @@ namespace Microsoft.Collections.Extensions
             RemoveEntryFromBucket(index);
 
             // Decrement the indices > index
+            Entry[] entries = _entries;
             for (int i = index + 1; i < count; ++i)
             {
+                entries[i - 1] = entries[i];
                 UpdateBucketIndex(i, -1);
             }
-            Entry[] entries = _entries;
-            Array.Copy(entries, index + 1, entries, index, count - index - 1);
             --_count;
             entries[Count] = default;
             ++_version;
@@ -822,11 +822,11 @@ namespace Microsoft.Collections.Extensions
 
             // Increment indices >= index;
             int actualIndex = index ?? count;
-            for (int i = actualIndex; i < count; ++i)
+            for (int i = count - 1; i >= actualIndex; --i)
             {
+                entries[i + 1] = entries[i];
                 UpdateBucketIndex(i, 1);
             }
-            Array.Copy(entries, actualIndex, entries, actualIndex + 1, count - actualIndex);
 
             Entry entry = new Entry { HashCode = hashCode, Key = key, Value = value };
             AddEntryToBucket(ref entry, actualIndex, _buckets);
