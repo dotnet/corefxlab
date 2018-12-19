@@ -10,7 +10,7 @@ namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2
     {
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<int> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<int> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -135,7 +135,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -259,7 +259,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -383,7 +383,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<ulong> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<ulong> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -507,7 +507,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<decimal> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<decimal> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -624,7 +624,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<double> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<double> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -741,7 +741,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<float> values, bool suppressEscaping = false)
+        public void WriteNumbers(ReadOnlySpan<byte> propertyName, ReadOnlySpan<float> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -858,7 +858,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<Guid> values, bool suppressEscaping = false)
+        public void WriteStrings(ReadOnlySpan<byte> propertyName, ReadOnlySpan<Guid> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -979,7 +979,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTime> values, bool suppressEscaping = false)
+        public void WriteStrings(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTime> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -1100,7 +1100,7 @@ namespace System.Text.JsonLab
             WriteEndFormatted(JsonConstants.CloseBracket);
         }
 
-        public void WriteArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTimeOffset> values, bool suppressEscaping = false)
+        public void WriteStrings(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTimeOffset> values, bool suppressEscaping = false)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
@@ -1227,6 +1227,56 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonWriterException(_tokenType);    //TODO: Add resource message
             }
+        }
+
+        public void WriteNumbers(ReadOnlySpan<int> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<long> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<uint> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<ulong> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<decimal> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<float> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteNumbers(ReadOnlySpan<double> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteStrings(ReadOnlySpan<Guid> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteStrings(ReadOnlySpan<DateTime> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteStrings(ReadOnlySpan<DateTimeOffset> values)
+        {
+            throw new NotImplementedException();
         }
     }
 }

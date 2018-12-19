@@ -139,7 +139,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
-            json.WriteArray(Encoding.UTF8.GetBytes("numbers"), dataArray, suppressEscaping: true);
+            json.WriteNumbers(Encoding.UTF8.GetBytes("numbers"), dataArray, suppressEscaping: true);
             json.WriteEndObject();
             json.Flush();
 
@@ -471,7 +471,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
-            json.WriteArray(Message, _longs, suppressEscaping: true);
+            json.WriteNumbers(Message, _longs, suppressEscaping: true);
             json.WriteEndObject();
             json.Flush();
         }
