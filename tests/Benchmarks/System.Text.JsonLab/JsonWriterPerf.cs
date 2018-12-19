@@ -294,7 +294,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteEndObject();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterSystemTextJsonBasicUtf8Unescaped()
         {
             _arrayFormatterWrapper.Clear();

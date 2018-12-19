@@ -415,7 +415,7 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted);
             var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
                 var jsonUtf8 = new Utf8JsonWriter2(output, state);
@@ -425,11 +425,25 @@ namespace System.Text.JsonLab.Tests
                 switch (i)
                 {
                     case 0:
-                        jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!");
+                        jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!", suppressEscaping: false);
                         break;
                     case 1:
-                        expectedStr = "{\"mess\\u0010age\":\"Hello, \\u0010World!\"}";
-                        jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"));
+                        expectedStr = formatted ?
+                            "{\r\n  \"mess\\u0010age\": \"Hello, \\u0010World!\"\r\n}" :
+                            "{\"mess\\u0010age\":\"Hello, \\u0010World!\"}";
+                        jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: false);
+                        break;
+                    case 2:
+                        expectedStr = formatted ?
+                            "{\r\n  \"mess\nage\": \"Hello, \\nWorld!\"\r\n}" :
+                            "{\"mess\nage\":\"Hello, \\nWorld!\"}";
+                        jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!", suppressEscaping: true);
+                        break;
+                    case 3:
+                        expectedStr = formatted ?
+                            "{\r\n  \"mess\nage\": \"Hello, \\u0010World!\"\r\n}" :
+                            "{\"mess\nage\":\"Hello, \\u0010World!\"}";
+                        jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: true);
                         break;
                 }
 

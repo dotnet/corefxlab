@@ -1777,7 +1777,6 @@ namespace System.Text.JsonLab
             _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
-            return;
         }
 
         private void WriteStringIndented(ref ReadOnlySpan<byte> escapedPropertyName, ref ReadOnlySpan<byte> escapedValue)
