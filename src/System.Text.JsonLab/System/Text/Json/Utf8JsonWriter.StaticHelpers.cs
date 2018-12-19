@@ -51,7 +51,7 @@ namespace System.Text.JsonLab
             buffer[0] = (char)('0' + value);
         }
 
-        internal static void EscapeStringInternal(ReadOnlySpan<byte> value, Span<byte> destination, int indexOfFirstByteToEscape, out int bytesWritten)
+        internal static void EscapeStringInternal(ref ReadOnlySpan<byte> value, ref Span<byte> destination, int indexOfFirstByteToEscape, out int bytesWritten)
         {
             Debug.Assert(indexOfFirstByteToEscape >= 0 && indexOfFirstByteToEscape < value.Length);
 
@@ -84,12 +84,12 @@ namespace System.Text.JsonLab
             }
         }
 
-        internal static void EscapeStringInternal(ReadOnlySpan<char> value, Span<char> destination, int indexOfFirstByteToEscape, out int bytesWritten)
+        internal static void EscapeStringInternal(ref ReadOnlySpan<char> value, ref Span<char> destination, int indexOfFirstByteToEscape, out int charsWritten)
         {
             Debug.Assert(indexOfFirstByteToEscape >= 0 && indexOfFirstByteToEscape < value.Length);
 
             value.Slice(0, indexOfFirstByteToEscape).CopyTo(destination);
-            bytesWritten = indexOfFirstByteToEscape;
+            charsWritten = indexOfFirstByteToEscape;
             int consumed = indexOfFirstByteToEscape;
 
             while (consumed < value.Length)
@@ -97,8 +97,8 @@ namespace System.Text.JsonLab
                 char val = value[consumed];
                 if (NeedsEscaping(val))
                 {
-                    destination[bytesWritten++] = '\\';
-                    destination[bytesWritten++] = 'u';
+                    destination[charsWritten++] = '\\';
+                    destination[charsWritten++] = 'u';
 
                     int scalar = val;
                     consumed++;
@@ -113,13 +113,13 @@ namespace System.Text.JsonLab
                         int lowSurrogate = value[consumed] - 0xDc00;
                         scalar = highSurrogate + lowSurrogate;
                     }
-                    WriteDigits((uint)scalar, destination.Slice(bytesWritten, 4));
-                    bytesWritten += 4;
+                    WriteDigits((uint)scalar, destination.Slice(charsWritten, 4));
+                    charsWritten += 4;
                 }
                 else
                 {
-                    destination[bytesWritten] = value[consumed];
-                    bytesWritten++;
+                    destination[charsWritten] = value[consumed];
+                    charsWritten++;
                     consumed++;
                 }
             }

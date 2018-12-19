@@ -163,16 +163,28 @@ namespace System.Text.JsonLab
 
         public void WriteNumberValue(long value)
         {
-            if (_writerOptions.SlowPath)
-                WriteValueSlow(value);
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingValue();
+                }
+                WriteValueIndented(value);
+            }
             else
-                WriteValueFast_withReturn(value);
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingValue();
+                }
+                WriteValueMinimized(value);
+            }
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Number;
         }
 
-        private void WriteValueFast_withReturn(long value)
+        private void WriteValueMinimized(long value)
         {
             int idx = 0;
             if (_currentDepth < 0)
@@ -198,37 +210,40 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteNumberValue_withMethod(int value)
-            => WriteNumberValue_withMethod((long)value);
-
-        public void WriteNumberValue_withMethod(long value)
-        {
-            if (_writerOptions.SlowPath)
-                WriteValueSlow(value);
-            else
-                WriteValueFast_withMethod(value);
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
-        }
-
-        private void WriteValueFast_withMethod(long value)
+        private void WriteValueIndented(long value)
         {
             int idx = 0;
             if (_currentDepth < 0)
             {
-                if (_buffer.Length <= 0)
+                while (_buffer.Length <= idx)
                 {
                     GrowAndEnsure();
                 }
                 _buffer[idx++] = JsonConstants.ListSeperator;
             }
 
+            if (_tokenType != JsonTokenType.None)
+                WriteNewLine(ref idx);
+
+            int indent = Indentation;
+            while (true)
+            {
+                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int written);
+                idx += written;
+                if (result)
+                {
+                    break;
+                }
+                indent -= written;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
             int bytesWritten;
             // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
             // See: https://github.com/dotnet/corefx/issues/25425
             // Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten);
-            while (!JsonWriterHelper.TryFormatInt64Default_withMethod(value, _buffer.Slice(idx), out bytesWritten))
+            while (!JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out bytesWritten))
             {
                 AdvanceAndGrow(idx, JsonConstants.MaximumInt64Length);
                 idx = 0;
@@ -236,26 +251,6 @@ namespace System.Text.JsonLab
             idx += bytesWritten;
 
             Advance(idx);
-        }
-
-        private void WriteValueSlow(long value)
-        {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingValue();
-                }
-                WriteValueFormatted(value);
-            }
-            else
-            {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingValue();
-                WriteValueFast_withReturn(value);
-            }
         }
 
         private void WriteValueFormatted(long value)

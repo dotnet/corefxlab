@@ -150,6 +150,14 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
         {
             // We can mutate the 'value' parameter since it's a copy-by-value local.
@@ -245,189 +253,14 @@ namespace System.Text.JsonLab
 
         // Borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Buffers/Text/Utf8Formatter/Utf8Formatter.Integer.Signed.Default.cs#L16
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryFormatInt64Default(long value, Span<byte> destination, out int bytesWritten, StandardFormat format = default)
-        {
-            if (!format.IsDefault)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            
+        public static bool TryFormatInt64Default(long value, Span<byte> destination, out int bytesWritten)
+        {            
             if ((ulong)value < 10)
             {
                 return TryFormatUInt32SingleDigit((uint)value, destination, out bytesWritten);
             }
 
             return TryFormatInt64MultipleDigits(value, destination, out bytesWritten);
-        }
-
-        // Borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Buffers/Text/Utf8Formatter/Utf8Formatter.Integer.Signed.Default.cs#L16
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryFormatInt64Default_withMethod(long value, Span<byte> destination, out int bytesWritten, StandardFormat format = default)
-        {
-            if (!format.IsDefault)
-            {
-                return SlowPath(value, destination, out bytesWritten, format);
-            }
-
-            if ((ulong)value < 10)
-            {
-                return TryFormatUInt32SingleDigit((uint)value, destination, out bytesWritten);
-            }
-
-            return TryFormatInt64MultipleDigits(value, destination, out bytesWritten);
-        }
-
-        public static bool SlowPath(long value, Span<byte> destination, out int bytesWritten, StandardFormat format = default)
-        {
-            switch (format.Symbol)
-            {
-                case 'G':
-                case 'g':
-                    if (format.HasPrecision)
-                        throw new NotSupportedException(); // With a precision, 'G' can produce exponential format, even for integers.
-                    return TryFormatInt64D(value, format.Precision, destination, out bytesWritten);
-
-                case 'd':
-                case 'D':
-                    return TryFormatInt64D(value, format.Precision, destination, out bytesWritten);
-
-                case 'n':
-                case 'N':
-                    return TryFormatInt64N(value, format.Precision, destination, out bytesWritten);
-
-                case 'x':
-                    return TryFormatUInt64X((ulong)value & 0xffffffffffffffff, format.Precision, true, destination, out bytesWritten);
-
-                case 'X':
-                    return TryFormatUInt64X((ulong)value & 0xffffffffffffffff, format.Precision, false, destination, out bytesWritten);
-
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryFormatInt64D(long value, byte precision, Span<byte> destination, out int bytesWritten)
-        {
-            bool insertNegationSign = false;
-            if (value < 0)
-            {
-                insertNegationSign = true;
-                value = -value;
-            }
-
-            return TryFormatUInt64D((ulong)value, precision, destination, insertNegationSign, out bytesWritten);
-        }
-
-        private static bool TryFormatUInt64X(ulong value, byte precision, bool useLower, Span<byte> destination, out int bytesWritten)
-        {
-            int actualDigitCount = CountDigits(value);
-            int computedOutputLength = (precision == StandardFormat.NoPrecision)
-                ? actualDigitCount
-                : Math.Max(precision, actualDigitCount);
-
-            if (destination.Length < computedOutputLength)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            bytesWritten = computedOutputLength;
-            string hexTable = ""; 
-
-            // Writing the output backward in this manner allows the JIT to elide
-            // bounds checking on the output buffer. The JIT won't elide the bounds
-            // check on the hex table lookup, but we can live with that for now.
-
-            // It doesn't quite make sense to use the fast hex conversion functionality
-            // for this method since that routine works on bytes, and here we're working
-            // directly with nibbles. There may be opportunity for improvement by special-
-            // casing output lengths of 2, 4, 8, and 16 and running them down optimized
-            // code paths.
-
-            while ((uint)(--computedOutputLength) < (uint)destination.Length)
-            {
-                destination[computedOutputLength] = (byte)hexTable[(int)value & 0xf];
-                value >>= 4;
-            }
-            return true;
-        }
-
-        private static bool TryFormatUInt64D(ulong value, byte precision, Span<byte> destination, bool insertNegationSign, out int bytesWritten)
-        {
-            // Calculate the actual digit count and the number of padding zeroes requested.
-            // From all of this we can get the required buffer length.
-
-            int digitCount = CountDigits(value);
-            int leadingZeroCount = ((precision == StandardFormat.NoPrecision) ? 0 : (int)precision) - digitCount;
-            if (leadingZeroCount < 0)
-            {
-                leadingZeroCount = 0;
-            }
-
-            int requiredBufferLength = digitCount + leadingZeroCount;
-
-            if (insertNegationSign)
-            {
-                requiredBufferLength++;
-            }
-
-            if (requiredBufferLength > destination.Length)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            bytesWritten = requiredBufferLength;
-            WriteDigits(value, destination.Slice(leadingZeroCount, digitCount));
-
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryFormatInt64N(long value, byte precision, Span<byte> destination, out int bytesWritten)
-        {
-            bool insertNegationSign = false;
-            if (value < 0)
-            {
-                insertNegationSign = true;
-                value = -value;
-            }
-
-            return TryFormatUInt64N((ulong)value, precision, destination, insertNegationSign, out bytesWritten);
-        }
-
-        private static bool TryFormatUInt64N(ulong value, byte precision, Span<byte> destination, bool insertNegationSign, out int bytesWritten)
-        {
-            // Calculate the actual digit count, number of group separators required, and the
-            // number of trailing zeros requested. From all of this we can get the required
-            // buffer length.
-
-            int digitCount = CountDigits(value);
-            int commaCount = (digitCount - 1) / 3;
-            int trailingZeroCount = (precision == StandardFormat.NoPrecision) ? 2 /* default for 'N' */ : precision;
-
-            int requiredBufferLength = digitCount + commaCount;
-            if (trailingZeroCount > 0)
-            {
-                requiredBufferLength += trailingZeroCount + 1;
-            }
-
-            if (insertNegationSign)
-            {
-                requiredBufferLength++;
-            }
-
-            if (requiredBufferLength > destination.Length)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            bytesWritten = requiredBufferLength;
-
-            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

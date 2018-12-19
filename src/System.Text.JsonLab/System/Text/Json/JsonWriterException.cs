@@ -4,6 +4,7 @@
 
 namespace System.Text.JsonLab
 {
+    //TODO: Mark as serializable
     public sealed class JsonWriterException : Exception
     {
         public JsonWriterException(string message) : base(message)

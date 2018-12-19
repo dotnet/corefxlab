@@ -87,11 +87,11 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast_withReturn(values[0]);
+                WriteValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast_withReturn(values[i]);
+                    WriteValueMinimized(values[i]);
                 }
             }
             WriteEndFast(JsonConstants.CloseBracket);
@@ -211,11 +211,11 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast_withReturn(values[0]);
+                WriteValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast_withReturn(values[i]);
+                    WriteValueMinimized(values[i]);
                 }
             }
             WriteEndFast(JsonConstants.CloseBracket);

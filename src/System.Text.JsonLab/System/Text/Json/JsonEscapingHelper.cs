@@ -36,7 +36,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int FindFirstCharacterToEncode(ReadOnlySpan<char> text)
+        public int FindFirstCharacterToEncode(ref ReadOnlySpan<char> text)
         {
             for (int i = 0; i < text.Length; i++)
             {
@@ -56,32 +56,7 @@ namespace System.Text.JsonLab
             return ((_allowedCharacters[index] >> offset) & 0x1U) != 0;
         }
 
-        public string Encode(string value)
-        {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            ReadOnlySpan<char> valueSpan = value.AsSpan();
-
-            int firstCharacterToEncode = FindFirstCharacterToEncode(valueSpan);
-
-            if (firstCharacterToEncode == -1)
-                return value;
-
-            int bufferSize = MaxOutputCharactersPerInputCharacter * value.Length;
-
-            char[] array = ArrayPool<char>.Shared.Rent(bufferSize);
-            Span<char> wholebuffer = array;
-            int totalWritten = EncodeIntoBuffer(valueSpan, wholebuffer, firstCharacterToEncode);
-
-            string str = wholebuffer.Slice(0, totalWritten).ToString();
-
-            ArrayPool<char>.Shared.Return(array);
-
-            return str;
-        }
-
-        public int EncodeIntoBuffer(ReadOnlySpan<char> value, Span<char> destination, int firstCharacterToEncode)
+        public int EncodeIntoBuffer(ref ReadOnlySpan<char> value, ref Span<char> destination, int firstCharacterToEncode)
         {
             Debug.Assert(value.Length > 0);
 
