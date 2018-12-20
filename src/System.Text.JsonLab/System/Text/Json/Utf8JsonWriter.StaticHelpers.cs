@@ -110,8 +110,20 @@ namespace System.Text.JsonLab
                     break;
                 default:
                     destination[written++] = (byte)'u';
-                    WriteDigits((uint)scalar, destination.Slice(written, 4));
-                    written += 4;
+                    if (scalar < 0x10000)
+                    {
+                        WriteHex(scalar, ref destination, ref written);
+                    }
+                    else
+                    {
+                        int quotient = Math.DivRem(scalar - 0x10000, 0x400, out int remainder);
+                        int firstChar = quotient + 0xD800;
+                        int nextChar = remainder + 0xDC00;
+                        WriteHex(firstChar, ref destination, ref written);
+                        destination[written++] = (byte)'\\';
+                        destination[written++] = (byte)'u';
+                        WriteHex(nextChar, ref destination, ref written);
+                    }
                     break;
             }
             return numBytesConsumed;
@@ -130,37 +142,32 @@ namespace System.Text.JsonLab
                 char val = value[consumed];
                 if (NeedsEscaping(val))
                 {
-                    consumed += EscapeNextChars(ref value, val, ref destination, ref written);
+                    EscapeNextChars(ref value, val, ref destination, ref consumed, ref written);
                 }
                 else
                 {
-                    destination[written] = val;
-                    written++;
-                    consumed++;
+                    destination[written++] = val;
                 }
+                consumed++;
             }
         }
 
-        private static int EscapeNextChars(ref ReadOnlySpan<char> value, int firstChar, ref Span<char> destination, ref int written)
+        private static void EscapeNextChars(ref ReadOnlySpan<char> value, int firstChar, ref Span<char> destination, ref int consumed, ref int written)
         {
-            int consumed = 1;
+            int nextChar = -1;
             if (InRange(firstChar, 0xD800, 0xDFFF))
             {
+                consumed++;
                 if (value.Length <= consumed || firstChar >= 0xDC00)
                 {
                     JsonThrowHelper.ThrowJsonWriterException("Invalid UTF-16 string ending in an invalid surrogate pair.");
                 }
 
-                int nextChar = value[consumed];
+                nextChar = value[consumed];
                 if (!InRange(nextChar, 0xDC00, 0xDFFF))
                 {
                     JsonThrowHelper.ThrowJsonWriterException("Invalid UTF-16 string ending in an invalid surrogate pair.");
                 }
-
-                int highSurrogate = (firstChar - 0xD800) * 0x400;
-                int lowSurrogate = nextChar - 0xDC00;
-                firstChar = highSurrogate + lowSurrogate;
-                consumed++;
             }
 
             destination[written++] = '\\';
@@ -189,11 +196,15 @@ namespace System.Text.JsonLab
                     break;
                 default:
                     destination[written++] = 'u';
-                    WriteDigits((uint)firstChar, destination.Slice(written, 4));
-                    written += 4;
+                    WriteHex(firstChar, ref destination, ref written);
+                    if (nextChar != -1)
+                    {
+                        destination[written++] = '\\';
+                        destination[written++] = 'u';
+                        WriteHex(nextChar, ref destination, ref written);
+                    }
                     break;
             }
-            return consumed;
         }
 
         // Only allow ASCII characters between ' ' (0x20) and '~' (0x7E), inclusively,
@@ -231,38 +242,31 @@ namespace System.Text.JsonLab
             return (uint)(ch - start) <= (uint)(end - start);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteDigits(uint value, Span<byte> buffer)
+        private static void WriteHex(int value, ref Span<byte> destination, ref int written)
         {
-            // We can mutate the 'value' parameter since it's a copy-by-value local.
-            // It'll be used to represent the value left over after each division by 10.
-
-            for (int i = buffer.Length - 1; i >= 1; i--)
-            {
-                uint temp = '0' + value;
-                value /= 10;
-                buffer[i] = (byte)(temp - (value * 10));
-            }
-
-            Debug.Assert(value < 10);
-            buffer[0] = (byte)('0' + value);
+            destination[written++] = Int32LsbToHexDigit(value >> 12);
+            destination[written++] = Int32LsbToHexDigit((int)((value >> 8) & 0xFU));
+            destination[written++] = Int32LsbToHexDigit((int)((value >> 4) & 0xFU));
+            destination[written++] = Int32LsbToHexDigit((int)(value & 0xFU));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteDigits(uint value, Span<char> buffer)
+        private static void WriteHex(int value, ref Span<char> destination, ref int written)
         {
-            // We can mutate the 'value' parameter since it's a copy-by-value local.
-            // It'll be used to represent the value left over after each division by 10.
-
-            for (int i = buffer.Length - 1; i >= 1; i--)
-            {
-                uint temp = '0' + value;
-                value /= 10;
-                buffer[i] = (char)(temp - (value * 10));
-            }
-
-            Debug.Assert(value < 10);
-            buffer[0] = (char)('0' + value);
+            destination[written++] = (char)Int32LsbToHexDigit(value >> 12);
+            destination[written++] = (char)Int32LsbToHexDigit((int)((value >> 8) & 0xFU));
+            destination[written++] = (char)Int32LsbToHexDigit((int)((value >> 4) & 0xFU));
+            destination[written++] = (char)Int32LsbToHexDigit((int)(value & 0xFU));
         }
+
+        /// <summary>
+        /// Converts a number 0 - 15 to its associated hex character '0' - 'f' as byte.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static byte Int32LsbToHexDigit(int value)
+        {
+            Debug.Assert(value < 16);
+            return (byte)((value < 10) ? ('0' + value) : ('a' + (value - 10)));
+        }
+
     }
 }

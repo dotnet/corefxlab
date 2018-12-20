@@ -15,7 +15,7 @@ namespace System.Text.JsonLab.Benchmarks
     //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
     [MemoryDiagnoser]
     [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
-    [SimpleJob(warmupCount: 3, targetCount: 5)]
+    [SimpleJob(warmupCount: 5, targetCount: 10)]
     //[Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
     {
