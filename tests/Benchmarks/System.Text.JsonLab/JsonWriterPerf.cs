@@ -14,8 +14,8 @@ namespace System.Text.JsonLab.Benchmarks
     //[SimpleJob(invocationCount: 2_097_152, warmupCount: 5, targetCount: 10)]
     //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
     [MemoryDiagnoser]
-    //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
-    [SimpleJob(warmupCount: 5, targetCount: 10)]
+    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    [SimpleJob(warmupCount: 3, targetCount: 5)]
     //[Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
     {
@@ -101,7 +101,7 @@ namespace System.Text.JsonLab.Benchmarks
                 dataArray[i] = 12345;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonValues()
         {
             _arrayFormatterWrapper.Clear();
@@ -129,7 +129,7 @@ namespace System.Text.JsonLab.Benchmarks
             //}
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonArrayValues()
         {
             _arrayFormatterWrapper.Clear();
@@ -212,7 +212,23 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        //[Benchmark]
+        [Benchmark]
+        public void WritePropertyValueEscapingRequiredLarger()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString("fir\nstaaaa\naaaa", "Joh\nnaaaa\naaaa");
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
         public void WritePropertyValueEscapingRequired()
         {
             _arrayFormatterWrapper.Clear();

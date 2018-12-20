@@ -54,8 +54,6 @@ namespace System.Text.JsonLab
             _bitStack = _bitStack,
         };
 
-        private static readonly JsonEscapingHelper s_singleton = JsonEscapingHelper.CreateNew();
-
         /// <summary>
         /// Constructs a JSON writer with a specified <paramref name="bufferWriter"/>.
         /// </summary>

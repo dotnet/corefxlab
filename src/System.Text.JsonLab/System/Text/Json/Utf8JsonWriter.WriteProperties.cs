@@ -1328,7 +1328,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteStringSuppressTrue(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> value)
         {
-            int valueIdx = s_singleton.FindFirstCharacterToEncode(ref value);
+            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(value);
             if (valueIdx != -1)
             {
                 WriteStringEscapeValueOnly(ref escapedPropertyName, ref value, valueIdx);
@@ -1360,7 +1360,7 @@ namespace System.Text.JsonLab
 
             char[] valueArray = ArrayPool<char>.Shared.Rent(firstEscapeIndex + 6 * (value.Length - firstEscapeIndex));
             Span<char> span = valueArray;
-            int charsWritten = s_singleton.EncodeIntoBuffer(ref value, ref span, firstEscapeIndex);
+            Utf8JsonWriterHelpers.EscapeString(ref value, ref span, firstEscapeIndex, out int charsWritten);
             value = span.Slice(0, charsWritten);
 
             if (_writerOptions.Indented)
@@ -1385,8 +1385,8 @@ namespace System.Text.JsonLab
 
         private void WriteStringSuppressFalse(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
         {
-            int valueIdx = s_singleton.FindFirstCharacterToEncode(ref value);
-            int propertyIdx = s_singleton.FindFirstCharacterToEncode(ref propertyName);
+            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(value);
+            int propertyIdx = Utf8JsonWriterHelpers.NeedsEscaping(propertyName);
 
             Debug.Assert(valueIdx >= -1 && valueIdx < int.MaxValue / 2);
             Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
@@ -1427,17 +1427,45 @@ namespace System.Text.JsonLab
 
             if (firstEscapeIndexVal != -1)
             {
-                valueArray = ArrayPool<char>.Shared.Rent(firstEscapeIndexVal + 6 * (value.Length - firstEscapeIndexVal));
-                Span<char> span = valueArray;
-                int charsWritten = s_singleton.EncodeIntoBuffer(ref value, ref span, firstEscapeIndexVal);
+                int length = firstEscapeIndexVal + 6 * (value.Length - firstEscapeIndexVal);
+                Span<char> span;
+                if (length > 256)
+                {
+                    valueArray = ArrayPool<char>.Shared.Rent(length);
+                    span = valueArray;
+                }
+                else
+                {
+                    // Cannot create a span directly since the span gets exposed outside this method.
+                    unsafe
+                    {
+                        char* ptr = stackalloc char[length];
+                        span = new Span<char>(ptr, length);
+                    }
+                }
+                Utf8JsonWriterHelpers.EscapeString(ref value, ref span, firstEscapeIndexVal, out int charsWritten);
                 value = span.Slice(0, charsWritten);
             }
 
             if (firstEscapeIndexProp != -1)
             {
-                propertyArray = ArrayPool<char>.Shared.Rent(firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp));
-                Span<char> span = propertyArray;
-                int charsWritten = s_singleton.EncodeIntoBuffer(ref propertyName, ref span, firstEscapeIndexProp);
+                int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
+                Span<char> span;
+                if (length > 256)
+                {
+                    propertyArray = ArrayPool<char>.Shared.Rent(length);
+                    span = propertyArray;
+                }
+                else
+                {
+                    // Cannot create a span directly since the span gets exposed outside this method.
+                    unsafe
+                    {
+                        char* ptr = stackalloc char[length];
+                        span = new Span<char>(ptr, length);
+                    }
+                }
+                Utf8JsonWriterHelpers.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int charsWritten);
                 propertyName = span.Slice(0, charsWritten);
             }
 
@@ -1458,10 +1486,10 @@ namespace System.Text.JsonLab
                 WriteStringMinimized(ref propertyName, ref value);
             }
 
-            if (firstEscapeIndexVal != -1)
+            if (valueArray != null)
                 ArrayPool<char>.Shared.Return(valueArray);
 
-            if (firstEscapeIndexProp != -1)
+            if (propertyArray != null)
                 ArrayPool<char>.Shared.Return(propertyArray);
         }
 
@@ -1879,7 +1907,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteStringSuppressTrue(ref ReadOnlySpan<byte> escapedPropertyName, ref ReadOnlySpan<byte> value)
         {
-            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(ref value);
+            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(value);
             if (valueIdx != -1)
             {
                 WriteStringEscapeValueOnly(ref escapedPropertyName, ref value, valueIdx);
@@ -1911,7 +1939,7 @@ namespace System.Text.JsonLab
 
             byte[] valueArray = ArrayPool<byte>.Shared.Rent(firstEscapeIndex + 6 * (value.Length - firstEscapeIndex));
             Span<byte> span = valueArray;
-            Utf8JsonWriterHelpers.EscapeStringInternal(ref value, ref span, firstEscapeIndex, out int bytesWritten);
+            Utf8JsonWriterHelpers.EscapeString(ref value, ref span, firstEscapeIndex, out int bytesWritten);
             value = span.Slice(0, bytesWritten);
 
             if (_writerOptions.Indented)
@@ -1936,8 +1964,8 @@ namespace System.Text.JsonLab
 
         private void WriteStringSuppressFalse(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
         {
-            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(ref value);
-            int propertyIdx = Utf8JsonWriterHelpers.NeedsEscaping(ref propertyName);
+            int valueIdx = Utf8JsonWriterHelpers.NeedsEscaping(value);
+            int propertyIdx = Utf8JsonWriterHelpers.NeedsEscaping(propertyName);
 
             Debug.Assert(valueIdx >= -1 && valueIdx < int.MaxValue / 2);
             Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
@@ -1978,17 +2006,46 @@ namespace System.Text.JsonLab
 
             if (firstEscapeIndexVal != -1)
             {
-                valueArray = ArrayPool<byte>.Shared.Rent(firstEscapeIndexVal + 6 * (value.Length - firstEscapeIndexVal));
-                Span<byte> span = valueArray;
-                Utf8JsonWriterHelpers.EscapeStringInternal(ref value, ref span, firstEscapeIndexVal, out int bytesWritten);
+                int length = firstEscapeIndexVal + 6 * (value.Length - firstEscapeIndexVal);
+
+                Span<byte> span;
+                if (length > 256)
+                {
+                    valueArray = ArrayPool<byte>.Shared.Rent(length);
+                    span = valueArray;
+                }
+                else
+                {
+                    // Cannot create a span directly since the span gets exposed outside this method.
+                    unsafe
+                    {
+                        byte* ptr = stackalloc byte[length];
+                        span = new Span<byte>(ptr, length);
+                    }
+                }
+                Utf8JsonWriterHelpers.EscapeString(ref value, ref span, firstEscapeIndexVal, out int bytesWritten);
                 value = span.Slice(0, bytesWritten);
             }
 
             if (firstEscapeIndexProp != -1)
             {
-                propertyArray = ArrayPool<byte>.Shared.Rent(firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp));
-                Span<byte> span = propertyArray;
-                Utf8JsonWriterHelpers.EscapeStringInternal(ref propertyName, ref span, firstEscapeIndexProp, out int bytesWritten);
+                int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
+                Span<byte> span;
+                if (length > 256)
+                {
+                    propertyArray = ArrayPool<byte>.Shared.Rent(length);
+                    span = propertyArray;
+                }
+                else
+                {
+                    // Cannot create a span directly since the span gets exposed outside this method.
+                    unsafe
+                    {
+                        byte* ptr = stackalloc byte[length];
+                        span = new Span<byte>(ptr, length);
+                    }
+                }
+                Utf8JsonWriterHelpers.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int bytesWritten);
                 propertyName = span.Slice(0, bytesWritten);
             }
 
@@ -2009,10 +2066,10 @@ namespace System.Text.JsonLab
                 WriteStringMinimized(ref propertyName, ref value);
             }
 
-            if (firstEscapeIndexVal != -1)
+            if (valueArray != null)
                 ArrayPool<byte>.Shared.Return(valueArray);
 
-            if (firstEscapeIndexProp != -1)
+            if (propertyArray != null)
                 ArrayPool<byte>.Shared.Return(propertyArray);
         }
 

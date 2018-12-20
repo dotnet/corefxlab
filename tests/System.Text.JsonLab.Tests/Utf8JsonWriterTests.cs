@@ -428,21 +428,14 @@ namespace System.Text.JsonLab.Tests
                         jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!", suppressEscaping: false);
                         break;
                     case 1:
-                        expectedStr = formatted ?
-                            "{\r\n  \"mess\\u0010age\": \"Hello, \\u0010World!\"\r\n}" :
-                            "{\"mess\\u0010age\":\"Hello, \\u0010World!\"}";
                         jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: false);
                         break;
                     case 2:
-                        expectedStr = formatted ?
-                            "{\r\n  \"mess\nage\": \"Hello, \\nWorld!\"\r\n}" :
-                            "{\"mess\nage\":\"Hello, \\nWorld!\"}";
+                        expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted, escape: false);
                         jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!", suppressEscaping: true);
                         break;
                     case 3:
-                        expectedStr = formatted ?
-                            "{\r\n  \"mess\nage\": \"Hello, \\u0010World!\"\r\n}" :
-                            "{\"mess\nage\":\"Hello, \\u0010World!\"}";
+                        expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted, escape: false);
                         jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: true);
                         break;
                 }
@@ -524,7 +517,7 @@ namespace System.Text.JsonLab.Tests
                 Assert.True(false, "Expected JsonWriterException to be thrown when user passes invalid UTF-8.");
         }
 
-        private static string GetHelloWorldEscapedExpectedString(bool prettyPrint)
+        private static string GetHelloWorldEscapedExpectedString(bool prettyPrint, bool escape = true)
         {
             MemoryStream ms = new MemoryStream();
             TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
@@ -535,7 +528,7 @@ namespace System.Text.JsonLab.Tests
             };
 
             json.WriteStartObject();
-            json.WritePropertyName("mess\nage");
+            json.WritePropertyName("mess\nage", escape);
             json.WriteValue("Hello, \nWorld!");
             json.WriteEnd();
 
