@@ -285,9 +285,6 @@ namespace System.Text.JsonLab.Tests
                 Assert.True(false, "Expected JsonWriterException to be thrown when validation is enabled.");
         }
 
-        private static readonly byte[] First = Encoding.UTF8.GetBytes("first");
-        private static readonly byte[] John = Encoding.UTF8.GetBytes("John");
-
         [Theory]
         [InlineData(true, true)]
         [InlineData(true, false)]
@@ -295,18 +292,6 @@ namespace System.Text.JsonLab.Tests
         [InlineData(false, false)]
         public void WriteSingleValueWithOptions(bool formatted, bool skipValidation)
         {
-            var _arrayFormatterWrapper = new ArrayFormatterWrapper(10000, SymbolTable.InvariantUtf8);
-
-            var state1 = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
-
-            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state1);
-
-            json.WriteStartObject();
-            for (int i = 0; i < 100; i++)
-                json.WriteString(First, John, suppressEscaping: true);
-            json.WriteEndObject();
-            json.Flush();
-
             string expectedStr = "123456789012345";
 
             var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
@@ -412,7 +397,8 @@ namespace System.Text.JsonLab.Tests
         [InlineData(false, false)]
         public void WriteHelloWorldEscapedWithOptions(bool formatted, bool skipValidation)
         {
-            string expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted);
+            string expectedStr = GetEscapedExpectedString(prettyPrint: formatted, "mess\nage", "Hello, \nWorld!", StringEscapeHandling.Default);
+
             var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
 
             for (int i = 0; i < 4; i++)
@@ -431,11 +417,11 @@ namespace System.Text.JsonLab.Tests
                         jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: false);
                         break;
                     case 2:
-                        expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted, escape: false);
+                        expectedStr = GetEscapedExpectedString(prettyPrint: formatted, "mess\nage", "Hello, \nWorld!", StringEscapeHandling.Default, escape: false);
                         jsonUtf8.WriteString("mess\nage", "Hello, \nWorld!", suppressEscaping: true);
                         break;
                     case 3:
-                        expectedStr = GetHelloWorldEscapedExpectedString(prettyPrint: formatted, escape: false);
+                        expectedStr = GetEscapedExpectedString(prettyPrint: formatted, "mess\nage", "Hello, \nWorld!", StringEscapeHandling.Default, escape: false);
                         jsonUtf8.WriteString(Encoding.UTF8.GetBytes("mess\nage"), Encoding.UTF8.GetBytes("Hello, \nWorld!"), suppressEscaping: true);
                         break;
                 }
@@ -689,47 +675,6 @@ namespace System.Text.JsonLab.Tests
                 Assert.True(false, "Expected JsonWriterException to be thrown when user passes invalid UTF-8.");
         }
 
-        private static string GetHelloWorldEscapedExpectedString(bool prettyPrint, bool escape = true)
-        {
-            MemoryStream ms = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
-
-            var json = new JsonTextWriter(streamWriter)
-            {
-                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
-            };
-
-            json.WriteStartObject();
-            json.WritePropertyName("mess\nage", escape);
-            json.WriteValue("Hello, \nWorld!");
-            json.WriteEnd();
-
-            json.Flush();
-
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
-
-        private static string GetEscapedExpectedString(bool prettyPrint, string propertyName, string value, StringEscapeHandling escaping, bool escape = true)
-        {
-            MemoryStream ms = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
-
-            var json = new JsonTextWriter(streamWriter)
-            {
-                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None,
-                StringEscapeHandling = escaping
-            };
-
-            json.WriteStartObject();
-            json.WritePropertyName(propertyName, escape);
-            json.WriteValue(value);
-            json.WriteEnd();
-
-            json.Flush();
-
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
-
         [Theory]
         [InlineData(true, true)]
         [InlineData(true, false)]
@@ -754,29 +699,6 @@ namespace System.Text.JsonLab.Tests
             string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
 
             Assert.Equal(GetCustomExpectedString(formatted), actualStr);
-        }
-
-        private static string GetCustomExpectedString(bool prettyPrint)
-        {
-            MemoryStream ms = new MemoryStream();
-            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
-
-            var json = new JsonTextWriter(streamWriter)
-            {
-                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
-            };
-
-            json.WriteStartObject();
-            for (int i = 0; i < 1_000; i++)
-            {
-                json.WritePropertyName("message");
-                json.WriteValue("Hello, World!");
-            }
-            json.WriteEnd();
-
-            json.Flush();
-
-            return Encoding.UTF8.GetString(ms.ToArray());
         }
 
         [Theory]
@@ -1584,6 +1506,50 @@ namespace System.Text.JsonLab.Tests
             json.WriteStartObject();
             json.WritePropertyName("message");
             json.WriteValue("Hello, World!");
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        private static string GetEscapedExpectedString(bool prettyPrint, string propertyName, string value, StringEscapeHandling escaping, bool escape = true)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None,
+                StringEscapeHandling = escaping
+            };
+
+            json.WriteStartObject();
+            json.WritePropertyName(propertyName, escape);
+            json.WriteValue(value);
+            json.WriteEnd();
+
+            json.Flush();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        private static string GetCustomExpectedString(bool prettyPrint)
+        {
+            MemoryStream ms = new MemoryStream();
+            TextWriter streamWriter = new StreamWriter(ms, new UTF8Encoding(false), 1024, true);
+
+            var json = new JsonTextWriter(streamWriter)
+            {
+                Formatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None
+            };
+
+            json.WriteStartObject();
+            for (int i = 0; i < 1_000; i++)
+            {
+                json.WritePropertyName("message");
+                json.WriteValue("Hello, World!");
+            }
             json.WriteEnd();
 
             json.Flush();
