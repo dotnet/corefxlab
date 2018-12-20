@@ -536,7 +536,7 @@ namespace Microsoft.Collections.Extensions
                 UpdateBucketIndex(i, -1);
             }
             --_count;
-            entries[Count] = default;
+            entries[_count] = default;
             ++_version;
         }
 
@@ -828,9 +828,11 @@ namespace Microsoft.Collections.Extensions
                 UpdateBucketIndex(i, 1);
             }
 
-            Entry entry = new Entry { HashCode = hashCode, Key = key, Value = value };
+            ref Entry entry = ref entries[actualIndex];
+            entry.HashCode = hashCode;
+            entry.Key = key;
+            entry.Value = value;
             AddEntryToBucket(ref entry, actualIndex, _buckets);
-            entries[actualIndex] = entry;
             ++_count;
             ++_version;
             return actualIndex;

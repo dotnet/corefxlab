@@ -1491,6 +1491,20 @@ namespace Microsoft.Collections.Extensions.Tests
         }
 
         [Fact]
+        public void RemoveAt_Succeeds_WhenThereAreCollisions()
+        {
+            OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
+            dictionary.Add(1, "1");
+            dictionary.Add(4, "4"); // should be in the same bucket
+            dictionary.Insert(1, 7, "7"); // should be in the same bucket
+            dictionary.RemoveAt(0);
+            Assert.Equal("7", dictionary[index: 0]);
+            Assert.Equal("4", dictionary[index: 1]);
+            Assert.Equal("7", dictionary[key: 7]);
+            Assert.Equal("4", dictionary[key: 4]);
+        }
+
+        [Fact]
         public void OrderedDictionaryVersusDictionary_AllCollisions()
         {
             Random rand = new Random(333);
