@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
 {
-    internal static partial class Utf8JsonWriterHelpers
+    internal static partial class JsonWriterHelper
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int NeedsEscaping(ReadOnlySpan<byte> value)

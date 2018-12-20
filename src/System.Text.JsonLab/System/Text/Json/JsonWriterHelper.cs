@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -10,15 +9,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    internal static class JsonWriterHelper
+    internal static partial class JsonWriterHelper
     {
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
-
-        public static ReadOnlySpan<byte> EscapeStringValue(ReadOnlySpan<byte> value)
-        {
-            //TODO: Add escaping logic.
-            return value;
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int WriteIndentation(Span<byte> buffer)
@@ -327,7 +320,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteDigits(ulong value, Span<byte> buffer)
+        private static void WriteDigits(ulong value, Span<byte> buffer)
         {
             // We can mutate the 'value' parameter since it's a copy-by-value local.
             // It'll be used to represent the value left over after each division by 10.

@@ -549,7 +549,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = value;
             if (!suppressEscaping)
             {
-                Utf8JsonWriterHelpers.EscapeString(value, _buffer, out _, out _);
+                JsonWriterHelper.EscapeString(value, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[value.Length];
                 escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
             }
@@ -649,7 +649,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = utf8Text;
             if (!suppressEscaping)
             {
-                Utf8JsonWriterHelpers.EscapeString(utf8Text, _buffer, out _, out _);
+                JsonWriterHelper.EscapeString(utf8Text, _buffer, out _, out _);
                 unsafe
                 {
                     byte* ptr = stackalloc byte[utf8Text.Length];
@@ -937,7 +937,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = value;
             if (!suppressEscaping)
             {
-                Utf8JsonWriterHelpers.EscapeString(value, _buffer, out _, out _);
+                JsonWriterHelper.EscapeString(value, _buffer, out _, out _);
                 byte* ptr = stackalloc byte[value.Length];
                 escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
             }
@@ -1029,7 +1029,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> escapedValue = utf8Text;
             if (!suppressEscaping)
             {
-                Utf8JsonWriterHelpers.EscapeString(utf8Text, _buffer, out _, out _);
+                JsonWriterHelper.EscapeString(utf8Text, _buffer, out _, out _);
                 unsafe
                 {
                     byte* ptr = stackalloc byte[utf8Text.Length];

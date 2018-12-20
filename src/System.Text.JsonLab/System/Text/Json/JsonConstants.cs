@@ -52,9 +52,6 @@ namespace System.Text.JsonLab
         // Explicitly skipping ReverseSolidus since that is handled separately
         public static ReadOnlySpan<byte> EscapableChars => new byte[] { Quote, (byte)'n', (byte)'r', (byte)'t', Solidus, (byte)'u', (byte)'b', (byte)'f' };
 
-        public static ReadOnlySpan<byte> ForbiddenBytes => new byte[] { (byte)'\\', (byte)'/', (byte)'"', (byte)'\'', (byte)'&', (byte)'+', (byte)'<', (byte)'>', (byte)'`' };
-        public static ReadOnlySpan<char> ForbiddenChars => new char[] { '\\', '/', '"', '\'', '&', '+', '<', '>', '`' };
-
         #endregion Common values
 
         public const int RemoveFlagsBitMask = 0x7FFFFFFF;
