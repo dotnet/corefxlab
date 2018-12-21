@@ -5,6 +5,8 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Toolchains.CsProj;
+using BenchmarkDotNet.Toolchains.DotNetCli;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
@@ -15,11 +17,11 @@ namespace System.Text.JsonLab.Benchmarks
     //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
     [MemoryDiagnoser]
     [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
-    [SimpleJob(warmupCount: 5, targetCount: 10)]
-    //[Config(typeof(ConfigWithCustomEnvVars))]
+    //[SimpleJob(warmupCount: 5, targetCount: 10)]
+    [Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
     {
-        /*private class ConfigWithCustomEnvVars : ManualConfig
+        private class ConfigWithCustomEnvVars : ManualConfig
         {
             private const string JitNoInline = "COMPlus_TieredCompilation";
 
@@ -27,9 +29,9 @@ namespace System.Text.JsonLab.Benchmarks
             {
                 Add(Job.Core
                     .With(new[] { new EnvironmentVariable(JitNoInline, "0") })
-                    .WithId("Tiered disabled"));
+                    .With(CsProjCoreToolchain.From(NetCoreAppSettings.NetCoreApp30)));
             }
-        }*/
+        }
 
         private static readonly byte[] Message = Encoding.UTF8.GetBytes("message");
         private static readonly byte[] HelloWorld = Encoding.UTF8.GetBytes("Hello, World!");
@@ -139,7 +141,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
-            json.WriteNumbers(Encoding.UTF8.GetBytes("numbers"), dataArray, suppressEscaping: true);
+            json.WriteNumberArray(Encoding.UTF8.GetBytes("numbers"), dataArray, suppressEscaping: true);
             json.WriteEndObject();
             json.Flush();
 
@@ -212,7 +214,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WritePropertyValueEscapingRequiredLarger()
         {
             _arrayFormatterWrapper.Clear();
@@ -228,7 +230,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WritePropertyValueEscapingRequired()
         {
             _arrayFormatterWrapper.Clear();
@@ -376,7 +378,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteEndObject();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterSystemTextJsonBasicUtf8Unescaped()
         {
             _arrayFormatterWrapper.Clear();
@@ -393,6 +395,22 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         //[Benchmark]
+        public void WriterSystemTextJsonBasicUtf8UnescapedSkip()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteStringSkipEscape(First, John);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
         public void WriterSystemTextJsonBasicUtf8UnescapedOverhead()
         {
             _arrayFormatterWrapper.Clear();
@@ -487,7 +505,7 @@ namespace System.Text.JsonLab.Benchmarks
             var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
 
             json.WriteStartObject();
-            json.WriteNumbers(Message, _longs, suppressEscaping: true);
+            json.WriteNumberArray(Message, _longs, suppressEscaping: true);
             json.WriteEndObject();
             json.Flush();
         }

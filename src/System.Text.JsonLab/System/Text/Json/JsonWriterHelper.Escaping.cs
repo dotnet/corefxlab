@@ -47,6 +47,7 @@ namespace System.Text.JsonLab
             return idx;
         }
 
+        // TODO: Remmove this
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static OperationStatus EscapeString(ReadOnlySpan<byte> value, Span<byte> destination, out int consumed, out int bytesWritten)
         {

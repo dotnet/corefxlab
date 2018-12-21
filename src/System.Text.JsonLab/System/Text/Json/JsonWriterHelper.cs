@@ -103,15 +103,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidatePropertyAndValue(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> value)
-        {
-            // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
-                JsonThrowHelper.ThrowArgumentException(propertyName, value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidatePropertyAndValue(ReadOnlySpan<char> propertyName, ReadOnlySpan<byte> value)
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<byte> value)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxTokenSize)
@@ -119,18 +111,10 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidatePropertyAndValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<char> value)
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<char> value)
         {
             // TODO: Use throw helper with proper error messages
             if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
-                JsonThrowHelper.ThrowArgumentException(propertyName, value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidatePropertyAndValue(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
-        {
-            // TODO: Use throw helper with proper error messages
-            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxTokenSize)
                 JsonThrowHelper.ThrowArgumentException(propertyName, value);
         }
 

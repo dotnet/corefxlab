@@ -1312,7 +1312,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8 = new Utf8JsonWriter2(output, state);
 
             jsonUtf8.WriteStartObject();
-            jsonUtf8.WriteNumbers(Encoding.UTF8.GetBytes("numbers"), longs, suppressEscaping: true);
+            jsonUtf8.WriteNumberArray(Encoding.UTF8.GetBytes("numbers"), longs, suppressEscaping: true);
             jsonUtf8.WriteEndObject();
             jsonUtf8.Flush();
 
@@ -1344,7 +1344,7 @@ namespace System.Text.JsonLab.Tests
 
             jsonUtf8.WriteStartObject();
 
-            jsonUtf8.WriteStrings(Encoding.UTF8.GetBytes("guids"), guids, suppressEscaping: true);
+            jsonUtf8.WriteStringArray(Encoding.UTF8.GetBytes("guids"), guids, suppressEscaping: true);
 
             jsonUtf8.WriteEndObject();
             jsonUtf8.Flush();
@@ -1381,7 +1381,7 @@ namespace System.Text.JsonLab.Tests
 
             jsonUtf8.WriteStartObject();
 
-            jsonUtf8.WriteStrings(Encoding.UTF8.GetBytes("dates"), dates, suppressEscaping: true);
+            jsonUtf8.WriteStringArray(Encoding.UTF8.GetBytes("dates"), dates, suppressEscaping: true);
 
             jsonUtf8.WriteEndObject();
             jsonUtf8.Flush();

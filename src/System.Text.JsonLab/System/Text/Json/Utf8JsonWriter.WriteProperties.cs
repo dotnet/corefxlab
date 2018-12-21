@@ -1891,6 +1891,16 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
+        public void WriteStringSkipEscape(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        {
+            JsonWriterHelper.ValidatePropertyAndValue(ref propertyName, ref value);
+
+            WriteStringSuppressTrue(ref propertyName, ref value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.String;
+        }
+
         public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(ref propertyName, ref value);
