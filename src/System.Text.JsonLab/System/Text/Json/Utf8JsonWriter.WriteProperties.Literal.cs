@@ -19,10 +19,12 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> span = JsonConstants.NullValue;
+
             if (!suppressEscaping)
-                WriteNullSuppressFalse(ref propertyName);
+                WriteLiteralSuppressFalse(ref propertyName, ref span);
             else
-                WriteNullByOptions(ref propertyName);
+                WriteLiteralByOptions(ref propertyName, ref span);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Null;
@@ -32,172 +34,15 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> span = JsonConstants.NullValue;
+
             if (!suppressEscaping)
-                WriteNullSuppressFalse(ref propertyName);
+                WriteLiteralSuppressFalse(ref propertyName, ref span);
             else
-                WriteNullByOptions(ref propertyName);
+                WriteLiteralByOptions(ref propertyName, ref span);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.Null;
-        }
-
-        private void WriteNullSuppressFalse(ref ReadOnlySpan<char> propertyName)
-        {
-            int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
-
-            Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
-
-            if (propertyIdx != -1)
-            {
-                WriteNullEscapeProperty(ref propertyName, propertyIdx);
-            }
-            else
-            {
-                WriteNullByOptions(ref propertyName);
-            }
-        }
-
-        private void WriteNullSuppressFalse(ref ReadOnlySpan<byte> propertyName)
-        {
-            int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
-
-            Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
-
-            if (propertyIdx != -1)
-            {
-                WriteNullEscapeProperty(ref propertyName, propertyIdx);
-            }
-            else
-            {
-                WriteNullByOptions(ref propertyName);
-            }
-        }
-
-        private void WriteNullEscapeProperty(ref ReadOnlySpan<char> propertyName, int firstEscapeIndexProp)
-        {
-            Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
-
-            char[] propertyArray = null;
-
-            int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
-            Span<char> span;
-            if (length > 256)
-            {
-                propertyArray = ArrayPool<char>.Shared.Rent(length);
-                span = propertyArray;
-            }
-            else
-            {
-                // Cannot create a span directly since the span gets exposed outside this method.
-                unsafe
-                {
-                    char* ptr = stackalloc char[length];
-                    span = new Span<char>(ptr, length);
-                }
-            }
-            JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
-            propertyName = span.Slice(0, written);
-
-            WriteNullByOptions(ref propertyName);
-
-            if (propertyArray != null)
-                ArrayPool<char>.Shared.Return(propertyArray);
-        }
-
-        private void WriteNullEscapeProperty(ref ReadOnlySpan<byte> propertyName, int firstEscapeIndexProp)
-        {
-            Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
-
-            byte[] propertyArray = null;
-
-            int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
-            Span<byte> span;
-            if (length > 256)
-            {
-                propertyArray = ArrayPool<byte>.Shared.Rent(length);
-                span = propertyArray;
-            }
-            else
-            {
-                // Cannot create a span directly since the span gets exposed outside this method.
-                unsafe
-                {
-                    byte* ptr = stackalloc byte[length];
-                    span = new Span<byte>(ptr, length);
-                }
-            }
-            JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
-            propertyName = span.Slice(0, written);
-
-            WriteNullByOptions(ref propertyName);
-
-            if (propertyArray != null)
-                ArrayPool<byte>.Shared.Return(propertyArray);
-        }
-
-        private void WriteNullByOptions(ref ReadOnlySpan<char> propertyName)
-        {
-            int idx;
-
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                idx = WritePropertyNameIndented(ref propertyName);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                idx = WritePropertyNameMinimized(ref propertyName);
-            }
-
-            if (JsonConstants.NullValue.Length > _buffer.Length - idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
-            idx += JsonConstants.NullValue.Length;
-
-            Advance(idx);
-        }
-
-        private void WriteNullByOptions(ref ReadOnlySpan<byte> propertyName)
-        {
-            int idx;
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                idx = WritePropertyNameIndented(ref propertyName);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                idx = WritePropertyNameMinimized(ref propertyName);
-            }
-
-            if (JsonConstants.NullValue.Length > _buffer.Length - idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            JsonConstants.NullValue.CopyTo(_buffer.Slice(idx));
-            idx += JsonConstants.NullValue.Length;
-
-            Advance(idx);
         }
 
         public void WriteBoolean(string propertyName, bool value, bool suppressEscaping = false)
@@ -207,28 +52,33 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> span = value ? JsonConstants.TrueValue : JsonConstants.FalseValue;
+
             if (!suppressEscaping)
-                WriteBooleanSuppressFalse(ref propertyName, value);
+                WriteLiteralSuppressFalse(ref propertyName, ref span);
             else
-                WriteBooleanByOptions(ref propertyName, value);
+                WriteLiteralByOptions(ref propertyName, ref span);
 
             _currentDepth |= 1 << 31;
+            _tokenType = value ? JsonTokenType.True : JsonTokenType.False;
         }
 
         public void WriteBoolean(ReadOnlySpan<byte> propertyName, bool value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
+            ReadOnlySpan<byte> span = value ? JsonConstants.TrueValue : JsonConstants.FalseValue;
+
             if (!suppressEscaping)
-                WriteBooleanSuppressFalse(ref propertyName, value);
+                WriteLiteralSuppressFalse(ref propertyName, ref span);
             else
-                WriteBooleanByOptions(ref propertyName, value);
+                WriteLiteralByOptions(ref propertyName, ref span);
 
             _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Null;
+            _tokenType = value ? JsonTokenType.True : JsonTokenType.False;
         }
 
-        private void WriteBooleanSuppressFalse(ref ReadOnlySpan<char> propertyName, bool value)
+        private void WriteLiteralSuppressFalse(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<byte> value)
         {
             int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
 
@@ -236,15 +86,15 @@ namespace System.Text.JsonLab
 
             if (propertyIdx != -1)
             {
-                WriteBooleanEscapeProperty(ref propertyName, value, propertyIdx);
+                WriteLiteralEscapeProperty(ref propertyName, ref value, propertyIdx);
             }
             else
             {
-                WriteBooleanByOptions(ref propertyName, value);
+                WriteLiteralByOptions(ref propertyName, ref value);
             }
         }
 
-        private void WriteBooleanSuppressFalse(ref ReadOnlySpan<byte> propertyName, bool value)
+        private void WriteLiteralSuppressFalse(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
         {
             int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
 
@@ -252,15 +102,15 @@ namespace System.Text.JsonLab
 
             if (propertyIdx != -1)
             {
-                WriteBooleanEscapeProperty(ref propertyName, value, propertyIdx);
+                WriteLiteralEscapeProperty(ref propertyName, ref value, propertyIdx);
             }
             else
             {
-                WriteBooleanByOptions(ref propertyName, value);
+                WriteLiteralByOptions(ref propertyName, ref value);
             }
         }
 
-        private void WriteBooleanEscapeProperty(ref ReadOnlySpan<char> propertyName, bool value, int firstEscapeIndexProp)
+        private void WriteLiteralEscapeProperty(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<byte> value, int firstEscapeIndexProp)
         {
             Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
 
@@ -285,13 +135,13 @@ namespace System.Text.JsonLab
             JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
             propertyName = span.Slice(0, written);
 
-            WriteBooleanByOptions(ref propertyName, value);
+            WriteLiteralByOptions(ref propertyName, ref value);
 
             if (propertyArray != null)
                 ArrayPool<char>.Shared.Return(propertyArray);
         }
 
-        private void WriteBooleanEscapeProperty(ref ReadOnlySpan<byte> propertyName, bool value, int firstEscapeIndexProp)
+        private void WriteLiteralEscapeProperty(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value, int firstEscapeIndexProp)
         {
             Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
 
@@ -316,13 +166,13 @@ namespace System.Text.JsonLab
             JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
             propertyName = span.Slice(0, written);
 
-            WriteBooleanByOptions(ref propertyName, value);
+            WriteLiteralByOptions(ref propertyName, ref value);
 
             if (propertyArray != null)
                 ArrayPool<byte>.Shared.Return(propertyArray);
         }
 
-        private void WriteBooleanByOptions(ref ReadOnlySpan<char> propertyName, bool value)
+        private void WriteLiteralByOptions(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<byte> value)
         {
             int idx;
             if (_writerOptions.Indented)
@@ -342,35 +192,19 @@ namespace System.Text.JsonLab
                 idx = WritePropertyNameMinimized(ref propertyName);
             }
 
-            if (value)
+            if (value.Length > _buffer.Length - idx)
             {
-                if (JsonConstants.TrueValue.Length > _buffer.Length - idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
-
-                JsonConstants.TrueValue.CopyTo(_buffer.Slice(idx));
-                idx += JsonConstants.TrueValue.Length;
-                _tokenType = JsonTokenType.True;
+                AdvanceAndGrow(idx, value.Length);
+                idx = 0;
             }
-            else
-            {
-                if (JsonConstants.FalseValue.Length > _buffer.Length - idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
 
-                JsonConstants.FalseValue.CopyTo(_buffer.Slice(idx));
-                idx += JsonConstants.FalseValue.Length;
-                _tokenType = JsonTokenType.False;
-            }
+            value.CopyTo(_buffer.Slice(idx));
+            idx += value.Length;
 
             Advance(idx);
         }
 
-        private void WriteBooleanByOptions(ref ReadOnlySpan<byte> propertyName, bool value)
+        private void WriteLiteralByOptions(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
         {
             int idx;
             if (_writerOptions.Indented)
@@ -390,30 +224,14 @@ namespace System.Text.JsonLab
                 idx = WritePropertyNameMinimized(ref propertyName);
             }
 
-            if (value)
+            if (value.Length > _buffer.Length - idx)
             {
-                if (JsonConstants.TrueValue.Length > _buffer.Length - idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
-
-                JsonConstants.TrueValue.CopyTo(_buffer.Slice(idx));
-                idx += JsonConstants.TrueValue.Length;
-                _tokenType = JsonTokenType.True;
+                AdvanceAndGrow(idx, value.Length);
+                idx = 0;
             }
-            else
-            {
-                if (JsonConstants.FalseValue.Length > _buffer.Length - idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
 
-                JsonConstants.FalseValue.CopyTo(_buffer.Slice(idx));
-                idx += JsonConstants.FalseValue.Length;
-                _tokenType = JsonTokenType.False;
-            }
+            value.CopyTo(_buffer.Slice(idx));
+            idx += value.Length;
 
             Advance(idx);
         }
