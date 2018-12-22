@@ -994,8 +994,8 @@ namespace System.Text.JsonLab.Tests
                     catch (JsonReaderException ex)
                     {
                         string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {commentHandling}";
-                        string firstSegmentString = Encodings.Utf8.ToString(dataMemory.Slice(0, i).Span);
-                        string secondSegmentString = Encodings.Utf8.ToString(secondMem.Span);
+                        string firstSegmentString = Buffers.Text.Encodings.Utf8.ToString(dataMemory.Slice(0, i).Span);
+                        string secondSegmentString = Buffers.Text.Encodings.Utf8.ToString(secondMem.Span);
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
                         errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {commentHandling}";
@@ -1115,8 +1115,8 @@ namespace System.Text.JsonLab.Tests
                     catch (JsonReaderException ex)
                     {
                         string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {commentHandling}";
-                        string firstSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(0, i));
-                        string secondSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
+                        string firstSegmentString = Buffers.Text.Encodings.Utf8.ToString(dataUtf8.AsSpan(0, i));
+                        string secondSegmentString = Buffers.Text.Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
                         errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                         Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
                         errorMessage = $"expectedBytePosition: {expectedBytePosition} | actual: {ex.LineBytePosition} | index: {i} | option: {commentHandling}";
@@ -1821,8 +1821,8 @@ namespace System.Text.JsonLab.Tests
                 catch (JsonReaderException ex)
                 {
                     string errorMessage = $"expectedLineNumber: {expectedlineNumber} | actual: {ex.LineNumber} | index: {i} | option: {jsonMultiSegment.Options}";
-                    string firstSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(0, i));
-                    string secondSegmentString = Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
+                    string firstSegmentString = Buffers.Text.Encodings.Utf8.ToString(dataUtf8.AsSpan(0, i));
+                    string secondSegmentString = Buffers.Text.Encodings.Utf8.ToString(dataUtf8.AsSpan(i));
                     errorMessage += " | " + firstSegmentString + " | " + secondSegmentString;
                     Assert.True(expectedlineNumber == ex.LineNumber, errorMessage);
                     errorMessage = $"expectedBytePosition: {expectedPosition} | actual: {ex.LineBytePosition} | index: {i} | option: {jsonMultiSegment.Options}";

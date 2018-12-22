@@ -10,9 +10,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref partial struct Utf8JsonWriter2<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    public ref partial struct Utf8JsonWriter2
     {
-        public void WriteNull()
+        public void WriteNullValue()
         {
             if (_writerOptions.SlowPath)
                 WriteNullSlow();
@@ -38,9 +38,9 @@ namespace System.Text.JsonLab
 
         private void WriteNullSlow()
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -74,7 +74,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(bool value)
+        public void WriteBooleanValue(bool value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -112,9 +112,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(bool value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -158,55 +158,99 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(int value)
-            => WriteValue((long)value);
+        public void WriteNumberValue(int value)
+            => WriteNumberValue((long)value);
 
-        public void WriteValue(long value)
+        public void WriteNumberValue(long value)
         {
-            if (_writerOptions.SlowPath)
-                WriteValueSlow(value);
-            else
-                WriteValueFast(value);
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
-        }
-
-        private void WriteValueFast(long value)
-        {
-            // Calculated based on the following: ',number'
-            int bytesNeeded = 1 + JsonConstants.MaximumInt64Length;
-
-            Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
-
-            bool result = JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten);
-            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
-            // See: https://github.com/dotnet/corefx/issues/25425
-            // bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            Advance(idx);
-        }
-
-        private void WriteValueSlow(long value)
-        {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
                     ValidateWritingValue();
                 }
-                WriteValueFormatted(value);
+                WriteValueIndented(value);
             }
             else
             {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingValue();
-                WriteValueFast(value);
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingValue();
+                }
+                WriteValueMinimized(value);
             }
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.Number;
+        }
+
+        private void WriteValueMinimized(long value)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                if (_buffer.Length <= 0)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            int bytesWritten;
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten);
+            while (!JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out bytesWritten))
+            {
+                AdvanceAndGrow(idx, JsonConstants.MaximumInt64Length);
+                idx = 0;
+            }
+            idx += bytesWritten;
+
+            Advance(idx);
+        }
+
+        private void WriteValueIndented(long value)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            if (_tokenType != JsonTokenType.None)
+                WriteNewLine(ref idx);
+
+            int indent = Indentation;
+            while (true)
+            {
+                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int written);
+                idx += written;
+                if (result)
+                {
+                    break;
+                }
+                indent -= written;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            int bytesWritten;
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            // Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten);
+            while (!JsonWriterHelper.TryFormatInt64Default(value, _buffer.Slice(idx), out bytesWritten))
+            {
+                AdvanceAndGrow(idx, JsonConstants.MaximumInt64Length);
+                idx = 0;
+            }
+            idx += bytesWritten;
+
+            Advance(idx);
         }
 
         private void WriteValueFormatted(long value)
@@ -231,10 +275,10 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(uint value)
-            => WriteValue((ulong)value);
+        public void WriteNumberValue(uint value)
+            => WriteNumberValue((ulong)value);
 
-        public void WriteValue(ulong value)
+        public void WriteNumberValue(ulong value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -264,9 +308,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(ulong value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -304,7 +348,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(double value)
+        public void WriteNumberValue(double value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -330,9 +374,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(double value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -366,7 +410,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(float value)
+        public void WriteNumberValue(float value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -392,9 +436,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(float value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -428,7 +472,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(decimal value)
+        public void WriteNumberValue(decimal value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -454,9 +498,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(decimal value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -490,26 +534,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(string utf16Text)
-            => WriteValue(utf16Text.AsSpan());
+        public void WriteStringValue(string utf16Text, bool suppressEscaping = false)
+            => WriteStringValue(utf16Text.AsSpan(), suppressEscaping);
 
-        public void WriteValue(ReadOnlySpan<char> utf16Text)
+        public void WriteStringValue(ReadOnlySpan<char> utf16Text, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateValue(ref utf16Text);
 
-            WriteValueWithEncodingValue(MemoryMarshal.AsBytes(utf16Text));
+            WriteValueWithEncodingValue(MemoryMarshal.AsBytes(utf16Text), suppressEscaping);
         }
 
-        private void WriteValueWithEncodingValue(ReadOnlySpan<byte> value)
+        private unsafe void WriteValueWithEncodingValue(ReadOnlySpan<byte> value, bool suppressEscaping)
         {
-            //TODO: Add ReadOnlySpan<char> overload to this check
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = JsonWriterHelper.EscapeStringValue(value);
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                JsonWriterHelper.EscapeString(value, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
+            }
 
             if (_writerOptions.SlowPath)
-                WriteValueSlowWithEncodingValue(ref value);
+                WriteValueSlowWithEncodingValue(ref escapedValue);
             else
-                WriteValueFastWithEncodingValue(ref value);
+                WriteValueFastWithEncodingValue(ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -526,13 +574,13 @@ namespace System.Text.JsonLab
             if (_currentDepth >= 0)
                 bytesNeeded--;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = WriteValue(bytesNeeded, out int idx);
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -548,9 +596,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlowWithEncodingValue(ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -580,7 +628,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -594,20 +642,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(ReadOnlySpan<byte> utf8Text)
+        public void WriteStringValue(ReadOnlySpan<byte> utf8Text, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateValue(ref utf8Text);
 
-            if (JsonWriterHelper.IndexOfAnyEscape(utf8Text) != -1)
+            ReadOnlySpan<byte> escapedValue = utf8Text;
+            if (!suppressEscaping)
             {
-                //TODO: Add escaping.
-                utf8Text = JsonWriterHelper.EscapeStringValue(utf8Text);
+                JsonWriterHelper.EscapeString(utf8Text, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[utf8Text.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, utf8Text.Length);
+                }
             }
 
             if (_writerOptions.SlowPath)
-                WriteValueSlow(ref utf8Text);
+                WriteValueSlow(ref escapedValue);
             else
-                WriteValueFast(ref utf8Text);
+                WriteValueFast(ref escapedValue);
 
             _currentDepth |= 1 << 31;
             _tokenType = JsonTokenType.String;
@@ -633,9 +686,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(ref ReadOnlySpan<byte> escapedValue)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -671,7 +724,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(DateTime value)
+        public void WriteStringValue(DateTime value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -699,9 +752,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(DateTime value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -737,7 +790,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(DateTimeOffset value)
+        public void WriteStringValue(DateTimeOffset value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -765,9 +818,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(DateTimeOffset value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -803,7 +856,7 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteValue(Guid value)
+        public void WriteStringValue(Guid value)
         {
             if (_writerOptions.SlowPath)
                 WriteValueSlow(value);
@@ -831,9 +884,9 @@ namespace System.Text.JsonLab
 
         private void WriteValueSlow(Guid value)
         {
-            Debug.Assert(_writerOptions.Formatted || !_writerOptions.SkipValidation);
+            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
 
-            if (_writerOptions.Formatted)
+            if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
                 {
@@ -869,26 +922,30 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteComment(string utf16Text)
-            => WriteComment(utf16Text.AsSpan());
+        public void WriteCommentValue(string utf16Text, bool suppressEscaping = false)
+            => WriteCommentValue(utf16Text.AsSpan(), suppressEscaping);
 
-        public void WriteComment(ReadOnlySpan<char> utf16Text)
+        public void WriteCommentValue(ReadOnlySpan<char> utf16Text, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateValue(ref utf16Text);
 
-            WriteCommentWithEncodingValue(MemoryMarshal.AsBytes(utf16Text));
+            WriteCommentWithEncodingValue(MemoryMarshal.AsBytes(utf16Text), suppressEscaping);
         }
 
-        private void WriteCommentWithEncodingValue(ReadOnlySpan<byte> value)
+        private unsafe void WriteCommentWithEncodingValue(ReadOnlySpan<byte> value, bool suppressEscaping)
         {
-            //TODO: Add ReadOnlySpan<char> overload to this check
-            if (JsonWriterHelper.IndexOfAnyEscape(value) != -1)
-                value = JsonWriterHelper.EscapeStringValue(value);
+            ReadOnlySpan<byte> escapedValue = value;
+            if (!suppressEscaping)
+            {
+                JsonWriterHelper.EscapeString(value, _buffer, out _, out _);
+                byte* ptr = stackalloc byte[value.Length];
+                escapedValue = new ReadOnlySpan<byte>(ptr, value.Length);
+            }
 
-            if (_writerOptions.Formatted)
-                WriteCommentFormattedWithEncodingValue(ref value);
+            if (_writerOptions.Indented)
+                WriteCommentFormattedWithEncodingValue(ref escapedValue);
             else
-                WriteCommentFastWithEncodingValue(ref value);
+                WriteCommentFastWithEncodingValue(ref escapedValue);
         }
 
         private void WriteCommentFastWithEncodingValue(ref ReadOnlySpan<byte> escapedValue)
@@ -899,7 +956,7 @@ namespace System.Text.JsonLab
             // Calculated based on the following: '/*encoded value*/'
             int bytesNeeded = escapedValue.Length / 2 * 3 + 4;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -908,7 +965,7 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Solidus;
             byteBuffer[idx++] = (byte)'*'; // TODO: Replace with JsonConstants.Asterisk
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -936,7 +993,7 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -950,7 +1007,7 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Solidus;
             byteBuffer[idx++] = (byte)'*'; // TODO: Replace with JsonConstants.Asterisk
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
 
             if (status != OperationStatus.Done)
@@ -965,20 +1022,25 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        public void WriteComment(ReadOnlySpan<byte> utf8Text)
+        public void WriteCommentValue(ReadOnlySpan<byte> utf8Text, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidateValue(ref utf8Text);
 
-            if (JsonWriterHelper.IndexOfAnyEscape(utf8Text) != -1)
+            ReadOnlySpan<byte> escapedValue = utf8Text;
+            if (!suppressEscaping)
             {
-                //TODO: Add escaping.
-                utf8Text = JsonWriterHelper.EscapeStringValue(utf8Text);
+                JsonWriterHelper.EscapeString(utf8Text, _buffer, out _, out _);
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[utf8Text.Length];
+                    escapedValue = new ReadOnlySpan<byte>(ptr, utf8Text.Length);
+                }
             }
 
-            if (_writerOptions.Formatted)
-                WriteCommentFormatted(ref utf8Text);
+            if (_writerOptions.Indented)
+                WriteCommentFormatted(ref escapedValue);
             else
-                WriteCommentFast(ref utf8Text);
+                WriteCommentFast(ref escapedValue);
         }
 
         private void WriteCommentFast(ref ReadOnlySpan<byte> escapedValue)
@@ -989,7 +1051,7 @@ namespace System.Text.JsonLab
             // Calculated based on the following: '/*value*/'
             int bytesNeeded = escapedValue.Length + 4;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -1020,7 +1082,7 @@ namespace System.Text.JsonLab
             if (_tokenType == JsonTokenType.None)
                 bytesNeeded -= JsonWriterHelper.NewLineUtf8.Length;
 
-            Ensure(bytesNeeded);
+            CheckSizeAndGrow(bytesNeeded);
 
             Span<byte> byteBuffer = _buffer;
 
@@ -1088,10 +1150,7 @@ namespace System.Text.JsonLab
             if (_inObject)
             {
                 Debug.Assert(_tokenType != JsonTokenType.None && _tokenType != JsonTokenType.StartArray);
-                if (_tokenType != JsonTokenType.PropertyName)
-                {
-                    JsonThrowHelper.ThrowJsonWriterException(_tokenType);    //TODO: Add resource message
-                }
+                JsonThrowHelper.ThrowJsonWriterException(_tokenType);    //TODO: Add resource message
             }
             else
             {

@@ -55,9 +55,9 @@ namespace System.Text.JsonLab
         #endregion Common values
 
         public const int RemoveFlagsBitMask = 0x7FFFFFFF;
-        public const int MaxPossibleDepth = (int.MaxValue - 2_000_001_000) / 2;  // 73_741_323 (to account for double space indentation), leaving 1_000 buffer for "JSONifying"
-        public const int MaxTokenSize = 1_000_000_000; // 1 GB
-        public const int MaxCharacterTokenSize = 1_000_000_000 / 3; // 333 million characters, i.e. 333 MB
+        public const int MaxWriterDepth = 1_000;
+        public const int MaxTokenSize = 2_000_000_000 / 6;  // 357_913_941 bytes
+        public const int MaxCharacterTokenSize = 2_000_000_000 / 6; // 357_913_941 characters
 
         public const int MaximumInt64Length = 20;   // 19 + sign (i.e. -9223372036854775808)
         public const int MaximumUInt64Length = 20;  // i.e. 18446744073709551615

@@ -6,11 +6,8 @@ namespace System.Text.JsonLab
 {
     public struct JsonWriterState
     {
-        internal const int DefaultMaxDepth = JsonConstants.MaxPossibleDepth;
-
         internal long _bytesWritten;
         internal long _bytesCommitted;
-        internal int _maxDepth;
         internal bool _inObject;
         internal bool _isNotPrimitive;
         internal JsonTokenType _tokenType;
@@ -21,15 +18,10 @@ namespace System.Text.JsonLab
 
         public long BytesCommitted => _bytesCommitted;
 
-        public JsonWriterState(int maxDepth = DefaultMaxDepth, JsonWriterOptions options = default)
+        public JsonWriterState(JsonWriterOptions options = default)
         {
-            //TODO: Use ThrowHelper: GetArgumentException_MaxDepthMustBePositive
-            if (maxDepth <= 0)
-                throw new ArgumentException("max depth must be positive");
-
             _bytesWritten = default;
             _bytesCommitted = default;
-            _maxDepth = maxDepth;
             _inObject = default;
             _isNotPrimitive = default;
             _tokenType = default;
@@ -41,7 +33,5 @@ namespace System.Text.JsonLab
         }
 
         public JsonWriterOptions Options => _writerOptions;
-
-        public int MaxDepth => _maxDepth;
     }
 }
