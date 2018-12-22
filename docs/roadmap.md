@@ -95,20 +95,27 @@ by these new APIs.
 
 ![](./img/areas.png)
 
-## CoreFxLab Roadmap Update (2018)
+## CoreFxLab Roadmap Updates (last updated December 12, 2018)
 
 - As part of .NET Core 2.1, [Span\<T>, Memory\<T>, and Pipelines][CodeMagazine-21] have shipped.  As such all future development on these primitive types will continue in the [corefx repo][corefx-repo] and will no longer be a part of the experimental CoreFxLab repository.
+
+- With the release of [.NET Core 3.0 Preview 1][dotnet-blog-20181204], [System.Device.Gpio][gpio-speclet] feature development has moved from corefxlab to the new open source repo https://github.com/dotnet/iot.  This new repo contains device drivers for Linux and Windows 10 IoT Core RS5; as well as new device bindings for important sensors, motors, and displays.
+- [Buffer Reader][buffers-speclet] has also graduated from the corefxlab prototype-phase and now ships in .NET Core 3.0 as System.Buffers.SequenceReader from the https://github.com/dotnet/corefx repo.  Prototype development of BufferWriter currently continues in corefxlab.
+
+- The high-performance [System.Text.Json.Utf8JsonReader][json-announcement] has moved to the https://github.com/corefx repo as part of .NET Core 3.0 Preview 1.  Please see the [JSON Announcement][json-announcement], the [JSON Roadmap][json-roadmap], and the [Future of JSON Discussion][json-discussion] for more details on the rest of the System.Text.Json features planned for .NET Core.
 
 
 ## Next Wave of Experimental CoreFxLab APIs
 
-The following areas are under active development.  Additional updates will come as planning continues and speclets are written.
+The following areas of prototype experimentation are our primary focus in the near term.
 
 - [Utf8String][utf8string-speclet], The cloud and the web are heavily based on UTF-8.  .NET String processing and character types are ill suited for the modern world as they require transcoding back and forth from UTF-8 to UTF-16 and use upwards of 2x as much memory.
-- [BufferReader / BufferWriter][buffers-speclet], analogous to TextReader / TextWriter but optimized for UTF-8 and byte buffer scenarios instead of UTF-16 text.
-- [System.Devices.Gpio][gpio-speclet], a summer internship project to research and design a .NET library for working with Board-Level General Purpose IO (GPIO) for IoT scenarios. 
+- [BufferWriter][buffers-speclet], analogous to TextWriter but optimized for UTF-8 and byte buffer scenarios instead of UTF-16 text.
 
-
+[json-discussion]: https://github.com/dotnet/corefx/issues/33115
+[json-announcement]: https://github.com/dotnet/announcements/issues/90
+[json-roadmap]: https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/roadmap/README.md
+[dotnet-blog-20181204]: https://blogs.msdn.microsoft.com/dotnet/2018/12/04/announcing-net-core-3-preview-1-and-open-sourcing-windows-desktop-frameworks/
 [corefx-repo]: https://github.com/dotnet/corefx
 [CodeMagazine-21]: https://www.codemag.com/Article/1807051/Introducing-.NET-Core-2.1-Flagship-Types-Span-T-and-Memory-T
 [TechEmpower]: https://www.techempower.com/benchmarks
