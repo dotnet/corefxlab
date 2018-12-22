@@ -117,7 +117,7 @@ namespace System.Text.JsonLab
                     }
                     else
                     {
-                        int quotient = Math.DivRem(scalar - 0x10000, 0x400, out int remainder);
+                        int quotient = DivMod(scalar - 0x10000, 0x400, out int remainder);
                         int firstChar = quotient + 0xD800;
                         int nextChar = remainder + 0xDC00;
                         WriteHex(firstChar, ref destination, ref written);
@@ -128,6 +128,17 @@ namespace System.Text.JsonLab
                     break;
             }
             return numBytesConsumed;
+        }
+
+        /// <summary>
+        /// We don't have access to Math.DivRem, so this is a copy of the implementation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int DivMod(int numerator, int denominator, out int modulo)
+        {
+            int div = numerator / denominator;
+            modulo = numerator - (div * denominator);
+            return div;
         }
 
         public static void EscapeString(ref ReadOnlySpan<char> value, ref Span<char> destination, int indexOfFirstByteToEscape, out int written)
