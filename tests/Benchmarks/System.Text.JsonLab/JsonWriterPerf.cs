@@ -54,11 +54,12 @@ namespace System.Text.JsonLab.Benchmarks
         private byte[] _output;
         private long[] _longs;
         private int[] dataArray;
+        private DateTime MyDate;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -101,6 +102,8 @@ namespace System.Text.JsonLab.Benchmarks
             dataArray = new int[100];
             for (int i = 0; i < 100; i++)
                 dataArray[i] = 12345;
+
+            MyDate = DateTime.Now;
         }
 
         //[Benchmark]
@@ -214,7 +217,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WritePropertyValueEscapingRequiredLarger()
         {
             _arrayFormatterWrapper.Clear();
@@ -230,7 +233,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WritePropertyValueEscapingRequired()
         {
             _arrayFormatterWrapper.Clear();
@@ -378,7 +381,106 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteEndObject();
         }
 
+        //[Benchmark]
+        public void WriteDateTimeUnescaped()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString(First, MyDate, suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        //[Benchmark]
+        public void WriteDateTimeUnescapedOverhead()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString(First, MyDate, suppressEscaping: false);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
         [Benchmark]
+        public void WriteDateTimeUnescapedUtf16()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString("first", MyDate, suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
+        public void WriteDateTimeUnescapedOverheadUtf16()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteString("first", MyDate, suppressEscaping: false);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+
+        //[Benchmark]
+        public void NewtonsoftDateTimeUnescaped()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < 100; i++)
+                {
+                    json.WritePropertyName("first", escape: false);
+                    json.WriteValue(MyDate);
+                }
+                json.WriteEndObject();
+            }
+        }
+
+        //[Benchmark]
+        public void NewtonsoftDateTimeUnescapedOverhead()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < 100; i++)
+                {
+                    json.WritePropertyName("first", escape: true);
+                    json.WriteValue(MyDate);
+                }
+                json.WriteEndObject();
+            }
+        }
+
+        //[Benchmark]
         public void WriterSystemTextJsonBasicUtf8Unescaped()
         {
             _arrayFormatterWrapper.Clear();
@@ -410,7 +512,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonBasicUtf8UnescapedOverhead()
         {
             _arrayFormatterWrapper.Clear();

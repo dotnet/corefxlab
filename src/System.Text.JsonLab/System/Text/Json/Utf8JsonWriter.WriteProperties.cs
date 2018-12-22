@@ -1452,230 +1452,6 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
-        private void WriteStringWithEncodingPropertyValue(ReadOnlySpan<char> escapedPropertyName, ReadOnlySpan<char> escapedValue)
-        {
-            if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
-            else
-                WriteStringFastWithEncodingPropertyValue(MemoryMarshal.AsBytes(escapedPropertyName), MemoryMarshal.AsBytes(escapedValue));
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.String;
-        }
-
-        private void WriteStringFastWithEncodingPropertyValue(ReadOnlySpan<byte> escapedPropertyName, ReadOnlySpan<byte> escapedValue)
-        {
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            int partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedPropertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        private void WriteStringSlowWithEncodingPropertyValue(ReadOnlySpan<byte> escapedPropertyName, ReadOnlySpan<byte> escapedValue)
-        {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringFormattedWithEncodingPropertyValue(escapedPropertyName, escapedValue);
-            }
-            else
-            {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty();
-                WriteStringFastWithEncodingPropertyValue(escapedPropertyName, escapedValue);
-            }
-        }
-
-        private void WriteStringFormattedWithEncodingPropertyValue(ReadOnlySpan<byte> escapedPropertyName, ReadOnlySpan<byte> escapedValue)
-        {
-            int indent = Indentation;
-
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    AdvanceAndGrow(idx);
-                    idx = 0;
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
-
-            if (_tokenType != JsonTokenType.None)
-                WriteNewLine(ref idx);
-
-            while (true)
-            {
-                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int bytesWritten);
-                idx += bytesWritten;
-                if (result)
-                {
-                    break;
-                }
-                indent -= bytesWritten;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            int partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedPropertyName.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Space;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(escapedValue.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        public void WriteStringSkipEscape(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
-        {
-            JsonWriterHelper.ValidatePropertyAndValue(ref propertyName, ref value);
-
-            WriteStringSuppressTrue(ref propertyName, ref value);
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.String;
-        }
-
         public void WriteString(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value, bool suppressEscaping = false)
         {
             JsonWriterHelper.ValidatePropertyAndValue(ref propertyName, ref value);
@@ -1816,6 +1592,16 @@ namespace System.Text.JsonLab
             Advance(idx);
         }
 
+        public void WriteStringSkipEscape(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
+        {
+            JsonWriterHelper.ValidatePropertyAndValue(ref propertyName, ref value);
+
+            WriteStringSuppressTrue(ref propertyName, ref value);
+
+            _currentDepth |= 1 << 31;
+            _tokenType = JsonTokenType.String;
+        }
+
         public void WriteString(string propertyName, DateTime value, bool suppressEscaping = false)
             => WriteString(propertyName.AsSpan(), value, suppressEscaping);
 
@@ -1823,93 +1609,107 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
-        }
-
-        private unsafe void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, DateTime value, bool suppressEscaping)
-        {
-            ReadOnlySpan<byte> escapedValue = propertyName;
             if (!suppressEscaping)
-            {
-                JsonWriterHelper.EscapeString(propertyName, _buffer, out _, out _);
-                byte* ptr = stackalloc byte[propertyName.Length];
-                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
-            }
-
-            if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncoding(ref escapedValue, value);
+                WriteStringSuppressFalse(ref propertyName, value);
             else
-                WriteStringFastWithEncoding(ref escapedValue, value);
+                WriteStringByOptions(ref propertyName, value);
 
             _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
+            _tokenType = JsonTokenType.String;
         }
 
-        private void WriteStringFastWithEncoding(ref ReadOnlySpan<byte> propertyName, DateTime value)
+        private void WriteStringSuppressFalse(ref ReadOnlySpan<char> propertyName, DateTime value)
         {
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 6 - JsonConstants.MaximumDateTimeLength >= 0);
+            int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
 
-            // Calculated based on the following: ',"encoded propertyName":"DateTime"'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 6 + JsonConstants.MaximumDateTimeLength;
+            Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
 
-            if (_currentDepth >= 0)
-                bytesNeeded--;
+            if (propertyIdx != -1)
+            {
+                WriteStringEscapeProperty(ref propertyName, value, propertyIdx);
+            }
+            else
+            {
+                WriteStringByOptions(ref propertyName, value);
+            }
+        }
 
-            CheckSizeAndGrow(bytesNeeded);
+        private void WriteStringEscapeProperty(ref ReadOnlySpan<char> propertyName, DateTime value, int firstEscapeIndexProp)
+        {
+            Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
 
-            WritePropertyNameEncoded(ref propertyName, bytesNeeded, out int idx);
+            char[] propertyArray = null;
 
-            _buffer[idx++] = JsonConstants.Quote;
+            int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
+            Span<char> span;
+            if (length > 256)
+            {
+                propertyArray = ArrayPool<char>.Shared.Rent(length);
+                span = propertyArray;
+            }
+            else
+            {
+                // Cannot create a span directly since the span gets exposed outside this method.
+                unsafe
+                {
+                    char* ptr = stackalloc char[length];
+                    span = new Span<char>(ptr, length);
+                }
+            }
+            JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
+            propertyName = span.Slice(0, written);
 
-            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
+            WriteStringByOptions(ref propertyName, value);
 
-            _buffer[idx++] = JsonConstants.Quote;
+            if (propertyArray != null)
+                ArrayPool<char>.Shared.Return(propertyArray);
+        }
+
+        private void WriteStringEscapeProperty(ref ReadOnlySpan<byte> propertyName, DateTime value, int firstEscapeIndexProp)
+        {
+            Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
+
+            byte[] propertyArray = null;
+
+            int length = firstEscapeIndexProp + 6 * (propertyName.Length - firstEscapeIndexProp);
+            Span<byte> span;
+            if (length > 256)
+            {
+                propertyArray = ArrayPool<byte>.Shared.Rent(length);
+                span = propertyArray;
+            }
+            else
+            {
+                // Cannot create a span directly since the span gets exposed outside this method.
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[length];
+                    span = new Span<byte>(ptr, length);
+                }
+            }
+            JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
+            propertyName = span.Slice(0, written);
+
+            WriteStringByOptions(ref propertyName, value);
+
+            if (propertyArray != null)
+                ArrayPool<byte>.Shared.Return(propertyArray);
+        }
+
+        private void WriteStringMinimized(ref ReadOnlySpan<char> escapedPropertyName, DateTime value)
+        {
+            int idx = WritePropertyNameMinimized(ref escapedPropertyName);
+
+            WriteStringValue(value, ref idx);
 
             Advance(idx);
         }
 
-        private void WriteStringSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, DateTime value)
+        private void WriteStringIndented(ref ReadOnlySpan<char> escapedPropertyName, DateTime value)
         {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
+            int idx = WritePropertyNameIndented(ref escapedPropertyName);
 
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringFormattedWithEncoding(ref propertyName, value);
-            }
-            else
-            {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty();
-                WriteStringFastWithEncoding(ref propertyName, value);
-            }
-        }
-
-        private void WriteStringFormattedWithEncoding(ref ReadOnlySpan<byte> propertyName, DateTime value)
-        {
-            int indent = Indentation;
-
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 7 - JsonConstants.MaximumDateTimeLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
-
-            // Calculated based on the following: ',\r\n  "encoded propertyName": "DateTime"'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 7 + JsonConstants.MaximumDateTimeLength + JsonWriterHelper.NewLineUtf8.Length + indent;
-
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(ref propertyName, bytesNeeded, indent, out int idx);
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(value, ref idx);
 
             Advance(idx);
         }
@@ -1918,293 +1718,66 @@ namespace System.Text.JsonLab
         {
             JsonWriterHelper.ValidateProperty(ref propertyName);
 
-            ReadOnlySpan<byte> escapedValue = propertyName;
             if (!suppressEscaping)
-            {
-                JsonWriterHelper.EscapeString(propertyName, _buffer, out _, out _);
-                unsafe
-                {
-                    byte* ptr = stackalloc byte[propertyName.Length];
-                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
-                }
-            }
-
-            if (_writerOptions.SlowPath)
-                WriteStringSlow(ref escapedValue, value);
+                WriteStringSuppressFalse(ref propertyName, value);
             else
-                WriteStringFast(ref escapedValue, value);
+                WriteStringByOptions(ref propertyName, value);
 
             _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
+            _tokenType = JsonTokenType.String;
         }
 
-        private void WriteStringFast(ref ReadOnlySpan<byte> propertyName, DateTime value)
+        private void WriteStringSuppressFalse(ref ReadOnlySpan<byte> propertyName, DateTime value)
         {
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 6 - JsonConstants.MaximumDateTimeLength >= 0);
+            int propertyIdx = JsonWriterHelper.NeedsEscaping(propertyName);
 
-            // Calculated based on the following: ',"propertyName":"DateTime"'
-            int bytesNeeded = propertyName.Length + 6 + JsonConstants.MaximumDateTimeLength;
+            Debug.Assert(propertyIdx >= -1 && propertyIdx < int.MaxValue / 2);
 
-            if (_currentDepth >= 0)
-                bytesNeeded--;
-
-            CheckSizeAndGrow(bytesNeeded);
-
-            WritePropertyName(ref propertyName, bytesNeeded, out int idx);
-
-            _buffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            _buffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        private void WriteStringSlow(ref ReadOnlySpan<byte> propertyName, DateTime value)
-        {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Indented)
+            if (propertyIdx != -1)
             {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringFormatted(ref propertyName, value);
+                WriteStringEscapeProperty(ref propertyName, value, propertyIdx);
             }
             else
             {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty();
-                WriteStringFast(ref propertyName, value);
+                WriteStringByOptions(ref propertyName, value);
             }
         }
 
-        private void WriteStringFormatted(ref ReadOnlySpan<byte> propertyName, DateTime value)
+        private void WriteStringMinimized(ref ReadOnlySpan<byte> escapedPropertyName, DateTime value)
         {
-            int indent = Indentation;
+            int idx = WritePropertyNameMinimized(ref escapedPropertyName);
 
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 7 - JsonConstants.MaximumDateTimeLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
-
-            // Calculated based on the following: ',\r\n  "propertyName": "DateTime"'
-            int bytesNeeded = propertyName.Length + 7 + JsonConstants.MaximumDateTimeLength + JsonWriterHelper.NewLineUtf8.Length + indent;
-
-            Span<byte> byteBuffer = WritePropertyNameFormatted(ref propertyName, bytesNeeded, indent, out int idx);
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(value, ref idx);
 
             Advance(idx);
         }
 
-        public void WriteString(string propertyName, DateTimeOffset value, bool suppressEscaping = false)
-            => WriteString(propertyName, value.DateTime, suppressEscaping);
-
-        public void WriteString(ReadOnlySpan<char> propertyName, DateTimeOffset value, bool suppressEscaping = false)
-            => WriteString(propertyName, value.DateTime, suppressEscaping);
-
-        public void WriteString(ReadOnlySpan<byte> propertyName, DateTimeOffset value, bool suppressEscaping = false)
-            => WriteString(propertyName, value.DateTime, suppressEscaping);
-
-        public void WriteString(string propertyName, Guid value, bool suppressEscaping = false)
-            => WriteString(propertyName.AsSpan(), value, suppressEscaping);
-
-        public void WriteString(ReadOnlySpan<char> propertyName, Guid value, bool suppressEscaping = false)
+        private void WriteStringIndented(ref ReadOnlySpan<byte> escapedPropertyName, DateTime value)
         {
-            JsonWriterHelper.ValidateProperty(ref propertyName);
+            int idx = WritePropertyNameIndented(ref escapedPropertyName);
 
-            WriteStringWithEncoding(MemoryMarshal.AsBytes(propertyName), value, suppressEscaping);
+            WriteStringValue(value, ref idx);
+
+            Advance(idx);
         }
 
-        private unsafe void WriteStringWithEncoding(ReadOnlySpan<byte> propertyName, Guid value, bool suppressEscaping)
+        private void WriteStringValue(DateTime value, ref int idx)
         {
-            ReadOnlySpan<byte> escapedValue = propertyName;
-            if (!suppressEscaping)
+            while (_buffer.Length <= idx)
             {
-                JsonWriterHelper.EscapeString(propertyName, _buffer, out _, out _);
-                byte* ptr = stackalloc byte[propertyName.Length];
-                escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
+                AdvanceAndGrow(idx);
+                idx = 0;
             }
-
-            if (_writerOptions.SlowPath)
-                WriteStringSlowWithEncoding(ref escapedValue, value);
-            else
-                WriteStringFastWithEncoding(ref escapedValue, value);
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
-        }
-
-        private void WriteStringFastWithEncoding(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 6 - JsonConstants.MaximumGuidLength >= 0);
-
-            // Calculated based on the following: ',"encoded propertyName":"Guid"'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 6 + JsonConstants.MaximumGuidLength;
-
-            if (_currentDepth >= 0)
-                bytesNeeded--;
-
-            CheckSizeAndGrow(bytesNeeded);
-
-            WritePropertyNameEncoded(ref propertyName, bytesNeeded, out int idx);
-
             _buffer[idx++] = JsonConstants.Quote;
 
-            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
+            FormatLoop(value, ref idx);
 
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
             _buffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        private void WriteStringSlowWithEncoding(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringFormattedWithEncoding(ref propertyName, value);
-            }
-            else
-            {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty();
-                WriteStringFastWithEncoding(ref propertyName, value);
-            }
-        }
-
-        private void WriteStringFormattedWithEncoding(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            int indent = Indentation;
-
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length / 2 * 3 - 7 - JsonConstants.MaximumGuidLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
-
-            // Calculated based on the following: ',\r\n  "encoded propertyName": "Guid"'
-            int bytesNeeded = propertyName.Length / 2 * 3 + 7 + JsonConstants.MaximumGuidLength + JsonWriterHelper.NewLineUtf8.Length + indent;
-
-            Span<byte> byteBuffer = WritePropertyNameEncodedAndFormatted(ref propertyName, bytesNeeded, indent, out int idx);
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        public void WriteString(ReadOnlySpan<byte> propertyName, Guid value, bool suppressEscaping = false)
-        {
-            JsonWriterHelper.ValidateProperty(ref propertyName);
-
-            ReadOnlySpan<byte> escapedValue = propertyName;
-            if (!suppressEscaping)
-            {
-                JsonWriterHelper.EscapeString(propertyName, _buffer, out _, out _);
-                unsafe
-                {
-                    byte* ptr = stackalloc byte[propertyName.Length];
-                    escapedValue = new ReadOnlySpan<byte>(ptr, propertyName.Length);
-                }
-            }
-
-            if (_writerOptions.SlowPath)
-                WriteStringSlow(ref escapedValue, value);
-            else
-                WriteStringFast(ref escapedValue, value);
-
-            _currentDepth |= 1 << 31;
-            _tokenType = JsonTokenType.Number;
-        }
-
-        private void WriteStringFast(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 6 - JsonConstants.MaximumGuidLength >= 0);
-
-            // Calculated based on the following: ',"propertyName":"Guid"'
-            int bytesNeeded = propertyName.Length + 6 + JsonConstants.MaximumGuidLength;
-
-            if (_currentDepth >= 0)
-                bytesNeeded--;
-
-            CheckSizeAndGrow(bytesNeeded);
-
-            WritePropertyName(ref propertyName, bytesNeeded, out int idx);
-
-            _buffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            _buffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
-        }
-
-        private void WriteStringSlow(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            Debug.Assert(_writerOptions.Indented || !_writerOptions.SkipValidation);
-
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringFormatted(ref propertyName, value);
-            }
-            else
-            {
-                Debug.Assert(!_writerOptions.SkipValidation);
-                ValidateWritingProperty();
-                WriteStringFast(ref propertyName, value);
-            }
-        }
-
-        private void WriteStringFormatted(ref ReadOnlySpan<byte> propertyName, Guid value)
-        {
-            int indent = Indentation;
-
-            // This is guaranteed not to overflow.
-            Debug.Assert(int.MaxValue - propertyName.Length - 7 - JsonConstants.MaximumGuidLength - JsonWriterHelper.NewLineUtf8.Length - indent >= 0);
-
-            // Calculated based on the following: ',\r\n  "propertyName": "Guid"'
-            int bytesNeeded = propertyName.Length + 7 + JsonConstants.MaximumGuidLength + JsonWriterHelper.NewLineUtf8.Length + indent;
-
-            Span<byte> byteBuffer = WritePropertyNameFormatted(ref propertyName, bytesNeeded, indent, out int idx);
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            bool result = Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten);
-            Debug.Assert(result);
-            idx += bytesWritten;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            Advance(idx);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2393,6 +1966,17 @@ namespace System.Text.JsonLab
             }
         }
 
+        private void FormatLoop(DateTime value, ref int idx)
+        {
+            int bytesWritten;
+            while (!Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out bytesWritten))
+            {
+                AdvanceAndGrow(idx, JsonConstants.MaximumDateTimeLength);
+                idx = 0;
+            }
+            idx += bytesWritten;
+        }
+
         private void WriteStringByOptions(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
         {
             if (_writerOptions.Indented)
@@ -2430,6 +2014,46 @@ namespace System.Text.JsonLab
                     ValidateWritingProperty();
                 }
                 WriteStringMinimized(ref propertyName, ref value);
+            }
+        }
+
+        private void WriteStringByOptions(ref ReadOnlySpan<char> propertyName, DateTime value)
+        {
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringIndented(ref propertyName, value);
+            }
+            else
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringMinimized(ref propertyName, value);
+            }
+        }
+
+        private void WriteStringByOptions(ref ReadOnlySpan<byte> propertyName, DateTime value)
+        {
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringIndented(ref propertyName, value);
+            }
+            else
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringMinimized(ref propertyName, value);
             }
         }
 
