@@ -415,7 +415,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriteNullUnescapedUtf16()
         {
             _arrayFormatterWrapper.Clear();
@@ -431,7 +431,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriteBoolUnescapedUtf16()
         {
             _arrayFormatterWrapper.Clear();
@@ -459,6 +459,39 @@ namespace System.Text.JsonLab.Benchmarks
                 {
                     json.WritePropertyName("first", escape: false);
                     json.WriteValue(true);
+                }
+                json.WriteEndObject();
+            }
+        }
+
+        [Benchmark]
+        public void WriteNumberUnescapedUtf16()
+        {
+            _arrayFormatterWrapper.Clear();
+
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
+
+            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
+
+            json.WriteStartObject();
+            for (int i = 0; i < 100; i++)
+                json.WriteNumber("first", value: 123456, suppressEscaping: true);
+            json.WriteEndObject();
+            json.Flush();
+        }
+
+        [Benchmark]
+        public void NewtonsoftNumberUnescaped()
+        {
+            using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
+            {
+                json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+
+                json.WriteStartObject();
+                for (int i = 0; i < 100; i++)
+                {
+                    json.WritePropertyName("first", escape: false);
+                    json.WriteValue(123456);
                 }
                 json.WriteEndObject();
             }
