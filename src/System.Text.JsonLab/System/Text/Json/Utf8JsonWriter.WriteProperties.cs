@@ -1335,22 +1335,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_writerOptions.Indented)
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringIndented(ref escapedPropertyName, ref value);
-                }
-                else
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringMinimized(ref escapedPropertyName, ref value);
-                }
+                WriteStringByOptions(ref escapedPropertyName, ref value);
             }
         }
 
@@ -1363,22 +1348,7 @@ namespace System.Text.JsonLab
             JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int charsWritten);
             value = span.Slice(0, charsWritten);
 
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringIndented(ref escapedPropertyName, ref value);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringMinimized(ref escapedPropertyName, ref value);
-            }
+            WriteStringByOptions(ref escapedPropertyName, ref value);
 
             ArrayPool<char>.Shared.Return(valueArray);
         }
@@ -1398,22 +1368,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_writerOptions.Indented)
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringIndented(ref propertyName, ref value);
-                }
-                else
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringMinimized(ref propertyName, ref value);
-                }
+                WriteStringByOptions(ref propertyName, ref value);
             }
         }
 
@@ -1469,6 +1424,17 @@ namespace System.Text.JsonLab
                 propertyName = span.Slice(0, charsWritten);
             }
 
+            WriteStringByOptions(ref propertyName, ref value);
+
+            if (valueArray != null)
+                ArrayPool<char>.Shared.Return(valueArray);
+
+            if (propertyArray != null)
+                ArrayPool<char>.Shared.Return(propertyArray);
+        }
+
+        private void WriteStringByOptions(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
+        {
             if (_writerOptions.Indented)
             {
                 if (!_writerOptions.SkipValidation)
@@ -1485,12 +1451,26 @@ namespace System.Text.JsonLab
                 }
                 WriteStringMinimized(ref propertyName, ref value);
             }
+        }
 
-            if (valueArray != null)
-                ArrayPool<char>.Shared.Return(valueArray);
-
-            if (propertyArray != null)
-                ArrayPool<char>.Shared.Return(propertyArray);
+        private void WriteStringByOptions(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
+        {
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringIndented(ref propertyName, ref value);
+            }
+            else
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringMinimized(ref propertyName, ref value);
+            }
         }
 
         private void WriteStringIndented(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> escapedValue)
@@ -1924,22 +1904,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_writerOptions.Indented)
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringIndented(ref escapedPropertyName, ref value);
-                }
-                else
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringMinimized(ref escapedPropertyName, ref value);
-                }
+                WriteStringByOptions(ref escapedPropertyName, ref value);
             }
         }
 
@@ -1952,22 +1917,7 @@ namespace System.Text.JsonLab
             JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int bytesWritten);
             value = span.Slice(0, bytesWritten);
 
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringIndented(ref escapedPropertyName, ref value);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringMinimized(ref escapedPropertyName, ref value);
-            }
+            WriteStringByOptions(ref escapedPropertyName, ref value);
 
             ArrayPool<byte>.Shared.Return(valueArray);
         }
@@ -1987,22 +1937,7 @@ namespace System.Text.JsonLab
             }
             else
             {
-                if (_writerOptions.Indented)
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringIndented(ref propertyName, ref value);
-                }
-                else
-                {
-                    if (!_writerOptions.SkipValidation)
-                    {
-                        ValidateWritingProperty();
-                    }
-                    WriteStringMinimized(ref propertyName, ref value);
-                }
+                WriteStringByOptions(ref propertyName, ref value);
             }
         }
 
@@ -2059,22 +1994,7 @@ namespace System.Text.JsonLab
                 propertyName = span.Slice(0, bytesWritten);
             }
 
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringIndented(ref propertyName, ref value);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringMinimized(ref propertyName, ref value);
-            }
+            WriteStringByOptions(ref propertyName, ref value);
 
             if (valueArray != null)
                 ArrayPool<byte>.Shared.Return(valueArray);

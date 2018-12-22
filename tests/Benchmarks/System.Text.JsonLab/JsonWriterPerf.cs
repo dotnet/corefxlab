@@ -15,8 +15,8 @@ namespace System.Text.JsonLab.Benchmarks
 {
     //[SimpleJob(invocationCount: 2_097_152, warmupCount: 5, targetCount: 10)]
     //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
-    [MemoryDiagnoser]
-    [DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
+    //[MemoryDiagnoser]
+    //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
     //[SimpleJob(warmupCount: 5, targetCount: 10)]
     [Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
@@ -214,7 +214,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WritePropertyValueEscapingRequiredLarger()
         {
             _arrayFormatterWrapper.Clear();
@@ -230,7 +230,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WritePropertyValueEscapingRequired()
         {
             _arrayFormatterWrapper.Clear();
