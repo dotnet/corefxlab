@@ -1345,8 +1345,8 @@ namespace System.Text.JsonLab
 
             char[] valueArray = ArrayPool<char>.Shared.Rent(firstEscapeIndex + 6 * (value.Length - firstEscapeIndex));
             Span<char> span = valueArray;
-            JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int charsWritten);
-            value = span.Slice(0, charsWritten);
+            JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int written);
+            value = span.Slice(0, written);
 
             WriteStringByOptions(ref escapedPropertyName, ref value);
 
@@ -1383,6 +1383,7 @@ namespace System.Text.JsonLab
             if (firstEscapeIndexVal != -1)
             {
                 int length = firstEscapeIndexVal + 6 * (value.Length - firstEscapeIndexVal);
+
                 Span<char> span;
                 if (length > 256)
                 {
@@ -1398,8 +1399,8 @@ namespace System.Text.JsonLab
                         span = new Span<char>(ptr, length);
                     }
                 }
-                JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndexVal, out int charsWritten);
-                value = span.Slice(0, charsWritten);
+                JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndexVal, out int written);
+                value = span.Slice(0, written);
             }
 
             if (firstEscapeIndexProp != -1)
@@ -1420,8 +1421,8 @@ namespace System.Text.JsonLab
                         span = new Span<char>(ptr, length);
                     }
                 }
-                JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int charsWritten);
-                propertyName = span.Slice(0, charsWritten);
+                JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
+                propertyName = span.Slice(0, written);
             }
 
             WriteStringByOptions(ref propertyName, ref value);
@@ -1433,226 +1434,20 @@ namespace System.Text.JsonLab
                 ArrayPool<char>.Shared.Return(propertyArray);
         }
 
-        private void WriteStringByOptions(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
+        private void WriteStringMinimized(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> escapedValue)
         {
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringIndented(ref propertyName, ref value);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringMinimized(ref propertyName, ref value);
-            }
-        }
+            int idx = WritePropertyNameMinimized(ref escapedPropertyName);
 
-        private void WriteStringByOptions(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
-        {
-            if (_writerOptions.Indented)
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringIndented(ref propertyName, ref value);
-            }
-            else
-            {
-                if (!_writerOptions.SkipValidation)
-                {
-                    ValidateWritingProperty();
-                }
-                WriteStringMinimized(ref propertyName, ref value);
-            }
-        }
-
-        private void WriteStringIndented(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> escapedValue)
-        {
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
-
-            if (_tokenType != JsonTokenType.None)
-                WriteNewLine(ref idx);
-
-            int indent = Indentation;
-            while (true)
-            {
-                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int bytesWritten);
-                idx += bytesWritten;
-                if (result)
-                {
-                    break;
-                }
-                indent -= bytesWritten;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            ReadOnlySpan<byte> byteSpan = MemoryMarshal.AsBytes(escapedPropertyName);
-            int partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Space;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            byteSpan = MemoryMarshal.AsBytes(escapedValue);
-            partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(ref escapedValue, ref idx);
 
             Advance(idx);
         }
 
-        private void WriteStringMinimized(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> escapedValue)
+        private void WriteStringIndented(ref ReadOnlySpan<char> escapedPropertyName, ref ReadOnlySpan<char> escapedValue)
         {
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
+            int idx = WritePropertyNameIndented(ref escapedPropertyName);
 
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            ReadOnlySpan<byte> byteSpan = MemoryMarshal.AsBytes(escapedPropertyName);
-            int partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            byteSpan = MemoryMarshal.AsBytes(escapedValue);
-            partialConsumed = 0;
-            while (true)
-            {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
-                idx += written;
-                if (status == OperationStatus.Done)
-                {
-                    break;
-                }
-                partialConsumed += consumed;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(ref escapedValue, ref idx);
 
             Advance(idx);
         }
@@ -1914,8 +1709,8 @@ namespace System.Text.JsonLab
 
             byte[] valueArray = ArrayPool<byte>.Shared.Rent(firstEscapeIndex + 6 * (value.Length - firstEscapeIndex));
             Span<byte> span = valueArray;
-            JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int bytesWritten);
-            value = span.Slice(0, bytesWritten);
+            JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndex, out int written);
+            value = span.Slice(0, written);
 
             WriteStringByOptions(ref escapedPropertyName, ref value);
 
@@ -1933,7 +1728,7 @@ namespace System.Text.JsonLab
             // Equivalent to: valueIdx != -1 || propertyIdx != -1
             if (valueIdx + propertyIdx != -2)
             {
-                WriteStringEscapePropertyOrValue(ref propertyName, ref value, valueIdx, propertyIdx);
+                WriteStringEscapePropertyOrValue(ref propertyName, ref value, propertyIdx, valueIdx);
             }
             else
             {
@@ -1941,7 +1736,7 @@ namespace System.Text.JsonLab
             }
         }
 
-        private void WriteStringEscapePropertyOrValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value, int firstEscapeIndexVal, int firstEscapeIndexProp)
+        private void WriteStringEscapePropertyOrValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value, int firstEscapeIndexProp, int firstEscapeIndexVal)
         {
             Debug.Assert(int.MaxValue / 6 >= value.Length);
             Debug.Assert(int.MaxValue / 6 >= propertyName.Length);
@@ -1968,8 +1763,8 @@ namespace System.Text.JsonLab
                         span = new Span<byte>(ptr, length);
                     }
                 }
-                JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndexVal, out int bytesWritten);
-                value = span.Slice(0, bytesWritten);
+                JsonWriterHelper.EscapeString(ref value, ref span, firstEscapeIndexVal, out int written);
+                value = span.Slice(0, written);
             }
 
             if (firstEscapeIndexProp != -1)
@@ -1990,8 +1785,8 @@ namespace System.Text.JsonLab
                         span = new Span<byte>(ptr, length);
                     }
                 }
-                JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int bytesWritten);
-                propertyName = span.Slice(0, bytesWritten);
+                JsonWriterHelper.EscapeString(ref propertyName, ref span, firstEscapeIndexProp, out int written);
+                propertyName = span.Slice(0, written);
             }
 
             WriteStringByOptions(ref propertyName, ref value);
@@ -2005,132 +1800,18 @@ namespace System.Text.JsonLab
 
         private void WriteStringMinimized(ref ReadOnlySpan<byte> escapedPropertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
+            int idx = WritePropertyNameMinimized(ref escapedPropertyName);
 
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            CopyLoop(ref escapedPropertyName, ref idx);
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            CopyLoop(ref escapedValue, ref idx);
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(ref escapedValue, ref idx);
 
             Advance(idx);
         }
 
         private void WriteStringIndented(ref ReadOnlySpan<byte> escapedPropertyName, ref ReadOnlySpan<byte> escapedValue)
         {
-            int idx = 0;
-            if (_currentDepth < 0)
-            {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
-                _buffer[idx++] = JsonConstants.ListSeperator;
-            }
+            int idx = WritePropertyNameIndented(ref escapedPropertyName);
 
-            if (_tokenType != JsonTokenType.None)
-                WriteNewLine(ref idx);
-
-            int indent = Indentation;
-            while (true)
-            {
-                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int bytesWritten);
-                idx += bytesWritten;
-                if (result)
-                {
-                    break;
-                }
-                indent -= bytesWritten;
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            CopyLoop(ref escapedPropertyName, ref idx);
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Space;
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
-
-            CopyLoop(ref escapedValue, ref idx);
-
-            while (_buffer.Length <= idx)
-            {
-                AdvanceAndGrow(idx);
-                idx = 0;
-            }
-            _buffer[idx++] = JsonConstants.Quote;
+            WriteStringValue(ref escapedValue, ref idx);
 
             Advance(idx);
         }
@@ -2710,6 +2391,323 @@ namespace System.Text.JsonLab
                 AdvanceAndGrow(_buffer.Length);
                 idx = 0;
             }
+        }
+
+        private void WriteStringByOptions(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
+        {
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringIndented(ref propertyName, ref value);
+            }
+            else
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringMinimized(ref propertyName, ref value);
+            }
+        }
+
+        private void WriteStringByOptions(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
+        {
+            if (_writerOptions.Indented)
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringIndented(ref propertyName, ref value);
+            }
+            else
+            {
+                if (!_writerOptions.SkipValidation)
+                {
+                    ValidateWritingProperty();
+                }
+                WriteStringMinimized(ref propertyName, ref value);
+            }
+        }
+
+        private int WritePropertyNameMinimized(ref ReadOnlySpan<byte> escapedPropertyName)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            CopyLoop(ref escapedPropertyName, ref idx);
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            return idx;
+        }
+
+        private int WritePropertyNameIndented(ref ReadOnlySpan<byte> escapedPropertyName)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            if (_tokenType != JsonTokenType.None)
+                WriteNewLine(ref idx);
+
+            int indent = Indentation;
+            while (true)
+            {
+                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int bytesWritten);
+                idx += bytesWritten;
+                if (result)
+                {
+                    break;
+                }
+                indent -= bytesWritten;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            CopyLoop(ref escapedPropertyName, ref idx);
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Space;
+
+            return idx;
+        }
+
+        private void WriteStringValue(ref ReadOnlySpan<byte> escapedValue, ref int idx)
+        {
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            CopyLoop(ref escapedValue, ref idx);
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+        }
+
+        private int WritePropertyNameMinimized(ref ReadOnlySpan<char> escapedPropertyName)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            ReadOnlySpan<byte> byteSpan = MemoryMarshal.AsBytes(escapedPropertyName);
+            int partialConsumed = 0;
+            while (true)
+            {
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                idx += written;
+                if (status == OperationStatus.Done)
+                {
+                    break;
+                }
+                partialConsumed += consumed;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            return idx;
+        }
+
+        private int WritePropertyNameIndented(ref ReadOnlySpan<char> escapedPropertyName)
+        {
+            int idx = 0;
+            if (_currentDepth < 0)
+            {
+                while (_buffer.Length <= idx)
+                {
+                    GrowAndEnsure();
+                }
+                _buffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            if (_tokenType != JsonTokenType.None)
+                WriteNewLine(ref idx);
+
+            int indent = Indentation;
+            while (true)
+            {
+                bool result = JsonWriterHelper.TryWriteIndentation(_buffer.Slice(idx), indent, out int bytesWritten);
+                idx += bytesWritten;
+                if (result)
+                {
+                    break;
+                }
+                indent -= bytesWritten;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            ReadOnlySpan<byte> byteSpan = MemoryMarshal.AsBytes(escapedPropertyName);
+            int partialConsumed = 0;
+            while (true)
+            {
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                idx += written;
+                if (status == OperationStatus.Done)
+                {
+                    break;
+                }
+                partialConsumed += consumed;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Space;
+
+            return idx;
+        }
+
+        private void WriteStringValue(ref ReadOnlySpan<char> escapedValue, ref int idx)
+        {
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
+
+            ReadOnlySpan<byte> byteSpan = MemoryMarshal.AsBytes(escapedValue);
+            int partialConsumed = 0;
+            while (true)
+            {
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                idx += written;
+                if (status == OperationStatus.Done)
+                {
+                    break;
+                }
+                partialConsumed += consumed;
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+
+            while (_buffer.Length <= idx)
+            {
+                AdvanceAndGrow(idx);
+                idx = 0;
+            }
+            _buffer[idx++] = JsonConstants.Quote;
         }
     }
 }
