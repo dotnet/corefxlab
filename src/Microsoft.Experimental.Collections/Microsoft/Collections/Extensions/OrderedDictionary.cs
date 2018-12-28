@@ -533,7 +533,7 @@ namespace Microsoft.Collections.Extensions
             for (int i = index + 1; i < count; ++i)
             {
                 entries[i - 1] = entries[i];
-                UpdateBucketIndex(i, -1);
+                UpdateBucketIndex(i, incrementAmount: -1);
             }
             --_count;
             entries[_count] = default;
@@ -825,7 +825,7 @@ namespace Microsoft.Collections.Extensions
             for (int i = count - 1; i >= actualIndex; --i)
             {
                 entries[i + 1] = entries[i];
-                UpdateBucketIndex(i, 1);
+                UpdateBucketIndex(i, incrementAmount: 1);
             }
 
             ref Entry entry = ref entries[actualIndex];

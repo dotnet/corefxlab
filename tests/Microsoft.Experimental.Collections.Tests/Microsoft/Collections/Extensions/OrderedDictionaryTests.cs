@@ -1481,7 +1481,7 @@ namespace Microsoft.Collections.Extensions.Tests
             OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
             dictionary.Add(1, "1");
             dictionary.Insert(0, 4, "4"); // should be in the same bucket
-            dictionary.Insert(0, 7, "7");
+            dictionary.Insert(0, 7, "7"); // should be in the same bucket
             Assert.Equal("7", dictionary[index: 0]);
             Assert.Equal("4", dictionary[index: 1]);
             Assert.Equal("1", dictionary[index: 2]);
@@ -1502,6 +1502,48 @@ namespace Microsoft.Collections.Extensions.Tests
             Assert.Equal("4", dictionary[index: 1]);
             Assert.Equal("7", dictionary[key: 7]);
             Assert.Equal("4", dictionary[key: 4]);
+        }
+
+        [Fact]
+        public void RemoveAt_Succeeds_WhenRemovingFromTheEndOfTheChain()
+        {
+            OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
+            dictionary.Add(1, "1");
+            dictionary.Add(4, "4"); // should be in the same bucket
+            dictionary.Add(7, "7"); // should be in the same bucket
+            dictionary.RemoveAt(0);
+            Assert.Equal("4", dictionary[index: 0]);
+            Assert.Equal("7", dictionary[index: 1]);
+            Assert.Equal("7", dictionary[key: 7]);
+            Assert.Equal("4", dictionary[key: 4]);
+        }
+
+        [Fact]
+        public void RemoveAt_Succeeds_WhenRemovingFromTheStartOfTheChain()
+        {
+            OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
+            dictionary.Add(1, "1");
+            dictionary.Add(4, "4"); // should be in the same bucket
+            dictionary.Insert(0, 7, "7"); // should be in the same bucket
+            dictionary.RemoveAt(0);
+            Assert.Equal("1", dictionary[index: 0]);
+            Assert.Equal("4", dictionary[index: 1]);
+            Assert.Equal("1", dictionary[key: 1]);
+            Assert.Equal("4", dictionary[key: 4]);
+        }
+
+        [Fact]
+        public void RemoveAt_Succeeds_WhenRemovingFromTheMiddleOfTheChain()
+        {
+            OrderedDictionary<int, string> dictionary = new OrderedDictionary<int, string>(3);
+            dictionary.Add(1, "1");
+            dictionary.Insert(0, 4, "4"); // should be in the same bucket
+            dictionary.Add(7, "7"); // should be in the same bucket
+            dictionary.RemoveAt(0);
+            Assert.Equal("1", dictionary[index: 0]);
+            Assert.Equal("7", dictionary[index: 1]);
+            Assert.Equal("1", dictionary[key: 1]);
+            Assert.Equal("7", dictionary[key: 7]);
         }
 
         [Fact]
