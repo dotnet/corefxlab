@@ -86,14 +86,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueMinimized(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueMinimized(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<int> values)
@@ -123,15 +123,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<long> values, bool suppressEscaping = false)
@@ -210,14 +210,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueMinimized(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueMinimized(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<long> values)
@@ -247,15 +247,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<uint> values, bool suppressEscaping = false)
@@ -334,14 +334,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<uint> values)
@@ -371,15 +371,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<ulong> values, bool suppressEscaping = false)
@@ -458,14 +458,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<ulong> values)
@@ -495,15 +495,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<decimal> values, bool suppressEscaping = false)
@@ -575,14 +575,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<decimal> values)
@@ -612,15 +612,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<double> values, bool suppressEscaping = false)
@@ -692,14 +692,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<double> values)
@@ -729,15 +729,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteNumberArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<float> values, bool suppressEscaping = false)
@@ -809,14 +809,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteNumberValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteNumberValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<float> values)
@@ -846,15 +846,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteNumberValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteNumberValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteStringArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<Guid> values, bool suppressEscaping = false)
@@ -930,14 +930,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteStringValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteStringValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<Guid> values)
@@ -967,15 +967,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteStringValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteStringValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteStringArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTime> values, bool suppressEscaping = false)
@@ -1051,14 +1051,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteStringValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteStringValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<DateTime> values)
@@ -1088,15 +1088,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteStringValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteStringValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         public void WriteStringArray(ReadOnlySpan<byte> propertyName, ReadOnlySpan<DateTimeOffset> values, bool suppressEscaping = false)
@@ -1172,14 +1172,14 @@ namespace System.Text.JsonLab
             WriteStartFast(ref propertyName, JsonConstants.OpenBracket);
             if (values.Length != 0)
             {
-                WriteValueFast(values[0]);
+                WriteStringValueMinimized(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFast(values[i]);
+                    WriteStringValueMinimized(values[i]);
                 }
             }
-            WriteEndFast(JsonConstants.CloseBracket);
+            WriteEndMinimized(JsonConstants.CloseBracket);
         }
 
         private void WriteArraySlow(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<DateTimeOffset> values)
@@ -1209,15 +1209,15 @@ namespace System.Text.JsonLab
             {
                 _currentDepth &= JsonConstants.RemoveFlagsBitMask;
                 _currentDepth++;
-                WriteValueFormatted(values[0]);
+                WriteStringValueIndented(values[0]);
                 _currentDepth |= 1 << 31;
                 for (int i = 1; i < values.Length; i++)
                 {
-                    WriteValueFormatted(values[i]);
+                    WriteStringValueIndented(values[i]);
                 }
                 _currentDepth--;
             }
-            WriteEndFormatted(JsonConstants.CloseBracket);
+            WriteEndIndented(JsonConstants.CloseBracket);
         }
 
         private void ValidateWritingArrayValues()

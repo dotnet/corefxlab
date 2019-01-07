@@ -286,6 +286,39 @@ namespace System.Text.JsonLab.Tests
         }
 
         [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void InvalidJsonContinue(bool formatted)
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = true });
+
+            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
+
+            var jsonUtf8 = new Utf8JsonWriter2(output, state);
+            for (int i = 0; i < 100; i++)
+                jsonUtf8.WriteEndArray();
+            jsonUtf8.WriteStartArray();
+            jsonUtf8.WriteEndArray();
+            jsonUtf8.Flush();
+
+            ArraySegment<byte> arraySegment = output.Formatted;
+            string actualStr = Encoding.UTF8.GetString(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < 100; i++)
+            {
+                if (formatted)
+                    sb.Append(Environment.NewLine);
+                sb.Append("]");
+            }
+            if (formatted)
+                sb.Append(Environment.NewLine);
+            sb.Append("[]");
+
+            Assert.Equal(sb.ToString(), actualStr);
+        }
+
+        [Theory]
         [InlineData(true, true)]
         [InlineData(true, false)]
         [InlineData(false, true)]

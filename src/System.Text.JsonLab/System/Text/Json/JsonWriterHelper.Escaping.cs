@@ -11,6 +11,36 @@ namespace System.Text.JsonLab
 {
     internal static partial class JsonWriterHelper
     {
+        // Only allow ASCII characters between ' ' (0x20) and '~' (0x7E), inclusively,
+        // but exclude characters that need to be escaped as hex: '"', '\'', '&', '+', '<', '>', '`'
+        // and exclude characters that need to be escaped by adding a backslash: '\n', '\r', '\t', '\\', '/', '\b', '\f'
+        //
+        // non-zero = allowed, 0 = disallowed
+        private static ReadOnlySpan<byte> AllowList => new byte[256] {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool NeedsEscaping(byte value) => AllowList[value] == 0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool NeedsEscaping(char value) => value > 255 || AllowList[value] == 0;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int NeedsEscaping(ReadOnlySpan<byte> value)
         {
@@ -219,36 +249,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        // Only allow ASCII characters between ' ' (0x20) and '~' (0x7E), inclusively,
-        // but exclude characters that need to be escaped as hex: '"', '\'', '&', '+', '<', '>', '`'
-        // and exclude characters that need to be escaped by adding a backslash: '\n', '\r', '\t', '\\', '/', '\b', '\f'
-        //
-        // non-zero = allowed, 0 = disallowed
-        private static ReadOnlySpan<byte> AllowList => new byte[256] {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
-            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool NeedsEscaping(byte value) => AllowList[value] == 0;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool NeedsEscaping(char value) => value > 255 || AllowList[value] == 0;
-
         private static bool InRange(int ch, int start, int end)
         {
             return (uint)(ch - start) <= (uint)(end - start);
@@ -279,6 +279,5 @@ namespace System.Text.JsonLab
             Debug.Assert(value < 16);
             return (byte)((value < 10) ? ('0' + value) : ('a' + (value - 10)));
         }
-
     }
 }
