@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>ASN.1 BER/CER/DER Reader/Writer</Description>
-    <TargetFrameworks>netstandard2.0;netcoreapp21</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>ASN1 BER CER DER corefxlab</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
