@@ -11,13 +11,13 @@ namespace System.Buffers.Experimental.Benchmarks
         [Params(10, 100, 1000, 10_000)]
         public uint Length;
 
-        private Range _range;
+        private RangeLab _range;
         private int[] _array;
 
         [GlobalSetup]
         public void Setup()
         {
-            _range = new Range(0, Length);
+            _range = new RangeLab(0, Length);
             _array = new int[Length];
         }
 

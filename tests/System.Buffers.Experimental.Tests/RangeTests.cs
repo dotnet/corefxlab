@@ -17,7 +17,7 @@ namespace System.Buffers.Tests
             {
                 for (uint length = 0; length < 20; length++)
                 {
-                    var range = new Range(first, length);
+                    var range = new RangeLab(first, length);
 
                     Assert.Equal(first, range.First);
                     Assert.Equal(length, range.Length);
@@ -38,7 +38,7 @@ namespace System.Buffers.Tests
                     Assert.Equal(range.First, f);
                     Assert.Equal(range.End, l);
 
-                    var constructed = Range.Construct(first, range.End);
+                    var constructed = RangeLab.Construct(first, range.End);
                     Assert.Equal(range.First, constructed.First);
                     Assert.Equal(range.End, constructed.End);
                     Assert.Equal(range.Length, constructed.Length);
@@ -49,7 +49,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void FirstIsInclusiveEndIsExclusive()
         {
-            var range = Range.Construct(10, 15);
+            var range = RangeLab.Construct(10, 15);
             Assert.Equal(10, range.First());
             Assert.Equal(14, range.Last());
         }
@@ -57,28 +57,28 @@ namespace System.Buffers.Tests
         [Fact]
         public void UnboundedEnd()
         {
-            var unboundedEnd = Range.Construct(10, Range.UnboundedEnd);
+            var unboundedEnd = RangeLab.Construct(10, RangeLab.UnboundedEnd);
             Assert.False(unboundedEnd.IsBound); 
             Assert.Equal(10, unboundedEnd.First);
-            Assert.Equal(Range.UnboundedEnd, unboundedEnd.End);          
+            Assert.Equal(RangeLab.UnboundedEnd, unboundedEnd.End);          
         }
 
         [Fact]
         public void UnboundedFirst()
         {
-            var unboundedFirst = Range.Construct(Range.UnboundedFirst, 10);
+            var unboundedFirst = RangeLab.Construct(RangeLab.UnboundedFirst, 10);
             Assert.False(unboundedFirst.IsBound);
-            Assert.Equal(Range.UnboundedFirst, unboundedFirst.First);
+            Assert.Equal(RangeLab.UnboundedFirst, unboundedFirst.First);
             Assert.Equal(10, unboundedFirst.End);           
         }
 
         [Fact]
         public void Unbounded()
         {
-            var unbounded = Range.Construct(Range.UnboundedFirst, Range.UnboundedEnd);
+            var unbounded = RangeLab.Construct(RangeLab.UnboundedFirst, RangeLab.UnboundedEnd);
             Assert.False(unbounded.IsBound);
-            Assert.Equal(Range.UnboundedFirst, unbounded.First);
-            Assert.Equal(Range.UnboundedEnd, unbounded.End);
+            Assert.Equal(RangeLab.UnboundedFirst, unbounded.First);
+            Assert.Equal(RangeLab.UnboundedEnd, unbounded.End);
         }
 
         [Theory]
@@ -88,29 +88,29 @@ namespace System.Buffers.Tests
         [InlineData(-1, 0, 0, false)] // lower bound negative
         public void IsValidArrayRange(int first, int end, int length, bool result)
         {
-            var range = Range.Construct(first, end);
+            var range = RangeLab.Construct(first, end);
             Assert.Equal(result, range.IsValid(length));
         }
 
         [Theory]
-        [InlineData(Range.UnboundedFirst, 0, 0, 0, 0)]
-        [InlineData(Range.UnboundedFirst, 1, 10, 0, 1)]
-        [InlineData(0, Range.UnboundedEnd, 1, 0, 1)]
+        [InlineData(RangeLab.UnboundedFirst, 0, 0, 0, 0)]
+        [InlineData(RangeLab.UnboundedFirst, 1, 10, 0, 1)]
+        [InlineData(0, RangeLab.UnboundedEnd, 1, 0, 1)]
         public void Bind(int first, int end, int length, int resultFirst, int resultEnd)
         {
-            var range = Range.Construct(first, end);
+            var range = RangeLab.Construct(first, end);
             var result = range.Bind(length);
             Assert.Equal(resultFirst, result.First);
             Assert.Equal(resultEnd, result.End);
         }
 
         [Theory]
-        [InlineData(1, 0, Range.UnboundedEnd, 1)]
-        [InlineData(1, 1, Range.UnboundedEnd, 0)]
-        [InlineData(1, 3, Range.UnboundedEnd, 0)]
+        [InlineData(1, 0, RangeLab.UnboundedEnd, 1)]
+        [InlineData(1, 1, RangeLab.UnboundedEnd, 0)]
+        [InlineData(1, 3, RangeLab.UnboundedEnd, 0)]
         public void BindToValid(int arrayLength, int first, int end, uint boundRangeLength)
         {
-            var range = Range.Construct(first, end);
+            var range = RangeLab.Construct(first, end);
             var result = range.BindToValid(arrayLength);
             Assert.Equal(boundRangeLength, result.Length);
             Assert.Equal(boundRangeLength == 0 ? arrayLength : first, result.First);
@@ -125,7 +125,7 @@ namespace System.Buffers.Tests
         [InlineData(int.MinValue + 1, uint.MaxValue - 2, int.MaxValue -1)]
         public void BoundaryConditions(int first, uint length, int end)
         {
-            var empty = new Range(first, length);
+            var empty = new RangeLab(first, length);
             Assert.Equal(length, empty.Length);
             Assert.Equal(first, empty.First);
             Assert.Equal(end, empty.End);
@@ -134,39 +134,39 @@ namespace System.Buffers.Tests
         [Fact]
         public void Errors()
         {
-            var max = new Range(int.MaxValue - 1, 1);
+            var max = new RangeLab(int.MaxValue - 1, 1);
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 // MinValue is used as a sentinel for First, so cannot be used with Length
-                var tooLong = new Range(int.MinValue, 0);
+                var tooLong = new RangeLab(int.MinValue, 0);
             });
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 // MaxValue is used as a sentinel for End, so End cannot end up being it.
-                var tooLong = new Range(int.MaxValue, 1);
+                var tooLong = new RangeLab(int.MaxValue, 1);
             });
             Assert.Throws<InvalidOperationException>(() =>
             {
                 // Cannot enumerate unbound
-                var unbound = Range.Construct(Range.UnboundedFirst, 1);
+                var unbound = RangeLab.Construct(RangeLab.UnboundedFirst, 1);
                 unbound.GetEnumerator();
             });
             Assert.Throws<InvalidOperationException>(() =>
             {
                 // Cannot enumerate unbound
-                var unbound = Range.Construct(1, Range.UnboundedEnd);
+                var unbound = RangeLab.Construct(1, RangeLab.UnboundedEnd);
                 unbound.GetEnumerator();
             });
             Assert.Throws<InvalidOperationException>(() =>
             {
                 // Cannot get length on unbound
-                var unbound = Range.Construct(Range.UnboundedFirst, 1);
+                var unbound = RangeLab.Construct(RangeLab.UnboundedFirst, 1);
                 var length = unbound.Length;
             });
             Assert.Throws<InvalidOperationException>(() =>
             {
                 // Cannot get length on unbound
-                var unbound = Range.Construct(1, Range.UnboundedEnd);
+                var unbound = RangeLab.Construct(1, RangeLab.UnboundedEnd);
                 var length = unbound.Length;
             });
         }
@@ -179,13 +179,13 @@ namespace System.Buffers.Tests
                 Assert.Throws<ArgumentOutOfRangeException>(() =>
                 {
                     // Unbound Range cannot have length
-                    var invalid = new Range(Range.UnboundedFirst, length);
+                    var invalid = new RangeLab(RangeLab.UnboundedFirst, length);
                 });
             }
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 // Unbound Range cannot have length
-                var invalid = new Range(Range.UnboundedFirst, uint.MaxValue);
+                var invalid = new RangeLab(RangeLab.UnboundedFirst, uint.MaxValue);
             });
         }
     }
