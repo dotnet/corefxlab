@@ -306,8 +306,14 @@ namespace System.Text.JsonLab.Tests
 
             var sb = new StringBuilder();
             for (int i = 0; i < 100; i++)
-                sb.Append(formatted ? "\r\n]" : "]");
-            sb.Append(formatted ? "\r\n[]" : "[]");
+            {
+                if (formatted)
+                    sb.Append(Environment.NewLine);
+                sb.Append("]");
+            }
+            if (formatted)
+                sb.Append(Environment.NewLine);
+            sb.Append("[]");
 
             Assert.Equal(sb.ToString(), actualStr);
         }
