@@ -9,9 +9,130 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    internal static class JsonWriterHelper
+    internal static partial class JsonWriterHelper
     {
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteIndentation(Span<byte> buffer)
+        {
+            Debug.Assert(buffer.Length % 2 == 0);
+
+            if (buffer.Length < 8)
+            {
+                int i = 0;
+                while (i < buffer.Length)
+                {
+                    buffer[i++] = JsonConstants.Space;
+                    buffer[i++] = JsonConstants.Space;
+                }
+            }
+            else
+            {
+                buffer.Fill(JsonConstants.Space);
+            }
+            return buffer.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWriteIndentation(Span<byte> buffer, int indent, out int bytesWritten)
+        {
+            Debug.Assert(indent % 2 == 0);
+
+            if (buffer.Length >= indent)
+            {
+                if (indent < 8)
+                {
+                    int i = 0;
+                    while (i < indent)
+                    {
+                        buffer[i++] = JsonConstants.Space;
+                        buffer[i++] = JsonConstants.Space;
+                    }
+                }
+                else
+                {
+                    buffer.Slice(0, indent).Fill(JsonConstants.Space);
+                }
+                bytesWritten = indent;
+                return true;
+            }
+            else
+            {
+                int i = 0;
+                while (i < buffer.Length - 1)
+                {
+                    buffer[i++] = JsonConstants.Space;
+                    buffer[i++] = JsonConstants.Space;
+                }
+                bytesWritten = i;
+                return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateProperty(ref ReadOnlySpan<byte> propertyName)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateValue(ref ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateProperty(ref ReadOnlySpan<char> propertyName)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidateValue(ref ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException("Argument too large.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<byte> propertyName, ref ReadOnlySpan<byte> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || value.Length > JsonConstants.MaxTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ValidatePropertyAndValue(ref ReadOnlySpan<char> propertyName, ref ReadOnlySpan<char> value)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxCharacterTokenSize || value.Length > JsonConstants.MaxCharacterTokenSize)
+                JsonThrowHelper.ThrowArgumentException(propertyName, value);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
@@ -110,13 +231,24 @@ namespace System.Text.JsonLab
         // Borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Buffers/Text/Utf8Formatter/Utf8Formatter.Integer.Signed.Default.cs#L16
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryFormatInt64Default(long value, Span<byte> destination, out int bytesWritten)
-        {
+        {            
             if ((ulong)value < 10)
             {
                 return TryFormatUInt32SingleDigit((uint)value, destination, out bytesWritten);
             }
 
             return TryFormatInt64MultipleDigits(value, destination, out bytesWritten);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryFormatUInt64Default(ulong value, Span<byte> destination, out int bytesWritten)
+        {
+            if (value < 10)
+            {
+                return TryFormatUInt32SingleDigit((uint)value, destination, out bytesWritten);
+            }
+
+            return TryFormatUInt64MultipleDigits(value, destination, out bytesWritten);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -172,7 +304,7 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteDigits(ulong value, Span<byte> buffer)
+        private static void WriteDigits(ulong value, Span<byte> buffer)
         {
             // We can mutate the 'value' parameter since it's a copy-by-value local.
             // It'll be used to represent the value left over after each division by 10.

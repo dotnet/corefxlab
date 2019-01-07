@@ -21,8 +21,9 @@ namespace System.Text.JsonLab
         public JsonObject Parse()
         {
             var database = new CustomDb(_pool, DbRow.Size + _utf8Json.Length);
-            var stack = new CustomStack(Utf8JsonReader.StackFreeMaxDepth * StackRow.Size);
-            var reader = new Utf8JsonReader(_utf8Json);
+            var stack = new CustomStack(JsonUtf8Reader.StackFreeMaxDepth * StackRow.Size);
+            var json = new Utf8Json();
+            var reader = json.GetReader(_utf8Json);
 
             bool inArray = false;
             int arrayItemsCount = 0;
@@ -42,7 +43,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForValues++;
-                    database.Append(JsonValueType.Object, reader.TokenStartIndex);
+                    database.Append(JsonType.StartObject, reader.TokenStartIndex);
                     var row = new StackRow(numberOfRowsForMembers + 1);
                     stack.Push(row);
                     numberOfRowsForMembers = 0;
@@ -50,7 +51,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndObject)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Object);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonType.StartObject);
                     database.SetLength(rowIndex, numberOfRowsForMembers);
                     if (numberOfRowsForMembers != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForMembers);
@@ -65,7 +66,7 @@ namespace System.Text.JsonLab
                     if (inArray)
                         arrayItemsCount++;
                     numberOfRowsForMembers++;
-                    database.Append(JsonValueType.Array, reader.TokenStartIndex);
+                    database.Append(JsonType.StartArray, reader.TokenStartIndex);
                     var row = new StackRow(arrayItemsCount, numberOfRowsForValues + 1);
                     stack.Push(row);
                     arrayItemsCount = 0;
@@ -74,7 +75,7 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.EndArray)
                 {
                     parentLocation = -1;
-                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonValueType.Array);
+                    int rowIndex = reader.ConsumedEverything ? 0 : database.FindIndexOfFirstUnsetSizeOrLength(JsonType.StartArray);
                     database.SetLength(rowIndex, arrayItemsCount);
                     if (numberOfRowsForValues != 0)
                         database.SetNumberOfRows(rowIndex, numberOfRowsForValues);
@@ -82,13 +83,21 @@ namespace System.Text.JsonLab
                     arrayItemsCount = row.SizeOrLength;
                     numberOfRowsForValues += row.NumberOfRows;
                 }
-                else
+                else if (tokenType == JsonTokenType.PropertyName)
                 {
-                    Debug.Assert(tokenType == JsonTokenType.PropertyName || tokenType == JsonTokenType.Value);
                     numberOfRowsForValues++;
                     numberOfRowsForMembers++;
-                    database.Append(reader.ValueType, reader.TokenStartIndex, reader.Value.Length);
-                    if (tokenType == JsonTokenType.Value && inArray)
+                    database.Append(JsonType.String, reader.TokenStartIndex, reader.Value.Length);
+                    if (inArray)
+                        arrayItemsCount++;
+                }
+                else
+                {
+                    Debug.Assert(tokenType >= JsonTokenType.String && tokenType <= JsonTokenType.Null);
+                    numberOfRowsForValues++;
+                    numberOfRowsForMembers++;
+                    database.Append((JsonType)(tokenType - 4), reader.TokenStartIndex, reader.Value.Length);
+                    if (inArray)
                         arrayItemsCount++;
                 }
 

@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers.Reader;
+using System.Buffers;
 using System.IO.Pipelines.Tests;
 using Xunit;
 
@@ -90,9 +90,9 @@ namespace System.Buffers.Tests
             Assert.Equal(0, reader.UnreadSpan.Length);
             Assert.Equal(0, reader.Consumed);
             Assert.Equal(0, reader.CurrentSpanIndex);
-            Assert.Equal(0, reader.SkipPast(default));
-            Assert.Equal(0, reader.SkipPastAny(array));
-            Assert.Equal(0, reader.SkipPastAny(default));
+            Assert.Equal(0, reader.AdvancePast(default));
+            Assert.Equal(0, reader.AdvancePastAny(array));
+            Assert.Equal(0, reader.AdvancePastAny(default));
             Assert.False(reader.TryReadTo(out ReadOnlySequence<T> sequence, default(T)));
             Assert.True(sequence.IsEmpty);
             Assert.False(reader.TryReadTo(out sequence, array));
@@ -103,8 +103,8 @@ namespace System.Buffers.Tests
             Assert.True(sequence.IsEmpty);
             Assert.False(reader.TryReadToAny(out span, array));
             Assert.True(span.IsEmpty);
-            Assert.False(reader.TrySkipTo(default));
-            Assert.False(reader.TrySkipToAny(array));
+            Assert.False(reader.TryAdvanceTo(default));
+            Assert.False(reader.TryAdvanceToAny(array));
         }
     }
 
@@ -207,6 +207,7 @@ namespace System.Buffers.Tests
             catch (Exception ex)
             {
                 Assert.True(ex is ArgumentOutOfRangeException);
+                Assert.Equal(5, reader.Consumed);
             }
         }
 
@@ -393,6 +394,70 @@ namespace System.Buffers.Tests
                 reader.Advance(span.Length);
             }
             Assert.Equal(buffer.Length, reader.Consumed);
+        }
+
+        [Theory,
+            InlineData(1),
+            InlineData(2),
+            InlineData(3)]
+        public void Advance_PositionIsCorrect(int advanceBy)
+        {
+            // Check that advancing through the reader gives the same position
+            // as returned directly from the buffer.
+
+            ReadOnlySequence<T> buffer = Factory.CreateWithContent(GetInputData(10));
+            BufferReader<T> reader = new BufferReader<T>(buffer);
+
+            SequencePosition readerPosition = reader.Position;
+            SequencePosition bufferPosition = buffer.GetPosition(0);
+            Assert.Equal(readerPosition.GetInteger(), bufferPosition.GetInteger());
+            Assert.Same(readerPosition.GetObject(), readerPosition.GetObject());
+
+            for (int i = advanceBy; i <= buffer.Length; i += advanceBy)
+            {
+                reader.Advance(advanceBy);
+                readerPosition = reader.Position;
+                bufferPosition = buffer.GetPosition(i);
+                Assert.Equal(readerPosition.GetInteger(), bufferPosition.GetInteger());
+                Assert.Same(readerPosition.GetObject(), readerPosition.GetObject());
+            }
+        }
+
+        [Fact]
+        public void AdvanceTo()
+        {
+            // Ensure we can advance to each of the items in the buffer
+
+            T[] inputData = GetInputData(10);
+            ReadOnlySequence<T> buffer = Factory.CreateWithContent(inputData);
+
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                BufferReader<T> reader = new BufferReader<T>(buffer);
+                Assert.True(reader.TryAdvanceTo(inputData[i], advancePastDelimiter: false));
+                Assert.True(reader.TryPeek(out T value));
+                Assert.Equal(inputData[i], value);
+            }
+        }
+
+        [Fact]
+        public void AdvanceTo_AdvancePast()
+        {
+            // Ensure we can advance to each of the items in the buffer (skipping what we advanced to)
+
+            T[] inputData = GetInputData(10);
+            ReadOnlySequence<T> buffer = Factory.CreateWithContent(inputData);
+
+            for (int start = 0; start < 2; start++)
+            {
+                for (int i = start; i < buffer.Length - 1; i += 2)
+                {
+                    BufferReader<T> reader = new BufferReader<T>(buffer);
+                    Assert.True(reader.TryAdvanceTo(inputData[i], advancePastDelimiter: true));
+                    Assert.True(reader.TryPeek(out T value));
+                    Assert.Equal(inputData[i + 1], value);
+                }
+            }
         }
 
         [Fact]

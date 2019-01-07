@@ -17,32 +17,37 @@ public class PollingFileSystemWatcherSerializableTests
         string path = Environment.CurrentDirectory;
         string filter = "*.abc";
         EnumerationOptions options = new EnumerationOptions { RecurseSubdirectories = true };
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(path, filter, options)
+        var watcher = new PollingFileSystemWatcher(path, filter, options)
         {
             PollingInterval = Timeout.Infinite
         };
 
-        PollingFileSystemWatcher deserialized = RoundTrip(watcher);
-
-        Assert.Equal(path, deserialized.Path);
-        Assert.Equal(filter, deserialized.Filter);
-        Assert.Equal(Timeout.Infinite, deserialized.PollingInterval);
-        Assert.Equal(options.RecurseSubdirectories, deserialized.EnumerationOptions.RecurseSubdirectories);
+        using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
+        {
+            Assert.Equal(path, deserialized.Path);
+            Assert.Equal(filter, deserialized.Filter);
+            Assert.Equal(Timeout.Infinite, deserialized.PollingInterval);
+            Assert.Equal(options.RecurseSubdirectories, deserialized.EnumerationOptions.RecurseSubdirectories);
+        }
+        watcher.Dispose();
     }
 
     [Fact]
     public void RoundTripReturnSeparateObjectTest()
     {
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = Timeout.Infinite };
+        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = Timeout.Infinite };
 
-        PollingFileSystemWatcher deserialized = RoundTrip(watcher);
-        watcher.PollingInterval = 0;
+        using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
+        {
+            watcher.PollingInterval = 0;
 
-        Assert.False(ReferenceEquals(watcher, deserialized));
-        Assert.Equal(Timeout.Infinite, deserialized.PollingInterval);
+            Assert.False(ReferenceEquals(watcher, deserialized));
+            Assert.Equal(Timeout.Infinite, deserialized.PollingInterval);
+        }
+        watcher.Dispose();
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripBeforeStartedDoesNotAutomaticallyStartTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -50,7 +55,7 @@ public class PollingFileSystemWatcherSerializableTests
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
         {
@@ -77,7 +82,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripBeforeStartedTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -85,7 +90,7 @@ public class PollingFileSystemWatcherSerializableTests
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
         {
@@ -113,7 +118,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripAfterStartedTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -121,7 +126,7 @@ public class PollingFileSystemWatcherSerializableTests
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
         watcher.Start();
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
@@ -149,7 +154,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public void RoundTripAfterStartedDoesNotAffectOriginalTest()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -157,7 +162,7 @@ public class PollingFileSystemWatcherSerializableTests
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
         watcher.Start();
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
@@ -180,18 +185,20 @@ public class PollingFileSystemWatcherSerializableTests
         finally
         {
             Directory.Delete(currentDir, true);
+            watcher.Dispose();
         }
     }
 
     [Fact]
     public void RoundTripAfterDisposedTest()
     {
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory);
+        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory);
         watcher.Dispose();
 
         PollingFileSystemWatcher deserialized = RoundTrip(watcher);
 
         Assert.Throws<ObjectDisposedException>(() => deserialized.Start());
+        deserialized.Dispose();
     }
 
     private static PollingFileSystemWatcher RoundTrip(PollingFileSystemWatcher watcher)

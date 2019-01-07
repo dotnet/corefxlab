@@ -116,21 +116,38 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
-            var json = new Utf8JsonReader(_dataUtf8);
+            var json = new JsonUtf8Reader(_dataUtf8);
             while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void HeapableReaderSystemTextJsonLabSpanEmptyLoop()
+        {
+            var reader = new Utf8Json();
+            Utf8Json.Reader json = reader.GetReader(_dataUtf8);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLabStreamTypeEmptyLoop()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            var json = new Utf8JsonReaderStream(_stream);
+            while (json.Read()) ;
+            json.Dispose();
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
-            var json = new Utf8JsonReader(_sequenceSingle);
+            var json = new JsonUtf8Reader(_sequenceSingle);
             while (json.Read()) ;
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
-            var json = new Utf8JsonReader(_sequence);
+            var json = new JsonUtf8Reader(_sequence);
             while (json.Read()) ;
         }
 
@@ -140,11 +157,11 @@ namespace System.Text.JsonLab.Benchmarks
             var outputArray = new byte[_dataUtf8.Length * 2];
 
             Span<byte> destination = outputArray;
-            var json = new Utf8JsonReader(_dataUtf8);
+            var json = new JsonUtf8Reader(_dataUtf8);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
+                ReadOnlySpan<byte> valueSpan = json.ValueSpan;
                 switch (tokenType)
                 {
                     case JsonTokenType.PropertyName:
@@ -153,41 +170,35 @@ namespace System.Text.JsonLab.Benchmarks
                         destination[valueSpan.Length + 1] = (byte)' ';
                         destination = destination.Slice(valueSpan.Length + 2);
                         break;
-                    case JsonTokenType.Value:
-                        var valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                                destination[0] = (byte)'T';
-                                destination[1] = (byte)'r';
-                                destination[2] = (byte)'u';
-                                destination[3] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.False:
-                                destination[0] = (byte)'F';
-                                destination[1] = (byte)'a';
-                                destination[2] = (byte)'l';
-                                destination[3] = (byte)'s';
-                                destination[4] = (byte)'e';
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Number:
-                            case JsonValueType.String:
-                                valueSpan.CopyTo(destination);
-                                destination[valueSpan.Length] = (byte)',';
-                                destination[valueSpan.Length + 1] = (byte)' ';
-                                destination = destination.Slice(valueSpan.Length + 2);
-                                break;
-                            case JsonValueType.Null:
-                                // Special casing  Null so that it matches what JSON.NET does
-                                break;
-                        }
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.True:
+                        // Special casing True/False so that the casing matches with Json.NET
+                        destination[0] = (byte)'T';
+                        destination[1] = (byte)'r';
+                        destination[2] = (byte)'u';
+                        destination[3] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.False:
+                        destination[0] = (byte)'F';
+                        destination[1] = (byte)'a';
+                        destination[2] = (byte)'l';
+                        destination[3] = (byte)'s';
+                        destination[4] = (byte)'e';
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Null:
+                        // Special casing Null so that it matches what JSON.NET does
                         break;
                     default:
                         break;
@@ -199,9 +210,9 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
-            var json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new global::Utf8Json.JsonReader(_dataUtf8);
 
-            while (json.GetCurrentJsonToken() != Utf8Json.JsonToken.None)
+            while (json.GetCurrentJsonToken() != global::Utf8Json.JsonToken.None)
             {
                 json.ReadNext();
             }
@@ -210,24 +221,24 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
-            var json = new Utf8Json.JsonReader(_dataUtf8);
+            var json = new global::Utf8Json.JsonReader(_dataUtf8);
 
             var outputArray = new byte[_dataUtf8.Length * 2];
             Span<byte> destination = outputArray;
 
-            Utf8Json.JsonToken token = json.GetCurrentJsonToken();
-            while (token != Utf8Json.JsonToken.None)
+            global::Utf8Json.JsonToken token = json.GetCurrentJsonToken();
+            while (token != global::Utf8Json.JsonToken.None)
             {
                 json.ReadNext();
                 token = json.GetCurrentJsonToken();
 
                 switch (token)
                 {
-                    case Utf8Json.JsonToken.String:
-                    case Utf8Json.JsonToken.Number:
-                    case Utf8Json.JsonToken.True:
-                    case Utf8Json.JsonToken.False:
-                    case Utf8Json.JsonToken.Null:
+                    case global::Utf8Json.JsonToken.String:
+                    case global::Utf8Json.JsonToken.Number:
+                    case global::Utf8Json.JsonToken.True:
+                    case global::Utf8Json.JsonToken.False:
+                    case global::Utf8Json.JsonToken.Null:
                         ReadOnlySpan<byte> valueSpan = json.ReadNextBlockSegment();
                         valueSpan.CopyTo(destination);
                         destination[valueSpan.Length] = (byte)',';

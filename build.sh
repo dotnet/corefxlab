@@ -45,13 +45,6 @@ if [ ! -d "dotnetcli" ]; then
     exit -1
   fi
 
-  ./scripts/install-dotnet.sh -Version 1.0.0 -InstallDir "dotnetcli"
-  ret=$?
-  if [ $ret -ne 0 ]; then
-    echo "Failed to install framework version 1.0.0, exit code $ret, aborting build."
-    exit -1
-  fi
-
   ./scripts/install-dotnet.sh -Version 2.0.0 -InstallDir "dotnetcli"
   ret=$?
   if [ $ret -ne 0 ]; then
@@ -91,7 +84,7 @@ fi
 
 echo "Building solution $myFile..."
 
-./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion" --no-restore
+./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion" --no-restore /nologo
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "Failed to build solution $myFile"

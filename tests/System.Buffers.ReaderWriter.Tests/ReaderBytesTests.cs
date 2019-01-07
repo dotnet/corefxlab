@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers.Reader;
+using System.Buffers;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -37,21 +37,21 @@ namespace System.Buffers.Tests
                 : BufferUtilities.CreateSplitBuffer(buffer, 2, 4);
 
             var skipReader = new BufferReader<byte>(bytes);
-            Assert.False(skipReader.TrySkipTo(10));
-            Assert.True(skipReader.TrySkipTo(4, advancePastDelimiter: false));
+            Assert.False(skipReader.TryAdvanceTo(10));
+            Assert.True(skipReader.TryAdvanceTo(4, advancePastDelimiter: false));
             Assert.True(skipReader.TryRead(out byte value));
             Assert.Equal(4, value);
 
-            Assert.True(skipReader.TrySkipToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
+            Assert.True(skipReader.TryAdvanceToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(7, value);
-            Assert.Equal(1, skipReader.SkipPast(8));
+            Assert.Equal(1, skipReader.AdvancePast(8));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(9, value);
 
             skipReader = new BufferReader<byte>(bytes);
-            Assert.Equal(0, skipReader.SkipPast(2));
-            Assert.Equal(3, skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
+            Assert.Equal(0, skipReader.AdvancePast(2));
+            Assert.Equal(3, skipReader.AdvancePastAny(new byte[] { 2, 3, 1 }));
             Assert.True(skipReader.TryRead(out value));
             Assert.Equal(4, value);
         }
@@ -146,22 +146,22 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryParse(out long l64, out _));
+            Assert.True(reader.TryParse(out long l64));
             Assert.Equal(123, l64);
 
-            Assert.True(reader.TryParse(out bool b, out _));
+            Assert.True(reader.TryParse(out bool b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64, out _));
+            Assert.True(reader.TryParse(out l64));
             Assert.Equal(456, l64);
 
-            Assert.True(reader.TryParse(out b, out _));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParse(out l64, out _));
+            Assert.True(reader.TryParse(out l64));
             Assert.Equal(789, l64);
 
-            Assert.True(reader.TryParse(out b, out _));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(false, b);
         }
     }

@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers.Reader;
+using System.Buffers;
 using System.Globalization;
 using Xunit;
 
@@ -10,7 +10,7 @@ namespace System.Buffers.Tests
 {
     public class Reader_ParseFloatingPoint
     {
-        private delegate bool ParseDelegate<T>(ref BufferReader<byte> reader, out T value, out int bytesConsumed, char standardFormat = '\0');
+        private delegate bool ParseDelegate<T>(ref BufferReader<byte> reader, out T value,  char standardFormat = '\0');
 
         [Fact]
         public void TryParse_FloatSpecial()
@@ -29,33 +29,33 @@ namespace System.Buffers.Tests
         {
             ReadOnlySequence<byte> bytes = BufferFactory.CreateUtf8("Infinity");
             BufferReader<byte> reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out T value, out int consumed));
+            Assert.True(parser(ref reader, out T value));
             Assert.Equal(positiveInfinity, value);
-            Assert.Equal(8, consumed);
+            Assert.Equal(8, reader.Consumed);
 
             bytes = BufferFactory.CreateUtf8("I", "n", "finity", "-");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out value, out consumed));
+            Assert.True(parser(ref reader, out value));
             Assert.Equal(positiveInfinity, value);
-            Assert.Equal(8, consumed);
+            Assert.Equal(8, reader.Consumed);
 
             bytes = BufferFactory.CreateUtf8("-Infinity");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out value, out consumed));
+            Assert.True(parser(ref reader, out value));
             Assert.Equal(negativeInfinity, value);
-            Assert.Equal(9, consumed);
+            Assert.Equal(9, reader.Consumed);
 
             bytes = BufferFactory.CreateUtf8("-", "Infinit", "y");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out value, out consumed));
+            Assert.True(parser(ref reader, out value));
             Assert.Equal(negativeInfinity, value);
-            Assert.Equal(9, consumed);
+            Assert.Equal(9, reader.Consumed);
 
             bytes = BufferFactory.CreateUtf8("NaN");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out value, out consumed));
+            Assert.True(parser(ref reader, out value));
             Assert.Equal(nan, value);
-            Assert.Equal(3, consumed);
+            Assert.Equal(3, reader.Consumed);
         }
 
         [Theory,
@@ -144,7 +144,7 @@ namespace System.Buffers.Tests
             string text = expected.ToString(formatString, CultureInfo.InvariantCulture);
             ReadOnlySequence<byte> bytes = BufferFactory.CreateUtf8(text);
             BufferReader<byte> reader = new BufferReader<byte>(bytes);
-            Assert.True(parser(ref reader, out T value, out _, standardFormat));
+            Assert.True(parser(ref reader, out T value, standardFormat));
             Assert.Equal(text, value.ToString(formatString, CultureInfo.InvariantCulture));
         }
     }

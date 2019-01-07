@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers.Reader;
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 using Xunit;
@@ -18,7 +18,7 @@ namespace System.Buffers.Tests
         private static readonly ReadOnlySequence<byte> s_rosSigned;
         private static readonly ReadOnlySequence<byte> s_rosSignedSplit;
 
-        private delegate bool ParseDelegate<T>(ref BufferReader<byte> reader, out T value, out int bytesConsumed, char standardFormat = '\0');
+        private delegate bool ParseDelegate<T>(ref BufferReader<byte> reader, out T value, char standardFormat = '\0');
 
         static Reader_ParseInteger()
         {
@@ -71,7 +71,7 @@ namespace System.Buffers.Tests
             var reader = new BufferReader<byte>(sequence);
 
             int count = 0;
-            while (parser(ref reader, out T value, out _))
+            while (parser(ref reader, out T value))
             {
                 // advance past the delimiter
                 reader.Advance(1);
@@ -81,7 +81,7 @@ namespace System.Buffers.Tests
             }
 
             reader = new BufferReader<byte>(splitSequence);
-            while (parser(ref reader, out T value, out _))
+            while (parser(ref reader, out T value))
             {
                 // advance past the delimiter
                 reader.Advance(1);
@@ -99,47 +99,47 @@ namespace System.Buffers.Tests
         {
             ReadOnlySequence<byte> bytes = BufferFactory.CreateUtf8("-123", "45");
             BufferReader<byte> reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out int value, out int consumed));
+            Assert.True(reader.TryParse(out int value));
             Assert.Equal(-12345, value);
-            Assert.Equal(6, consumed);
+            Assert.Equal(6, reader.Consumed);
 
             // With group separators
             bytes = BufferFactory.CreateUtf8("-1,2,3", "4,5.0000000000NewData");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out value, out consumed));
+            Assert.True(reader.TryParse(out value));
             Assert.Equal(-1, value);
-            Assert.Equal(2, consumed);
+            Assert.Equal(2, reader.Consumed);
 
             reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out value, out consumed, 'N'));
+            Assert.True(reader.TryParse(out value, 'N'));
             Assert.Equal(-12345, value);
-            Assert.Equal(20, consumed);
+            Assert.Equal(20, reader.Consumed);
             Assert.True(reader.IsNext((byte)'N'));
 
             reader = new BufferReader<byte>(bytes);
-            Assert.False(reader.TryParse(out value, out consumed, 'X'));
-            Assert.Equal(0, consumed);
+            Assert.False(reader.TryParse(out value, 'X'));
+            Assert.Equal(0, reader.Consumed);
             reader.Advance(1);
-            Assert.True(reader.TryParse(out value, out consumed));
+            Assert.True(reader.TryParse(out value));
             Assert.Equal(1, value);
-            Assert.Equal(1, consumed);
+            Assert.Equal(2, reader.Consumed);
 
             bytes = BufferFactory.CreateUtf8("FEE", "D");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out value, out consumed, 'X'));
+            Assert.True(reader.TryParse(out value, 'X'));
             Assert.Equal(0xFEED, value);
-            Assert.Equal(4, consumed);
+            Assert.Equal(4, reader.Consumed);
 
             // Overflow
             bytes = BufferFactory.CreateUtf8("FE", "ED", "BEEFBEE");
             reader = new BufferReader<byte>(bytes);
-            Assert.False(reader.TryParse(out value, out consumed, 'X'));
-            Assert.Equal(0, consumed);
+            Assert.False(reader.TryParse(out value, 'X'));
+            Assert.Equal(0, reader.Consumed);
 
             reader.Advance(3);
-            Assert.True(reader.TryParse(out value, out consumed, 'X'));
+            Assert.True(reader.TryParse(out value, 'X'));
             Assert.Equal(unchecked((int)0xDBEEFBEE), value);
-            Assert.Equal(8, consumed);
+            Assert.Equal(11, reader.Consumed);
         }
 
         [Theory,
@@ -252,12 +252,14 @@ namespace System.Buffers.Tests
             BufferReader<byte> reader = new BufferReader<byte>(bytes);
 
             // Too many bytes
-            Assert.False(parser(ref reader, out T value, out int consumed, standardFormat));
+            Assert.False(parser(ref reader, out T value, standardFormat));
             reader.Advance(140);
-            Assert.Equal(0, consumed);
-            Assert.True(parser(ref reader, out value, out consumed, standardFormat));
+            Assert.Equal(140, reader.Consumed);
+            Assert.True(parser(ref reader, out value, standardFormat));
             Assert.Equal(expected, value);
-            Assert.True(consumed > 20, "should have consumed all of the leading zeroes");
+            Assert.True(reader.Consumed > 20, "should have consumed all of the leading zeroes");
+
+            long priorConsumed = reader.Consumed;
 
             // Overflow
             bytes = BufferFactory.CreateUtf8(
@@ -272,8 +274,8 @@ namespace System.Buffers.Tests
                 "1234567891"
             );
 
-            Assert.False(parser(ref reader, out value, out consumed, standardFormat));
-            Assert.Equal(0, consumed);
+            Assert.False(parser(ref reader, out value, standardFormat));
+            Assert.Equal(priorConsumed, reader.Consumed);
         }
 
         [Fact]
@@ -283,29 +285,26 @@ namespace System.Buffers.Tests
 
             ReadOnlySequence<byte> bytes = BufferFactory.CreateUtf8("-", "123");
             var reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out int value, out int consumed));
+            Assert.True(reader.TryParse(out int value));
             Assert.Equal(-123, value);
-            Assert.Equal(4, consumed);
-            Assert.True(reader.End);
             Assert.Equal(4, reader.Consumed);
+            Assert.True(reader.End);
 
             bytes = BufferFactory.CreateUtf8("+", "123");
             reader = new BufferReader<byte>(bytes);
-            Assert.True(reader.TryParse(out value, out consumed));
+            Assert.True(reader.TryParse(out value));
             Assert.Equal(123, value);
-            Assert.Equal(4, consumed);
-            Assert.True(reader.End);
             Assert.Equal(4, reader.Consumed);
+            Assert.True(reader.End);
 
             bytes = BufferFactory.CreateUtf8(".", "0");
             reader = new BufferReader<byte>(bytes);
-            Assert.False(reader.TryParse(out value, out consumed, 'd'));
-            Assert.Equal(0, consumed);
-            Assert.True(reader.TryParse(out value, out consumed, 'n'));
-            Assert.Equal(2, consumed);
+            Assert.False(reader.TryParse(out value, 'd'));
+            Assert.Equal(0, reader.Consumed);
+            Assert.True(reader.TryParse(out value, 'n'));
+            Assert.Equal(2, reader.Consumed);
             Assert.Equal(0, value);
             Assert.True(reader.End);
-            Assert.Equal(2, reader.Consumed);
         }
     }
 }

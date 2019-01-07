@@ -98,6 +98,15 @@ namespace System.Text.JsonLab {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected either a &apos;\n&apos; or &apos;*/&apos; to indicate end of comment, but instead reached end of data..
+        /// </summary>
+        internal static string EndOfCommentNotFound {
+            get {
+                return ResourceManager.GetString("EndOfCommentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected a &apos;&quot;&apos; to indicate end of string, but instead reached end of data..
         /// </summary>
         internal static string EndOfStringNotFound {
@@ -238,6 +247,15 @@ namespace System.Text.JsonLab {
         internal static string FoundInvalidCharacter {
             get {
                 return ResourceManager.GetString("FoundInvalidCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found an invalid character within a json string: &apos;{0}&apos;. It is expected that the string is properly escaped..
+        /// </summary>
+        internal static string InvalidCharacterWithinString {
+            get {
+                return ResourceManager.GetString("InvalidCharacterWithinString", resourceCulture);
             }
         }
         

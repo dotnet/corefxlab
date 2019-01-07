@@ -54,7 +54,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
-            var json = new Utf8JsonReader(_dataUtf8)
+            var json = new JsonUtf8Reader(_dataUtf8)
             {
                 MaxDepth = Depth
             };

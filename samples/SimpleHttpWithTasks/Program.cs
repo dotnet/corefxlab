@@ -159,7 +159,7 @@ public class Server
         /// <summary>
         /// Parse what is in 'buffer' of length 'bufferLength, and call user code (to format a response)
         /// This method also copies down any unused tail of the buffer to the front of the buffer and
-        /// returns that count (thus if it return 3 the first three bytes in the buffer are unconsumed).  
+        /// returns that count (thus if it returns 3, the first three bytes in the buffer are unconsumed).  
         /// </summary>
         int ParseAndReply(byte[] buffer, int bufferLength)
         {

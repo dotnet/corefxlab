@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
-using System.Buffers.Reader;
 using System.Buffers.Tests;
 
 namespace System.Buffers.Benchmarks
@@ -30,7 +29,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
 
-            while (reader.TryParse(out int value, out _))
+            while (reader.TryParse(out int value))
             {
                 // Skip the delimiter
                 reader.Advance(1);
@@ -42,7 +41,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_rosSplit);
 
-            while (reader.TryParse(out int value, out _))
+            while (reader.TryParse(out int value))
             {
                 // Skip the delimiter
                 reader.Advance(1);

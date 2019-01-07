@@ -3,8 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Attributes;
-using System.Buffers.Reader;
+using System.Buffers;
 using System.Buffers.Tests;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Benchmarks
 {

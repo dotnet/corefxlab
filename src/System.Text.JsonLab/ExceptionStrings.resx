@@ -129,6 +129,9 @@
   <data name="DepthMustBePositive" xml:space="preserve">
     <value>Mismatched number of start/end objects or arrays. Depth is {0} but must be greater than 0.</value>
   </data>
+  <data name="EndOfCommentNotFound" xml:space="preserve">
+    <value>Expected either a '\n' or '*/' to indicate end of comment, but instead reached end of data.</value>
+  </data>
   <data name="EndOfStringNotFound" xml:space="preserve">
     <value>Expected a '"' to indicate end of string, but instead reached end of data.</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="FoundInvalidCharacter" xml:space="preserve">
     <value>Expected either ',', '}}', or ']', but instead got '{0}'.</value>
+  </data>
+  <data name="InvalidCharacterWithinString" xml:space="preserve">
+    <value>Found an invalid character within a json string: '{0}'. It is expected that the string is properly escaped.</value>
   </data>
   <data name="InvalidEndOfJson" xml:space="preserve">
     <value>Expected valid end of json payload with TokenType either EndArray or EndObject. Current token type is '{0}'.</value>

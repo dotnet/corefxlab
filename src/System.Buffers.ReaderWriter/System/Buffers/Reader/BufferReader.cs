@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
@@ -17,36 +17,105 @@ namespace System.Buffers.Reader
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BufferReader(in ReadOnlySequence<T> buffer)
+        public BufferReader(ReadOnlySequence<T> buffer)
         {
             CurrentSpanIndex = 0;
             Consumed = 0;
             Sequence = buffer;
-            _currentPosition = Sequence.Start;
-            _nextPosition = _currentPosition;
+            _currentPosition = buffer.Start;
 
-            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
+            GetFirstSpan(buffer, out ReadOnlySpan<T> first, out _nextPosition);
+            CurrentSpan = first;
+            _moreData = first.Length > 0;
+
+            if (!buffer.IsSingleSegment && !_moreData)
             {
                 _moreData = true;
+                GetNextSpan();
+            }
+        }
 
-                if (memory.Length == 0)
+        private const int FlagBitMask = 1 << 31;
+        private const int IndexBitMask = ~FlagBitMask;
+
+        // TODO:
+        // Move to helper in ReadOnlySequence
+        // https://github.com/dotnet/corefx/issues/33029
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetFirstSpan(in ReadOnlySequence<T> buffer, out ReadOnlySpan<T> first, out SequencePosition next)
+        {
+            first = default;
+            next = default;
+            SequencePosition start = buffer.Start;
+            int startIndex = start.GetInteger();
+            object startObject = start.GetObject();
+
+            if (startObject != null)
+            {
+                SequencePosition end = buffer.End;
+                int endIndex = end.GetInteger();
+                bool isMultiSegment = startObject != end.GetObject();
+
+                // A == 0 && B == 0 means SequenceType.MultiSegment
+                if (startIndex >= 0)
                 {
-                    CurrentSpan = default;
-                    // No space in the first span, move to one with space
-                    GetNextSpan();
+                    if (endIndex >= 0)  // SequenceType.MultiSegment
+                    {
+                        ReadOnlySequenceSegment<T> segment = (ReadOnlySequenceSegment<T>)startObject;
+                        next = new SequencePosition(segment.Next, 0);
+                        first = segment.Memory.Span;
+                        if (isMultiSegment)
+                        {
+                            first = first.Slice(startIndex);
+                        }
+                        else
+                        {
+                            first = first.Slice(startIndex, endIndex - startIndex);
+                        }
+                    }
+                    else
+                    {
+                        if (isMultiSegment)
+                            ThrowHelper.ThrowInvalidOperationException_EndPositionNotReached();
+
+                        first = new ReadOnlySpan<T>((T[])startObject, startIndex, (endIndex & IndexBitMask) - startIndex);
+                    }
                 }
                 else
                 {
-                    CurrentSpan = memory.Span;
+                    first = GetFirstSpanSlow(startObject, startIndex, endIndex, isMultiSegment);
                 }
             }
-            else
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ReadOnlySpan<T> GetFirstSpanSlow(object startObject, int startIndex, int endIndex, bool isMultiSegment)
+        {
+            Debug.Assert(startIndex < 0 || endIndex < 0);
+            if (isMultiSegment)
+                ThrowHelper.ThrowInvalidOperationException_EndPositionNotReached();
+
+            // The type == char check here is redundant. However, we still have it to allow
+            // the JIT to see when that the code is unreachable and eliminate it.
+            // A == 1 && B == 1 means SequenceType.String
+            if (typeof(T) == typeof(char) && endIndex < 0)
             {
-                // No space in any spans and at end of sequence
-                _moreData = false;
-                CurrentSpan = default;
+                var memory = (ReadOnlyMemory<T>)(object)((string)startObject).AsMemory();
+
+                // No need to remove the FlagBitMask since (endIndex - startIndex) == (endIndex & ReadOnlySequence.IndexBitMask) - (startIndex & ReadOnlySequence.IndexBitMask)
+                return memory.Span.Slice(startIndex & IndexBitMask, endIndex - startIndex);
+            }
+            else // endIndex >= 0, A == 1 && B == 0 means SequenceType.MemoryManager
+            {
+                startIndex &= IndexBitMask;
+                return ((MemoryManager<T>)startObject).Memory.Span.Slice(startIndex, endIndex - startIndex);
             }
         }
+
+        /// <summary>
+        /// Return true if we're in the last segment
+        /// </summary>
+        public bool IsLastSegment => _nextPosition.GetObject() == null;
 
         /// <summary>
         /// True when there is no more data in the <see cref="Sequence"/>.
@@ -61,7 +130,8 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The current position in the <see cref="Sequence"/>.
         /// </summary>
-        public SequencePosition Position => Sequence.GetPosition(CurrentSpanIndex, _currentPosition);
+        public SequencePosition Position
+            => new SequencePosition(_currentPosition.GetObject(), CurrentSpanIndex + (_currentPosition.GetInteger() & ~(1 << 31)));
 
         /// <summary>
         /// The current segment in the <see cref="Sequence"/>.
@@ -149,6 +219,7 @@ namespace System.Buffers.Reader
             if (CurrentSpanIndex >= count)
             {
                 CurrentSpanIndex -= (int)count;
+                _moreData = true;
             }
             else
             {
@@ -197,7 +268,6 @@ namespace System.Buffers.Reader
         /// <summary>
         /// Get the next segment with available space, if any.
         /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSpan()
         {
             if (!Sequence.IsSingleSegment)
@@ -216,6 +286,7 @@ namespace System.Buffers.Reader
                     {
                         CurrentSpan = default;
                         CurrentSpanIndex = 0;
+                        previousNextPosition = _nextPosition;
                     }
                 }
             }
@@ -228,27 +299,52 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(long count)
         {
+            const long TooBigOrNegative = unchecked((long)0xFFFFFFFF80000000);
+            if ((count & TooBigOrNegative) == 0 && CurrentSpan.Length - CurrentSpanIndex > (int)count)
+            {
+                CurrentSpanIndex += (int)count;
+                Consumed += count;
+            }
+            else
+            {
+                // Can't satisfy from the current span
+                AdvanceToNextSpan(count);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceCurrentSpan(long count)
+        {
+            // Unchecked helper to avoid unnecessary checks where you know count is valid.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+            if (CurrentSpanIndex >= CurrentSpan.Length)
+                GetNextSpan();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AdvanceWithinSpan(long count)
+        {
+            // Only call this helper if you know that you are advancing in the current span
+            // with valid count and there is no need to fetch the next one.
+            Debug.Assert(count >= 0);
+
+            Consumed += count;
+            CurrentSpanIndex += (int)count;
+
+            Debug.Assert(CurrentSpanIndex < CurrentSpan.Length);
+        }
+
+        private void AdvanceToNextSpan(long count)
+        {
             if (count < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
 
             Consumed += count;
-
-            if (CurrentSpanIndex < CurrentSpan.Length - count)
-            {
-                CurrentSpanIndex += (int)count;
-            }
-            else
-            {
-                // Current segment doesn't have enough space, scan forward through segments
-                AdvanceToNextSpan(count);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void AdvanceToNextSpan(long count)
-        {
             while (_moreData)
             {
                 int remaining = CurrentSpan.Length - CurrentSpanIndex;
@@ -272,6 +368,8 @@ namespace System.Buffers.Reader
 
             if (count != 0)
             {
+                // Not enough space left- adjust for where we actually ended and throw
+                Consumed -= count;
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
             }
         }

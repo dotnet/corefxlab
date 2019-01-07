@@ -32,7 +32,7 @@ namespace System.Text.JsonLab
                 value = default;
                 return false;
             }
-            if (jsonObject.Type != JsonValueType.Number)
+            if (jsonObject.Type != JsonTokenType.Number)
             {
                 throw new InvalidOperationException();
             }
@@ -47,7 +47,7 @@ namespace System.Text.JsonLab
                 value = default;
                 return false;
             }
-            if (jsonObject.Type != JsonValueType.String) {
+            if (jsonObject.Type != JsonTokenType.String) {
                 throw new InvalidOperationException();
             }
             value = (Utf8Span)jsonObject;
@@ -63,25 +63,25 @@ namespace System.Text.JsonLab
             }
 
             switch (jsonObject.Type) {
-                case JsonValueType.Number:
+                case JsonTokenType.Number:
                     result = (object)(int)jsonObject;
                     break;
-                case JsonValueType.True:
+                case JsonTokenType.True:
                     result = (object)true;
                     break;
-                case JsonValueType.False:
+                case JsonTokenType.False:
                     result = (object)false;
                     break;
-                case JsonValueType.Null:
+                case JsonTokenType.Null:
                     result = null;
                     break;
-                case JsonValueType.String:
+                case JsonTokenType.String:
                     result = (string)jsonObject;
                     break;
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     result = new JsonLazyDynamicObject(jsonObject);
                     break;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     result = new JsonLazyDynamicObject(jsonObject);
                     break;
                 default:
@@ -105,29 +105,29 @@ namespace System.Text.JsonLab
 
             var index = (int)indexes[0];
 
-            if (_dom.Type == JsonValueType.Array) {
+            if (_dom.Type == JsonTokenType.StartArray) {
                 var resultObject = _dom[index];
 
                 switch (resultObject.Type) {
-                    case JsonValueType.Number:
+                    case JsonTokenType.Number:
                         result = (object)(int)resultObject;
                         break;
-                    case JsonValueType.True:
+                    case JsonTokenType.True:
                         result = (object)true;
                         break;
-                    case JsonValueType.False:
+                    case JsonTokenType.False:
                         result = (object)false;
                         break;
-                    case JsonValueType.Null:
+                    case JsonTokenType.Null:
                         result = null;
                         break;
-                    case JsonValueType.String:
+                    case JsonTokenType.String:
                         result = (string)resultObject;
                         break;
-                    case JsonValueType.Object:
+                    case JsonTokenType.StartObject:
                         result = new JsonLazyDynamicObject(resultObject);
                         break;
-                    case JsonValueType.Array:
+                    case JsonTokenType.StartArray:
                         result = new JsonLazyDynamicObject(resultObject);
                         break;
                     default:

@@ -14,13 +14,14 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_ctor_Defaults()
     {
-
         string path = Environment.CurrentDirectory;
-        var watcher = new PollingFileSystemWatcher(path);
-        Assert.Equal(path, watcher.Path);
-        Assert.Equal("*", watcher.Filter);
-        Assert.NotNull(watcher.EnumerationOptions);
-        Assert.Equal(1000, watcher.PollingInterval);
+        using (var watcher = new PollingFileSystemWatcher(path))
+        {
+            Assert.Equal(path, watcher.Path);
+            Assert.Equal("*", watcher.Filter);
+            Assert.NotNull(watcher.EnumerationOptions);
+            Assert.Equal(1000, watcher.PollingInterval);
+        }
     }
 
     [Fact]
@@ -28,11 +29,12 @@ public partial class PollingFileSystemWatcherUnitTests
     {
         string currentDir = Directory.GetCurrentDirectory();
         const string filter = "*.csv";
-        var watcher = new PollingFileSystemWatcher(currentDir, filter, new EnumerationOptions { RecurseSubdirectories = true });
-
-        Assert.Equal(currentDir, watcher.Path);
-        Assert.Equal(filter, watcher.Filter);
-        Assert.True(watcher.EnumerationOptions.RecurseSubdirectories);
+        using (var watcher = new PollingFileSystemWatcher(currentDir, filter, new EnumerationOptions { RecurseSubdirectories = true }))
+        {
+            Assert.Equal(currentDir, watcher.Path);
+            Assert.Equal(filter, watcher.Filter);
+            Assert.True(watcher.EnumerationOptions.RecurseSubdirectories);
+        }
     }
 
     [Fact]
@@ -43,7 +45,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Throws<ArgumentNullException>("filter", () => new PollingFileSystemWatcher(Environment.CurrentDirectory, null));
 
         // Valid
-        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory, options: null);
+        using (var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory, options: null)) { }
     }
 
     [Fact]
@@ -52,8 +54,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Throws<ArgumentException>(() => new PollingFileSystemWatcher(@"Z:\RandomPath\sdsdljdkkjdfsdlcjfskdcvnj"));
     }
 
-
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Created_File()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -92,7 +93,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Deleted_File()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -127,7 +128,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Directory.Delete(currentDir, true);
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Changed_File()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -167,7 +168,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Filter()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -207,7 +208,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_PollingInterval_ChangeBeforeStart()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -243,7 +244,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_PollingInterval_ChangeAfterStart()
     {
         string currentDir = Utility.GetRandomDirectory();
@@ -279,7 +280,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Active issue: https://github.com/dotnet/corefxlab/issues/420")]
     public static void FileSystemWatcher_Recursive()
     {
         string currentDir = Utility.GetRandomDirectory();

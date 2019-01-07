@@ -27,12 +27,18 @@ namespace System.Buffers
 
             return argument.ToString();
         }
+
+        internal static void ThrowInvalidOperationException_EndPositionNotReached() { throw CreateInvalidOperationException_EndPositionNotReached(); }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception CreateInvalidOperationException_EndPositionNotReached()
+        {
+            return new InvalidOperationException("EndPositionNotReached");
+        }
     }
 
     internal enum ExceptionArgument
     {
         count,
         length,
-
     }
 }

@@ -15,7 +15,7 @@ public partial class PollingFileSystemWatcherDerivedTests
         string currentDir = Utility.GetRandomDirectory();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
 
-        DerivedWatcher watcher2 = new DerivedWatcher(currentDir)
+        var watcher2 = new DerivedWatcher(currentDir)
         {
             PollingInterval = 1
         };
@@ -29,6 +29,7 @@ public partial class PollingFileSystemWatcherDerivedTests
         finally
         {
             Directory.Delete(currentDir, true);
+            watcher2.Dispose();
         }
     }
 
@@ -38,7 +39,7 @@ public partial class PollingFileSystemWatcherDerivedTests
         string currentDir = Utility.GetRandomDirectory();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
 
-        DerivedWatcher watcher2 = new DerivedWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true })
+        var watcher2 = new DerivedWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true })
         {
             PollingInterval = 1
         };
@@ -52,6 +53,7 @@ public partial class PollingFileSystemWatcherDerivedTests
         finally
         {
             Directory.Delete(currentDir, true);
+            watcher2.Dispose();
         }
     }
 }

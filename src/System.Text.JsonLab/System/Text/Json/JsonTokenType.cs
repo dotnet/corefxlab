@@ -4,7 +4,7 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonTokenType
+    public enum JsonTokenType : byte
     {
         None,
         StartObject,
@@ -12,7 +12,11 @@ namespace System.Text.JsonLab
         StartArray,
         EndArray,
         PropertyName,
+        String,
+        Number,
+        True,
+        False,
+        Null,
         Comment,
-        Value,
     }
 }

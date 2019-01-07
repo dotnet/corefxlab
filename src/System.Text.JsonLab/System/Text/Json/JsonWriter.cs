@@ -11,19 +11,10 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public static class Utf8JsonWriter
-    {
-        public static Utf8JsonWriter<TBufferWriter> Create<TBufferWriter>(TBufferWriter bufferWriter, bool prettyPrint = false)
-            where TBufferWriter : IBufferWriter<byte>
-        {
-            return new Utf8JsonWriter<TBufferWriter>(bufferWriter, prettyPrint);
-        }
-    }
-
     public ref struct Utf8JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;
-        private BufferWriter<TBufferWriter> _bufferWriter;
+        private Buffers.Writer.BufferWriter<TBufferWriter> _bufferWriter;
 
         // The highest order bit of _indent is used to discern whether we are writing the first item in a list or not.
         // if (_indent >> 31) == 1, add a list separator before writing the item
@@ -51,24 +42,25 @@ namespace System.Text.JsonLab
 
         public void Write(JsonObject jsonObject)
         {
-            JsonValueType type = jsonObject.Type;
+            JsonTokenType type = jsonObject.Type;
             switch (type)
             {
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     WriteObjectStart();
                     WriteObject(jsonObject);
                     break;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     WriteArrayStart();
                     WriteArray(jsonObject);
                     break;
-                case JsonValueType.String:
+                case JsonTokenType.String:
+                case JsonTokenType.PropertyName:
                     ReadOnlySpan<byte> span = jsonObject.GetSpan();
                     while (!TryWriteValueStringAlreadyUtf8(span))
                         EnsureBufferConstant();
                     break;
                 default:
-                    Debug.Assert(type >= JsonValueType.Number && type <= JsonValueType.Null);
+                    Debug.Assert(type >= JsonTokenType.Number && type <= JsonTokenType.Null);
                     span = jsonObject.GetSpan();
                     while (!TryWriteValueAlreadyUtf8(span))
                         EnsureBufferConstant();
@@ -78,14 +70,14 @@ namespace System.Text.JsonLab
 
         private void Write(JsonObject jsonObject, ReadOnlySpan<byte> name)
         {
-            JsonValueType type = jsonObject.Type;
+            JsonTokenType type = jsonObject.Type;
             switch (type)
             {
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     WriteObjectStart(name);
                     WriteObject(jsonObject);
                     break;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     WriteArrayStart(name);
                     WriteArray(jsonObject);
                     break;
@@ -111,7 +103,7 @@ namespace System.Text.JsonLab
                 if (valueRow.IsSimpleValue)
                 {
                     ReadOnlySpan<byte> value = child.GetSpan(valueRow);
-                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonValueType.String);
+                    WriteAttribute(child.PropertyName, value, valueRow.JsonType == JsonType.String);
                 }
                 else
                 {
@@ -168,6 +160,9 @@ namespace System.Text.JsonLab
         private void WriteStartUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
+
+            // This is guaranteed not to overflow.
+            Debug.Assert(int.MaxValue - 1 - indent * 2 >= 0);
 
             int bytesNeeded = 1 + indent * 2;
 
@@ -296,7 +291,7 @@ namespace System.Text.JsonLab
                 bytesNeeded++;
             }
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpanByte, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(nameSpanByte, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -331,7 +326,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -378,7 +373,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -449,7 +444,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
                 if (status == OperationStatus.DestinationTooSmall) return false;
                 if (status != OperationStatus.Done)
                 {
@@ -488,7 +483,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -890,11 +885,11 @@ namespace System.Text.JsonLab
                 bytesNeeded++;
             }
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
-            if (Encodings.Utf16.ToUtf8Length(valueSpan, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(valueSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -919,7 +914,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -936,7 +931,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
+            status = Buffers.Text.Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
             Debug.Assert(consumed == valueSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -964,7 +959,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
                 if (status == OperationStatus.DestinationTooSmall) return false;
                 if (status != OperationStatus.Done)
                 {
@@ -979,7 +974,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
+                status = Buffers.Text.Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
                 if (status == OperationStatus.DestinationTooSmall) return false;
                 if (status != OperationStatus.Done)
                 {
@@ -1045,7 +1040,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
                 if (status == OperationStatus.DestinationTooSmall) return false;
                 if (status != OperationStatus.Done)
                 {
@@ -1086,7 +1081,7 @@ namespace System.Text.JsonLab
                 bytesNeeded++;
             }
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -1117,7 +1112,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpan, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpan, byteBuffer.Slice(idx), out int consumed, out int written);
             if (status != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowFormatException();
@@ -1244,7 +1239,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
@@ -1300,7 +1295,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             if (status != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowFormatException();
@@ -1330,7 +1325,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
                 if (status == OperationStatus.DestinationTooSmall) return false;
                 if (status != OperationStatus.Done)
                 {
@@ -1367,7 +1362,7 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx++] = JsonConstants.Quote;
 
-            OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             if (status != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowFormatException();
@@ -1829,7 +1824,7 @@ namespace System.Text.JsonLab
             // For the new line, \r\n or \n
             bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + (_indent & RemoveFlagsBitMask) * 2;
 
-            if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -1845,7 +1840,7 @@ namespace System.Text.JsonLab
                 bytesNeeded++;
             }
 
-            if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -1865,7 +1860,7 @@ namespace System.Text.JsonLab
             // For the new line, \r\n or \n, and the space after the colon
             bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
@@ -1890,7 +1885,7 @@ namespace System.Text.JsonLab
 
             bytesNeeded += numBytes * 3;    // quote {name} quote colon, hence 3
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
+            if (Buffers.Text.Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }

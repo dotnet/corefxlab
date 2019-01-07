@@ -4,9 +4,10 @@
 
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Buffers.Reader
+namespace System.Buffers
 {
     public static partial class ReaderExtensions
     {
@@ -25,7 +26,7 @@ namespace System.Buffers.Reader
             if (span.Length < sizeof(T))
                 return TryReadSlow(ref reader, out value);
 
-            value = MemoryMarshal.Read<T>(span);
+            value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(span));
             reader.Advance(sizeof(T));
             return true;
         }
@@ -44,7 +45,7 @@ namespace System.Buffers.Reader
                 return false;
             }
 
-            value = MemoryMarshal.Read<T>(tempSpan);
+            value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(tempSpan));
             reader.Advance(sizeof(T));
             return true;
         }
@@ -64,7 +65,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int16"/> as big  endian.
+        /// Reads an <see cref="Int16"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
         public static bool TryReadInt16BigEndian(ref this BufferReader<byte> reader, out short value)
@@ -103,7 +104,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int32"/> as big  endian.
+        /// Reads an <see cref="Int32"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
         public static bool TryReadInt32BigEndian(ref this BufferReader<byte> reader, out int value)
@@ -142,7 +143,7 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Reads an <see cref="Int64"/> as big  endian.
+        /// Reads an <see cref="Int64"/> as big endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
         public static bool TryReadInt64BigEndian(ref this BufferReader<byte> reader, out long value)

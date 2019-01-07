@@ -28,40 +28,40 @@ namespace System.Text.JsonLab
             var properties = new Dictionary<JsonProperty, JsonValue>(expectedNumberOfProperties);
             stack.Push(new JsonDynamicObject(properties));
 
-            var reader = new Utf8JsonReader(utf8);
+            var reader = new JsonUtf8Reader(utf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        var name = new Utf8String(reader.Value);
+                        var name = new Utf8String(reader.ValueSpan);
                         reader.Read(); // Move to the value token
-                        var type = reader.ValueType;
+                        var type = reader.TokenType;
                         var current = stack.Peek();
                         var property = new JsonProperty(current, name);
                             switch (type)
                             {
-                            case JsonValueType.String:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value));
+                            case JsonTokenType.String:
+                                current._properties[property] = new JsonValue(new Utf8String(reader.ValueSpan));
                                 break;
-                            case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
+                            case JsonTokenType.StartObject: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 var newObj = new JsonDynamicObject(properties);
                                 current._properties[property] = new JsonValue(newObj);
                                 stack.Push(newObj);
                                     break;
-                            case JsonValueType.True:
+                            case JsonTokenType.True:
                                     current._properties[property] = new JsonValue(type);
                                     break;
-                            case JsonValueType.False:
+                            case JsonTokenType.False:
                                     current._properties[property] = new JsonValue(type);
                                     break;
-                            case JsonValueType.Null:
+                            case JsonTokenType.Null:
                                     current._properties[property] = new JsonValue(type);
                                     break;
-                            case JsonValueType.Number:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value), type);
+                            case JsonTokenType.Number:
+                                current._properties[property] = new JsonValue(new Utf8String(reader.ValueSpan), type);
                                     break;
-                            case JsonValueType.Array:
+                            case JsonTokenType.StartArray:
                                 throw new NotImplementedException("array support not implemented yet.");
                                 default:
                                     throw new NotSupportedException();
@@ -75,7 +75,11 @@ namespace System.Text.JsonLab
                     case JsonTokenType.StartArray:
                         throw new NotImplementedException("array support not implemented yet.");
                     case JsonTokenType.EndArray:
-                    case JsonTokenType.Value:
+                    case JsonTokenType.String:
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                    case JsonTokenType.Null:
+                    case JsonTokenType.Number:
                         break;
                     default:
                         throw new NotSupportedException();
@@ -94,7 +98,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            if (jsonValue.Type != JsonValueType.Number)
+            if (jsonValue.Type != JsonTokenType.Number)
             {
                 throw new InvalidOperationException();
             }
@@ -110,7 +114,7 @@ namespace System.Text.JsonLab
                 return false;
             }
 
-            if (jsonValue.Type != JsonValueType.String)
+            if (jsonValue.Type != JsonTokenType.String)
             {
                 throw new InvalidOperationException();
             }
@@ -152,7 +156,7 @@ namespace System.Text.JsonLab
             var property = new JsonProperty(this, name);
             if(value == null)
             {
-                _properties[property] = new JsonValue(JsonValueType.Null);
+                _properties[property] = new JsonValue(JsonTokenType.Null);
                 return true;
             }
             if(value is string)
@@ -227,9 +231,9 @@ namespace System.Text.JsonLab
 
             JsonDynamicObject _object;
             Utf8String _value { get; set; }
-            JsonValueType _type;
+            JsonTokenType _type;
 
-            public JsonValue(Utf8String value, JsonValueType type = JsonValueType.String)
+            public JsonValue(Utf8String value, JsonTokenType type = JsonTokenType.String)
             {
                 _value = value;
                 _object = null;
@@ -239,10 +243,10 @@ namespace System.Text.JsonLab
             {
                 _value = default(Utf8String);
                 _object = obj;
-                _type = JsonValueType.Object;
+                _type = JsonTokenType.StartObject;
             }
 
-            public JsonValue(JsonValueType type)
+            public JsonValue(JsonTokenType type)
             {
                 _type = type;
                 _value = default(Utf8String);
@@ -251,16 +255,16 @@ namespace System.Text.JsonLab
 
             public JsonDynamicObject Object { get { return _object; } }
             public Utf8String Value { get { return _value; } }
-            public JsonValueType Type { get { return _type; } }
+            public JsonTokenType Type { get { return _type; } }
 
             public object ToObject()
             {
                 if (_object != null) return _object;
-                if (_type == JsonValueType.Null) return null;
-                if (_type == JsonValueType.True) return true;
-                if (_type == JsonValueType.False) return false;
-                if (_type == JsonValueType.String) return _value.ToString();
-                if (_type == JsonValueType.Number)
+                if (_type == JsonTokenType.Null) return null;
+                if (_type == JsonTokenType.True) return true;
+                if (_type == JsonTokenType.False) return false;
+                if (_type == JsonTokenType.String) return _value.ToString();
+                if (_type == JsonTokenType.Number)
                 {
                     return double.Parse(_value.ToString());
                 }
@@ -275,17 +279,17 @@ namespace System.Text.JsonLab
 
                 switch (_type)
                 {
-                    case JsonValueType.String:
+                    case JsonTokenType.String:
                         return _value.TryFormatQuotedString(buffer, out written, format, symbolTable: symbolTable);
-                    case JsonValueType.Number:
+                    case JsonTokenType.Number:
                         return _value.TryFormat(buffer, out written, format, symbolTable: symbolTable);
-                    case JsonValueType.Object:
+                    case JsonTokenType.StartObject:
                         return _object.TryFormat(buffer, out written, format, symbolTable);
-                    case JsonValueType.Null:
+                    case JsonTokenType.Null:
                         return symbolTable.TryEncode(s_nullBytes, buffer, out consumed, out written);
-                    case JsonValueType.True:
+                    case JsonTokenType.True:
                         return symbolTable.TryEncode(s_trueBytes, buffer, out consumed, out written);
-                    case JsonValueType.False:
+                    case JsonTokenType.False:
                         return symbolTable.TryEncode(s_falseBytes, buffer, out consumed, out written);
                     default:
                         throw new NotImplementedException();

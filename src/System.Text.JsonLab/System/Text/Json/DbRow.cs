@@ -26,14 +26,14 @@ namespace System.Text.JsonLab
         private readonly int _union;
 
         public bool HasChildren => _union < 0;  // True only if there are nested objects or arrays within the current JSON element
-        public JsonValueType JsonType => (JsonValueType)((_union & 0x70000000) >> 28); // type of JSON construct (e.g. Object, Array, Number)
+        public JsonType JsonType => (JsonType)((_union & 0x70000000) >> 28); // type of JSON construct (e.g. Object, Array, Number)
         public int NumberOfRows => _union & 0x0FFFFFFF; // Number of rows that the current JSON element occupies within the database
 
         internal const int UnknownSize = -1;
 
-        public DbRow(JsonValueType jsonType, int location, int sizeOrLength = UnknownSize, int numberOfRows = 1)
+        public DbRow(JsonType jsonType, int location, int sizeOrLength = UnknownSize, int numberOfRows = 1)
         {
-            Debug.Assert(jsonType >= JsonValueType.Object && jsonType <= JsonValueType.Unknown);
+            Debug.Assert(jsonType >= JsonType.StartObject && jsonType <= JsonType.Null);
             Debug.Assert(location >= 0);
             Debug.Assert(sizeOrLength >= UnknownSize);
             Debug.Assert(numberOfRows >= 1 && numberOfRows <= 0x0FFFFFFF);
@@ -43,9 +43,9 @@ namespace System.Text.JsonLab
             _union = numberOfRows | (int)jsonType << 28; // HasChildren is set to false by default
         }
 
-        internal DbRow(JsonValueType jsonType, int location, bool hasChildren, int sizeOrLength, int numberOfRows)
+        internal DbRow(JsonType jsonType, int location, bool hasChildren, int sizeOrLength, int numberOfRows)
         {
-            Debug.Assert(jsonType >= JsonValueType.Object && jsonType <= JsonValueType.Unknown);
+            Debug.Assert(jsonType >= JsonType.StartObject && jsonType <= JsonType.Null);
             Debug.Assert(location >= 0);
             Debug.Assert(sizeOrLength >= UnknownSize);
             Debug.Assert(numberOfRows >= 1 && numberOfRows <= 0x0FFFFFFF);
@@ -57,6 +57,6 @@ namespace System.Text.JsonLab
                 _union = _union | 1 << 31;
         }
 
-        public bool IsSimpleValue => JsonType > JsonValueType.Array;
+        public bool IsSimpleValue => JsonType > JsonType.StartArray;
     }
 }

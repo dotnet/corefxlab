@@ -24,45 +24,45 @@ namespace System.Text.JsonLab
 
             T instance = Create<T>.CreateInstanceOfType(utf8);
 
-            var reader = new Utf8JsonReader(utf8);
+            var reader = new JsonUtf8Reader(utf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        int key = GetHashCode(reader.Value);
+                        int key = GetHashCode(reader.ValueSpan);
                         reader.Read(); // Move to the value token
-                        JsonValueType type = reader.ValueType;
+                        JsonTokenType type = reader.TokenType;
                         switch (type)
                         {
-                            case JsonValueType.String:
-                                PropertyInfo pi = GetPropertyInfo(dictionary, key, reader.Value);
-                                pi.SetValue(instance, new Utf8String(reader.Value));    // TODO: Use Ref.Emit instead of Reflection
+                            case JsonTokenType.String:
+                                PropertyInfo pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
+                                pi.SetValue(instance, new Utf8String(reader.ValueSpan));    // TODO: Use Ref.Emit instead of Reflection
                                 break;
-                            case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
+                            case JsonTokenType.StartObject: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 throw new NotImplementedException("object support not implemented yet.");
-                            case JsonValueType.True:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                            case JsonTokenType.True:
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, true);
                                 break;
-                            case JsonValueType.False:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                            case JsonTokenType.False:
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, false);
                                 break;
-                            case JsonValueType.Null:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                            case JsonTokenType.Null:
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 pi.SetValue(instance, null);
                                 break;
-                            case JsonValueType.Number:
-                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                            case JsonTokenType.Number:
+                                pi = GetPropertyInfo(dictionary, key, reader.ValueSpan);
                                 // TODO: Add support for other numeric types like double, long, etc.
-                                if (!Utf8Parser.TryParse(reader.Value, out int result, out _))
+                                if (!Utf8Parser.TryParse(reader.ValueSpan, out int result, out _))
                                 {
                                     throw new InvalidCastException();
                                 }
                                 pi.SetValue(instance, result);
                                 break;
-                            case JsonValueType.Array:
+                            case JsonTokenType.StartArray:
                                 throw new NotImplementedException("array support not implemented yet.");
                             default:
                                 throw new NotSupportedException();
@@ -75,7 +75,11 @@ namespace System.Text.JsonLab
                     case JsonTokenType.StartArray:
                         throw new NotImplementedException("array support not implemented yet.");
                     case JsonTokenType.EndArray:
-                    case JsonTokenType.Value:
+                    case JsonTokenType.String:
+                    case JsonTokenType.True:
+                    case JsonTokenType.False:
+                    case JsonTokenType.Null:
+                    case JsonTokenType.Number:
                         break;
                     default:
                         throw new NotSupportedException();

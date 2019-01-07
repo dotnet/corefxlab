@@ -96,7 +96,7 @@ namespace System.Numerics.Tensors
 
                 foreach (T item in fromArray)
                 {
-                    if (!item.Equals(arithmetic.Zero))
+                    if (!item.Equals(Zero))
                     {
                         var destIndex = ArrayUtilities.TransformIndexByStrides(index, sourceStrides, false, strides);
                         var compressedIndex = destIndex / strides[compressedDimension];
@@ -112,7 +112,7 @@ namespace System.Numerics.Tensors
             {
                 foreach (T item in fromArray)
                 {
-                    if (!item.Equals(arithmetic.Zero))
+                    if (!item.Equals(Zero))
                     {
                         var compressedIndex = index / strides[compressedDimension];
                         var nonCompressedIndex = index % strides[compressedDimension];
@@ -143,7 +143,7 @@ namespace System.Numerics.Tensors
                     return values.Span[valueIndex];
                 }
 
-                return arithmetic.Zero;
+                return Zero;
             }
 
             set
@@ -174,7 +174,7 @@ namespace System.Numerics.Tensors
                 return values.Span[valueIndex];
             }
 
-            return arithmetic.Zero;
+            return Zero;
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace System.Numerics.Tensors
 
         private void SetAt(T value, int compressedIndex, int nonCompressedIndex)
         {
-            bool isZero = value.Equals(arithmetic.Zero);
+            bool isZero = value.Equals(Zero);
 
             if (TryFindIndex(compressedIndex, nonCompressedIndex, out int valueIndex))
             {

@@ -23,6 +23,7 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
+    <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\..\src\System.Text.JsonLab.Dynamic\System.Text.JsonLab.Dynamic.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->

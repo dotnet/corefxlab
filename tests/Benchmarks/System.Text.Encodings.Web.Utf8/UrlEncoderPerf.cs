@@ -34,6 +34,6 @@ namespace System.Text.Encodings.Web.Utf8.Benchmarks
         }
 
         [Benchmark]
-        public void DecodeInPlace() => UrlEncoder.DecodeInPlace(_encodedBytes);
+        public void DecodeInPlace() => UrlDecoder.Utf8.DecodeInPlace(_encodedBytes, _encodedBytes.Length, out _);
     }
 }

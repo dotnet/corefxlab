@@ -272,7 +272,7 @@ namespace System.Text.JsonLab.Tests
                 return json;
             }
 
-            var jsonReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonString));
+            var jsonReader = new JsonUtf8Reader(Encoding.UTF8.GetBytes(jsonString));
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {
@@ -292,16 +292,16 @@ namespace System.Text.JsonLab.Tests
             return json;
         }
 
-        private static Value GetValue(ref Utf8JsonReader jsonReader)
+        private static Value GetValue(ref JsonUtf8Reader jsonReader)
         {
-            var value = new Value { Type = MapValueType(jsonReader.ValueType) };
+            var value = new Value { Type = MapValueType(jsonReader.TokenType) };
             switch (value.Type)
             {
                 case Value.ValueType.String:
                     value.StringValue = ReadUtf8String(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed);
+                    CustomParser.TryParseDecimal(jsonReader.ValueSpan, out decimal num, out int consumed);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:
@@ -322,30 +322,30 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
-        private static Value.ValueType MapValueType(JsonValueType type)
+        private static Value.ValueType MapValueType(JsonTokenType type)
         {
             switch (type)
             {
-                case JsonValueType.False:
+                case JsonTokenType.False:
                     return Value.ValueType.False;
-                case JsonValueType.True:
+                case JsonTokenType.True:
                     return Value.ValueType.True;
-                case JsonValueType.Null:
+                case JsonTokenType.Null:
                     return Value.ValueType.Null;
-                case JsonValueType.Number:
+                case JsonTokenType.Number:
                     return Value.ValueType.Number;
-                case JsonValueType.String:
+                case JsonTokenType.String:
                     return Value.ValueType.String;
-                case JsonValueType.Array:
+                case JsonTokenType.StartArray:
                     return Value.ValueType.Array;
-                case JsonValueType.Object:
+                case JsonTokenType.StartObject:
                     return Value.ValueType.Object;
                 default:
                     throw new ArgumentException();
             }
         }
 
-        private static Object ReadObject(ref Utf8JsonReader jsonReader)
+        private static Object ReadObject(ref JsonUtf8Reader jsonReader)
         {
             // NOTE: We should be sitting on a StartObject token.
             Assert.Equal(JsonTokenType.StartObject, jsonReader.TokenType);
@@ -378,7 +378,7 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json object was started but never ended.");
         }
 
-        private static Array ReadArray(ref Utf8JsonReader jsonReader)
+        private static Array ReadArray(ref JsonUtf8Reader jsonReader)
         {
             // NOTE: We should be sitting on a StartArray token.
             Assert.Equal(JsonTokenType.StartArray, jsonReader.TokenType);
@@ -395,7 +395,11 @@ namespace System.Text.JsonLab.Tests
                         return jsonArray;
                     case JsonTokenType.StartArray:
                     case JsonTokenType.StartObject:
-                    case JsonTokenType.Value:
+                    case JsonTokenType.False:
+                    case JsonTokenType.True:
+                    case JsonTokenType.Null:
+                    case JsonTokenType.Number:
+                    case JsonTokenType.String:
                         jsonValues.Add(GetValue(ref jsonReader));
                         break;
                     default:
@@ -406,9 +410,9 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json array was started but never ended.");
         }
 
-        private static byte[] ReadUtf8String(ref Utf8JsonReader jsonReader)
+        private static byte[] ReadUtf8String(ref JsonUtf8Reader jsonReader)
         {
-            return jsonReader.Value.ToArray();
+            return jsonReader.ValueSpan.ToArray();
         }
     }
 }
