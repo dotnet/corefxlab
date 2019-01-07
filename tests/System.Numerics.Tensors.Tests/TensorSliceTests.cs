@@ -28,7 +28,7 @@ namespace System.Numerics.Tensors.Tests
             //  { 20,21,22*,23*}}}        { 5,11,17*,23*}}}
 
             // get the *'d elements above
-            var slice = tensor.Slice(new Range(1, 1), new Range(0, 3), new Range(2, 2));
+            var slice = tensor.Slice(new RangeLab(1, 1), new RangeLab(0, 3), new RangeLab(2, 2));
 
             Assert.Equal(2, slice.Rank);
             Assert.Equal(new[] { 3, 2 }, slice.Dimensions.ToArray());
@@ -87,7 +87,7 @@ namespace System.Numerics.Tensors.Tests
             // {  8, 9,10,11*}}          { 2, 5, 8,11*}}
 
             // get the *'d elements above
-            var slice = tensor.Slice(new Range(0, 3), new Range(3, 1));
+            var slice = tensor.Slice(new RangeLab(0, 3), new RangeLab(3, 1));
 
             Assert.Equal(1, slice.Rank);
             Assert.Equal(new[] { 3 }, slice.Dimensions.ToArray());
@@ -135,7 +135,7 @@ namespace System.Numerics.Tensors.Tests
             //  { 20,21,22*,23*}}}
 
             // get the *'d elements above
-            return tensor.Slice(new Range(0, 2), new Range(0, 3), new Range(2, 2));
+            return tensor.Slice(new RangeLab(0, 2), new RangeLab(0, 3), new RangeLab(2, 2));
         }
 
         [Theory]
@@ -226,7 +226,7 @@ namespace System.Numerics.Tensors.Tests
         public void Slice1DSlice(TensorConstructor constructor)
         {
             var slice = Get3DSlice(constructor);
-            var resliced = slice.Slice(new Range(0, 1), new Range(0, 3), new Range(1, 1));
+            var resliced = slice.Slice(new RangeLab(0, 1), new RangeLab(0, 3), new RangeLab(1, 1));
 
             Assert.Equal(1, resliced.Rank);
             Assert.Equal(new[] { 3 }, resliced.Dimensions.ToArray());
@@ -250,7 +250,7 @@ namespace System.Numerics.Tensors.Tests
         public void Slice2DSlice(TensorConstructor constructor)
         {
             var slice = Get3DSlice(constructor);
-            var resliced = slice.Slice(new Range(0, 1), new Range(0, 2), new Range(0, 2));
+            var resliced = slice.Slice(new RangeLab(0, 1), new RangeLab(0, 2), new RangeLab(0, 2));
 
             Assert.Equal(2, resliced.Rank);
             Assert.Equal(new[] { 2, 2 }, resliced.Dimensions.ToArray());
@@ -304,18 +304,18 @@ namespace System.Numerics.Tensors.Tests
             var tensor = constructor.CreateFromArray<int>(arr).Reshape(new[] { 2, 3, 4 });
 
             // first dimension is invalid
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 3), new Range(0, 1), new Range(0, 1)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 10), new Range(0, 1), new Range(0, 1)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(1, 2), new Range(0, 1), new Range(0, 1)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(2, 1), new Range(0, 1), new Range(0, 1)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(-1, 1), new Range(0, 1), new Range(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 3), new RangeLab(0, 1), new RangeLab(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 10), new RangeLab(0, 1), new RangeLab(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(1, 2), new RangeLab(0, 1), new RangeLab(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(2, 1), new RangeLab(0, 1), new RangeLab(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(-1, 1), new RangeLab(0, 1), new RangeLab(0, 1)));
 
             // third dimension is invalid
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(0, 5)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(0, 10)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(3, 2)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(4, 1)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(-1, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 1), new RangeLab(0, 1), new RangeLab(0, 5)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 1), new RangeLab(0, 1), new RangeLab(0, 10)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 1), new RangeLab(0, 1), new RangeLab(3, 2)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 1), new RangeLab(0, 1), new RangeLab(4, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new RangeLab(0, 1), new RangeLab(0, 1), new RangeLab(-1, 1)));
         }
 
         [Theory]

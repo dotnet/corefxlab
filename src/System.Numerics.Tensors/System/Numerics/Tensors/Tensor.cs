@@ -1220,12 +1220,12 @@ namespace System.Numerics.Tensors
 
         #region Slice
 
-        public Tensor<T> Slice(params Range[] ranges)
+        public Tensor<T> Slice(params RangeLab[] ranges)
         {
-            return Slice(new ReadOnlySpan<Range>(ranges));
+            return Slice(new ReadOnlySpan<RangeLab>(ranges));
         }
 
-        public virtual Tensor<T> Slice(ReadOnlySpan<Range> ranges)
+        public virtual Tensor<T> Slice(ReadOnlySpan<RangeLab> ranges)
         {
             if (ranges.Length != Rank)
             {

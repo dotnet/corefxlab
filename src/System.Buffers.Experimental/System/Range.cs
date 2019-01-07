@@ -9,7 +9,7 @@ using System.Text;
 namespace System.Buffers.Experimental
 {
     // TODO: consider allowing Last > First. Ennumeration will count down.
-    public readonly struct Range : IEnumerable<int>
+    public readonly struct RangeLab : IEnumerable<int>
     {
         public const int UnboundedFirst = Int32.MinValue;
         public const int UnboundedEnd = Int32.MaxValue;
@@ -25,7 +25,7 @@ namespace System.Buffers.Experimental
             }
         }
 
-        public Range(int first, uint length)
+        public RangeLab(int first, uint length)
         {
             if (first == UnboundedFirst)
                 throw new ArgumentOutOfRangeException(nameof(first));
@@ -36,7 +36,7 @@ namespace System.Buffers.Experimental
             if (End < First) throw new ArgumentOutOfRangeException(nameof(length));
         }
 
-        private Range(int first, int end)
+        private RangeLab(int first, int end)
         {
             First = first;
             End = end;
@@ -50,8 +50,8 @@ namespace System.Buffers.Experimental
             end = End;
         }
 
-        public static Range Construct(int first, int end)
-            => new Range(first, end);
+        public static RangeLab Construct(int first, int end)
+            => new RangeLab(first, end);
 
         public struct Enumerator : IEnumerator<int>
         {
@@ -124,7 +124,7 @@ namespace System.Buffers.Experimental
         /// <param name="length">zero based length of an indexable 'list' the range is being bound to.</param>
         /// <returns>Bound Range (IsBound == true).</returns>
         /// <remarks>The method throws ArgumentOutOfRangeException Range.IsValid(lenght) returns false.</remarks>
-        public Range Bind(int length)
+        public RangeLab Bind(int length)
         {
             if (!IsValid(length)) throw new ArgumentOutOfRangeException(nameof(length));
             if (IsBound) return this;
@@ -136,7 +136,7 @@ namespace System.Buffers.Experimental
             if (End != UnboundedEnd) end = End;
             else end = length;
 
-            return new Range(first, end);
+            return new RangeLab(first, end);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace System.Buffers.Experimental
         /// </summary>
         /// <param name="length">zero based length.</param>
         /// <returns></returns>
-        public Range BindToValid(int length)
+        public RangeLab BindToValid(int length)
         {
             int first = First;
             if (first < 0) first = 0;
@@ -153,7 +153,7 @@ namespace System.Buffers.Experimental
             int end = End;
             if (end == UnboundedEnd || end > length) end = length;
 
-            return new Range(first, end);
+            return new RangeLab(first, end);
         }
 
         public override string ToString()
