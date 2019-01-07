@@ -211,7 +211,6 @@ namespace System.Security.Cryptography.Tests.Asn1
         [Theory]
         [InlineData(PublicEncodingRules.BER, "2017121900.06861111087Z")]
         [InlineData(PublicEncodingRules.BER, "201712190004.11666665167Z")]
-        [InlineData(PublicEncodingRules.BER, "201712190004.11666665167Z")]
         [InlineData(PublicEncodingRules.BER, "20171219000406.9999991Z")]
         [InlineData(PublicEncodingRules.CER, "20171219000406.9999991Z")]
         [InlineData(PublicEncodingRules.DER, "20171219000406.9999991Z")]

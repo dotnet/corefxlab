@@ -171,7 +171,6 @@ namespace System.Security.Cryptography.Tests.Asn1
         [InlineData(PublicEncodingRules.DER, 2, "FE", true)]
         [InlineData(PublicEncodingRules.DER, 1, "02", false)]
         [InlineData(PublicEncodingRules.DER, 1, "82", false)]
-        [InlineData(PublicEncodingRules.DER, 1, "FE", false)]
         [InlineData(PublicEncodingRules.DER, 1, "80", false)]
         public static void WriteBitString_UnusedBitCount_MustBeValid(
             PublicEncodingRules ruleSet,
