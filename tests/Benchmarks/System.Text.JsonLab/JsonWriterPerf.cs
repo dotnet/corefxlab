@@ -13,11 +13,8 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    //[SimpleJob(invocationCount: 2_097_152, warmupCount: 5, targetCount: 10)]
-    //[SimpleJob(invocationCount: 16_384, warmupCount: 5, targetCount: 10)]
     //[MemoryDiagnoser]
     //[DisassemblyDiagnoser(printPrologAndEpilog: true, recursiveDepth: 3)]
-    //[SimpleJob(warmupCount: 5, targetCount: 10)]
     [Config(typeof(ConfigWithCustomEnvVars))]
     public class JsonWriterPerf
     {
@@ -58,10 +55,10 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] dataArray;
         private DateTime MyDate;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
-        [Params(true)]
+        [Params(true, false)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -124,16 +121,6 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteEndArray();
             json.WriteEndObject();
             json.Flush();
-
-            //using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
-            //{
-            //    json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
-
-            //    json.WriteStartArray();
-            //    for (int i = 0; i < 100; i++)
-            //        json.WriteValue(12345);
-            //    json.WriteEndArray();
-            //}
         }
 
         //[Benchmark]
@@ -149,43 +136,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteNumberArray(Encoding.UTF8.GetBytes("numbers"), dataArray, suppressEscaping: true);
             json.WriteEndObject();
             json.Flush();
-
-            //using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
-            //{
-            //    json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
-
-            //    json.WriteStartArray();
-            //    for (int i = 0; i < 100; i++)
-            //        json.WriteValue(12345);
-            //    json.WriteEndArray();
-            //}
         }
-
-        //[Benchmark]
-        /*public void WriterSystemTextJsonValues_withMethod()
-        {
-            _arrayFormatterWrapper.Clear();
-
-            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = Formatted, SkipValidation = SkipValidation });
-
-            var json = new Utf8JsonWriter2(_arrayFormatterWrapper, state);
-
-            json.WriteStartArray();
-            for (int i = 0; i < 100; i++)
-                json.WriteNumberValue_withMethod(12345);
-            json.WriteEndArray();
-            json.Flush();
-
-            //using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
-            //{
-            //    json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
-
-            //    json.WriteStartArray();
-            //    for (int i = 0; i < 100; i++)
-            //        json.WriteValue(12345);
-            //    json.WriteEndArray();
-            //}
-        }*/
 
         //[Benchmark]
         public void WritePropertyValueSuppressEscaping()
@@ -249,39 +200,6 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteString("fir\nst", "Joh\nn");
             json.WriteEndObject();
             json.Flush();
-
-
-
-            //using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
-            //{
-            //    json.Formatting = Formatted ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
-
-            //    json.WriteStartObject();
-            //    for (int i = 0; i < 100; i++)
-            //    {
-            //        json.WritePropertyName("first");
-            //        json.WriteValue("John");
-            //    }
-            //    json.WriteEndObject();
-            //}
-
-
-            //json.WriteStartObject();
-            ////json.WriteNumber("age", 42, suppressEscaping: true);
-            //json.WriteString("first", "John", suppressEscaping: true);
-            //json.WriteString("last", "Smith", suppressEscaping: true);
-            ////json.WriteStartArray("phoneNumbers", suppressEscaping: true);
-            ////json.WriteStringValue("425-000-1212", suppressEscaping: true);
-            ////json.WriteStringValue("425-000-1213", suppressEscaping: true);
-            ////json.WriteEndArray();
-            ////json.WriteStartObject("address", suppressEscaping: true);
-            //json.WriteString("street", "1 Microsoft Way", suppressEscaping: true);
-            //json.WriteString("city", "Redmond", suppressEscaping: true);
-            ////json.WriteNumber("zip", 98052, suppressEscaping: true);
-            ////json.WriteEndObject();
-            ////json.WriteArray(ExtraArray, _data.AsSpan(0, 10), suppressEscaping: true);
-            //json.WriteEndObject();
-            //json.Flush();
         }
 
         //[Benchmark]
@@ -335,7 +253,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark (Baseline = true)]
+        //[Benchmark]
         public void WriterSystemTextJsonBasicNoDefault()
         {
             _arrayFormatterWrapper.Clear();
@@ -676,23 +594,6 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteString(FirNst, JohNn);
             json.WriteEndObject();
             json.Flush();
-
-            //json.WriteStartObject();
-            ////json.WriteNumber("age", 42, suppressEscaping: true);
-            //json.WriteString("first", "John", suppressEscaping: true);
-            //json.WriteString("last", "Smith", suppressEscaping: true);
-            ////json.WriteStartArray("phoneNumbers", suppressEscaping: true);
-            ////json.WriteStringValue("425-000-1212", suppressEscaping: true);
-            ////json.WriteStringValue("425-000-1213", suppressEscaping: true);
-            ////json.WriteEndArray();
-            ////json.WriteStartObject("address", suppressEscaping: true);
-            //json.WriteString("street", "1 Microsoft Way", suppressEscaping: true);
-            //json.WriteString("city", "Redmond", suppressEscaping: true);
-            ////json.WriteNumber("zip", 98052, suppressEscaping: true);
-            ////json.WriteEndObject();
-            ////json.WriteArray(ExtraArray, _data.AsSpan(0, 10), suppressEscaping: true);
-            //json.WriteEndObject();
-            //json.Flush();
         }
 
         //[Benchmark]
@@ -711,7 +612,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        //[Benchmark(Baseline = true)]
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
