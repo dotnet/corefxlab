@@ -54,23 +54,20 @@ namespace System.Text.JsonLab
         {
             // Calculated based on the following: ',null' OR ',true' OR ',false'
             int bytesNeeded = value.Length + 1;
-            while (_buffer.Length < bytesNeeded)
+            if (_buffer.Length < bytesNeeded)
             {
-                GrowAndEnsure();
+                GrowAndEnsure(bytesNeeded);
             }
 
+            int idx = 0;
             if (_currentDepth < 0)
             {
-                _buffer[0] = JsonConstants.ListSeperator;
-                value.CopyTo(_buffer.Slice(1));
-            }
-            else
-            {
-                bytesNeeded--;
-                value.CopyTo(_buffer);
+                _buffer[idx++] = JsonConstants.ListSeperator;
             }
 
-            Advance(bytesNeeded);
+            value.CopyTo(_buffer.Slice(idx));
+
+            Advance(idx + value.Length);
         }
 
         private void WriteLiteralIndented(ref ReadOnlySpan<byte> value)

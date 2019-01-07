@@ -382,7 +382,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriteNumberUnescapedUtf16()
         {
             _arrayFormatterWrapper.Clear();
@@ -618,6 +618,13 @@ namespace System.Text.JsonLab.Benchmarks
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
         }
 
+        [Benchmark]
+        public void SystemTextJson()
+        {
+            _arrayFormatterWrapper.Clear();
+            WriterSystemJsonBasic(Formatted, SkipValidation, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+        }
+
         //[Benchmark]
         public void WriterUtf8JsonBasic()
         {
@@ -787,6 +794,38 @@ namespace System.Text.JsonLab.Benchmarks
 
                 json.WriteEnd();
             }
+        }
+
+        private static void WriterSystemJsonBasic(bool formatted, bool skipValidation, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var state = new JsonWriterState(options: new JsonWriterOptions { Indented = formatted, SkipValidation = skipValidation });
+
+            var json = new Utf8JsonWriter2(output, state);
+
+            json.WriteStartObject();
+            json.WriteNumber("age", 42);
+            json.WriteString("first", "John");
+            json.WriteString("last", "Smith");
+            json.WriteStartArray("phoneNumbers");
+            json.WriteStringValue("425-000-1212");
+            json.WriteStringValue("425-000-1213");
+            json.WriteEndArray();
+            json.WriteStartObject("address");
+            json.WriteString("street", "1 Microsoft Way");
+            json.WriteString("city", "Redmond");
+            json.WriteNumber("zip", 98052);
+            json.WriteEndObject();
+
+            json.WriteStartArray("ExtraArray");
+            for (var i = 0; i < data.Length; i++)
+            {
+                json.WriteNumberValue(data[i]);
+            }
+            json.WriteEndArray();
+
+            json.WriteEndObject();
+
+            json.Flush();
         }
 
         private static void WriterUtf8JsonBasic(ReadOnlySpan<int> data)

@@ -34,19 +34,22 @@ namespace System.Text.JsonLab
 
         private void WriteNumberValueMinimized(ulong value)
         {
+            // Calculated based on the following: ',ulong.MaxValue'
+            int bytesNeeded = JsonConstants.MaximumUInt64Length + 1;
+            if (_buffer.Length < bytesNeeded)
+            {
+                GrowAndEnsure(bytesNeeded);
+            }
+
             int idx = 0;
             if (_currentDepth < 0)
             {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
                 _buffer[idx++] = JsonConstants.ListSeperator;
             }
 
-            WriteNumberValueFormatLoop(value, ref idx);
+            JsonWriterHelper.TryFormatUInt64Default(value, _buffer.Slice(idx), out int bytesWritten);
 
-            Advance(idx);
+            Advance(idx + bytesWritten);
         }
 
         private void WriteNumberValueIndented(ulong value)

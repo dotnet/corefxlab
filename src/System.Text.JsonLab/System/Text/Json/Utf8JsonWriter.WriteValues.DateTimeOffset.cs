@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers.Text;
+
 namespace System.Text.JsonLab
 {
     public ref partial struct Utf8JsonWriter2
@@ -31,17 +33,25 @@ namespace System.Text.JsonLab
 
         private void WriteStringValueMinimized(DateTimeOffset value)
         {
+            // Calculated based on the following: ',"DateTimeOffset value"'
+            int bytesNeeded = JsonConstants.MaximumDateTimeOffsetLength + 1;
+            if (_buffer.Length < bytesNeeded)
+            {
+                GrowAndEnsure(bytesNeeded);
+            }
+
             int idx = 0;
             if (_currentDepth < 0)
             {
-                while (_buffer.Length <= idx)
-                {
-                    GrowAndEnsure();
-                }
                 _buffer[idx++] = JsonConstants.ListSeperator;
             }
 
-            WriteStringValue(value, ref idx);
+            _buffer[idx++] = JsonConstants.Quote;
+
+            Utf8Formatter.TryFormat(value, _buffer.Slice(idx), out int bytesWritten);
+            idx += bytesWritten;
+
+            _buffer[idx++] = JsonConstants.Quote;
 
             Advance(idx);
         }

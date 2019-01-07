@@ -741,7 +741,21 @@ namespace System.Text.JsonLab
                 if (_buffer.Length <= previousSpanLength)
                 {
                     //TODO: Use Throwhelper and fix message.
-                    throw new OutOfMemoryException("Failed to get larger buffer when growing.");
+                    throw new OutOfMemoryException("Failed to get a larger buffer when growing.");
+                }
+            }
+        }
+
+        private void GrowAndEnsure(int minimumSize)
+        {
+            GrowSpan(4096);
+            if (_buffer.Length <= minimumSize)
+            {
+                GrowSpan(4096);
+                if (_buffer.Length <= minimumSize)
+                {
+                    //TODO: Use Throwhelper and fix message.
+                    throw new OutOfMemoryException("Failed to get buffer larger than minimumSize when growing.");
                 }
             }
         }
@@ -757,17 +771,7 @@ namespace System.Text.JsonLab
         {
             Debug.Assert(minimumSize > 6 && minimumSize <= 128);
             Advance(alreadyWritten);
-            int previousSpanLength = _buffer.Length;
-            GrowSpan(4096);
-            if (_buffer.Length <= minimumSize)
-            {
-                GrowSpan(4096);
-                if (_buffer.Length <= minimumSize)
-                {
-                    //TODO: Use Throwhelper and fix message.
-                    throw new OutOfMemoryException("Failed to get larger buffer when growing after advancing.");
-                }
-            }
+            GrowAndEnsure(minimumSize);
         }
 
         private void CopyLoop(ref ReadOnlySpan<byte> span, ref int idx)
