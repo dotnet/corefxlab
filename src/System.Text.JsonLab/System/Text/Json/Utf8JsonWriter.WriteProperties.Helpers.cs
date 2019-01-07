@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -30,87 +29,20 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePropertyNameAndDepth(ref ReadOnlySpan<byte> propertyName)
+        {
+            // TODO: Use throw helper with proper error messages
+            if (propertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
+                JsonThrowHelper.ThrowJsonWriterOrArgumentException(propertyName, _currentDepth);
+        }
+
         private void ValidateWritingProperty()
         {
             if (!_inObject)
             {
                 Debug.Assert(_tokenType != JsonTokenType.StartObject);
                 JsonThrowHelper.ThrowJsonWriterException("Cannot add a property within an array or as the first JSON token.");    //TODO: Add resouce message
-            }
-        }
-
-        private void GrowAndEnsure()
-        {
-            int previousSpanLength = _buffer.Length;
-            GrowSpan(4096);
-            if (_buffer.Length <= previousSpanLength)
-            {
-                GrowSpan(4096);
-                if (_buffer.Length <= previousSpanLength)
-                {
-                    //TODO: Use Throwhelper and fix message.
-                    throw new OutOfMemoryException("Failed to get larger buffer when growing.");
-                }
-            }
-        }
-
-        private void AdvanceAndGrow(int alreadyWritten)
-        {
-            Debug.Assert(alreadyWritten >= 0);
-            Advance(alreadyWritten);
-            GrowAndEnsure();
-        }
-
-        private void AdvanceAndGrow(int alreadyWritten, int minimumSize)
-        {
-            Debug.Assert(minimumSize > 6 && minimumSize <= 128);
-            Advance(alreadyWritten);
-            int previousSpanLength = _buffer.Length;
-            GrowSpan(4096);
-            if (_buffer.Length <= minimumSize)
-            {
-                GrowSpan(4096);
-                if (_buffer.Length <= minimumSize)
-                {
-                    //TODO: Use Throwhelper and fix message.
-                    throw new OutOfMemoryException("Failed to get larger buffer when growing after advancing.");
-                }
-            }
-        }
-
-        private void CopyLoop(ref ReadOnlySpan<byte> span, ref int idx)
-        {
-            while (true)
-            {
-                if (span.Length <= _buffer.Length - idx)
-                {
-                    span.CopyTo(_buffer.Slice(idx));
-                    idx += span.Length;
-                    break;
-                }
-
-                span.Slice(0, _buffer.Length - idx).CopyTo(_buffer.Slice(idx));
-                span = span.Slice(_buffer.Length - idx);
-                AdvanceAndGrow(_buffer.Length);
-                idx = 0;
-            }
-        }
-
-        private void CopyLoop(ReadOnlySpan<byte> span, ref int idx)
-        {
-            while (true)
-            {
-                if (span.Length <= _buffer.Length - idx)
-                {
-                    span.CopyTo(_buffer.Slice(idx));
-                    idx += span.Length;
-                    break;
-                }
-
-                span.Slice(0, _buffer.Length - idx).CopyTo(_buffer.Slice(idx));
-                span = span.Slice(_buffer.Length - idx);
-                AdvanceAndGrow(_buffer.Length);
-                idx = 0;
             }
         }
 

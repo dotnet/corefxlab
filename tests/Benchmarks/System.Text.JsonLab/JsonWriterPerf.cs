@@ -55,10 +55,10 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] dataArray;
         private DateTime MyDate;
 
-        [Params(true, false)]
+        [Params(false)]
         public bool Formatted;
 
-        [Params(true, false)]
+        [Params(true)]
         public bool SkipValidation;
 
         [GlobalSetup]
@@ -398,7 +398,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void NewtonsoftNumberUnescaped()
         {
             using (var json = new Newtonsoft.Json.JsonTextWriter(GetWriter()))
