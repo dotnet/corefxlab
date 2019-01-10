@@ -12,5 +12,9 @@
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
     <BenchmarkDotNetVersion>0.11.3</BenchmarkDotNetVersion>
+    <SnVersion>1.0.0</SnVersion>
+    <VSWhereVersion>2.5.2</VSWhereVersion>
+    <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
+    <MicrosoftDotNetSignToolVersion>1.0.0-beta.19058.5</MicrosoftDotNetSignToolVersion>
   </PropertyGroup>
 </Project>
