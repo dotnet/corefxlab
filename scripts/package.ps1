@@ -43,9 +43,10 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "*.cspr
 if ($Sign)
 {
     Write-Host "** Signing packages with SignType = $SignType **"
-    & $dotnetExePath msbuild "$repoRoot\tools\sign.proj" /p:SignType="$SignType" /p:PackagesPath="$packagesPath"
+    & $dotnetExePath msbuild "$repoRoot\tools\signing\sign.proj" /p:SignType="$SignType" /p:PackagesPath="$packagesPath"
 
     if (!$?) {
+        Write-Error "Failed to sign the packages"
         exit $lastExitCode
     }
 }

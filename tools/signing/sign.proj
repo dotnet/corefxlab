@@ -4,11 +4,11 @@
     <RestorePackagesPath Condition="'$(NUGET_PACKAGES)' == ''">$(MSBuildProjectDirectory)\..\.nuget\packages</RestorePackagesPath>
   </PropertyGroup>
   <Target Name="Build">
-    <MSBuild Projects="signing\sign.depproj"
+    <MSBuild Projects="sign.depproj"
              Targets="Restore"
              Properties="RestorePackagesPath=$(RestorePackagesPath)" />
 
-    <MSBuild Projects="signing\sign.targets" 
+    <MSBuild Projects="sign.targets" 
              Properties="RestorePackagesPath=$(RestorePackagesPath)" />
   </Target>
 </Project>
