@@ -19,7 +19,7 @@
   <Import Project="$(NuGetPackageRoot)microsoft.dotnet.signtool\$(MicrosoftDotNetSignToolVersion)\build\Microsoft.DotNet.SignTool.props" />
 
   <ItemGroup>
-    <ItemsToSign Include="$(PackagesPath)\*.nupkg" />
+    <ItemsToSign Include="$(PackagesPath)\$(FilesToSignFilter)" />
 
     <FileExtensionSignInfo Include=".dll;.exe" CertificateName="Microsoft400" />
     <FileExtensionSignInfo Include=".nupkg" CertificateName="NuGet" />
