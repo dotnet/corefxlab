@@ -8,6 +8,8 @@ using System.Text;
 namespace Benchmarks.System.Text.ValueBuilder
 {
     [MemoryDiagnoser]
+    // [DisassemblyDiagnoser(printAsm: true, recursiveDepth: 2)]
+    // [ShortRunJob]
     public class AppendBaseline
     {
         private static StringBuilder s_builder = new StringBuilder(100);
@@ -17,6 +19,13 @@ namespace Benchmarks.System.Text.ValueBuilder
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("The answer is {0}", 42);
+        }
+
+        [Benchmark]
+        public void AppendFormatIntString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("The answer is {0}, the question is {1}", 42, "6 x 7");
         }
 
         [Benchmark]

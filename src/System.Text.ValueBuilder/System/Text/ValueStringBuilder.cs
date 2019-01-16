@@ -11,11 +11,13 @@ namespace System.Text
 {
     // *** This file is a simple copy from CoreFX/CoreCLR (made public)
 
-    public ref partial struct ValueStringBuilder
+    public unsafe ref partial struct ValueStringBuilder
     {
         private char[] _arrayToReturnToPool;
         private Span<char> _chars;
         private int _pos;
+        private fixed char _default[DefaultBufferSize];
+        private const int DefaultBufferSize = 16;
 
         public ValueStringBuilder(Span<char> initialBuffer)
         {
@@ -239,6 +241,15 @@ namespace System.Text
         private void Grow(int requiredAdditionalCapacity)
         {
             Debug.Assert(requiredAdditionalCapacity > 0);
+
+            if (_pos + requiredAdditionalCapacity <= DefaultBufferSize)
+            {
+                fixed (char* c = _default)
+                {
+                    _chars = new Span<char>(c, DefaultBufferSize);
+                }
+                return;
+            }
 
             char[] poolArray = ArrayPool<char>.Shared.Rent(Math.Max(_pos + requiredAdditionalCapacity, _chars.Length * 2));
 
