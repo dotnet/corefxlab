@@ -2,13 +2,13 @@
   <Import Project="dependencies.props" />
   <PropertyGroup>
     <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(preview2-yyMMdd-1))</VersionSuffix>
-    <Copyright>Microsoft Corporation, All rights reserved</Copyright>
+    <Copyright>&#169; Microsoft Corporation. All rights reserved.</Copyright>
     <VersionPrefix>0.1.1</VersionPrefix>
-    <Authors>Microsoft Corporation</Authors>
+    <Authors>Microsoft</Authors>
     <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
     <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
-    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <SignAssembly>true</SignAssembly>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -17,5 +17,11 @@
     <LangVersion>latest</LangVersion>
     <!-- We are usually using a preview SDK -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <RepoRoot>$(MSBuildProjectDirectory)\..\..\</RepoRoot>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="$(RepoRoot)THIRD-PARTY-NOTICES.TXT" Pack="true" PackagePath="\" />
+    <Content Include="$(RepoRoot)LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
