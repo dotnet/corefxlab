@@ -1,0 +1,61 @@
+<Project DefaultTargets="Sign">
+  <Import Project="..\dependencies.props" />
+  <PropertyGroup>
+    <NuGetPackageRoot>$(RestorePackagesPath)</NuGetPackageRoot>
+    <NuGetPackageRoot Condition="!HasTrailingSlash('$(NuGetPackageRoot)')">$(NuGetPackageRoot)\</NuGetPackageRoot>
+    <SignType Condition="'$(SignType)' == ''">test</SignType> 
+
+    <_DryRun>true</_DryRun>
+    <_DryRun Condition="'$(BUILD_BUILDNUMBER)' != ''">false</_DryRun>
+    <_TestSign>false</_TestSign>
+    <_TestSign Condition="'$(SignType)' == 'test'">true</_TestSign>
+
+    <_DesktopMSBuildRequired Condition="'$(_DryRun)' != 'true'">true</_DesktopMSBuildRequired>
+
+    <_SigningTempDir Condition="'$(_SigningTempDir)' == ''">$(MSBuildProjectDirectory)\obj\tmp\</_SigningTempDir>
+    <_SigningLogDir Condition="'$(_SigningLogDir)' == ''">$(MSBuildProjectDirectory)\obj\log\</_SigningLogDir>
+  </PropertyGroup>
+
+  <Import Project="$(NuGetPackageRoot)microsoft.dotnet.signtool\$(MicrosoftDotNetSignToolVersion)\build\Microsoft.DotNet.SignTool.props" />
+
+  <ItemGroup>
+    <ItemsToSign Include="$(PackagesPath)\$(FilesToSignFilter)" />
+
+    <FileExtensionSignInfo Include=".dll;.exe" CertificateName="Microsoft400" />
+    <FileExtensionSignInfo Include=".nupkg" CertificateName="NuGet" />
+  </ItemGroup>
+
+  <Target Name="Sign">
+
+    <!-- We only need this if we are going to use the executable version. -->
+    <Exec Command='"$(NuGetPackageRoot)vswhere\$(VSWhereVersion)\tools\vswhere.exe" -latest -prerelease -property installationPath -requires Microsoft.Component.MSBuild'
+          ConsoleToMsBuild="true"
+          StandardErrorImportance="high"
+          Condition="'$(_DesktopMSBuildRequired)' == 'true'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_VSInstallDir" />
+    </Exec>
+
+    <PropertyGroup>
+      <_DesktopMSBuildPath Condition="'$(_DesktopMSBuildRequired)' == 'true'">$(_VSInstallDir)\MSBuild\15.0\Bin\msbuild.exe</_DesktopMSBuildPath>
+    </PropertyGroup>
+
+    <Error Condition="'$(AllowEmptySignList)' != 'true' AND '@(ItemsToSign)' == ''" 
+           Text="List of files to sign is empty. Make sure that ItemsToSign is configured correctly." />
+
+    <Microsoft.DotNet.SignTool.SignToolTask
+        DryRun="$(_DryRun)"
+        TestSign="$(_TestSign)"
+        DoStrongNameCheck="$(DoStrongNameCheck)"
+        CertificatesSignInfo="$(CertificatesSignInfo)"
+        ItemsToSign="@(ItemsToSign)"
+        StrongNameSignInfo="@(StrongNameSignInfo)"
+        FileSignInfo="@(FileSignInfo)"
+        FileExtensionSignInfo="@(FileExtensionSignInfo)"
+        TempDir="$(_SigningTempDir)"
+        LogDir="$(_SigningLogDir)"
+        MSBuildPath="$(_DesktopMSBuildPath)"
+        SNBinaryPath="$(NuGetPackageRoot)sn\$(SnVersion)\sn.exe"
+        MicroBuildCorePath="$(NuGetPackageRoot)microbuild.core\$(MicroBuildCoreVersion)"/>
+
+  </Target>
+</Project>

@@ -1,0 +1,14 @@
+<Project DefaultTargets="Build">
+  <PropertyGroup Condition="'$(RestorePackagesPath)' == ''">
+    <RestorePackagesPath Condition="'$(NUGET_PACKAGES)' != ''">$(NUGET_PACKAGES)</RestorePackagesPath>
+    <RestorePackagesPath Condition="'$(NUGET_PACKAGES)' == ''">$(MSBuildProjectDirectory)\..\.nuget\packages</RestorePackagesPath>
+  </PropertyGroup>
+  <Target Name="Build">
+    <MSBuild Projects="sign.depproj"
+             Targets="Restore"
+             Properties="RestorePackagesPath=$(RestorePackagesPath)" />
+
+    <MSBuild Projects="sign.targets" 
+             Properties="RestorePackagesPath=$(RestorePackagesPath)" />
+  </Target>
+</Project>

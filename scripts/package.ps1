@@ -1,7 +1,10 @@
 ﻿Param(
     [string]$Configuration="Debug",
     [string]$ApiKey,
-    [string]$BuildVersion=[System.DateTime]::Now.ToString('preview2-yyMMdd-1')
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1'),
+    [string]$FilesToSignFilter="*.nupkg",
+    [string]$SignType="test",
+    [switch]$Sign
 )
 
 $repoRoot = "$PSScriptRoot\.."
@@ -35,6 +38,17 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "*.cspr
 
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $file"
+    }
+}
+
+if ($Sign)
+{
+    Write-Host "** Signing packages with SignType = $SignType **"
+    & $dotnetExePath msbuild "$repoRoot\tools\signing\sign.proj" /p:SignType="$SignType" /p:PackagesPath="$packagesPath" /p:FilesToSignFilter="$FilesToSignFilter"
+
+    if (!$?) {
+        Write-Error "Failed to sign the packages"
+        exit $lastExitCode
     }
 }
 
