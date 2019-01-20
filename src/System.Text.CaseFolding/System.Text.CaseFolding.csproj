@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>Unicode Case Folding.</Description>
+    <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET Unicode Folding String</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
+  </ItemGroup>
+</Project>
