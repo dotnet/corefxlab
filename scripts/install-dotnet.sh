@@ -104,8 +104,16 @@ get_os_download_name_from_platform() {
             echo "ubuntu18.04"
             return 0
             ;;
+        "ubuntu.18.10")
+            echo "ubuntu18.10"
+            return 0
+            ;;
         "alpine.3.4.3")
             echo "alpine"
+            return 0
+            ;;
+        *)
+            echo "_unknown_"
             return 0
             ;;
     esac
