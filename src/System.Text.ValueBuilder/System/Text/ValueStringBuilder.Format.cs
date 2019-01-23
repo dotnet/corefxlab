@@ -26,12 +26,12 @@ namespace System.Text
         // lines. This would, of course, make the code a little slower, but the advantage of having
         // shareable logic (between StringBuilder, ValueStringBuilder, etc.) may be worth it.
 
-        public unsafe void Append(FormatString format, ReadOnlySpan<Variant> args, IFormatProvider provider = null)
+        public unsafe void Append(FormatString formatString, ReadOnlySpan<Variant> args, IFormatProvider provider = null)
         {
-            ReadOnlySpan<char> formatSpan = format.Format;
+            ReadOnlySpan<char> format = formatString.Format;
 
             int position = 0;
-            int length = formatSpan.Length;
+            int formatLength = format.Length;
             char current = '\x0';
             ValueStringBuilder unescapedItemFormat = default;
 
@@ -49,14 +49,14 @@ namespace System.Text
             while (true)
             {
                 // Scan for an argument hole (braces)
-                while (position < length)
+                while (position < formatLength)
                 {
-                    current = formatSpan[position];
+                    current = format[position];
                     position++;
 
                     if (current == '}')
                     {
-                        if (position < length && formatSpan[position] == '}')
+                        if (position < formatLength && format[position] == '}')
                         {
                             // Escaped brace (}}), skip
                             position++;
@@ -70,7 +70,7 @@ namespace System.Text
 
                     if (current == '{')
                     {
-                        if (position < length && formatSpan[position] == '{')
+                        if (position < formatLength && format[position] == '{')
                         {
                             // Escaped brace ({{), skip
                             position++;
@@ -87,7 +87,7 @@ namespace System.Text
                     Append(current);
                 }
 
-                if (position == length)
+                if (position == formatLength)
                 {
                     // No arguments, exit
                     break;
@@ -104,7 +104,7 @@ namespace System.Text
                 // Index ::= ('0'-'9')+ WS*
                 {
                     position++;
-                    if (position == length || (current = formatSpan[position]) < '0' || current > '9')
+                    if (position == formatLength || (current = format[position]) < '0' || current > '9')
                     {
                         // Need at least one digit
                         FormatError();
@@ -114,12 +114,12 @@ namespace System.Text
                     {
                         index = index * 10 + current - '0';
                         position++;
-                        if (position == length)
+                        if (position == formatLength)
                         {
                             // End of text (can't have a closing brace)
                             FormatError();
                         }
-                        current = formatSpan[position];
+                        current = format[position];
                     } while (current >= '0' && current <= '9' && index < IndexLimit);
 
                     if (index >= args.Length)
@@ -128,7 +128,7 @@ namespace System.Text
                     }
 
                     // Consume optional whitespace.
-                    while (position < length && (current = formatSpan[position]) == ' ')
+                    while (position < formatLength && (current = format[position]) == ' ')
                     {
                         position++;
                     }
@@ -146,29 +146,29 @@ namespace System.Text
                         position++;
 
                         // Consume optional whitespace
-                        while (position < length && formatSpan[position] == ' ')
+                        while (position < formatLength && format[position] == ' ')
                         {
                             position++;
                         }
 
-                        if (position == length)
+                        if (position == formatLength)
                         {
                             // End of text (can't have a closing brace)
                             FormatError();
                         }
 
-                        current = formatSpan[position];
+                        current = format[position];
                         if (current == '-')
                         {
                             // Minus sign means alignment is left justified.
                             leftJustify = true;
                             position++;
-                            if (position == length)
+                            if (position == formatLength)
                             {
                                 // End of text (can't have a closing brace)
                                 FormatError();
                             }
-                            current = formatSpan[position];
+                            current = format[position];
                         }
 
                         if (current < '0' || current > '9')
@@ -181,19 +181,19 @@ namespace System.Text
                         {
                             width = width * 10 + current - '0';
                             position++;
-                            if (position == length)
+                            if (position == formatLength)
                             {
                                 // End of text (can't have a closing brace)
                                 FormatError();
                             }
 
-                            current = formatSpan[position];
+                            current = format[position];
                         }
                         while (current >= '0' && current <= '9' && width < WidthLimit);
                     }
 
                     // Consume optional whitespace
-                    while (position < length && (current = formatSpan[position]) == ' ')
+                    while (position < formatLength && (current = format[position]) == ' ')
                     {
                         position++;
                     }
@@ -209,20 +209,20 @@ namespace System.Text
 
                     while (true)
                     {
-                        if (position == length)
+                        if (position == formatLength)
                         {
-                            // End of text (can't have a closing brace)
+                            // End of text (didn't find closing brace)
                             FormatError();
                         }
-                        current = formatSpan[position];
+                        current = format[position];
                         position++;
 
-                        // Is character a opening or closing brace?
+                        // Is character an opening or closing brace?
                         if (current == '}' || current == '{')
                         {
                             if (current == '{')
                             {
-                                if (position < length && formatSpan[position] == '{')
+                                if (position < formatLength && format[position] == '{')
                                 {
                                     // Escaped brace ({{), skip
                                     position++;
@@ -237,7 +237,7 @@ namespace System.Text
                             {
                                 // Closing brace
 
-                                if (position < length && formatSpan[position] == '}')
+                                if (position < formatLength && format[position] == '}')
                                 {
                                     // Escaped brace (}}), skip
                                     position++;
@@ -252,7 +252,7 @@ namespace System.Text
 
                             // Reaching here means the brace has been escaped
                             // so we need to build up the format string in segments
-                            unescapedItemFormat.Append(formatSpan.Slice(startPosition, position - startPosition - 1));
+                            unescapedItemFormat.Append(format.Slice(startPosition, position - startPosition - 1));
                             startPosition = position;
                         }
                     }
@@ -262,13 +262,13 @@ namespace System.Text
                         if (startPosition != position)
                         {
                             // There was no brace escaping, extract the item format as a single string
-                            itemFormatSpan = formatSpan.Slice(startPosition, position - startPosition);
+                            itemFormatSpan = format.Slice(startPosition, position - startPosition);
                         }
                     }
                     else
                     {
-                        unescapedItemFormat.Append(formatSpan.Slice(startPosition, position - startPosition));
-                        itemFormatSpan = unescapedItemFormat.ToString();
+                        unescapedItemFormat.Append(format.Slice(startPosition, position - startPosition));
+                        itemFormatSpan = unescapedItemFormat.AsSpan();
                         unescapedItemFormat.Length = 0;
                     }
                 }
@@ -283,34 +283,52 @@ namespace System.Text
 
                 // Construct the output for this argument hole.
                 position++;
-                ReadOnlySpan<char> formattedSpan = default;
+                ReadOnlySpan<char> formattedItem = default;
 
-                if (customFormatter != null)
+                // If we don't have a custom formatter and don't need to right justify we
+                // can create directly into the output buffer and avoid a copy.
+                bool canFormatDirect = customFormatter == null && (width == 0 || leftJustify);
+                int padding = 0;
+
+                if (canFormatDirect)
+                {
+                    int initialLength = Length;
+                    if (!arg.TryFormat(ref this, itemFormatSpan, provider))
+                    {
+                        Debug.Fail($"Failed to format index {index} with format span of '{new string(itemFormatSpan)}'");
+                    }
+                    padding = width - Length - initialLength;
+                }
+                else if (customFormatter != null)
                 {
                     string itemFormat = null;
                     if (itemFormatSpan.Length != 0)
                     {
                         itemFormat = new string(itemFormatSpan);
                     }
-                    formattedSpan = customFormatter.Format(itemFormat, arg.Box(), provider);
+                    formattedItem = customFormatter.Format(itemFormat, arg.Box(), provider);
+                    padding = width - formattedItem.Length;
                 }
                 else
                 {
+                    formatBuilder.Length = 0;
                     if (!arg.TryFormat(ref formatBuilder, itemFormatSpan, provider))
                     {
                         Debug.Fail($"Failed to format index {index} with format span of '{new string(itemFormatSpan)}'");
                     }
-                    formattedSpan = formatBuilder.AsSpan();
+                    formattedItem = formatBuilder.AsSpan();
+                    padding = width - formattedItem.Length;
                 }
-
-                int padding = width - formattedSpan.Length;
 
                 if (!leftJustify && padding > 0)
                 {
                     Append(' ', padding);
                 }
 
-                Append(formattedSpan);
+                if (!canFormatDirect)
+                {
+                    Append(formattedItem);
+                }
 
                 if (leftJustify && padding > 0)
                 {

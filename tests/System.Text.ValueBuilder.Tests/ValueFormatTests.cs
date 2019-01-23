@@ -9,14 +9,26 @@ namespace System.Text.ValueBuilder.Tests
     public class ValueFormatTests
     {
         [Theory,
-            InlineData(true, "The answer is {0}", "The answer is True"),
-            InlineData(true, "{0} is the answer", "False is the answer")]
-        public void FormatSingleBool(bool value, string format, string expected)
+            InlineData(true, "The answer is {0}"),
+            InlineData(false, "{0,10} is the answer"),
+            InlineData(true, "{0} is the answer")]
+        public void FormatSingleBool(bool value, string format)
         {
             Variant variant = new Variant(value);
-            ValueStringBuilder vsb = new ValueStringBuilder(expected.Length);
+            ValueStringBuilder vsb = new ValueStringBuilder();
             vsb.Append(format, variant.ToSpan());
-            string result = vsb.ToString();
+            Assert.Equal(string.Format(format, value), vsb.ToString());
+            vsb.Dispose();
+        }
+
+        [Theory,
+            InlineData(42, "6 x 7", "The answer is {0}, the question is {1}")]
+        public void FormatIntString(int value1, string value2, string format)
+        {
+            ValueStringBuilder vsb = new ValueStringBuilder();
+            vsb.Append(format, Variant.Create(value1, value2).ToSpan());
+            Assert.Equal(string.Format(format, value1, value2), vsb.ToString());
+            vsb.Dispose();
         }
     }
 }

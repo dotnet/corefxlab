@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#define STACKBUFFER
+#define TRACKRENT
+
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -9,15 +12,41 @@ using System.Runtime.InteropServices;
 
 namespace System.Text
 {
-    // *** This file is a simple copy from CoreFX/CoreCLR (made public)
+    // This file is a copy from CoreFX/CoreCLR (made public) with simple tweaks.
+    // As much as possible code has been left the same to allow for easier comparison.
 
     public unsafe ref partial struct ValueStringBuilder
     {
         private char[] _arrayToReturnToPool;
         private Span<char> _chars;
         private int _pos;
+
+        // Stringbuilder has a default size of 16. This is an experiment to
+        // see the impact of reserving a small amount of stack space.
+        //
+        // It does make a noticeable difference over renting the smallest buffer
+        // (16 chars), but copying is *very* costly so the max buffer size tracking may
+        // be more impactful. Still gathering data.
+
+#if STACKBUFFER
         private fixed char _default[DefaultBufferSize];
         private const int DefaultBufferSize = 16;
+#endif
+
+#if TRACKRENT
+        // The initial rent we'll do- we'll grow and contract this based
+        // on our rental history when we dispose of the builder.
+        [ThreadStatic]
+        private static int t_InitialMinRent = 0;
+
+        // The largest initial rent we'll do based on history.
+        private const int MaxInitialRent = 1024;
+
+        // The rent size decrement if we don't use the entire buffer. ArrayPool bucketing
+        // (memory is given out in ^2 chunks) should allow us to gradually "age" down into
+        // a smaller bucket size should we repeatedly not use the full bucket.
+        private const int InitialRentDecrement = 64;
+#endif
 
         public ValueStringBuilder(Span<char> initialBuffer)
         {
@@ -77,9 +106,7 @@ namespace System.Text
 
         public override string ToString()
         {
-            var s = _chars.Slice(0, _pos).ToString();
-            Dispose();
-            return s;
+            return _chars.Slice(0, _pos).ToString();
         }
 
         /// <summary>Returns the underlying storage of the builder.</summary>
@@ -242,7 +269,14 @@ namespace System.Text
         {
             Debug.Assert(requiredAdditionalCapacity > 0);
 
-            if (_pos + requiredAdditionalCapacity <= DefaultBufferSize)
+            int requestedSize = _pos + requiredAdditionalCapacity;
+
+#if STACKBUFFER
+            if (requestedSize <= DefaultBufferSize
+#if TRACKRENT
+                && t_InitialMinRent <= requestedSize
+#endif
+                )
             {
                 fixed (char* c = _default)
                 {
@@ -250,10 +284,26 @@ namespace System.Text
                 }
                 return;
             }
+#endif
 
-            char[] poolArray = ArrayPool<char>.Shared.Rent(Math.Max(_pos + requiredAdditionalCapacity, _chars.Length * 2));
+#if TRACKRENT
+            // We'll always grab the last max rent if it's bigger on the assumption that we can
+            // avoid extra copying / multiple grows. The ArrayPool will eventually flush unused
+            // buffers and we'll decrement our max rent size if we don't utilize the full buffer.
 
-            _chars.CopyTo(poolArray);
+            // If doubling up is greater, we'll go for that, up to 4K.
+
+            int rentSize = Math.Max(Math.Max(requestedSize, t_InitialMinRent), Math.Min(_chars.Length * 2, 4096));
+#else
+            int rentSize = Math.Max(requestedSize, Math.Min(_chars.Length * 2, 4096));
+#endif
+
+            // At least double the size
+            // TODO: This should be smarter about large buffers- we don't want to grow too much.)
+            char[] poolArray = ArrayPool<char>.Shared.Rent(rentSize);
+
+            if (_chars.Length > 0)
+                _chars.CopyTo(poolArray);
 
             char[] toReturn = _arrayToReturnToPool;
             _chars = _arrayToReturnToPool = poolArray;
@@ -267,9 +317,22 @@ namespace System.Text
         public void Dispose()
         {
             char[] toReturn = _arrayToReturnToPool;
+            int length = _pos;
+
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {
+#if TRACKRENT
+                // Remember our usage to hint our next rent
+                if (length > t_InitialMinRent)
+                {
+                    t_InitialMinRent = Math.Min(length, MaxInitialRent);
+                }
+                else if (length < t_InitialMinRent && t_InitialMinRent > InitialRentDecrement)
+                {
+                    t_InitialMinRent -= InitialRentDecrement;
+                }
+#endif
                 ArrayPool<char>.Shared.Return(toReturn);
             }
         }

@@ -9,8 +9,8 @@ using System.Text;
 
 namespace Benchmarks.System.Text.ValueBuilder
 {
-    [MemoryDiagnoser]
-    // [EtwProfiler]
+    // [MemoryDiagnoser]
+    // [EtwProfiler(performExtraBenchmarksRun: false)]
     // [DisassemblyDiagnoser(printAsm: true, recursiveDepth: 2)]
     // [ShortRunJob]
     public class AppendVariant
@@ -30,6 +30,17 @@ namespace Benchmarks.System.Text.ValueBuilder
             ValueStringBuilder sb = new ValueStringBuilder();
             sb.Append("The answer is {0}, the question is {1}", Variant.Create(42, "6 x 7").ToSpan());
             sb.Dispose();
+        }
+
+        // [Benchmark]
+        public void AppendFormatIntString_Multiple()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                ValueStringBuilder sb = new ValueStringBuilder();
+                sb.Append("The answer is {0}, the question is {1}", Variant.Create(42, "6 x 7").ToSpan());
+                sb.Dispose();
+            }
         }
 
         [Benchmark]

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Benchmarks.System.Text.ValueBuilder
 {
-    [MemoryDiagnoser]
+    // [MemoryDiagnoser]
     // [DisassemblyDiagnoser(printAsm: true, recursiveDepth: 2)]
     // [ShortRunJob]
     public class AppendBaseline

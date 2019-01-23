@@ -344,91 +344,108 @@ namespace System
         public static Variant3 Create(in Variant first, in Variant second, in Variant third) => new Variant3(in first, in second, in third);
 
         /// <summary>
-        /// Try to format the variant into the given span.
+        /// Try to format the variant into the given builder.
         /// </summary>
         /// <remarks>
         /// TODO: If we can make ISpanFormattable public (which this signature matches)
         /// we could format objects if they implemented said interface.
         /// </remarks>
-        public bool TryFormat(ref ValueStringBuilder destination, ReadOnlySpan<char> format = default, IFormatProvider provider = null)
+        public unsafe bool TryFormat(ref ValueStringBuilder destination, ReadOnlySpan<char> format = default, IFormatProvider provider = null)
         {
             // TODO: This generates a a lot of assembly instructions (575). Is there a way to make this faster/smaller?
             bool success = false;
             int charsWritten = 0;
 
+            if (Type == VariantType.Object)
+            {
+                // ISpanFormattable isn't public- if accessible this should check that *first*
+                string s = null;
+                if (_object is IFormattable formattable)
+                {
+                    s = formattable.ToString(new string(format), provider);
+                }
+                else if (_object != null)
+                {
+                    s = _object.ToString();
+                }
+
+                destination.Append(s);
+                return true;
+            }
+
+            const int CapacityNeeded = 32;
+            bool hasCapacity = destination.Capacity - destination.Length >= CapacityNeeded;
+            char* c = stackalloc char[CapacityNeeded];
+            Span<char> targetSpan = hasCapacity ? destination.AppendSpan(CapacityNeeded) : new Span<char>(c, CapacityNeeded);
+
             switch (Type)
             {
+                case VariantType.Int32:
+                    success = ((int)this).TryFormat(targetSpan, out charsWritten, format, provider);
+                    break;
                 case VariantType.Boolean:
-                    success = ((bool)this).TryFormat(destination.RawChars, out charsWritten);
+                    success = ((bool)this).TryFormat(targetSpan, out charsWritten);
                     break;
                 case VariantType.Byte:
-                    success = ((byte)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((byte)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Char:
                     success = true;
-                    destination.RawChars[0] = (char)this;
+                    targetSpan[0] = (char)this;
                     charsWritten = 1;
                     break;
                 case VariantType.DateTime:
-                    success = ((DateTime)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((DateTime)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.DateTimeOffset:
-                    success = ((DateTimeOffset)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((DateTimeOffset)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Decimal:
-                    success = ((decimal)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((decimal)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Double:
-                    success = ((double)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((double)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Guid:
-                    success = ((Guid)this).TryFormat(destination.RawChars, out charsWritten, format);
+                    success = ((Guid)this).TryFormat(targetSpan, out charsWritten, format);
                     break;
                 case VariantType.Int16:
-                    success = ((short)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
-                    break;
-                case VariantType.Int32:
-                    success = ((int)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((short)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Int64:
-                    success = ((long)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((long)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.SByte:
-                    success = ((sbyte)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((sbyte)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.Single:
-                    success = ((float)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((float)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.TimeSpan:
-                    success = ((TimeSpan)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((TimeSpan)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.UInt16:
-                    success = ((ushort)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((ushort)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.UInt32:
-                    success = ((uint)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
+                    success = ((uint)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
                 case VariantType.UInt64:
-                    success = ((ulong)this).TryFormat(destination.RawChars, out charsWritten, format, provider);
-                    break;
-                case VariantType.Object:
-                    // ISpanFormattable isn't public- if accessible this should check that *first*
-                    string s = null;
-                    if (_object is IFormattable formattable)
-                    {
-                        s = formattable.ToString(new string(format), provider);
-                    }
-                    else if (_object != null)
-                    {
-                        s = _object.ToString();
-                    }
-
-                    destination.Append(s);
+                    success = ((ulong)this).TryFormat(targetSpan, out charsWritten, format, provider);
                     break;
             }
 
-            if (charsWritten != 0)
-                destination.Length = charsWritten;
+            if (hasCapacity)
+            {
+                if (charsWritten != 0)
+                {
+                    destination.Length = destination.Length - CapacityNeeded + charsWritten;
+                }
+            }
+            else
+            {
+                destination.Append(targetSpan.Slice(0, charsWritten));
+            }
 
             return success;
         }
