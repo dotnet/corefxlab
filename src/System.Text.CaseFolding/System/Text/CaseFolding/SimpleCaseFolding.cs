@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -45,6 +46,8 @@ namespace System.Text.CaseFolding
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int SimpleCaseFoldCompareAbove05ff(char c1, char c2, ref ushort refMapLevel1, ref char refMapData)
         {
+            Debug.Assert((int)c1 > 0x5ff, "Char should be greater than 0x5ff.");
+            Debug.Assert((int)c2 > 0x5ff, "Char should be greater than 0x5ff.");
             var v1 =  Unsafe.Add(ref refMapLevel1, c1 >> 8);
             var ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
             if (ch1 == 0)
