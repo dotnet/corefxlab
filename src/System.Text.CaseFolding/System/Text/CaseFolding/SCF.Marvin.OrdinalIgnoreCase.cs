@@ -79,7 +79,7 @@ namespace System.Text.CaseFolding
             char[] borrowedArr = null;
             Span<char> scratch = (uint)count <= 64 ? stackalloc char[64] : (borrowedArr = ArrayPool<char>.Shared.Rent(count));
 
-            SimpleCaseFolding.SimpleCaseFold(scratch, new ReadOnlySpan<char>(Unsafe.AsPointer(ref data), count));
+            SimpleCaseFolding.SimpleCaseFold(new ReadOnlySpan<char>(Unsafe.AsPointer(ref data), count), scratch);
 
             // Slice the array to the size returned by ToUpperInvariant.
             // Multiplication below may overflow, that's fine since it's going to an unsigned integer.

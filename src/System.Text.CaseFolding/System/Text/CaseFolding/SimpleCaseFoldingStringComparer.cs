@@ -126,7 +126,7 @@ namespace System.Text.CaseFolding
                 stackalloc char[source.Length] :
                 (borrowedArr = ArrayPool<char>.Shared.Rent(source.Length));
 
-            SimpleCaseFolding.SimpleCaseFold(span, source);
+            SimpleCaseFolding.SimpleCaseFold(source, span);
 
             int hash = SCFMarvin.ComputeHash32OrdinalIgnoreCase(span, SCFMarvin.DefaultSeed);
 

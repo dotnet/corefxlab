@@ -334,7 +334,7 @@ namespace System.Text.CaseFolding
                 source,
                 (chars, sourceString) =>
                 {
-                    SimpleCaseFold(chars, sourceString);
+                    SimpleCaseFold(sourceString, chars);
                 });
         }
 
@@ -360,7 +360,7 @@ namespace System.Text.CaseFolding
         {
             Span<char> destination = new char[source.Length];
 
-            SimpleCaseFold(destination, source);
+            SimpleCaseFold(source, destination);
 
             return destination;
         }
@@ -370,7 +370,7 @@ namespace System.Text.CaseFolding
         /// </summary>
         /// <param name="source">Destination span.</param>
         /// <param name="source">Source span.</param>
-        public static void SimpleCaseFold(Span<char> destination, ReadOnlySpan<char> source)
+        public static void SimpleCaseFold(ReadOnlySpan<char> source, Span<char> destination)
         {
             if (source.Length > destination.Length)
             {
