@@ -368,8 +368,8 @@ namespace System.Text.CaseFolding
         /// <summary>
         /// Simple case folding of the ReadOnlySpan&lt;char&gt;.
         /// </summary>
-        /// <param name="source">Destination span.</param>
         /// <param name="source">Source span.</param>
+        /// <param name="destination">Destination span.</param>
         public static void SimpleCaseFold(ReadOnlySpan<char> source, Span<char> destination)
         {
             if (source.Length > destination.Length)
