@@ -334,7 +334,7 @@ namespace System.Text.CaseFolding
                 source,
                 (chars, sourceString) =>
                 {
-                    SpanSimpleCaseFold(chars, sourceString);
+                    SimpleCaseFold(chars, sourceString);
                 });
         }
 
@@ -345,7 +345,7 @@ namespace System.Text.CaseFolding
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SimpleCaseFold(this Span<char> source)
         {
-            SpanSimpleCaseFold(source, source);
+            SimpleCaseFold(source, source);
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace System.Text.CaseFolding
         {
             Span<char> destination = new char[source.Length];
 
-            SpanSimpleCaseFold(destination, source);
+            SimpleCaseFold(destination, source);
 
             return destination;
         }
@@ -370,7 +370,7 @@ namespace System.Text.CaseFolding
         /// </summary>
         /// <param name="source">Destination span.</param>
         /// <param name="source">Source span.</param>
-        public static void SpanSimpleCaseFold(Span<char> destination, ReadOnlySpan<char> source)
+        public static void SimpleCaseFold(Span<char> destination, ReadOnlySpan<char> source)
         {
             if (source.Length > destination.Length)
             {
