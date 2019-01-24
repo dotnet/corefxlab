@@ -18,7 +18,13 @@ namespace System.Text.CaseFolding
         private static ref (char highSurrogate, char lowSurrogate) s_refMapSurrogateData => ref MapSurrogateData[0];
 
         /// <summary>
+        /// Simple case fold the char.
         /// </summary>
+        /// <param name="c">Source char.</param>
+        /// <returns>
+        /// Returns folded char.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char SimpleCaseFold(char c)
         {
             if (c <= 0x5ff)
