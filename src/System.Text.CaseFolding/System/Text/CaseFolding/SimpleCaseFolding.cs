@@ -377,12 +377,6 @@ namespace System.Text.CaseFolding
                 throw new ArgumentNullException(nameof(destination)); // throw?
             }
 
-            if (source.Length == 0)
-            {
-                destination.Clear();
-                return;
-            }
-
             // Diagnostics.Assert(destination.Length >= source.Length, "Destination span length must be equal or greater then source span length.");
             ref char dst = ref MemoryMarshal.GetReference(destination);
             ref char src = ref MemoryMarshal.GetReference(source);
