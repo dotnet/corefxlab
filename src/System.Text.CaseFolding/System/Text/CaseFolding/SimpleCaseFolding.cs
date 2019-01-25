@@ -233,7 +233,8 @@ namespace System.Text.CaseFolding
                     if (length == 0)
                     {
                         // No low surrogate - throw?
-                        throw new ArgumentNullException("Low surrogate is expected.");
+                        // We would have to throw but for comparing we can do simple binary compare.
+                        return c1 - c2;
                     }
 
                     refA = ref Unsafe.Add(ref refA, 1);
@@ -244,7 +245,14 @@ namespace System.Text.CaseFolding
                     if (!IsLowSurrogate(c1Low) || !IsLowSurrogate(c2Low))
                     {
                         // No low surrogate - throw?
-                        throw new ArgumentNullException("Low surrogate is expected.");
+                        // We would have to throw but for comparing we can do simple binary compare.
+                        var r = c1 - c2;
+                        if (r == 0)
+                        {
+                            return c1Low - c2Low;
+                        }
+
+                        return r;
                     }
 
                     // The index is Utf32 minus 0x10000 (UNICODE_PLANE01_START)
@@ -273,7 +281,8 @@ namespace System.Text.CaseFolding
                     else
                     {
                         // We expect a high surrogate but get a low surrogate - throw?
-                        throw new ArgumentNullException("High surrogate is expected.");
+                        // We would have to throw but for comparing we can do simple binary compare.
+                        return c1 - c2;
                     }
                 }
 
@@ -452,7 +461,10 @@ namespace System.Text.CaseFolding
                     if (length == 0)
                     {
                         // No low surrogate - throw?
-                        throw new ArgumentNullException("Low surrogate is expected.");
+                        // We would have to throw but we can do simple binary copy
+                        // because the simple case folding is only used for comparisons.
+                        dst = c1;
+                        return;
                     }
 
                     src = ref Unsafe.Add(ref src, 1);
@@ -460,41 +472,50 @@ namespace System.Text.CaseFolding
 
                     if (!IsLowSurrogate(c1Low))
                     {
-                        // No low surrogate - throw?
-                        throw new ArgumentNullException("Low surrogate is expected.");
+                        // The index is Utf32 minus 0x10000 (UNICODE_PLANE01_START)
+                        var index1 = ((c1 - HIGH_SURROGATE_START) * 0x400) + (c1Low - LOW_SURROGATE_START);
+
+                        if (index1 <= 0xFFFF)
+                        {
+                            var v1 = Unsafe.Add(ref refMapSurrogateLevel1, index1 >> 8);
+                            var ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
+                            if (ch1 != (0, 0))
+                            {
+                                dst = ch1.highSurrogate;
+                                dst = ref Unsafe.Add(ref dst, 1);
+                                dst = ch1.lowSurrogate;
+                            }
+                            else
+                            {
+                                dst = c1;
+                                dst = ref Unsafe.Add(ref dst, 1);
+                                dst = c1Low;
+                            }
+                        }
                     }
-
-                    // The index is Utf32 minus 0x10000 (UNICODE_PLANE01_START)
-                    var index1 = ((c1 - HIGH_SURROGATE_START) * 0x400) + (c1Low - LOW_SURROGATE_START);
-
-                    if (index1 <= 0xFFFF)
+                    else
                     {
-                        var v1 = Unsafe.Add(ref refMapSurrogateLevel1, index1 >> 8);
-                        var ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
-                        if (ch1 != (0, 0))
-                        {
-                            dst = ch1.highSurrogate;
-                            dst = ref Unsafe.Add(ref dst, 1);
-                            dst = ch1.lowSurrogate;
-                        }
-                        else
-                        {
-                            dst = c1;
-                            dst = ref Unsafe.Add(ref dst, 1);
-                            dst = c1Low;
-                        }
-                    }
+                        // No low surrogate - throw?
+                        // We would have to throw but we can do simple binary copy
+                        // because the simple case folding is only used for comparisons.
+                        dst = c1;
 
-                    // Move to next char.
-                    length--;
-                    src = ref Unsafe.Add(ref src, 1);
-                    dst = ref Unsafe.Add(ref dst, 1);
+                        // Undo because it can be regular char and we will process it in next cycle.
+                        src = ref Unsafe.Add(ref src, -1);
+                    }
                 }
                 else
                 {
                     // We expect a high surrogate but get a low surrogate - throw?
-                    throw new ArgumentNullException("High surrogate is expected.");
+                    // We would have to throw but we can do simple binary copy
+                    // because the simple case folding is only used for comparisons.
+                    dst = c1;
                 }
+
+                // Move to next char.
+                length--;
+                src = ref Unsafe.Add(ref src, 1);
+                dst = ref Unsafe.Add(ref dst, 1);
 
                 // For char below 0x5ff use fastest 1-level mapping.
                 while (length != 0 && src <= MaxChar)
