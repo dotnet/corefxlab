@@ -12,7 +12,7 @@ using nuint = System.UInt64;
 
 namespace System.Text.CaseFolding
 {
-    public static partial class SCFMarvin
+    internal static partial class SCFMarvin
     {
         /// <summary>
         /// Compute a Marvin hash and collapse it into a 32-bit hash.
