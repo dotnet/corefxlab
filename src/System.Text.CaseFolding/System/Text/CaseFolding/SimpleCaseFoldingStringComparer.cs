@@ -128,7 +128,7 @@ namespace System.Text.CaseFolding
 
             SimpleCaseFolding.SimpleCaseFold(source, span);
 
-            int hash = SCFMarvin.ComputeHash32OrdinalIgnoreCase(span, SCFMarvin.DefaultSeed);
+            int hash = String.GetHashCode(span);
 
             // Return the borrowed array if necessary.
             if (borrowedArr != null)
