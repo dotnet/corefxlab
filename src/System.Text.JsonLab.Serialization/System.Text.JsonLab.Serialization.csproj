@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>Json serialization</Description>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <!-- Target exact version to prevent breaking API changes -->
+    <RuntimeFrameworkVersion>3.0.0-preview-27122-01</RuntimeFrameworkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET Json serialization corefxlab</PackageTags>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+</Project>
