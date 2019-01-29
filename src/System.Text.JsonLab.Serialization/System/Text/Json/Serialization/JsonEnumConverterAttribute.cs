@@ -29,8 +29,7 @@ namespace System.Text.Json.Serialization
 
         public override bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out object value)
         {
-            System.Enum temp;
-            bool success = EnumConverter.TryGetFromJson(span, type, out temp);
+            bool success = EnumConverter.TryGetFromJson(span, type, out Enum temp);
             value = temp;
             return success;
         }

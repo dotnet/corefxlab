@@ -33,6 +33,7 @@ namespace System.Text.Json.Serialization
             if (options == null)
                 options = s_DefaultSettings;
 
+            // todo: use an array pool here for smaller requests to avoid the alloc. Also doc the API that UTF8 is preferred for perf. 
             byte[] jsonBytes = s_utf8Encoding.GetBytes(json);
             JsonReaderState state = new JsonReaderState(options.DefaultBufferSize, options.ReaderOptions);
             Utf8JsonReader reader = new Utf8JsonReader(jsonBytes, true, state);

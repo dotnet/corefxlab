@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Json.Serialization
 {
@@ -94,11 +95,11 @@ namespace System.Text.Json.Serialization
                 {
                     jsonInfo = new JsonPropertyInfo<ushort>(classType, propertyType, propertyInfo, options);
                 }
-                else if(propertyType == typeof(uint))
+                else if (propertyType == typeof(uint))
                 {
                     jsonInfo = new JsonPropertyInfo<uint>(classType, propertyType, propertyInfo, options);
                 }
-                else if(propertyType == typeof(ulong))
+                else if (propertyType == typeof(ulong))
                 {
                     jsonInfo = new JsonPropertyInfo<ulong>(classType, propertyType, propertyInfo, options);
                 }
@@ -212,29 +213,33 @@ namespace System.Text.Json.Serialization
         {
             Debug.Assert(propertyName.Length > 0);
 
+            ulong key;
             int length = propertyName.Length;
 
             // Embed the propertyName in the first 6 bytes of the key.
-            ulong key = propertyName[0];
-            if (length > 1)
+            if (length > 3)
             {
-                key |= (ulong)propertyName[1] << 8;
+                key = MemoryMarshal.Read<uint>(propertyName);
+                if (length > 4)
+                {
+                    key |= (ulong)propertyName[4] << 32;
+                }
+                if (length > 5)
+                {
+                    key |= (ulong)propertyName[5] << 40;
+                }
+            }
+            else if (length > 1)
+            {
+                key = MemoryMarshal.Read<ushort>(propertyName);
                 if (length > 2)
                 {
                     key |= (ulong)propertyName[2] << 16;
-                    if (length > 3)
-                    {
-                        key |= (ulong)propertyName[3] << 24;
-                        if (length > 4)
-                        {
-                            key |= (ulong)propertyName[4] << 32;
-                            if (length > 5)
-                            {
-                                key |= (ulong)propertyName[5] << 40;
-                            }
-                        }
-                    }
                 }
+            }
+            else
+            {
+                key = propertyName[0];
             }
 
             // Embed the propertyName length in the last two bytes.

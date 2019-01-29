@@ -110,8 +110,6 @@ namespace System.Text.Json.Serialization
             throw new InvalidOperationException("todo");
         }
 
-
-
         private static bool ReadData(
             ref JsonReaderState readerState,
             Type returnType,
