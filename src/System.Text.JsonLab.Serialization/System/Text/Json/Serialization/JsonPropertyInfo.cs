@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization.Policies;
 
-
 namespace System.Text.Json.Serialization
 {
     internal abstract class JsonPropertyInfo
@@ -47,7 +46,7 @@ namespace System.Text.Json.Serialization
         public abstract object GetValueAsObject(object obj);
         public abstract void SetValueAsObject(object obj, object value);
 
-        public abstract IUtf8ValueConverter<T> GetValueConverter<T>();
+        public abstract PropertyValueConverterAttribute GetValueConverter();
 
         public virtual void GetPolicies()
         {
@@ -202,7 +201,7 @@ namespace System.Text.Json.Serialization
     {
         public delegate TValue GetterDelegate(object obj);
         public delegate void SetterDelegate(object obj, TValue value);
-        public IUtf8ValueConverter<TValue> ValueConverter { get; private set; }
+        public PropertyValueConverterAttribute ValueConverter { get; private set; }
 
         public SetterDelegate Set { get; private set; }
         public GetterDelegate Get { get; private set; }
@@ -247,9 +246,9 @@ namespace System.Text.Json.Serialization
             Set(obj, (TValue)value);
         }
 
-        public override IUtf8ValueConverter<T> GetValueConverter<T>()
+        public override PropertyValueConverterAttribute GetValueConverter()
         {
-            return ValueConverter as IUtf8ValueConverter<T>;
+            return ValueConverter;
         }
 
         public override void GetPolicies()
@@ -260,7 +259,7 @@ namespace System.Text.Json.Serialization
             base.GetPolicies();
         }
 
-        protected IUtf8ValueConverter<TProperty> GetPropertyValueConverter<TProperty>()
+        protected PropertyValueConverterAttribute GetPropertyValueConverter<TProperty>()
         {
             Type propertyType = typeof(TProperty);
 
@@ -295,7 +294,7 @@ namespace System.Text.Json.Serialization
                 }
             }
 
-            return attr?.GetConverter<TProperty>();
+            return attr;
         }
     }
 }

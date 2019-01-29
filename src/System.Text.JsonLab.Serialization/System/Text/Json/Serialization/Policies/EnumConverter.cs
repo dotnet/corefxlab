@@ -4,43 +4,26 @@
 
 namespace System.Text.Json.Serialization.Policies
 {
-    internal class EnumConverter : IUtf8ValueConverter<Enum>
+    internal class EnumConverter
     {
-        public static readonly UTF8Encoding s_utf8Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
-        private readonly bool _treatAsString;
-
-        public EnumConverter(bool treatAsString)
+        //todo: support [Flags]?
+        public static bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out Enum value)
         {
-            _treatAsString = treatAsString;
-        }
-
-        //todo: support [Flags]
-        public bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out Enum value)
-        {
-            string enumString = s_utf8Encoding.GetString(span);
+            string enumString = JsonConverter.s_utf8Encoding.GetString(span);
             if (Enum.TryParse(type, enumString, out object objValue))
             {
                 value = (Enum)objValue;
                 return true;
             }
 
-            throw new InvalidOperationException("todo");
+            throw new InvalidOperationException($"todo:could not convert value to string-based Enum {type}");
         }
 
-        public bool TrySetToJson(Enum value, out Span<byte> span)
+        public static bool TrySetToJson(Enum value, out Span<byte> span)
         {
             string stringVal;
-            if (_treatAsString)
-            {
-                stringVal = value.ToString();
-            }
-            else
-            {
-                object objVal = Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()));
-                stringVal = value.ToString();
-            }
-
-            span = Encoding.UTF8.GetBytes(stringVal);
+            stringVal = value.ToString();
+            span = JsonConverter.s_utf8Encoding.GetBytes(stringVal);
             return true;
         }
     }

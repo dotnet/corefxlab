@@ -12,17 +12,19 @@ namespace System.Text.Json.Serialization
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     internal class JsonDateConverterAttribute : PropertyValueConverterAttribute
     {
-        private static readonly IUtf8ValueConverter<DateTime> s_dateConverter = new DateConverter();
-
         public JsonDateConverterAttribute()
         {
             PropertyType = typeof(DateTime);
         }
 
-        public override IUtf8ValueConverter<DateTime> GetConverter<DateTime>()
+        public override bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out object value)
         {
-            //return default;
-            return (IUtf8ValueConverter<DateTime>)s_dateConverter;
+            return DateConverter.TryGetFromJson(span, type, out value);
+        }
+
+        public override bool TrySetToJson(object value, out Span<byte> span)
+        {
+            return DateConverter.TrySetToJson(value, out span);
         }
     }
 }

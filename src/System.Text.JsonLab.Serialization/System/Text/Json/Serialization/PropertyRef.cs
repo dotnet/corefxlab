@@ -4,10 +4,15 @@
 
 namespace System.Text.Json.Serialization
 {
-    public enum JsonClassMaterializer
+    internal struct PropertyRef
     {
-        Default = 0,
-        Reflection = 1,
-        ReflectionEmit = 2
+        public PropertyRef(ulong key, JsonPropertyInfo info)
+        {
+            Key = key;
+            Info = info;
+        }
+
+        public ulong Key;
+        public JsonPropertyInfo Info;
     }
 }

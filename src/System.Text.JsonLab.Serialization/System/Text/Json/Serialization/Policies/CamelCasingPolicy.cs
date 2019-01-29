@@ -8,24 +8,40 @@ namespace System.Text.Json.Serialization.Policies
     {
         public static string FromJson(string value)
         {
-            if (value.Length == 0 || char.IsUpper(value[0]))
+            if (value.Length == 0)
+                return value;
+
+            char firstChar = value[0];
+            if (char.IsUpper(firstChar))
                 return value;
 
             if (value.Length == 1)
                 return value.ToUpperInvariant();
 
-            return char.ToUpperInvariant(value[0]) + value.Substring(1);
+            return string.Create(value.Length, (firstChar, value), (chars, args) =>
+            {
+                chars[0] = char.ToUpperInvariant(args.firstChar);
+                args.value.AsSpan(1).CopyTo(chars.Slice(1));
+            });
         }
 
         public static string ToJson(string value)
         {
-            if (value.Length == 0 || char.IsLower(value[0]))
+            if (value.Length == 0)
+                return value;
+
+            char firstChar = value[0];
+            if (char.IsLower(firstChar))
                 return value;
 
             if (value.Length == 1)
                 return value.ToLowerInvariant();
 
-            return char.ToLower(value[0]) + value.Substring(1);
+            return string.Create(value.Length, (firstChar, value), (chars, args) =>
+            {
+                chars[0] = char.ToLowerInvariant(args.firstChar);
+                args.value.AsSpan(1).CopyTo(chars.Slice(1));
+            });
         }
     }
 }

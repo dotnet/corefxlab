@@ -11,7 +11,10 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
-        private static readonly JsonConverterSettings s_default_options = new JsonConverterSettings();
+        // todo: use a common instance across project (once corefxlab done)
+        internal static readonly UTF8Encoding s_utf8Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+        private static readonly JsonConverterSettings s_DefaultSettings = new JsonConverterSettings();
 
         private static bool ReadData(
             ref Utf8JsonReader reader,

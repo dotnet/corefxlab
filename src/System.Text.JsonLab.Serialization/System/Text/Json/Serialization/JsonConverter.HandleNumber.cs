@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization.Policies;
 
 namespace System.Text.Json.Serialization
 {
@@ -20,56 +21,81 @@ namespace System.Text.Json.Serialization
 
             if (propType == typeof(int))
             {
-                if (!reader.TryGetInt32Value(out int value))
-                {
-                    throw new FormatException();
-                }
+                int value = reader.GetInt32();
                 return SetValueAsPrimitive(ref current, value);
             }
 
             if (propType == typeof(decimal))
             {
-                if (!reader.TryGetDecimalValue(out decimal value))
-                {
-                    throw new FormatException();
-                }
+                decimal value = reader.GetDecimal();
                 return SetValueAsPrimitive(ref current, value);
             }
 
             if (propType == typeof(double))
             {
-                if (!reader.TryGetDoubleValue(out double value))
-                {
-                    throw new FormatException();
-                }
+                double value = reader.GetDouble();
                 return SetValueAsPrimitive(ref current, value);
             }
 
             if (propType == typeof(long))
             {
-                if (!reader.TryGetInt64Value(out long value))
-                {
-                    throw new FormatException();
-                }
+                long value = reader.GetInt64();
                 return SetValueAsPrimitive(ref current, value);
             }
 
             if (propType == typeof(short))
             {
-                if (!reader.TryGetInt32Value(out int value))
-                {
-                    throw new FormatException();
-                }
+                int value = reader.GetInt32();
                 return SetValueAsPrimitive(ref current, (short)value);
             }
 
             if (propType == typeof(float))
             {
-                if (!reader.TryGetSingleValue(out float value))
-                {
-                    throw new FormatException();
-                }
+                float value = reader.GetSingle();
                 return SetValueAsPrimitive(ref current, value);
+            }
+
+            if (propType == typeof(byte))
+            {
+                uint value = reader.GetUInt32();
+                return SetValueAsPrimitive(ref current, (byte)value);
+            }
+
+            if (propType == typeof(uint))
+            {
+                uint value = reader.GetUInt32();
+                return SetValueAsPrimitive(ref current, value);
+            }
+
+            if (propType == typeof(ulong))
+            {
+                ulong value = reader.GetUInt64();
+                return SetValueAsPrimitive(ref current, value);
+            }
+
+            if (propType == typeof(ushort))
+            {
+                uint value = reader.GetUInt32();
+                return SetValueAsPrimitive(ref current, (ushort)value);
+            }
+
+            if (propType.IsEnum)
+            {
+                PropertyValueConverterAttribute converter = current.PropertyInfo.GetValueConverter();
+                Debug.Assert(converter != null);
+
+                JsonEnumConverterAttribute enumConverter = converter as JsonEnumConverterAttribute;
+
+                if (enumConverter.TreatAsString)
+                {
+                    throw new InvalidOperationException($"todo: expected property {current.PropertyInfo.PropertyInfo.Name} to have JsonEnumConverterAttribute.TreatAsString=false");
+                }
+
+                long value = reader.GetInt64();
+
+                Enum enumObject = (Enum)Enum.ToObject(current.PropertyInfo.PropertyInfo.PropertyType, value);
+
+                return SetValueAsPrimitive<Enum>(ref current, enumObject);
             }
 
             //todo: add support for unsigned types (UInt, etc): https://github.com/dotnet/corefx/issues/33320

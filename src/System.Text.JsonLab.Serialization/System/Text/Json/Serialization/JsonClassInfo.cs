@@ -4,13 +4,16 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace System.Text.Json.Serialization
 {
     internal class JsonClassInfo
     {
-        public static readonly UTF8Encoding s_utf8Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+        // The length of the property name embedded in the key (in bytes).
+        private const int PropertyNameKeyLength = 6;
+
         public delegate object ConstructorDelegate();
         public ConstructorDelegate CreateObject { get; private set; }
 
@@ -25,10 +28,10 @@ namespace System.Text.Json.Serialization
 
             CreateObject = options.ClassMaterializerStrategy.CreateConstructor(classType);
 
-            // Ignore properties on enumerable
+            // Ignore properties on enumerable.
             if (classType.IsPrimitive || typeof(IEnumerable).IsAssignableFrom(classType))
             {
-                // Create a property that maps to the classType so we can have policies applied
+                // Create a property that maps to the classType so we can have policies applied.
                 AddProperty(classType, null, classType, options);
             }
             else
@@ -46,7 +49,7 @@ namespace System.Text.Json.Serialization
 
             if (propertyType.IsValueType)
             {
-                // More common types are listed first
+                // More common types are listed first.
                 if (propertyType == typeof(int))
                 {
                     jsonInfo = new JsonPropertyInfo<int>(classType, propertyType, propertyInfo, options);
@@ -83,6 +86,22 @@ namespace System.Text.Json.Serialization
                 {
                     jsonInfo = new JsonPropertyInfo<Enum>(classType, propertyType, propertyInfo, options);
                 }
+                else if (propertyType == typeof(byte))
+                {
+                    jsonInfo = new JsonPropertyInfo<byte>(classType, propertyType, propertyInfo, options);
+                }
+                else if (propertyType == typeof(ushort))
+                {
+                    jsonInfo = new JsonPropertyInfo<ushort>(classType, propertyType, propertyInfo, options);
+                }
+                else if(propertyType == typeof(uint))
+                {
+                    jsonInfo = new JsonPropertyInfo<uint>(classType, propertyType, propertyInfo, options);
+                }
+                else if(propertyType == typeof(ulong))
+                {
+                    jsonInfo = new JsonPropertyInfo<ulong>(classType, propertyType, propertyInfo, options);
+                }
                 else
                 {
                     Type genericPropertyType = typeof(JsonPropertyInfo<>).MakeGenericType(propertyType);
@@ -107,9 +126,9 @@ namespace System.Text.Json.Serialization
             {
                 string propertyName = jsonInfo.NameConverter == null ? propertyInfo.Name : jsonInfo.NameConverter.ToJson(propertyInfo.Name);
                 var bytes = (ReadOnlySpan<byte>)Encoding.Default.GetBytes(propertyName);
-                if (bytes.Length > 6)
+                if (bytes.Length > PropertyNameKeyLength)
                 {
-                    jsonInfo.Key = bytes.Slice(6).ToArray();
+                    jsonInfo.Key = bytes.Slice(PropertyNameKeyLength).ToArray();
                 }
 
                 _property_refs.Add(new PropertyRef(GetKey(bytes), jsonInfo));
@@ -125,7 +144,7 @@ namespace System.Text.Json.Serialization
             ulong key = GetKey(propertyName);
             JsonPropertyInfo info = null;
 
-            // First try sorted lookup
+            // First try sorted lookup.
             int count = _property_refs_sorted.Count;
             if (count != 0)
             {
@@ -164,7 +183,7 @@ namespace System.Text.Json.Serialization
 
             if (info == null)
             {
-                string stringPropertyName = s_utf8Encoding.GetString(propertyName);
+                string stringPropertyName = JsonConverter.s_utf8Encoding.GetString(propertyName);
                 throw new InvalidOperationException($"todo: invalid property {stringPropertyName}");
             }
 
@@ -175,12 +194,12 @@ namespace System.Text.Json.Serialization
 
         private static bool TryIsPropertyRefEqual(List<PropertyRef> list, ReadOnlySpan<byte> propertyName, ulong key, int index, out JsonPropertyInfo info)
         {
-            if (key == list[index]._key)
+            if (key == list[index].Key)
             {
-                if (propertyName.Length <= 6 ||
-                    propertyName.Slice(6).SequenceEqual((ReadOnlySpan<byte>)list[index]._info.Key))
+                if (propertyName.Length <= PropertyNameKeyLength ||
+                    propertyName.Slice(PropertyNameKeyLength).SequenceEqual((ReadOnlySpan<byte>)list[index].Info.Key))
                 {
-                    info = list[index]._info;
+                    info = list[index].Info;
                     return true;
                 }
             }
@@ -191,7 +210,11 @@ namespace System.Text.Json.Serialization
 
         private static ulong GetKey(ReadOnlySpan<byte> propertyName)
         {
+            Debug.Assert(propertyName.Length > 0);
+
             int length = propertyName.Length;
+
+            // Embed the propertyName in the first 6 bytes of the key.
             ulong key = propertyName[0];
             if (length > 1)
             {
@@ -213,13 +236,16 @@ namespace System.Text.Json.Serialization
                     }
                 }
             }
+
+            // Embed the propertyName length in the last two bytes.
             key |= (ulong)propertyName.Length << 48;
             return key;
         }
 
         public JsonPropertyInfo GetPolicyProperty()
         {
-            return _property_refs[0]._info;
+            Debug.Assert(_property_refs.Count == 1);
+            return _property_refs[0].Info;
         }
 
         private static Type GetElementType(Type propertyType)
@@ -242,19 +268,6 @@ namespace System.Text.Json.Serialization
             }
 
             return elementType;
-        }
-
-
-        internal struct PropertyRef
-        {
-            public PropertyRef(ulong key, JsonPropertyInfo info)
-            {
-                _key = key;
-                _info = info;
-            }
-
-            public ulong _key;
-            public JsonPropertyInfo _info;
         }
     }
 }

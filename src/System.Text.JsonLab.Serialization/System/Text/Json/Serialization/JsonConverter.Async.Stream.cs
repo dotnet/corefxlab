@@ -17,18 +17,30 @@ namespace System.Text.Json.Serialization
 
         public static Task<T> FromJsonAsync<T>(this Stream source, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             return FromJsonAsync<T>(source, typeof(T), options, cancellationToken);
         }
 
         public static Task<object> FromJsonAsync(this Stream source, Type returnType, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (returnType == null)
+                throw new ArgumentNullException(nameof(returnType));
+
             return FromJsonAsync<object>(source, returnType, options, cancellationToken);
         }
 
         private static async Task<T> FromJsonAsync<T>(this Stream source, Type returnType, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             if (options == null)
-                options = s_default_options;
+                options = s_DefaultSettings;
 
             var readerState = new JsonReaderState(options.MaxDepth, options.ReaderOptions);
             JsonObjectState current = default;
@@ -98,6 +110,8 @@ namespace System.Text.Json.Serialization
             throw new InvalidOperationException("todo");
         }
 
+
+
         private static bool ReadData(
             ref JsonReaderState readerState,
             Type returnType,
@@ -109,7 +123,8 @@ namespace System.Text.Json.Serialization
             ref List<JsonObjectState> previous,
             ref int arrayIndex)
         {
-            Utf8JsonReader reader = new Utf8JsonReader(new ReadOnlySequence<byte>(buffer, 0, bytesToRead), isFinalBlock, readerState);
+            Utf8JsonReader reader = new Utf8JsonReader(buffer.AsSpan(0, bytesToRead), isFinalBlock, readerState);
+
             bool finished = ReadData(
                 ref reader,
                 options,

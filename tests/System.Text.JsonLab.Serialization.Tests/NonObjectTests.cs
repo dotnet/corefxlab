@@ -92,15 +92,7 @@ namespace System.Text.Json.Serialization.Tests
             Assert.Equal(3, result[1][0]);
             Assert.Equal(4, result[1][1]);
         }
-
-        //[Fact]
-        //public static void SerializeHeterogeneousArray()
-        //{
-        //    object[] i = JsonConverter.FromJson<object[]>(Encoding.UTF8.GetBytes(@"[1,""a""]"));
-        //    Assert.Equal(1, i[0]);
-        //    Assert.Equal("a", i[1]);
-        //}
-
+        
         [Fact]
         public static void SerializePrimitiveList()
         {

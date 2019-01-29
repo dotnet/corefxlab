@@ -12,9 +12,11 @@ namespace System.Text.Json.Serialization
 {
     public class JsonConverterSettings
     {
+        private const int DefaultBufferSizeInternal = 16 * 1024;
+
         private volatile JsonMemberBasedClassMaterializer _classMaterializerStrategy;
         private JsonClassMaterializer _classMaterializer;
-        private int _defaultBufferSize = 16 * 1024;
+        private int _defaultBufferSize = DefaultBufferSizeInternal;
         private int _maxDepth = 64;
         private bool _hasRuntimeCustomAttributes;
 
@@ -101,23 +103,6 @@ namespace System.Text.Json.Serialization
                 _maxDepth = value;
             }
         }
-
-        //public static void AddAttribute(ICustomAttributeProvider type, Attribute attribute)
-        //{
-        //    if (type == null)
-        //        throw new ArgumentException(nameof(type));
-
-        //    if (attribute == null)
-        //        throw new ArgumentNullException(nameof(attribute));
-
-        //    if (!_runtimeAttributes.Value.TryGetValue(type, out List<Attribute> attributes))
-        //    {
-        //        _runtimeAttributes.Value.Add(type, attributes = new List<Attribute>());
-        //    }
-
-        //    attributes.Add(attribute);
-        //    _hasRuntimeCustomAttributes = true;
-        //}
 
         public void AddAttribute(ICustomAttributeProvider type, Attribute attribute)
         {

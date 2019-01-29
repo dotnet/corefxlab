@@ -20,19 +20,20 @@ namespace System.Text.Json.Serialization
 
             if (propType == typeof(string))
             {
-                string value = reader.GetStringValue();
+                string value = reader.GetString();
                 return SetValueAsPrimitive<string>(ref current, value);
             }
 
             if (propType == typeof(DateTime))
             {
-                IUtf8ValueConverter<DateTime> converter = current.PropertyInfo.GetValueConverter<DateTime>();
+                PropertyValueConverterAttribute converter = current.PropertyInfo.GetValueConverter();
                 Debug.Assert(converter != null);
 
                 ReadOnlySpan<byte> span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
-                if (converter.TryGetFromJson(span, typeof(DateTime), out DateTime value))
+                if (converter.TryGetFromJson(span, typeof(DateTime), out object value))
                 {
-                    return SetValueAsPrimitive<DateTime>(ref current, value);
+                    DateTime temp = (DateTime)value;
+                    return SetValueAsPrimitive<DateTime>(ref current, temp);
                 }
                 else
                 {
@@ -42,24 +43,41 @@ namespace System.Text.Json.Serialization
 
             if (propType.IsEnum)
             {
-                IUtf8ValueConverter<Enum> converter = current.PropertyInfo.GetValueConverter<Enum>();
+                PropertyValueConverterAttribute converter = current.PropertyInfo.GetValueConverter();
                 Debug.Assert(converter != null);
 
-                ReadOnlySpan<byte> span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
-                if (converter.TryGetFromJson(span, current.PropertyInfo.PropertyType, out Enum value))
+                JsonEnumConverterAttribute enumConverter = converter as JsonEnumConverterAttribute;
+
+                if (!enumConverter.TreatAsString)
                 {
-                    return SetValueAsPrimitive<Enum>(ref current, value);
+                    throw new InvalidOperationException($"todo: expected property {current.PropertyInfo.PropertyInfo.Name} to have JsonEnumConverterAttribute.TreatAsString=true");
+                }
+
+                ReadOnlySpan<byte> span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
+                object value;
+                if (converter.TryGetFromJson(span, current.PropertyInfo.PropertyType, out value))
+                {
+                    return SetValueAsPrimitive<Enum>(ref current, (Enum)value);
                 }
                 else
                 {
                     throw new InvalidOperationException("todo: invalid data");
                 }
             }
-            else
+
+            if (propType == typeof(char))
             {
-                //todo: add extensibility
-                throw new InvalidOperationException();
+                string value = reader.GetString();
+                if (value.Length != 1)
+                {
+                    throw new InvalidOperationException("todo: invalid data");
+                }
+
+                return SetValueAsPrimitive<char>(ref current, value[0]);
             }
+
+            //todo: add extensibility
+            throw new InvalidOperationException();
         }
     }
 }

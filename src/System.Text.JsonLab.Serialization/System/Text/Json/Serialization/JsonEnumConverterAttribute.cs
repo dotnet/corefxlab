@@ -12,26 +12,32 @@ namespace System.Text.Json.Serialization
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public sealed class JsonEnumConverterAttribute : PropertyValueConverterAttribute
     {
-        private static readonly IUtf8ValueConverter<Enum> s_enumConverterFalse = new EnumConverter(false);
-        private static readonly IUtf8ValueConverter<Enum> s_enumConverterTrue = new EnumConverter(true);
-
         /// <summary>
-        /// Determines whether the enum should be output as a <see cref="string"/>. By default, enums are <see cref="long"/>.
+        /// Determines how an enum should be converted to\from a <see cref="string"/>. By default, enums are <see cref="long"/>.
         /// </summary>
         public bool TreatAsString { get; set; }
+
+        public JsonEnumConverterAttribute(bool treatAsString) : this()
+        {
+            TreatAsString = treatAsString;
+        }
 
         public JsonEnumConverterAttribute()
         {
             PropertyType = typeof(Enum);
         }
 
-        public override IUtf8ValueConverter<Enum> GetConverter<Enum>()
+        public override bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out object value)
         {
-            if (TreatAsString)
-            {
-                return (IUtf8ValueConverter<Enum>)s_enumConverterTrue;
-            }
-            return (IUtf8ValueConverter<Enum>)s_enumConverterFalse;
+            System.Enum temp;
+            bool success = EnumConverter.TryGetFromJson(span, type, out temp);
+            value = temp;
+            return success;
+        }
+
+        public override bool TrySetToJson(object value, out Span<byte> span)
+        {
+            return EnumConverter.TrySetToJson((Enum)value, out span);
         }
     }
 }

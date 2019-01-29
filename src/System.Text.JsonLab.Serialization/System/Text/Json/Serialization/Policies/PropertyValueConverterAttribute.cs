@@ -9,6 +9,8 @@ namespace System.Text.Json.Serialization.Policies
     {
         public Type PropertyType { get; protected set; }
 
-        public abstract IUtf8ValueConverter<TProperty> GetConverter<TProperty>();
+        public abstract bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out object value);
+
+        public abstract bool TrySetToJson(object value, out Span<byte> span);
     }
 }

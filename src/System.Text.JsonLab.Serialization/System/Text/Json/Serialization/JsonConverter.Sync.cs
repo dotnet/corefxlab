@@ -11,13 +11,32 @@ namespace System.Text.Json.Serialization
     {
         public static T FromJson<T>(string json, JsonConverterSettings options = null)
         {
+            if (json == null)
+                throw new ArgumentNullException(nameof(json));
+
             return (T)FromJson(json, typeof(T), options);
         }
 
         public static object FromJson(string json, Type returnType, JsonConverterSettings options = null)
         {
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
-            return FromJson((ReadOnlySpan<byte>)jsonBytes, returnType, options);
+            if (json == null)
+                throw new ArgumentNullException(nameof(json));
+
+            if (returnType == null)
+                throw new ArgumentNullException(nameof(returnType));
+
+            return FromJsonInternal(json, returnType, options);
+        }
+
+        private static object FromJsonInternal(string json, Type returnType, JsonConverterSettings options = null)
+        {
+            if (options == null)
+                options = s_DefaultSettings;
+
+            byte[] jsonBytes = s_utf8Encoding.GetBytes(json);
+            JsonReaderState state = new JsonReaderState(options.DefaultBufferSize, options.ReaderOptions);
+            Utf8JsonReader reader = new Utf8JsonReader(jsonBytes, true, state);
+            return FromJsonInternal(reader, returnType, options);
         }
 
         public static T FromJson<T>(this ReadOnlySpan<byte> json, JsonConverterSettings options = null)
@@ -28,11 +47,11 @@ namespace System.Text.Json.Serialization
         public static object FromJson(this ReadOnlySpan<byte> json, Type returnType, JsonConverterSettings options = null)
         {
             if (options == null)
-                options = s_default_options;
+                options = s_DefaultSettings;
 
             JsonReaderState state = new JsonReaderState(options.DefaultBufferSize, options.ReaderOptions);
             Utf8JsonReader reader = new Utf8JsonReader(json, true, state);
-            return FromJson(reader, returnType, options);
+            return FromJsonInternal(reader, returnType, options);
         }
 
         public static T FromJson<T>(this ReadOnlySequence<byte> json, JsonConverterSettings options = null)
@@ -42,18 +61,21 @@ namespace System.Text.Json.Serialization
 
         public static object FromJson(this ReadOnlySequence<byte> json, Type returnType, JsonConverterSettings options = null)
         {
+            if (returnType == null)
+                throw new ArgumentNullException(nameof(returnType));
+
             if (options == null)
-                options = s_default_options;
+                options = s_DefaultSettings;
 
             JsonReaderState state = new JsonReaderState(options.DefaultBufferSize, options.ReaderOptions);
             Utf8JsonReader reader = new Utf8JsonReader(json, true, state);
-            return FromJson(reader, returnType, options);
+            return FromJsonInternal(reader, returnType, options);
         }
 
-        private static object FromJson(this Utf8JsonReader reader, Type returnType, JsonConverterSettings options = null)
+        private static object FromJsonInternal(this Utf8JsonReader reader, Type returnType, JsonConverterSettings options = null)
         {
             if (options == null)
-                options = s_default_options;
+                options = s_DefaultSettings;
 
             JsonObjectState current = default;
             List<JsonObjectState> previous = null;

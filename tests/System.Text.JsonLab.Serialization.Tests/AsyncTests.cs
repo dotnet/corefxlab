@@ -32,8 +32,6 @@ namespace System.Text.Json.Serialization.Tests
                 DefaultBufferSize = 1
             };
 
-            System.Diagnostics.Debugger.Break();
-
             int i = await stream.FromJsonAsync<int>(settings);
             Assert.Equal(1, i);
         }

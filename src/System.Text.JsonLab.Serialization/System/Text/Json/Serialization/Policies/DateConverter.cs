@@ -6,18 +6,19 @@ using System.Buffers.Text;
 
 namespace System.Text.Json.Serialization.Policies
 {
-    internal class DateConverter : IUtf8ValueConverter<DateTime>
+    internal static class DateConverter
     {
-        public DateConverter() { }
-
-        public bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out DateTime value)
+        public static bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out object value)
         {
-            return Utf8Parser.TryParse(span, out value, out int bytesConsumed, 'O') && span.Length == bytesConsumed;
+            DateTime temp;
+            bool success = Utf8Parser.TryParse(span, out temp, out int bytesConsumed, 'O') && span.Length == bytesConsumed;
+            value = temp;
+            return success;
         }
 
-        public bool TrySetToJson(DateTime value, out Span<byte> span)
+        public static bool TrySetToJson(object value, out Span<byte> span)
         {
-            span = Encoding.UTF8.GetBytes(value.ToString("O"));
+            span = JsonConverter.s_utf8Encoding.GetBytes(((Enum)value).ToString("O"));
             return true;
         }
     }
