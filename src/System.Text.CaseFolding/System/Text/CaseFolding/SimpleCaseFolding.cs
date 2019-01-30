@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 namespace System.Text.CaseFolding
 {
     /// <summary>
+    /// Implement Unicode Simple Case Folding API.
     /// </summary>
     public static partial class SimpleCaseFolding
-
     {
         private static ref ushort s_MapLevel1 => ref MapLevel1[0];
         private static ref char s_refMapData => ref MapData[0];
