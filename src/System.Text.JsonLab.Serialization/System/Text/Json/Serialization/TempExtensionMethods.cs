@@ -4,78 +4,40 @@
 
 namespace System.Text.Json.Serialization
 {
-    // Temporary extension methods until we get the API additions from Preview2
+    // Temporary extension methods until we move to corefx
     internal static class TempExtensionMethods
     {
-        public static int GetInt32(this Utf8JsonReader reader)
+        // TODO: Replace with existing static helper in corefx
+        // System/Text/Json/Reader/JsonReaderHelper.Unescaping.cs#L42
+        public static string TranscodeHelper(ReadOnlySpan<byte> utf8Unescaped)
         {
-            if (!reader.TryGetInt32Value(out int value))
+            try
             {
-                throw new FormatException();
+#if BUILDING_INBOX_LIBRARY
+                return JsonConverter.s_utf8Encoding.GetString(utf8Unescaped);
+#else
+                if (utf8Unescaped.IsEmpty)
+                {
+                    return string.Empty;
+                }
+                unsafe
+                {
+                    fixed (byte* bytePtr = utf8Unescaped)
+                    {
+                        return JsonConverter.s_utf8Encoding.GetString(bytePtr, utf8Unescaped.Length);
+                    }
+                }
+#endif
             }
-            return value;
-        }
-
-        public static uint GetUInt32(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetInt64Value(out long value))
+            catch (DecoderFallbackException ex)
             {
-                throw new FormatException();
+                // We want to be consistent with the exception being thrown
+                // so the user only has to catch a single exception.
+                // Since we already throw InvalidOperationException for mismatch token type,
+                // and while unescaping, using that exception for failure to decode invalid UTF-8 bytes as well.
+                // Therefore, wrapping the DecoderFallbackException around an InvalidOperationException.
+                throw new InvalidOperationException("Cannot transcode invalid UTF-8 JSON text to UTF-16 string.", ex);
             }
-            return (uint)value;
-        }
-
-        public static long GetInt64(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetInt64Value(out long value))
-            {
-                throw new FormatException();
-            }
-            return value;
-        }
-
-        public static ulong GetUInt64(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetInt64Value(out long value))
-            {
-                throw new FormatException();
-            }
-            unchecked
-            {
-                return (ulong)value;
-            }
-        }
-
-        public static string GetString(this Utf8JsonReader reader)
-        {
-            return reader.GetStringValue();
-        }
-
-        public static decimal GetDecimal(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetDecimalValue(out decimal value))
-            {
-                throw new FormatException();
-            }
-            return value;
-        }
-
-        public static double GetDouble(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetDoubleValue(out double value))
-            {
-                throw new FormatException();
-            }
-            return value;
-        }
-
-        public static float GetSingle(this Utf8JsonReader reader)
-        {
-            if (!reader.TryGetSingleValue(out float value))
-            {
-                throw new FormatException();
-            }
-            return value;
         }
     }
 }

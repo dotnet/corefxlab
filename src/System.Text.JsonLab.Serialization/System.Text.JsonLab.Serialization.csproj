@@ -2,12 +2,29 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Json serialization</Description>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <!-- Target exact version to prevent breaking API changes -->
-    <RuntimeFrameworkVersion>3.0.0-preview-27122-01</RuntimeFrameworkVersion>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET Json serialization corefxlab</PackageTags>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants Condition="'$(TargetFramework)' != 'netstandard2.0'">$(DefineConstants);BUILDING_INBOX_LIBRARY</DefineConstants>
   </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <!--These properties are necessary to build the source package-->
+      <PropertyGroup>
+        <!-- Suppress warnings for unnecessary CLSCompliance attributes -->
+        <NoWarn>3021</NoWarn>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Bcl.Json.Sources" Version="4.6.0-preview.19080.4">
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="System.Memory" Version="4.5.2" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
+      </ItemGroup>
+    </When>
+  </Choose>
+  
 </Project>

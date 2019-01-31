@@ -9,12 +9,16 @@ namespace System.Text.Json.Serialization.Policies
         //todo: support [Flags]?
         public static bool TryGetFromJson(ReadOnlySpan<byte> span, Type type, out Enum value)
         {
-            string enumString = JsonConverter.s_utf8Encoding.GetString(span);
+            string enumString = TempExtensionMethods.TranscodeHelper(span);
+#if BUILDING_INBOX_LIBRARY
             if (Enum.TryParse(type, enumString, out object objValue))
             {
                 value = (Enum)objValue;
                 return true;
             }
+#else
+            throw new NotImplementedException("TODO: EnumConverter is not yet supported on .NET Standard 2.0.");
+#endif
 
             throw new InvalidOperationException($"todo:could not convert value to string-based Enum {type}");
         }

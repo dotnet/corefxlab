@@ -183,7 +183,7 @@ namespace System.Text.JsonLab.Tests
                 switch (json.TokenType)
                 {
                     case Json.JsonTokenType.PropertyName:
-                        builder.Append(json.GetStringValue());
+                        builder.Append(json.GetString());
                         break;
                 }
             }
