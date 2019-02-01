@@ -51,7 +51,7 @@ namespace System.Text.Json.Serialization
             return result;
         }
 
-        public JsonReaderOptions ReaderOptions { get; set; }
+        internal JsonReaderOptions ReaderOptions { get; set; }
 
         public JsonClassMaterializer ClassMaterializer
         {
@@ -150,7 +150,14 @@ namespace System.Text.Json.Serialization
             if (!s_reflectionAttributes.TryGetValue(type, out object[] allReflectionAttributes))
             {
                 allReflectionAttributes = type.GetCustomAttributes(inherit: inherit);
-                s_reflectionAttributes.TryAdd(type, allReflectionAttributes);
+#if BUILDING_INBOX_LIBRARY
+                bool result = s_reflectionAttributes.TryAdd(type, allReflectionAttributes);
+                Debug.Assert(result);
+#else
+                // Dictionary.TryAdd API is not available on .NET Standard 2.0
+                s_reflectionAttributes.Add(type, allReflectionAttributes);
+#endif
+
             }
 
             return attributes.Concat(allReflectionAttributes.OfType<TAttribute>());

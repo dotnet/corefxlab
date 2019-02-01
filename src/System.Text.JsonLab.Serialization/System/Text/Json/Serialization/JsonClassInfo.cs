@@ -184,7 +184,7 @@ namespace System.Text.Json.Serialization
 
             if (info == null)
             {
-                string stringPropertyName = JsonConverter.s_utf8Encoding.GetString(propertyName);
+                string stringPropertyName = TempExtensionMethods.TranscodeHelper(propertyName);
                 throw new InvalidOperationException($"todo: invalid property {stringPropertyName}");
             }
 
