@@ -73,8 +73,8 @@ namespace System.Text.CaseFolding
             if (c1 <= 0xFFFF)
             {
                 ushort v1 = Unsafe.Add(ref refMapLevel1, c1 >> 8);
-                char ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
-                if (ch1 != (0, 0))
+                (char highSurrogate, char lowSurrogate) ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
+                if (ch1.highSurrogate != 0 && ch1.lowSurrogate != 0)
                 {
                     c1 = ((ch1.highSurrogate - HIGH_SURROGATE_START) * 0x400) + (ch1.lowSurrogate - LOW_SURROGATE_START);
                 }
@@ -83,8 +83,8 @@ namespace System.Text.CaseFolding
             if (c2 <= 0xFFFF)
             {
                 ushort v1 = Unsafe.Add(ref refMapLevel1, c2 >> 8);
-                char ch2 = Unsafe.Add(ref refMapData, v1 + (c2 & 0xFF));
-                if (ch2 != (0, 0))
+                (char highSurrogate, char lowSurrogate) ch2 = Unsafe.Add(ref refMapData, v1 + (c2 & 0xFF));
+                if (ch2.highSurrogate != 0 && ch2.lowSurrogate != 0)
                 {
                     c2 = ((ch2.highSurrogate - HIGH_SURROGATE_START) * 0x400) + (ch2.lowSurrogate - LOW_SURROGATE_START);
                 }
