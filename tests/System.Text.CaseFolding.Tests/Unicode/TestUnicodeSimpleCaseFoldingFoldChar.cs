@@ -41,10 +41,6 @@ namespace System.Text.CaseFolding.Tests
                 var expectedString = Char.ConvertFromUtf32(expected);
                 var value = Char.ConvertFromUtf32(i);
                 var foldedString = SimpleCaseFolding.SimpleCaseFold(value);
-                if (expectedString != foldedString)
-                {
-                    Console.WriteLine("Q");
-                }
                 Assert.Equal(expectedString, foldedString);
             }
         }
