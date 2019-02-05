@@ -28,7 +28,7 @@ namespace System.Text.CaseFolding
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char SimpleCaseFold(char c)
         {
-            if (c <= 0x5ff)
+            if (c <= MaxChar)
             {
                 return MapBelow5FF[c];
             }
@@ -46,8 +46,8 @@ namespace System.Text.CaseFolding
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int SimpleCaseFoldCompareAbove05ff(char c1, char c2, ref ushort refMapLevel1, ref char refMapData)
         {
-            Debug.Assert((int)c1 > 0x5ff, "Char should be greater than 0x5ff.");
-            Debug.Assert((int)c2 > 0x5ff, "Char should be greater than 0x5ff.");
+            Debug.Assert(c1 > MaxChar, "Char should be greater than 0x5ff.");
+            Debug.Assert(c2 > MaxChar, "Char should be greater than 0x5ff.");
             var v1 =  Unsafe.Add(ref refMapLevel1, c1 >> 8);
             var ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
             if (ch1 == 0)
