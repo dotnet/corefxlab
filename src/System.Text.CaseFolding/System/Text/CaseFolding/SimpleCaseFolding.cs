@@ -384,7 +384,7 @@ namespace System.Text.CaseFolding
         {
             if (source.Length > destination.Length)
             {
-                throw new ArgumentNullException(nameof(destination)); // throw?
+                throw new ArgumentException(nameof(destination));
             }
 
             ref char dst = ref MemoryMarshal.GetReference(destination);
