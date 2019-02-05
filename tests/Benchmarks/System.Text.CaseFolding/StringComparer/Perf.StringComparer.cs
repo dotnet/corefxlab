@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
-namespace System.Text.CaseFolding
+namespace System.Text.CaseFolding.Benchmarks
 {
     public class StringComparerBenchmark
     {
