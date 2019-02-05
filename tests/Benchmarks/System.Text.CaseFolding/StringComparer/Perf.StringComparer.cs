@@ -18,17 +18,17 @@ namespace System.Text.CaseFolding.Benchmarks
     {
         [Benchmark(Baseline = true)]
         [ArgumentsSource(nameof(Data))]
-        public void CoreFXCompare(string StrA, string StrB)
+        public void CoreFXCompare(string strA, string strB)
         {
-            string.Compare(StrA, StrB, StringComparison.OrdinalIgnoreCase);
+            string.Compare(strA, strB, StringComparison.OrdinalIgnoreCase);
         }
 
         [Benchmark]
         [ArgumentsSource(nameof(Data))]
-        public int SimpleCaseFoldCompare(string StrA, string StrB)
+        public int SimpleCaseFoldCompare(string strA, string strB)
         {
             var comparer = new SimpleCaseFoldingStringComparer();
-            return comparer.Compare(StrA, StrB);
+            return comparer.Compare(strA, strB);
         }
 
         public IEnumerable<object[]> Data()
