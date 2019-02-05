@@ -349,7 +349,7 @@ namespace System.Text.CaseFolding
         }
 
         /// <summary>
-        /// Simple case folding of the Span&lt;char&gt; on place.
+        /// Simple case folding of the Span&lt;char&gt; in place.
         /// </summary>
         /// <param name="source">Source and target span.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
