@@ -568,7 +568,7 @@ namespace System.Text.CaseFolding
         /// <param name="source">Source string.</param>
         /// <param name="ch">Char to search.</param>
         /// <returns>
-        /// Returns an index the char in the string or -1 if not found.
+        /// Returns the index of the first occurrence of a specified character in the string or -1 if not found.
         /// </returns>
         public static int IndexOfFolded(this string source, char ch)
         {
