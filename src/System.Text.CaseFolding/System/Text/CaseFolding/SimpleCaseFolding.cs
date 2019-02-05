@@ -33,8 +33,6 @@ namespace System.Text.CaseFolding
                 return MapBelow5FF[c];
             }
 
-            // var v = L1[c >> 8];
-            // var ch = L3[v + (c & 0xFF)];
             // Still slow due to border checks.
             ushort v = Unsafe.Add(ref s_MapLevel1, c >> 8);
             char ch = Unsafe.Add(ref s_refMapData, v + (c & 0xFF));
@@ -134,14 +132,11 @@ namespace System.Text.CaseFolding
             return CompareUsingSimpleCaseFolding(ref refA, spanA.Length, ref refB, spanB.Length);
         }
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int CompareUsingSimpleCaseFolding(ref char refA, int lengthA, ref char refB, int lengthB)
         {
             var result = lengthA - lengthB;
             var length = Math.Min(lengthA, lengthB);
 
-            // var l0AsSpan = MapBelow5FF.AsSpan();
-            // ref char refMapBelow5FF = ref MemoryMarshal.GetReference(l0AsSpan);
             ref char refMapBelow5FF = ref MapBelow5FF[0];
 
             // For char below 0x5ff use fastest 1-level mapping.
@@ -190,9 +185,7 @@ namespace System.Text.CaseFolding
             {
                 return result;
             }
-/*
-            return -1;
-*/
+
             return CompareUsingSimpleCaseFolding(
                         ref refA,
                         ref refB,
@@ -214,7 +207,6 @@ namespace System.Text.CaseFolding
 
             ref ushort refMapSurrogateLevel1 = ref s_refMapSurrogateLevel1;
             ref (char highSurrogate, char lowSurrogate) refMapSurrogateData = ref s_refMapSurrogateData;
-            // ref int refMapSurrogateData = ref Unsafe.As<(char, char), int>(ref s_refMapSurrogateData);
 
             while (length != 0)
             {
@@ -395,14 +387,11 @@ namespace System.Text.CaseFolding
                 throw new ArgumentNullException(nameof(destination)); // throw?
             }
 
-            // Diagnostics.Assert(destination.Length >= source.Length, "Destination span length must be equal or greater then source span length.");
             ref char dst = ref MemoryMarshal.GetReference(destination);
             ref char src = ref MemoryMarshal.GetReference(source);
 
             var length = source.Length;
 
-            // var l0AsSpan = MapBelow5FF.AsSpan();
-            // ref char refMapBelow5FF = ref MemoryMarshal.GetReference(l0AsSpan);
             ref char refMapBelow5FF = ref MapBelow5FF[0];
 
             // For char below 0x5ff use fastest 1-level mapping.
