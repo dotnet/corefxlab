@@ -139,48 +139,6 @@ namespace System.Text.CaseFolding
             return hash;
         }
 
-        // The code come from CoreFX SqlBinary.HashByteArray()
-        internal static int HashByteArray(ReadOnlySpan<byte> rgbValue)
-        {
-            int length = rgbValue.Length;
-
-            if (length <= 0)
-            {
-                return 0;
-            }
-
-            int ulValue = DefaultSeed;
-            int ulHi;
-
-            // Size of CRC window (hashing bytes, ssstr, sswstr, numeric)
-            const int XcbCrcWindow = 4;
-
-            // const int IntShiftVal = (sizeof ulValue) * (8*sizeof(char)) - XcbCrcWindow;
-            const int IntShiftVal = (4 * 8) - XcbCrcWindow;
-
-            for (int i = 0; i < length; i++)
-            {
-                ulHi = (ulValue >> IntShiftVal) & 0xff;
-                ulValue <<= XcbCrcWindow;
-                ulValue = ulValue ^ rgbValue[i] ^ ulHi;
-            }
-
-            return ulValue;
-        }
-
-        private static int DefaultSeed { get; } = GenerateSeed();
-
-        private static int GenerateSeed()
-        {
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                var bytes = new byte[sizeof(ulong)];
-                rng.GetBytes(bytes);
-                var hash64 = BitConverter.ToUInt64(bytes, 0);
-                return ((int)(hash64 >> 32)) ^ (int)hash64;
-            }
-        }
-
         /// <summary>
         /// IComparer&lt;string&gt;.GetHashCode() implementation.
         /// </summary>
