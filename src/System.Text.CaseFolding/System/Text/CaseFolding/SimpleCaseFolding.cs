@@ -545,12 +545,6 @@ namespace System.Text.CaseFolding
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsAscii(char c)
-        {
-            return c < 0x80;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsHighSurrogate(char c)
         {
             return (uint)(c - HIGH_SURROGATE_START) <= (uint)(HIGH_SURROGATE_END - HIGH_SURROGATE_START);
