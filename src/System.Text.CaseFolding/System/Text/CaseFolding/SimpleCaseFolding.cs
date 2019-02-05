@@ -36,8 +36,8 @@ namespace System.Text.CaseFolding
             // var v = L1[c >> 8];
             // var ch = L3[v + (c & 0xFF)];
             // Still slow due to border checks.
-            var v = Unsafe.Add(ref s_MapLevel1, c >> 8);
-            var ch = Unsafe.Add(ref s_refMapData, v + (c & 0xFF));
+            ushort v = Unsafe.Add(ref s_MapLevel1, c >> 8);
+            char ch = Unsafe.Add(ref s_refMapData, v + (c & 0xFF));
 
             return ch == 0 ? c : ch;
         }
@@ -48,15 +48,15 @@ namespace System.Text.CaseFolding
         {
             Debug.Assert(c1 > MaxChar, "Char should be greater than 0x5ff.");
             Debug.Assert(c2 > MaxChar, "Char should be greater than 0x5ff.");
-            var v1 =  Unsafe.Add(ref refMapLevel1, c1 >> 8);
-            var ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
+            ushort v1 =  Unsafe.Add(ref refMapLevel1, c1 >> 8);
+            char ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
             if (ch1 == 0)
             {
                 ch1 = c1;
             }
 
-            var v2 =  Unsafe.Add(ref refMapLevel1, c2 >> 8);
-            var ch2 = Unsafe.Add(ref refMapData, v2 + (c2 & 0xFF));
+            ushort v2 =  Unsafe.Add(ref refMapLevel1, c2 >> 8);
+            char ch2 = Unsafe.Add(ref refMapData, v2 + (c2 & 0xFF));
             if (ch2 == 0)
             {
                 ch2 = c2;
@@ -72,8 +72,8 @@ namespace System.Text.CaseFolding
         {
             if (c1 <= 0xFFFF)
             {
-                var v1 = Unsafe.Add(ref refMapLevel1, c1 >> 8);
-                var ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
+                ushort v1 = Unsafe.Add(ref refMapLevel1, c1 >> 8);
+                char ch1 = Unsafe.Add(ref refMapData, v1 + (c1 & 0xFF));
                 if (ch1 != (0, 0))
                 {
                     c1 = ((ch1.highSurrogate - HIGH_SURROGATE_START) * 0x400) + (ch1.lowSurrogate - LOW_SURROGATE_START);
@@ -82,8 +82,8 @@ namespace System.Text.CaseFolding
 
             if (c2 <= 0xFFFF)
             {
-                var v1 = Unsafe.Add(ref refMapLevel1, c2 >> 8);
-                var ch2 = Unsafe.Add(ref refMapData, v1 + (c2 & 0xFF));
+                ushort v1 = Unsafe.Add(ref refMapLevel1, c2 >> 8);
+                char ch2 = Unsafe.Add(ref refMapData, v1 + (c2 & 0xFF));
                 if (ch2 != (0, 0))
                 {
                     c2 = ((ch2.highSurrogate - HIGH_SURROGATE_START) * 0x400) + (ch2.lowSurrogate - LOW_SURROGATE_START);
@@ -220,9 +220,9 @@ namespace System.Text.CaseFolding
             {
                 // We catch a high or low surrogate.
                 // Process it and fallback to fastest options.
-                var c1 = refA;
+                char c1 = refA;
                 var isHighSurrogateA = IsHighSurrogate(c1);
-                var c2 = refB;
+                char c2 = refB;
                 var isHighSurrogateB = IsHighSurrogate(c2);
 
                 if (isHighSurrogateA && isHighSurrogateB)
@@ -238,9 +238,9 @@ namespace System.Text.CaseFolding
                     }
 
                     refA = ref Unsafe.Add(ref refA, 1);
-                    var c1Low = refA;
+                    char c1Low = refA;
                     refB = ref Unsafe.Add(ref refB, 1);
-                    var c2Low = refB;
+                    char c2Low = refB;
 
                     if (!IsLowSurrogate(c1Low) || !IsLowSurrogate(c2Low))
                     {
@@ -426,8 +426,8 @@ namespace System.Text.CaseFolding
             // Process it with more slow two-level mapping.
             while (length != 0 && !IsSurrogate(src))
             {
-                var v1 =  Unsafe.Add(ref refMapLevel1, src >> 8);
-                var ch1 = Unsafe.Add(ref refMapData, v1 + (src & 0xFF));
+                ushort v1 =  Unsafe.Add(ref refMapLevel1, src >> 8);
+                char ch1 = Unsafe.Add(ref refMapData, v1 + (src & 0xFF));
                 if (ch1 == 0)
                 {
                     ch1 = src;
@@ -451,7 +451,7 @@ namespace System.Text.CaseFolding
             {
                 // We catch a high or low surrogate.
                 // Process it and fallback to fastest options.
-                var c1 = src;
+                char c1 = src;
                 var isHighSurrogateA = IsHighSurrogate(c1);
 
                 if (isHighSurrogateA)
@@ -468,7 +468,7 @@ namespace System.Text.CaseFolding
                     }
 
                     src = ref Unsafe.Add(ref src, 1);
-                    var c1Low = src;
+                    char c1Low = src;
 
                     if (!IsLowSurrogate(c1Low))
                     {
@@ -477,8 +477,8 @@ namespace System.Text.CaseFolding
 
                         if (index1 <= 0xFFFF)
                         {
-                            var v1 = Unsafe.Add(ref refMapSurrogateLevel1, index1 >> 8);
-                            var ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
+                            ushort v1 = Unsafe.Add(ref refMapSurrogateLevel1, index1 >> 8);
+                            char ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
                             if (ch1 != (0, 0))
                             {
                                 dst = ch1.highSurrogate;
@@ -535,8 +535,8 @@ namespace System.Text.CaseFolding
                 // Process it with more slow two-level mapping.
                 while (length != 0 && !IsSurrogate(src))
                 {
-                    var v1 =  Unsafe.Add(ref refMapLevel1, src >> 8);
-                    var ch1 = Unsafe.Add(ref refMapData, v1 + (src & 0xFF));
+                    ushort v1 =  Unsafe.Add(ref refMapLevel1, src >> 8);
+                    char ch1 = Unsafe.Add(ref refMapData, v1 + (src & 0xFF));
                     if (ch1 == 0)
                     {
                         ch1 = src;
