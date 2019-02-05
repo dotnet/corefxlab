@@ -12,7 +12,7 @@ namespace System.Text.CaseFolding
     /// <summary>
     /// String comparer with simple case folding.
     /// </summary>
-    public class SimpleCaseFoldingStringComparer : IComparer, IEqualityComparer, IComparer<string>, IEqualityComparer<string>
+    public sealed class SimpleCaseFoldingStringComparer : IComparer, IEqualityComparer, IComparer<string>, IEqualityComparer<string>
     {
         // Based on CoreFX StringComparer code
 
