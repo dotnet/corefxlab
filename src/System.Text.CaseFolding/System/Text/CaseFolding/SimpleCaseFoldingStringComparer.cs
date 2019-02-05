@@ -122,13 +122,13 @@ namespace System.Text.CaseFolding
             }
 
             char[] borrowedArr = null;
-            Span<char> span = source.Length <= 255 ?
+            Span<char> destination = source.Length <= 255 ?
                 stackalloc char[source.Length] :
                 (borrowedArr = ArrayPool<char>.Shared.Rent(source.Length));
 
-            SimpleCaseFolding.SimpleCaseFold(source, span);
+            SimpleCaseFolding.SimpleCaseFold(source, destination);
 
-            int hash = String.GetHashCode(span);
+            int hash = String.GetHashCode(destination);
 
             // Return the borrowed array if necessary.
             if (borrowedArr != null)
