@@ -134,7 +134,7 @@ namespace System.Text.CaseFolding
 
         private static int CompareUsingSimpleCaseFolding(ref char refA, int lengthA, ref char refB, int lengthB)
         {
-            var result = lengthA - lengthB;
+            int result = lengthA - lengthB;
             var length = Math.Min(lengthA, lengthB);
 
             ref char refMapBelow5FF = ref MapBelow5FF[0];
@@ -142,7 +142,7 @@ namespace System.Text.CaseFolding
             // For char below 0x5ff use fastest 1-level mapping.
             while (length != 0 && refA <= MaxChar && refB <= MaxChar)
             {
-                var compare1 = Unsafe.Add(ref refMapBelow5FF, refA) - Unsafe.Add(ref refMapBelow5FF, refB);
+                int compare1 = Unsafe.Add(ref refMapBelow5FF, refA) - Unsafe.Add(ref refMapBelow5FF, refB);
                 if (compare1 == 0)
                 {
                     length--;
@@ -167,7 +167,7 @@ namespace System.Text.CaseFolding
             // Process it with more slow two-level mapping.
             while (length != 0 && !IsSurrogate(refA) && !IsSurrogate(refB))
             {
-                var compare2 = SimpleCaseFoldCompareAbove05ff(refA, refB, ref refMapLevel1, ref refMapData);
+                int compare2 = SimpleCaseFoldCompareAbove05ff(refA, refB, ref refMapLevel1, ref refMapData);
 
                 if (compare2 == 0)
                 {
@@ -238,7 +238,7 @@ namespace System.Text.CaseFolding
                     {
                         // No low surrogate - throw?
                         // We would have to throw but for comparing we can do simple binary compare.
-                        var r = c1 - c2;
+                        int r = c1 - c2;
                         if (r == 0)
                         {
                             return c1Low - c2Low;
@@ -251,7 +251,7 @@ namespace System.Text.CaseFolding
                     var index1 = ((c1 - HIGH_SURROGATE_START) * 0x400) + (c1Low - LOW_SURROGATE_START);
                     var index2 = ((c2 - HIGH_SURROGATE_START) * 0x400) + (c2Low - LOW_SURROGATE_START);
 
-                    var compare4 = SimpleCaseFoldCompareSurrogates(index1, index2, ref refMapSurrogateLevel1, ref refMapSurrogateData);
+                    int compare4 = SimpleCaseFoldCompareSurrogates(index1, index2, ref refMapSurrogateLevel1, ref refMapSurrogateData);
 
                     if (compare4 != 0)
                     {
@@ -281,7 +281,7 @@ namespace System.Text.CaseFolding
                 // Both char is not surrogates. 'length--' was already done.
                 while (length != 0 && refA <= MaxChar && refB <= MaxChar)
                 {
-                    var compare1 = Unsafe.Add(ref refMapBelow5FF, refA) - Unsafe.Add(ref refMapBelow5FF, refB);
+                    int compare1 = Unsafe.Add(ref refMapBelow5FF, refA) - Unsafe.Add(ref refMapBelow5FF, refB);
                     if (compare1 == 0)
                     {
                         length--;
@@ -301,7 +301,7 @@ namespace System.Text.CaseFolding
 
                 while (length != 0 && !IsSurrogate(refA) && !IsSurrogate(refB))
                 {
-                    var compare2 = SimpleCaseFoldCompareAbove05ff(refA, refB, ref refMapLevel1, ref refMapData);
+                    int compare2 = SimpleCaseFoldCompareAbove05ff(refA, refB, ref refMapLevel1, ref refMapData);
 
                     if (compare2 == 0)
                     {
@@ -390,7 +390,7 @@ namespace System.Text.CaseFolding
             ref char dst = ref MemoryMarshal.GetReference(destination);
             ref char src = ref MemoryMarshal.GetReference(source);
 
-            var length = source.Length;
+            int length = source.Length;
 
             ref char refMapBelow5FF = ref MapBelow5FF[0];
 
@@ -596,7 +596,7 @@ namespace System.Text.CaseFolding
         /// </returns>
         public static int IndexOfFolded(this ReadOnlySpan<char> source, char ch)
         {
-            var foldedChar = SimpleCaseFold(ch);
+            char foldedChar = SimpleCaseFold(ch);
 
             for (int i = 0; i < source.Length; i++)
             {
