@@ -20,8 +20,8 @@ namespace System.Text.Json.Serialization
         private int _maxDepth = 64;
         private bool _hasRuntimeCustomAttributes;
 
-        private static readonly Dictionary<ICustomAttributeProvider, object[]> s_reflectionAttributes = new Dictionary<ICustomAttributeProvider, object[]>();
-        private readonly Lazy<Dictionary<ICustomAttributeProvider, List<Attribute>>> _runtimeAttributes = new Lazy<Dictionary<ICustomAttributeProvider, List<Attribute>>>();
+        private static readonly ConcurrentDictionary<ICustomAttributeProvider, object[]> s_reflectionAttributes = new ConcurrentDictionary<ICustomAttributeProvider, object[]>();
+        private readonly Lazy<ConcurrentDictionary<ICustomAttributeProvider, List<Attribute>>> _runtimeAttributes = new Lazy<ConcurrentDictionary<ICustomAttributeProvider, List<Attribute>>>();
 
         private static readonly ConcurrentDictionary<Type, JsonClassInfo> s_classes = new ConcurrentDictionary<Type, JsonClassInfo>();
         private readonly ConcurrentDictionary<Type, JsonClassInfo> _local_classes = new ConcurrentDictionary<Type, JsonClassInfo>();
@@ -116,7 +116,8 @@ namespace System.Text.Json.Serialization
 
             if (!_runtimeAttributes.Value.TryGetValue(type, out List<Attribute> attributes))
             {
-                _runtimeAttributes.Value.Add(type, attributes = new List<Attribute>());
+                _runtimeAttributes.Value.TryAdd(type, attributes = new List<Attribute>());
+                // Failure in TryAdd is OK since another thread just finished the same operation.
             }
 
             attributes.Add(attribute);
@@ -126,9 +127,7 @@ namespace System.Text.Json.Serialization
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(ICustomAttributeProvider type, bool inherit = false) where TAttribute:Attribute
         {
             if (type == null)
-            {
-                return Enumerable.Empty<TAttribute>();
-            }
+                throw new ArgumentException(nameof(type));
 
             IEnumerable<TAttribute> attributes = Enumerable.Empty<TAttribute>();
 
@@ -157,12 +156,8 @@ namespace System.Text.Json.Serialization
             if (!s_reflectionAttributes.TryGetValue(type, out object[] allReflectionAttributes))
             {
                 allReflectionAttributes = type.GetCustomAttributes(inherit: inherit);
-#if BUILDING_INBOX_LIBRARY
                 s_reflectionAttributes.TryAdd(type, allReflectionAttributes);
-#else
-                // Dictionary.TryAdd API is not available on .NET Standard 2.0
-                s_reflectionAttributes[type] = allReflectionAttributes;
-#endif
+                // Failure in TryAdd is OK since another thread just finished the same operation.
             }
 
             return attributes.Concat(allReflectionAttributes.OfType<TAttribute>());
