@@ -113,7 +113,7 @@ namespace System.Text.CaseFolding
 
         private static int GetHashCodeSimpleCaseFolding(string source)
         {
-            //Diagnostics.Assert(source != null, "source must not be null");
+            Debug.Assert(source != null, "source must not be null");
 
             // Do not allocate on the stack if string is empty
             if (source.Length == 0)
