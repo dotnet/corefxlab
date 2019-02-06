@@ -17,7 +17,7 @@ namespace System.Text.CaseFolding.Tests
         {
             Dictionary<int, int> caseFoldingPairs = new Dictionary<int, int>();
             string fileName = "CaseFolding.txt";
-            Stream stream = typeof(CharTests).GetTypeInfo().Assembly.GetManifestResourceStream(fileName);
+            Stream stream = typeof(CharUnicodeInfoTestData).GetTypeInfo().Assembly.GetManifestResourceStream(fileName);
             using (StreamReader reader = new StreamReader(stream))
             {
                 while (!reader.EndOfStream)
@@ -50,7 +50,7 @@ namespace System.Text.CaseFolding.Tests
         {
             List<CharUnicodeInfoTestCase> testCases = new List<CharUnicodeInfoTestCase>();
             string fileName = "UnicodeData.11.0.txt";
-            Stream stream = typeof(CharTests).GetTypeInfo().Assembly.GetManifestResourceStream(fileName);
+            Stream stream = typeof(CharUnicodeInfoTestData).GetTypeInfo().Assembly.GetManifestResourceStream(fileName);
             using (StreamReader reader = new StreamReader(stream))
             {
                 while (!reader.EndOfStream)
