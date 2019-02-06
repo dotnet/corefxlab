@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization.Converters;
 using System.Text.Json.Serialization.Policies;
@@ -144,7 +143,7 @@ namespace System.Text.Json.Serialization
                     }
                     else
                     {
-                        ValueConverter.SetToJson(ref writer, Name, Get(current.CurrentValue));
+                        ValueConverter.SetToJson(ref writer, Name, value);
                     }
                 }
                 else
@@ -155,7 +154,6 @@ namespace System.Text.Json.Serialization
                         TValue value = Get(current.CurrentValue);
                         if (Name == null)
                         {
-                            
                             if (value == null)
                             {
                                 if (SerializeNullValues)
@@ -179,7 +177,7 @@ namespace System.Text.Json.Serialization
                             }
                             else
                             {
-                                converter.ToJson(ref writer, Name, Get(current.CurrentValue));
+                                converter.ToJson(ref writer, Name, value);
                             }
                         }
                     }
@@ -195,24 +193,28 @@ namespace System.Text.Json.Serialization
         {
             if (ValueConverter != null)
             {
-                if (current.Enumerator != null)
+                Debug.Assert(current.Enumerator != null);
+
+                object value = current.Enumerator.Current;
+                if (value == null)
                 {
-                    object value = current.Enumerator.Current;
-                    if (value == null)
+                    if (SerializeNullValues)
                     {
-                        if (SerializeNullValues)
-                        {
-                            writer.WriteNull(Name);
-                        }
-                    }
-                    else
-                    {
-                        ValueConverter.SetToJson(ref writer, Name, value);
+                        writer.WriteNull(Name);
                     }
                 }
                 else
                 {
-                    object value = Get(current.CurrentValue);
+                    ValueConverter.SetToJson(ref writer, Name, value);
+                }
+            }
+            else
+            {
+                IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
+                if (converter != null)
+                {
+                    Debug.Assert(current.Enumerator != null);
+                    TValue value = (TValue)current.Enumerator.Current;
                     if (value == null)
                     {
                         if (SerializeNullValues)
@@ -222,44 +224,7 @@ namespace System.Text.Json.Serialization
                     }
                     else
                     {
-                        SetValueAsObject(current.CurrentValue, value);
-                    }
-                }
-            }
-            else
-            {
-                IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
-                if (converter != null)
-                {
-                    if (current.Enumerator != null)
-                    {
-                        TValue value = (TValue)current.Enumerator.Current;
-                        if (value == null)
-                        {
-                            if (SerializeNullValues)
-                            {
-                                writer.WriteNullValue();
-                            }
-                        }
-                        else
-                        {
-                            converter.ToJson(ref writer, value);
-                        }
-                    }
-                    else
-                    {
-                        TValue value = Get(current.CurrentValue);
-                        if (value == null)
-                        {
-                            if (SerializeNullValues)
-                            {
-                                writer.WriteNullValue();
-                            }
-                        }
-                        else
-                        {
-                            converter.ToJson(ref writer, Name, value);
-                        }
+                        converter.ToJson(ref writer, value);
                     }
                 }
                 else
