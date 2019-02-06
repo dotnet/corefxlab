@@ -467,8 +467,8 @@ namespace System.Text.CaseFolding
                         if (index1 <= 0xFFFF)
                         {
                             ushort v1 = Unsafe.Add(ref refMapSurrogateLevel1, index1 >> 8);
-                            char ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
-                            if (ch1 != (0, 0))
+                            (char highSurrogate, char lowSurrogate) ch1 = Unsafe.Add(ref refMapSurrogateData, v1 + (index1 & 0xFF));
+                            if (ch1.highSurrogate != 0 && ch1.lowSurrogate != 0)
                             {
                                 dst = ch1.highSurrogate;
                                 dst = ref Unsafe.Add(ref dst, 1);
