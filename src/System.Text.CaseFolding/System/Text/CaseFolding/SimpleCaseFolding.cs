@@ -334,7 +334,7 @@ namespace System.Text.CaseFolding
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string SimpleCaseFold(this string source)
         {
-            if (source.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(source))
             {
                 return source;
             }
