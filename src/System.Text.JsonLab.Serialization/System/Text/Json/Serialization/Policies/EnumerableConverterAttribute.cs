@@ -11,7 +11,6 @@ namespace System.Text.Json.Serialization.Policies
     {
         public EnumerableConverterAttribute() { }
         public Type EnumerableType { get; protected set; }
-
         public abstract IEnumerable CreateFromList(Type elementType, IList sourceList);
     }
 }

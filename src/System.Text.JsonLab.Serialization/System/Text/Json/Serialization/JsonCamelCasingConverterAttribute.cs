@@ -9,6 +9,8 @@ namespace System.Text.Json.Serialization
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class JsonCamelCasingConverterAttribute : PropertyNamePolicyAttribute
     {
+        public JsonCamelCasingConverterAttribute() { }
+
         public override string FromJson(string value)
         {
             return CamelCasingPolicy.FromJson(value);

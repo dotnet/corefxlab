@@ -15,15 +15,15 @@ namespace System.Text.Json.Serialization
     {
         private const int HalfMaxValue = int.MaxValue / 2;
 
-        public static Task<T> FromJsonAsync<T>(this Stream source, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
+        public static Task<T> FromJsonAsync<T>(this Stream source, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            return FromJsonAsync<T>(source, typeof(T), options, cancellationToken);
+            return FromJsonAsync<T>(source, typeof(T), settings, cancellationToken);
         }
 
-        public static Task<object> FromJsonAsync(this Stream source, Type returnType, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
+        public static Task<object> FromJsonAsync(this Stream source, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -31,26 +31,34 @@ namespace System.Text.Json.Serialization
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return FromJsonAsync<object>(source, returnType, options, cancellationToken);
+            return FromJsonAsync<object>(source, returnType, settings, cancellationToken);
         }
 
-        private static async Task<T> FromJsonAsync<T>(this Stream source, Type returnType, JsonConverterSettings options = null, CancellationToken cancellationToken = default)
+        private static async Task<T> FromJsonAsync<T>(this Stream source, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            if (options == null)
-                options = s_DefaultSettings;
+            if (settings == null)
+                settings = s_DefaultSettings;
 
-            var readerState = new JsonReaderState(options.MaxDepth, options.ReaderOptions);
-            JsonObjectState current = default;
-            List<JsonObjectState> previous = null;
+            FromJsonObjectState current = default;
+            JsonClassInfo classInfo = settings.GetOrAddClass(returnType);
+            current.ClassInfo = classInfo;
+            if (classInfo.ClassType != ClassType.Object)
+            {
+                current.PropertyInfo = classInfo.GetPolicyProperty();
+            }
+
+            var readerState = new JsonReaderState(settings.MaxDepth, settings.ReaderOptions);
+            List<FromJsonObjectState> previous = null;
             int arrayIndex = 0;
 
             int bytesRemaining = 0;
             int bytesRead;
 
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(options.DefaultBufferSize);
+            // todo: switch to IBufferWriter implementation.
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(settings.DefaultBufferSize);
             int bufferSize = buffer.Length;
             try
             {
@@ -61,13 +69,13 @@ namespace System.Text.Json.Serialization
 
                     int deserializeBufferSize = bytesRemaining + bytesRead;
                     bool isFinalBlock = (bytesRead == 0);
-                    if (ReadData(
+                    if (FromJson(
                         ref readerState,
                         returnType,
                         isFinalBlock,
                         buffer,
                         deserializeBufferSize,
-                        options,
+                        settings,
                         ref current,
                         ref previous,
                         ref arrayIndex))
@@ -110,22 +118,22 @@ namespace System.Text.Json.Serialization
             throw new InvalidOperationException("todo");
         }
 
-        private static bool ReadData(
+        private static bool FromJson(
             ref JsonReaderState readerState,
             Type returnType,
             bool isFinalBlock,
             byte[] buffer,
             int bytesToRead,
-            JsonConverterSettings options,
-            ref JsonObjectState current,
-            ref List<JsonObjectState> previous,
+            JsonConverterSettings settings,
+            ref FromJsonObjectState current,
+            ref List<FromJsonObjectState> previous,
             ref int arrayIndex)
         {
             Utf8JsonReader reader = new Utf8JsonReader(buffer.AsSpan(0, bytesToRead), isFinalBlock, readerState);
 
-            bool finished = ReadData(
+            bool finished = FromJson(
                 ref reader,
-                options,
+                settings,
                 returnType,
                 ref current,
                 ref previous,

@@ -7,10 +7,10 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class SerializeTests
+    public partial class FromJsonTests
     {
         [Fact]
-        public static void SerializePrimitives()
+        public static void Primitives()
         {
             int i = JsonConverter.FromJson<int>(Encoding.UTF8.GetBytes(@"1"));
             Assert.Equal(1, i);
@@ -32,14 +32,14 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void SerializePrimitivesFail()
+        public static void PrimitivesFail()
         {
             Assert.Throws<JsonReaderException>(() => JsonConverter.FromJson<int>(Encoding.UTF8.GetBytes(@"a")));
             Assert.Throws<JsonReaderException>(() => JsonConverter.FromJson<int[]>(Encoding.UTF8.GetBytes(@"[1,a]")));
         }
 
         [Fact]
-        public static void SerializePrimitiveArray()
+        public static void PrimitiveArray()
         {
             int[] i = JsonConverter.FromJson<int[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
             Assert.Equal(1, i[0]);
@@ -47,7 +47,15 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void SerializePrimitiveArrayFail()
+        public static void ArrayWithEnums()
+        {
+            SampleEnum[] i = JsonConverter.FromJson<SampleEnum[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
+            Assert.Equal(SampleEnum.One, i[0]);
+            Assert.Equal(SampleEnum.Two, i[1]);
+        }
+
+        [Fact]
+        public static void PrimitiveArrayFail()
         {
             // Invalid data
             Assert.Throws<InvalidOperationException>(() => JsonConverter.FromJson<int[]>(Encoding.UTF8.GetBytes(@"[1,""a""]")));
@@ -57,7 +65,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void SerializeObjectArray()
+        public static void ObjectArray()
         {
             string data =
                 "[" +
@@ -73,7 +81,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void SerializePrimitiveJaggedArray()
+        public static void PrimitiveJaggedArray()
         {
             int[][] i = JsonConverter.FromJson<int[][]>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
             Assert.Equal(1, i[0][0]);
@@ -83,7 +91,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void SerializeListOfList()
+        public static void ListOfList()
         {
             List<List<int>> result = JsonConverter.FromJson<List<List<int>>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
 
@@ -92,9 +100,31 @@ namespace System.Text.Json.Serialization.Tests
             Assert.Equal(3, result[1][0]);
             Assert.Equal(4, result[1][1]);
         }
-        
+
         [Fact]
-        public static void SerializePrimitiveList()
+        public static void ListOfArray()
+        {
+            List<int[]> result = JsonConverter.FromJson<List<int[]>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+
+            Assert.Equal(1, result[0][0]);
+            Assert.Equal(2, result[0][1]);
+            Assert.Equal(3, result[1][0]);
+            Assert.Equal(4, result[1][1]);
+        }
+
+        [Fact]
+        public static void ArrayOfList()
+        {
+            List<int>[] result = JsonConverter.FromJson<List<int>[]> (Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+
+            Assert.Equal(1, result[0][0]);
+            Assert.Equal(2, result[0][1]);
+            Assert.Equal(3, result[1][0]);
+            Assert.Equal(4, result[1][1]);
+        }
+
+        [Fact]
+        public static void PrimitiveList()
         {
             List<int> i = JsonConverter.FromJson<List<int>>(Encoding.UTF8.GetBytes(@"[1,2]"));
             Assert.Equal(1, i[0]);

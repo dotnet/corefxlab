@@ -7,6 +7,7 @@ namespace System.Text.Json.Serialization
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class JsonPropertyAttribute : Attribute
     {
-        public bool? IncludeNullValues { get; set; }
+        public bool? SerializeNullValues { get; set; }
+        public bool? DeserializeNullValues { get; set; }
     }
 }

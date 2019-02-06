@@ -26,7 +26,7 @@ namespace System.Text.Json.Serialization
         private static readonly ConcurrentDictionary<Type, JsonClassInfo> s_classes = new ConcurrentDictionary<Type, JsonClassInfo>();
         private readonly ConcurrentDictionary<Type, JsonClassInfo> _local_classes = new ConcurrentDictionary<Type, JsonClassInfo>();
 
-        //todo: exception once used on all globals
+        //todo: throw exception if we try to add attributes once (de)serialization occurred.
 
         internal JsonClassInfo GetOrAddClass(Type classType)
         {
@@ -51,7 +51,9 @@ namespace System.Text.Json.Serialization
             return result;
         }
 
+        // Todo: add these options to the JsonConverterSettings and then internally map to JsonReaderOptions\JsonWriterOptions
         internal JsonReaderOptions ReaderOptions { get; set; }
+        internal JsonWriterOptions WriterOptions { get; set; }
 
         public JsonClassMaterializer ClassMaterializer
         {
@@ -123,6 +125,11 @@ namespace System.Text.Json.Serialization
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(ICustomAttributeProvider type, bool inherit = false) where TAttribute:Attribute
         {
+            if (type == null)
+            {
+                return Enumerable.Empty<TAttribute>();
+            }
+
             IEnumerable<TAttribute> attributes = Enumerable.Empty<TAttribute>();
 
             if (_runtimeAttributes.IsValueCreated)
@@ -151,13 +158,11 @@ namespace System.Text.Json.Serialization
             {
                 allReflectionAttributes = type.GetCustomAttributes(inherit: inherit);
 #if BUILDING_INBOX_LIBRARY
-                bool result = s_reflectionAttributes.TryAdd(type, allReflectionAttributes);
-                Debug.Assert(result);
+                s_reflectionAttributes.TryAdd(type, allReflectionAttributes);
 #else
                 // Dictionary.TryAdd API is not available on .NET Standard 2.0
-                s_reflectionAttributes.Add(type, allReflectionAttributes);
+                s_reflectionAttributes[type] = allReflectionAttributes;
 #endif
-
             }
 
             return attributes.Concat(allReflectionAttributes.OfType<TAttribute>());
@@ -171,11 +176,19 @@ namespace System.Text.Json.Serialization
                 {
                     if (ClassMaterializer == JsonClassMaterializer.Default)
                     {
-                        _classMaterializerStrategy = new JsonDefaultMaterializer(this);
+#if BUILDING_INBOX_LIBRARY
+                        _classMaterializerStrategy = new JsonReflectionEmitMaterializer();
+#else
+                        _classMaterializerStrategy = new JsonReflectionMaterializer();
+#endif
                     }
                     else if (ClassMaterializer == JsonClassMaterializer.ReflectionEmit)
                     {
+#if BUILDING_INBOX_LIBRARY
                         _classMaterializerStrategy = new JsonReflectionEmitMaterializer();
+#else
+                        throw new PlatformNotSupportedException("TODO: IL Emit is not supported on .NET Standard 2.0.");
+#endif
                     }
                     else if (ClassMaterializer == JsonClassMaterializer.Reflection)
                     {
@@ -183,7 +196,7 @@ namespace System.Text.Json.Serialization
                     }
                     else
                     {
-                        throw new InvalidOperationException("todo");
+                        throw new InvalidOperationException("todo: invalid option");
                     }
                 }
 
@@ -192,50 +205,6 @@ namespace System.Text.Json.Serialization
             set
             {
                 _classMaterializerStrategy = value;
-            }
-        }
-
-        /// <summary>
-        /// Determine if Reflection.Emit is supported with try\catch in this single location to reduce subsequent overhead.
-        /// </summary>
-        private class JsonDefaultMaterializer : JsonMemberBasedClassMaterializer
-        {
-            private JsonConverterSettings _settings;
-
-            public JsonDefaultMaterializer(JsonConverterSettings settings)
-            {
-                _settings = settings;
-            }
-
-            public override JsonClassInfo.ConstructorDelegate CreateConstructor(Type type)
-            {
-                try
-                {
-                    var testMaterializer = new JsonReflectionEmitMaterializer();
-                    JsonClassInfo.ConstructorDelegate value = testMaterializer.CreateConstructor(type);
-                    _settings._classMaterializerStrategy = testMaterializer;
-                    return value;
-                }
-                catch (NotSupportedException)
-                {
-                    var fallbackMaterializer = new JsonReflectionMaterializer();
-                    _settings._classMaterializerStrategy = fallbackMaterializer;
-                    return fallbackMaterializer.CreateConstructor(type);
-                }
-            }
-
-            public override JsonPropertyInfo<TValue>.GetterDelegate CreateGetter<TValue>(PropertyInfo propertyInfo)
-            {
-                // Should never get here as we create constructors first
-                Debug.Fail("Should never get here");
-                return default;
-            }
-
-            public override JsonPropertyInfo<TValue>.SetterDelegate CreateSetter<TValue>(PropertyInfo propertyInfo)
-            {
-                // Should never get here as we create constructors first
-                Debug.Fail("Should never get here");
-                return default;
             }
         }
     }

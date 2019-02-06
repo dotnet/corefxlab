@@ -4,15 +4,13 @@
 
 namespace System.Text.Json.Serialization
 {
-    internal readonly struct PropertyRef
+    /// <summary>
+    /// Determines how a given class is treated when it is (de)serialized.
+    /// </summary>
+    internal enum ClassType
     {
-        public PropertyRef(ulong key, JsonPropertyInfo info)
-        {
-            Key = key;
-            Info = info;
-        }
-
-        public readonly ulong Key;
-        public readonly JsonPropertyInfo Info;
+        Object = 0,
+        Value = 1,
+        Enumerable = 2
     }
 }
