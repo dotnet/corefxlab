@@ -45,7 +45,6 @@
     <PackageReference Include="Manatee.Json" Version="9.9.2" />
     <PackageReference Include="SpanJson" Version="1.0.7" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
