@@ -39,7 +39,7 @@ namespace System.Text.Json.Serialization
             // todo: use an array pool here for smaller requests to avoid the alloc. Also doc the API that UTF8 is preferred for perf. 
             byte[] jsonBytes = s_utf8Encoding.GetBytes(json);
             var state = new JsonReaderState(settings.DefaultBufferSize, settings.ReaderOptions);
-            var reader = new Utf8JsonReader(jsonBytes, true, state);
+            var reader = new Utf8JsonReader(jsonBytes, isFinalBlock: true, state);
             return FromJsonInternal(reader, returnType, settings);
         }
 
@@ -54,7 +54,7 @@ namespace System.Text.Json.Serialization
                 settings = s_DefaultSettings;
 
             var state = new JsonReaderState(settings.DefaultBufferSize, settings.ReaderOptions);
-            var reader = new Utf8JsonReader(json, true, state);
+            var reader = new Utf8JsonReader(json, isFinalBlock: true, state);
             return FromJsonInternal(reader, returnType, settings);
         }
 
@@ -72,7 +72,7 @@ namespace System.Text.Json.Serialization
                 settings = s_DefaultSettings;
 
             var state = new JsonReaderState(settings.DefaultBufferSize, settings.ReaderOptions);
-            var reader = new Utf8JsonReader(json, true, state);
+            var reader = new Utf8JsonReader(json, isFinalBlock: true, state);
             return FromJsonInternal(reader, returnType, settings);
         }
 
@@ -103,22 +103,7 @@ namespace System.Text.Json.Serialization
                 throw new ArgumentNullException(nameof(value));
 
             Span<byte> jsonBytes = ToJsonInternal(value, settings);
-#if BUILDING_INBOX_LIBRARY
-            string stringJson = s_utf8Encoding.GetString(jsonBytes);
-#else
-            string stringJson;
-            if (jsonBytes.IsEmpty)
-            {
-                stringJson = string.Empty;
-            }
-            unsafe
-            {
-                fixed (byte* bytePtr = jsonBytes)
-                {
-                    stringJson = s_utf8Encoding.GetString(bytePtr, jsonBytes.Length);
-                }
-            }
-#endif
+            string stringJson = JsonReaderHelper.TranscodeHelper(jsonBytes);
             return stringJson;
         }
 
@@ -130,7 +115,7 @@ namespace System.Text.Json.Serialization
             return ToJsonInternal(value, settings);
         }
 
-        private static Span<byte> ToJsonInternal(object value, JsonConverterSettings settings = null)
+        private static Span<byte> ToJsonInternal(object value, JsonConverterSettings settings)
         {
             if (settings == null)
                 settings = s_DefaultSettings;
@@ -153,19 +138,14 @@ namespace System.Text.Json.Serialization
 
             byte[] result;
 
-            using (var output = new ArrayBufferWriter(settings.DefaultBufferSize))
+            using (var output = new ArrayBufferWriter<byte>(settings.DefaultBufferSize))
             {
                 var writer = new Utf8JsonWriter(output, state);
 
                 ToJson(ref writer, settings, ref current, ref previous, ref arrayIndex);
 
-                int byteCount;
-                checked
-                {
-                    byteCount = (int)writer.BytesWritten;
-                }
-
-                Span<byte> json = output.GetSpan().Slice(0, byteCount);
+                writer.Flush(isFinalBlock: true);
+                ReadOnlyMemory<byte> json = output.WrittenMemory;
                 result = json.ToArray();
             }
 

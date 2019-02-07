@@ -56,7 +56,7 @@ namespace System.Text.Json.Serialization
                         else
                         {
                             // Primitive arrays being returned without object
-                            current.SetReturnValue(value, true);
+                            current.SetReturnValue(value, isValueEnumerable: true);
                         }
                     }
                 }

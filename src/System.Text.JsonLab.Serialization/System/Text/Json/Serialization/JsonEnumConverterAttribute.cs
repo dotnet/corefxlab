@@ -34,7 +34,7 @@ namespace System.Text.Json.Serialization
             if (TreatAsString)
             {
 #if !BUILDING_INBOX_LIBRARY 
-            throw new NotImplementedException("TODO: EnumConverter is not yet supported on .NET Standard 2.0."); 
+                throw new NotImplementedException("TODO: EnumConverter is not yet supported on .NET Standard 2.0."); 
 #else
                 string enumString = reader.GetString();
                 if (Enum.TryParse(propertyType, enumString, out object objValue))

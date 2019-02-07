@@ -14,10 +14,7 @@ namespace System.Text.Json.Serialization.Converters
 
         public float FromJson(ref Utf8JsonReader reader)
         {
-            checked
-            {
-                return reader.GetSingle();
-            }
+            return reader.GetSingle();
         }
 
         public void ToJson(ref Utf8JsonWriter writer, float value)

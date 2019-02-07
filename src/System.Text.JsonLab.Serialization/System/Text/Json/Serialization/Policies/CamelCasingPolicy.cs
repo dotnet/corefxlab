@@ -25,7 +25,7 @@ namespace System.Text.Json.Serialization.Policies
                 args.value.AsSpan(1).CopyTo(chars.Slice(1));
             });
 #else
-            return char.ToUpperInvariant(value[0]) + value.Substring(1);
+            return char.ToUpperInvariant(firstChar) + value.Substring(1);
 #endif
         }
 
@@ -48,7 +48,7 @@ namespace System.Text.Json.Serialization.Policies
                 args.value.AsSpan(1).CopyTo(chars.Slice(1));
             });
 #else
-            return char.ToLowerInvariant(value[0]) + value.Substring(1);
+            return char.ToLowerInvariant(firstChar) + value.Substring(1);
 #endif
         }
     }

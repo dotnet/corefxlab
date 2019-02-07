@@ -71,7 +71,7 @@ namespace System.Text.Json.Serialization
             return PropertyInfo.PropertyType;
         }
 
-        public static object CreateEnumerableValue(ref FromJsonObjectState current, JsonConverterSettings settings)//, Type arrayType)
+        public static object CreateEnumerableValue(ref FromJsonObjectState current, JsonConverterSettings settings)
         {
             // If the property has an EnumerableConverter, then we use tempEnumerableValues.
             if (current.PropertyInfo.EnumerableConverter != null)

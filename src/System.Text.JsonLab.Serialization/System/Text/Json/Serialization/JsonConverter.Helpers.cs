@@ -4,13 +4,12 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
-        private static void GetPreviousState<T>(ref List<T> previous, ref T state, int index) where T:new()
+        private static void GetPreviousState<T>(ref List<T> previous, ref T state, int index) where T : new()
         {
             if (previous == null)
             {

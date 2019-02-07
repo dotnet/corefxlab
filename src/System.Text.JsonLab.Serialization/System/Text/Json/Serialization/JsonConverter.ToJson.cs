@@ -16,7 +16,7 @@ namespace System.Text.Json.Serialization
             ref int arrayIndex)
         {
             bool writeMore = true;
-            while (writeMore)
+            do
             {
                 ClassType classType = current.ClassInfo.ClassType;
                 if (classType == ClassType.Enumerable)
@@ -48,7 +48,7 @@ namespace System.Text.Json.Serialization
                 }
 
                 // todo: if writeMore==true and we wrote to buffer length, then we need to check for a flush (when async implemented)
-            }
+            } while (writeMore);
 
             return false;
         }        

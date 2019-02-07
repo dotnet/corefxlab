@@ -27,7 +27,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void CamelCaseAttributeDesignTime()
         {
-            SimpleTestClassWithCamelCase obj  =JsonConverter.FromJson<SimpleTestClassWithCamelCase>(SimpleTestClassWithCamelCase.s_data);
+            SimpleTestClassWithCamelCase obj = JsonConverter.FromJson<SimpleTestClassWithCamelCase>(SimpleTestClassWithCamelCase.s_data);
             Assert.Equal(obj.MyInt16, 1);
         }
 

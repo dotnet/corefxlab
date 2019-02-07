@@ -110,22 +110,7 @@ namespace System.Text.Json.Serialization
 
             if (info == null)
             {
-#if BUILDING_INBOX_LIBRARY
-                string stringPropertyName = JsonConverter.s_utf8Encoding.GetString(propertyName);
-#else
-                string stringPropertyName;
-                if (propertyName.IsEmpty)
-                {
-                    stringPropertyName = string.Empty;
-                }
-                unsafe
-                {
-                    fixed (byte* bytePtr = propertyName)
-                    {
-                        stringPropertyName = JsonConverter.s_utf8Encoding.GetString(bytePtr, propertyName.Length);
-                    }
-                }
-#endif
+                string stringPropertyName = JsonReaderHelper.TranscodeHelper(propertyName);
                 throw new InvalidOperationException($"todo: invalid property {stringPropertyName}");
             }
 

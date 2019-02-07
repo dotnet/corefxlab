@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Json.Serialization.Converters
 {
@@ -19,12 +20,24 @@ namespace System.Text.Json.Serialization.Converters
 
         public void ToJson(ref Utf8JsonWriter writer, char? value)
         {
-            writer.WriteStringValue(value.Value.ToString());
+#if BUILDING_INBOX_LIBRARY
+            char tempChar = value.Value;
+            Span<char> tempSpan = MemoryMarshal.CreateSpan<char>(ref tempChar, 1);
+            writer.WriteStringValue(tempSpan);
+#else
+            writer.WriteStringValue(value.ToString());
+#endif
         }
 
         public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, char? value)
         {
-            writer.WriteString(name, value.Value.ToString());
+#if BUILDING_INBOX_LIBRARY
+            char tempChar = value.Value;
+            Span<char> tempSpan = MemoryMarshal.CreateSpan<char>(ref tempChar, 1);
+            writer.WriteString(name, tempSpan);
+#else
+            writer.WriteString(name, value.ToString());
+#endif
         }
     }
 }

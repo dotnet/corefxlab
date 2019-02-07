@@ -27,8 +27,9 @@ namespace System.Text.Json.Serialization
             while (reader.Read())
             {
                 JsonTokenType tokenType = reader.TokenType;
-                if (tokenType == JsonTokenType.String || tokenType == JsonTokenType.Number || tokenType == JsonTokenType.True || tokenType == JsonTokenType.False)
+                if (tokenType >= JsonTokenType.String && tokenType <= JsonTokenType.False)
                 {
+                    Debug.Assert(tokenType == JsonTokenType.String || tokenType == JsonTokenType.Number || tokenType == JsonTokenType.True || tokenType == JsonTokenType.False);
                     if (HandleValue(ref reader, settings, returnType, ref current))
                     {
                         // todo: verify bytes read == bytes processed.

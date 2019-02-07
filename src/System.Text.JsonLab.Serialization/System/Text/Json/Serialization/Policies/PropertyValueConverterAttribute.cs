@@ -15,7 +15,7 @@ namespace System.Text.Json.Serialization.Policies
         public abstract object GetFromJson(ref Utf8JsonReader reader, Type propertyType);
         public abstract void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
 #else
-        //todo: ns20
+        // For corefxlab these need to be internal for netstandard
         internal abstract object GetFromJson(ref Utf8JsonReader reader, Type propertyType);
         internal abstract void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
 #endif
