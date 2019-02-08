@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class SerializeTests
+    public partial class FromJsonTests
     {
         [JsonCamelCasingConverter]
         public class SimpleTestClassWithCamelCase : SimpleTestClass
@@ -42,10 +42,6 @@ namespace System.Text.Json.Serialization.Tests
             Assert.Equal(obj.MyInt16, 1);
         }
 
-        public class SimpleDerivedTestClass : SimpleTestClass
-        {
-        }
-
         [Fact]
         public static void CamelCaseAttributeInheritanceRuntime()
         {
@@ -58,41 +54,12 @@ namespace System.Text.Json.Serialization.Tests
             Assert.Equal(obj.MyInt16, 1);
         }
 
-        public class OverridePropertyNameDesignTime_TestClass
-        {
-            [JsonPropertyName(Name = "blah")]
-            public Int16 MyInt16 { get; set; }
-
-            public static readonly byte[] DataMatchingAttribute = Encoding.UTF8.GetBytes(
-                @"{" +
-                @"""blah"" : 1" +
-                @"}"
-            );
-
-            public static readonly byte[] DataNotMatchingAttribute = Encoding.UTF8.GetBytes(
-                @"{" +
-                @"""blah2"" : 1" +
-                @"}"
-            );
-        }
-
         [Fact]
         public static void OverridePropertyNameAtDesignTime()
         {
             OverridePropertyNameDesignTime_TestClass x = JsonConverter.FromJson<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.DataMatchingAttribute);
 
             Assert.Equal(x.MyInt16, 1);
-        }
-
-        public class OverridePropertyNameRuntime_TestClass
-        {
-            public Int16 MyInt16 { get; set; }
-
-            public static readonly byte[] Data = Encoding.UTF8.GetBytes(
-                @"{" +
-                @"""blah"" : 1" +
-                @"}"
-            );
         }
 
         [Fact]
@@ -107,10 +74,14 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void OverridePropertyNameAndDesignTimeAttributeAtRuntime()
+        public static void OverridePropertyNameAndDesignTimeAttributeAtRuntimeFail()
         {
             Assert.Throws<InvalidOperationException>(() => JsonConverter.FromJson<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.DataNotMatchingAttribute));
+        }
 
+        [Fact]
+        public static void OverridePropertyNameAndDesignTimeAttributeAtRuntime()
+        {
             var settings = new JsonConverterSettings();
             settings.AddAttribute(typeof(OverridePropertyNameDesignTime_TestClass).GetProperty("MyInt16"), new JsonPropertyNameAttribute("blah2"));
 

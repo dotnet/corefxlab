@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Json.Serialization
@@ -10,17 +11,20 @@ namespace System.Text.Json.Serialization
     public static partial class JsonConverter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void HandleStartObject(JsonConverterSettings options, Type returnType, ref JsonObjectState current, ref List<JsonObjectState> previous, ref int arrayIndex)
+        private static void HandleStartObject(JsonConverterSettings settings, Type returnType, ref FromJsonObjectState current, ref List<FromJsonObjectState> previous, ref int arrayIndex)
         {
             Type objType;
 
             if (current.IsEnumerable() || current.IsPropertyEnumerable())
             {
                 // An array of objects either on the current property or on a list
-                objType = current.PropertyInfo.ElementType;
+                objType = current.GetElementType();
                 JsonPropertyInfo propInfo = current.PropertyInfo;
                 SetPreviousState(ref previous, current, arrayIndex++);
                 current.Reset();
+
+                current.ClassInfo = settings.GetOrAddClass(objType);
+                current.ReturnValue = current.ClassInfo.CreateObject();
             }
             else if (current.PropertyInfo != null)
             {
@@ -28,25 +32,28 @@ namespace System.Text.Json.Serialization
                 objType = current.PropertyInfo.PropertyType;
                 SetPreviousState(ref previous, current, arrayIndex++);
                 current.Reset();
+
+                current.ClassInfo = settings.GetOrAddClass(objType);
+                current.ReturnValue = current.ClassInfo.CreateObject();
             }
             else
             {
                 // Initial object type
                 objType = returnType;
-            }
 
-            current.ClassInfo = options.GetOrAddClass(objType);
-            current.ReturnValue = current.ClassInfo.CreateObject();
+                Debug.Assert(current.ClassInfo != null);
+                current.ReturnValue = current.ClassInfo.CreateObject();
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HandleEndObject(ref JsonObjectState current, ref List<JsonObjectState> previous, ref int arrayIndex)
+        private static bool HandleEndObject(ref FromJsonObjectState current, ref List<FromJsonObjectState> previous, ref int arrayIndex)
         {
             object value = current.ReturnValue;
 
             if (arrayIndex > 0)
             {
-                JsonObjectState previousFrame = default;
+                FromJsonObjectState previousFrame = default;
                 GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
                 current = previousFrame;
             }
@@ -57,7 +64,7 @@ namespace System.Text.Json.Serialization
                 return true;
             }
 
-            JsonObjectState.SetReturnValue(ref current, value, false);
+            FromJsonObjectState.SetReturnValue(ref current, value);
             return false;
         }
     }

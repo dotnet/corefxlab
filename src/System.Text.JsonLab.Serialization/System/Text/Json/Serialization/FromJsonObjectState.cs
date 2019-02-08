@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace System.Text.Json.Serialization
 {
-    internal struct JsonObjectState
+    internal struct FromJsonObjectState
     {
         // The object (POCO or IEnumerable) that is being populated
         public object ReturnValue;
@@ -17,13 +17,10 @@ namespace System.Text.Json.Serialization
         // Current property values
         public JsonPropertyInfo PropertyInfo;
         public bool PopStackOnEndArray;
+        public bool EnumerableCreated;
 
         // Support System.Array and other types that don't implement IList
         public List<object> TempEnumerableValues;
-
-        // Cached values used to determine if the current property value or current return value is enumerable.
-        private bool _isEnumerable;
-        private bool _isPropertyEnumerable;
 
         // For performance, we order the properties by the first usage and this index helps find the right slot quicker.
         public int PropertyIndex;
@@ -40,69 +37,64 @@ namespace System.Text.Json.Serialization
         {
             PropertyInfo = null;
             PopStackOnEndArray = false;
+            EnumerableCreated = false;
             TempEnumerableValues = null;
-            _isEnumerable = false;
-            _isPropertyEnumerable = false;
         }
 
         public bool IsEnumerable()
         {
-            if (ReturnValue != null)
-            {
-                return _isEnumerable;
-            }
-
-            return (TempEnumerableValues != null);
+            return ClassInfo.ClassType == ClassType.Enumerable;
         }
 
         public bool IsPropertyEnumerable()
         {
-            if (PropertyInfo != null && ReturnValue != null)
+            if (PropertyInfo != null)
             {
-                if (TempEnumerableValues != null)
-                {
-                    return true;
-                }
-
-                return _isPropertyEnumerable;
+                return PropertyInfo.ClassType == ClassType.Enumerable;
             }
 
             return false;
         }
 
-        public static Type GetElementType(in JsonObjectState current)
+        public Type GetElementType()
         {
-            if (current.IsEnumerable() || current.IsPropertyEnumerable())
+            if (IsPropertyEnumerable())
             {
-                return current.PropertyInfo.ElementType;
+                return PropertyInfo.ElementClassInfo.Type;
             }
 
-            return current.PropertyInfo.PropertyType;
+            if (IsEnumerable())
+            {
+                return ClassInfo.ElementClassInfo.Type;
+            }
+
+            return PropertyInfo.PropertyType;
         }
 
-        public static object CreateEnumerableValue(ref JsonObjectState current, Type propType, JsonConverterSettings settings, Type arrayType)
+        public static object CreateEnumerableValue(ref FromJsonObjectState current, JsonConverterSettings settings)
         {
-            // If the property has an EnumerableConverter, then we use tempEnumerableValues
+            // If the property has an EnumerableConverter, then we use tempEnumerableValues.
             if (current.PropertyInfo.EnumerableConverter != null)
             {
                 current.TempEnumerableValues = new List<object>();
                 return null;
             }
 
+            Type propType = current.PropertyInfo.PropertyType;
             if (typeof(IList).IsAssignableFrom(propType))
             {
                 // If IList, add the members as we create them.
-                JsonClassInfo collectionClassInfo = settings.GetOrAddClass(current.PropertyInfo.PropertyType);
+                JsonClassInfo collectionClassInfo = settings.GetOrAddClass(propType);
                 IList collection = (IList)collectionClassInfo.CreateObject();
                 return collection;
             }
             else
             {
-                throw new InvalidOperationException($"todo: IEnumerable type {arrayType.ToString()} is not convertable.");
+                throw new InvalidOperationException($"todo: IEnumerable type {propType.ToString()} is not convertable.");
             }
         }
 
-        public static IEnumerable GetEnumerableValue(in JsonObjectState current)
+        public static IEnumerable GetEnumerableValue(in FromJsonObjectState current)
         {
             if (current.IsEnumerable())
             {
@@ -120,10 +112,9 @@ namespace System.Text.Json.Serialization
         {
             Debug.Assert(ReturnValue == null);
             ReturnValue = value;
-            _isEnumerable = isValueEnumerable;
         }
 
-        public static void SetReturnValue(ref JsonObjectState current, object value, bool isPropertyEnumerable, bool ignorePropertyEnumerable = false)
+        public static void SetReturnValue(ref FromJsonObjectState current, object value, bool setPropertyDirectly = false)
         {
             if (current.IsEnumerable())
             {
@@ -136,7 +127,7 @@ namespace System.Text.Json.Serialization
                     ((IList)current.ReturnValue).Add(value);
                 }
             }
-            else if (!ignorePropertyEnumerable && current.IsPropertyEnumerable())
+            else if (!setPropertyDirectly && current.IsPropertyEnumerable())
             {
                 Debug.Assert(current.PropertyInfo != null);
                 Debug.Assert(current.ReturnValue != null);
@@ -152,11 +143,7 @@ namespace System.Text.Json.Serialization
             else
             {
                 Debug.Assert(current.PropertyInfo != null);
-                Debug.Assert(
-                    (current.TempEnumerableValues == null && !ignorePropertyEnumerable) || 
-                    (current.TempEnumerableValues != null && ignorePropertyEnumerable));
                 current.PropertyInfo.SetValueAsObject(current.ReturnValue, value);
-                current._isPropertyEnumerable = isPropertyEnumerable;
             }
         }
     }

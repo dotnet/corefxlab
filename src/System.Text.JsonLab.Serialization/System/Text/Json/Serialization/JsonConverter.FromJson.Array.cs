@@ -13,7 +13,7 @@ namespace System.Text.Json.Serialization
     public static partial class JsonConverter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void HandleStartArray(JsonConverterSettings options, Type returnType, ref JsonObjectState current, ref List<JsonObjectState> previous, ref int arrayIndex)
+        private static void HandleStartArray(JsonConverterSettings settings, Type returnType, ref FromJsonObjectState current, ref List<FromJsonObjectState> previous, ref int arrayIndex)
         {
             Type arrayType = current.PropertyInfo.PropertyType;
             if (!typeof(IEnumerable).IsAssignableFrom(arrayType) || (arrayType.IsArray && arrayType.GetArrayRank() > 1))
@@ -21,44 +21,42 @@ namespace System.Text.Json.Serialization
                 throw new InvalidOperationException($"todo: type {arrayType.ToString()} is not convertable to array.");
             }
 
-            Debug.Assert(current.PropertyInfo.ElementType != null);
-
-            // If a nested array then push a new stack frame.
             Type propType = current.PropertyInfo.PropertyType;
-            if (current.IsEnumerable() || current.IsPropertyEnumerable())
+            Debug.Assert(current.IsPropertyEnumerable());
+            if (current.IsPropertyEnumerable())
             {
-                Type elementType = current.PropertyInfo.ElementType;
-
-                SetPreviousState(ref previous, current, arrayIndex++);
-                current.Reset();
-                current.ClassInfo = options.GetOrAddClass(elementType);
-                current.PropertyInfo = current.ClassInfo.GetPolicyProperty();
-                current.PopStackOnEndArray = true;
-
-                object value = JsonObjectState.CreateEnumerableValue(ref current, propType, options, arrayType);
-                if (value != null)
+                if (current.EnumerableCreated)
                 {
-                    current.SetReturnValue(value, true);
+                    // A nested json array so push a new stack frame.
+                    Type elementType = current.ClassInfo.ElementClassInfo.GetPolicyProperty().PropertyType;
+                    Type enumerableType = current.ClassInfo.Type;
+
+                    SetPreviousState(ref previous, current, arrayIndex++);
+                    current.Reset();
+                    current.ClassInfo = settings.GetOrAddClass(elementType);
+                    current.PropertyInfo = current.ClassInfo.GetPolicyProperty();
+                    current.PopStackOnEndArray = true;
                 }
-            }
-            else
-            {
+                else
+                {
+                    current.EnumerableCreated = true;
+                }
+
                 // If current property is already set (from a constructor, for example) leave as-is
                 if (current.PropertyInfo.GetValueAsObject(current.ReturnValue) == null)
                 {
-                    // Avoid creating a stack frame for the first array.
-                    object value = JsonObjectState.CreateEnumerableValue(ref current, propType, options, arrayType);
+                    // Create the enumerable.
+                    object value = FromJsonObjectState.CreateEnumerableValue(ref current, settings);
                     if (value != null)
                     {
                         if (current.ReturnValue != null)
                         {
-                            JsonObjectState.SetReturnValue(ref current, value, true);
-                            //current.propertyInfo.SetValueAsObject(current.obj, value);
+                            current.PropertyInfo.SetValueAsObject(current.ReturnValue, value);
                         }
                         else
                         {
                             // Primitive arrays being returned without object
-                            current.SetReturnValue(value, true);
+                            current.SetReturnValue(value, isValueEnumerable: true);
                         }
                     }
                 }
@@ -66,9 +64,9 @@ namespace System.Text.Json.Serialization
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HandleEndArray(ref JsonObjectState current, ref List<JsonObjectState> previous, ref int arrayIndex)
+        private static bool HandleEndArray(ref FromJsonObjectState current, ref List<FromJsonObjectState> previous, ref int arrayIndex)
         {
-            IEnumerable value = JsonObjectState.GetEnumerableValue(current);
+            IEnumerable value = FromJsonObjectState.GetEnumerableValue(current);
             if (value == null)
             {
                 // We added the items to the list property already.
@@ -78,24 +76,29 @@ namespace System.Text.Json.Serialization
 
             bool lastFrame = (arrayIndex == 0);
 
-            Type elementType = current.PropertyInfo.ElementType;
-            if (current.PopStackOnEndArray)
-            {
-                JsonObjectState previousFrame = default;
-                GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
-                current = previousFrame;
-            }
-
-            bool ignorePropertyEnumerable;
+            bool setPropertyDirectly;
             if (current.TempEnumerableValues != null)
             {
                 EnumerableConverterAttribute converter = current.PropertyInfo.EnumerableConverter;
+                if (converter == null)
+                {
+                    converter = current.ClassInfo.EnumerableConverter;
+                }
+
+                Type elementType = current.GetElementType();
                 value = converter.CreateFromList(elementType, (IList)value);
-                ignorePropertyEnumerable = true;
+                setPropertyDirectly = true;
             }
             else
             {
-                ignorePropertyEnumerable = false;
+                setPropertyDirectly = false;
+            }
+
+            if (current.PopStackOnEndArray)
+            {
+                FromJsonObjectState previousFrame = default;
+                GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
+                current = previousFrame;
             }
 
             if (lastFrame)
@@ -112,9 +115,10 @@ namespace System.Text.Json.Serialization
                     // Returning a non-converted list.
                     return true;
                 }
+                // else there must be an outer object, so we'll return false here.
             }
 
-            JsonObjectState.SetReturnValue(ref current, value, true, ignorePropertyEnumerable);
+            FromJsonObjectState.SetReturnValue(ref current, value, setPropertyDirectly : setPropertyDirectly);
             return false;
         }
     }

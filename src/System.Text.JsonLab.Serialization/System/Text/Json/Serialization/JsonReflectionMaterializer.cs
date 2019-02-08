@@ -17,8 +17,7 @@ namespace System.Text.Json.Serialization
         {
             return (obj) =>
             {
-                MethodInfo getter = propertyInfo.GetGetMethod(nonPublic: true);
-                return (TValue)getter.Invoke(obj, Array.Empty<object>());
+                return (TValue)propertyInfo.GetValue(obj);
             };
         }
 
@@ -26,8 +25,7 @@ namespace System.Text.Json.Serialization
         {
             return (obj, propertyValue) =>
             {
-                MethodInfo setter = propertyInfo.GetSetMethod(nonPublic: true);
-                setter.Invoke(obj, new object[] { propertyValue });
+                propertyInfo.SetValue(obj, propertyValue);
             };
         }
     }

@@ -5,7 +5,7 @@
 namespace System.Text.Json.Serialization
 {
     // Temporary extension methods until we move to corefx
-    internal static class TempExtensionMethods
+    internal static class JsonReaderHelper
     {
         // TODO: Replace with existing static helper in corefx
         // System/Text/Json/Reader/JsonReaderHelper.Unescaping.cs#L42
