@@ -3,10 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
-
-// Todo: this is a copy of class in the test project. We need to detemine best implementation for sync.
 
 namespace System.Text.Json.Serialization
 {
@@ -96,68 +93,5 @@ namespace System.Text.Json.Serialization
 
             return current.ReturnValue;
         }
-
-        public static string ToJsonString(object value, JsonConverterSettings settings = null)
-        {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            Span<byte> jsonBytes = ToJsonInternal(value, settings);
-            string stringJson = JsonReaderHelper.TranscodeHelper(jsonBytes);
-            return stringJson;
-        }
-
-        public static Span<byte> ToJson(object value, JsonConverterSettings settings = null)
-        {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            return ToJsonInternal(value, settings);
-        }
-
-        private static Span<byte> ToJsonInternal(object value, JsonConverterSettings settings)
-        {
-            if (settings == null)
-                settings = s_DefaultSettings;
-
-            ToJsonObjectState current = default;
-            Type initialType = value.GetType();
-
-            JsonClassInfo classInfo = settings.GetOrAddClass(initialType);
-            current.ClassInfo = classInfo;
-            current.CurrentValue = value;
-            if (classInfo.ClassType != ClassType.Object)
-            {
-                current.PropertyInfo = classInfo.GetPolicyProperty();
-            }
-
-            List<ToJsonObjectState> previous = null;
-            int arrayIndex = 0;
-
-            var state = new JsonWriterState(settings.WriterOptions);
-
-            byte[] result;
-
-            using (var output = new ArrayBufferWriter<byte>(settings.DefaultBufferSize))
-            {
-                var writer = new Utf8JsonWriter(output, state);
-
-                ToJson(ref writer, settings, ref current, ref previous, ref arrayIndex);
-
-                writer.Flush(isFinalBlock: true);
-                ReadOnlyMemory<byte> json = output.WrittenMemory;
-                result = json.ToArray();
-            }
-
-            return result;
-        }
-
-        // Coming soon:
-        
-        //public static ValueTask ToJsonAsync<T>(this PipeWriter writer, T value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default);
-        //public static ValueTask ToJsonAsync(this PipeWriter writer, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default);
-
-        //public static ValueTask ToJsonAsync<T>(this Stream writer, T value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default);
-        //public static ValueTask ToJsonAsync(this Stream writer, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default);
     }
 }

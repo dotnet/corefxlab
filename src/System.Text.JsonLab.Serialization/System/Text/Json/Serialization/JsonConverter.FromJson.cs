@@ -16,6 +16,7 @@ namespace System.Text.Json.Serialization
 
         private static readonly JsonConverterSettings s_DefaultSettings = new JsonConverterSettings();
 
+        // todo: refactor this method to split by ClassType(Enumerable, Object, or Value) like ToJson()
         private static bool FromJson(
             ref Utf8JsonReader reader,
             JsonConverterSettings settings,

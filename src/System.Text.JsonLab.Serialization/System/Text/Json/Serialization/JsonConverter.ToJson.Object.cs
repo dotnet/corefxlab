@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Json.Serialization
@@ -12,10 +13,12 @@ namespace System.Text.Json.Serialization
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool WriteObject(
             ref Utf8JsonWriter writer,
+            JsonConverterSettings settings,
             ref ToJsonObjectState current,
             ref List<ToJsonObjectState> previous,
             ref int arrayIndex)
         {
+            // Write the start.
             if (!current.StartObjectWritten)
             {
                 if (current.PropertyInfo?.Name == null)
@@ -29,22 +32,80 @@ namespace System.Text.Json.Serialization
                 current.StartObjectWritten = true;
             }
 
-            if (current.PropertyIndex == current.ClassInfo.PropertyCount)
+            // Determine if we are done enumerating properties.
+            if (current.PropertyIndex != current.ClassInfo.PropertyCount)
             {
-                writer.WriteEndObject();
-
-                if (arrayIndex > 0)
-                {
-                    ToJsonObjectState previousFrame = default;
-                    GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
-                    current = previousFrame;
-                }
-
+                HandleObject(ref writer, settings, ref current, ref previous, ref arrayIndex);
                 return false;
             }
 
+            // We are done enumerating properties.
+            writer.WriteEndObject();
+
+            if (current.PopStackOnEndObject)
+            {
+                ToJsonObjectState previousFrame = default;
+                GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
+                current = previousFrame;
+            }
+            else
+            {
+                current.EndObject();
+            }
+
+            return true;
+        }
+
+        private static bool HandleObject(
+                ref Utf8JsonWriter writer,
+                JsonConverterSettings settings,
+                ref ToJsonObjectState current,
+                ref List<ToJsonObjectState> previous,
+                ref int arrayIndex)
+        {
+            Debug.Assert(current.ClassInfo.ClassType == ClassType.Object);
+
             JsonPropertyInfo propertyInfo = current.ClassInfo.GetProperty(current.PropertyIndex);
             current.PropertyInfo = propertyInfo;
+
+            ClassType propertyClassType = propertyInfo.ClassType;
+            if (propertyClassType == ClassType.Value)
+            {
+                propertyInfo.ToJson(ref current, ref writer);
+                current.NextProperty();
+                return true;
+            }
+
+            // A property that returns an enumerator keeps the same stack frame.
+            if (propertyClassType == ClassType.Enumerable)
+            {
+                bool endOfEnumerable = HandleEnumerable(propertyInfo.ElementClassInfo, ref writer, ref current, ref previous, ref arrayIndex);
+                if (endOfEnumerable)
+                {
+                    current.NextProperty();
+                }
+
+                return endOfEnumerable;
+            }
+
+            // A property that returns an object requires a new stack frame.
+            object value = propertyInfo.GetValueAsObject(current.CurrentValue);
+            if (value != null)
+            {
+                JsonPropertyInfo previousPropertyInfo = current.PropertyInfo;
+
+                current.NextProperty();
+
+                JsonClassInfo nextClassInfo = settings.GetOrAddClass(propertyInfo.PropertyType);
+                AddNewStackFrame(nextClassInfo, value, ref current, ref previous, ref arrayIndex);
+
+                // Set the PropertyInfo so we can obtain the property name in order to write it.
+                current.PropertyInfo = previousPropertyInfo;
+            }
+            else if (propertyInfo.SerializeNullValues)
+            {
+                writer.WriteNull(propertyInfo.Name);
+            }
 
             return true;
         }
