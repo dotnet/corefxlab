@@ -23,23 +23,41 @@ namespace System.Text.Json.Serialization
         // Has the Start tag been written
         public bool StartObjectWritten;
 
-        // Has the Start tag been written
-        public bool StartArrayWritten;
+        public bool PopStackOnEndArray;
+        public bool PopStackOnEndObject;
 
         public void Reset()
         {
             CurrentValue = null;
             ClassInfo = null;
             StartObjectWritten = false;
-            PropertyIndex = 0;
-            Enumerator = null;
-            ResetProperty();
+            EndObject();
+            EndArray();
         }
 
-        public void ResetProperty()
+        public void EndObject()
+        {
+            PropertyIndex = 0;
+            PopStackOnEndObject = false;
+            EndProperty();
+        }
+
+        public void EndArray()
+        {
+            Enumerator = null;
+            PopStackOnEndArray = false;
+            EndProperty();
+        }
+
+        public void EndProperty()
         {
             PropertyInfo = null;
-            StartArrayWritten = false;
+        }
+
+        public void NextProperty()
+        {
+            PropertyInfo = null;
+            PropertyIndex++;
         }
     }
 }

@@ -16,10 +16,82 @@ namespace System.Text.Json.Serialization
 
         private static readonly JsonConverterSettings s_DefaultSettings = new JsonConverterSettings();
 
-        private static bool FromJson(
+        private static void FromJson(
+            ref JsonReaderState readerState,
+            Type returnType,
+            bool isFinalBlock,
+            byte[] buffer,
+            int bytesToRead,
+            JsonConverterSettings settings,
+            ref FromJsonObjectState current,
+            ref List<FromJsonObjectState> previous,
+            ref int arrayIndex)
+        {
+            Utf8JsonReader reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesToRead), isFinalBlock, readerState);
+
+            FromJson(
+                ref reader,
+                settings,
+                returnType,
+                ref current,
+                ref previous,
+                ref arrayIndex);
+
+            readerState = reader.CurrentState;
+        }
+
+        private static void FromJson(
+            ref JsonReaderState readerState,
+            Type returnType,
+            bool isFinalBlock,
+            ReadOnlySequence<byte> buffer,
+            JsonConverterSettings settings,
+            ref FromJsonObjectState current,
+            ref List<FromJsonObjectState> previous,
+            ref int arrayIndex)
+        {
+            Utf8JsonReader reader = new Utf8JsonReader(buffer, isFinalBlock, readerState);
+
+            FromJson(
+                ref reader,
+                settings,
+                returnType,
+                ref current,
+                ref previous,
+                ref arrayIndex);
+
+            readerState = reader.CurrentState;
+        }
+
+        private static object FromJson(
+            Utf8JsonReader reader,
+            Type returnType,
+            JsonConverterSettings settings)
+        {
+            if (settings == null)
+                settings = s_DefaultSettings;
+
+            List<FromJsonObjectState> previous = null;
+            int arrayIndex = 0;
+
+            FromJsonObjectState current = default;
+            JsonClassInfo classInfo = settings.GetOrAddClass(returnType);
+            current.ClassInfo = classInfo;
+            if (classInfo.ClassType != ClassType.Object)
+            {
+                current.PropertyInfo = classInfo.GetPolicyProperty();
+            }
+
+            FromJson(ref reader, settings, returnType, ref current, ref previous, ref arrayIndex);
+
+            return current.ReturnValue;
+        }
+
+        // todo: refactor this method to split by ClassType(Enumerable, Object, or Value) like ToJson()
+        private static void FromJson(
             ref Utf8JsonReader reader,
             JsonConverterSettings settings,
-            Type returnType,
+            Type returnType, //todo: we shouldn't need to pass this since we can now get it from current.ClassInfo.PropertyPolicy
             ref FromJsonObjectState current,
             ref List<FromJsonObjectState> previous,
             ref int arrayIndex)
@@ -33,7 +105,7 @@ namespace System.Text.Json.Serialization
                     if (HandleValue(ref reader, settings, returnType, ref current))
                     {
                         // todo: verify bytes read == bytes processed.
-                        return true;
+                        return;
                     }
                 }
                 else if (tokenType == JsonTokenType.PropertyName)
@@ -54,7 +126,7 @@ namespace System.Text.Json.Serialization
                     if (HandleEndObject(ref current, ref previous, ref arrayIndex))
                     {
                         // todo: verify bytes read == bytes processed.
-                        return true;
+                        return;
                     }
                 }
                 else if (tokenType == JsonTokenType.StartArray)
@@ -66,19 +138,19 @@ namespace System.Text.Json.Serialization
                     if (HandleEndArray(ref current, ref previous, ref arrayIndex))
                     {
                         // todo: verify bytes read == bytes processed.
-                        return true;
+                        return;
                     }
                 }
                 else if (tokenType == JsonTokenType.Null)
                 {
                     if (HandleNull(ref current))
                     {
-                        return true;
+                        return;
                     }
                 }
             }
 
-            return false;
+            return;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

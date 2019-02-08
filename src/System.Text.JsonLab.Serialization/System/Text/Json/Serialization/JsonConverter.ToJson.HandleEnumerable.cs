@@ -4,6 +4,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Json.Serialization
@@ -13,14 +14,25 @@ namespace System.Text.Json.Serialization
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool WriteEnumerable(
             ref Utf8JsonWriter writer,
-            JsonConverterSettings settings,
             ref ToJsonObjectState current,
             ref List<ToJsonObjectState> previous,
             ref int arrayIndex)
         {
+            return HandleEnumerable(current.ClassInfo.ElementClassInfo, ref writer, ref current, ref previous, ref arrayIndex);
+        }
+
+        private static bool HandleEnumerable(
+            JsonClassInfo elementClassInfo,
+            ref Utf8JsonWriter writer,
+            ref ToJsonObjectState current,
+            ref List<ToJsonObjectState> previous,
+            ref int arrayIndex)
+        {
+            Debug.Assert(current.PropertyInfo.ClassType == ClassType.Enumerable);
+
             JsonPropertyInfo propertyInfo = current.PropertyInfo;
 
-            if (!current.StartArrayWritten)
+            if (current.Enumerator == null)
             {
                 if (propertyInfo.Name == null)
                 {
@@ -31,35 +43,35 @@ namespace System.Text.Json.Serialization
                     writer.WriteStartArray(propertyInfo.Name);
                 }
 
-                current.StartArrayWritten = true;
-                current.Enumerator = ((IEnumerable)propertyInfo.GetValueAsObject(current.CurrentValue)).GetEnumerator();
+                IEnumerable enumerable = (IEnumerable)propertyInfo.GetValueAsObject(current.CurrentValue);
+
+                if (enumerable != null)
+                {
+                    current.Enumerator = enumerable.GetEnumerator();
+                }
             }
 
-            if (current.ClassInfo.ElementClassInfo.ClassType == ClassType.Value)
+            if (current.Enumerator != null && current.Enumerator.MoveNext())
             {
-                if (current.Enumerator.MoveNext())
+                if (elementClassInfo.ClassType == ClassType.Value)
                 {
                     propertyInfo.ToJson(ref current, ref writer);
-                    return false;
                 }
-            }
-            else if (current.Enumerator.MoveNext())
-            {
-                object obj = current.Enumerator.Current;
-                SetPreviousState(ref previous, current, arrayIndex++);
-                current.Reset();
-                current.ClassInfo = propertyInfo.ElementClassInfo;
-                current.CurrentValue = obj;
-
-                if (current.ClassInfo.ClassType == ClassType.Enumerable)
+                else
                 {
-                    current.PropertyInfo = current.ClassInfo.GetPolicyProperty();
+                    // An object or another enumerator requires a new stack frame
+                    JsonClassInfo nextClassInfo = propertyInfo.ElementClassInfo;
+                    object nextValue = current.Enumerator.Current;
+                    AddNewStackFrame(nextClassInfo, nextValue, ref current, ref previous, ref arrayIndex);
                 }
-                
+
                 return false;
             }
 
-            if (arrayIndex > 0)
+            // We are done enumerating.
+            writer.WriteEndArray();
+
+            if (current.PopStackOnEndArray)
             {
                 ToJsonObjectState previousFrame = default;
                 GetPreviousState(ref previous, ref previousFrame, --arrayIndex);
@@ -67,11 +79,10 @@ namespace System.Text.Json.Serialization
             }
             else
             {
-                current.ResetProperty();
+                current.EndArray();
             }
 
-            writer.WriteEndArray();
-            return false;
+            return true;
         }
     }
 }

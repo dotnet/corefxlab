@@ -73,7 +73,7 @@ namespace System.Text.Json.Serialization
                 }
                 else
                 {
-                    IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
+                    var converter = this as IJsonConverterInternal<TValue>;
                     if (converter != null)
                     {
                         TValue value = converter.FromJson(ref reader);
@@ -108,7 +108,7 @@ namespace System.Text.Json.Serialization
             }
             else
             {
-                IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
+                var converter = this as IJsonConverterInternal<TValue>;
                 if (converter != null)
                 {
                     TValue value = converter.FromJson(ref reader);
@@ -121,6 +121,7 @@ namespace System.Text.Json.Serialization
             }
         }
 
+        // todo: have the caller check if current.Enumerator != null and call ToJsonEnumerable of the underlying property directly to avoid an extra virtual call.
         public override void ToJson(ref ToJsonObjectState current, ref Utf8JsonWriter writer)
         {
             if (current.Enumerator != null)
@@ -148,7 +149,7 @@ namespace System.Text.Json.Serialization
                 }
                 else
                 {
-                    IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
+                    var converter = this as IJsonConverterInternal<TValue>;
                     if (converter != null)
                     {
                         TValue value = Get(current.CurrentValue);
@@ -210,7 +211,7 @@ namespace System.Text.Json.Serialization
             }
             else
             {
-                IJsonConverterInternal<TValue> converter = this as IJsonConverterInternal<TValue>;
+                var converter = this as IJsonConverterInternal<TValue>;
                 if (converter != null)
                 {
                     Debug.Assert(current.Enumerator != null);

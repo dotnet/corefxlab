@@ -10,6 +10,11 @@
     <DefineConstants Condition="'$(TargetFramework)' != 'netstandard2.0'">$(DefineConstants);BUILDING_INBOX_LIBRARY</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Buffers" Version="$(SystemBuffersVersion)" />
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemBuffersVersion)" />
+  </ItemGroup>
+  
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
       <!--These properties are necessary to build the source package-->
