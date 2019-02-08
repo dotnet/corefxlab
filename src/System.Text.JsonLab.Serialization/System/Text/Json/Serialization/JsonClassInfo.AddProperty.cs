@@ -149,11 +149,13 @@ namespace System.Text.Json.Serialization
                 jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] { classType, propertyType, propertyInfo, settings, null });
             }
 
-            if (propertyInfo != null)
+            if (propertyInfo != null) //todo: why can this be null?
             {
                 string propertyName = jsonInfo.NameConverter == null ? propertyInfo.Name : jsonInfo.NameConverter.ToJson(propertyInfo.Name);
-                var bytes = (ReadOnlySpan<byte>)JsonConverter.s_utf8Encoding.GetBytes(propertyName);
-                jsonInfo.Name = bytes.ToArray();
+
+                // No need to call helper method to encode here since property names are valid UTF16 and no escaping necessary.
+                var bytes = Encoding.UTF8.GetBytes(propertyName);
+                jsonInfo.Name = bytes;
 
                 _property_refs.Add(new PropertyRef(GetKey(bytes), jsonInfo));
             }

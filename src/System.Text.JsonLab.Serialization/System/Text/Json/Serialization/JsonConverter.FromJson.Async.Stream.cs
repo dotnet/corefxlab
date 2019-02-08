@@ -15,30 +15,27 @@ namespace System.Text.Json.Serialization
     {
         private const int HalfMaxValue = int.MaxValue / 2;
 
-        public static Task<T> FromJsonAsync<T>(this Stream source, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        public static Task<T> FromJsonAsync<T>(this Stream stream, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
-            return FromJsonAsync<T>(source, typeof(T), settings, cancellationToken);
+            return FromJsonAsync<T>(stream, typeof(T), settings, cancellationToken);
         }
 
-        public static Task<object> FromJsonAsync(this Stream source, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        public static Task<object> FromJsonAsync(this Stream stream, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return FromJsonAsync<object>(source, returnType, settings, cancellationToken);
+            return FromJsonAsync<object>(stream, returnType, settings, cancellationToken);
         }
 
-        private static async Task<T> FromJsonAsync<T>(this Stream source, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        private static async Task<T> FromJsonAsync<T>(this Stream stream, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
             if (settings == null)
                 settings = s_DefaultSettings;
 
@@ -65,11 +62,11 @@ namespace System.Text.Json.Serialization
                 do
                 {
                     int bytesToRead = bufferSize - bytesRemaining;
-                    bytesRead = await source.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
+                    bytesRead = await stream.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
 
                     int deserializeBufferSize = bytesRemaining + bytesRead;
                     bool isFinalBlock = (bytesRead == 0);
-                    if (FromJson(
+                    bool finished = FromJson(
                         ref readerState,
                         returnType,
                         isFinalBlock,
@@ -78,7 +75,9 @@ namespace System.Text.Json.Serialization
                         settings,
                         ref current,
                         ref previous,
-                        ref arrayIndex))
+                        ref arrayIndex);
+
+                    if (finished)
                     {
                         return (T)current.ReturnValue;
                     }
@@ -88,7 +87,7 @@ namespace System.Text.Json.Serialization
                     int bytesConsumed = (int)readerState.BytesConsumed;
                     bytesRemaining = deserializeBufferSize - bytesConsumed;
 
-                    if (bytesRemaining <= (bufferSize / 2))
+                    if (bytesConsumed <= (bufferSize / 2))
                     {
                         // We have less than half the buffer available, double the buffer size.
                         bufferSize = (bufferSize < HalfMaxValue) ? bufferSize * 2 : int.MaxValue;
@@ -100,7 +99,7 @@ namespace System.Text.Json.Serialization
                             // Copy the unprocessed data to the new buffer while shifting the processed bytes.
                             Buffer.BlockCopy(buffer, bytesConsumed, dest, 0, bytesRemaining);
                         }
-                        ArrayPool<byte>.Shared.Return(buffer, clearArray:true);
+                        ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
                         buffer = dest;
                     }
                     else if (bytesRemaining > 0)

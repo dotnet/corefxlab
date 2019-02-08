@@ -179,7 +179,7 @@ namespace System.Text.Json.Serialization.Tests
     }
 
 
-     public class TestClassWithNull
+    public class TestClassWithNull
     {
         public string MyString { get; set; }
         public static readonly string s_json =
@@ -421,5 +421,66 @@ namespace System.Text.Json.Serialization.Tests
             @"""blah"" : 1" +
             @"}"
         );
+    }
+
+    public class LargeDataTestClass : ITestClass
+    {
+        public List<LargeDataChildTestClass> Children { get; set; } = new List<LargeDataChildTestClass>();
+        public const int ChildrenCount = 10;
+
+        public string MyString { get; set; }
+        public const int MyStringLength = 1000;
+
+        public void Initialize()
+        {
+            MyString = new string('1', MyStringLength);
+
+            for (int i = 0; i < ChildrenCount; i++)
+            {
+                var child = new LargeDataChildTestClass();
+                child.MyString = new string('2', LargeDataChildTestClass.MyStringLength);
+
+                child.MyStringArray = new string[LargeDataChildTestClass.MyStringArrayArrayCount];
+                for (int j = 0; j < child.MyStringArray.Length; j++)
+                {
+                    child.MyStringArray[j] = new string('3', LargeDataChildTestClass.MyStringArrayElementStringLength);
+                }
+
+                Children.Add(child);
+            }
+        }
+
+        public void Verify()
+        {
+            Assert.Equal(MyStringLength, MyString.Length);
+            Assert.Equal('1', MyString[0]);
+            Assert.Equal('1', MyString[MyStringLength - 1]);
+
+            Assert.Equal(ChildrenCount, Children.Count);
+            for (int i = 0; i < ChildrenCount; i++)
+            {
+                LargeDataChildTestClass child = Children[i];
+                Assert.Equal(LargeDataChildTestClass.MyStringLength, child.MyString.Length);
+                Assert.Equal('2', child.MyString[0]);
+                Assert.Equal('2', child.MyString[LargeDataChildTestClass.MyStringLength - 1]);
+
+                Assert.Equal(LargeDataChildTestClass.MyStringArrayArrayCount, child.MyStringArray.Length);
+                for (int j = 0; j < LargeDataChildTestClass.MyStringArrayArrayCount; j++)
+                {
+                    Assert.Equal('3', child.MyStringArray[j][0]);
+                    Assert.Equal('3', child.MyStringArray[j][LargeDataChildTestClass.MyStringArrayElementStringLength - 1]);
+                }
+            }
+        }
+    }
+
+    public class LargeDataChildTestClass
+    {
+        public const int MyStringLength = 2000;
+        public string MyString { get; set; }
+
+        public string[] MyStringArray { get; set; }
+        public const int MyStringArrayArrayCount = 1000;
+        public const int MyStringArrayElementStringLength = 50;
     }
 }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.Text.Json.Serialization
 {
@@ -10,47 +11,65 @@ namespace System.Text.Json.Serialization
     {
         private static bool ToJson(
             ref Utf8JsonWriter writer,
+            int flushThreshold,
             JsonConverterSettings settings,
             ref ToJsonObjectState current,
             ref List<ToJsonObjectState> previous,
             ref int arrayIndex)
         {
-            bool writeMore = true;
+            bool continueWriting = true;
+            bool checkForFinished = true;
             do
             {
                 ClassType classType = current.ClassInfo.ClassType;
                 if (classType == ClassType.Enumerable)
                 {
-                    if (WriteEnumerable(ref writer, settings, ref current, ref previous, ref arrayIndex))
-                    {
-                        WriteValue(ref writer, settings, ref current, ref previous, ref arrayIndex);
-                    }
-                    else
-                    {
-                        writeMore = (writer.CurrentDepth > 0);
-                    }
+                    checkForFinished = WriteEnumerable(ref writer, ref current, ref previous, ref arrayIndex);
                 }
                 else if (classType == ClassType.Object)
                 {
-                    if (WriteObject(ref writer, ref current, ref previous, ref arrayIndex))
-                    {
-                        WriteValue(ref writer, settings, ref current, ref previous, ref arrayIndex);
-                    }
-                    else
-                    {
-                        writeMore = (writer.CurrentDepth > 0);
-                    }
+                    checkForFinished = WriteObject(ref writer, settings, ref current, ref previous, ref arrayIndex);
                 }
                 else
                 {
-                    WriteValue(ref writer, settings, ref current, ref previous, ref arrayIndex);
-                    writeMore = (writer.CurrentDepth > 0);
+                    checkForFinished = WriteValue(ref writer, ref current);
                 }
 
-                // todo: if writeMore==true and we wrote to buffer length, then we need to check for a flush (when async implemented)
-            } while (writeMore);
+                if (flushThreshold >= 0 && writer.BytesWritten > flushThreshold)
+                {
+                    return false;
+                }
+                else if (checkForFinished && writer.CurrentDepth == 0)
+                {
+                    continueWriting = false;
+                }
+            } while (continueWriting);
 
-            return false;
+            return true;
         }        
+
+        private static void AddNewStackFrame(
+            JsonClassInfo nextClassInfo,
+            object nextValue,
+            ref ToJsonObjectState current,
+            ref List<ToJsonObjectState> previous,
+            ref int arrayIndex)
+        {
+            SetPreviousState(ref previous, current, arrayIndex++);
+            current.Reset();
+            current.ClassInfo = nextClassInfo;
+            current.CurrentValue = nextValue;
+
+            if (nextClassInfo.ClassType == ClassType.Enumerable)
+            {
+                current.PopStackOnEndArray = true;
+                current.PropertyInfo = current.ClassInfo.GetPolicyProperty();
+            }
+            else
+            {
+                Debug.Assert(nextClassInfo.ClassType == ClassType.Object);
+                current.PopStackOnEndObject = true;
+            }
+        }
     }
 }
