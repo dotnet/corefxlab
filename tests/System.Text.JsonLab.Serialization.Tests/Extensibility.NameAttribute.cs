@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class FromJsonTests
+    public partial class ExtensibilityTests
     {
         [JsonCamelCasingConverter]
         public class SimpleTestClassWithCamelCase : SimpleTestClass

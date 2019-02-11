@@ -6,31 +6,31 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class FromJsonTests
+    public partial class ArrayTests
     {
         [Fact]
-        public static void ClassWithStringArray()
+        public static void FromJsonClassWithStringArray()
         {
             TestClassWithStringArray obj = JsonConverter.FromJson<TestClassWithStringArray>(TestClassWithStringArray.s_data);
             obj.Verify();
         }
 
         [Fact]
-        public static void ClassWithObjectList()
+        public static void FromJsonClassWithObjectList()
         {
             TestClassWithObjectList obj = JsonConverter.FromJson<TestClassWithObjectList>(TestClassWithObjectList.s_data);
             obj.Verify();
         }
 
         [Fact]
-        public static void ClassWithObjectArray()
+        public static void FromJsonClassWithObjectArray()
         {
             TestClassWithObjectArray obj = JsonConverter.FromJson<TestClassWithObjectArray>(TestClassWithObjectArray.s_data);
             obj.Verify();
         }
 
         [Fact]
-        public static void ClassWithGenericList()
+        public static void FromJsonClassWithGenericList()
         {
             TestClassWithGenericList obj = JsonConverter.FromJson<TestClassWithGenericList>(TestClassWithGenericList.s_data);
             obj.Verify();

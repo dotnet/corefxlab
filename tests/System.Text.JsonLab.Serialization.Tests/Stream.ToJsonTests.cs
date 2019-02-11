@@ -9,7 +9,7 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class ToJsonTests
+    public partial class StreamTests
     {
         [Fact]
         public static async Task RoundTripAsync()
@@ -78,7 +78,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static async Task PrimitivesAsync()
+        public static async Task ToJsonPrimitivesAsync()
         {
             MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(@"1"));
             JsonConverterSettings settings = new JsonConverterSettings

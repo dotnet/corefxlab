@@ -8,10 +8,10 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class FromJsonTests
+    public partial class StreamTests
     {
         [Fact]
-        public static async Task SimpleObjectAsync()
+        public static async Task FromJsonSimpleObjectAsync()
         {
             using (MemoryStream stream = new MemoryStream(SimpleTestClass.s_data))
             {
@@ -26,7 +26,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static async Task PrimitivesAsync()
+        public static async Task FromJsonPrimitivesAsync()
         {
             using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(@"1")))
             {

@@ -12,11 +12,12 @@ namespace System.Text.Json.Serialization
 {
     public class JsonConverterSettings
     {
-        private const int DefaultBufferSizeInternal = 16 * 1024;
+        internal const int BufferSizeUnspecified = -1;
+        internal const int BufferSizeDefault = 16 * 1024;
 
         private volatile JsonMemberBasedClassMaterializer _classMaterializerStrategy;
         private JsonClassMaterializer _classMaterializer;
-        private int _defaultBufferSize = DefaultBufferSizeInternal;
+        private int _defaultBufferSize = BufferSizeUnspecified;
         private int _maxDepth = 64;
         private bool _hasRuntimeCustomAttributes;
 
@@ -80,12 +81,20 @@ namespace System.Text.Json.Serialization
             }
             set
             {
-                if (value < 1)
+                if (value == 0 || value < BufferSizeUnspecified)
                 {
-                    throw new ArgumentException("todo");
+                    throw new ArgumentException("todo: value must be equal to zero or -1");
                 }
 
                 _defaultBufferSize = value;
+            }
+        }
+
+        internal int EffectiveBufferSize
+        {
+            get
+            {
+                return DefaultBufferSize == BufferSizeUnspecified ? BufferSizeDefault : DefaultBufferSize;
             }
         }
 
@@ -124,7 +133,7 @@ namespace System.Text.Json.Serialization
             _hasRuntimeCustomAttributes = true;
         }
 
-        public IEnumerable<TAttribute> GetAttributes<TAttribute>(ICustomAttributeProvider type, bool inherit = false) where TAttribute:Attribute
+        public IEnumerable<TAttribute> GetAttributes<TAttribute>(ICustomAttributeProvider type, bool inherit = false) where TAttribute : Attribute
         {
             if (type == null)
                 throw new ArgumentException(nameof(type));
