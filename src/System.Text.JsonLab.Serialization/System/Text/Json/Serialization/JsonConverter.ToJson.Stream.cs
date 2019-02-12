@@ -11,18 +11,18 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
-        public static ValueTask ToJsonAsync(this Stream writer, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        public static ValueTask ToJsonAsync(this Stream stream, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            return ToJsonAsyncInternal(writer, value, settings, cancellationToken);
+            return ToJsonAsyncInternal(stream, value, settings, cancellationToken);
         }
 
-        private static async ValueTask ToJsonAsyncInternal(this Stream writer, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        private static async ValueTask ToJsonAsyncInternal(this Stream stream, object value, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
             if (settings == null)
                 settings = s_DefaultSettings;
@@ -52,10 +52,10 @@ namespace System.Text.Json.Serialization
 
                     isFinalBlock = ToJson(ref writerState, bufferWriter, flushThreshold, settings, ref current, ref previous, ref arrayIndex);
 #if BUILDING_INBOX_LIBRARY
-                    await writer.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
+                    await stream.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
 #else
                     // todo: stackalloc
-                    await writer.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
+                    await stream.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
 #endif
                     bufferWriter.Clear();
                 } while (!isFinalBlock);

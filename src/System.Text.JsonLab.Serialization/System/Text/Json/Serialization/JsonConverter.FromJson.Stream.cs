@@ -15,26 +15,26 @@ namespace System.Text.Json.Serialization
     {
         private const int HalfMaxValue = int.MaxValue / 2;
 
-        public static Task<T> FromJsonAsync<T>(this Stream reader, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        public static Task<T> FromJsonAsync<T>(this Stream stream, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
-            return FromJsonAsync<T>(reader, typeof(T), settings, cancellationToken);
+            return FromJsonAsync<T>(stream, typeof(T), settings, cancellationToken);
         }
 
-        public static Task<object> FromJsonAsync(this Stream reader, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        public static Task<object> FromJsonAsync(this Stream stream, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return FromJsonAsync<object>(reader, returnType, settings, cancellationToken);
+            return FromJsonAsync<object>(stream, returnType, settings, cancellationToken);
         }
 
-        private static async Task<T> FromJsonAsync<T>(this Stream reader, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
+        private static async Task<T> FromJsonAsync<T>(this Stream stream, Type returnType, JsonConverterSettings settings = null, CancellationToken cancellationToken = default)
         {
             if (settings == null)
                 settings = s_DefaultSettings;
@@ -63,7 +63,7 @@ namespace System.Text.Json.Serialization
                 do
                 {
                     int bytesToRead = bufferSize - bytesRemaining;
-                    bytesRead = await reader.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
+                    bytesRead = await stream.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
 
                     int deserializeBufferSize = bytesRemaining + bytesRead;
                     isFinalBlock = (bytesRead == 0);
