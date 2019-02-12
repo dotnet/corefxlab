@@ -8,12 +8,12 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
-        public static T FromJson<T>(this ReadOnlySequence<byte> json, JsonConverterSettings settings = null)
+        public static T FromJson<T>(this in ReadOnlySequence<byte> json, JsonConverterSettings settings = null)
         {
             return (T)FromJson(json, typeof(T), settings);
         }
 
-        public static object FromJson(this ReadOnlySequence<byte> json, Type returnType, JsonConverterSettings settings = null)
+        public static object FromJson(this in ReadOnlySequence<byte> json, Type returnType, JsonConverterSettings settings = null)
         {
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
