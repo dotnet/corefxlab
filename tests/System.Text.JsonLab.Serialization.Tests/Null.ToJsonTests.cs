@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class ToJsonTests
+    public partial class NullTests
     {
         [Fact]
         public static void DontSerializeNull()

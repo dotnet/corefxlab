@@ -6,10 +6,10 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class ToJsonTests
+    public partial class ArrayTests
     {
         [Fact]
-        public static void ClassWithStringArray()
+        public static void ToJsonClassWithStringArray()
         {
             string json;
 
@@ -32,7 +32,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void ClassWithObjectArray()
+        public static void ToJsonClassWithObjectArray()
         {
             string json;
 
@@ -55,7 +55,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void ClassWithGenericList()
+        public static void ToJsonClassWithGenericList()
         {
             string json;
 

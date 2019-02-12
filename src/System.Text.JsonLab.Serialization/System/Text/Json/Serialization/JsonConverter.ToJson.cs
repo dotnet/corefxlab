@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -9,6 +10,31 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
+        private static bool ToJson(
+            ref JsonWriterState writerState,
+            IBufferWriter<byte> bufferWriter,
+            int flushThreshold,
+            JsonConverterSettings settings,
+            ref ToJsonObjectState current,
+            ref List<ToJsonObjectState> previous,
+            ref int arrayIndex)
+        {
+            Utf8JsonWriter writer = new Utf8JsonWriter(bufferWriter, writerState);
+
+            bool isFinalBlock = ToJson(
+                ref writer,
+                flushThreshold,
+                settings,
+                ref current,
+                ref previous,
+                ref arrayIndex);
+
+            writer.Flush(isFinalBlock: isFinalBlock);
+            writerState = writer.GetCurrentState();
+
+            return isFinalBlock;
+        }
+
         private static bool ToJson(
             ref Utf8JsonWriter writer,
             int flushThreshold,
@@ -18,28 +44,28 @@ namespace System.Text.Json.Serialization
             ref int arrayIndex)
         {
             bool continueWriting = true;
-            bool checkForFinished = true;
+            bool finishedSerializing;
             do
             {
-                ClassType classType = current.ClassInfo.ClassType;
-                if (classType == ClassType.Enumerable)
+                switch (current.ClassInfo.ClassType)
                 {
-                    checkForFinished = WriteEnumerable(ref writer, ref current, ref previous, ref arrayIndex);
-                }
-                else if (classType == ClassType.Object)
-                {
-                    checkForFinished = WriteObject(ref writer, settings, ref current, ref previous, ref arrayIndex);
-                }
-                else
-                {
-                    checkForFinished = WriteValue(ref writer, ref current);
+                    case ClassType.Enumerable:
+                        finishedSerializing = WriteEnumerable(ref writer, ref current, ref previous, ref arrayIndex);
+                        break;
+                    case ClassType.Object:
+                        finishedSerializing = WriteObject(ref writer, settings, ref current, ref previous, ref arrayIndex);
+                        break;
+                    default:
+                        finishedSerializing = WriteValue(ref writer, ref current);
+                        break;
                 }
 
                 if (flushThreshold >= 0 && writer.BytesWritten > flushThreshold)
                 {
                     return false;
                 }
-                else if (checkForFinished && writer.CurrentDepth == 0)
+
+                if (finishedSerializing && writer.CurrentDepth == 0)
                 {
                     continueWriting = false;
                 }

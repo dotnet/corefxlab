@@ -8,16 +8,6 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonConverter
     {
-        public static string ToJsonString(object value, JsonConverterSettings settings = null)
-        {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            Span<byte> jsonBytes = ToJsonInternal(value, settings);
-            string stringJson = JsonReaderHelper.TranscodeHelper(jsonBytes);
-            return stringJson;
-        }
-
         public static Span<byte> ToJson(object value, JsonConverterSettings settings = null)
         {
             if (value == null)
@@ -49,7 +39,7 @@ namespace System.Text.Json.Serialization
 
             byte[] result;
 
-            using (var output = new ArrayBufferWriter<byte>(settings.DefaultBufferSize))
+            using (var output = new ArrayBufferWriter<byte>(settings.EffectiveBufferSize))
             {
                 var writer = new Utf8JsonWriter(output, state);
 

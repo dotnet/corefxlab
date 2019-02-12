@@ -54,9 +54,10 @@ namespace System.Text.Json.Serialization
             int bytesRemaining = 0;
             int bytesRead;
 
-            // todo: switch to IBufferWriter implementation.
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(settings.DefaultBufferSize);
+            // todo: switch to IBufferWriter implementation to handle the allocs?
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(settings.EffectiveBufferSize);
             int bufferSize = buffer.Length;
+            bool isFinalBlock;
             try
             {
                 do
@@ -65,8 +66,9 @@ namespace System.Text.Json.Serialization
                     bytesRead = await stream.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
 
                     int deserializeBufferSize = bytesRemaining + bytesRead;
-                    bool isFinalBlock = (bytesRead == 0);
-                    bool finished = FromJson(
+                    isFinalBlock = (bytesRead == 0);
+
+                    FromJson(
                         ref readerState,
                         returnType,
                         isFinalBlock,
@@ -77,13 +79,12 @@ namespace System.Text.Json.Serialization
                         ref previous,
                         ref arrayIndex);
 
-                    if (finished)
+                    if (isFinalBlock)
                     {
                         return (T)current.ReturnValue;
                     }
 
                     // We have to shift or expand the buffer because there wasn't enough data to complete deserialization.
-                    Debug.Assert(isFinalBlock == false);
                     int bytesConsumed = (int)readerState.BytesConsumed;
                     bytesRemaining = deserializeBufferSize - bytesConsumed;
 
@@ -107,7 +108,7 @@ namespace System.Text.Json.Serialization
                         // Shift the processed bytes to the beginning of buffer to make more room.
                         Buffer.BlockCopy(buffer, bytesConsumed, buffer, 0, bytesRemaining);
                     }
-                } while (bytesRead > 0);
+                } while (!isFinalBlock);
             }
             finally
             {
@@ -115,31 +116,6 @@ namespace System.Text.Json.Serialization
             }
 
             throw new InvalidOperationException("todo");
-        }
-
-        private static bool FromJson(
-            ref JsonReaderState readerState,
-            Type returnType,
-            bool isFinalBlock,
-            byte[] buffer,
-            int bytesToRead,
-            JsonConverterSettings settings,
-            ref FromJsonObjectState current,
-            ref List<FromJsonObjectState> previous,
-            ref int arrayIndex)
-        {
-            Utf8JsonReader reader = new Utf8JsonReader(buffer.AsSpan(0, bytesToRead), isFinalBlock, readerState);
-
-            bool finished = FromJson(
-                ref reader,
-                settings,
-                returnType,
-                ref current,
-                ref previous,
-                ref arrayIndex);
-
-            readerState = reader.CurrentState;
-            return finished;
         }
     }
 }

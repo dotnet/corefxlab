@@ -7,9 +7,9 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class ToJsonTests
+    public partial class ObjectTests
     {
-        public static IEnumerable<object[]> SuccessCases
+        public static IEnumerable<object[]> ToJsonSuccessCases
         {
             get
             {
@@ -24,8 +24,8 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Theory]
-        [MemberData(nameof(SuccessCases))]
-        public static void FromJson(string className, ITestClass testObj)
+        [MemberData(nameof(ToJsonSuccessCases))]
+        public static void ToJson(string className, ITestClass testObj)
         {
             string json;
 
@@ -42,7 +42,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void CyclicFail()
+        public static void ToJsonCyclicFail()
         {
             TestClassWithCycle obj = new TestClassWithCycle();
             obj.Initialize();

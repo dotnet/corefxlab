@@ -7,9 +7,9 @@ using Xunit;
 
 namespace System.Text.Json.Serialization.Tests
 {
-    public partial class FromJsonTests
+    public partial class ObjectTests
     {
-        public static IEnumerable<object[]> SuccessCases
+        public static IEnumerable<object[]> FromJsonSuccessCases
         {
             get
             {
@@ -25,7 +25,7 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Theory]
-        [MemberData(nameof(SuccessCases))]
+        [MemberData(nameof(FromJsonSuccessCases))]
         public static void FromJson(string className, Type classType, byte[] data)
         {
             object obj = JsonConverter.FromJson(data, classType);
@@ -34,14 +34,14 @@ namespace System.Text.Json.Serialization.Tests
         }
 
         [Fact]
-        public static void GenericApi()
+        public static void FromJsonGenericApi()
         {
             SimpleTestClass obj = JsonConverter.FromJson<SimpleTestClass>(SimpleTestClass.s_data);
             obj.Verify();
         }
 
         [Fact]
-        public static void StringApi()
+        public static void FromJsonStringApi()
         {
             SimpleTestClass obj = JsonConverter.FromJson<SimpleTestClass>(SimpleTestClass.s_json);
             obj.Verify();
