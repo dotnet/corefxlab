@@ -11,14 +11,14 @@ namespace System.Text.Json.Serialization
     {
         public JsonCamelCasingConverterAttribute() { }
 
-        public override string FromJson(string value)
+        public override string Read(string value)
         {
-            return CamelCasingPolicy.FromJson(value);
+            return CamelCasingPolicy.Read(value);
         }
 
-        public override string ToJson(string value)
+        public override string Write(string value)
         {
-            return CamelCasingPolicy.ToJson(value);
+            return CamelCasingPolicy.Write(value);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace System.Text.Json.Serialization.Tests
         One = 1,
         Two = 2
     }
+
     public class SimpleTestClass : ITestClass
     {
         public short MyInt16 { get; set; }
@@ -376,9 +377,11 @@ namespace System.Text.Json.Serialization.Tests
 
         public void Initialize()
         {
-            MyData = new List<string>();
-            MyData.Add("Hello");
-            MyData.Add("World");
+            MyData = new List<string>
+            {
+                "Hello",
+                "World"
+            };
             Assert.Equal(2, MyData.Count);
         }
 
@@ -399,13 +402,13 @@ namespace System.Text.Json.Serialization.Tests
         [JsonPropertyName(Name = "blah")]
         public Int16 MyInt16 { get; set; }
 
-        public static readonly byte[] DataMatchingAttribute = Encoding.UTF8.GetBytes(
+        public static readonly byte[] s_dataMatchingAttribute = Encoding.UTF8.GetBytes(
             @"{" +
             @"""blah"" : 1" +
             @"}"
         );
 
-        public static readonly byte[] DataNotMatchingAttribute = Encoding.UTF8.GetBytes(
+        public static readonly byte[] s_dataNotMatchingAttribute = Encoding.UTF8.GetBytes(
             @"{" +
             @"""blah2"" : 1" +
             @"}"
@@ -416,7 +419,7 @@ namespace System.Text.Json.Serialization.Tests
     {
         public Int16 MyInt16 { get; set; }
 
-        public static readonly byte[] Data = Encoding.UTF8.GetBytes(
+        public static readonly byte[] s_data = Encoding.UTF8.GetBytes(
             @"{" +
             @"""blah"" : 1" +
             @"}"
@@ -437,10 +440,11 @@ namespace System.Text.Json.Serialization.Tests
 
             for (int i = 0; i < ChildrenCount; i++)
             {
-                var child = new LargeDataChildTestClass();
-                child.MyString = new string('2', LargeDataChildTestClass.MyStringLength);
-
-                child.MyStringArray = new string[LargeDataChildTestClass.MyStringArrayArrayCount];
+                var child = new LargeDataChildTestClass
+                {
+                    MyString = new string('2', LargeDataChildTestClass.MyStringLength),
+                    MyStringArray = new string[LargeDataChildTestClass.MyStringArrayArrayCount]
+                };
                 for (int j = 0; j < child.MyStringArray.Length; j++)
                 {
                     child.MyStringArray[j] = new string('3', LargeDataChildTestClass.MyStringArrayElementStringLength);

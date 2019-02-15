@@ -6,23 +6,23 @@ using System.Reflection;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoUInt32 : JsonPropertyInfo<uint>, IJsonConverterInternal<uint>
+    internal class JsonPropertyInfoUInt32 : JsonPropertyInfo<uint>, IJsonSerializerInternal<uint>
     {
-        public JsonPropertyInfoUInt32(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonConverterSettings settings) :
-            base(classType, propertyType, propertyInfo, settings)
+        public JsonPropertyInfoUInt32(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
+            base(classType, propertyType, propertyInfo, options)
         { }
 
-        public uint FromJson(ref Utf8JsonReader reader)
+        public uint Read(ref Utf8JsonReader reader)
         {
             return reader.GetUInt32();
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, uint value)
+        public void Write(ref Utf8JsonWriter writer, uint value)
         {
             writer.WriteNumberValue(value);
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, uint value)
+        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, uint value)
         {
             writer.WriteNumber(name, value);
         }

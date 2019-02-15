@@ -12,9 +12,8 @@ namespace System.Text.Json.Serialization.Policies
         public static IEnumerable CreateFromList(Type elementType, IList sourceList)
         {
             Array array;
-            Array probe;
 
-            if (sourceList.Count > 0 && (probe = sourceList[0] as Array) != null)
+            if (sourceList.Count > 0 && sourceList[0] is Array probe)
             {
                 array = Array.CreateInstance(probe.GetType(), sourceList.Count);
 

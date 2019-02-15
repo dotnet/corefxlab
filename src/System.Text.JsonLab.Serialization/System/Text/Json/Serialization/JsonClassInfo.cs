@@ -20,8 +20,8 @@ namespace System.Text.Json.Serialization
         public delegate object ConstructorDelegate();
         public ConstructorDelegate CreateObject { get; private set; }
 
-        private List<PropertyRef> _property_refs = new List<PropertyRef>();
-        private List<PropertyRef> _property_refs_sorted = new List<PropertyRef>();
+        private readonly List<PropertyRef> _property_refs = new List<PropertyRef>();
+        private readonly List<PropertyRef> _property_refs_sorted = new List<PropertyRef>();
 
         public Type Type { get; private set; }
         public ClassType ClassType { get; private set; }
@@ -31,42 +31,42 @@ namespace System.Text.Json.Serialization
         // If enumerable, the info for the element type.
         public JsonClassInfo ElementClassInfo { get; set; }
 
-        internal JsonClassInfo(Type type, JsonConverterSettings settings)
+        internal JsonClassInfo(Type type, JsonSerializerOptions options)
         {
             Type = type;
             ClassType = GetClassType(type);
 
-            CreateObject = settings.ClassMaterializerStrategy.CreateConstructor(type);
+            CreateObject = options.ClassMaterializerStrategy.CreateConstructor(type);
 
             // Ignore properties on enumerable.
             if (ClassType == ClassType.Object)
             {
                 foreach (PropertyInfo propertyInfo in type.GetProperties())
                 {
-                    AddProperty(propertyInfo.PropertyType, propertyInfo, type, settings);
+                    AddProperty(propertyInfo.PropertyType, propertyInfo, type, options);
                 }
             }
             else if (ClassType == ClassType.Enumerable)
             {
                 // Add a single property that maps to the class type so we can have policies applied.
-                AddProperty(type, propertyInfo : null, type, settings);
+                AddProperty(type, propertyInfo : null, type, options);
 
                 // Create a ClassInfo that maps to the element type which is used for (de)serialization and policies.
                 Type elementType = GetElementType(type);
-                ElementClassInfo = settings.GetOrAddClass(elementType);
+                ElementClassInfo = options.GetOrAddClass(elementType);
 
-                GetPolicies(settings);
+                GetPolicies(options);
             }
             else
             {
                 Debug.Assert(ClassType == ClassType.Value);
 
                 // Add a single property that maps to the class type so we can have policies applied.
-                AddProperty(type, null, type, settings);
+                AddProperty(type, null, type, options);
             }
         }
 
-        public JsonPropertyInfo GetProperty(Type classType, ReadOnlySpan<byte> propertyName, int propertyIndex)
+        public JsonPropertyInfo GetProperty(ReadOnlySpan<byte> propertyName, int propertyIndex)
         {
             ulong key = GetKey(propertyName);
             JsonPropertyInfo info = null;
@@ -225,6 +225,8 @@ namespace System.Text.Json.Serialization
 
         internal static ClassType GetClassType(Type type)
         {
+            Debug.Assert(type != null);
+
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 type = Nullable.GetUnderlyingType(type);
@@ -240,11 +242,11 @@ namespace System.Text.Json.Serialization
             return ClassType.Object;
         }
 
-        public void GetPolicies(JsonConverterSettings settings)
+        public void GetPolicies(JsonSerializerOptions options)
         {
             if (ClassType == ClassType.Enumerable)
             {
-                EnumerableConverter = DefaultConverters.GetEnumerableConverter(Type, propertyInfo: null, settings, Type);
+                EnumerableConverter = DefaultConverters.GetEnumerableConverter(Type, propertyInfo: null, Type, options);
             }
         }
     }

@@ -6,23 +6,23 @@ using System.Reflection;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoDoubleNullable : JsonPropertyInfo<double?>, IJsonConverterInternal<double?>
+    internal class JsonPropertyInfoDoubleNullable : JsonPropertyInfo<double?>, IJsonSerializerInternal<double?>
     {
-        public JsonPropertyInfoDoubleNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonConverterSettings settings) :
-            base(classType, propertyType, propertyInfo, settings)
+        public JsonPropertyInfoDoubleNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
+            base(classType, propertyType, propertyInfo, options)
         { }
 
-        public double? FromJson(ref Utf8JsonReader reader)
+        public double? Read(ref Utf8JsonReader reader)
         {
             return reader.GetDouble();
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, double? value)
+        public void Write(ref Utf8JsonWriter writer, double? value)
         {
             writer.WriteNumberValue(value.Value);
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, double? value)
+        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, double? value)
         {
             writer.WriteNumber(name, value.Value);
         }

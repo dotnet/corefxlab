@@ -6,7 +6,7 @@ namespace System.Text.Json.Serialization.Policies
 {
     internal static class CamelCasingPolicy
     {
-        public static string FromJson(string value)
+        public static string Read(string value)
         {
             if (value.Length == 0)
                 return value;
@@ -29,7 +29,7 @@ namespace System.Text.Json.Serialization.Policies
 #endif
         }
 
-        public static string ToJson(string value)
+        public static string Write(string value)
         {
             if (value.Length == 0)
                 return value;

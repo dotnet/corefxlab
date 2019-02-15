@@ -7,7 +7,7 @@ namespace System.Text.Json.Serialization.Policies
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public abstract class PropertyNamePolicyAttribute : Attribute
     {
-        public abstract string FromJson(string value);
-        public abstract string ToJson(string value);
+        public abstract string Read(string value);
+        public abstract string Write(string value);
     }
 }

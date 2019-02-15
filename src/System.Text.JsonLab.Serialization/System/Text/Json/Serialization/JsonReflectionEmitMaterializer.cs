@@ -1,9 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
-
 #if BUILDING_INBOX_LIBRARY
+
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -25,11 +24,11 @@ namespace System.Text.Json.Serialization
                 skipVisibility: true);
 
             if (dynamicMethod == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             ILGenerator generator = dynamicMethod?.GetILGenerator();
             if (generator == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             generator.Emit(OpCodes.Newobj, realMethod);
             generator.Emit(OpCodes.Ret);
@@ -52,11 +51,11 @@ namespace System.Text.Json.Serialization
                 skipVisibility: true);
 
             if (dynamicMethod == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             ILGenerator generator = dynamicMethod?.GetILGenerator();
             if (generator == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             generator.Emit(OpCodes.Ldarg_0);
             generator.EmitCall(OpCodes.Callvirt, realMethod, null);
@@ -80,11 +79,11 @@ namespace System.Text.Json.Serialization
                 skipVisibility: true);
 
             if (dynamicMethod == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             ILGenerator generator = dynamicMethod?.GetILGenerator();
             if (generator == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("todo - unable to create DynamicMethod");
 
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldarg_1);
