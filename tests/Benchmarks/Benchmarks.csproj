@@ -44,6 +44,7 @@
     <PackageReference Include="codetitans-json" Version="1.8.3" />
     <PackageReference Include="Manatee.Json" Version="9.9.2" />
     <PackageReference Include="SpanJson" Version="1.0.7" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
@@ -51,6 +52,7 @@
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.CaseFolding\System.Text.CaseFolding.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
