@@ -4,6 +4,81 @@
         <name>System.Text.Json</name>
     </assembly>
     <members>
+        <member name="T:System.Text.Json.JsonCommentHandling">
+            <summary>
+            This enum defines the various ways the <see cref="T:System.Text.Json.Utf8JsonReader"/> can deal with comments.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Disallow">
+            <summary>
+            By default, do no allow comments within the JSON input.
+            Comments are treated as invalid JSON if found and a
+            <see cref="T:System.Text.Json.JsonReaderException"/> is thrown.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Allow">
+            <summary>
+            Allow comments within the JSON input and treat them as a valid token.
+            While reading, the caller will be able to access the comment values.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Skip">
+            <summary>
+            Allow comments within the JSON input and ignore them.
+            The <see cref="T:System.Text.Json.Utf8JsonReader"/> will behave as if no comments were present.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonHelpers.IsValidUnicodeScalar(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar
+            value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonHelpers.IsInRangeInclusive(System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is between
+            <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonHelpers.IsInRangeInclusive(System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is between
+            <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonHelpers.IsInRangeInclusive(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is between
+            <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonTokenType">
+            <summary>
+            This enum defines the various JSON tokens that make up a JSON text and is used by
+            the <see cref="T:System.Text.Json.Utf8JsonReader"/> when moving from one token to the next.
+            The <see cref="T:System.Text.Json.Utf8JsonReader"/> starts at 'None' by default. The 'Comment' enum value
+            is only ever reached in a specific <see cref="T:System.Text.Json.Utf8JsonReader"/> mode and is not
+            reachable by default.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonDocument.DbRow.Location">
+            <summary>
+            Index into the payload
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonDocument.DbRow.SizeOrLength">
+            <summary>
+            length of text in JSON payload (or number of elements if its a JSON array)
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonDocument.DbRow.HasComplexChildren">
+            <summary>
+            Number: Use scientific format.
+            String/PropertyName: Unescaping is required.
+            Array: At least one element is an object/array.
+            Otherwise; false
+            </summary>
+        </member>
         <member name="T:System.Text.Json.ConsumeNumberResult">
             <summary>
             This enum captures the tri-state return value when trying to read a
@@ -48,30 +123,6 @@
             <summary>
             Observed incomplete data but no change was made to the state.
             Return false, but do not roll-back anything since nothing changed.
-            </summary>
-        </member>
-        <member name="T:System.Text.Json.JsonCommentHandling">
-            <summary>
-            This enum defines the various ways the <see cref="T:System.Text.Json.Utf8JsonReader"/> can deal with comments.
-            </summary>
-        </member>
-        <member name="F:System.Text.Json.JsonCommentHandling.Disallow">
-            <summary>
-            By default, do no allow comments within the JSON input.
-            Comments are treated as invalid JSON if found and a
-            <see cref="T:System.Text.Json.JsonReaderException"/> is thrown.
-            </summary>
-        </member>
-        <member name="F:System.Text.Json.JsonCommentHandling.Allow">
-            <summary>
-            Allow comments within the JSON input and treat them as a valid token.
-            While reading, the caller will be able to access the comment values.
-            </summary>
-        </member>
-        <member name="F:System.Text.Json.JsonCommentHandling.Skip">
-            <summary>
-            Allow comments within the JSON input and ignore them.
-            The <see cref="T:System.Text.Json.Utf8JsonReader"/> will behave as if no comments were present.
             </summary>
         </member>
         <member name="T:System.Text.Json.JsonReaderException">
@@ -175,15 +226,6 @@
             <summary>
             Gets or sets the maximum depth allowed when reading JSON.
             Reading past this depth will throw a <exception cref="T:System.Text.Json.JsonReaderException"/>.
-            </summary>
-        </member>
-        <member name="T:System.Text.Json.JsonTokenType">
-            <summary>
-            This enum defines the various JSON tokens that make up a JSON text and is used by
-            the <see cref="T:System.Text.Json.Utf8JsonReader"/> when moving from one token to the next.
-            The <see cref="T:System.Text.Json.Utf8JsonReader"/> starts at 'None' by default. The 'Comment' enum value
-            is only ever reached in a specific <see cref="T:System.Text.Json.Utf8JsonReader"/> mode and is not
-            reachable by default.
             </summary>
         </member>
         <member name="T:System.Text.Json.Utf8JsonReader">
@@ -330,42 +372,156 @@
             For an object, it reads the next property name token. For an array, it just reads the next value.
             </summary>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.GetStringValue">
+        <member name="M:System.Text.Json.Utf8JsonReader.GetString">
             <summary>
-            Reads the next JSON token value from the source transcoded as a <see cref="T:System.String"/>.
+            Reads the next JSON token value from the source, unescaped, and transcoded as a <see cref="T:System.String"/>.
             </summary>
             <exception cref="T:System.InvalidOperationException">
             Thrown if trying to get the value of the JSON token that is not a string
             (i.e. other than <see cref="F:System.Text.Json.JsonTokenType.String"/> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName"/>).
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
-            </exception>
-            <exception cref="T:System.ArgumentException">
-            Thrown if invalid UTF-8 byte sequences are detected while transcoding.
+            I will also throw when the JSON string contains invalid UTF-8 bytes, or invalid UTF-16 surrogates.
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.GetBooleanValue">
+        <member name="M:System.Text.Json.Utf8JsonReader.GetBoolean">
             <summary>
             Reads the next JSON token value from the source as a <see cref="T:System.Boolean"/>.
             Returns true if the TokenType is JsonTokenType.True and false if the TokenType is JsonTokenType.False.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a boolean (i.e. <see cref="F:System.Text.Json.JsonTokenType.True"/> or <see cref="F:System.Text.Json.JsonTokenType.False"/>).
+            Thrown if trying to get the value of a JSON token that is not a boolean (i.e. <see cref="F:System.Text.Json.JsonTokenType.True"/> or <see cref="F:System.Text.Json.JsonTokenType.False"/>).
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt32Value(System.Int32@)">
+        <member name="M:System.Text.Json.Utf8JsonReader.GetInt32">
             <summary>
-            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Int32"/>.
+            Reads the next JSON token value from the source and parses it to an <see cref="T:System.Int32"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to an <see cref="T:System.Int32"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value is either of incorrect numeric format (for example if it contains a decimal or 
+            is written in scientific notation) or, it represents a number less than <see cref="F:System.Int32.MinValue"/> or greater 
+            than <see cref="F:System.Int32.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetInt64">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Int64"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.Int64"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value is either of incorrect numeric format (for example if it contains a decimal or 
+            is written in scientific notation) or, it represents a number less than <see cref="F:System.Int64.MinValue"/> or greater 
+            than <see cref="F:System.Int64.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetUInt32">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.UInt32"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.UInt32"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value is either of incorrect numeric format (for example if it contains a decimal or 
+            is written in scientific notation) or, it represents a number less than <see cref="F:System.UInt32.MinValue"/> or greater 
+            than <see cref="F:System.UInt32.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetUInt64">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.UInt64"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.UInt64"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value is either of incorrect numeric format (for example if it contains a decimal or 
+            is written in scientific notation) or, it represents a number less than <see cref="F:System.UInt64.MinValue"/> or greater 
+            than <see cref="F:System.UInt64.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetSingle">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Single"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.Single"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value represents a number less than <see cref="F:System.Single.MinValue"/> or greater 
+            than <see cref="F:System.Single.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetDouble">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Double"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.Double"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value represents a number less than <see cref="F:System.Double.MinValue"/> or greater 
+            than <see cref="F:System.Double.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetDecimal">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Decimal"/>.
+            Returns the value if the entire UTF-8 encoded token value can be successfully parsed to a <see cref="T:System.Decimal"/>
+            value.
+            Throws exceptions otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.FormatException">
+            Thrown if the JSON token value represents a number less than <see cref="F:System.Decimal.MinValue"/> or greater 
+            than <see cref="F:System.Decimal.MaxValue"/>.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt32(System.Int32@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to an <see cref="T:System.Int32"/>.
             Returns true if the entire UTF-8 encoded token value can be successfully 
-            parsed to a <see cref="T:System.Int32"/> value.
+            parsed to an <see cref="T:System.Int32"/> value.
             Returns false otherwise.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt64Value(System.Int64@)">
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt64(System.Int64@)">
             <summary>
             Reads the next JSON token value from the source and parses it to a <see cref="T:System.Int64"/>.
             Returns true if the entire UTF-8 encoded token value can be successfully 
@@ -373,11 +529,35 @@
             Returns false otherwise.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.TryGetSingleValue(System.Single@)">
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetUInt32(System.UInt32@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.UInt32"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.UInt32"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetUInt64(System.UInt64@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.UInt64"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.UInt64"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetSingle(System.Single@)">
             <summary>
             Reads the next JSON token value from the source and parses it to a <see cref="T:System.Single"/>.
             Returns true if the entire UTF-8 encoded token value can be successfully 
@@ -385,11 +565,11 @@
             Returns false otherwise.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDoubleValue(System.Double@)">
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDouble(System.Double@)">
             <summary>
             Reads the next JSON token value from the source and parses it to a <see cref="T:System.Double"/>.
             Returns true if the entire UTF-8 encoded token value can be successfully 
@@ -397,11 +577,11 @@
             Returns false otherwise.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
-        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDecimalValue(System.Decimal@)">
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDecimal(System.Decimal@)">
             <summary>
             Reads the next JSON token value from the source and parses it to a <see cref="T:System.Decimal"/>.
             Returns true if the entire UTF-8 encoded token value can be successfully 
@@ -409,12 +589,1332 @@
             Returns false otherwise.
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            Thrown if trying to get the value of a JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
             <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
             </exception>
         </member>
+        <member name="M:System.Text.Json.JsonWriterHelper.IsUtf8ContinuationByte(System.Byte)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-8 continuation byte.
+            A UTF-8 continuation byte is a byte whose value is in the range 0x80-0xBF, inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonWriterHelper.IsLowWordSurrogate(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff the low word of <paramref name="char"/> is a UTF-16 surrogate.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonWriterHelper.ReplacementChar">
+            <summary>
+            A scalar that represents the Unicode replacement character U+FFFD.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonWriterHelper.ToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+             <summary>
+             Converts a span containing a sequence of UTF-16 bytes into UTF-8 bytes.
+            
+             This method will consume as many of the input bytes as possible.
+            
+             On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+             equal to the length of the <paramref name="utf16Source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+             the <paramref name="utf8Destination"/>.
+             </summary>
+             <param name="utf16Source">A span containing a sequence of UTF-16 bytes.</param>
+             <param name="utf8Destination">A span to write the UTF-8 bytes into.</param>
+             <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="utf16Source"/>.</param>
+             <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="utf8Destination"/></param>
+             <returns>A <see cref="T:System.Buffers.OperationStatus"/> value representing the state of the conversion.</returns>
+        </member>
+        <member name="T:System.Text.Json.JsonWriterOptions">
+            <summary>
+            Provides the ability for the user to define custom behavior when writing JSON
+            using the <see cref="T:System.Text.Json.Utf8JsonWriter"/>. By default, the JSON is written without
+            any indentation or extra white space. Also, the <see cref="T:System.Text.Json.Utf8JsonWriter"/> will
+            throw an exception if the user attempts to write structurally invalid JSON.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonWriterOptions.Indented">
+            <summary>
+            Defines whether the <see cref="T:System.Text.Json.Utf8JsonWriter"/> should pretty print the JSON which includes:
+            indenting nested JSON tokens, adding new lines, and adding white space between property names and values.
+            By default, the JSON is written without any extra white space.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonWriterOptions.SkipValidation">
+            <summary>
+            Defines whether the <see cref="T:System.Text.Json.Utf8JsonWriter"/> should skip structural validation and allow
+            the user to write invalid JSON, when set to true. If set to false, any attempts to write invalid JSON will result in
+            a <exception cref="T:System.InvalidOperationException"/> to be thrown.
+            </summary>
+            <remarks>
+            If the JSON being written is known to be correct,
+            then skipping validation (by setting it to true) could improve performance.
+            An example of invalid JSON where the writer will throw (when SkipValidation
+            is set to false) is when you write a value within a JSON object
+            without a property name. 
+            </remarks>
+        </member>
+        <member name="T:System.Text.Json.JsonWriterState">
+            <summary>
+            Defines an opaque type that holds and saves all the relevant state information which must be provided
+            to the <see cref="T:System.Text.Json.Utf8JsonWriter"/> to continue writing after completing a partial write.
+            </summary>
+            <remarks>
+            This type is required to support reentrancy when writing incomplete data, and to continue
+            writing in chunks. Unlike the <see cref="T:System.Text.Json.Utf8JsonWriter"/>, which is a ref struct,
+            this type can survive across async/await boundaries and hence this type is required to provide
+            support for writing more JSON text asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.JsonWriterState.BytesWritten">
+            <summary>
+            Returns the total amount of bytes written by the <see cref="T:System.Text.Json.Utf8JsonWriter"/> so far.
+            This includes data that has been written beyond what has already been committed.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonWriterState.BytesCommitted">
+            <summary>
+            Returns the total amount of bytes committed to the output by the <see cref="T:System.Text.Json.Utf8JsonWriter"/> so far.
+            This is how much the IBufferWriter has advanced.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonWriterState.#ctor(System.Text.Json.JsonWriterOptions)">
+            <summary>
+            Constructs a new <see cref="T:System.Text.Json.JsonWriterState"/> instance.
+            </summary>
+            <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>
+            By default, the <see cref="T:System.Text.Json.Utf8JsonWriter"/> writes JSON minimized (i.e. with no extra whitespace)
+            and validates that the JSON being written is structurally valid according to JSON RFC.</param>
+            <remarks>
+            An instance of this state must be passed to the <see cref="T:System.Text.Json.Utf8JsonWriter"/> ctor with the output destination.
+            Unlike the <see cref="T:System.Text.Json.Utf8JsonWriter"/>, which is a ref struct, the state can survive
+            across async/await boundaries and hence this type is required to provide support for reading
+            in more data asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.JsonWriterState.Options">
+            <summary>
+            Gets the custom behavior when writing JSON using
+            the <see cref="T:System.Text.Json.Utf8JsonWriter"/> which indicates whether to format the output
+            while writing and whether to skip structural JSON validation or not.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.Utf8JsonWriter">
+            <summary>
+            Provides a high-performance API for forward-only, non-cached writing of UTF-8 encoded JSON text.
+            It writes the text sequentially with no caching and adheres to the JSON RFC
+            by default (https://tools.ietf.org/html/rfc8259), with the exception of writing comments.
+            </summary>
+            <remarks>
+            When the user attempts to write invalid JSON and validation is enabled, it throws
+            a <see cref="T:System.InvalidOperationException"/> with a context specific error message.
+            Since this type is a ref struct, it does not directly support async. However, it does provide
+            support for reentrancy to write partial data, and continue writing in chunks.
+            To be able to format the output with indentation and whitespace OR to skip validation, create an instance of 
+            <see cref="T:System.Text.Json.JsonWriterState"/> and pass that in to the writer.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonWriter.BytesWritten">
+            <summary>
+            Returns the total amount of bytes written by the <see cref="T:System.Text.Json.Utf8JsonWriter"/> so far
+            for the current instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>.
+            This includes data that has been written beyond what has already been committed.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonWriter.BytesCommitted">
+            <summary>
+            Returns the total amount of bytes committed to the output by the <see cref="T:System.Text.Json.Utf8JsonWriter"/> so far
+            for the current instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>.
+            This is how much the IBufferWriter has advanced.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonWriter.CurrentDepth">
+            <summary>
+            Tracks the recursive depth of the nested objects / arrays within the JSON text
+            written so far. This provides the depth of the current token.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.GetCurrentState">
+            <summary>
+            Returns the current snapshot of the <see cref="T:System.Text.Json.Utf8JsonWriter"/> state which must
+            be captured by the caller and passed back in to the <see cref="T:System.Text.Json.Utf8JsonWriter"/> ctor with more data.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when there is JSON data that has been written and buffered but not yet flushed to the <see cref="T:System.Buffers.IBufferWriter`1" />.	
+            Getting the state for creating a new <see cref="T:System.Text.Json.Utf8JsonWriter"/> without first committing the data that has been written	
+            would result in an inconsistent state. Call Flush before getting the current state.	
+            </exception>
+            <remarks>
+            Unlike the <see cref="T:System.Text.Json.Utf8JsonWriter"/>, which is a ref struct, the state can survive
+            across async/await boundaries and hence this type is required to provide support for reading
+            in more data asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},System.Text.Json.JsonWriterState)">
+            <summary>
+            Constructs a new <see cref="T:System.Text.Json.Utf8JsonWriter"/> instance with a specified <paramref name="bufferWriter"/>.
+            </summary>
+            <param name="bufferWriter">An instance of <see cref="T:System.Buffers.IBufferWriter`1" /> used as a destination for writing JSON text into.</param>
+            <param name="state">If this is the first call to the ctor, pass in a default state. Otherwise,
+            capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonWriter"/> and pass that back.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when the instance of <see cref="T:System.Buffers.IBufferWriter`1" /> that is passed in is null.
+            </exception>
+            <remarks>
+            Since this type is a ref struct, it is a stack-only type and all the limitations of ref structs apply to it.
+            This is the reason why the ctor accepts a <see cref="T:System.Text.Json.JsonWriterState"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.Flush(System.Boolean)">
+            <summary>
+            Advances the underlying <see cref="T:System.Buffers.IBufferWriter`1" /> based on what has been written so far.
+            </summary>
+            <param name="isFinalBlock">Let's the writer know whether more data will be written. This is used to validate
+            that the JSON written so far is structurally valid if no more data is to follow.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when incomplete JSON has been written and <paramref name="isFinalBlock"/> is true.
+            (for example when an open object or array needs to be closed).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray">
+            <summary>
+            Writes the beginning of a JSON array.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject">
+            <summary>
+            Writes the beginning of a JSON object.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON array with a property name as the key.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON array to be written.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON object with a property name as the key.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.String,System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON array with a property name as the key.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.String,System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON object with a property name as the key.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON array with a property name as the key.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the beginning of a JSON object with a property name as the key.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the depth of the JSON has exceeded the maximum depth of 1000 
+            OR if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteEndArray">
+            <summary>
+            Writes the end of a JSON array.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteEndObject">
+            <summary>
+            Writes the end of a JSON object.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.DateTime,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTime"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTime"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.DateTime,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTime"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTime"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.DateTime,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTime"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTime"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.DateTimeOffset,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTimeOffset"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTimeOffset"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000-07:00.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.DateTimeOffset,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTimeOffset"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTimeOffset"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000-07:00.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.DateTimeOffset,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.DateTimeOffset"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTimeOffset"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000-07:00.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.Decimal,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Decimal"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Decimal"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.Decimal,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Decimal"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Decimal"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.Decimal,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Decimal"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Decimal"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.Double,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Double"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Double"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.Double,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Double"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Double"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.Double,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Double"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Double"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.Single,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Single"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Single"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.Single,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Single"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Single"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.Single,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Single"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Single"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.Guid,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Guid"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Guid"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'D'), as the form: nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.Guid,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Guid"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Guid"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'D'), as the form: nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.Guid,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Guid"/> value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Guid"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'D'), as the form: nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNull(System.String,System.Boolean)">
+            <summary>
+            Writes the property name and the JSON literal "null" as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNull(System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the property name and the JSON literal "null" as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNull(System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the property name and the JSON literal "null" as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteBoolean(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Boolean"/> value (as a JSON literal "true" or "false") as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON literal "true" or "false" as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteBoolean(System.ReadOnlySpan{System.Char},System.Boolean,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Boolean"/> value (as a JSON literal "true" or "false") as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON literal "true" or "false" as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteBoolean(System.ReadOnlySpan{System.Byte},System.Boolean,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Boolean"/> value (as a JSON literal "true" or "false") as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON literal "true" or "false" as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.Int64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.Int64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.Int64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.Int32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.Int32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.Int32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.String,System.Boolean)">
+            <summary>
+            Writes the property name and string text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the UTF-16 property name and UTF-16 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the UTF-8 property name and UTF-8 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="utf8Value">The UTF-8 encoded value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the property name and UTF-16 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the UTF-8 property name and UTF-16 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.String,System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the property name and UTF-8 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="utf8Value">The UTF-8 encoded value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the UTF-16 property name and UTF-8 text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="utf8Value">The UTF-8 encoded value to be written as a JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Char},System.String,System.Boolean)">
+            <summary>
+            Writes the UTF-16 property name and string text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.String,System.Boolean)">
+            <summary>
+            Writes the UTF-8 property name and string text value (as a JSON string) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.
+            The value is always escaped</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name or value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.UInt64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.UInt64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt64"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.String,System.UInt32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Char},System.UInt32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumber(System.ReadOnlySpan{System.Byte},System.UInt32,System.Boolean)">
+            <summary>
+            Writes the property name and <see cref="T:System.UInt32"/> value (as a JSON number) as part of a name/value pair of a JSON object.
+            </summary>
+            <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
+            <param name="value">The value to be written as a JSON number as part of the name/value pair.</param>
+            <param name="escape">If this is set to false, the writer assumes the property name is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified property name is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.String,System.Boolean)">
+            <summary>
+            Writes the string text value (as a JSON comment).
+            </summary>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /*..*/.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the UTF-16 text value (as a JSON comment).
+            </summary>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /*..*/.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the UTF-8 text value (as a JSON comment).
+            </summary>
+            <param name="utf8Value">The UTF-8 encoded value to be written as a JSON comment within /*..*/.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.DateTime)">
+            <summary>
+            Writes the <see cref="T:System.DateTime"/> value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON string as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTime"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.DateTimeOffset)">
+            <summary>
+            Writes the <see cref="T:System.DateTimeOffset"/> value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON string as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.DateTimeOffset"/> using the round-trippable ('O') <see cref="T:System.Buffers.StandardFormat"/> , for example: 2017-06-12T05:30:45.7680000-07:00.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.Decimal)">
+            <summary>
+            Writes the <see cref="T:System.Decimal"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Decimal"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.Double)">
+            <summary>
+            Writes the <see cref="T:System.Double"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Double"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.Single)">
+            <summary>
+            Writes the <see cref="T:System.Single"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Single"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G').
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.Guid)">
+            <summary>
+            Writes the <see cref="T:System.Guid"/> value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON string as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Guid"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'D'), as the form: nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNullValue">
+            <summary>
+            Writes the JSON literal "null" as an element of a JSON array.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteBooleanValue(System.Boolean)">
+            <summary>
+            Writes the <see cref="T:System.Boolean"/> value (as a JSON literal "true" or "false") as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON literal "true" or "false" as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.Int32)">
+            <summary>
+            Writes the <see cref="T:System.Int32"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.Int64)">
+            <summary>
+            Writes the <see cref="T:System.Int64"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.Int64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.String,System.Boolean)">
+            <summary>
+            Writes the string text value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string element of a JSON array.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.ReadOnlySpan{System.Char},System.Boolean)">
+            <summary>
+            Writes the UTF-16 text value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON string element of a JSON array.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteStringValue(System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes the UTF-8 text value (as a JSON string) as an element of a JSON array.
+            </summary>
+            <param name="utf8Value">The UTF-8 encoded value to be written as a JSON string element of a JSON array.</param>
+            <param name="escape">If this is set to false, the writer assumes the value is properly escaped and skips the escaping step.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the specified value is too large.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.UInt32)">
+            <summary>
+            Writes the <see cref="T:System.UInt32"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt32"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonWriter.WriteNumberValue(System.UInt64)">
+            <summary>
+            Writes the <see cref="T:System.UInt64"/> value (as a JSON number) as an element of a JSON array.
+            </summary>
+            <param name="value">The value to be written as a JSON number as an element of a JSON array.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this would result in an invalid JSON to be written (while validation is enabled).
+            </exception>
+            <remarks>
+            Writes the <see cref="T:System.UInt64"/> using the default <see cref="T:System.Buffers.StandardFormat"/> (i.e. 'G'), for example: 32767.
+            </remarks>
+        </member>
+        <member name="T:System.Buffers.Text.SequenceValidity">
+            <summary>
+            Represents the validity of a UTF code unit sequence.
+            </summary>
+        </member>
+        <member name="F:System.Buffers.Text.SequenceValidity.Empty">
+            <summary>
+            The sequence is empty.
+            </summary>
+        </member>
+        <member name="F:System.Buffers.Text.SequenceValidity.WellFormed">
+            <summary>
+            The sequence is well-formed and unambiguously represents a proper Unicode scalar value.
+            </summary>
+            <remarks>
+            [ 20 ] (U+0020 SPACE) is a well-formed UTF-8 sequence.
+            [ C3 A9 ] (U+00E9 LATIN SMALL LETTER E WITH ACUTE) is a well-formed UTF-8 sequence.
+            [ F0 9F 98 80 ] (U+1F600 GRINNING FACE) is a well-formed UTF-8 sequence.
+            [ D83D DE00 ] (U+1F600 GRINNING FACE) is a well-formed UTF-16 sequence.
+            </remarks>
+        </member>
+        <member name="F:System.Buffers.Text.SequenceValidity.Incomplete">
+            <summary>
+            The sequence is not well-formed on its own, but it could appear as a prefix
+            of a longer well-formed sequence. More code units are needed to make a proper
+            determination as to whether this sequence is well-formed. Incomplete sequences
+            can only appear at the end of a string.
+            </summary>
+            <remarks>
+            [ C2 ] is an incomplete UTF-8 sequence if it is followed by nothing.
+            [ F0 9F ] is an incomplete UTF-8 sequence if it is followed by nothing.
+            [ D83D ] is an incomplete UTF-16 sequence if it is followed by nothing.
+            </remarks>
+        </member>
+        <member name="F:System.Buffers.Text.SequenceValidity.Invalid">
+            <summary>
+            The sequence is never well-formed anywhere, or this sequence can never appear as a prefix
+            of a longer well-formed sequence, or the sequence was improperly terminated by the code
+            unit which appeared immediately after this sequence.
+            </summary>
+            <remarks>
+            [ 80 ] is an invalid UTF-8 sequence (code unit cannot appear at start of sequence).
+            [ FE ] is an invalid UTF-8 sequence (sequence is never well-formed anywhere in UTF-8 string).
+            [ C2 ] is an invalid UTF-8 sequence if it is followed by [ 20 ] (sequence improperly terminated).
+            [ ED A0 ] is an invalid UTF-8 sequence (sequence is never well-formed anywhere in UTF-8 string).
+            [ DE00 ] is an invalid UTF-16 sequence (code unit cannot appear at start of sequence).
+            </remarks>
+        </member>
         <member name="P:System.SR.ArrayDepthTooLarge">
             <summary>CurrentDepth ({0}) is larger than the maximum configured depth of {1}. Cannot read next JSON array.</summary>
+        </member>
+        <member name="P:System.SR.CallFlushToAvoidDataLoss">
+            <summary>The JSON writer needs to be flushed before getting the current state. There are {0} bytes that have not been committed to the output.</summary>
+        </member>
+        <member name="P:System.SR.CannotReadIncompleteUTF16">
+            <summary>Cannot read incomplete UTF-16 JSON text as string with missing low surrogate.</summary>
+        </member>
+        <member name="P:System.SR.CannotReadInvalidUTF16">
+            <summary>Cannot read invalid UTF-16 JSON text as string. Invalid surrogate value: '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotStartObjectArrayAfterPrimitiveOrClose">
+            <summary>Cannot write the start of an object/array after a single JSON value or outside of an existing closed object/array. Current token type is '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotStartObjectArrayWithoutProperty">
+            <summary>Cannot write the start of an object or array without a property name. Current token type is '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotTranscodeInvalidUtf8">
+            <summary>Cannot transcode invalid UTF-8 JSON text to UTF-16 string.</summary>
+        </member>
+        <member name="P:System.SR.CannotWriteInvalidUTF16">
+            <summary>Cannot write invalid UTF-16 text as JSON. Invalid surrogate value: '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotWriteInvalidUTF8">
+            <summary>Cannot write invalid UTF-8 text as JSON. Invalid input: '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotWritePropertyWithinArray">
+            <summary>Cannot write a JSON property within an array or as the first JSON token. Current token type is '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotWriteValueAfterPrimitive">
+            <summary>Cannot write a JSON value after a single JSON value. Current token type is '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.CannotWriteValueWithinObject">
+            <summary>Cannot write a JSON value within an object without a property name. Current token type is '{0}'.</summary>
+        </member>
+        <member name="P:System.SR.DepthTooLarge">
+            <summary>CurrentDepth ({0}) is equal to or larger than the maximum allowed depth of {1}. Cannot write the next JSON object or array.</summary>
+        </member>
+        <member name="P:System.SR.EmptyJsonIsInvalid">
+            <summary>Writing an empty JSON payload (excluding comments) is invalid.</summary>
         </member>
         <member name="P:System.SR.EndOfCommentNotFound">
             <summary>Expected end of comment, but instead reached end of data.</summary>
@@ -430,6 +1930,9 @@
         </member>
         <member name="P:System.SR.ExpectedFalse">
             <summary>'{0}' is an invalid JSON literal. Expected the literal 'false'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedJsonTokens">
+            <summary>The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true.</summary>
         </member>
         <member name="P:System.SR.ExpectedNextDigitEValueNotFound">
             <summary>'{0}' is an invalid end of a number. Expected 'E' or 'e'.</summary>
@@ -455,6 +1958,12 @@
         <member name="P:System.SR.ExpectedValueAfterPropertyNameNotFound">
             <summary>Expected a value, but instead reached end of data.</summary>
         </member>
+        <member name="P:System.SR.FailedToGetLargerSpan">
+            <summary>The 'IBufferWriter' could not provide an output buffer that is large enough to continue writing.</summary>
+        </member>
+        <member name="P:System.SR.FailedToGetMinimumSizeSpan">
+            <summary>The 'IBufferWriter' could not provide an output buffer that is large enough to continue writing. Need at least {0} bytes.</summary>
+        </member>
         <member name="P:System.SR.FoundInvalidCharacter">
             <summary>'{0}' is invalid after a value. Expected either ',', '}}', or ']'.</summary>
         </member>
@@ -473,6 +1982,12 @@
         <member name="P:System.SR.InvalidHexCharacterWithinString">
             <summary>'{0}' is not a hex digit following '\u' within a JSON string. The string should be correctly escaped.</summary>
         </member>
+        <member name="P:System.SR.JsonDocumentDoesNotSupportComments">
+            <summary>Comments cannot be stored in a JsonDocument, only the Skip and Disallow comment handling modes are supported.</summary>
+        </member>
+        <member name="P:System.SR.JsonElementHasWrongType">
+            <summary>The requested operation requires an element of type '{0}', but the target element has type '{1}'.</summary>
+        </member>
         <member name="P:System.SR.MaxDepthMustBePositive">
             <summary>Max depth must be positive.</summary>
         </member>
@@ -482,6 +1997,30 @@
         <member name="P:System.SR.ObjectDepthTooLarge">
             <summary>CurrentDepth ({0}) is larger than the maximum configured depth of {1}. Cannot read next JSON object.</summary>
         </member>
+        <member name="P:System.SR.PropertyNameTooLarge">
+            <summary>The JSON property name of length {0} is too large and not supported by the JSON writer.</summary>
+        </member>
+        <member name="P:System.SR.FormatDecimal">
+            <summary>The JSON value is either too large or too small for a Decimal.</summary>
+        </member>
+        <member name="P:System.SR.FormatDouble">
+            <summary>The JSON value is either too large or too small for a Double.</summary>
+        </member>
+        <member name="P:System.SR.FormatInt32">
+            <summary>The JSON value is either of incorrect numeric format, or too large or too small for an Int32.</summary>
+        </member>
+        <member name="P:System.SR.FormatInt64">
+            <summary>The JSON value is either of incorrect numeric format, or too large or too small for an Int64.</summary>
+        </member>
+        <member name="P:System.SR.FormatSingle">
+            <summary>The JSON value is either too large or too small for a Single.</summary>
+        </member>
+        <member name="P:System.SR.FormatUInt32">
+            <summary>The JSON value is either of incorrect numeric format, or too large or too small for a UInt32.</summary>
+        </member>
+        <member name="P:System.SR.FormatUInt64">
+            <summary>The JSON value is either of incorrect numeric format, or too large or too small for a UInt64.</summary>
+        </member>
         <member name="P:System.SR.RequiredDigitNotFoundAfterDecimal">
             <summary>'{0}' is invalid within a number, immediately after a decimal point ('.'). Expected a digit ('0'-'9').</summary>
         </member>
@@ -490,6 +2029,12 @@
         </member>
         <member name="P:System.SR.RequiredDigitNotFoundEndOfData">
             <summary>Expected a digit ('0'-'9'), but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.SpecialNumberValuesNotSupported">
+            <summary>.NET number values such as positive and negative infinity cannot be written as valid JSON.</summary>
+        </member>
+        <member name="P:System.SR.ValueTooLarge">
+            <summary>The JSON value of length {0} is too large and not supported by the JSON writer.</summary>
         </member>
         <member name="P:System.SR.ZeroDepthAtEnd">
             <summary>Expected CurrentDepth ({0}) to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed.</summary>
