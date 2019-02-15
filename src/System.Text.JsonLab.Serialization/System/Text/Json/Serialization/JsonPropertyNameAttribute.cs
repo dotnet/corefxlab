@@ -18,12 +18,12 @@ namespace System.Text.Json.Serialization
 
         public string Name { get; set; }
 
-        public override string FromJson(string value)
+        public override string Read(string value)
         {
             return value;
         }
 
-        public override string ToJson(string value)
+        public override string Write(string value)
         {
             return Name;
         }

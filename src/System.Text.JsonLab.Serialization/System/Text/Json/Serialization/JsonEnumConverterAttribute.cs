@@ -24,11 +24,10 @@ namespace System.Text.Json.Serialization
             PropertyType = typeof(Enum);
         }
 
-#if BUILDING_INBOX_LIBRARY
-        public override object GetFromJson(ref Utf8JsonReader reader, Type propertyType)
+#if BUILDING_INBOX_LIBRARY 
+        public override object GetRead(ref Utf8JsonReader reader, Type propertyType)
 #else
-        // todo: ns20
-        internal override object GetFromJson(ref Utf8JsonReader reader, Type propertyType)
+        internal override object GetRead(ref Utf8JsonReader reader, Type propertyType)
 #endif
         {
             if (TreatAsString)
@@ -51,11 +50,10 @@ namespace System.Text.Json.Serialization
             return enumObject;
         }
 
-#if BUILDING_INBOX_LIBRARY
-        public override void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
+#if BUILDING_INBOX_LIBRARY 
+        public override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
 #else
-        // todo: ns20
-        internal override void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
+        internal override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
 #endif
         {
             Debug.Assert(value is Enum);

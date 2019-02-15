@@ -21,13 +21,13 @@ namespace System.Text.Json.Serialization.Tests
         public static void CamelCaseAttributeDesignTimeFail()
         {
             // This fails because the provided data is pascal-cased
-            Assert.Throws<InvalidOperationException>(() => JsonConverter.FromJson<SimpleTestClassWithCamelCase>(SimpleTestClass.s_data));
+            Assert.Throws<InvalidOperationException>(() => JsonSerializer.Read<SimpleTestClassWithCamelCase>(SimpleTestClass.s_data));
         }
 
         [Fact]
         public static void CamelCaseAttributeDesignTime()
         {
-            SimpleTestClassWithCamelCase obj = JsonConverter.FromJson<SimpleTestClassWithCamelCase>(SimpleTestClassWithCamelCase.s_data);
+            SimpleTestClassWithCamelCase obj = JsonSerializer.Read<SimpleTestClassWithCamelCase>(SimpleTestClassWithCamelCase.s_data);
             Assert.Equal(obj.MyInt16, 1);
         }
 
@@ -35,29 +35,29 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void CamelCaseAttributeRuntime()
         {
-            var settings = new JsonConverterSettings();
-            settings.AddAttribute(typeof(SimpleTestClass), new JsonCamelCasingConverterAttribute());
+            var options = new JsonSerializerOptions();
+            options.AddAttribute(typeof(SimpleTestClass), new JsonCamelCasingConverterAttribute());
 
-            SimpleTestClass obj = JsonConverter.FromJson<SimpleTestClass>(SimpleTestClassWithCamelCase.s_data, settings);
+            SimpleTestClass obj = JsonSerializer.Read<SimpleTestClass>(SimpleTestClassWithCamelCase.s_data, options);
             Assert.Equal(obj.MyInt16, 1);
         }
 
         [Fact]
         public static void CamelCaseAttributeInheritanceRuntime()
         {
-            var settings = new JsonConverterSettings();
+            var options = new JsonSerializerOptions();
             
             // Add attibute to base class
-            settings.AddAttribute(typeof(SimpleTestClass), new JsonCamelCasingConverterAttribute());
+            options.AddAttribute(typeof(SimpleTestClass), new JsonCamelCasingConverterAttribute());
 
-            SimpleDerivedTestClass obj = JsonConverter.FromJson<SimpleDerivedTestClass>(SimpleTestClassWithCamelCase.s_data, settings);
+            SimpleDerivedTestClass obj = JsonSerializer.Read<SimpleDerivedTestClass>(SimpleTestClassWithCamelCase.s_data, options);
             Assert.Equal(obj.MyInt16, 1);
         }
 
         [Fact]
         public static void OverridePropertyNameAtDesignTime()
         {
-            OverridePropertyNameDesignTime_TestClass x = JsonConverter.FromJson<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.DataMatchingAttribute);
+            OverridePropertyNameDesignTime_TestClass x = JsonSerializer.Read<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.s_dataMatchingAttribute);
 
             Assert.Equal(x.MyInt16, 1);
         }
@@ -65,10 +65,10 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void OverridePropertyNameAtRuntime()
         {
-            var settings = new JsonConverterSettings();
-            settings.AddAttribute(typeof(OverridePropertyNameRuntime_TestClass), new JsonPropertyNameAttribute("blah"));
+            var options = new JsonSerializerOptions();
+            options.AddAttribute(typeof(OverridePropertyNameRuntime_TestClass), new JsonPropertyNameAttribute("blah"));
 
-            OverridePropertyNameRuntime_TestClass x = JsonConverter.FromJson<OverridePropertyNameRuntime_TestClass>(OverridePropertyNameRuntime_TestClass.Data, settings);
+            OverridePropertyNameRuntime_TestClass x = JsonSerializer.Read<OverridePropertyNameRuntime_TestClass>(OverridePropertyNameRuntime_TestClass.s_data, options);
 
             Assert.Equal(x.MyInt16, 1);
         }
@@ -76,16 +76,16 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void OverridePropertyNameAndDesignTimeAttributeAtRuntimeFail()
         {
-            Assert.Throws<InvalidOperationException>(() => JsonConverter.FromJson<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.DataNotMatchingAttribute));
+            Assert.Throws<InvalidOperationException>(() => JsonSerializer.Read<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.s_dataNotMatchingAttribute));
         }
 
         [Fact]
         public static void OverridePropertyNameAndDesignTimeAttributeAtRuntime()
         {
-            var settings = new JsonConverterSettings();
-            settings.AddAttribute(typeof(OverridePropertyNameDesignTime_TestClass).GetProperty("MyInt16"), new JsonPropertyNameAttribute("blah2"));
+            var options = new JsonSerializerOptions();
+            options.AddAttribute(typeof(OverridePropertyNameDesignTime_TestClass).GetProperty("MyInt16"), new JsonPropertyNameAttribute("blah2"));
 
-            OverridePropertyNameDesignTime_TestClass x = JsonConverter.FromJson<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.DataNotMatchingAttribute, settings);
+            OverridePropertyNameDesignTime_TestClass x = JsonSerializer.Read<OverridePropertyNameDesignTime_TestClass>(OverridePropertyNameDesignTime_TestClass.s_dataNotMatchingAttribute, options);
 
             Assert.Equal(x.MyInt16, 1);
         }

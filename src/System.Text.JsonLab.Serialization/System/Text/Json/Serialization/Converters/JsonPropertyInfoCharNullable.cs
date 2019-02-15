@@ -7,18 +7,18 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoCharNullable : JsonPropertyInfo<char?>, IJsonConverterInternal<char?>
+    internal class JsonPropertyInfoCharNullable : JsonPropertyInfo<char?>, IJsonSerializerInternal<char?>
     {
-        public JsonPropertyInfoCharNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonConverterSettings settings) :
-            base(classType, propertyType, propertyInfo, settings)
+        public JsonPropertyInfoCharNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
+            base(classType, propertyType, propertyInfo, options)
         { }
 
-        public char? FromJson(ref Utf8JsonReader reader)
+        public char? Read(ref Utf8JsonReader reader)
         {
             return reader.GetString()[0];
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, char? value)
+        public void Write(ref Utf8JsonWriter writer, char? value)
         {
 #if BUILDING_INBOX_LIBRARY
             char tempChar = value.Value;
@@ -29,7 +29,7 @@ namespace System.Text.Json.Serialization.Converters
 #endif
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, char? value)
+        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, char? value)
         {
 #if BUILDING_INBOX_LIBRARY
             char tempChar = value.Value;

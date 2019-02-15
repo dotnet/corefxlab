@@ -9,15 +9,14 @@ namespace System.Text.Json.Serialization.Policies
     {
         public Type PropertyType { get; protected set; }
 
-        // todo: these must to be boxed to object (performance); we need to refactor to add converter interfaces with <T>
-
 #if BUILDING_INBOX_LIBRARY
-        public abstract object GetFromJson(ref Utf8JsonReader reader, Type propertyType);
-        public abstract void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
+        // todo: these must not be boxed to object (performance); we need to refactor to add converter interfaces with <T>
+        public abstract object GetRead(ref Utf8JsonReader reader, Type propertyType);
+        public abstract void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
 #else
-        // For corefxlab these need to be internal for netstandard
-        internal abstract object GetFromJson(ref Utf8JsonReader reader, Type propertyType);
-        internal abstract void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
+        // Temporary for corefxlab
+        internal abstract object GetRead(ref Utf8JsonReader reader, Type propertyType);
+        internal abstract void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value);
 #endif
     }
 }

@@ -6,13 +6,13 @@ using System.Reflection;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoByteNullable : JsonPropertyInfo<byte?>, IJsonConverterInternal<byte?>
+    internal class JsonPropertyInfoByteNullable : JsonPropertyInfo<byte?>, IJsonSerializerInternal<byte?>
     {
-        public JsonPropertyInfoByteNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonConverterSettings settings) :
-            base(classType, propertyType, propertyInfo, settings)
+        public JsonPropertyInfoByteNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
+            base(classType, propertyType, propertyInfo, options)
         { }
 
-        public byte? FromJson(ref Utf8JsonReader reader)
+        public byte? Read(ref Utf8JsonReader reader)
         {
             checked
             {
@@ -20,12 +20,12 @@ namespace System.Text.Json.Serialization.Converters
             }
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, byte? value)
+        public void Write(ref Utf8JsonWriter writer, byte? value)
         {
             writer.WriteNumberValue(value.Value);
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, byte? value)
+        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, byte? value)
         {
             writer.WriteNumber(name, value.Value);
         }

@@ -11,6 +11,6 @@ namespace System.Text.Json.Serialization
     {
         Object = 0,
         Value = 1,
-        Enumerable = 2
+        Enumerable = 2,
     }
 }

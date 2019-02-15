@@ -6,23 +6,23 @@ using System.Reflection;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoBooleanNullable : JsonPropertyInfo<bool?>, IJsonConverterInternal<bool?>
+    internal class JsonPropertyInfoBooleanNullable : JsonPropertyInfo<bool?>, IJsonSerializerInternal<bool?>
     {
-        public JsonPropertyInfoBooleanNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonConverterSettings settings) :
-            base(classType, propertyType, propertyInfo, settings)
+        public JsonPropertyInfoBooleanNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
+            base(classType, propertyType, propertyInfo, options)
         { }
 
-        public bool? FromJson(ref Utf8JsonReader reader)
+        public bool? Read(ref Utf8JsonReader reader)
         {
             return reader.GetBoolean();
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, bool? value)
+        public void Write(ref Utf8JsonWriter writer, bool? value)
         {
             writer.WriteBooleanValue(value.Value);
         }
 
-        public void ToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, bool? value)
+        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, bool? value)
         {
             writer.WriteBoolean(name, value.Value);
         }

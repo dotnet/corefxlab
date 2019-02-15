@@ -14,7 +14,7 @@ namespace System.Text.Json.Serialization
             try
             {
 #if BUILDING_INBOX_LIBRARY
-                return JsonConverter.s_utf8Encoding.GetString(utf8Unescaped);
+                return JsonSerializer.s_utf8Encoding.GetString(utf8Unescaped);
 #else
                 if (utf8Unescaped.IsEmpty)
                 {
@@ -24,7 +24,7 @@ namespace System.Text.Json.Serialization
                 {
                     fixed (byte* bytePtr = utf8Unescaped)
                     {
-                        return JsonConverter.s_utf8Encoding.GetString(bytePtr, utf8Unescaped.Length);
+                        return JsonSerializer.s_utf8Encoding.GetString(bytePtr, utf8Unescaped.Length);
                     }
                 }
 #endif

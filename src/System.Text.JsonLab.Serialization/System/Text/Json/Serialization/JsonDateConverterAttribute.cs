@@ -21,16 +21,14 @@ namespace System.Text.Json.Serialization
         }
 
 #if BUILDING_INBOX_LIBRARY
-        public override object GetFromJson(ref Utf8JsonReader reader, Type propertyType)
+        public override object GetRead(ref Utf8JsonReader reader, Type propertyType)
 #else
-        // todo: ns20
-        internal override object GetFromJson(ref Utf8JsonReader reader, Type propertyType)
+        internal override object GetRead(ref Utf8JsonReader reader, Type propertyType)
 #endif
         {
             ReadOnlySpan<byte> span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
 
-            DateTime value;
-            bool success = Utf8Parser.TryParse(span, out value, out int bytesConsumed, 'O') && span.Length == bytesConsumed;
+            bool success = Utf8Parser.TryParse(span, out DateTime value, out int bytesConsumed, 'O') && span.Length == bytesConsumed;
             if (success)
             {
                 return value;
@@ -40,14 +38,14 @@ namespace System.Text.Json.Serialization
         }
 
 #if BUILDING_INBOX_LIBRARY
-        public override void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
+        public override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
 #else
-        internal override void SetToJson(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
+        internal override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
 #endif
         {
             Debug.Assert(value is DateTime);
 
-            byte[] stringValue = JsonConverter.s_utf8Encoding.GetBytes(((DateTime)value).ToString("O"));
+            byte[] stringValue = JsonSerializer.s_utf8Encoding.GetBytes(((DateTime)value).ToString("O"));
 
             if (name.IsEmpty)
             {
