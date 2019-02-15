@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <assembly>
+        <name>System.Text.Json</name>
+    </assembly>
+    <members>
+        <member name="T:System.Text.Json.ConsumeNumberResult">
+            <summary>
+            This enum captures the tri-state return value when trying to read a
+            JSON number.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeNumberResult.Success">
+            <summary>
+            Reached a valid end of number and hence no action is required.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeNumberResult.OperationIncomplete">
+            <summary>
+            Successfully processed a portion of the number and need to
+            read to the next region of the number.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeNumberResult.NeedMoreData">
+            <summary>
+            Observed incomplete data.
+            Return false if we have more data to follow. Otherwise throw.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.ConsumeTokenResult">
+            <summary>
+            This enum captures the tri-state return value when trying to read the
+            next JSON token.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeTokenResult.Success">
+            <summary>
+            Reached a valid end of token and hence no action is required.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeTokenResult.NotEnoughDataRollBackState">
+            <summary>
+            Observed incomplete data but progressed state partially in looking ahead.
+            Return false and roll-back to a previously saved state.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.ConsumeTokenResult.IncompleteNoRollBackNecessary">
+            <summary>
+            Observed incomplete data but no change was made to the state.
+            Return false, but do not roll-back anything since nothing changed.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonCommentHandling">
+            <summary>
+            This enum defines the various ways the <see cref="T:System.Text.Json.Utf8JsonReader"/> can deal with comments.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Disallow">
+            <summary>
+            By default, do no allow comments within the JSON input.
+            Comments are treated as invalid JSON if found and a
+            <see cref="T:System.Text.Json.JsonReaderException"/> is thrown.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Allow">
+            <summary>
+            Allow comments within the JSON input and treat them as a valid token.
+            While reading, the caller will be able to access the comment values.
+            </summary>
+        </member>
+        <member name="F:System.Text.Json.JsonCommentHandling.Skip">
+            <summary>
+            Allow comments within the JSON input and ignore them.
+            The <see cref="T:System.Text.Json.Utf8JsonReader"/> will behave as if no comments were present.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonReaderException">
+            <summary>
+            Defines a custom exception object that is thrown by the <see cref="T:System.Text.Json.Utf8JsonReader"/> whenever it
+            encounters an invalid JSON text while reading through it. This exception is also thrown
+            whenever you read past the defined maximum depth.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonReaderException.#ctor(System.String,System.Int64,System.Int64)">
+            <summary>
+            Creates a new exception object to relay error information to the user.
+            </summary>
+            <param name="message">The context specific error message.</param>
+            <param name="lineNumber">The line number at which the invalid JSON was encountered (starting at 0).</param>
+            <param name="bytePositionInLine">The byte count within the current line where the invalid JSON was encountered (starting at 0).</param>
+            <remarks>
+            Note that the <paramref name="bytePositionInLine"/> counts the number of bytes (i.e. UTF-8 code units) and not characters or scalars.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.JsonReaderException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+             Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with information about the exception.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderException.LineNumber">
+            <summary>
+            The number of lines read so far before the exception (starting at 0).
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderException.BytePositionInLine">
+            <summary>
+            The number of bytes read within the current line before the exception (starting at 0).
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonReaderOptions">
+            <summary>
+            Provides the ability for the user to define custom behavior when reading JSON
+            using the <see cref="T:System.Text.Json.Utf8JsonReader"/> that may deviate from strict adherence
+            to the JSON specification (as per the JSON RFC - https://tools.ietf.org/html/rfc8259),
+            which is the default behavior.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderOptions.CommentHandling">
+            <summary>
+            Defines how the <see cref="T:System.Text.Json.Utf8JsonReader"/> should handle comments when reading through the JSON.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonReaderState">
+            <summary>
+            Defines an opaque type that holds and saves all the relevant state information which must be provided
+            to the <see cref="T:System.Text.Json.Utf8JsonReader"/> to continue reading after processing incomplete data.
+            This type is required to support reentrancy when reading incomplete data, and to continue
+            reading once more data is available. Unlike the <see cref="T:System.Text.Json.Utf8JsonReader"/>, which is a ref struct,
+            this type can survive across async/await boundaries and hence this type is required to provide
+            support for reading in more data asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/>.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderState.BytesConsumed">
+            <summary>
+            Returns the total amount of bytes consumed by the <see cref="T:System.Text.Json.Utf8JsonReader"/> so far
+            for the given UTF-8 encoded input text.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderState.Position">
+            <summary>
+            Returns the current <see cref="T:System.SequencePosition"/> within the provided UTF-8 encoded
+            input ReadOnlySequence&lt;byte&gt;. If the <see cref="T:System.Text.Json.Utf8JsonReader"/> was constructed
+            with a ReadOnlySpan&lt;byte&gt; instead, this will always return a default <see cref="T:System.SequencePosition"/>.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonReaderState.#ctor(System.Int32,System.Text.Json.JsonReaderOptions)">
+            <summary>
+            Constructs a new <see cref="T:System.Text.Json.JsonReaderState"/> instance.
+            </summary>
+            <param name="maxDepth">Sets the maximum depth allowed when reading JSON, with the default set as 64.
+            Reading past this depth will throw a <exception cref="T:System.Text.Json.JsonReaderException"/>.</param>
+            <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonReader"/>
+            that is different from the JSON RFC (for example how to handle comments).
+            By default, the <see cref="T:System.Text.Json.Utf8JsonReader"/> follows the JSON RFC strictly (i.e. comments within the JSON are invalid).</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the max depth is set to a non-positive value (&lt;= 0)
+            </exception>
+            <remarks>
+            An instance of this state must be passed to the <see cref="T:System.Text.Json.Utf8JsonReader"/> ctor with the JSON data.
+            Unlike the <see cref="T:System.Text.Json.Utf8JsonReader"/>, which is a ref struct, the state can survive
+            across async/await boundaries and hence this type is required to provide support for reading
+            in more data asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/>.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderState.Options">
+            <summary>
+            Gets the custom behavior when reading JSON using
+            the <see cref="T:System.Text.Json.Utf8JsonReader"/> that may deviate from strict adherence
+            to the JSON specification, which is the default behavior.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.JsonReaderState.MaxDepth">
+            <summary>
+            Gets or sets the maximum depth allowed when reading JSON.
+            Reading past this depth will throw a <exception cref="T:System.Text.Json.JsonReaderException"/>.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.JsonTokenType">
+            <summary>
+            This enum defines the various JSON tokens that make up a JSON text and is used by
+            the <see cref="T:System.Text.Json.Utf8JsonReader"/> when moving from one token to the next.
+            The <see cref="T:System.Text.Json.Utf8JsonReader"/> starts at 'None' by default. The 'Comment' enum value
+            is only ever reached in a specific <see cref="T:System.Text.Json.Utf8JsonReader"/> mode and is not
+            reachable by default.
+            </summary>
+        </member>
+        <member name="T:System.Text.Json.Utf8JsonReader">
+            <summary>
+            Provides a high-performance API for forward-only, read-only access to the UTF-8 encoded JSON text.
+            It processes the text sequentially with no caching and adheres strictly to the JSON RFC
+            by default (https://tools.ietf.org/html/rfc8259). When it encounters invalid JSON, it throws
+            a JsonReaderException with basic error information like line number and byte position on the line.
+            Since this type is a ref struct, it does not directly support async. However, it does provide
+            support for reentrancy to read incomplete data, and continue reading once more data is presented.
+            To be able to set max depth while reading OR allow skipping comments, create an instance of 
+            <see cref="T:System.Text.Json.JsonReaderState"/> and pass that in to the reader.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.ValueSpan">
+            <summary>
+            Gets the value of the last processed token as a ReadOnlySpan&lt;byte&gt; slice
+            of the input payload. If the JSON is provided within a ReadOnlySequence&lt;byte&gt;
+            and the slice that represents the token value fits in a single segment, then
+            <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/> will contain the sliced value since it can be represented as a span.
+            Otherwise, the <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence"/> will contain the token value.
+            </summary>
+            <remarks>
+            If <see cref="P:System.Text.Json.Utf8JsonReader.HasValueSequence"/> is true, <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/> contains useless data, likely for
+            a previous single-segment token. Therefore, only access <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/> if <see cref="P:System.Text.Json.Utf8JsonReader.HasValueSequence"/> is false.
+            Otherwise, the token value must be accessed from <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence"/>.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.BytesConsumed">
+            <summary>
+            Returns the total amount of bytes consumed by the <see cref="T:System.Text.Json.Utf8JsonReader"/> so far
+            for the current instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/> with the given UTF-8 encoded input text.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.CurrentDepth">
+            <summary>
+            Tracks the recursive depth of the nested objects / arrays within the JSON text
+            processed so far. This provides the depth of the current token.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.TokenType">
+            <summary>
+            Gets the type of the last processed JSON token in the UTF-8 encoded JSON text.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.HasValueSequence">
+            <summary>
+            Lets the caller know which of the two 'Value' properties to read to get the 
+            token value. For input data within a ReadOnlySpan&lt;byte&gt; this will
+            always return false. For input data within a ReadOnlySequence&lt;byte&gt;, this
+            will only return true if the token value straddles more than a single segment and
+            hence couldn't be represented as a span.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.ValueSequence">
+            <summary>
+            Gets the value of the last processed token as a ReadOnlySpan&lt;byte&gt; slice
+            of the input payload. If the JSON is provided within a ReadOnlySequence&lt;byte&gt;
+            and the slice that represents the token value fits in a single segment, then
+            <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/> will contain the sliced value since it can be represented as a span.
+            Otherwise, the <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence"/> will contain the token value.
+            </summary>
+            <remarks>
+            If <see cref="P:System.Text.Json.Utf8JsonReader.HasValueSequence"/> is false, <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence"/> contains useless data, likely for
+            a previous multi-segment token. Therefore, only access <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/> if <see cref="P:System.Text.Json.Utf8JsonReader.HasValueSequence"/> is true.
+            Otherwise, the token value must be accessed from <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan"/>.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.Position">
+            <summary>
+            Returns the current <see cref="T:System.SequencePosition"/> within the provided UTF-8 encoded
+            input ReadOnlySequence&lt;byte&gt;. If the <see cref="T:System.Text.Json.Utf8JsonReader"/> was constructed
+            with a ReadOnlySpan&lt;byte&gt; instead, this will always return a default <see cref="T:System.SequencePosition"/>.
+            </summary>
+        </member>
+        <member name="P:System.Text.Json.Utf8JsonReader.CurrentState">
+            <summary>
+            Returns the current snapshot of the <see cref="T:System.Text.Json.Utf8JsonReader"/> state which must
+            be captured by the caller and passed back in to the <see cref="T:System.Text.Json.Utf8JsonReader"/> ctor with more data.
+            Unlike the <see cref="T:System.Text.Json.Utf8JsonReader"/>, which is a ref struct, the state can survive
+            across async/await boundaries and hence this type is required to provide support for reading
+            in more data asynchronously before continuing with a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/>.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,System.Text.Json.JsonReaderState)">
+            <summary>
+            Constructs a new <see cref="T:System.Text.Json.Utf8JsonReader"/> instance.
+            </summary>
+            <param name="jsonData">The ReadOnlySpan&lt;byte&gt; containing the UTF-8 encoded JSON text to process.</param>
+            <param name="isFinalBlock">True when the input span contains the entire data to process.
+            Set to false only if it is known that the input span contains partial data with more data to follow.</param>
+            <param name="state">If this is the first call to the ctor, pass in a default state. Otherwise,
+            capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/> and pass that back.</param>
+            <remarks>
+            Since this type is a ref struct, it is a stack-only type and all the limitations of ref structs apply to it.
+            This is the reason why the ctor accepts a <see cref="T:System.Text.Json.JsonReaderState"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.Read">
+            <summary>
+            Read the next JSON token from input source.
+            </summary>
+            <returns>True if the token was read successfully, else false.</returns>
+            <exception cref="T:System.Text.Json.JsonReaderException">
+            Thrown when an invalid JSON token is encountered according to the JSON RFC
+            or if the current depth exceeds the recursive limit set by the max depth.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.ConsumeValue(System.Byte)">
+            <summary>
+            This method contains the logic for processing the next value token and determining
+            what type of data it is.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.ConsumeNextToken(System.Byte)">
+            <summary>
+            This method consumes the next token regardless of whether we are inside an object or an array.
+            For an object, it reads the next property name token. For an array, it just reads the next value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,System.Boolean,System.Text.Json.JsonReaderState)">
+            <summary>
+            Constructs a new <see cref="T:System.Text.Json.Utf8JsonReader"/> instance.
+            </summary>
+            <param name="jsonData">The ReadOnlySequence&lt;byte&gt; containing the UTF-8 encoded JSON text to process.</param>
+            <param name="isFinalBlock">True when the input span contains the entire data to process.
+            Set to false only if it is known that the input span contains partial data with more data to follow.</param>
+            <param name="state">If this is the first call to the ctor, pass in a default state. Otherwise,
+            capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader"/> and pass that back.</param>
+            <remarks>
+            Since this type is a ref struct, it is a stack-only type and all the limitations of ref structs apply to it.
+            This is the reason why the ctor accepts a <see cref="T:System.Text.Json.JsonReaderState"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.ConsumeValueMultiSegment(System.Byte)">
+            <summary>
+            This method contains the logic for processing the next value token and determining
+            what type of data it is.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.ConsumeNextTokenMultiSegment(System.Byte)">
+            <summary>
+            This method consumes the next token regardless of whether we are inside an object or an array.
+            For an object, it reads the next property name token. For an array, it just reads the next value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetStringValue">
+            <summary>
+            Reads the next JSON token value from the source transcoded as a <see cref="T:System.String"/>.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of the JSON token that is not a string
+            (i.e. other than <see cref="F:System.Text.Json.JsonTokenType.String"/> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName"/>).
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Thrown if invalid UTF-8 byte sequences are detected while transcoding.
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.GetBooleanValue">
+            <summary>
+            Reads the next JSON token value from the source as a <see cref="T:System.Boolean"/>.
+            Returns true if the TokenType is JsonTokenType.True and false if the TokenType is JsonTokenType.False.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a boolean (i.e. <see cref="F:System.Text.Json.JsonTokenType.True"/> or <see cref="F:System.Text.Json.JsonTokenType.False"/>).
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt32Value(System.Int32@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Int32"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.Int32"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetInt64Value(System.Int64@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Int64"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.Int64"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetSingleValue(System.Single@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Single"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.Single"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDoubleValue(System.Double@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Double"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.Double"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="M:System.Text.Json.Utf8JsonReader.TryGetDecimalValue(System.Decimal@)">
+            <summary>
+            Reads the next JSON token value from the source and parses it to a <see cref="T:System.Decimal"/>.
+            Returns true if the entire UTF-8 encoded token value can be successfully 
+            parsed to a <see cref="T:System.Decimal"/> value.
+            Returns false otherwise.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if trying to get the value of JSON token that is not a <see cref="F:System.Text.Json.JsonTokenType.Number"/>.
+            <seealso cref="P:System.Text.Json.Utf8JsonReader.TokenType" />
+            </exception>
+        </member>
+        <member name="P:System.SR.ArrayDepthTooLarge">
+            <summary>CurrentDepth ({0}) is larger than the maximum configured depth of {1}. Cannot read next JSON array.</summary>
+        </member>
+        <member name="P:System.SR.EndOfCommentNotFound">
+            <summary>Expected end of comment, but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.EndOfStringNotFound">
+            <summary>Expected end of string, but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedEndAfterSingleJson">
+            <summary>'{0}' is invalid after a single JSON value. Expected end of data.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedEndOfDigitNotFound">
+            <summary>'{0}' is an invalid end of a number. Expected a delimiter.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedFalse">
+            <summary>'{0}' is an invalid JSON literal. Expected the literal 'false'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedNextDigitEValueNotFound">
+            <summary>'{0}' is an invalid end of a number. Expected 'E' or 'e'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedNull">
+            <summary>'{0}' is an invalid JSON literal. Expected the literal 'null'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedSeparatorAfterPropertyNameNotFound">
+            <summary>'{0}' is invalid after a property name. Expected a ':'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedStartOfPropertyNotFound">
+            <summary>'{0}' is an invalid start of a property name. Expected a '"'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedStartOfPropertyOrValueNotFound">
+            <summary>Expected start of a property name or value, but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedStartOfValueNotFound">
+            <summary>'{0}' is an invalid start of a value.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedTrue">
+            <summary>'{0}' is an invalid JSON literal. Expected the literal 'true'.</summary>
+        </member>
+        <member name="P:System.SR.ExpectedValueAfterPropertyNameNotFound">
+            <summary>Expected a value, but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.FoundInvalidCharacter">
+            <summary>'{0}' is invalid after a value. Expected either ',', '}}', or ']'.</summary>
+        </member>
+        <member name="P:System.SR.InvalidCast">
+            <summary>Cannot get the value of a token type '{0}' as a {1}.</summary>
+        </member>
+        <member name="P:System.SR.InvalidCharacterAfterEscapeWithinString">
+            <summary>'{0}' is an invalid escapable character within a JSON string. The string should be correctly escaped.</summary>
+        </member>
+        <member name="P:System.SR.InvalidCharacterWithinString">
+            <summary>'{0}' is invalid within a JSON string. The string should be correctly escaped.</summary>
+        </member>
+        <member name="P:System.SR.InvalidEndOfJsonNonPrimitive">
+            <summary>'{0}' is an invalid token type for the end of the JSON payload. Expected either 'EndArray' or 'EndObject'.</summary>
+        </member>
+        <member name="P:System.SR.InvalidHexCharacterWithinString">
+            <summary>'{0}' is not a hex digit following '\u' within a JSON string. The string should be correctly escaped.</summary>
+        </member>
+        <member name="P:System.SR.MaxDepthMustBePositive">
+            <summary>Max depth must be positive.</summary>
+        </member>
+        <member name="P:System.SR.MismatchedObjectArray">
+            <summary>'{0}' is invalid without a matching open.</summary>
+        </member>
+        <member name="P:System.SR.ObjectDepthTooLarge">
+            <summary>CurrentDepth ({0}) is larger than the maximum configured depth of {1}. Cannot read next JSON object.</summary>
+        </member>
+        <member name="P:System.SR.RequiredDigitNotFoundAfterDecimal">
+            <summary>'{0}' is invalid within a number, immediately after a decimal point ('.'). Expected a digit ('0'-'9').</summary>
+        </member>
+        <member name="P:System.SR.RequiredDigitNotFoundAfterSign">
+            <summary>'{0}' is invalid within a number, immediately after a sign character ('+' or '-'). Expected a digit ('0'-'9').</summary>
+        </member>
+        <member name="P:System.SR.RequiredDigitNotFoundEndOfData">
+            <summary>Expected a digit ('0'-'9'), but instead reached end of data.</summary>
+        </member>
+        <member name="P:System.SR.ZeroDepthAtEnd">
+            <summary>Expected CurrentDepth ({0}) to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed.</summary>
+        </member>
+    </members>
+</doc>

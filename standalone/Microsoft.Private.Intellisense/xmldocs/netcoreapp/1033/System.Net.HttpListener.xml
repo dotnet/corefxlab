@@ -1,0 +1,684 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Net.HttpListener</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.WebSockets.HttpListenerWebSocketContext">
+      <summary>Provides access to information received by the <see cref="T:System.Net.HttpListener"></see> class when accepting WebSocket connections.</summary>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.CookieCollection">
+      <summary>Gets the cookies received by the <see cref="T:System.Net.HttpListener"></see> object in the WebSocket opening handshake.</summary>
+      <returns>Returns <see cref="T:System.Net.CookieCollection"></see>.  
+ The cookies received by the <see cref="T:System.Net.HttpListener"></see> object.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.Headers">
+      <summary>Gets the HTTP headers received by the <see cref="T:System.Net.HttpListener"></see> object in the WebSocket opening handshake.</summary>
+      <returns>Returns <see cref="T:System.Collections.Specialized.NameValueCollection"></see>.  
+ The HTTP headers received by the <see cref="T:System.Net.HttpListener"></see> object.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.IsAuthenticated">
+      <summary>Gets a value that indicates if the WebSocket client is authenticated.</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> if the WebSocket client is authenticated; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.IsLocal">
+      <summary>Gets a value that indicates if the WebSocket client connected from the local machine.</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> if the WebSocket client connected from the local machine; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.IsSecureConnection">
+      <summary>Gets a value that indicates if the WebSocket connection is secured using Secure Sockets Layer (SSL).</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> if the WebSocket connection is secured using SSL; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.Origin">
+      <summary>Gets the value of the Origin HTTP header included in the WebSocket opening handshake.</summary>
+      <returns>Returns <see cref="T:System.String"></see>.  
+ The value of the Origin HTTP header.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.RequestUri">
+      <summary>Gets the URI requested by the WebSocket client.</summary>
+      <returns>Returns <see cref="T:System.Uri"></see>.  
+ The URI requested by the WebSocket client.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketKey">
+      <summary>Gets the value of the SecWebSocketKey HTTP header included in the WebSocket opening handshake.</summary>
+      <returns>Returns <see cref="T:System.String"></see>.  
+ The value of the SecWebSocketKey HTTP header.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketProtocols">
+      <summary>Gets the list of the Secure WebSocket protocols included in the WebSocket opening handshake.</summary>
+      <returns>Returns <see cref="T:System.Collections.Generic.IEnumerable`1"></see>.  
+ The list of the Secure WebSocket protocols.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketVersion">
+      <summary>Gets the list of sub-protocols requested by the WebSocket client.</summary>
+      <returns>Returns <see cref="T:System.String"></see>.  
+ The list of sub-protocols requested by the WebSocket client.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.User">
+      <summary>Gets an object used to obtain identity, authentication information, and security roles for the WebSocket client.</summary>
+      <returns>Returns <see cref="T:System.Security.Principal.IPrincipal"></see>.  
+ The identity, authentication information, and security roles for the WebSocket client.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.HttpListenerWebSocketContext.WebSocket">
+      <summary>Gets the WebSocket instance used to send and receive data over the WebSocket connection.</summary>
+      <returns>Returns <see cref="T:System.Net.WebSockets.WebSocket"></see>.  
+ The WebSocket instance.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerTimeoutManager">
+      <summary>The timeout manager to use for an <see cref="T:System.Net.HttpListener"></see> object.</summary>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.DrainEntityBody">
+      <summary>Gets or sets the time, in seconds, allowed for the <see cref="T:System.Net.HttpListener"></see> to drain the entity body on a Keep-Alive connection.</summary>
+      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
+ The time, in seconds, allowed for the <see cref="T:System.Net.HttpListener"></see> to drain the entity body on a Keep-Alive connection.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.EntityBody">
+      <summary>Gets or sets the time, in seconds, allowed for the request entity body to arrive.</summary>
+      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
+ The time, in seconds, allowed for the request entity body to arrive.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.HeaderWait">
+      <summary>Gets or sets the time, in seconds, allowed for the <see cref="T:System.Net.HttpListener"></see> to parse the request header.</summary>
+      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
+ The time, in seconds, allowed for the <see cref="T:System.Net.HttpListener"></see> to parse the request header.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.IdleConnection">
+      <summary>Gets or sets the time, in seconds, allowed for an idle connection.</summary>
+      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
+ The time, in seconds, allowed for an idle connection.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.MinSendBytesPerSecond">
+      <summary>Gets or sets the minimum send rate, in bytes-per-second, for the response.</summary>
+      <returns>Returns <see cref="T:System.Int64"></see>.  
+ The minimum send rate, in bytes-per-second, for the response.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerTimeoutManager.RequestQueue">
+      <summary>Gets or sets the time, in seconds, allowed for the request to remain in the request queue before the <see cref="T:System.Net.HttpListener"></see> picks it up.</summary>
+      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
+ The time, in seconds, allowed for the request to remain in the request queue before the <see cref="T:System.Net.HttpListener"></see> picks it up.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerResponse">
+      <summary>Represents a response to a request being handled by an <see cref="T:System.Net.HttpListener"></see> object.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.Abort">
+      <summary>Closes the connection to the client without sending a response.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.AddHeader(System.String,System.String)">
+      <summary>Adds the specified header and value to the HTTP headers for this response.</summary>
+      <param name="name">The name of the HTTP header to set.</param>
+      <param name="value">The value for the name header.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="name">name</paramref> is <see langword="null"></see> or an empty string (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.ArgumentException">You are not allowed to specify a value for the specified header.  
+ -or-  
+ <paramref name="name">name</paramref> or <paramref name="value">value</paramref> contains invalid characters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value">value</paramref> is greater than 65,535 characters.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.AppendCookie(System.Net.Cookie)">
+      <summary>Adds the specified <see cref="T:System.Net.Cookie"></see> to the collection of cookies for this response.</summary>
+      <param name="cookie">The <see cref="T:System.Net.Cookie"></see> to add to the collection to be sent with this response.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="cookie">cookie</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.AppendHeader(System.String,System.String)">
+      <summary>Appends a value to the specified HTTP header to be sent with this response.</summary>
+      <param name="name">The name of the HTTP header to append value to.</param>
+      <param name="value">The value to append to the name header.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="name">name</paramref> is <see langword="null"></see> or an empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ You are not allowed to specify a value for the specified header.  
+ -or-  
+ <paramref name="name">name</paramref> or <paramref name="value">value</paramref> contains invalid characters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value">value</paramref> is greater than 65,535 characters.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.Close">
+      <summary>Sends the response to the client and releases the resources held by this <see cref="T:System.Net.HttpListenerResponse"></see> instance.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.Close(System.Byte[],System.Boolean)">
+      <summary>Returns the specified byte array to the client and releases the resources held by this <see cref="T:System.Net.HttpListenerResponse"></see> instance.</summary>
+      <param name="responseEntity">A <see cref="T:System.Byte"></see> array that contains the response to send to the client.</param>
+      <param name="willBlock"><see langword="true"></see> to block execution while flushing the stream to the client; otherwise, <see langword="false"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="responseEntity">responseEntity</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.ContentEncoding">
+      <summary>Gets or sets the <see cref="T:System.Text.Encoding"></see> for this response&amp;#39;s <see cref="P:System.Net.HttpListenerResponse.OutputStream"></see>.</summary>
+      <returns>An <see cref="T:System.Text.Encoding"></see> object suitable for use with the data in the <see cref="P:System.Net.HttpListenerResponse.OutputStream"></see> property, or <see langword="null"></see> if no encoding is specified.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.ContentLength64">
+      <summary>Gets or sets the number of bytes in the body data included in the response.</summary>
+      <returns>The value of the response&amp;#39;s <see langword="Content-Length"></see> header.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value specified for a set operation is less than zero.</exception>
+      <exception cref="T:System.InvalidOperationException">The response is already being sent.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.ContentType">
+      <summary>Gets or sets the MIME type of the content returned.</summary>
+      <returns>A <see cref="T:System.String"></see> instance that contains the text of the response&amp;#39;s <see langword="Content-Type"></see> header.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is an empty string (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.Cookies">
+      <summary>Gets or sets the collection of cookies returned with the response.</summary>
+      <returns>A <see cref="T:System.Net.CookieCollection"></see> that contains cookies to accompany the response. The collection is empty if no cookies have been added to the response.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.CopyFrom(System.Net.HttpListenerResponse)">
+      <summary>Copies properties from the specified <see cref="T:System.Net.HttpListenerResponse"></see> to this response.</summary>
+      <param name="templateResponse">The <see cref="T:System.Net.HttpListenerResponse"></see> instance to copy.</param>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.Headers">
+      <summary>Gets or sets the collection of header name/value pairs returned by the server.</summary>
+      <returns>A <see cref="T:System.Net.WebHeaderCollection"></see> instance that contains all the explicitly set HTTP headers to be included in the response.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.Net.WebHeaderCollection"></see> instance specified for a set operation is not valid for a response.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.KeepAlive">
+      <summary>Gets or sets a value indicating whether the server requests a persistent connection.</summary>
+      <returns><see langword="true"></see> if the server requests a persistent connection; otherwise, <see langword="false"></see>. The default is <see langword="true"></see>.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.OutputStream">
+      <summary>Gets a <see cref="T:System.IO.Stream"></see> object to which a response can be written.</summary>
+      <returns>A <see cref="T:System.IO.Stream"></see> object to which a response can be written.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.ProtocolVersion">
+      <summary>Gets or sets the HTTP version used for the response.</summary>
+      <returns>A <see cref="T:System.Version"></see> object indicating the version of HTTP used when responding to the client. Note that this property is now obsolete.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation does not have its <see cref="System.Version.Major"></see> property set to 1 or does not have its <see cref="System.Version.Minor"></see> property set to either 0 or 1.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.Redirect(System.String)">
+      <summary>Configures the response to redirect the client to the specified URL.</summary>
+      <param name="url">The URL that the client should use to locate the requested resource.</param>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.RedirectLocation">
+      <summary>Gets or sets the value of the HTTP <see langword="Location"></see> header in this response.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the absolute URL to be sent to the client in the <see langword="Location"></see> header.</returns>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is an empty string (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.SendChunked">
+      <summary>Gets or sets whether the response uses chunked transfer encoding.</summary>
+      <returns><see langword="true"></see> if the response is set to use chunked transfer encoding; otherwise, <see langword="false"></see>. The default is <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.SetCookie(System.Net.Cookie)">
+      <summary>Adds or updates a <see cref="T:System.Net.Cookie"></see> in the collection of cookies sent with this response.</summary>
+      <param name="cookie">A <see cref="T:System.Net.Cookie"></see> for this response.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="cookie">cookie</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The cookie already exists in the collection and could not be replaced.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.StatusCode">
+      <summary>Gets or sets the HTTP status code to be returned to the client.</summary>
+      <returns>An <see cref="T:System.Int32"></see> value that specifies the HTTP status code for the requested resource. The default is <see cref="F:System.Net.HttpStatusCode.OK"></see>, indicating that the server successfully processed the client&amp;#39;s request and included the requested resource in the response body.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+      <exception cref="T:System.Net.ProtocolViolationException">The value specified for a set operation is not valid. Valid values are between 100 and 999 inclusive.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerResponse.StatusDescription">
+      <summary>Gets or sets a text description of the HTTP status code returned to the client.</summary>
+      <returns>The text description of the HTTP status code returned to the client. The default is the RFC 2616 description for the <see cref="P:System.Net.HttpListenerResponse.StatusCode"></see> property value, or an empty string (&amp;quot;&amp;quot;) if an RFC 2616 description does not exist.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation contains non-printable characters.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerResponse.System#IDisposable#Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.Net.HttpListenerResponse"></see>.</summary>
+    </member>
+    <member name="T:System.Net.HttpListenerRequest">
+      <summary>Describes an incoming HTTP request to an <see cref="T:System.Net.HttpListener"></see> object. This class cannot be inherited.</summary>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.AcceptTypes">
+      <summary>Gets the MIME types accepted by the client.</summary>
+      <returns>A <see cref="T:System.String"></see> array that contains the type names specified in the request&amp;#39;s <see langword="Accept"></see> header or <see langword="null"></see> if the client request did not include an <see langword="Accept"></see> header.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous request for the client&amp;#39;s X.509 v.3 certificate.</summary>
+      <param name="requestCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the operation is complete.</param>
+      <param name="state">A user-defined object that contains information about the operation. This object is passed to the callback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> that indicates the status of the operation.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ClientCertificateError">
+      <summary>Gets an error code that identifies a problem with the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate"></see> provided by the client.</summary>
+      <returns>An <see cref="T:System.Int32"></see> value that contains a Windows error code.</returns>
+      <exception cref="T:System.InvalidOperationException">The client certificate has not been initialized yet by a call to the <see cref="System.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)"></see> or <see cref="System.Net.HttpListenerRequest.GetClientCertificate"></see> methods  
+ -or -  
+ The operation is still in progress.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ContentEncoding">
+      <summary>Gets the content encoding that can be used with data sent with the request</summary>
+      <returns>An <see cref="T:System.Text.Encoding"></see> object suitable for use with the data in the <see cref="P:System.Net.HttpListenerRequest.InputStream"></see> property.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ContentLength64">
+      <summary>Gets the length of the body data included in the request.</summary>
+      <returns>The value from the request&amp;#39;s <see langword="Content-Length"></see> header. This value is -1 if the content length is not known.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ContentType">
+      <summary>Gets the MIME type of the body data included in the request.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the text of the request&amp;#39;s <see langword="Content-Type"></see> header.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.Cookies">
+      <summary>Gets the cookies sent with the request.</summary>
+      <returns>A <see cref="T:System.Net.CookieCollection"></see> that contains cookies that accompany the request. This property returns an empty collection if the request does not contain cookies.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerRequest.EndGetClientCertificate(System.IAsyncResult)">
+      <summary>Ends an asynchronous request for the client&amp;#39;s X.509 v.3 certificate.</summary>
+      <param name="asyncResult">The pending request for the certificate.</param>
+      <returns>The <see cref="T:System.IAsyncResult"></see> object that is returned when the operation started.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not obtained by calling <see cref="System.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)"></see><paramref name="e.">e.</paramref></exception>
+      <exception cref="T:System.InvalidOperationException">This method was already called for the operation identified by <paramref name="asyncResult">asyncResult</paramref>.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerRequest.GetClientCertificate">
+      <summary>Retrieves the client&amp;#39;s X.509 v.3 certificate.</summary>
+      <returns>A <see cref="System.Security.Cryptography.X509Certificates"></see> object that contains the client&amp;#39;s X.509 v.3 certificate.</returns>
+      <exception cref="T:System.InvalidOperationException">A call to this method to retrieve the client&amp;#39;s X.509 v.3 certificate is in progress and therefore another call to this method cannot be made.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerRequest.GetClientCertificateAsync">
+      <summary>Retrieves the client&amp;#39;s X.509 v.3 certificate as an asynchronous operation.</summary>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="System.Security.Cryptography.X509Certificates"></see> object that contains the client&amp;#39;s X.509 v.3 certificate.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.HasEntityBody">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the request has associated body data.</summary>
+      <returns><see langword="true"></see> if the request has associated body data; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.Headers">
+      <summary>Gets the collection of header name/value pairs sent in the request.</summary>
+      <returns>A <see cref="T:System.Net.WebHeaderCollection"></see> that contains the HTTP headers included in the request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.HttpMethod">
+      <summary>Gets the HTTP method specified by the client.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the method used in the request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.InputStream">
+      <summary>Gets a stream that contains the body data sent by the client.</summary>
+      <returns>A readable <see cref="T:System.IO.Stream"></see> object that contains the bytes sent by the client in the body of the request. This property returns <see cref="F:System.IO.Stream.Null"></see> if no data is sent with the request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.IsAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the client sending this request is authenticated.</summary>
+      <returns><see langword="true"></see> if the client was authenticated; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.IsLocal">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the request is sent from the local computer.</summary>
+      <returns><see langword="true"></see> if the request originated on the same computer as the <see cref="T:System.Net.HttpListener"></see> object that provided the request; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.IsSecureConnection">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the TCP connection used to send the request is using the Secure Sockets Layer (SSL) protocol.</summary>
+      <returns><see langword="true"></see> if the TCP connection is using SSL; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.IsWebSocketRequest">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the TCP connection was  a WebSocket request.</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> if the TCP connection is a WebSocket request; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.KeepAlive">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the client requests a persistent connection.</summary>
+      <returns><see langword="true"></see> if the connection should be kept open; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.LocalEndPoint">
+      <summary>Get the server IP address and port number to which the request is directed.</summary>
+      <returns>An <see cref="T:System.Net.IPEndPoint"></see> that represents the IP address that the request is sent to.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ProtocolVersion">
+      <summary>Gets the HTTP version used by the requesting client.</summary>
+      <returns>A <see cref="T:System.Version"></see> that identifies the client&amp;#39;s version of HTTP.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.QueryString">
+      <summary>Gets the query string included in the request.</summary>
+      <returns>A <see cref="T:System.Collections.Specialized.NameValueCollection"></see> object that contains the query data included in the request <see cref="P:System.Net.HttpListenerRequest.Url"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.RawUrl">
+      <summary>Gets the URL information (without the host and port) requested by the client.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the raw URL for this request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.RemoteEndPoint">
+      <summary>Gets the client IP address and port number from which the request originated.</summary>
+      <returns>An <see cref="T:System.Net.IPEndPoint"></see> that represents the IP address and port number from which the request originated.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.RequestTraceIdentifier">
+      <summary>Gets the request identifier of the incoming HTTP request.</summary>
+      <returns>A <see cref="T:System.Guid"></see> object that contains the identifier of the HTTP request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.ServiceName">
+      <summary>Gets the Service Provider Name (SPN) that the client sent on the request.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the SPN the client sent on the request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.TransportContext">
+      <summary>Gets the <see cref="T:System.Net.TransportContext"></see> for the client request.</summary>
+      <returns>A <see cref="T:System.Net.TransportContext"></see> object for the client request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.Url">
+      <summary>Gets the <see cref="T:System.Uri"></see> object requested by the client.</summary>
+      <returns>A <see cref="T:System.Uri"></see> object that identifies the resource requested by the client.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.UrlReferrer">
+      <summary>Gets the Uniform Resource Identifier (URI) of the resource that referred the client to the server.</summary>
+      <returns>A <see cref="T:System.Uri"></see> object that contains the text of the request&amp;#39;s <see cref="F:System.Net.HttpRequestHeader.Referer"></see> header, or <see langword="null"></see> if the header was not included in the request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.UserAgent">
+      <summary>Gets the user agent presented by the client.</summary>
+      <returns>A <see cref="T:System.String"></see> object that contains the text of the request&amp;#39;s <see langword="User-Agent"></see> header.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.UserHostAddress">
+      <summary>Gets the server IP address and port number to which the request is directed.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the host address information.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.UserHostName">
+      <summary>Gets the DNS name and, if provided, the port number specified by the client.</summary>
+      <returns>A <see cref="T:System.String"></see> value that contains the text of the request&amp;#39;s <see langword="Host"></see> header.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerRequest.UserLanguages">
+      <summary>Gets the natural languages that are preferred for the response.</summary>
+      <returns>A <see cref="T:System.String"></see> array that contains the languages specified in the request&amp;#39;s <see cref="F:System.Net.HttpRequestHeader.AcceptLanguage"></see> header or <see langword="null"></see> if the client request did not include an <see cref="F:System.Net.HttpRequestHeader.AcceptLanguage"></see> header.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerPrefixCollection">
+      <summary>Represents the collection used to store Uniform Resource Identifier (URI) prefixes for <see cref="T:System.Net.HttpListener"></see> objects.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.Add(System.String)">
+      <summary>Adds a Uniform Resource Identifier (URI) prefix to the collection.</summary>
+      <param name="uriPrefix">A <see cref="T:System.String"></see> that identifies the URI information that is compared in incoming requests. The prefix must be terminated with a forward slash (&amp;quot;/&amp;quot;).</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="uriPrefix">uriPrefix</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="uriPrefix">uriPrefix</paramref> does not use the http:// or https:// scheme. These are the only schemes supported for <see cref="System.Net.HttpListener"></see> objects.  
+ -or-  
+ <paramref name="uriPrefix">uriPrefix</paramref> is not a correctly formatted URI prefix. Make sure the string is terminated with a &amp;quot;/&amp;quot;.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.Net.HttpListener"></see> associated with this collection is closed.</exception>
+      <exception cref="T:System.Net.HttpListenerException">A Windows function call failed. Check the exception&amp;#39;s <see cref="System.Net.HttpListenerException.ErrorCode"></see> property to determine the cause of the exception. This exception is thrown if another <see cref="System.Net.HttpListener"></see> has already added the prefix <paramref name="uriPrefix">uriPrefix</paramref>.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.Clear">
+      <summary>Removes all the Uniform Resource Identifier (URI) prefixes from the collection.</summary>
+      <exception cref="T:System.Net.HttpListenerException">A Windows function call failed. Check the exception&amp;#39;s <see cref="System.Net.HttpListenerException.ErrorCode"></see> property to determine the cause of the exception.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.Net.HttpListener"></see> associated with this collection is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.Contains(System.String)">
+      <summary>Returns a <see cref="T:System.Boolean"></see> value that indicates whether the specified prefix is contained in the collection.</summary>
+      <param name="uriPrefix">A <see cref="T:System.String"></see> that contains the Uniform Resource Identifier (URI) prefix to test.</param>
+      <returns><see langword="true"></see> if this collection contains the prefix specified by <paramref name="uriPrefix">uriPrefix</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="uriPrefix">uriPrefix</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.CopyTo(System.Array,System.Int32)">
+      <summary>Copies the contents of an <see cref="T:System.Net.HttpListenerPrefixCollection"></see> to the specified array.</summary>
+      <param name="array">The one dimensional <see cref="T:System.Array"></see> that receives the Uniform Resource Identifier (URI) prefix strings in this collection.</param>
+      <param name="offset">The zero-based index in array at which copying begins.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="array">array</paramref> has more than one dimension.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">This collection contains more elements than can be stored in <paramref name="array">array</paramref> starting at <paramref name="offset">offset</paramref>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.Net.HttpListener"></see> associated with this collection is closed.</exception>
+      <exception cref="T:System.InvalidCastException"><paramref name="array">array</paramref> cannot store string values.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.CopyTo(System.String[],System.Int32)">
+      <summary>Copies the contents of an <see cref="T:System.Net.HttpListenerPrefixCollection"></see> to the specified string array.</summary>
+      <param name="array">The one dimensional string array that receives the Uniform Resource Identifier (URI) prefix strings in this collection.</param>
+      <param name="offset">The zero-based index in array at which copying begins.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="array">array</paramref> has more than one dimension.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">This collection contains more elements than can be stored in <paramref name="array">array</paramref> starting at <paramref name="offset">offset</paramref>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.Net.HttpListener"></see> associated with this collection is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerPrefixCollection.Count">
+      <summary>Gets the number of prefixes contained in the collection.</summary>
+      <returns>An <see cref="T:System.Int32"></see> that contains the number of prefixes in this collection.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.GetEnumerator">
+      <summary>Returns an object that can be used to iterate through the collection.</summary>
+      <returns>An object that implements the <see cref="T:System.Collections.IEnumerator"></see> interface and provides access to the strings in this collection.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerPrefixCollection.IsReadOnly">
+      <summary>Gets a value that indicates whether access to the collection is read-only.</summary>
+      <returns>Always returns <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerPrefixCollection.IsSynchronized">
+      <summary>Gets a value that indicates whether access to the collection is synchronized (thread-safe).</summary>
+      <returns>This property always returns <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.Remove(System.String)">
+      <summary>Removes the specified Uniform Resource Identifier (URI) from the list of prefixes handled by the <see cref="T:System.Net.HttpListener"></see> object.</summary>
+      <param name="uriPrefix">A <see cref="T:System.String"></see> that contains the URI prefix to remove.</param>
+      <returns><see langword="true"></see> if the <paramref name="uriPrefix">uriPrefix</paramref> was found in the <see cref="T:System.Net.HttpListenerPrefixCollection"></see> and removed; otherwise <see langword="false"></see>.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="uriPrefix">uriPrefix</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.HttpListenerException">A Windows function call failed. To determine the cause of the exception, check the exception&amp;#39;s error code.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.Net.HttpListener"></see> associated with this collection is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerPrefixCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an object that can be used to iterate through the collection.</summary>
+      <returns>An object that implements the <see cref="T:System.Collections.IEnumerator"></see> interface and provides access to the strings in this collection.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerException">
+      <summary>The exception that is thrown when an error occurs processing an HTTP request.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListenerException"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerException.#ctor(System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListenerException"></see> class using the specified error code.</summary>
+      <param name="errorCode">A <see cref="T:System.Int32"></see> value that identifies the error that occurred.</param>
+    </member>
+    <member name="M:System.Net.HttpListenerException.#ctor(System.Int32,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListenerException"></see> class using the specified error code and message.</summary>
+      <param name="errorCode">A <see cref="T:System.Int32"></see> value that identifies the error that occurred.</param>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+    </member>
+    <member name="M:System.Net.HttpListenerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListenerException"></see> class from the specified instances of the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> classes.</summary>
+      <param name="serializationInfo">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> object that contains the information required to deserialize the new <see cref="T:System.Net.HttpListenerException"></see> object.</param>
+      <param name="streamingContext">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> object.</param>
+    </member>
+    <member name="P:System.Net.HttpListenerException.ErrorCode">
+      <summary>Gets a value that identifies the error that occurred.</summary>
+      <returns>A <see cref="T:System.Int32"></see> value.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerContext">
+      <summary>Provides access to the request and response objects used by the <see cref="T:System.Net.HttpListener"></see> class. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerContext.AcceptWebSocketAsync(System.String)">
+      <summary>Accept a WebSocket connection as an asynchronous operation.</summary>
+      <param name="subProtocol">The supported WebSocket sub-protocol.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext"></see> object.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="subProtocol">subProtocol</paramref> is an empty string  
+ -or-  
+ <paramref name="subProtocol">subProtocol</paramref> contains illegal characters.</exception>
+      <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerContext.AcceptWebSocketAsync(System.String,System.TimeSpan)">
+      <summary>Accept a WebSocket connection specifying the supported WebSocket sub-protocol  and WebSocket keep-alive interval as an asynchronous operation.</summary>
+      <param name="subProtocol">The supported WebSocket sub-protocol.</param>
+      <param name="keepAliveInterval">The WebSocket protocol keep-alive interval in milliseconds.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext"></see> object.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="subProtocol">subProtocol</paramref> is an empty string  
+ -or-  
+ <paramref name="subProtocol">subProtocol</paramref> contains illegal characters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="keepAliveInterval">keepAliveInterval</paramref> is too small.</exception>
+      <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerContext.AcceptWebSocketAsync(System.String,System.Int32,System.TimeSpan)">
+      <summary>Accept a WebSocket connection specifying the supported WebSocket sub-protocol, receive buffer size, and WebSocket keep-alive interval as an asynchronous operation.</summary>
+      <param name="subProtocol">The supported WebSocket sub-protocol.</param>
+      <param name="receiveBufferSize">The receive buffer size in bytes.</param>
+      <param name="keepAliveInterval">The WebSocket protocol keep-alive interval in milliseconds.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext"></see> object.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="subProtocol">subProtocol</paramref> is an empty string  
+ -or-  
+ <paramref name="subProtocol">subProtocol</paramref> contains illegal characters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="keepAliveInterval">keepAliveInterval</paramref> is too small.  
+ -or-  
+ <paramref name="receiveBufferSize">receiveBufferSize</paramref> is less than 16 bytes  
+ -or-  
+ <paramref name="receiveBufferSize">receiveBufferSize</paramref> is greater than 64K bytes.</exception>
+      <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
+    </member>
+    <member name="M:System.Net.HttpListenerContext.AcceptWebSocketAsync(System.String,System.Int32,System.TimeSpan,System.ArraySegment{System.Byte})">
+      <summary>Accept a WebSocket connection specifying the supported WebSocket sub-protocol, receive buffer size, WebSocket keep-alive interval, and the internal buffer as an asynchronous operation.</summary>
+      <param name="subProtocol">The supported WebSocket sub-protocol.</param>
+      <param name="receiveBufferSize">The receive buffer size in bytes.</param>
+      <param name="keepAliveInterval">The WebSocket protocol keep-alive interval in milliseconds.</param>
+      <param name="internalBuffer">An internal buffer to use for this operation.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext"></see> object.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="subProtocol">subProtocol</paramref> is an empty string  
+ -or-  
+ <paramref name="subProtocol">subProtocol</paramref> contains illegal characters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="keepAliveInterval">keepAliveInterval</paramref> is too small.  
+ -or-  
+ <paramref name="receiveBufferSize">receiveBufferSize</paramref> is less than 16 bytes  
+ -or-  
+ <paramref name="receiveBufferSize">receiveBufferSize</paramref> is greater than 64K bytes.</exception>
+      <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
+    </member>
+    <member name="P:System.Net.HttpListenerContext.Request">
+      <summary>Gets the <see cref="T:System.Net.HttpListenerRequest"></see> that represents a client&amp;#39;s request for a resource.</summary>
+      <returns>An <see cref="T:System.Net.HttpListenerRequest"></see> object that represents the client request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerContext.Response">
+      <summary>Gets the <see cref="T:System.Net.HttpListenerResponse"></see> object that will be sent to the client in response to the client&amp;#39;s request.</summary>
+      <returns>An <see cref="T:System.Net.HttpListenerResponse"></see> object used to send a response back to the client.</returns>
+    </member>
+    <member name="P:System.Net.HttpListenerContext.User">
+      <summary>Gets an object used to obtain identity, authentication information, and security roles for the client whose request is represented by this <see cref="T:System.Net.HttpListenerContext"></see> object.</summary>
+      <returns>An <see cref="T:System.Security.Principal.IPrincipal"></see> object that describes the client, or <see langword="null"></see> if the <see cref="T:System.Net.HttpListener"></see> that supplied this <see cref="T:System.Net.HttpListenerContext"></see> does not require authentication.</returns>
+    </member>
+    <member name="T:System.Net.HttpListenerBasicIdentity">
+      <summary>Holds the user name and password from a basic authentication request.</summary>
+    </member>
+    <member name="M:System.Net.HttpListenerBasicIdentity.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListenerBasicIdentity"></see> class using the specified user name and password.</summary>
+      <param name="username">The user name.</param>
+      <param name="password">The password.</param>
+    </member>
+    <member name="P:System.Net.HttpListenerBasicIdentity.Password">
+      <summary>Indicates the password from a basic authentication attempt.</summary>
+      <returns>A <see cref="T:System.String"></see> that holds the password.</returns>
+    </member>
+    <member name="T:System.Net.HttpListener">
+      <summary>Provides a simple, programmatically controlled HTTP protocol listener. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Net.HttpListener.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.HttpListener"></see> class.</summary>
+      <exception cref="T:System.PlatformNotSupportedException">This class cannot be used on the current operating system. Windows Server 2003 or Windows XP SP2 is required to use instances of this class.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.Abort">
+      <summary>Shuts down the <see cref="T:System.Net.HttpListener"></see> object immediately, discarding all currently queued requests.</summary>
+    </member>
+    <member name="P:System.Net.HttpListener.AuthenticationSchemes">
+      <summary>Gets or sets the scheme used to authenticate clients.</summary>
+      <returns>A bitwise combination of <see cref="T:System.Net.AuthenticationSchemes"></see> enumeration values that indicates how clients are to be authenticated. The default value is <see cref="F:System.Net.AuthenticationSchemes.Anonymous"></see>.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.AuthenticationSchemeSelectorDelegate">
+      <summary>Gets or sets the delegate called to determine the protocol used to authenticate clients.</summary>
+      <returns>An <see cref="T:System.Net.AuthenticationSchemeSelector"></see> delegate that invokes the method used to select an authentication protocol. The default value is <see langword="null"></see>.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)">
+      <summary>Begins asynchronously retrieving an incoming request.</summary>
+      <param name="callback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when a client request is available.</param>
+      <param name="state">A user-defined object that contains information about the operation. This object is passed to the callback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.Net.HttpListenerException">A Win32 function call failed. Check the exception&amp;#39;s <see cref="System.Net.HttpListenerException.ErrorCode"></see> property to determine the cause of the exception.</exception>
+      <exception cref="T:System.InvalidOperationException">This object has not been started or is currently stopped.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.Close">
+      <summary>Shuts down the <see cref="T:System.Net.HttpListener"></see>.</summary>
+    </member>
+    <member name="P:System.Net.HttpListener.DefaultServiceNames">
+      <summary>Gets a default list of Service Provider Names (SPNs) as determined by registered prefixes.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> that contains a list of SPNs.</returns>
+    </member>
+    <member name="M:System.Net.HttpListener.EndGetContext(System.IAsyncResult)">
+      <summary>Completes an asynchronous operation to retrieve an incoming client request.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> object that was obtained when the asynchronous operation was started.</param>
+      <returns>An <see cref="T:System.Net.HttpListenerContext"></see> object that represents the client request.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not obtained by calling the <see cref="System.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.Net.HttpListener.EndGetContext(System.IAsyncResult)"></see> method was already called for the specified <paramref name="asyncResult">asyncResult</paramref> object.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.ExtendedProtectionPolicy">
+      <summary>Get or set the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> to use for extended protection for a session.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that specifies the policy to use for extended protection.</returns>
+      <exception cref="T:System.ArgumentException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionPolicy"></see> property, but the <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> property was not <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionPolicy"></see> property to <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionPolicy"></see> property after the <see cref="System.Net.HttpListener.Start"></see> method was already called.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.PolicyEnforcement"></see> property was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.ExtendedProtectionSelectorDelegate">
+      <summary>Get or set the delegate called to determine the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> to use for each request.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that specifies the policy to use for extended protection.</returns>
+      <exception cref="T:System.ArgumentException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionSelectorDelegate"></see> property, but the <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> property must be <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionSelectorDelegate"></see> property to <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionSelectorDelegate"></see> property after the <see cref="System.Net.HttpListener.Start"></see> method was already called.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">An attempt was made to set the <see cref="System.Net.HttpListener.ExtendedProtectionSelectorDelegate"></see> property on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.GetContext">
+      <summary>Waits for an incoming request and returns when one is received.</summary>
+      <returns>An <see cref="T:System.Net.HttpListenerContext"></see> object that represents a client request.</returns>
+      <exception cref="T:System.Net.HttpListenerException">A Win32 function call failed. Check the exception&amp;#39;s <see cref="System.Net.HttpListenerException.ErrorCode"></see> property to determine the cause of the exception.</exception>
+      <exception cref="T:System.InvalidOperationException">This object has not been started or is currently stopped.  
+ -or-  
+ The <see cref="System.Net.HttpListener"></see> does not have any Uniform Resource Identifier (URI) prefixes to respond to.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.GetContextAsync">
+      <summary>Waits for an incoming request as an asynchronous operation.</summary>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns an <see cref="T:System.Net.HttpListenerContext"></see> object that represents a client request.</returns>
+    </member>
+    <member name="P:System.Net.HttpListener.IgnoreWriteExceptions">
+      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that specifies whether your application receives exceptions that occur when an <see cref="T:System.Net.HttpListener"></see> sends the response to the client.</summary>
+      <returns><see langword="true"></see> if this <see cref="T:System.Net.HttpListener"></see> should not return exceptions that occur when sending the response to the client; otherwise <see langword="false"></see>. The default value is <see langword="false"></see>.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.IsListening">
+      <summary>Gets a value that indicates whether <see cref="T:System.Net.HttpListener"></see> has been started.</summary>
+      <returns><see langword="true"></see> if the <see cref="T:System.Net.HttpListener"></see> was started; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListener.IsSupported">
+      <summary>Gets a value that indicates whether <see cref="T:System.Net.HttpListener"></see> can be used with the current operating system.</summary>
+      <returns><see langword="true"></see> if <see cref="T:System.Net.HttpListener"></see> is supported; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.HttpListener.Prefixes">
+      <summary>Gets the Uniform Resource Identifier (URI) prefixes handled by this <see cref="T:System.Net.HttpListener"></see> object.</summary>
+      <returns>An <see cref="T:System.Net.HttpListenerPrefixCollection"></see> that contains the URI prefixes that this <see cref="T:System.Net.HttpListener"></see> object is configured to handle.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.Realm">
+      <summary>Gets or sets the realm, or resource partition, associated with this <see cref="T:System.Net.HttpListener"></see> object.</summary>
+      <returns>A <see cref="T:System.String"></see> value that contains the name of the realm associated with the <see cref="T:System.Net.HttpListener"></see> object.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.Start">
+      <summary>Allows this instance to receive incoming requests.</summary>
+      <exception cref="T:System.Net.HttpListenerException">A Win32 function call failed. Check the exception&amp;#39;s <see cref="System.Net.HttpListenerException.ErrorCode"></see> property to determine the cause of the exception.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.Stop">
+      <summary>Causes this instance to stop receiving incoming requests.</summary>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="P:System.Net.HttpListener.TimeoutManager">
+      <summary>The timeout manager for this <see cref="T:System.Net.HttpListener"></see> instance.</summary>
+      <returns>Returns <see cref="T:System.Net.HttpListenerTimeoutManager"></see>.  
+ The timeout manager for this <see cref="T:System.Net.HttpListener"></see> instance.</returns>
+    </member>
+    <member name="P:System.Net.HttpListener.UnsafeConnectionNtlmAuthentication">
+      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that controls whether, when NTLM is used, additional requests using the same Transmission Control Protocol (TCP) connection are required to authenticate.</summary>
+      <returns><see langword="true"></see> if the <see cref="T:System.Security.Principal.IIdentity"></see> of the first request will be used for subsequent requests on the same connection; otherwise, <see langword="false"></see>. The default value is <see langword="false"></see>.</returns>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.HttpListener.System#IDisposable#Dispose">
+      <summary>Releases the resources held by this <see cref="T:System.Net.HttpListener"></see> object.</summary>
+    </member>
+    <member name="T:System.Net.HttpListener.ExtendedProtectionSelector">
+      <summary>A delegate called to determine the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> to use for each <see cref="T:System.Net.HttpListener"></see> request.</summary>
+      <param name="request">The <see cref="T:System.Net.HttpListenerRequest"></see> to determine the extended protection policy that the <see cref="T:System.Net.HttpListener"></see> instance will use to provide extended protection.</param>
+      <returns>An <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> object that specifies the extended protection policy to use for this request.</returns>
+    </member>
+    <member name="T:System.Net.AuthenticationSchemeSelector">
+      <summary>Selects the authentication scheme for an <see cref="T:System.Net.HttpListener"></see> instance.</summary>
+      <param name="httpRequest">The <see cref="T:System.Net.HttpListenerRequest"></see> instance for which to select an authentication scheme.</param>
+      <returns>One of the <see cref="T:System.Net.AuthenticationSchemes"></see> values that indicates the method of authentication to use for the specified client request.</returns>
+    </member>
+  </members>
+</doc>

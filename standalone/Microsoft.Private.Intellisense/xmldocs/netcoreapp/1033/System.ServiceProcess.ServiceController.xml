@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.ServiceProcess.ServiceController</name>
+  </assembly>
+  <members>
+    <member name="T:System.ServiceProcess.ServiceController">
+      <summary>Represents a Windows service and allows you to connect to a running or stopped service, manipulate it, or get information about it.</summary>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceProcess.ServiceController"></see> class that is associated with an existing service on the local computer.</summary>
+      <param name="name">The name that identifies the service to the system. This can also be the display name for the service.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="name">name</paramref> is invalid.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceProcess.ServiceController"></see> class that is associated with an existing service on the specified computer.</summary>
+      <param name="name">The name that identifies the service to the system. This can also be the display name for the service.</param>
+      <param name="machineName">The computer on which the service resides.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="name">name</paramref> is invalid.  
+ -or-  
+ <paramref name="machineName">machineName</paramref> is invalid.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.CanPauseAndContinue">
+      <summary>Gets a value indicating whether the service can be paused and resumed.</summary>
+      <returns>true if the service can be paused; otherwise, false.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.CanShutdown">
+      <summary>Gets a value indicating whether the service should be notified when the system is shutting down.</summary>
+      <returns>true if the service should be notified when the system is shutting down; otherwise, false.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.CanStop">
+      <summary>Gets a value indicating whether the service can be stopped after it has started.</summary>
+      <returns>true if the service can be stopped and the <see cref="System.ServiceProcess.ServiceBase.OnStop"></see> method called; otherwise, false.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Continue">
+      <summary>Continues a service after it has been paused.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.DependentServices">
+      <summary>Gets the set of services that depends on the service associated with this <see cref="T:System.ServiceProcess.ServiceController"></see> instance.</summary>
+      <returns>An array of <see cref="System.ServiceProcess.ServiceController"></see> instances, each of which is associated with a service that depends on this service.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.DisplayName">
+      <summary>Gets or sets a friendly name for the service.</summary>
+      <returns>The friendly name of the service, which can be used to identify the service.</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="System.ServiceProcess.ServiceController.DisplayName"></see> is null.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Dispose">
+      
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.ServiceProcess.ServiceController"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.GetDevices">
+      <summary>Retrieves the device driver services on the local computer.</summary>
+      <returns>An array of type <see cref="System.ServiceProcess.ServiceController"></see> in which each element is associated with a device driver service on the local computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.GetDevices(System.String)">
+      <summary>Retrieves the device driver services on the specified computer.</summary>
+      <param name="machineName">The computer from which to retrieve the device driver services.</param>
+      <returns>An array of type <see cref="System.ServiceProcess.ServiceController"></see> in which each element is associated with a device driver service on the specified computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName">machineName</paramref> parameter has invalid syntax.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.GetServices(System.String)">
+      <summary>Retrieves all the services on the specified computer, except for the device driver services.</summary>
+      <param name="machineName">The computer from which to retrieve the services.</param>
+      <returns>An array of type <see cref="System.ServiceProcess.ServiceController"></see> in which each element is associated with a service on the specified computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName">machineName</paramref> parameter has invalid syntax.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.GetServices">
+      <summary>Retrieves all the services on the local computer, except for the device driver services.</summary>
+      <returns>An array of type <see cref="System.ServiceProcess.ServiceController"></see> in which each element is associated with a service on the local computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.MachineName">
+      <summary>Gets or sets the name of the computer on which this service resides.</summary>
+      <returns>The name of the computer that is running the service associated with this <see cref="System.ServiceProcess.ServiceController"></see> instance. The default is the local computer (&amp;quot;.&amp;quot;).</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.ServiceProcess.ServiceController.MachineName"></see> syntax is invalid.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Pause">
+      <summary>Suspends a service&amp;#39;s operation.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Refresh">
+      <summary>Refreshes property values by resetting the properties to their current values.</summary>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.ServiceHandle">
+      <summary>Gets the handle for the service.</summary>
+      <returns>A <see cref="System.Runtime.InteropServices.SafeHandle"></see> that contains the handle for the service.</returns>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.ServiceName">
+      <summary>Gets or sets the name that identifies the service that this instance references.</summary>
+      <returns>The name that identifies the service that this <see cref="System.ServiceProcess.ServiceController"></see> instance references. The default is an empty string (&amp;quot;&amp;quot;).</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="System.ServiceProcess.ServiceController.ServiceName"></see> is null.</exception>
+      <exception cref="T:System.ArgumentException">The syntax of the <see cref="System.ServiceProcess.ServiceController.ServiceName"></see> property is invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.ServicesDependedOn">
+      <summary>The set of services that this service depends on.</summary>
+      <returns>An array of <see cref="System.ServiceProcess.ServiceController"></see> instances, each of which is associated with a service that must be running for this service to run.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.ServiceType">
+      <summary>Gets the type of service that this object references.</summary>
+      <returns>One of the <see cref="System.ServiceProcess.ServiceType"></see> values, used to indicate the network service type.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Start">
+      <summary>Starts the service, passing no arguments.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Start(System.String[])">
+      <summary>Starts a service, passing the specified arguments.</summary>
+      <param name="args">An array of arguments to pass to the service when it starts.</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service cannot be started.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="args">args</paramref> is null.  
+ -or-  
+ A member of the array is null.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.StartType">
+      <summary>Gets a value that indicates how the service represented by the <see cref="T:System.ServiceProcess.ServiceController"></see> object starts.</summary>
+      <returns>A value that indicates how the service starts.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+    </member>
+    <member name="P:System.ServiceProcess.ServiceController.Status">
+      <summary>Gets the status of the service that is referenced by this instance.</summary>
+      <returns>One of the <see cref="System.ServiceProcess.ServiceControllerStatus"></see> values that indicates whether the service is running, stopped, or paused, or whether a start, stop, pause, or continue command is pending.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.Stop">
+      <summary>Stops this service and any services that are dependent on this service.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
+      <exception cref="T:System.InvalidOperationException">The service was not found.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.WaitForStatus(System.ServiceProcess.ServiceControllerStatus)">
+      <summary>Infinitely waits for the service to reach the specified status.</summary>
+      <param name="desiredStatus">The status to wait for.</param>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="desiredStatus">desiredStatus</paramref> parameter is not any of the values defined in the <see cref="System.ServiceProcess.ServiceControllerStatus"></see> enumeration.</exception>
+    </member>
+    <member name="M:System.ServiceProcess.ServiceController.WaitForStatus(System.ServiceProcess.ServiceControllerStatus,System.TimeSpan)">
+      <summary>Waits for the service to reach the specified status or for the specified time-out to expire.</summary>
+      <param name="desiredStatus">The status to wait for.</param>
+      <param name="timeout">A <see cref="T:System.TimeSpan"></see> object specifying the amount of time to wait for the service to reach the specified status.</param>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="desiredStatus">desiredStatus</paramref> parameter is not any of the values defined in the <see cref="System.ServiceProcess.ServiceControllerStatus"></see> enumeration.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The value specified for the <paramref name="timeout">timeout</paramref> parameter expires.</exception>
+    </member>
+    <member name="T:System.ServiceProcess.ServiceControllerStatus">
+      <summary>Indicates the current state of the service.</summary>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.ContinuePending">
+      <summary>The service continue is pending. This corresponds to the Win32 SERVICE_CONTINUE_PENDING constant, which is defined as 0x00000005.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.Paused">
+      <summary>The service is paused. This corresponds to the Win32 SERVICE_PAUSED constant, which is defined as 0x00000007.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.PausePending">
+      <summary>The service pause is pending. This corresponds to the Win32 SERVICE_PAUSE_PENDING constant, which is defined as 0x00000006.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.Running">
+      <summary>The service is running. This corresponds to the Win32 SERVICE_RUNNING constant, which is defined as 0x00000004.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.StartPending">
+      <summary>The service is starting. This corresponds to the Win32 SERVICE_START_PENDING constant, which is defined as 0x00000002.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.Stopped">
+      <summary>The service is not running. This corresponds to the Win32 SERVICE_STOPPED constant, which is defined as 0x00000001.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceControllerStatus.StopPending">
+      <summary>The service is stopping. This corresponds to the Win32 SERVICE_STOP_PENDING constant, which is defined as 0x00000003.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.ServiceProcess.ServiceStartMode">
+      <summary>Indicates the start mode of the service.</summary>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceStartMode.Automatic">
+      <summary>Indicates that the service is to be started (or was started) by the operating system, at system start-up. If an automatically started service depends on a manually started service, the manually started service is also started automatically at system startup.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceStartMode.Boot">
+      <summary>Indicates that the service is a device driver started by the system loader. This value is valid only for device drivers.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceStartMode.Disabled">
+      <summary>Indicates that the service is disabled, so that it cannot be started by a user or application.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceStartMode.Manual">
+      <summary>Indicates that the service is started only manually, by a user (using the Service Control Manager) or by an application.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceStartMode.System">
+      <summary>Indicates that the service is a device driver started by the IOInitSystem function. This value is valid only for device drivers.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.ServiceProcess.ServiceType">
+      <summary>Represents the type of the service.</summary>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.Adapter">
+      <summary>A service for a hardware device that requires its own driver.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.FileSystemDriver">
+      <summary>A file system driver, which is also a Kernel device driver.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.InteractiveProcess">
+      <summary>A service that can communicate with the desktop.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.KernelDriver">
+      <summary>A Kernel device driver such as a hard disk or other low-level hardware device driver.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.RecognizerDriver">
+      <summary>A file system driver used during startup to determine the file systems present on the system.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.Win32OwnProcess">
+      <summary>A Win32 program that can be started by the Service Controller and that obeys the service control protocol. This type of Win32 service runs in a process by itself.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.ServiceProcess.ServiceType.Win32ShareProcess">
+      <summary>A Win32 service that can share a process with other Win32 services.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.ServiceProcess.TimeoutException">
+      <summary>The exception that is thrown when a specified timeout has expired.</summary>
+    </member>
+    <member name="M:System.ServiceProcess.TimeoutException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceProcess.TimeoutException"></see> class with no message text.</summary>
+    </member>
+    <member name="M:System.ServiceProcess.TimeoutException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceProcess.TimeoutException"></see> class with the specified message text.</summary>
+      <param name="message">Text that describes the type or source of the exception.</param>
+    </member>
+    <member name="M:System.ServiceProcess.TimeoutException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instace of the <see cref="T:System.ServiceProcess.TimeoutException"></see> class with the specified serialization information and context.</summary>
+      <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+      <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="info">info</paramref> parameter is null.</exception>
+      <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="System.Exception.HResult"></see> is zero (0).</exception>
+    </member>
+    <member name="M:System.ServiceProcess.TimeoutException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceProcess.TimeoutException"></see> class with the specified message text and inner exception.</summary>
+      <param name="message">Text that describes the type or source of the exception.</param>
+      <param name="innerException">The exception that caused the current exception.</param>
+    </member>
+  </members>
+</doc>

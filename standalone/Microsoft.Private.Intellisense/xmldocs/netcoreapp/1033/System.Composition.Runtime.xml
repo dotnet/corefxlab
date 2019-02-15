@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Composition.Runtime</name>
+  </assembly>
+  <members>
+    <member name="T:System.Composition.CompositionContext">
+      <summary>Provides methods to retrieve exports from the composition.</summary>
+    </member>
+    <member name="M:System.Composition.CompositionContext.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.CompositionContext"></see> class.</summary>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExport(System.Composition.Hosting.Core.CompositionContract)">
+      <summary>Retrieves the export that matches the specified contract.</summary>
+      <param name="contract">The contract to match.</param>
+      <returns>The exported value.</returns>
+      <exception cref="T:System.Composition.Hosting.CompositionFailedException">No export found for <paramref name="contract">contract</paramref>.</exception>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExport(System.Type)">
+      <summary>Retrieves the export that matches the specified type.</summary>
+      <param name="exportType">The type to match.</param>
+      <returns>The exported value.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExport(System.Type,System.String)">
+      <summary>Retrieves the export that matches the specified name and type.</summary>
+      <param name="exportType">The type to match.</param>
+      <param name="contractName">The name to match.</param>
+      <returns>The exported value.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExport``1">
+      <summary>Retrieves the export that matches the specified generic type parameter.</summary>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>The exported value.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExport``1(System.String)">
+      <summary>Retrieves the export that matches the specified generic type parameter and contract name.</summary>
+      <param name="contractName">The name to match.</param>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>The exported value.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExports(System.Type)">
+      <summary>Retrieves a collection of all exports that match the specified type.</summary>
+      <param name="exportType">The type to match.</param>
+      <returns>A collection of exported values.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExports(System.Type,System.String)">
+      <summary>Retrieves all exports that match the specified contract name and type.</summary>
+      <param name="exportType">The type to match.</param>
+      <param name="contractName">The name to match.</param>
+      <returns>A collection of exported values.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExports``1">
+      <summary>Retrieves all exports that match the specified generic type parameter.</summary>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>A collection of exported values.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.GetExports``1(System.String)">
+      <summary>Retrieves all exports that match the specified generic type parameter and contract name.</summary>
+      <param name="contractName">The name to match.</param>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>A collection of exported values.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.TryGetExport(System.Composition.Hosting.Core.CompositionContract,System.Object@)">
+      <summary>Returns the export that matches the specified contract, or returns null if no match is found.</summary>
+      <param name="contract">The contract to match.</param>
+      <param name="export">When this method returns, contains the matched export or null.</param>
+      <returns>true if an export was found; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.TryGetExport(System.Type,System.Object@)">
+      <summary>Returns the export that matches the specified type, or returns null if no match is found.</summary>
+      <param name="exportType">The type to match.</param>
+      <param name="export">When this method returns, contains the matched export or null.</param>
+      <returns>true if an export was found; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.TryGetExport(System.Type,System.String,System.Object@)">
+      <summary>Returns the export that matches the specified contract name and type, or returns null if no match is found.</summary>
+      <param name="exportType">The type to match.</param>
+      <param name="contractName">The name to match.</param>
+      <param name="export">When this method returns, contains the matched export or null.</param>
+      <returns>true if an export was found; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.TryGetExport``1(``0@)">
+      <summary>Returns the export that matches the specified generic type parameter, or returns null if no match is found.</summary>
+      <param name="export">When this method returns, contains the matched export or null.</param>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>true if an export was found; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Composition.CompositionContext.TryGetExport``1(System.String,``0@)">
+      <summary>Returns the export that matches the specified generic type parameter and contract name, or returns null if no match is found.</summary>
+      <param name="contractName">The name to match.</param>
+      <param name="export">When this method returns, contains the matched export or null.</param>
+      <typeparam name="TExport">The type to match.</typeparam>
+      <returns>true if an export was found; otherwise, false.</returns>
+    </member>
+    <member name="T:System.Composition.Export`1">
+      <summary>A reference that allows the graph of parts associated with an exported instance to be released.</summary>
+      <typeparam name="T">The type of the instance.</typeparam>
+    </member>
+    <member name="M:System.Composition.Export`1.#ctor(`0,System.Action)">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Export`1"></see> class.</summary>
+      <param name="value">The exported instance.</param>
+      <param name="disposeAction">An action that will dispose the exported instance.</param>
+    </member>
+    <member name="M:System.Composition.Export`1.Dispose">
+      <summary>Disposes the exported instance.</summary>
+    </member>
+    <member name="P:System.Composition.Export`1.Value">
+      <summary>Gets the exported value.</summary>
+      <returns>The exported value.</returns>
+    </member>
+    <member name="T:System.Composition.ExportFactory`1">
+      <summary>A factory that creates new instances of a part that provides the specified export.</summary>
+      <typeparam name="T">The type of the export.</typeparam>
+    </member>
+    <member name="M:System.Composition.ExportFactory`1.#ctor(System.Func{System.Tuple{`0,System.Action}})">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.ExportFactory`1"></see> class.</summary>
+      <param name="exportCreator">A function that returns the exported value in <see cref="System.Tuple&amp;lt;T1,T2&amp;gt;.Item1"></see> and an <see cref="T:System.Action"></see> that releases it in <see cref="System.Tuple&amp;lt;T1,T2&amp;gt;.Item2"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="exportCreator">exportCreator</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Composition.ExportFactory`1.CreateExport">
+      <summary>Creates an instance of the factory&amp;#39;s export type.</summary>
+      <returns>A valid instance of the factory&amp;#39;s export type.</returns>
+    </member>
+    <member name="T:System.Composition.ExportFactory`2">
+      <summary>A factory that creates new instances of a part that provides the specified export, with attached metadata.</summary>
+      <typeparam name="T">The type of the created part.</typeparam>
+      <typeparam name="TMetadata">The metadata for the type of the created part.</typeparam>
+    </member>
+    <member name="M:System.Composition.ExportFactory`2.#ctor(System.Func{System.Tuple{`0,System.Action}},`1)">
+      <summary>Initializes a new instance of the <see cref="System.Composition.ExportFactory&amp;lt;T,TMetadata&amp;gt;"></see> class.</summary>
+      <param name="exportCreator">A function that returns the exported value in <see cref="System.Tuple&amp;lt;T1,T2&amp;gt;.Item1"></see> and an <see cref="T:System.Action"></see> that releases it in <see cref="System.Tuple&amp;lt;T1,T2&amp;gt;.Item2"></see>.</param>
+      <param name="metadata">The metadata to attach to the created parts.</param>
+    </member>
+    <member name="P:System.Composition.ExportFactory`2.Metadata">
+      <summary>Gets the metadata to be attached to the created parts.</summary>
+      <returns>A metadata object that will be attached to the created parts.</returns>
+    </member>
+    <member name="T:System.Composition.Hosting.CompositionFailedException">
+      <summary>The exception that is thrown when composition problems occur.</summary>
+    </member>
+    <member name="M:System.Composition.Hosting.CompositionFailedException.#ctor">
+      <summary>Initializes a new instance of the <see cref="CompositionFailedException"></see> class.</summary>
+    </member>
+    <member name="M:System.Composition.Hosting.CompositionFailedException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.CompositionFailedException"></see> class with the specified message.</summary>
+      <param name="message">A message that contains information about the exception.</param>
+    </member>
+    <member name="M:System.Composition.Hosting.CompositionFailedException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.CompositionFailedException"></see> class with the specified message and inner exception.</summary>
+      <param name="message">A message that contains information about the exception.</param>
+      <param name="innerException">The inner exception to wrap in this exception.</param>
+    </member>
+    <member name="T:System.Composition.Hosting.Core.CompositionContract">
+      <summary>Represents an agreement between parts that allows the composition engine to match imports with exports.</summary>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.#ctor(System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see> class with the specified contract type.</summary>
+      <param name="contractType">The contract type.</param>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.#ctor(System.Type,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see> class with the specified contract name and type.</summary>
+      <param name="contractType">The contract type.</param>
+      <param name="contractName">The contract name.</param>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.#ctor(System.Type,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see> class with the specified contract name, type, and metadata constraints.</summary>
+      <param name="contractType">The contract type.</param>
+      <param name="contractName">The contract name.</param>
+      <param name="metadataConstraints">A collection of metadata constraints for the contract.</param>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.ChangeType(System.Type)">
+      <summary>Creates a new contract that has the specified type but the same name and constraints as this object.</summary>
+      <param name="newContractType">The new contract type.</param>
+      <returns>The created contract.</returns>
+    </member>
+    <member name="P:System.Composition.Hosting.Core.CompositionContract.ContractName">
+      <summary>Gets the name of the contract.</summary>
+      <returns>The contract name.</returns>
+    </member>
+    <member name="P:System.Composition.Hosting.Core.CompositionContract.ContractType">
+      <summary>Gets the contract type.</summary>
+      <returns>The contract type.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.Equals(System.Object)">
+      <summary>Determines whether the specified object is equal to this instance of <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see>.</summary>
+      <param name="obj">The object to compare with this object.</param>
+      <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.GetHashCode">
+      <summary>Returns the hash code for this <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see> object.</summary>
+      <returns>The hash code for the current object.</returns>
+    </member>
+    <member name="P:System.Composition.Hosting.Core.CompositionContract.MetadataConstraints">
+      <summary>Gets a collection of metadata constraints for the contract.</summary>
+      <returns>A collection of metadata constraints.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.ToString">
+      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.CompositionContract"></see> object.</summary>
+      <returns>The string representation of this <see cref="System.Composition.Hosting.Core.CompositionContract"></see> object.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.Core.CompositionContract.TryUnwrapMetadataConstraint``1(System.String,``0@,System.Composition.Hosting.Core.CompositionContract@)">
+      <summary>Gets a metadata constraint that has the specified type and name, if it exists.</summary>
+      <param name="constraintName">The name of the metadata constraint.</param>
+      <param name="constraintValue">When this method returns, contains the value of the constraint if it was found. This parameter is treated as uninitialized.</param>
+      <param name="remainingContract">When this method returns, holds the contract with the constraint removed, if the constraint was found. This parameter is treated as uninitialized.</param>
+      <typeparam name="T">The type of the metadata constraint value.</typeparam>
+      <returns>true if the constrained metadata item was unwrapped and the value extracted; otherwise, false.</returns>
+    </member>
+  </members>
+</doc>

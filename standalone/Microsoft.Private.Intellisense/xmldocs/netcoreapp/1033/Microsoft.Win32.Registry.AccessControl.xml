@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>Microsoft.Win32.Registry.AccessControl</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.RegistryAclExtensions">
+      
+    </member>
+    <member name="M:Microsoft.Win32.RegistryAclExtensions.GetAccessControl(Microsoft.Win32.RegistryKey)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="M:Microsoft.Win32.RegistryAclExtensions.GetAccessControl(Microsoft.Win32.RegistryKey,System.Security.AccessControl.AccessControlSections)">
+      <param name="key"></param>
+      <param name="includeSections"></param>
+      <returns></returns>
+    </member>
+    <member name="M:Microsoft.Win32.RegistryAclExtensions.SetAccessControl(Microsoft.Win32.RegistryKey,System.Security.AccessControl.RegistrySecurity)">
+      <param name="key"></param>
+      <param name="registrySecurity"></param>
+    </member>
+    <member name="T:System.Security.AccessControl.RegistryAccessRule">
+      <summary>Represents a set of access rights allowed or denied for a user or group. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAccessRule.#ctor(System.Security.Principal.IdentityReference,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.AccessControlType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> class, specifying the user or group the rule applies to, the access rights, and whether the specified access rights are allowed or denied.</summary>
+      <param name="identity">The user or group the rule applies to. Must be of type <see cref="T:System.Security.Principal.SecurityIdentifier"></see> or a type such as <see cref="T:System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier"></see>.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values indicating the rights allowed or denied.</param>
+      <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType"></see> values indicating whether the rights are allowed or denied.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="registryRights">registryRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="type">type</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="eventRights">eventRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is neither of type <see cref="System.Security.Principal.SecurityIdentifier"></see> nor of a type such as <see cref="System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="System.Security.Principal.SecurityIdentifier"></see>.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAccessRule.#ctor(System.String,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.AccessControlType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> class, specifying the name of the user or group the rule applies to, the access rights, and whether the specified access rights are allowed or denied.</summary>
+      <param name="identity">The name of the user or group the rule applies to.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values indicating the rights allowed or denied.</param>
+      <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType"></see> values indicating whether the rights are allowed or denied.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="registryRights">registryRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="type">type</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="registryRights">registryRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="identity">identity</paramref> is a zero-length string.  
+ -or-  
+ <paramref name="identity">identity</paramref> is longer than 512 characters.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAccessRule.#ctor(System.Security.Principal.IdentityReference,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AccessControlType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> class, specifying the user or group the rule applies to, the access rights, the inheritance flags, the propagation flags, and whether the specified access rights are allowed or denied.</summary>
+      <param name="identity">The user or group the rule applies to. Must be of type <see cref="T:System.Security.Principal.SecurityIdentifier"></see> or a type such as <see cref="T:System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier"></see>.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values specifying the rights allowed or denied.</param>
+      <param name="inheritanceFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> flags specifying how access rights are inherited from other objects.</param>
+      <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> flags specifying how access rights are propagated to other objects.</param>
+      <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType"></see> values specifying whether the rights are allowed or denied.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="registryRights">registryRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="type">type</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="inheritanceFlags">inheritanceFlags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="propagationFlags">propagationFlags</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="registryRights">registryRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is neither of type <see cref="System.Security.Principal.SecurityIdentifier"></see>, nor of a type such as <see cref="System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="System.Security.Principal.SecurityIdentifier"></see>.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAccessRule.#ctor(System.String,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AccessControlType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> class, specifying the name of the user or group the rule applies to, the access rights, the inheritance flags, the propagation flags, and whether the specified access rights are allowed or denied.</summary>
+      <param name="identity">The name of the user or group the rule applies to.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values indicating the rights allowed or denied.</param>
+      <param name="inheritanceFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> flags specifying how access rights are inherited from other objects.</param>
+      <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> flags specifying how access rights are propagated to other objects.</param>
+      <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType"></see> values specifying whether the rights are allowed or denied.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="registryRights">registryRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="type">type</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="inheritanceFlags">inheritanceFlags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="propagationFlags">propagationFlags</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="eventRights">eventRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="identity">identity</paramref> is a zero-length string.  
+ -or-  
+ <paramref name="identity">identity</paramref> is longer than 512 characters.</exception>
+    </member>
+    <member name="P:System.Security.AccessControl.RegistryAccessRule.RegistryRights">
+      <summary>Gets the rights allowed or denied by the access rule.</summary>
+      <returns>A bitwise combination of <see cref="System.Security.AccessControl.RegistryRights"></see> values indicating the rights allowed or denied by the access rule.</returns>
+    </member>
+    <member name="T:System.Security.AccessControl.RegistryAuditRule">
+      <summary>Represents a set of access rights to be audited for a user or group. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAuditRule.#ctor(System.Security.Principal.IdentityReference,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AuditFlags)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> class, specifying the user or group to audit, the rights to audit, whether to take inheritance into account, and whether to audit success, failure, or both.</summary>
+      <param name="identity">The user or group the rule applies to. Must be of type <see cref="T:System.Security.Principal.SecurityIdentifier"></see> or a type such as <see cref="T:System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier"></see>.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values specifying the kinds of access to audit.</param>
+      <param name="inheritanceFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> values specifying whether the audit rule applies to subkeys of the current key.</param>
+      <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> values that affect the way an inherited audit rule is propagated to subkeys of the current key.</param>
+      <param name="flags">A bitwise combination of <see cref="T:System.Security.AccessControl.AuditFlags"></see> values specifying whether to audit success, failure, or both.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="eventRights">eventRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="flags">flags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="inheritanceFlags">inheritanceFlags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="propagationFlags">propagationFlags</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="registryRights">registryRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is neither of type <see cref="System.Security.Principal.SecurityIdentifier"></see> nor of a type such as <see cref="System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="System.Security.Principal.SecurityIdentifier"></see>.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistryAuditRule.#ctor(System.String,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AuditFlags)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> class, specifying the name of the user or group to audit, the rights to audit, whether to take inheritance into account, and whether to audit success, failure, or both.</summary>
+      <param name="identity">The name of the user or group the rule applies to.</param>
+      <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values specifying the kinds of access to audit.</param>
+      <param name="inheritanceFlags">A combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> flags that specifies whether the audit rule applies to subkeys of the current key.</param>
+      <param name="propagationFlags">A combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> flags that affect the way an inherited audit rule is propagated to subkeys of the current key.</param>
+      <param name="flags">A bitwise combination of <see cref="T:System.Security.AccessControl.AuditFlags"></see> values specifying whether to audit success, failure, or both.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="eventRights">eventRights</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="flags">flags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="inheritanceFlags">inheritanceFlags</paramref> specifies an invalid value.  
+ -or-  
+ <paramref name="propagationFlags">propagationFlags</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="registryRights">registryRights</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identity">identity</paramref> is null.  
+ -or-  
+ <paramref name="identity">identity</paramref> is a zero-length string.  
+ -or-  
+ <paramref name="identity">identity</paramref> is longer than 512 characters.</exception>
+    </member>
+    <member name="P:System.Security.AccessControl.RegistryAuditRule.RegistryRights">
+      <summary>Gets the access rights affected by the audit rule.</summary>
+      <returns>A bitwise combination of <see cref="System.Security.AccessControl.RegistryRights"></see> values that indicates the rights affected by the audit rule.</returns>
+    </member>
+    <member name="T:System.Security.AccessControl.RegistrySecurity">
+      <summary>Represents the Windows access control security for a registry key. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.AccessControl.RegistrySecurity"></see> class with default values.</summary>
+    </member>
+    <member name="P:System.Security.AccessControl.RegistrySecurity.AccessRightType">
+      <summary>Gets the enumeration type that the <see cref="T:System.Security.AccessControl.RegistrySecurity"></see> class uses to represent access rights.</summary>
+      <returns>A <see cref="System.Type"></see> object representing the <see cref="System.Security.AccessControl.RegistryRights"></see> enumeration.</returns>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.AccessRuleFactory(System.Security.Principal.IdentityReference,System.Int32,System.Boolean,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AccessControlType)">
+      <summary>Creates a new access control rule for the specified user, with the specified access rights, access control, and flags.</summary>
+      <param name="identityReference">An <see cref="T:System.Security.Principal.IdentityReference"></see> that identifies the user or group the rule applies to.</param>
+      <param name="accessMask">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values specifying the access rights to allow or deny, cast to an integer.</param>
+      <param name="isInherited">A Boolean value specifying whether the rule is inherited.</param>
+      <param name="inheritanceFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> values specifying how the rule is inherited by subkeys.</param>
+      <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> values that modify the way the rule is inherited by subkeys. Meaningless if the value of inheritanceFlags is <see cref="F:System.Security.AccessControl.InheritanceFlags.None"></see>.</param>
+      <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType"></see> values specifying whether the rights are allowed or denied.</param>
+      <returns>A <see cref="System.Security.AccessControl.RegistryAccessRule"></see> object representing the specified rights for the specified user.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="accessMask">accessMask</paramref>, <paramref name="inheritanceFlags">inheritanceFlags</paramref>, <paramref name="propagationFlags">propagationFlags</paramref>, or <paramref name="type">type</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="identityReference">identityReference</paramref> is null.  
+ -or-  
+ <paramref name="accessMask">accessMask</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identityReference">identityReference</paramref> is neither of type <see cref="System.Security.Principal.SecurityIdentifier"></see>, nor of a type such as <see cref="System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="System.Security.Principal.SecurityIdentifier"></see>.</exception>
+    </member>
+    <member name="P:System.Security.AccessControl.RegistrySecurity.AccessRuleType">
+      <summary>Gets the type that the <see cref="T:System.Security.AccessControl.RegistrySecurity"></see> class uses to represent access rules.</summary>
+      <returns>A <see cref="System.Type"></see> object representing the <see cref="System.Security.AccessControl.RegistryAccessRule"></see> class.</returns>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.AddAccessRule(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Searches for a matching access control with which the new rule can be merged. If none are found, adds the new rule.</summary>
+      <param name="rule">The access control rule to add.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.AddAuditRule(System.Security.AccessControl.RegistryAuditRule)">
+      <summary>Searches for an audit rule with which the new rule can be merged. If none are found, adds the new rule.</summary>
+      <param name="rule">The audit rule to add. The user specified by this rule determines the search.</param>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.AuditRuleFactory(System.Security.Principal.IdentityReference,System.Int32,System.Boolean,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AuditFlags)">
+      <summary>Creates a new audit rule, specifying the user the rule applies to, the access rights to audit, the inheritance and propagation of the rule, and the outcome that triggers the rule.</summary>
+      <param name="identityReference">An <see cref="T:System.Security.Principal.IdentityReference"></see> that identifies the user or group the rule applies to.</param>
+      <param name="accessMask">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights"></see> values specifying the access rights to audit, cast to an integer.</param>
+      <param name="isInherited">A Boolean value specifying whether the rule is inherited.</param>
+      <param name="inheritanceFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.InheritanceFlags"></see> values specifying how the rule is inherited by subkeys.</param>
+      <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags"></see> values that modify the way the rule is inherited by subkeys. Meaningless if the value of inheritanceFlags is <see cref="F:System.Security.AccessControl.InheritanceFlags.None"></see>.</param>
+      <param name="flags">A bitwise combination of <see cref="T:System.Security.AccessControl.AuditFlags"></see> values specifying whether to audit successful access, failed access, or both.</param>
+      <returns>A <see cref="System.Security.AccessControl.RegistryAuditRule"></see> object representing the specified audit rule for the specified user, with the specified flags. The return type of the method is the base class, <see cref="System.Security.AccessControl.AuditRule"></see>, but the return value can be cast safely to the derived class.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="accessMask">accessMask</paramref>, <paramref name="inheritanceFlags">inheritanceFlags</paramref>, <paramref name="propagationFlags">propagationFlags</paramref>, or <paramref name="flags">flags</paramref> specifies an invalid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="identityReference">identityReference</paramref> is null.  
+ -or-  
+ <paramref name="accessMask">accessMask</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="identityReference">identityReference</paramref> is neither of type <see cref="System.Security.Principal.SecurityIdentifier"></see>, nor of a type such as <see cref="System.Security.Principal.NTAccount"></see> that can be converted to type <see cref="System.Security.Principal.SecurityIdentifier"></see>.</exception>
+    </member>
+    <member name="P:System.Security.AccessControl.RegistrySecurity.AuditRuleType">
+      <summary>Gets the type that the <see cref="T:System.Security.AccessControl.RegistrySecurity"></see> class uses to represent audit rules.</summary>
+      <returns>A <see cref="System.Type"></see> object representing the <see cref="System.Security.AccessControl.RegistryAuditRule"></see> class.</returns>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAccessRule(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Searches for an access control rule with the same user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> (allow or deny) as the specified access rule, and with compatible inheritance and propagation flags; if such a rule is found, the rights contained in the specified access rule are removed from it.</summary>
+      <param name="rule">A <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> that specifies the user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> to search for, and a set of inheritance and propagation flags that a matching rule, if found, must be compatible with. Specifies the rights to remove from the compatible rule, if found.</param>
+      <returns>true if a compatible rule is found; otherwise false.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAccessRuleAll(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Searches for all access control rules with the same user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> (allow or deny) as the specified rule and, if found, removes them.</summary>
+      <param name="rule">A <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> that specifies the user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> to search for. Any rights, inheritance flags, or propagation flags specified by this rule are ignored.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAccessRuleSpecific(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Searches for an access control rule that exactly matches the specified rule and, if found, removes it.</summary>
+      <param name="rule">The <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> to remove.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAuditRule(System.Security.AccessControl.RegistryAuditRule)">
+      <summary>Searches for an audit control rule with the same user as the specified rule, and with compatible inheritance and propagation flags; if a compatible rule is found, the rights contained in the specified rule are removed from it.</summary>
+      <param name="rule">A <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> that specifies the user to search for, and a set of inheritance and propagation flags that a matching rule, if found, must be compatible with. Specifies the rights to remove from the compatible rule, if found.</param>
+      <returns>true if a compatible rule is found; otherwise, false.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAuditRuleAll(System.Security.AccessControl.RegistryAuditRule)">
+      <summary>Searches for all audit rules with the same user as the specified rule and, if found, removes them.</summary>
+      <param name="rule">A <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> that specifies the user to search for. Any rights, inheritance flags, or propagation flags specified by this rule are ignored.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.RemoveAuditRuleSpecific(System.Security.AccessControl.RegistryAuditRule)">
+      <summary>Searches for an audit rule that exactly matches the specified rule and, if found, removes it.</summary>
+      <param name="rule">The <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> to be removed.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.ResetAccessRule(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Removes all access control rules with the same user as the specified rule, regardless of <see cref="T:System.Security.AccessControl.AccessControlType"></see>, and then adds the specified rule.</summary>
+      <param name="rule">The <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> to add. The user specified by this rule determines the rules to remove before this rule is added.</param>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.SetAccessRule(System.Security.AccessControl.RegistryAccessRule)">
+      <summary>Removes all access control rules with the same user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> (allow or deny) as the specified rule, and then adds the specified rule.</summary>
+      <param name="rule">The <see cref="T:System.Security.AccessControl.RegistryAccessRule"></see> to add. The user and <see cref="T:System.Security.AccessControl.AccessControlType"></see> of this rule determine the rules to remove before this rule is added.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.AccessControl.RegistrySecurity.SetAuditRule(System.Security.AccessControl.RegistryAuditRule)">
+      <summary>Removes all audit rules with the same user as the specified rule, regardless of the <see cref="T:System.Security.AccessControl.AuditFlags"></see> value, and then adds the specified rule.</summary>
+      <param name="rule">The <see cref="T:System.Security.AccessControl.RegistryAuditRule"></see> to add. The user specified by this rule determines the rules to remove before this rule is added.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="rule">rule</paramref> is null.</exception>
+    </member>
+  </members>
+</doc>

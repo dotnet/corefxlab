@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Text.Encoding.CodePages</name>
+  </assembly>
+  <members>
+    <member name="T:System.Text.CodePagesEncodingProvider">
+      <summary>Provides access to an encoding provider for code pages supported in the desktop .NET Framework but not in UWP apps.</summary>
+    </member>
+    <member name="P:System.Text.CodePagesEncodingProvider.Instance">
+      <summary>Gets an encoding provider for code pages supported in the desktop .NET Framework but not in the current .NET Framework platform.</summary>
+      <returns>An encoding provider that allows access to encodings not supported on the current .NET Framework platform.</returns>
+    </member>
+  </members>
+</doc>

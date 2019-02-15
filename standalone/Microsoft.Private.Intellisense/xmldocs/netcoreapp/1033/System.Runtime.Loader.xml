@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Runtime.Loader</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.Metadata.AssemblyExtensions">
+      
+    </member>
+    <member name="M:System.Reflection.Metadata.AssemblyExtensions.TryGetRawMetadata(System.Reflection.Assembly,System.Byte*@,System.Int32@)">
+      <param name="assembly"></param>
+      <param name="blob"></param>
+      <param name="length"></param>
+      <returns></returns>
+    </member>
+    <member name="T:System.Runtime.Loader.AssemblyLoadContext">
+      
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.#ctor">
+      
+    </member>
+    <member name="P:System.Runtime.Loader.AssemblyLoadContext.Default">
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.GetAssemblyName(System.String)">
+      <param name="assemblyPath"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(System.Reflection.Assembly)">
+      <param name="assembly"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.Load(System.Reflection.AssemblyName)">
+      <param name="assemblyName"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyName(System.Reflection.AssemblyName)">
+      <param name="assemblyName"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyPath(System.String)">
+      <param name="assemblyPath"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadFromNativeImagePath(System.String,System.String)">
+      <param name="nativeImagePath"></param>
+      <param name="assemblyPath"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadFromStream(System.IO.Stream)">
+      <param name="assembly"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadFromStream(System.IO.Stream,System.IO.Stream)">
+      <param name="assembly"></param>
+      <param name="assemblySymbols"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadUnmanagedDll(System.String)">
+      <param name="unmanagedDllName"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadUnmanagedDllFromPath(System.String)">
+      <param name="unmanagedDllPath"></param>
+      <returns></returns>
+    </member>
+    <member name="E:System.Runtime.Loader.AssemblyLoadContext.Resolving">
+      
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.SetProfileOptimizationRoot(System.String)">
+      <param name="directoryPath"></param>
+    </member>
+    <member name="M:System.Runtime.Loader.AssemblyLoadContext.StartProfileOptimization(System.String)">
+      <param name="profile"></param>
+    </member>
+    <member name="E:System.Runtime.Loader.AssemblyLoadContext.Unloading">
+      
+    </member>
+  </members>
+</doc>

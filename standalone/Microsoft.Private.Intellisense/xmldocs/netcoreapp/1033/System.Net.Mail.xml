@@ -1,0 +1,1287 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Net.Mail</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Mime.TransferEncoding">
+      <summary>Specifies the Content-Transfer-Encoding header information for an email message attachment.</summary>
+    </member>
+    <member name="F:System.Net.Mime.TransferEncoding.Base64">
+      <summary>Encodes stream-based data. See RFC 2406 Section 6.8.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.TransferEncoding.EightBit">
+      <summary>The data is in 8-bit characters that may represent international characters with a total line length of no longer than 1000 8-bit characters. For more information about this 8-bit MIME transport extension, see IETF RFC 6152.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.TransferEncoding.QuotedPrintable">
+      <summary>Encodes data that consists of printable characters in the US-ASCII character set. See RFC 2406 Section 6.7.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.TransferEncoding.SevenBit">
+      <summary>Used for data that is not encoded. The data is in 7-bit US-ASCII characters with a total line length of no longer than 1000 characters. See RFC2406 Section 2.7.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.TransferEncoding.Unknown">
+      <summary>Indicates that the transfer encoding is unknown.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mime.MediaTypeNames">
+      <summary>Specifies the media type information for an email message attachment.</summary>
+    </member>
+    <member name="T:System.Net.Mime.MediaTypeNames.Text">
+      <summary>Specifies the type of text data in an email message attachment.</summary>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Text.Html">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Text"></see> data is in HTML format.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Text.Plain">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Text"></see> data is in plain text format.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Text.RichText">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Text"></see> data is in Rich Text Format (RTF).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Text.Xml">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Text"></see> data is in XML format.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mime.MediaTypeNames.Image">
+      <summary>Specifies the type of image data in an email message attachment.</summary>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Image.Gif">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Image"></see> data is in Graphics Interchange Format (GIF).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Image.Jpeg">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Image"></see> data is in Joint Photographic Experts Group (JPEG) format.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Image.Tiff">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Image"></see> data is in Tagged Image File Format (TIFF).</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mime.MediaTypeNames.Application">
+      <summary>Specifies the kind of application data in an email message attachment.</summary>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Json">
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Octet">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Application"></see> data is not interpreted.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Pdf">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Application"></see> data is in Portable Document Format (PDF).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Rtf">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Application"></see> data is in Rich Text Format (RTF).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Soap">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Application"></see> data is a SOAP document.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Xml">
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.MediaTypeNames.Application.Zip">
+      <summary>Specifies that the <see cref="T:System.Net.Mime.MediaTypeNames.Application"></see> data is compressed.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mime.DispositionTypeNames">
+      <summary>Supplies the strings used to specify the disposition type for an email attachment.</summary>
+    </member>
+    <member name="F:System.Net.Mime.DispositionTypeNames.Attachment">
+      <summary>Specifies that the attachment is to be displayed as a file attached to the email message.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mime.DispositionTypeNames.Inline">
+      <summary>Specifies that the attachment is to be displayed as part of the email message body.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mime.ContentType">
+      <summary>Represents a MIME protocol Content-Type header.</summary>
+    </member>
+    <member name="M:System.Net.Mime.ContentType.#ctor">
+      <summary>Initializes a new default instance of the <see cref="T:System.Net.Mime.ContentType"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mime.ContentType.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mime.ContentType"></see> class using the specified string.</summary>
+      <param name="contentType">A <see cref="T:System.String"></see>, for example, &amp;quot;text/plain; charset=us-ascii&amp;quot;, that contains the MIME media type, subtype, and optional parameters.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentType">contentType</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="contentType">contentType</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is in a form that cannot be parsed.</exception>
+    </member>
+    <member name="P:System.Net.Mime.ContentType.Boundary">
+      <summary>Gets or sets the value of the boundary parameter included in the Content-Type header represented by this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the value associated with the boundary parameter.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentType.CharSet">
+      <summary>Gets or sets the value of the charset parameter included in the Content-Type header represented by this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the value associated with the charset parameter.</returns>
+    </member>
+    <member name="M:System.Net.Mime.ContentType.Equals(System.Object)">
+      <summary>Determines whether the content-type header of the specified <see cref="T:System.Net.Mime.ContentType"></see> object is equal to the content-type header of this object.</summary>
+      <param name="rparam">The <see cref="T:System.Net.Mime.ContentType"></see> object to compare with this object.</param>
+      <returns><see langword="true"></see> if the content-type headers are the same; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Mime.ContentType.GetHashCode">
+      <summary>Determines the hash code of the specified <see cref="T:System.Net.Mime.ContentType"></see> object</summary>
+      <returns>An integer hash value.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentType.MediaType">
+      <summary>Gets or sets the media type value included in the Content-Type header represented by this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the media type and subtype value. This value does not include the semicolon (;) separator that follows the subtype.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException">The value specified for a set operation is in a form that cannot be parsed.</exception>
+    </member>
+    <member name="P:System.Net.Mime.ContentType.Name">
+      <summary>Gets or sets the value of the name parameter included in the Content-Type header represented by this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the value associated with the name parameter.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentType.Parameters">
+      <summary>Gets the dictionary that contains the parameters included in the Content-Type header represented by this instance.</summary>
+      <returns>A writable <see cref="T:System.Collections.Specialized.StringDictionary"></see> that contains name and value pairs.</returns>
+    </member>
+    <member name="M:System.Net.Mime.ContentType.ToString">
+      <summary>Returns a string representation of this <see cref="T:System.Net.Mime.ContentType"></see> object.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the current settings for this <see cref="T:System.Net.Mime.ContentType"></see>.</returns>
+    </member>
+    <member name="T:System.Net.Mime.ContentDisposition">
+      <summary>Represents a MIME protocol Content-Disposition header.</summary>
+    </member>
+    <member name="M:System.Net.Mime.ContentDisposition.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mime.ContentDisposition"></see> class with a <see cref="P:System.Net.Mime.ContentDisposition.DispositionType"></see> of <see cref="F:System.Net.Mime.DispositionTypeNames.Attachment"></see>.</summary>
+    </member>
+    <member name="M:System.Net.Mime.ContentDisposition.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mime.ContentDisposition"></see> class with the specified disposition information.</summary>
+      <param name="disposition">A <see cref="T:System.Net.Mime.DispositionTypeNames"></see> value that contains the disposition.</param>
+      <exception cref="T:System.FormatException"><paramref name="disposition">disposition</paramref> is <see langword="null"></see> or equal to <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.CreationDate">
+      <summary>Gets or sets the creation date for a file attachment.</summary>
+      <returns>A <see cref="T:System.DateTime"></see> value that indicates the file creation date; otherwise, <see cref="F:System.DateTime.MinValue"></see> if no date was specified.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.DispositionType">
+      <summary>Gets or sets the disposition type for an email attachment.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the disposition type. The value is not restricted but is typically one of the <see cref="P:System.Net.Mime.ContentDisposition.DispositionType"></see> values.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is equal to <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+    </member>
+    <member name="M:System.Net.Mime.ContentDisposition.Equals(System.Object)">
+      <summary>Determines whether the content-disposition header of the specified <see cref="T:System.Net.Mime.ContentDisposition"></see> object is equal to the content-disposition header of this object.</summary>
+      <param name="rparam">The <see cref="T:System.Net.Mime.ContentDisposition"></see> object to compare with this object.</param>
+      <returns><see langword="true"></see> if the content-disposition headers are the same; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.FileName">
+      <summary>Gets or sets the suggested file name for an email attachment.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the file name.</returns>
+    </member>
+    <member name="M:System.Net.Mime.ContentDisposition.GetHashCode">
+      <summary>Determines the hash code of the specified <see cref="T:System.Net.Mime.ContentDisposition"></see> object</summary>
+      <returns>An integer hash value.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.Inline">
+      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that determines the disposition type (Inline or Attachment) for an email attachment.</summary>
+      <returns><see langword="true"></see> if content in the attachment is presented inline as part of the email body; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.ModificationDate">
+      <summary>Gets or sets the modification date for a file attachment.</summary>
+      <returns>A <see cref="T:System.DateTime"></see> value that indicates the file modification date; otherwise, <see cref="F:System.DateTime.MinValue"></see> if no date was specified.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.Parameters">
+      <summary>Gets the parameters included in the Content-Disposition header represented by this instance.</summary>
+      <returns>A writable <see cref="T:System.Collections.Specialized.StringDictionary"></see> that contains parameter name/value pairs.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.ReadDate">
+      <summary>Gets or sets the read date for a file attachment.</summary>
+      <returns>A <see cref="T:System.DateTime"></see> value that indicates the file read date; otherwise, <see cref="F:System.DateTime.MinValue"></see> if no date was specified.</returns>
+    </member>
+    <member name="P:System.Net.Mime.ContentDisposition.Size">
+      <summary>Gets or sets the size of a file attachment.</summary>
+      <returns>A <see cref="T:System.Int32"></see> that specifies the number of bytes in the file attachment. The default value is -1, which indicates that the file size is unknown.</returns>
+    </member>
+    <member name="M:System.Net.Mime.ContentDisposition.ToString">
+      <summary>Returns a <see cref="T:System.String"></see> representation of this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the property values for this instance.</returns>
+    </member>
+    <member name="T:System.Net.Mail.SmtpStatusCode">
+      <summary>Specifies the outcome of sending email by using the <see cref="T:System.Net.Mail.SmtpClient"></see> class.</summary>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.BadCommandSequence">
+      <summary>The commands were sent in the incorrect sequence.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.CannotVerifyUserWillAttemptDelivery">
+      <summary>The specified user is not local, but the receiving SMTP service accepted the message and attempted to deliver it. This status code is defined in RFC 1123, which is available at https://www.ietf.org.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.ClientNotPermitted">
+      <summary>The client was not authenticated or is not allowed to send mail using the specified SMTP host.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.CommandNotImplemented">
+      <summary>The SMTP service does not implement the specified command.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.CommandParameterNotImplemented">
+      <summary>The SMTP service does not implement the specified command parameter.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.CommandUnrecognized">
+      <summary>The SMTP service does not recognize the specified command.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.ExceededStorageAllocation">
+      <summary>The message is too large to be stored in the destination mailbox.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.GeneralFailure">
+      <summary>The transaction could not occur. You receive this error when the specified SMTP host cannot be found.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.HelpMessage">
+      <summary>A Help message was returned by the service.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.InsufficientStorage">
+      <summary>The SMTP service does not have sufficient storage to complete the request.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.LocalErrorInProcessing">
+      <summary>The SMTP service cannot complete the request. This error can occur if the client&amp;#39;s IP address cannot be resolved (that is, a reverse lookup failed). You can also receive this error if the client domain has been identified as an open relay or source for unsolicited email (spam). For details, see RFC 2505, which is available at https://www.ietf.org.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.MailboxBusy">
+      <summary>The destination mailbox is in use.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.MailboxNameNotAllowed">
+      <summary>The syntax used to specify the destination mailbox is incorrect.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.MailboxUnavailable">
+      <summary>The destination mailbox was not found or could not be accessed.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.MustIssueStartTlsFirst">
+      <summary>The SMTP server is configured to accept only TLS connections, and the SMTP client is attempting to connect by using a non-TLS connection. The solution is for the user to set EnableSsl=true on the SMTP Client.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.Ok">
+      <summary>The email was successfully sent to the SMTP service.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.ServiceClosingTransmissionChannel">
+      <summary>The SMTP service is closing the transmission channel.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.ServiceNotAvailable">
+      <summary>The SMTP service is not available; the server is closing the transmission channel.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.ServiceReady">
+      <summary>The SMTP service is ready.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.StartMailInput">
+      <summary>The SMTP service is ready to receive the email content.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.SyntaxError">
+      <summary>The syntax used to specify a command or parameter is incorrect.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.SystemStatus">
+      <summary>A system status or system Help reply.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.TransactionFailed">
+      <summary>The transaction failed.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.UserNotLocalTryAlternatePath">
+      <summary>The user mailbox is not located on the receiving server. You should resend using the supplied address information.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpStatusCode.UserNotLocalWillForward">
+      <summary>The user mailbox is not located on the receiving server; the server forwards the email.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mail.SmtpFailedRecipientsException">
+      <summary>The exception that is thrown when email is sent using an <see cref="T:System.Net.Mail.SmtpClient"></see> and cannot be delivered to all recipients.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.#ctor">
+      <summary>Initializes an empty instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> class with the specified <see cref="T:System.String"></see>.</summary>
+      <param name="message">The exception message.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> class from the specified instances of the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> classes.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance that contains the information required to serialize the new <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> instance.</param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> instance.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> class with the specified <see cref="T:System.String"></see> and inner <see cref="T:System.Exception"></see>.</summary>
+      <param name="message">The exception message.</param>
+      <param name="innerException">The inner exception.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.#ctor(System.String,System.Net.Mail.SmtpFailedRecipientException[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientsException"></see> class with the specified <see cref="T:System.String"></see> and array of type <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>.</summary>
+      <param name="message">The exception message.</param>
+      <param name="innerExceptions">The array of recipients with delivery errors.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="serializationInfo"></param>
+      <param name="streamingContext"></param>
+    </member>
+    <member name="P:System.Net.Mail.SmtpFailedRecipientsException.InnerExceptions">
+      <summary>Gets one or more <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>s that indicate the email recipients with SMTP delivery errors.</summary>
+      <returns>An array of type <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see> that lists the recipients with delivery errors.</returns>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientsException.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="serializationInfo"></param>
+      <param name="streamingContext"></param>
+    </member>
+    <member name="T:System.Net.Mail.SmtpFailedRecipientException">
+      <summary>Represents the exception that is thrown when the <see cref="T:System.Net.Mail.SmtpClient"></see> is not able to complete a <see cref="Overload:System.Net.Mail.SmtpClient.Send"></see> or <see cref="Overload:System.Net.Mail.SmtpClient.SendAsync"></see> operation to a particular recipient.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor">
+      <summary>Initializes an empty instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see> class with the specified error message.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that contains the error message.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.Net.Mail.SmtpStatusCode,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see> class with the specified status code and email address.</summary>
+      <param name="statusCode">An <see cref="T:System.Net.Mail.SmtpStatusCode"></see> value.</param>
+      <param name="failedRecipient">A <see cref="T:System.String"></see> that contains the email address.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified error message and inner exception.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+      <param name="innerException">The exception that is the cause of the current exception.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.Net.Mail.SmtpStatusCode,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see> class with the specified status code, email address, and server response.</summary>
+      <param name="statusCode">An <see cref="T:System.Net.Mail.SmtpStatusCode"></see> value.</param>
+      <param name="failedRecipient">A <see cref="T:System.String"></see> that contains the email address.</param>
+      <param name="serverResponse">A <see cref="T:System.String"></see> that contains the server response.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.String,System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified error message, email address, and inner exception.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+      <param name="failedRecipient">A <see cref="T:System.String"></see> that contains the email address.</param>
+      <param name="innerException">The exception that is the cause of the current exception.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="info"></param>
+      <param name="context"></param>
+    </member>
+    <member name="P:System.Net.Mail.SmtpFailedRecipientException.FailedRecipient">
+      <summary>Indicates the email address with delivery difficulties.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the email address.</returns>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance with the data that is needed to serialize the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>.</summary>
+      <param name="serializationInfo">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> to populate with data.</param>
+      <param name="streamingContext">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that specifies the destination for this serialization.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpFailedRecipientException.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance with the data that is needed to serialize the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>.</summary>
+      <param name="serializationInfo">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance, which holds the serialized data for the <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>.</param>
+      <param name="streamingContext">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instance that contains the destination of the serialized stream that is associated with the new <see cref="T:System.Net.Mail.SmtpFailedRecipientException"></see>.</param>
+    </member>
+    <member name="T:System.Net.Mail.SmtpException">
+      <summary>Represents the exception that is thrown when the <see cref="T:System.Net.Mail.SmtpClient"></see> is not able to complete a <see cref="Overload:System.Net.Mail.SmtpClient.Send"></see> or <see cref="Overload:System.Net.Mail.SmtpClient.SendAsync"></see> operation.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor(System.Net.Mail.SmtpStatusCode)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified status code.</summary>
+      <param name="statusCode">An <see cref="T:System.Net.Mail.SmtpStatusCode"></see> value.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified error message.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor(System.Net.Mail.SmtpStatusCode,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified status code and error message.</summary>
+      <param name="statusCode">An <see cref="T:System.Net.Mail.SmtpStatusCode"></see> value.</param>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpException"></see> class with the specified error message and inner exception.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the error that occurred.</param>
+      <param name="innerException">The exception that is the cause of the current exception.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="serializationInfo"></param>
+      <param name="streamingContext"></param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="serializationInfo"></param>
+      <param name="streamingContext"></param>
+    </member>
+    <member name="P:System.Net.Mail.SmtpException.StatusCode">
+      <summary>Gets the status code returned by an SMTP server when an email message is transmitted.</summary>
+      <returns>An <see cref="T:System.Net.Mail.SmtpStatusCode"></see> value that indicates the error that occurred.</returns>
+    </member>
+    <member name="M:System.Net.Mail.SmtpException.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="serializationInfo"></param>
+      <param name="streamingContext"></param>
+    </member>
+    <member name="T:System.Net.Mail.SmtpDeliveryMethod">
+      <summary>Specifies how email messages are delivered.</summary>
+    </member>
+    <member name="F:System.Net.Mail.SmtpDeliveryMethod.Network">
+      <summary>Email is sent through the network to an SMTP server.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis">
+      <summary>Email is copied to the pickup directory used by a local Internet Information Services (IIS) for delivery.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory">
+      <summary>Email is copied to the directory specified by the <see cref="P:System.Net.Mail.SmtpClient.PickupDirectoryLocation"></see> property for delivery by an external application.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mail.SmtpDeliveryFormat">
+      <summary>The delivery format to use for sending outgoing email using the Simple Mail Transport Protocol (SMTP).</summary>
+    </member>
+    <member name="F:System.Net.Mail.SmtpDeliveryFormat.International">
+      <summary>A delivery format where non-ASCII characters in the envelope and header fields used in the Simple Mail Transport Protocol (SMTP) for mail messages are encoded with UTF-8 characters.  
+ The extensions to support international email are defined in IETF RFC 6530, 6531, and 6532.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.SmtpDeliveryFormat.SevenBit">
+      <summary>A delivery format using 7-bit ASCII.  
+ The traditional delivery format used in the Simple Mail Transport Protocol (SMTP) for mail messages.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mail.SmtpClient">
+      <summary>Allows applications to send email by using the Simple Mail Transfer Protocol (SMTP).</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpClient"></see> class by using configuration file settings.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpClient"></see> class that sends email by using the specified SMTP server.</summary>
+      <param name="host">A <see cref="T:System.String"></see> that contains the name or IP address of the host computer used for SMTP transactions.</param>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.#ctor(System.String,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.SmtpClient"></see> class that sends email by using the specified SMTP server and port.</summary>
+      <param name="host">A <see cref="T:System.String"></see> that contains the name or IP address of the host used for SMTP transactions.</param>
+      <param name="port">An <see cref="T:System.Int32"></see> greater than zero that contains the port to be used on host.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="port">port</paramref> cannot be less than zero.</exception>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.ClientCertificates">
+      <summary>Specify which certificates should be used to establish the Secure Sockets Layer (SSL) connection.</summary>
+      <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see>, holding one or more client certificates. The default value is derived from the mail configuration attributes in a configuration file.</returns>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.Credentials">
+      <summary>Gets or sets the credentials used to authenticate the sender.</summary>
+      <returns>An <see cref="T:System.Net.ICredentialsByHost"></see> that represents the credentials to use for authentication; or <see langword="null"></see> if no credentials have been specified.</returns>
+      <exception cref="T:System.InvalidOperationException">You cannot change the value of this property when an email is being sent.</exception>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.DeliveryFormat">
+      <summary>Gets or sets the delivery format used by <see cref="T:System.Net.Mail.SmtpClient"></see> to send email.</summary>
+      <returns>Returns <see cref="T:System.Net.Mail.SmtpDeliveryFormat"></see>.  
+ The delivery format used by <see cref="T:System.Net.Mail.SmtpClient"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.DeliveryMethod">
+      <summary>Specifies how outgoing email messages will be handled.</summary>
+      <returns>An <see cref="T:System.Net.Mail.SmtpDeliveryMethod"></see> that indicates how email messages are delivered.</returns>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.Dispose">
+      <summary>Sends a QUIT message to the SMTP server, gracefully ends the TCP connection, and releases all resources used by the current instance of the <see cref="T:System.Net.Mail.SmtpClient"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.Dispose(System.Boolean)">
+      <summary>Sends a QUIT message to the SMTP server, gracefully ends the TCP connection, releases all resources used by the current instance of the <see cref="T:System.Net.Mail.SmtpClient"></see> class, and optionally disposes of the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to releases only unmanaged resources.</param>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.EnableSsl">
+      <summary>Specify whether the <see cref="T:System.Net.Mail.SmtpClient"></see> uses Secure Sockets Layer (SSL) to encrypt the connection.</summary>
+      <returns><see langword="true"></see> if the <see cref="T:System.Net.Mail.SmtpClient"></see> uses SSL; otherwise, <see langword="false"></see>. The default is <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.Host">
+      <summary>Gets or sets the name or IP address of the host used for SMTP transactions.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the name or IP address of the computer to use for SMTP transactions.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is equal to <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.InvalidOperationException">You cannot change the value of this property when an email is being sent.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.OnSendCompleted(System.ComponentModel.AsyncCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.Mail.SmtpClient.SendCompleted"></see> event.</summary>
+      <param name="e">An <see cref="T:System.ComponentModel.AsyncCompletedEventArgs"></see> that contains event data.</param>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.PickupDirectoryLocation">
+      <summary>Gets or sets the folder where applications save mail messages to be processed by the local SMTP server.</summary>
+      <returns>A <see cref="T:System.String"></see> that specifies the pickup directory for mail messages.</returns>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.Port">
+      <summary>Gets or sets the port used for SMTP transactions.</summary>
+      <returns>An <see cref="T:System.Int32"></see> that contains the port number on the SMTP host. The default value is 25.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value specified for a set operation is less than or equal to zero.</exception>
+      <exception cref="T:System.InvalidOperationException">You cannot change the value of this property when an email is being sent.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.Send(System.Net.Mail.MailMessage)">
+      <summary>Sends the specified message to an SMTP server for delivery.</summary>
+      <param name="message">A <see cref="T:System.Net.Mail.MailMessage"></see> that contains the message to send.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="message">message</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">This <see cref="System.Net.Mail.SmtpClient"></see> has a <see cref="System.Net.Mail.SmtpClient.SendAsync*"></see> call in progress.  
+ -or-  
+ <see cref="System.Net.Mail.MailMessage.From"></see> is <see langword="null"></see>.  
+ -or-  
+ There are no recipients specified in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, and <see cref="System.Net.Mail.MailMessage.Bcc"></see> properties.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is <see langword="null"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is equal to the empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Port"></see> is zero, a negative number, or greater than 65,535.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been disposed.</exception>
+      <exception cref="T:System.Net.Mail.SmtpException">The connection to the SMTP server failed.  
+ -or-  
+ Authentication failed.  
+ -or-  
+ The operation timed out.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true"></see> but the <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory"></see> or <see cref="System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true,"></see> but the SMTP mail server did not advertise STARTTLS in the response to the EHLO command.</exception>
+      <exception cref="T:System.Net.Mail.SmtpFailedRecipientException">The <paramref name="message">message</paramref> could not be delivered to one of the recipients in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, or <see cref="System.Net.Mail.MailMessage.Bcc"></see>.</exception>
+      <exception cref="T:System.Net.Mail.SmtpFailedRecipientsException">The <paramref name="message">message</paramref> could not be delivered to two or more of the recipients in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, or <see cref="System.Net.Mail.MailMessage.Bcc"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.Send(System.String,System.String,System.String,System.String)">
+      <summary>Sends the specified email message to an SMTP server for delivery. The message sender, recipients, subject, and message body are specified using <see cref="T:System.String"></see> objects.</summary>
+      <param name="from">A <see cref="T:System.String"></see> that contains the address information of the message sender.</param>
+      <param name="recipients"></param>
+      <param name="subject">A <see cref="T:System.String"></see> that contains the subject line for the message.</param>
+      <param name="body">A <see cref="T:System.String"></see> that contains the message body.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="recipients">recipients</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="from">from</paramref> is <see cref="System.String.Empty"></see>.  
+ -or-  
+ <paramref name="recipients">recipients</paramref> is <see cref="System.String.Empty"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">This <see cref="System.Net.Mail.SmtpClient"></see> has a <see cref="System.Net.Mail.SmtpClient.SendAsync*"></see> call in progress.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is <see langword="null"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is equal to the empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Port"></see> is zero, a negative number, or greater than 65,535.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been disposed.</exception>
+      <exception cref="T:System.Net.Mail.SmtpException">The connection to the SMTP server failed.  
+ -or-  
+ Authentication failed.  
+ -or-  
+ The operation timed out.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true"></see> but the <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory"></see> or <see cref="System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true,"></see> but the SMTP mail server did not advertise STARTTLS in the response to the EHLO command.</exception>
+      <exception cref="T:System.Net.Mail.SmtpFailedRecipientException">The <paramref name="message">message</paramref> could not be delivered to one of the recipients in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, or <see cref="System.Net.Mail.MailMessage.Bcc"></see>.</exception>
+      <exception cref="T:System.Net.Mail.SmtpFailedRecipientsException">The <paramref name="message">message</paramref> could not be delivered to two or more of the recipients in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, or <see cref="System.Net.Mail.MailMessage.Bcc"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.SendAsync(System.Net.Mail.MailMessage,System.Object)">
+      <summary>Sends the specified email message to an SMTP server for delivery. This method does not block the calling thread and allows the caller to pass an object to the method that is invoked when the operation completes.</summary>
+      <param name="message">A <see cref="T:System.Net.Mail.MailMessage"></see> that contains the message to send.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="message">message</paramref> is <see langword="null"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.MailMessage.From"></see> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">This <see cref="System.Net.Mail.SmtpClient"></see> has a <see cref="System.Net.Mail.SmtpClient.SendAsync*"></see> call in progress.  
+ -or-  
+ There are no recipients specified in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, and <see cref="System.Net.Mail.MailMessage.Bcc"></see> properties.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is <see langword="null"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is equal to the empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Port"></see> is zero, a negative number, or greater than 65,535.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been disposed.</exception>
+      <exception cref="T:System.Net.Mail.SmtpException">The connection to the SMTP server failed.  
+ -or-  
+ Authentication failed.  
+ -or-  
+ The operation timed out.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true"></see> but the <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory"></see> or <see cref="System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true,"></see> but the SMTP mail server did not advertise STARTTLS in the response to the EHLO command.  
+ -or-  
+ The <paramref name="message">message</paramref> could not be delivered to one or more of the recipients in <see cref="System.Net.Mail.MailMessage.To"></see>, <see cref="System.Net.Mail.MailMessage.CC"></see>, or <see cref="System.Net.Mail.MailMessage.Bcc"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.SendAsync(System.String,System.String,System.String,System.String,System.Object)">
+      <summary>Sends an email message to an SMTP server for delivery. The message sender, recipients, subject, and message body are specified using <see cref="T:System.String"></see> objects. This method does not block the calling thread and allows the caller to pass an object to the method that is invoked when the operation completes.</summary>
+      <param name="from">A <see cref="T:System.String"></see> that contains the address information of the message sender.</param>
+      <param name="recipients"></param>
+      <param name="subject">A <see cref="T:System.String"></see> that contains the subject line for the message.</param>
+      <param name="body">A <see cref="T:System.String"></see> that contains the message body.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="recipient">recipient</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="from">from</paramref> is <see cref="System.String.Empty"></see>.  
+ -or-  
+ <paramref name="recipient">recipient</paramref> is <see cref="System.String.Empty"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">This <see cref="System.Net.Mail.SmtpClient"></see> has a <see cref="System.Net.Mail.SmtpClient.SendAsync*"></see> call in progress.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is <see langword="null"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Host"></see> is equal to the empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.Network"></see> and <see cref="System.Net.Mail.SmtpClient.Port"></see> is zero, a negative number, or greater than 65,535.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been disposed.</exception>
+      <exception cref="T:System.Net.Mail.SmtpException">The connection to the SMTP server failed.  
+ -or-  
+ Authentication failed.  
+ -or-  
+ The operation timed out.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true"></see> but the <see cref="System.Net.Mail.SmtpClient.DeliveryMethod"></see> property is set to <see cref="System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory"></see> or <see cref="System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis"></see>.  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.EnableSsl"></see> is set to <see langword="true,"></see> but the SMTP mail server did not advertise STARTTLS in the response to the EHLO command.  
+ -or-  
+ The message could not be delivered to one or more of the recipients in <paramref name="recipients">recipients</paramref>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.SendAsyncCancel">
+      <summary>Cancels an asynchronous operation to send an email message.</summary>
+      <exception cref="T:System.ObjectDisposedException">This object has been disposed.</exception>
+    </member>
+    <member name="E:System.Net.Mail.SmtpClient.SendCompleted">
+      <summary>Occurs when an asynchronous email send operation completes.</summary>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.SendMailAsync(System.Net.Mail.MailMessage)">
+      <summary>Sends the specified message to an SMTP server for delivery as an asynchronous operation.</summary>
+      <param name="message">A <see cref="T:System.Net.Mail.MailMessage"></see> that contains the message to send.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="message">message</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.SmtpClient.SendMailAsync(System.String,System.String,System.String,System.String)">
+      <summary>Sends the specified message to an SMTP server for delivery as an asynchronous operation. . The message sender, recipients, subject, and message body are specified using <see cref="T:System.String"></see> objects.</summary>
+      <param name="from">A <see cref="T:System.String"></see> that contains the address information of the message sender.</param>
+      <param name="recipients">A <see cref="T:System.String"></see> that contains the addresses that the message is sent to.</param>
+      <param name="subject">A <see cref="T:System.String"></see> that contains the subject line for the message.</param>
+      <param name="body">A <see cref="T:System.String"></see> that contains the message body.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="recipients">recipients</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="from">from</paramref> is <see cref="System.String.Empty"></see>.  
+ -or-  
+ <paramref name="recipients">recipients</paramref> is <see cref="System.String.Empty"></see>.</exception>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.ServicePoint">
+      <summary>Gets the network connection used to transmit the email message.</summary>
+      <returns>A <see cref="T:System.Net.ServicePoint"></see> that connects to the <see cref="P:System.Net.Mail.SmtpClient.Host"></see> property used for SMTP.</returns>
+      <exception cref="T:System.InvalidOperationException"><see cref="System.Net.Mail.SmtpClient.Host"></see> is <see langword="null"></see> or the empty string (&amp;quot;&amp;quot;).  
+ -or-  
+ <see cref="System.Net.Mail.SmtpClient.Port"></see> is zero.</exception>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.TargetName">
+      <summary>Gets or sets the Service Provider Name (SPN) to use for authentication when using extended protection.</summary>
+      <returns>A <see cref="T:System.String"></see> that specifies the SPN to use for extended protection. The default value for this SPN is of the form &amp;quot;SMTPSVC/&amp;lt;host&amp;gt;&amp;quot; where &amp;lt;host&amp;gt; is the hostname of the SMTP mail server.</returns>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.Timeout">
+      <summary>Gets or sets a value that specifies the amount of time after which a synchronous <see cref="Overload:System.Net.Mail.SmtpClient.Send"></see> call times out.</summary>
+      <returns>An <see cref="T:System.Int32"></see> that specifies the time-out value in milliseconds. The default value is 100,000 (100 seconds).</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value specified for a set operation was less than zero.</exception>
+      <exception cref="T:System.InvalidOperationException">You cannot change the value of this property when an email is being sent.</exception>
+    </member>
+    <member name="P:System.Net.Mail.SmtpClient.UseDefaultCredentials">
+      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that controls whether the <see cref="P:System.Net.CredentialCache.DefaultCredentials"></see> are sent with requests.</summary>
+      <returns><see langword="true"></see> if the default credentials are used; otherwise <see langword="false"></see>. The default value is <see langword="false"></see>.</returns>
+      <exception cref="T:System.InvalidOperationException">You cannot change the value of this property when an email is being sent.</exception>
+    </member>
+    <member name="T:System.Net.Mail.SendCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.Mail.SmtpClient.SendCompleted"></see> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">An <see cref="T:System.ComponentModel.AsyncCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.Mail.MailPriority">
+      <summary>Specifies the priority of a <see cref="T:System.Net.Mail.MailMessage"></see>.</summary>
+    </member>
+    <member name="F:System.Net.Mail.MailPriority.High">
+      <summary>The email has high priority.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.MailPriority.Low">
+      <summary>The email has low priority.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.MailPriority.Normal">
+      <summary>The email has normal priority.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mail.MailMessage">
+      <summary>Represents an email message that can be sent using the <see cref="T:System.Net.Mail.SmtpClient"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.#ctor">
+      <summary>Initializes an empty instance of the <see cref="T:System.Net.Mail.MailMessage"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.#ctor(System.Net.Mail.MailAddress,System.Net.Mail.MailAddress)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailMessage"></see> class by using the specified <see cref="T:System.Net.Mail.MailAddress"></see> class objects.</summary>
+      <param name="from">A <see cref="T:System.Net.Mail.MailAddress"></see> that contains the address of the sender of the email message.</param>
+      <param name="to">A <see cref="T:System.Net.Mail.MailAddress"></see> that contains the address of the recipient of the email message.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="to">to</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="from">from</paramref> or <paramref name="to">to</paramref> is malformed.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailMessage"></see> class by using the specified <see cref="T:System.String"></see> class objects.</summary>
+      <param name="from">A <see cref="T:System.String"></see> that contains the address of the sender of the email message.</param>
+      <param name="to">A <see cref="T:System.String"></see> that contains the addresses of the recipients of the email message.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="to">to</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="from">from</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).  
+ -or-  
+ <paramref name="to">to</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="from">from</paramref> or <paramref name="to">to</paramref> is malformed.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailMessage"></see> class.</summary>
+      <param name="from">A <see cref="T:System.String"></see> that contains the address of the sender of the email message.</param>
+      <param name="to">A <see cref="T:System.String"></see> that contains the address of the recipient of the email message.</param>
+      <param name="subject">A <see cref="T:System.String"></see> that contains the subject text.</param>
+      <param name="body">A <see cref="T:System.String"></see> that contains the message body.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="from">from</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="to">to</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="from">from</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).  
+ -or-  
+ <paramref name="to">to</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="from">from</paramref> or <paramref name="to">to</paramref> is malformed.</exception>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.AlternateViews">
+      <summary>Gets the attachment collection used to store alternate forms of the message body.</summary>
+      <returns>A writable <see cref="T:System.Net.Mail.AlternateViewCollection"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Attachments">
+      <summary>Gets the attachment collection used to store data attached to this email message.</summary>
+      <returns>A writable <see cref="T:System.Net.Mail.AttachmentCollection"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Bcc">
+      <summary>Gets the address collection that contains the blind carbon copy (BCC) recipients for this email message.</summary>
+      <returns>A writable <see cref="T:System.Net.Mail.MailAddressCollection"></see> object.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Body">
+      <summary>Gets or sets the message body.</summary>
+      <returns>A <see cref="T:System.String"></see> value that contains the body text.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.BodyEncoding">
+      <summary>Gets or sets the encoding used to encode the message body.</summary>
+      <returns>An <see cref="T:System.Text.Encoding"></see> applied to the contents of the <see cref="P:System.Net.Mail.MailMessage.Body"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.BodyTransferEncoding">
+      <summary>Gets or sets the transfer encoding used to encode the message body.</summary>
+      <returns>Returns <see cref="T:System.Net.Mime.TransferEncoding"></see>.  
+ A <see cref="T:System.Net.Mime.TransferEncoding"></see> applied to the contents of the <see cref="P:System.Net.Mail.MailMessage.Body"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.CC">
+      <summary>Gets the address collection that contains the carbon copy (CC) recipients for this email message.</summary>
+      <returns>A writable <see cref="T:System.Net.Mail.MailAddressCollection"></see> object.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.DeliveryNotificationOptions">
+      <summary>Gets or sets the delivery notifications for this email message.</summary>
+      <returns>A <see cref="T:System.Net.Mail.DeliveryNotificationOptions"></see> value that contains the delivery notifications for this message.</returns>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Mail.MailMessage"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="M:System.Net.Mail.MailMessage.Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.Net.Mail.MailMessage"></see>.</summary>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.From">
+      <summary>Gets or sets the from address for this email message.</summary>
+      <returns>A <see cref="T:System.Net.Mail.MailAddress"></see> that contains the from address information.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Headers">
+      <summary>Gets the email headers that are transmitted with this email message.</summary>
+      <returns>A <see cref="T:System.Collections.Specialized.NameValueCollection"></see> that contains the email headers.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.HeadersEncoding">
+      <summary>Gets or sets the encoding used for the user-defined custom headers for this email message.</summary>
+      <returns>The encoding used for user-defined custom headers for this email message.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.IsBodyHtml">
+      <summary>Gets or sets a value indicating whether the mail message body is in HTML.</summary>
+      <returns><see langword="true"></see> if the message body is in HTML; else <see langword="false"></see>. The default is <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Priority">
+      <summary>Gets or sets the priority of this email message.</summary>
+      <returns>A <see cref="T:System.Net.Mail.MailPriority"></see> that contains the priority of this message.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.ReplyTo">
+      <summary>Gets or sets the ReplyTo address for the mail message.</summary>
+      <returns>A MailAddress that indicates the value of the <see cref="P:System.Net.Mail.MailMessage.ReplyTo"></see> field.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.ReplyToList">
+      <summary>Gets the list of addresses to reply to for the mail message.</summary>
+      <returns>The list of the addresses to reply to for the mail message.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Sender">
+      <summary>Gets or sets the sender&amp;#39;s address for this email message.</summary>
+      <returns>A <see cref="T:System.Net.Mail.MailAddress"></see> that contains the sender&amp;#39;s address information.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.Subject">
+      <summary>Gets or sets the subject line for this email message.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the subject content.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.SubjectEncoding">
+      <summary>Gets or sets the encoding used for the subject content for this email message.</summary>
+      <returns>An <see cref="T:System.Text.Encoding"></see> that was used to encode the <see cref="P:System.Net.Mail.MailMessage.Subject"></see> property.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailMessage.To">
+      <summary>Gets the address collection that contains the recipients of this email message.</summary>
+      <returns>A writable <see cref="T:System.Net.Mail.MailAddressCollection"></see> object.</returns>
+    </member>
+    <member name="T:System.Net.Mail.MailAddressCollection">
+      <summary>Store email addresses that are associated with an email message.</summary>
+    </member>
+    <member name="M:System.Net.Mail.MailAddressCollection.#ctor">
+      <summary>Initializes an empty instance of the <see cref="T:System.Net.Mail.MailAddressCollection"></see> class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.MailAddressCollection.Add(System.String)">
+      <summary>Add a list of email addresses to the collection.</summary>
+      <param name="addresses">The email addresses to add to the <see cref="T:System.Net.Mail.MailAddressCollection"></see>. Multiple email addresses must be separated with a comma character (&amp;quot;,&amp;quot;).</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="addresses">addresses</paramref> parameter is null.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="addresses">addresses</paramref> parameter is an empty string.</exception>
+      <exception cref="T:System.FormatException">The <paramref name="addresses">addresses</paramref> parameter contains an email address that is invalid or not supported.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailAddressCollection.InsertItem(System.Int32,System.Net.Mail.MailAddress)">
+      <summary>Inserts an email address into the <see cref="T:System.Net.Mail.MailAddressCollection"></see>, at the specified location.</summary>
+      <param name="index">The location at which to insert the email address that is specified by item.</param>
+      <param name="item">The email address to be inserted into the collection.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="item">item</paramref> parameter is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailAddressCollection.SetItem(System.Int32,System.Net.Mail.MailAddress)">
+      <summary>Replaces the element at the specified index.</summary>
+      <param name="index">The index of the email address element to be replaced.</param>
+      <param name="item">An email address that will replace the element in the collection.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="item">item</paramref> parameter is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailAddressCollection.ToString">
+      <summary>Returns a string representation of the email addresses in this <see cref="T:System.Net.Mail.MailAddressCollection"></see> object.</summary>
+      <returns>A <see cref="T:System.String"></see> containing the email addresses in this collection.</returns>
+    </member>
+    <member name="T:System.Net.Mail.MailAddress">
+      <summary>Represents the address of an electronic mail sender or recipient.</summary>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailAddress"></see> class using the specified address.</summary>
+      <param name="address">A <see cref="T:System.String"></see> that contains an email address.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="address">address</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="address">address</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="address">address</paramref> is not in a recognized format.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailAddress"></see> class using the specified address and display name.</summary>
+      <param name="address">A <see cref="T:System.String"></see> that contains an email address.</param>
+      <param name="displayName">A <see cref="T:System.String"></see> that contains the display name associated with address. This parameter can be <see langword="null"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="address">address</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="address">address</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="address">address</paramref> is not in a recognized format.  
+ -or-  
+ <paramref name="address">address</paramref> contains non-ASCII characters.</exception>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.#ctor(System.String,System.String,System.Text.Encoding)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.MailAddress"></see> class using the specified address, display name, and encoding.</summary>
+      <param name="address">A <see cref="T:System.String"></see> that contains an email address.</param>
+      <param name="displayName">A <see cref="T:System.String"></see> that contains the display name associated with address.</param>
+      <param name="displayNameEncoding">The <see cref="T:System.Text.Encoding"></see> that defines the character set used for displayName.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="address">address</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="displayName">displayName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="address">address</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).  
+ -or-  
+ <paramref name="displayName">displayName</paramref> is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+      <exception cref="T:System.FormatException"><paramref name="address">address</paramref> is not in a recognized format.  
+ -or-  
+ <paramref name="address">address</paramref> contains non-ASCII characters.</exception>
+    </member>
+    <member name="P:System.Net.Mail.MailAddress.Address">
+      <summary>Gets the email address specified when this instance was created.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the email address.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailAddress.DisplayName">
+      <summary>Gets the display name composed from the display name and address information specified when this instance was created.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the display name; otherwise, <see cref="F:System.String.Empty"></see> (&amp;quot;&amp;quot;) if no display name information was specified when this instance was created.</returns>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.Equals(System.Object)">
+      <summary>Compares two mail addresses.</summary>
+      <param name="value"></param>
+      <returns><see langword="true"></see> if the two mail addresses are equal; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.GetHashCode">
+      <summary>Returns a hash value for a mail address.</summary>
+      <returns>An integer hash value.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailAddress.Host">
+      <summary>Gets the host portion of the address specified when this instance was created.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the name of the host computer that accepts email for the <see cref="P:System.Net.Mail.MailAddress.User"></see> property.</returns>
+    </member>
+    <member name="M:System.Net.Mail.MailAddress.ToString">
+      <summary>Returns a string representation of this instance.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the contents of this <see cref="T:System.Net.Mail.MailAddress"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.MailAddress.User">
+      <summary>Gets the user information from the address specified when this instance was created.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the user name portion of the <see cref="P:System.Net.Mail.MailAddress.Address"></see>.</returns>
+    </member>
+    <member name="T:System.Net.Mail.LinkedResourceCollection">
+      <summary>Stores linked resources to be sent as part of an email message.</summary>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResourceCollection.Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.Net.Mail.LinkedResourceCollection"></see>.</summary>
+    </member>
+    <member name="T:System.Net.Mail.LinkedResource">
+      <summary>Represents an embedded external resource in an email attachment, such as an image in an HTML attachment.</summary>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> using the supplied <see cref="T:System.IO.Stream"></see>.</summary>
+      <param name="contentStream">A stream that contains the content for this embedded resource.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> using the specified file name.</summary>
+      <param name="fileName">The file name holding the content for this embedded resource.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.IO.Stream,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> with the values supplied by <see cref="T:System.IO.Stream"></see> and <see cref="T:System.Net.Mime.ContentType"></see>.</summary>
+      <param name="contentStream">A stream that contains the content for this embedded resource.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.IO.Stream,System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> with the specified <see cref="T:System.IO.Stream"></see> and media type.</summary>
+      <param name="contentStream">A stream that contains the content for this embedded resource.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.String,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> with the specified file name and content type.</summary>
+      <param name="fileName">The file name that holds the content for this embedded resource.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.LinkedResource"></see> with the specified file name and media type.</summary>
+      <param name="fileName">The file name that holds the content for this embedded resource.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="P:System.Net.Mail.LinkedResource.ContentLink">
+      <summary>Gets or sets a URI that the resource must match.</summary>
+      <returns>If <see cref="P:System.Net.Mail.LinkedResource.ContentLink"></see> is a relative URI, the recipient of the message must resolve it.</returns>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.CreateLinkedResourceFromString(System.String)">
+      <summary>Creates a <see cref="T:System.Net.Mail.LinkedResource"></see> object from a string to be included in an email attachment as an embedded resource. The default media type is plain text, and the default content type is ASCII.</summary>
+      <param name="content">A string that contains the embedded resource to be included in the email attachment.</param>
+      <returns>A <see cref="T:System.Net.Mail.LinkedResource"></see> object that contains the embedded resource to be included in the email attachment.</returns>
+      <exception cref="T:System.ArgumentNullException">The specified content string is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.CreateLinkedResourceFromString(System.String,System.Net.Mime.ContentType)">
+      <summary>Creates a <see cref="T:System.Net.Mail.LinkedResource"></see> object from a string to be included in an email attachment as an embedded resource, with the specified content type, and media type as plain text.</summary>
+      <param name="content">A string that contains the embedded resource to be included in the email attachment.</param>
+      <param name="contentType">The type of the content.</param>
+      <returns>A <see cref="T:System.Net.Mail.LinkedResource"></see> object that contains the embedded resource to be included in the email attachment.</returns>
+      <exception cref="T:System.ArgumentNullException">The specified content string is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.LinkedResource.CreateLinkedResourceFromString(System.String,System.Text.Encoding,System.String)">
+      <summary>Creates a <see cref="T:System.Net.Mail.LinkedResource"></see> object from a string to be included in an email attachment as an embedded resource, with the specified content type, and media type.</summary>
+      <param name="content">A string that contains the embedded resource to be included in the email attachment.</param>
+      <param name="contentEncoding">The type of the content.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <returns>A <see cref="T:System.Net.Mail.LinkedResource"></see> object that contains the embedded resource to be included in the email attachment.</returns>
+      <exception cref="T:System.ArgumentNullException">The specified content string is null.</exception>
+    </member>
+    <member name="T:System.Net.Mail.DeliveryNotificationOptions">
+      <summary>Describes the delivery notification options for email.</summary>
+    </member>
+    <member name="F:System.Net.Mail.DeliveryNotificationOptions.Delay">
+      <summary>Notify if the delivery is delayed.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.DeliveryNotificationOptions.Never">
+      <summary>A notification should not be generated under any circumstances.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.DeliveryNotificationOptions.None">
+      <summary>No notification information will be sent. The mail server will utilize its configured behavior to determine whether it should generate a delivery notification.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.DeliveryNotificationOptions.OnFailure">
+      <summary>Notify if the delivery is unsuccessful.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Mail.DeliveryNotificationOptions.OnSuccess">
+      <summary>Notify if the delivery is successful.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Mail.AttachmentCollection">
+      <summary>Stores attachments to be sent as part of an email message.</summary>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentCollection.Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.Net.Mail.AttachmentCollection"></see>.</summary>
+    </member>
+    <member name="T:System.Net.Mail.AttachmentBase">
+      <summary>Base class that represents an email attachment. Classes <see cref="T:System.Net.Mail.Attachment"></see>, <see cref="T:System.Net.Mail.AlternateView"></see>, and <see cref="T:System.Net.Mail.LinkedResource"></see> derive from this class.</summary>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.IO.Stream)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified <see cref="T:System.IO.Stream"></see>.</summary>
+      <param name="contentStream">A stream containing the content for this attachment.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.String)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified file name.</summary>
+      <param name="fileName">The file name holding the content for this attachment.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.IO.Stream,System.Net.Mime.ContentType)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified <see cref="T:System.IO.Stream"></see> and <see cref="T:System.Net.Mime.ContentType"></see>.</summary>
+      <param name="contentStream">A stream containing the content for this attachment.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.IO.Stream,System.String)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified <see cref="T:System.IO.Stream"></see> and media type.</summary>
+      <param name="contentStream">A stream containing the content for this attachment.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.String,System.Net.Mime.ContentType)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified file name and content type.</summary>
+      <param name="fileName">The file name holding the content for this attachment.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.#ctor(System.String,System.String)">
+      <summary>Instantiates an <see cref="T:System.Net.Mail.AttachmentBase"></see> with the specified file name and media type.</summary>
+      <param name="fileName">The file name holding the content for this attachment.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="P:System.Net.Mail.AttachmentBase.ContentId">
+      <summary>Gets or sets the MIME content ID for this attachment.</summary>
+      <returns>A <see cref="T:System.String"></see> holding the content ID.</returns>
+      <exception cref="T:System.ArgumentNullException">Attempted to set <see cref="System.Net.Mail.AttachmentBase.ContentId"></see> to <see langword="null"></see>.</exception>
+    </member>
+    <member name="P:System.Net.Mail.AttachmentBase.ContentStream">
+      <summary>Gets the content stream of this attachment.</summary>
+      <returns>A <see cref="T:System.IO.Stream"></see>.  
+ The content stream of this attachment.</returns>
+    </member>
+    <member name="P:System.Net.Mail.AttachmentBase.ContentType">
+      <summary>Gets the content type of this attachment.</summary>
+      <returns>A <see cref="T:System.Net.Mime.ContentType"></see>.  
+ The content type for this attachment.</returns>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.Dispose">
+      <summary>Releases the resources used by the <see cref="T:System.Net.Mail.AttachmentBase"></see>.</summary>
+    </member>
+    <member name="M:System.Net.Mail.AttachmentBase.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Mail.AttachmentBase"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="P:System.Net.Mail.AttachmentBase.TransferEncoding">
+      <summary>Gets or sets the encoding of this attachment.</summary>
+      <returns>A <see cref="T:System.Net.Mime.TransferEncoding"></see>.  
+ The encoding for this attachment.</returns>
+    </member>
+    <member name="T:System.Net.Mail.Attachment">
+      <summary>Represents an attachment to an email.</summary>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified content string.</summary>
+      <param name="fileName">A <see cref="T:System.String"></see> that contains a file path to use to create this attachment.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="fileName">fileName</paramref> is empty.</exception>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.IO.Stream,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified stream and content type.</summary>
+      <param name="contentStream">A readable <see cref="T:System.IO.Stream"></see> that contains the content for this attachment.</param>
+      <param name="contentType">A <see cref="T:System.Net.Mime.ContentType"></see> that describes the data in stream.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentType">contentType</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.IO.Stream,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified stream and name.</summary>
+      <param name="contentStream">A readable <see cref="T:System.IO.Stream"></see> that contains the content for this attachment.</param>
+      <param name="name">A <see cref="T:System.String"></see> that contains the value for the <see cref="P:System.Net.Mime.ContentType.Name"></see> property of the <see cref="T:System.Net.Mime.ContentType"></see> associated with this attachment. This value can be <see langword="null"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.String,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified content string and <see cref="T:System.Net.Mime.ContentType"></see>.</summary>
+      <param name="fileName">A <see cref="T:System.String"></see> that contains a file path to use to create this attachment.</param>
+      <param name="contentType">A <see cref="T:System.Net.Mime.ContentType"></see> that describes the data in string.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="mediaType">mediaType</paramref> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified content string and MIME type information.</summary>
+      <param name="fileName">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="mediaType">A <see cref="T:System.String"></see> that contains the MIME Content-Header information for this attachment. This value can be <see langword="null"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.#ctor(System.IO.Stream,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Mail.Attachment"></see> class with the specified stream, name, and MIME type information.</summary>
+      <param name="contentStream">A readable <see cref="T:System.IO.Stream"></see> that contains the content for this attachment.</param>
+      <param name="name">A <see cref="T:System.String"></see> that contains the value for the <see cref="P:System.Net.Mime.ContentType.Name"></see> property of the <see cref="T:System.Net.Mime.ContentType"></see> associated with this attachment. This value can be <see langword="null"></see>.</param>
+      <param name="mediaType">A <see cref="T:System.String"></see> that contains the MIME Content-Header information for this attachment. This value can be <see langword="null"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="stream">stream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not in the correct format.</exception>
+    </member>
+    <member name="P:System.Net.Mail.Attachment.ContentDisposition">
+      <summary>Gets the MIME content disposition for this attachment.</summary>
+      <returns>A <see cref="T:System.Net.Mime.ContentDisposition"></see> that provides the presentation information for this attachment.</returns>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.CreateAttachmentFromString(System.String,System.Net.Mime.ContentType)">
+      <summary>Creates a mail attachment using the content from the specified string, and the specified <see cref="T:System.Net.Mime.ContentType"></see>.</summary>
+      <param name="content">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="contentType">A <see cref="T:System.Net.Mime.ContentType"></see> object that represents the Multipurpose Internet Mail Exchange (MIME) protocol Content-Type header to be used.</param>
+      <returns>An object of type <see cref="T:System.Net.Mail.Attachment"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.CreateAttachmentFromString(System.String,System.String)">
+      <summary>Creates a mail attachment using the content from the specified string, and the specified MIME content type name.</summary>
+      <param name="content">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="name">The MIME content type name value in the content type associated with this attachment.</param>
+      <returns>An object of type <see cref="T:System.Net.Mail.Attachment"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Mail.Attachment.CreateAttachmentFromString(System.String,System.String,System.Text.Encoding,System.String)">
+      <summary>Creates a mail attachment using the content from the specified string, the specified MIME content type name, character encoding, and MIME header information for the attachment.</summary>
+      <param name="content">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="name">The MIME content type name value in the content type associated with this attachment.</param>
+      <param name="contentEncoding">An <see cref="T:System.Text.Encoding"></see>. This value can be <see langword="null"></see>.</param>
+      <param name="mediaType">A <see cref="T:System.String"></see> that contains the MIME Content-Header information for this attachment. This value can be <see langword="null"></see>.</param>
+      <returns>An object of type <see cref="T:System.Net.Mail.Attachment"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Mail.Attachment.Name">
+      <summary>Gets or sets the MIME content type name value in the content type associated with this attachment.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the value for the content type <paramref name="name">name</paramref> represented by the <see cref="P:System.Net.Mime.ContentType.Name"></see> property.</returns>
+      <exception cref="T:System.ArgumentNullException">The value specified for a set operation is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The value specified for a set operation is <see cref="System.String.Empty"></see> (&amp;quot;&amp;quot;).</exception>
+    </member>
+    <member name="P:System.Net.Mail.Attachment.NameEncoding">
+      <summary>Specifies the encoding for the <see cref="T:System.Net.Mail.Attachment"></see><see cref="P:System.Net.Mail.Attachment.Name"></see>.</summary>
+      <returns>An <see cref="T:System.Text.Encoding"></see> value that specifies the type of name encoding. The default value is determined from the name of the attachment.</returns>
+    </member>
+    <member name="T:System.Net.Mail.AlternateViewCollection">
+      <summary>Represents a collection of <see cref="T:System.Net.Mail.AlternateView"></see> objects.</summary>
+    </member>
+    <member name="M:System.Net.Mail.AlternateViewCollection.Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.Net.Mail.AlternateViewCollection"></see>.</summary>
+    </member>
+    <member name="T:System.Net.Mail.AlternateView">
+      <summary>Represents the format to view an email message.</summary>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified <see cref="T:System.IO.Stream"></see>.</summary>
+      <param name="contentStream">A stream that contains the content for this view.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified file name.</summary>
+      <param name="fileName">The name of the file that contains the content for this alternate view.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred, such as a disk error.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The access requested is not permitted by the operating system for the specified file handle, such as when access is Write or ReadWrite and the file handle is set for read-only access.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.IO.Stream,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified <see cref="T:System.IO.Stream"></see> and <see cref="T:System.Net.Mime.ContentType"></see>.</summary>
+      <param name="contentStream">A stream that contains the content for this attachment.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.IO.Stream,System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified <see cref="T:System.IO.Stream"></see> and media type.</summary>
+      <param name="contentStream">A stream that contains the content for this attachment.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="contentStream">contentStream</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.String,System.Net.Mime.ContentType)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified file name and content type.</summary>
+      <param name="fileName">The name of the file that contains the content for this alternate view.</param>
+      <param name="contentType">The type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="contentType">contentType</paramref> is not a valid value.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred, such as a disk error.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The access requested is not permitted by the operating system for the specified file handle, such as when access is Write or ReadWrite and the file handle is set for read-only access.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of <see cref="T:System.Net.Mail.AlternateView"></see> with the specified file name and media type.</summary>
+      <param name="fileName">The name of the file that contains the content for this alternate view.</param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="fileName">fileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.FormatException"><paramref name="mediaType">mediaType</paramref> is not a valid value.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred, such as a disk error.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The access requested is not permitted by the operating system for the specified file handle, such as when access is Write or ReadWrite and the file handle is set for read-only access.</exception>
+    </member>
+    <member name="P:System.Net.Mail.AlternateView.BaseUri">
+      <summary>Gets or sets the base URI to use for resolving relative URIs in the <see cref="T:System.Net.Mail.AlternateView"></see>.</summary>
+      <returns>A <see cref="T:System.Uri"></see>.  
+ The base <see cref="T:System.Uri"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.CreateAlternateViewFromString(System.String)">
+      <summary>Creates a <see cref="T:System.Net.Mail.AlternateView"></see> of an email message using the content specified in a <see cref="T:System.String"></see>.</summary>
+      <param name="content">The <see cref="T:System.String"></see> that contains the content of the email message.</param>
+      <returns>An <see cref="T:System.Net.Mail.AlternateView"></see> object that represents an alternate view of an email message.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="content">content</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.CreateAlternateViewFromString(System.String,System.Net.Mime.ContentType)">
+      <summary>Creates an <see cref="T:System.Net.Mail.AlternateView"></see> of an email message using the content specified in a <see cref="T:System.String"></see> and the specified MIME media type of the content.</summary>
+      <param name="content">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="contentType">A <see cref="T:System.Net.Mime.ContentType"></see> that describes the data in string.</param>
+      <returns>An <see cref="T:System.Net.Mail.AlternateView"></see> object that represents an alternate view of an email message.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="content">content</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.CreateAlternateViewFromString(System.String,System.Text.Encoding,System.String)">
+      <summary>Creates an <see cref="T:System.Net.Mail.AlternateView"></see> of an email message using the content specified in a <see cref="T:System.String"></see>, the specified text encoding, and MIME media type of the content.</summary>
+      <param name="content">A <see cref="T:System.String"></see> that contains the content for this attachment.</param>
+      <param name="contentEncoding"></param>
+      <param name="mediaType">The MIME media type of the content.</param>
+      <returns>An <see cref="T:System.Net.Mail.AlternateView"></see> object that represents an alternate view of an email message.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="content">content</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Net.Mail.AlternateView.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Mail.AlternateView"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="P:System.Net.Mail.AlternateView.LinkedResources">
+      <summary>Gets the set of embedded resources referred to by this attachment.</summary>
+      <returns>A <see cref="T:System.Net.Mail.LinkedResourceCollection"></see> object that stores the collection of linked resources to be sent as part of an email message.</returns>
+    </member>
+  </members>
+</doc>

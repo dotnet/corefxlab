@@ -1,0 +1,804 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.IO.IsolatedStorage</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.IsolatedStorage.IsolatedStorageScope">
+      <summary>Enumerates the levels of isolated storage scope that are supported by <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see>.</summary>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application">
+      <summary>Isolated storage scoped to the application.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly">
+      <summary>Isolated storage scoped to the identity of the assembly.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain">
+      <summary>Isolated storage scoped to the application domain identity.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.Machine">
+      <summary>Isolated storage scoped to the machine.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.None">
+      <summary>No isolated storage usage.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.Roaming">
+      <summary>The isolated store can be placed in a location on the file system that might roam (if roaming user data is enabled on the underlying operating system).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.IsolatedStorage.IsolatedStorageScope.User">
+      <summary>Isolated storage scoped by user identity.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.IsolatedStorage.IsolatedStorageFileStream">
+      <summary>Exposes a file within isolated storage.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode)">
+      <summary>Initializes a new instance of an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object giving access to the file designated by <paramref name="path">path</paramref> in the specified <paramref name="mode">mode</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory in <paramref name="path">path</paramref> does not exist.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see></exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, with the kind of <paramref name="access">access</paramref> requested.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.IsolatedStorage.IsolatedStorageFile)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, and in the context of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> specified by <paramref name="isf">isf</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="isf">The <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> in which to open the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see>.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException"><paramref name="isf">isf</paramref> does not have a quota.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, with the specified file <paramref name="access">access</paramref>, using the file sharing mode specified by <paramref name="share">share</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <param name="share">A bitwise combination of the <see cref="T:System.IO.FileShare"></see> values.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.IsolatedStorage.IsolatedStorageFile)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref> in the specified <paramref name="mode">mode</paramref>, with the specified file <paramref name="access">access</paramref>, and in the context of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> specified by <paramref name="isf">isf</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <param name="isf">The <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> in which to open the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see>.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store is closed.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException"><paramref name="isf">isf</paramref> does not have a quota.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, with the specified file <paramref name="access">access</paramref>, using the file sharing mode specified by <paramref name="share">share</paramref>, with the <paramref name="buffersize">buffersize</paramref> specified.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <param name="share">A bitwise combination of the <see cref="T:System.IO.FileShare"></see> values.</param>
+      <param name="bufferSize">The <see cref="T:System.IO.FileStream"></see> buffer size.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.IsolatedStorage.IsolatedStorageFile)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, with the specified file <paramref name="access">access</paramref>, using the file sharing mode specified by <paramref name="share">share</paramref>, and in the context of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> specified by <paramref name="isf">isf</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <param name="share">A bitwise combination of the <see cref="T:System.IO.FileShare"></see> values.</param>
+      <param name="isf">The <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> in which to open the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see>.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException"><paramref name="isf">isf</paramref> does not have a quota.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.IsolatedStorage.IsolatedStorageFile)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> class giving access to the file designated by <paramref name="path">path</paramref>, in the specified <paramref name="mode">mode</paramref>, with the specified file <paramref name="access">access</paramref>, using the file sharing mode specified by <paramref name="share">share</paramref>, with the <paramref name="buffersize">buffersize</paramref> specified, and in the context of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> specified by <paramref name="isf">isf</paramref>.</summary>
+      <param name="path">The relative path of the file within isolated storage.</param>
+      <param name="mode">One of the <see cref="T:System.IO.FileMode"></see> values.</param>
+      <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess"></see> values.</param>
+      <param name="share">A bitwise combination of the <see cref="T:System.IO.FileShare"></see> values</param>
+      <param name="bufferSize">The <see cref="T:System.IO.FileStream"></see> buffer size.</param>
+      <param name="isf">The <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> in which to open the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see>.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="path">path</paramref> is badly formed.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException"><paramref name="isf">isf</paramref> does not have a quota.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous read.</summary>
+      <param name="buffer">The buffer to read data into.</param>
+      <param name="offset">The byte offset in buffer at which to begin reading.</param>
+      <param name="numBytes">The maximum number of bytes to read.</param>
+      <param name="userCallback">The method to call when the asynchronous read operation is completed. This parameter is optional.</param>
+      <param name="stateObject">The status of the asynchronous read.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that represents the asynchronous read, which is possibly still pending. This <see cref="T:System.IAsyncResult"></see> must be passed to this stream&amp;#39;s <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.EndRead(System.IAsyncResult)"></see> method to determine how many bytes were read. This can be done either by the same code that called <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see> or in a callback passed to <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</returns>
+      <exception cref="T:System.IO.IOException">An asynchronous read was attempted past the end of the file.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous write.</summary>
+      <param name="buffer">The buffer to write data to.</param>
+      <param name="offset">The byte offset in buffer at which to begin writing.</param>
+      <param name="numBytes">The maximum number of bytes to write.</param>
+      <param name="userCallback">The method to call when the asynchronous write operation is completed. This parameter is optional.</param>
+      <param name="stateObject">The status of the asynchronous write.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> that represents the asynchronous write, which is possibly still pending. This <see cref="T:System.IAsyncResult"></see> must be passed to this stream&amp;#39;s <see cref="M:System.IO.Stream.EndWrite(System.IAsyncResult)"></see> method to ensure that the write is complete, then frees resources appropriately. This can be done either by the same code that called <see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see> or in a callback passed to <see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</returns>
+      <exception cref="T:System.IO.IOException">An asynchronous write was attempted past the end of the file.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.CanRead">
+      <summary>Gets a Boolean value indicating whether the file can be read.</summary>
+      <returns><see langword="true"></see> if an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object can be read; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.CanSeek">
+      <summary>Gets a Boolean value indicating whether seek operations are supported.</summary>
+      <returns><see langword="true"></see> if an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object supports seek operations; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.CanWrite">
+      <summary>Gets a Boolean value indicating whether you can write to the file.</summary>
+      <returns><see langword="true"></see> if an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object can be written; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources</param>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.EndRead(System.IAsyncResult)">
+      <summary>Ends a pending asynchronous read request.</summary>
+      <param name="asyncResult">The pending asynchronous request.</param>
+      <returns>The number of bytes read from the stream, between zero and the number of requested bytes. Streams will only return zero at the end of the stream. Otherwise, they will block until at least one byte is available.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.EndWrite(System.IAsyncResult)">
+      <summary>Ends an asynchronous write.</summary>
+      <param name="asyncResult">The pending asynchronous I/O request to end.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="asyncResult">asyncResult</paramref> parameter is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Flush">
+      <summary>Clears buffers for this stream and causes any buffered data to be written to the file.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Flush(System.Boolean)">
+      <summary>Clears buffers for this stream and causes any buffered data to be written to the file, and also clears all intermediate file buffers.</summary>
+      <param name="flushToDisk"><see langword="true"></see> to flush all intermediate file buffers; otherwise, <see langword="false"></see>.</param>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.Handle">
+      <summary>Gets the file handle for the file that the current <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object encapsulates. Accessing this property is not permitted on an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object, and throws an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageException"></see>.</summary>
+      <returns>The file handle for the file that the current <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object encapsulates.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The <see cref="System.IO.IsolatedStorage.IsolatedStorageFileStream.Handle"></see> property always generates this exception.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.IsAsync">
+      <summary>Gets a Boolean value indicating whether the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object was opened asynchronously or synchronously.</summary>
+      <returns><see langword="true"></see> if the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object supports asynchronous access; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.Length">
+      <summary>Gets the length of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</summary>
+      <returns>The length of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object in bytes.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Lock(System.Int64,System.Int64)">
+      <summary>Prevents other processes from reading from or writing to the stream.</summary>
+      <param name="position">The starting position of the range to lock. The value of this parameter must be equal to or greater than 0 (zero).</param>
+      <param name="length">The number of bytes to lock.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="position">position</paramref> or <paramref name="length">length</paramref> is negative.</exception>
+      <exception cref="T:System.ObjectDisposedException">The file is closed.</exception>
+      <exception cref="T:System.IO.IOException">The process cannot access the file because another process has locked a portion of the file.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.Position">
+      <summary>Gets or sets the current position of the current <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</summary>
+      <returns>The current position of this <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The position cannot be set to a negative number.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Copies bytes from the current buffered <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object to an array.</summary>
+      <param name="buffer">The buffer to read.</param>
+      <param name="offset">The offset in the buffer at which to begin writing.</param>
+      <param name="count">The maximum number of bytes to read.</param>
+      <returns>The total number of bytes read into the <paramref name="buffer">buffer</paramref>. This can be less than the number of bytes requested if that many bytes are not currently available, or zero if the end of the stream is reached.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.ReadByte">
+      <summary>Reads a single byte from the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object in isolated storage.</summary>
+      <returns>The 8-bit unsigned integer value read from the isolated storage file.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFileStream.SafeFileHandle">
+      <summary>Gets a <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"></see> object that represents the operating system file handle for the file that the current <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object encapsulates.</summary>
+      <returns>A <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"></see> object that represents the operating system file handle for the file that the current <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object encapsulates.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The <see cref="System.IO.IsolatedStorage.IsolatedStorageFileStream.SafeFileHandle"></see> property always generates this exception.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Sets the current position of this <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object to the specified value.</summary>
+      <param name="offset">The new position of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</param>
+      <param name="origin">One of the <see cref="T:System.IO.SeekOrigin"></see> values.</param>
+      <returns>The new position in the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="origin">origin</paramref> must be one of the <see cref="System.IO.SeekOrigin"></see> values.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.SetLength(System.Int64)">
+      <summary>Sets the length of this <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object to the specified <paramref name="value">value</paramref>.</summary>
+      <param name="value">The new length of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="value">value</paramref> is a negative number.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Unlock(System.Int64,System.Int64)">
+      <summary>Allows other processes to access all or part of a file that was previously locked.</summary>
+      <param name="position">The starting position of the range to unlock. The value of this parameter must be equal to or greater than 0 (zero).</param>
+      <param name="length">The number of bytes to unlock.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="position">position</paramref> or <paramref name="length">length</paramref> is negative.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Writes a block of bytes to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object using data read from a byte array.</summary>
+      <param name="buffer">The buffer to write.</param>
+      <param name="offset">The byte offset in buffer from which to begin.</param>
+      <param name="count">The maximum number of bytes to write.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The write attempt exceeds the quota for the <see cref="System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFileStream.WriteByte(System.Byte)">
+      <summary>Writes a single byte to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</summary>
+      <param name="value">The byte value to write to the isolated storage file.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The write attempt exceeds the quota for the <see cref="System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> object.</exception>
+    </member>
+    <member name="T:System.IO.IsolatedStorage.IsolatedStorageFile">
+      <summary>Represents an isolated storage area containing files and directories.</summary>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.AvailableFreeSpace">
+      <summary>Gets a value that represents the amount of free space available for isolated storage.</summary>
+      <returns>The available free space for isolated storage, in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Close">
+      <summary>Closes a store previously opened with <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type,System.Type)"></see>, <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly"></see>, or <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForDomain"></see>.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CopyFile(System.String,System.String)">
+      <summary>Copies an existing file to a new file.</summary>
+      <param name="sourceFileName">The name of the file to copy.</param>
+      <param name="destinationFileName">The name of the destination file. This cannot be a directory or an existing file.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.FileNotFoundException"><paramref name="sourceFileName">sourceFileName</paramref> was not found.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException"><paramref name="sourceFileName">sourceFileName</paramref> was not found.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.  
+ -or-  
+ <paramref name="destinationFileName">destinationFileName</paramref> exists.  
+ -or-  
+ An I/O error has occurred.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CopyFile(System.String,System.String,System.Boolean)">
+      <summary>Copies an existing file to a new file, and optionally overwrites an existing file.</summary>
+      <param name="sourceFileName">The name of the file to copy.</param>
+      <param name="destinationFileName">The name of the destination file. This cannot be a directory.</param>
+      <param name="overwrite"><see langword="true"></see> if the destination file can be overwritten; otherwise, <see langword="false"></see>.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.FileNotFoundException"><paramref name="sourceFileName">sourceFileName</paramref> was not found.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException"><paramref name="sourceFileName">sourceFileName</paramref> was not found.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.  
+ -or-  
+ An I/O error has occurred.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CreateDirectory(System.String)">
+      <summary>Creates a directory in the isolated storage scope.</summary>
+      <param name="dir">The relative path of the directory to create within the isolated storage scope.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The current code has insufficient permissions to create isolated storage directory.</exception>
+      <exception cref="T:System.ArgumentNullException">The directory path is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CreateFile(System.String)">
+      <summary>Creates a file in the isolated store.</summary>
+      <param name="path">The relative path of the file to create.</param>
+      <returns>A new isolated storage file.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is malformed.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory in <paramref name="path">path</paramref> does not exist.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.CurrentSize">
+      <summary>Gets the current size of the isolated storage.</summary>
+      <returns>The total number of bytes of storage currently in use within the isolated storage scope.</returns>
+      <exception cref="T:System.InvalidOperationException">The property is unavailable. The current store has a roaming scope or is not open.</exception>
+      <exception cref="T:System.ObjectDisposedException">The current object size is undefined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.DeleteDirectory(System.String)">
+      <summary>Deletes a directory in the isolated storage scope.</summary>
+      <param name="dir">The relative path of the directory to delete within the isolated storage scope.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The directory could not be deleted.</exception>
+      <exception cref="T:System.ArgumentNullException">The directory path was <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.DeleteFile(System.String)">
+      <summary>Deletes a file in the isolated storage scope.</summary>
+      <param name="file">The relative path of the file to delete within the isolated storage scope.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The target file is open or the path is incorrect.</exception>
+      <exception cref="T:System.ArgumentNullException">The file path is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.DirectoryExists(System.String)">
+      <summary>Determines whether the specified path refers to an existing directory in the isolated store.</summary>
+      <param name="path">The path to test.</param>
+      <returns><see langword="true"></see> if <paramref name="path">path</paramref> refers to an existing directory in the isolated store and is not <see langword="null"></see>; otherwise, <see langword="false"></see>.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Dispose">
+      <summary>Releases all resources used by the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see>.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.FileExists(System.String)">
+      <summary>Determines whether the specified path refers to an existing file in the isolated store.</summary>
+      <param name="path">The path and file name to test.</param>
+      <returns><see langword="true"></see> if <paramref name="path">path</paramref> refers to an existing file in the isolated store and is not <see langword="null"></see>; otherwise, <see langword="false"></see>.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Finalize">
+      <summary>Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetCreationTime(System.String)">
+      <summary>Returns the creation date and time of a specified file or directory.</summary>
+      <param name="path">The path to the file or directory for which to obtain creation date and time information.</param>
+      <returns>The creation date and time for the specified file or directory. This value is expressed in local time.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetDirectoryNames">
+      <summary>Enumerates the directories at the root of an isolated store.</summary>
+      <returns>An array of relative paths of directories at the root of the isolated store. A zero-length array specifies that there are no directories at the root.</returns>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Caller does not have permission to enumerate directories.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">One or more directories are not found.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetDirectoryNames(System.String)">
+      <summary>Enumerates the directories in an isolated storage scope that match a given search pattern.</summary>
+      <param name="searchPattern">A search pattern. Both single-character (&amp;quot;?&amp;quot;) and multi-character (&amp;quot;*&amp;quot;) wildcards are supported.</param>
+      <returns>An array of the relative paths of directories in the isolated storage scope that match <paramref name="searchPattern">searchPattern</paramref>. A zero-length array specifies that there are no directories that match.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="searchPattern">searchPattern</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Caller does not have permission to enumerate directories resolved from <paramref name="searchPattern">searchPattern</paramref>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory or directories specified by <paramref name="searchPattern">searchPattern</paramref> are not found.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetEnumerator(System.IO.IsolatedStorage.IsolatedStorageScope)">
+      <summary>Gets the enumerator for the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> stores within an isolated storage scope.</summary>
+      <param name="scope">Represents the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> for which to return isolated stores. <see langword="User"></see> and <see langword="User|Roaming"></see> are the only <see langword="IsolatedStorageScope"></see> combinations supported.</param>
+      <returns>Enumerator for the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile"></see> stores within the specified isolated storage scope.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetFileNames">
+      <summary>Enumerates the file names at the root of an isolated store.</summary>
+      <returns>An array of relative paths of files at the root of the isolated store.  A zero-length array specifies that there are no files at the root.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">File paths from the isolated store root cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetFileNames(System.String)">
+      <summary>Gets the file names that match a search pattern.</summary>
+      <param name="searchPattern">A search pattern. Both single-character (&amp;quot;?&amp;quot;) and multi-character (&amp;quot;*&amp;quot;) wildcards are supported.</param>
+      <returns>An array of relative paths of files in the isolated storage scope that match <paramref name="searchPattern">searchPattern</paramref>. A zero-length array specifies that there are no files that match.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="searchPattern">searchPattern</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The file path specified by <paramref name="searchPattern">searchPattern</paramref> cannot be found.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetLastAccessTime(System.String)">
+      <summary>Returns the date and time a specified file or directory was last accessed.</summary>
+      <param name="path">The path to the file or directory for which to obtain last access date and time information.</param>
+      <returns>The date and time that the specified file or directory was last accessed. This value is expressed in local time.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetLastWriteTime(System.String)">
+      <summary>Returns the date and time a specified file or directory was last written to.</summary>
+      <param name="path">The path to the file or directory for which to obtain last write date and time information.</param>
+      <returns>The date and time that the specified file or directory was last written to. This value is expressed in local time.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForApplication">
+      <summary>Obtains machine-scoped isolated storage corresponding to the calling code&amp;#39;s application identity.</summary>
+      <returns>An object corresponding to the isolated storage scope based on the calling code&amp;#39;s application identity.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The application identity of the caller could not be determined.  
+ -or-  
+ The granted permission set for the application domain could not be determined.  
+ -or-  
+ An isolated storage location cannot be initialized.</exception>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForAssembly">
+      <summary>Obtains machine-scoped isolated storage corresponding to the calling code&amp;#39;s assembly identity.</summary>
+      <returns>An object corresponding to the isolated storage scope based on the calling code&amp;#39;s assembly identity.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.</exception>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForDomain">
+      <summary>Obtains machine-scoped isolated storage corresponding to the application domain identity and the assembly identity.</summary>
+      <returns>An object corresponding to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see>, based on a combination of the application domain identity and the assembly identity.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.  
+ -or-  
+ The assembly specified has insufficient permissions to create isolated stores.  
+ -or-  
+ The permissions for the application domain cannot be determined.  
+ -or-  
+ An isolated storage location cannot be initialized.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Object)">
+      <summary>Obtains isolated storage corresponding to the given application identity.</summary>
+      <param name="scope">A bitwise combination of the enumeration values.</param>
+      <param name="applicationIdentity">An object that contains evidence for the application identity.</param>
+      <returns>An object that represents the parameters.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.ArgumentNullException">The  <paramref name="applicationIdentity">applicationIdentity</paramref> identity has not been passed in.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="scope">scope</paramref> is invalid.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the enumeration value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Application"></see>, but the application identity of the caller cannot be determined,because the <see cref="System.AppDomain.ActivationContext"></see> for  the current application domain returned <see langword="null"></see>.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Domain"></see>, but the permissions for the application domain cannot be determined.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Assembly"></see>, but the permissions for the calling assembly cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type)">
+      <summary>Obtains isolated storage corresponding to the isolation scope and the application identity object.</summary>
+      <param name="scope">A bitwise combination of the enumeration values.</param>
+      <param name="applicationEvidenceType">An object that contains the application identity.</param>
+      <returns>An object that represents the parameters.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.ArgumentNullException">The   <paramref name="applicationEvidence">applicationEvidence</paramref> identity has not been passed in.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="scope">scope</paramref> is invalid.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the enumeration value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Application"></see>, but the application identity of the caller cannot be determined, because the <see cref="System.AppDomain.ActivationContext"></see> for  the current application domain returned <see langword="null"></see>.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Domain"></see>, but the permissions for the application domain cannot be determined.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Assembly"></see>, but the permissions for the calling assembly cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Object,System.Object)">
+      <summary>Obtains the isolated storage corresponding to the given application domain and assembly evidence objects.</summary>
+      <param name="scope">A bitwise combination of the enumeration values.</param>
+      <param name="domainIdentity">An object that contains evidence for the application domain identity.</param>
+      <param name="assemblyIdentity">An object that contains evidence for the code assembly identity.</param>
+      <returns>An object that represents the parameters.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.ArgumentNullException">Neither <paramref name="domainIdentity">domainIdentity</paramref> nor <paramref name="assemblyIdentity">assemblyIdentity</paramref> has been passed in. This verifies that the correct constructor is being used.  
+ -or-  
+ Either <paramref name="domainIdentity">domainIdentity</paramref> or <paramref name="assemblyIdentity">assemblyIdentity</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="scope">scope</paramref> is invalid.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the enumeration value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Application"></see>, but the application identity of the caller cannot be determined, because the <see cref="System.AppDomain.ActivationContext"></see> for  the current application domain returned <see langword="null"></see>.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Domain"></see>, but the permissions for the application domain cannot be determined.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Assembly"></see>, but the permissions for the calling assembly cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type,System.Type)">
+      <summary>Obtains isolated storage corresponding to the isolated storage scope given the application domain and assembly evidence types.</summary>
+      <param name="scope">A bitwise combination of the enumeration values.</param>
+      <param name="domainEvidenceType">The type of the <see cref="T:System.Security.Policy.Evidence"></see> that you can chose from the list of <see cref="T:System.Security.Policy.Evidence"></see> present in the domain of the calling application. <see langword="null"></see> lets the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object choose the evidence.</param>
+      <param name="assemblyEvidenceType">The type of the <see cref="T:System.Security.Policy.Evidence"></see> that you can chose from the list of <see cref="T:System.Security.Policy.Evidence"></see> present in the domain of the calling application. <see langword="null"></see> lets the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object choose the evidence.</param>
+      <returns>An object that represents the parameters.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="scope">scope</paramref> is invalid.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The evidence type provided is missing in the assembly evidence list.  
+ -or-  
+ An isolated storage location cannot be initialized.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the enumeration value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Application"></see>, but the application identity of the caller cannot be determined, because the <see cref="System.AppDomain.ActivationContext"></see> for  the current application domain returned <see langword="null"></see>.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains the value <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Domain"></see>, but the permissions for the application domain cannot be determined.  
+ -or-  
+ <paramref name="scope">scope</paramref> contains <see cref="System.IO.IsolatedStorage.IsolatedStorageScope.Assembly"></see>, but the permissions for the calling assembly cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication">
+      <summary>Obtains user-scoped isolated storage corresponding to the calling code&amp;#39;s application identity.</summary>
+      <returns>An object corresponding to the isolated storage scope based on the calling code&amp;#39;s assembly identity.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
+ -or-  
+ The application identity of the caller cannot be determined, because the <see cref="System.AppDomain.ActivationContext"></see> property returned <see langword="null"></see>.  
+ -or-  
+ The permissions for the application domain cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly">
+      <summary>Obtains user-scoped isolated storage corresponding to the calling code&amp;#39;s assembly identity.</summary>
+      <returns>An object corresponding to the isolated storage scope based on the calling code&amp;#39;s assembly identity.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
+ -or-  
+ The permissions for the calling assembly cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForDomain">
+      <summary>Obtains user-scoped isolated storage corresponding to the application domain identity and assembly identity.</summary>
+      <returns>An object corresponding to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see>, based on a combination of the application domain identity and the assembly identity.</returns>
+      <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.  
+ -or-  
+ The assembly specified has insufficient permissions to create isolated stores.  
+ -or-  
+ An isolated storage location cannot be initialized.  
+ -or-  
+ The permissions for the application domain cannot be determined.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForSite">
+      <summary>Obtains a user-scoped isolated store for use by applications in a virtual host domain.</summary>
+      <returns>The isolated storage file that corresponds to the isolated storage scope based on the calling code&amp;#39;s application identity.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.IncreaseQuotaTo(System.Int64)">
+      <summary>Enables an application to explicitly request a larger quota size, in bytes.</summary>
+      <param name="newQuotaSize">The requested size, in bytes.</param>
+      <returns><see langword="true"></see> if the new quota is accepted; otherwise, <see langword="false"></see>.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="newQuotaSize">newQuotaSize</paramref> is less than current quota size.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="newQuotaSize">newQuotaSize</paramref> is less than zero, or less than or equal to the current quota size.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.NotSupportedException">The current scope is not for an application user.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.IsEnabled">
+      <summary>Gets a value that indicates whether isolated storage is enabled.</summary>
+      <returns><see langword="true"></see> in all cases.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.MaximumSize">
+      <summary>Gets a value representing the maximum amount of space available for isolated storage within the limits established by the quota.</summary>
+      <returns>The limit of isolated storage space in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">The property is unavailable. <see cref="System.IO.IsolatedStorage.IsolatedStorageFile.MaximumSize"></see> cannot be determined without evidence from the assembly&amp;#39;s creation. The evidence could not be determined when the object was created.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage error occurred.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.MoveDirectory(System.String,System.String)">
+      <summary>Moves a specified directory and its contents to a new location.</summary>
+      <param name="sourceDirectoryName">The name of the directory to move.</param>
+      <param name="destinationDirectoryName">The path to the new location for sourceDirectoryName. This cannot be the path to an existing directory.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException"><paramref name="sourceDirectoryName">sourceDirectoryName</paramref> does not exist.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.  
+ -or-  
+ <paramref name="destinationDirectoryName">destinationDirectoryName</paramref> already exists.  
+ -or-  
+ <paramref name="sourceDirectoryName">sourceDirectoryName</paramref> and <paramref name="destinationDirectoryName">destinationDirectoryName</paramref> refer to the same directory.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.MoveFile(System.String,System.String)">
+      <summary>Moves a specified file to a new location, and optionally lets you specify a new file name.</summary>
+      <param name="sourceFileName">The name of the file to move.</param>
+      <param name="destinationFileName">The path to the new location for the file. If a file name is included, the moved file will have that name.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is a zero-length string, contains only white space, or contains one or more invalid characters defined by the <see cref="System.IO.Path.GetInvalidPathChars"></see> method.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="sourceFileName">sourceFileName</paramref> or <paramref name="destinationFileName">destinationFileName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+      <exception cref="T:System.IO.FileNotFoundException"><paramref name="sourceFileName">sourceFileName</paramref> was not found.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.OpenFile(System.String,System.IO.FileMode)">
+      <summary>Opens a file in the specified mode.</summary>
+      <param name="path">The relative path of the file within the isolated store.</param>
+      <param name="mode">One of the enumeration values that specifies how to open the file.</param>
+      <returns>A file that is opened in the specified mode, with read/write access, and is unshared.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is malformed.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory in <paramref name="path">path</paramref> does not exist.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess)">
+      <summary>Opens a file in the specified mode with the specified read/write access.</summary>
+      <param name="path">The relative path of the file within the isolated store.</param>
+      <param name="mode">One of the enumeration values that specifies how to open the file.</param>
+      <param name="access">One of the enumeration values that specifies whether the file will be opened with read, write, or read/write access.</param>
+      <returns>A file that is opened in the specified mode and access, and is unshared.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is malformed.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory in <paramref name="path">path</paramref> does not exist.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileMode.Open"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.OpenFile(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+      <summary>Opens a file in the specified mode, with the specified read/write access and sharing permission.</summary>
+      <param name="path">The relative path of the file within the isolated store.</param>
+      <param name="mode">One of the enumeration values that specifies how to open or create the file.</param>
+      <param name="access">One of the enumeration values that specifies whether the file will be opened with read, write, or read/write access</param>
+      <param name="share">A bitwise combination of enumeration values that specify the type of access other <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream"></see> objects have to this file.</param>
+      <returns>A file that is opened in the specified mode and access, and with the specified sharing options.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="path">path</paramref> is malformed.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="path">path</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.DirectoryNotFoundException">The directory in <paramref name="path">path</paramref> does not exist.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">No file was found and the <paramref name="mode">mode</paramref> is set to <see cref="System.IO.FileInfo.Open(System.IO.FileMode)"></see>.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.Quota">
+      <summary>Gets a value that represents the maximum amount of space available for isolated storage.</summary>
+      <returns>The limit of isolated storage space, in bytes.</returns>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
+ -or-  
+ Isolated storage is disabled.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Remove">
+      <summary>Removes the isolated storage scope and all its contents.</summary>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store cannot be deleted.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Remove(System.IO.IsolatedStorage.IsolatedStorageScope)">
+      <summary>Removes the specified isolated storage scope for all identities.</summary>
+      <param name="scope">A bitwise combination of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> values.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store cannot be removed.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.UsedSize">
+      <summary>Gets a value that represents the amount of the space used for isolated storage.</summary>
+      <returns>The used isolated storage space, in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
+    </member>
+    <member name="T:System.IO.IsolatedStorage.IsolatedStorageException">
+      <summary>The exception that is thrown when an operation in isolated storage fails.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageException"></see> class with default properties.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageException"></see> class with a specified error message.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageException"></see> class with serialized data.</summary>
+      <param name="info">The object that holds the serialized object data.</param>
+      <param name="context">The contextual information about the source or destination.</param>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorageException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageException"></see> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+      <param name="inner">The exception that is the cause of the current exception. If the inner parameter is not <see langword="null"></see>, the current exception is raised in a <see langword="catch"></see> block that handles the inner exception.</param>
+    </member>
+    <member name="T:System.IO.IsolatedStorage.IsolatedStorage">
+      <summary>Represents the abstract base class from which all isolated storage implementations must derive.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorage.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> class.</summary>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.ApplicationIdentity">
+      <summary>Gets an application identity that scopes isolated storage.</summary>
+      <returns>An <see cref="T:System.Object"></see> that represents the <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application"></see> identity.</returns>
+      <exception cref="T:System.Security.SecurityException">The code lacks the required <see cref="System.Security.Permissions.SecurityPermission"></see> to access this object. These permissions are granted by the runtime based on security policy.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.IO.IsolatedStorage.IsolatedStorage"></see> object is not isolated by the application <see cref="System.IO.IsolatedStorage.IsolatedStorageScope"></see>.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.AssemblyIdentity">
+      <summary>Gets an assembly identity used to scope isolated storage.</summary>
+      <returns>An <see cref="T:System.Object"></see> that represents the <see cref="T:System.Reflection.Assembly"></see> identity.</returns>
+      <exception cref="T:System.Security.SecurityException">The code lacks the required <see cref="System.Security.Permissions.SecurityPermission"></see> to access this object.</exception>
+      <exception cref="T:System.InvalidOperationException">The assembly is not defined.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.AvailableFreeSpace">
+      <summary>When overridden in a derived class, gets the available free space for isolated storage, in bytes.</summary>
+      <returns>The available free space for isolated storage, in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">An operation was performed that requires access to <see cref="System.IO.IsolatedStorage.IsolatedStorage.AvailableFreeSpace"></see>, but that property is not defined for this store. Stores that are obtained by using enumerations do not have a well-defined <see cref="System.IO.IsolatedStorage.IsolatedStorage.AvailableFreeSpace"></see> property, because partial evidence is used to open the store.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.CurrentSize">
+      <summary>Gets a value representing the current size of isolated storage.</summary>
+      <returns>The number of storage units currently used within the isolated storage scope.</returns>
+      <exception cref="T:System.InvalidOperationException">The current size of the isolated store is undefined.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.DomainIdentity">
+      <summary>Gets a domain identity that scopes isolated storage.</summary>
+      <returns>An <see cref="T:System.Object"></see> that represents the <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain"></see> identity.</returns>
+      <exception cref="T:System.Security.SecurityException">The code lacks the required <see cref="System.Security.Permissions.SecurityPermission"></see> to access this object. These permissions are granted by the runtime based on security policy.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.IO.IsolatedStorage.IsolatedStorage"></see> object is not isolated by the domain <see cref="System.IO.IsolatedStorage.IsolatedStorageScope"></see>.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorage.IncreaseQuotaTo(System.Int64)">
+      <summary>When overridden in a derived class, prompts a user to approve a larger quota size, in bytes, for isolated storage.</summary>
+      <param name="newQuotaSize">The requested new quota size, in bytes, for the user to approve.</param>
+      <returns><see langword="false"></see> in all cases.</returns>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorage.InitStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type,System.Type)">
+      <summary>Initializes a new <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object.</summary>
+      <param name="scope">A bitwise combination of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> values.</param>
+      <param name="domainEvidenceType">The type of <see cref="T:System.Security.Policy.Evidence"></see> that you can choose from the list of <see cref="T:System.Security.Policy.Evidence"></see> present in the domain of the calling application. <see langword="null"></see> lets the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object choose the evidence.</param>
+      <param name="assemblyEvidenceType">The type of <see cref="T:System.Security.Policy.Evidence"></see> that you can choose from the list of <see cref="T:System.Security.Policy.Evidence"></see> present in the assembly of the calling application. <see langword="null"></see> lets the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object choose the evidence.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The assembly specified has insufficient permissions to create isolated stores.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorage.InitStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type)">
+      <summary>Initializes a new <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object.</summary>
+      <param name="scope">A bitwise combination of the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> values.</param>
+      <param name="appEvidenceType">The type of <see cref="T:System.Security.Policy.Evidence"></see> that you can choose from the list of <see cref="T:System.Security.Policy.Evidence"></see> for the calling application. <see langword="null"></see> lets the <see cref="T:System.IO.IsolatedStorage.IsolatedStorage"></see> object choose the evidence.</param>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The assembly specified has insufficient permissions to create isolated stores.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.MaximumSize">
+      <summary>Gets a value representing the maximum amount of space available for isolated storage. When overridden in a derived class, this value can take different units of measure.</summary>
+      <returns>The maximum amount of isolated storage space in bytes. Derived classes can return different units of value.</returns>
+      <exception cref="T:System.InvalidOperationException">The quota has not been defined.</exception>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.Quota">
+      <summary>When overridden in a derived class, gets a value that represents the maximum amount of space available for isolated storage.</summary>
+      <returns>The limit of isolated storage space, in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">An operation was performed that requires access to <see cref="System.IO.IsolatedStorage.IsolatedStorage.Quota"></see>, but that property is not defined for this store. Stores that are obtained by using enumerations do not have a well-defined <see cref="System.IO.IsolatedStorage.IsolatedStorage.Quota"></see> property, because partial evidence is used to open the store.</exception>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.IsolatedStorage.Remove">
+      <summary>When overridden in a derived class, removes the individual isolated store and all contained data.</summary>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.Scope">
+      <summary>Gets an <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> enumeration value specifying the scope used to isolate the store.</summary>
+      <returns>A bitwise combination of <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope"></see> values specifying the scope used to isolate the store.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.SeparatorExternal">
+      <summary>Gets a backslash character that can be used in a directory string. When overridden in a derived class, another character might be returned.</summary>
+      <returns>The default implementation returns the &amp;#39;\&amp;#39; (backslash) character.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.SeparatorInternal">
+      <summary>Gets a period character that can be used in a directory string. When overridden in a derived class, another character might be returned.</summary>
+      <returns>The default implementation returns the &amp;#39;.&amp;#39; (period) character.</returns>
+    </member>
+    <member name="P:System.IO.IsolatedStorage.IsolatedStorage.UsedSize">
+      <summary>When overridden in a derived class, gets a value that represents the amount of the space used for isolated storage.</summary>
+      <returns>The used amount of isolated storage space, in bytes.</returns>
+      <exception cref="T:System.InvalidOperationException">An operation was performed that requires access to <see cref="System.IO.IsolatedStorage.IsolatedStorage.UsedSize"></see>, but that property is not defined for this store. Stores that are obtained by using enumerations do not have a well-defined <see cref="System.IO.IsolatedStorage.IsolatedStorage.UsedSize"></see> property, because partial evidence is used to open the store.</exception>
+    </member>
+    <member name="T:System.IO.IsolatedStorage.INormalizeForIsolatedStorage">
+      <summary>Enables comparisons between an isolated store and an application domain and assembly&amp;#39;s evidence.</summary>
+    </member>
+    <member name="M:System.IO.IsolatedStorage.INormalizeForIsolatedStorage.Normalize">
+      <summary>When overridden in a derived class, returns a normalized copy of the object on which it is called.</summary>
+      <returns>A normalized object that represents the instance on which this method was called. This instance can be a string, stream, or any serializable object.</returns>
+    </member>
+  </members>
+</doc>

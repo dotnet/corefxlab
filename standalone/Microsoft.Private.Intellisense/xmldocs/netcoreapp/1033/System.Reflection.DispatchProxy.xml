@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Reflection.DispatchProxy</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.DispatchProxy">
+      
+    </member>
+    <member name="M:System.Reflection.DispatchProxy.#ctor">
+      
+    </member>
+    <member name="M:System.Reflection.DispatchProxy.Create``2">
+      <typeparam name="T"></typeparam>
+      <typeparam name="TProxy"></typeparam>
+      <returns></returns>
+    </member>
+    <member name="M:System.Reflection.DispatchProxy.Invoke(System.Reflection.MethodInfo,System.Object[])">
+      <param name="targetMethod"></param>
+      <param name="args"></param>
+      <returns></returns>
+    </member>
+  </members>
+</doc>

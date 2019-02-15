@@ -1,0 +1,1466 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.DirectoryServices.AccountManagement</name>
+  </assembly>
+  <members>
+    <member name="T:System.DirectoryServices.AccountManagement.GroupPrincipal">
+      <summary>Encapsulates group accounts. Group accounts can be arbitrary collections of principal objects or accounts created for administrative purposes.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> class by using the specified context.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> class and assigns it to the specified context and SAM account name.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="samAccountName">The SAM account name for this principal.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.Dispose">
+      <summary>Disposes the current instance of the <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.String)">
+      <summary>Returns a group principal object that matches the specified identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityValue">The identity of the group principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object that matches the specified identity value and type, or null if no matches are found.</returns>
+      <exception cref="T:System.MultipleMatchesException">Multiple group principal objects matching the current group object were found.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a group principal object that matches the specified identity type, and value. This version of the <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal.FindByIdentity"></see> method determines the format of the identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityType">A <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the format of the identityValue parameter.</param>
+      <param name="identityValue">The identity of the group principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> that matches the specified identity value and type, or null if no matches are found.</returns>
+      <exception cref="T:System.MultipleMatchesException">Multiple group principal objects matching the current group object were found.</exception>
+      <exception cref="T:System.ComponenetModel.InvalidEnumerationOperatorException">The identity value is not a valid <see cref="System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.GetMembers">
+      <summary>Returns a collection of the principal objects that is contained in the group.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult'1"></see> object that contains the principal objects that are members of the group, or an empty collection if the group has no members.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.GroupPrincipal.GetMembers(System.Boolean)">
+      <summary>Returns a collection of the principal objects that is contained in the group. When the recursive flag is set to true, this method searches the current group recursively and returns all nested group members.</summary>
+      <param name="recursive">A Boolean value that specifies whether the group is searched recursively.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult'1"></see> object that contains the principal objects that are members of the group, or an empty collection if the group has no members.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.GroupPrincipal.GroupScope">
+      <summary>Gets or sets a Nullable <see cref="T:System.DirectoryServices.AccountManagement.GroupScope"></see> enumeration that specifies the scope for this group principal.</summary>
+      <returns>A nullable <see cref="System.DirectoryServices.AccountManagement.GroupScope"></see> enumeration value that specifies the scope of this group or null if no scope has been set.</returns>
+      <exception cref="T:System.ArgumentNullException">The application may not set this property to null.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.GroupPrincipal.IsSecurityGroup">
+      <summary>Gets or sets a Nullable Boolean value that indicates whether the group is security-enabled.</summary>
+      <returns>true if the group is security enabled, or null if the group has not been persisted; otherwise false.</returns>
+      <exception cref="T:System.ArgumentNullException">The application may not set this property to null.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.GroupPrincipal.Members">
+      <summary>Gets a collection of principal objects that represent the members of the group.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection"></see> object that contains the principal objects that represent the members of the group.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.GroupScope">
+      <summary>Specifies the scope of the group principal.</summary>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.GroupScope.Global">
+      <summary>The group&amp;#39;s scope is global. This group type is supported on AD DS. When a global group is specified with an AD LDS directory, a <see cref="F:System.DirectoryServices.AccountManagement.GroupScope.Local"></see> group is created instead.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.GroupScope.Local">
+      <summary>The scope of the group is local. This group type is supported on AD DS and AD LDS.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.GroupScope.Universal">
+      <summary>The scope of the group is universal. This group type is supported on AD DS and AD LDS.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.IdentityType">
+      <summary>Specifies the format of the identity.</summary>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.DistinguishedName">
+      <summary>The identity is a Distinguished Name (DN).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.Guid">
+      <summary>The identity is a Globally Unique Identifier (GUID).</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.Name">
+      <summary>The identity is a name.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.SamAccountName">
+      <summary>The identity is a Security Account Manager (SAM) name.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.Sid">
+      <summary>The identity is a Security Identifier (SID) in Security Descriptor Definition Language (SDDL) format.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.IdentityType.UserPrincipalName">
+      <summary>The identity is a User Principal Name (UPN).</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.MatchType">
+      <summary>The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration specifies the type of comparison used in a search.</summary>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.Equals">
+      <summary>The search results include values that equal the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that have the same date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.GreaterThan">
+      <summary>The search results include values that are greater than the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that are dated after the specified date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.GreaterThanOrEquals">
+      <summary>The search results include values that are greater than or equal to the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that are dated on or after the specified date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.LessThan">
+      <summary>The search results include values that are less than the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that are dated prior to the specified date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.LessThanOrEquals">
+      <summary>The search results include values that are less than or equal to the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that are dated prior to or on the specified date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.MatchType.NotEquals">
+      <summary>The search results include values that are not equal to the supplied value. If the supplied value specifies a date and time, the returned collection includes objects that do not include the specified date and time.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">
+      <summary>This exception is thrown by methods that expect to match a single principal object when there are multiple matches to the search query.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.MultipleMatchesException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.MultipleMatchesException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see> class with the specified error message.</summary>
+      <param name="message">The text of the error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.MultipleMatchesException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.MultipleMatchesException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the error message.</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException">
+      <summary>This exception is thrown when no matching principal object could be found with the specified parameters.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see> class with the specified error message.</summary>
+      <param name="message">The text of the error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the message</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PasswordException">
+      <summary>This exception is thrown when a password does not meet complexity requirements.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PasswordException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PasswordException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see> class with the specified error message.</summary>
+      <param name="message">The text of the error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PasswordException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PasswordException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PasswordException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the error message.</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.Principal">
+      <summary>Encapsulates the account data and operations common to all security principals. This is the abstract base class from which all security principals are derived.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> class. This constructor is called by derived-class constructors to initialize the base class and is not intended to be called directly from your code.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.CheckDisposedOrDeleted">
+      <summary>Determines whether the <see cref="M:System.DirectoryServices.AccountManagement.Principal.Dispose"></see> or <see cref="M:System.DirectoryServices.AccountManagement.Principal.Delete"></see> methods have been called on this class. This method is called by classes that derive from this principal class.</summary>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="System.DirectoryServices.AccountManagement.Principal.Dispose"></see> method has been called on this principal object.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.DirectoryServices.AccountManagement.Principal.Delete"></see> method has been called on this principal object.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.Context">
+      <summary>Gets a principal context that is associated with the principal.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that contains the context associated with this principal.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.ContextRaw">
+      <summary>Gets a principal context that is associated with this principal.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that contains the context associated with this principal.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.ContextType">
+      <summary>Gets the context type enumeraton value that specifies the type of principal context associated with this principal.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value that specifies the context type.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.Delete">
+      <summary>Deletes the principal object from the store.</summary>
+      <exception cref="T:System.InvalidOperationException">The object that is not persisted in the store.  
+ The object has already been deleted.  
+ The target context type must match the context type of the current principal.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.Description">
+      <summary>Gets or sets the description of the principal.</summary>
+      <returns>The description text for this principal or null if there is no description.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.DisplayName">
+      <summary>Gets or sets the display name for this principal.</summary>
+      <returns>The display name for this principal or null if there is no display name.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.Dispose">
+      <summary>Disposes the current instance of the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object.</summary>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.DistinguishedName">
+      <summary>Gets the distinguished name (DN) for this principal.</summary>
+      <returns>The DN for this principal or null if there is no DN.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.Equals(System.Object)">
+      <summary>Returns a Boolean value that specifies whether the supplied object is equal to the current object.</summary>
+      <param name="o">The <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object that is compared to the current instance.</param>
+      <returns>true if the supplied object and current principal objects represent the same underlying principal in the store; otherwise false.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.ExtensionGet(System.String)">
+      <summary>Retrieves an attribute of an extended class object.</summary>
+      <param name="attribute">The name of the attribute to retrieve.</param>
+      <returns>Returns an array of objects, or null if no attribute exists with that name. See System.DirectoryServices.AccountManagement Principle Extensions for an example on using this function.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.ExtensionSet(System.String,System.Object)">
+      <summary>Sets the value of an attribute in an extended class.</summary>
+      <param name="attribute">The name of the attribute.</param>
+      <param name="value">The object that contains the value of the attribute.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.String)">
+      <summary>Returns a principal object that matches the specified identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityValue">The identity of the principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that matches the specified identity value and type, or null if no matches are found.</returns>
+      <exception cref="T:System.MultipleMatchesException">Multiple principal objects matching the current object were found.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a principal object that matches the specified identity type, and value. This version of the <see cref="M:System.DirectoryServices.AccountManagement.Principal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)"></see> method determines the format of the identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityType">An <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the format of the identityValue parameter.</param>
+      <param name="identityValue">The identity of the principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that matches the specified identity value and type or null if no matches are found.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">Multiple principal objects matching the current object were found.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The identity type is not a valid <see cref="System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.FindByIdentityWithType(System.DirectoryServices.AccountManagement.PrincipalContext,System.Type,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a principal object that matches the specified identity type, and value. This method is called by the implementation of the derived-class FindByIdentity method to restrict the search to the derived class type and is not intended to be called directly from your code.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="principalType">The type of object for which results are returned. This must of type <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> or a type derived from the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> class.</param>
+      <param name="identityType">An <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the type of the identity value.</param>
+      <param name="identityValue">The identity of the principal.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that matches the specified identity value and type or null if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.FindByIdentityWithType(System.DirectoryServices.AccountManagement.PrincipalContext,System.Type,System.String)">
+      <summary>Returns a principal object that matches the specified identity type, and value. This method is called by the implementation of the derived-class FindByIdentity method to restrict the search to the derived class type and is not intended to be called directly from your code.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="principalType">The type of object for which results are returned. This must of type <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> or a type derived from the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> class.</param>
+      <param name="identityValue">The identity of the principal.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that matches the specified identity value and type, or null if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.GetGroups">
+      <summary>Returns a collection of group objects that specify the groups of which the current principal is a member.</summary>
+      <returns>A collection of <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> objects that specify the groups of which the current principal is a member.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.GetGroups(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Returns a collection of group objects that the principal is a member of and that exist in the store provided by the specified context parameter.</summary>
+      <param name="contextToQuery">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the context against which the query is performed.  
+ When the context is located in another domain, the query is performed against the principal objects&amp;#39; representation in the specified context.</param>
+      <returns>A collection of <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> objects that specify the groups of which the current principal is a member.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.GetHashCode">
+      <summary>Retrieves the hash created from the contents of the principal object, suited for use in hashing algorithms and data structures like a hash table.</summary>
+      <returns>A hash code for the current principal.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.GetUnderlyingObject">
+      <summary>Returns the underlying <see cref="T:System.DirectoryServices.DirectoryEntry"></see> object that provides the contact data for the principal object.</summary>
+      <returns>The underlying <see cref="System.DirectoryServices.DirectoryEntry"></see> object.</returns>
+      <exception cref="T:System.InvalidOperationExtension">The current principal has not been persisted and does not have an associated <see cref="System.DirectoryServices.DirectoryEntry"></see> object.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.GetUnderlyingObjectType">
+      <summary>Returns the underlying object type.</summary>
+      <returns>The underlying object type. For AD DS, AD LDS, and SAM the type is <see cref="System.DirectoryServices.DirectoryEntry"></see>.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.Guid">
+      <summary>Gets the GUID associated with this principal.</summary>
+      <returns>The Nullable <see cref="System.Guid"></see> associated with this principal or null if there is no GUID.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.IsMemberOf(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a Boolean value that specifies whether the principal is a member of the group specified by identity type and value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityType">A <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the type of the identity value.</param>
+      <param name="identityValue">The identity of the group.</param>
+      <returns>true if the principal is a member of the specified group; otherwise false.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException">The identity type or value does not correspond to a <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see>.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">More than one matching <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> was found.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.IsMemberOf(System.DirectoryServices.AccountManagement.GroupPrincipal)">
+      <summary>Returns a Boolean value that specifies whether the principal is a member of the specified group.</summary>
+      <param name="group">The <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object for which principal membership is determined.</param>
+      <returns>true if the principal is a member of the specified group; otherwise false.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException">The <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> specified in the group parameter could not be found.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">More than one matching <see cref="System.DirectoryServices.AccountManagement.GroupPrincipal"></see> was found.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.Name">
+      <summary>Gets or sets the name of this principal.</summary>
+      <returns>The name of the principal or null if the name attribute is not set.</returns>
+      <exception cref="T:System.ArgumentNullException">The application tried to set the name to null.</exception>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.SamAccountName">
+      <summary>Gets or sets the SAM account name for this principal.</summary>
+      <returns>The SAM account name for this principal or null if no name has been set.</returns>
+      <exception cref="T:System.ArgumentNullException">The application tried to set the SAM account name to null.</exception>
+      <exception cref="T:System.InvalidOperationException">The application tried to set the SAM account name on a persisted principal.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.Save">
+      <summary>Saves the changes that were made on the principal object to the store. If this is a new principal object, this method inserts it into the store.</summary>
+      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="System.DirectoryServices.AccountManagement.PrincipalContext"></see> object.  
+ This type of principal cannot be inserted in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving changes tnso the store, or updating the group membership in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">The principal already occurs in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">The password does not meet complexity requirements.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.Save(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Saves the changes that were made on the principal object to the store. If this is a new principal object, this method inserts it into the specified context. If the principal has already been persisted, it is moved from the original context to the specified context.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="System.DirectoryServices.AccountManagement.PrincipalContext"></see> object.  
+ This type of principal cannot be inserted in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving changes to the store, or updating the group membership in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">The principal already occurs in the store.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">The password does not meet complexity requirements.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.Sid">
+      <summary>Gets the Security ID (SID) of the principal.</summary>
+      <returns>The <see cref="System.Security.Principal.SecurityIdentifier"></see> for this principal or null if there is no SID.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.StructuralObjectClass">
+      <summary>Gets the structural object class directory attribute.</summary>
+      <returns>The structural object class directory attribute.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.Principal.ToString">
+      <summary>Returns a user friendly string representation of the current principal object.</summary>
+      <returns>A string representation of the current <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.Principal.UserPrincipalName">
+      <summary>Gets or sets the user principal name (UPN) associated with this principal.</summary>
+      <returns>The UPN associated with this principal or null if no if the UPN has not been set.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalCollection">
+      <summary>A mutable collection of objects derived from the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> class.  This class is designed to be used for multi-valued properties that contain Principals.  Manipulating the contents of this collection changes the contents of the corresponding store property, which is made permanent when <see cref="M:System.DirectoryServices.AccountManagement.Principal.Save"></see> is called on the corresponding principal object.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.ComputerPrincipal)">
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object to the end of the collection</summary>
+      <param name="computer">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.GroupPrincipal)">
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object to the end of the collection</summary>
+      <param name="group">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.Principal)">
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object to the end of the collection</summary>
+      <param name="principal">A <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.UserPrincipal)">
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object to the end of the collection</summary>
+      <param name="user">A <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Searches for a <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object that matches the parameters, and adds it to the end of the collection.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object for the principal to be added to the collection.</param>
+      <param name="identityType">An <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> object that specifies the format of identityValue</param>
+      <param name="identityValue">A string that identifies the principal, in the format specified by identityType</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Clear">
+      <summary>Removes all Principals from the collection.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Contains(System.DirectoryServices.AccountManagement.ComputerPrincipal)">
+      <summary>Returns true if the collection contains the specified <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object.</summary>
+      <param name="computer">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Contains(System.DirectoryServices.AccountManagement.GroupPrincipal)">
+      <summary>Returns true if the collection contains the specified <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object.</summary>
+      <param name="group">A <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Contains(System.DirectoryServices.AccountManagement.Principal)">
+      <summary>Returns true if the collection contains the specified <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object.</summary>
+      <param name="principal">A <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Contains(System.DirectoryServices.AccountManagement.UserPrincipal)">
+      <summary>Returns true if the collection contains the specified <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object.</summary>
+      <param name="user">A <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Contains(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns true if the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object matching the <paramref name="indentityType">indentityType</paramref>/<paramref name="idendityValue">idendityValue</paramref> pair is in the collection</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object of the principal.</param>
+      <param name="identityType">An <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> object that specifies the format of identityValue</param>
+      <param name="identityValue">A string that identifies the principal, in the format specified by identityType</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.CopyTo(System.DirectoryServices.AccountManagement.Principal[],System.Int32)">
+      <summary>Copies the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> objects from this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see> into the specified array, starting at the specified position index in array.</summary>
+      <param name="array">The <see cref="T:System.Array"></see> that should be populated with <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> objects.</param>
+      <param name="index">The position in array into which the first principal object in the collection should be copied.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.Count">
+      <summary>Returns the count of Principal objects in this collection.</summary>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.GetEnumerator">
+      <summary>Returns an enumerator to iterate through the principals in the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>.</summary>
+      <returns>An <see cref="System.Collections.IEnumerator"></see> containing the principals in the <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection"></see>.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.IsReadOnly">
+      <summary>Returns false.  This is not a read-only collection.</summary>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.IsSynchronized">
+      <summary>Returns false.  It is up to the application to serialize access to this collection.</summary>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Remove(System.DirectoryServices.AccountManagement.ComputerPrincipal)">
+      <summary>Removes the specified <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object from the collection, and returns true if the <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> was a member of this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>, and false otherwise (in which case the method performs no operation).</summary>
+      <param name="computer">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Remove(System.DirectoryServices.AccountManagement.GroupPrincipal)">
+      <summary>Removes the specified <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object from the collection, and returns true if the <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> was a member of this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>, and false otherwise (in which case the method performs no operation).</summary>
+      <param name="group">A <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Remove(System.DirectoryServices.AccountManagement.Principal)">
+      <summary>Removes the specified <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object from the collection, and returns true if the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> was a member of this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>, and false otherwise (in which case the method performs no operation).</summary>
+      <param name="principal">A <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Remove(System.DirectoryServices.AccountManagement.UserPrincipal)">
+      <summary>Removes the specified <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object from the collection, and returns true if the <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> was a member of this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>, and false otherwise (in which case the method performs no operation).</summary>
+      <param name="user">A <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Remove(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Finds the <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> object specified by the given <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> and <paramref name="identityType">identityType</paramref>/<paramref name="identityValue">identityValue</paramref> pair from the collection, and returns true if the identified <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> was a member of this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>, and false otherwise (in which case the method performs no operation).</summary>
+      <param name="context">A <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object.</param>
+      <param name="identityType">An <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> that identifies the format of identityValue.</param>
+      <param name="identityValue">A string.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.SyncRoot">
+      <summary>Returns a synchronization object that can be used to synchronize access to this collection.</summary>
+      <returns>Returns the <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection"></see> object itself.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copies the <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> objects from this <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see> into the specified array, starting at the specified position index in array.</summary>
+      <param name="array">The T:System.Array that should be populated with <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> objects.</param>
+      <param name="index">The position in array to which the first <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object should be copied to.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.System#Collections#ICollection#Count">
+      <summary>Returns the count of Principal objects in this collection.</summary>
+      <returns>Returns an integer.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>Always returns false.  It is up to the application to synchronize access to this collection.</summary>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalCollection.System#Collections#ICollection#SyncRoot">
+      <summary>Returns a synchronization object that can be used to synchronize access to this collection.  Returns the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see> object itself.</summary>
+      <returns>The <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection"></see> object.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator to iterate through the principals in the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalCollection"></see>.</summary>
+      <returns>An <see cref="System.Collections.IEnumerator"></see> containing the principals in the <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection"></see>.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalContext">
+      <summary>Encapsulates the server or domain against which all operations are performed, the container that is used as the base of those operations, and the credentials used to perform the operations.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <exception cref="T:System.ArgumentException">A name or container must be specified when using the application directory context.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type and name.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <exception cref="T:System.ArgumentException">A name must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type, name, and container.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types, this parameter is the distinguished name of a container object.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, this parameter must be set to null.</param>
+      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type is specified in the <paramref name="contextType">contextType</paramref> parameter.  
+ A name or container must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.DirectoryServices.AccountManagement.ContextOptions)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type, name, container, and context options.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types, this parameter is the distinguished name of a container object.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, this parameter must be set to null.</param>
+      <param name="options">A combination of one or more <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration values specifying the options used to bind to the server. If this parameter is null, the default options are ContextOptions.Negotiate | ContextOptions.Signing | ContextOptions.Sealing.</param>
+      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type is specified in the <paramref name="contextType">contextType</paramref> parameter.  
+ A name or container must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.  
+ The <paramref name="options">options</paramref> parameter does not contain a combination of valid <see cref="System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration values.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type, name, username, and password.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <param name="userName">The username used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used. Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <param name="password">The password used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used. Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="username">username</paramref> and <paramref name="password">password</paramref> parameters must either be null or contain a value.  
+ A name must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type, name, container, username, and password.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types, this parameter is the distinguished name of a container object.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, this parameter must be set to null.</param>
+      <param name="userName">The username used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used.  Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <param name="password">The password used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used.  Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="username">username</paramref> and <paramref name="password">password</paramref> parameters must either be null or contain a value.  
+ A container cannot be specified when the <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type is specified in the <paramref name="contextType">contextType</paramref> parameter.  
+ A <paramref name="name">name</paramref> or <paramref name="container">container</paramref> must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.DirectoryServices.AccountManagement.ContextOptions,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> class with the specified context type, name, container, context options, username, and password.</summary>
+      <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of store for the principal context.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance.  
+ If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is null for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type, this is the local machine name. This parameter cannot be null for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain"></see> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> context types, this parameter is the distinguished name of a container object.  
+ For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, this parameter must be set to null.</param>
+      <param name="options">A combination of one or more <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration values the options used to bind to the server. If this parameter is null, the default options are ContextOptions.Negotiate | ContextOptions.Signing | ContextOptions.Sealing.</param>
+      <param name="userName">The username used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used. Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <param name="password">The password used to connect to the store. If the username and password parameters are both null, the default credentials of the current principal are used.  Otherwise, both username and password must be non-null, and the credentials they specify are used to connect to the store.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="username">username</paramref> and <paramref name="password">password</paramref> parameters must either be null or contain a value.  
+ A container cannot be specified when the <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context type is specified in the <paramref name="contextType">contextType</paramref> parameter.  
+ A name or container must be specified when <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> is specified in the <paramref name="contextType">contextType</paramref> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType">contextType</paramref> parameter does not contain a valid <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value.  
+ The <paramref name="options">options</paramref> parameter does not contain a combination of valid <see cref="System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration values.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.ConnectedServer">
+      <summary>Gets the name of the server to which the principal context is connected.</summary>
+      <returns>The name of the server to which the principal context is connected or null if the principal context is not connected to a server.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.Container">
+      <summary>Gets the value specified in the container parameter in the constructor.</summary>
+      <returns>The container on the store to use as the root of the context or null if the container is not specified.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.ContextType">
+      <summary>Gets the context type that specifies the type of store for the principal context.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value specifying the type of target to connect to.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.Dispose">
+      <summary>Disposes the current instance of the <see cref="System.DirectorySerices.AccountManagement.PrincipalContext"></see> object.</summary>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.Name">
+      <summary>Gets the value specified as the <paramref name="name">name</paramref> parameter in the constructor.</summary>
+      <returns>The name of the domain or server for <see cref="System.DirectoryServices.AccountManagement.ContextType.Domain"></see> contexts types, the host name for <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine"></see> context types, the name of the server hosting the <see cref="System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory"></see> instance, or null if no name is set.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.Options">
+      <summary>Gets the options specified in the <paramref name="contextOptions">contextOptions</paramref> parameter of the constructor.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration value specifying the type of target to connect to.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.UserName">
+      <summary>Gets the value specified in the username parameter in the constructor.</summary>
+      <returns>The username used to connect to the store, or null if no user name exists.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.ValidateCredentials(System.String,System.String)">
+      <summary>Creates the connections to the server and returns a Boolean value that specifies whether the specified username and password are valid.</summary>
+      <param name="userName">The username that is validated on the server. See the Remarks section for more information on the format of <paramref name="userName">userName</paramref>.</param>
+      <param name="password">The password that is validated on the server.</param>
+      <returns>true if the credentials are valid; otherwise false.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.ValidateCredentials(System.String,System.String,System.DirectoryServices.AccountManagement.ContextOptions)">
+      <summary>Creates the connections to the server and returns a Boolean value that specifies whether the specified user name and password are valid. This method performs fast credential validation of the username and password.</summary>
+      <param name="userName">The username that is validated on the server. See the Remarks section for information on the format of <paramref name="userName">userName</paramref>.</param>
+      <param name="password">The password that is validated on the server.</param>
+      <param name="options">A combination of one or more <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions"></see> enumeration values the options used to bind to the server. This parameter can only specify Simple bind with or without SSL, or Negotiate bind.</param>
+      <returns>true if the credentials are valid; otherwise false.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="options">options</paramref> parameter must specify <see cref="System.DirectoryServices.AccountManagement.ContextOptions.Negotiate"></see> when the context type is <see cref="System.DirectoryServices.AccountManagement.ContextType.Machine."></see></exception>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalException">
+      <summary>The base class of exceptions thrown by <see cref="System.DirectoryServices.AccountManagement"></see> objects.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <param name="info"></param>
+      <param name="context"></param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">
+      <summary>Thrown by <see cref="System.DirectoryServices.AccountManagement.PrincipalCollection.Add"></see> when an attempt is made to insert a principal that already exists in the collection, or by <see cref="M:System.DirectoryServices.AccountManagement.Principal.Save"></see> when an attempt is made to save a new principal that already exists in the store.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalExistsException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalExistsException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see> class with the specified error message.</summary>
+      <param name="message">The text of the error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalExistsException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalExistsException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the error message.</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">
+      <summary>Thrown when ADSI returns an error during an operation to update the store.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class with the specified error message.</summary>
+      <param name="message">The text of the error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the error message.</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor(System.String,System.Int32)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class with the specified error message and specified error code.</summary>
+      <param name="message">The text of the message.</param>
+      <param name="errorCode">An error code.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.#ctor(System.String,System.Exception,System.Int32)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class with the specified error message, the specified nested exception, and the specified error code.</summary>
+      <param name="message">The text of the message.</param>
+      <param name="innerException">A nested exception.</param>
+      <param name="errorCode">An error code.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalOperationException.ErrorCode">
+      <summary>Returns an integer error code.</summary>
+      <returns>Returns an integer.  
+ The system will return 0 (zero) in the exception error code property if no underlying error was received from a win32 API. Callers need to distinguish between 0 (zero) and a valid win32 error code.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalOperationException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException"></see> class with serialized data.</summary>
+      <param name="info">The object that holds the serialized object data.</param>
+      <param name="context">The contextual information about the source or destination.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalSearcher">
+      <summary>Encapsulates the methods and search patterns used to execute a query against the underlying principal store.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see> class. The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> property must be set before the Principal searcher object can be used to perform a search.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.#ctor(System.DirectoryServices.AccountManagement.Principal)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see> class with the specified query filter.</summary>
+      <param name="queryFilter">The <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object that specifies the filter to use for the search. The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> property is initialized to this value.</param>
+      <exception cref="T:System.ArgumentException">Persisted principal objects can not be used as the <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see>.  
+ The <paramref name="queryFilter">queryFilter</paramref> parameter cannot be null or empty.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.Context">
+      <summary>Gets that principal context that is used to perform the query. The context specifies the server or domain against which search operations are performed.</summary>
+      <returns>The <see cref="System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.Dispose">
+      <summary>Disposes the current instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see> object.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.FindAll">
+      <summary>Returns a principal search result that contains a collection of all the principal objects that match the principal specified in the query filter property.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult'1"></see> object that matches the query filter or an empty collection if no results are found.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> contains referential properties. For more information, see the Query by Example overview topic.  
+ The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> is a persisted principal.</exception>
+      <exception cref="T:System.ArgumentException">A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> must first be assigned to the principal searcher before the query can be performed.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.FindOne">
+      <summary>Returns a principal search result that contains the first principal object found that matches the principal specified in the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> property.</summary>
+      <returns>A  <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that contains the principal object that matches the query filter or null if no results are found.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> contains referential properties. For more information, see the Query by Example overview topic.  
+ The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> is a persisted principal.</exception>
+      <exception cref="T:System.ArgumentException">A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> must first be assigned to the principal searcher before the query can be performed.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcher">
+      <summary>Returns the underlying search object that is used by the Account Management API to perform the search.</summary>
+      <returns>A <see cref="System.DirectoryServices.DirectorySearcher"></see> object.</returns>
+      <exception cref="T:System.InvalidOperationException">A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> must first be assigned to the principal searcher before the query can be performed.  
+ The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> contains referential properties. For more information, see the Query by Example overview topic.  
+ The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> is a persisted principal.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcherType">
+      <summary>Returns the type of the object returned from the <see cref="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcher"></see> method.</summary>
+      <returns>A <see cref="System.Type"></see> that specifies the type of object returned from the <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcher"></see> method.</returns>
+      <exception cref="T:System.InvalidOperationException">A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> must first be assigned to the principal searcher before the query can be performed.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter">
+      <summary>Gets or sets the query filter that is used to locate matching principals.</summary>
+      <returns>The <see cref="System.DirectoryServices.AccountManagement.Principal"></see> object that is used for the query or null if no filter is set.</returns>
+      <exception cref="T:System.ArgumentException">Persisted Principal objects can not be used as the <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see>.  
+ The <see cref="System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter"></see> cannot be null or empty.</exception>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> objects that are returned by a search.</summary>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1.Dispose">
+      <summary>Disposes the current instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> object.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1.GetEnumerator">
+      <summary>Returns an enumerator that iterates through a collection.</summary>
+      <returns>The <see cref="SystemCollections.IEnumerator"></see> object that is used to iterate through the principal objects.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator that can be used to iterate over the objects in this collection.</summary>
+      <returns>Returns an <see cref="System.Collections.IEnumerator"></see> containing the principals in the search result collection.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException">
+      <summary>This exception is thrown when the API is unable to connect to the server.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class with the specified error message.</summary>
+      <param name="message">An error message.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instances.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that contains the information required to serialize the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see></param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see></param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.String,System.Exception)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class with the specified error message and specified nested exception.</summary>
+      <param name="message">The text of the message.</param>
+      <param name="innerException">A nested exception.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.String,System.Int32)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class with the specified error message and specified error code.</summary>
+      <param name="message">The text of the message.</param>
+      <param name="errorCode">An error code.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.String,System.Exception,System.Int32)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class with the specified error message, the specified nested exception, and the specified error code.</summary>
+      <param name="message">The text of the error message.</param>
+      <param name="innerException">A nested exception.</param>
+      <param name="errorCode">An error code.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.#ctor(System.String,System.Exception,System.Int32,System.String)">
+      <summary>Instantiates a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalServerDownException"></see> class with the specified error message, the specified nested exception, the specified error code, and the specified server name.</summary>
+      <param name="message">The text of the message.</param>
+      <param name="innerException">A nested exception.</param>
+      <param name="errorCode">An error code.</param>
+      <param name="serverName">A server name.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalServerDownException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> with the parameter name and additional exception information.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> object that will hold the serialized object data.</param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> object that will hold contextual information about the source or destination.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1">
+      <summary>Multi-valued properties, such as <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.PermittedWorkstations"></see>, have a value of the type <see cref="T:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1"></see>.  This class provides methods to enumerate and manipulate those values.</summary>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Add(`0)">
+      <summary>Adds the specified value to the end of the collection.</summary>
+      <param name="value">An object to be added to the collection.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Clear">
+      <summary>Clears the contents of the collection.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Contains(`0)">
+      <summary>Returns true if the specified object is in the collection, and false otherwise.</summary>
+      <param name="value">An object.</param>
+      <returns>Returns a bool.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.CopyTo(`0[],System.Int32)">
+      <summary>Copys the contents of the collection to the specified array, starting at the specified position in the array.</summary>
+      <param name="array">An <see cref="T:System.Array"></see> of objects.</param>
+      <param name="index">An integer representing the position in array to which the first object in the collection should be copied.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Count">
+      <summary>Gets the number of objects in the collection.</summary>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.GetEnumerator">
+      <summary>Returns an enumerator that can be used to iterate through the collection.</summary>
+      <returns>An <see cref="SystemCollections.IEnumerator"></see> object.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.IndexOf(`0)">
+      <summary>Returns the index of the specified object, or -1 if the object is not in the collection.</summary>
+      <param name="value">The object whose index is required.</param>
+      <returns>An integer.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Insert(System.Int32,`0)">
+      <summary>Inserts the specified object into the collection at the specified index.</summary>
+      <param name="index">The index at which value will be inserted into the collection.</param>
+      <param name="value">An object.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.IsFixedSize">
+      <summary>Gets a bool that represents whether or not the collection is fixed in size.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.IsReadOnly">
+      <summary>Gets a bool that represents whether or not the collection is read-only.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.IsSynchronized">
+      <summary>Gets a value indicating whether access to the collection is synchronized (thread safe).</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Item(System.Int32)">
+      <summary>Gets the object at the specified index in the collection.</summary>
+      <param name="index">An integer.</param>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.Remove(`0)">
+      <summary>Removes the specified object from the collection.</summary>
+      <param name="value">The object to be removed from the collection.</param>
+      <returns>Returns a bool.  Returns true if the object was removed, or false if the object was not in the collection.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.RemoveAt(System.Int32)">
+      <summary>Removes the object at the specified index from the collection.</summary>
+      <param name="index">The index of the object to be removed from the collection.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.SyncRoot">
+      <summary>Gets an object that can be used to synchronize access to the collection.</summary>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copies the contents of the collection to the specified array, starting at the specified index.</summary>
+      <param name="array">An <see cref="T:System.Array"></see> of objects.</param>
+      <param name="index">An integer representing the position in array to which the first object in the collection should be copied.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#ICollection#Count">
+      <summary>Gets the number of objects in the collection.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#ICollection#IsSynchronized">
+      <summary>Gets a value indicating whether access to the collection is synchronized (thread safe).</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#ICollection#SyncRoot">
+      <summary>Gets an object that can be used to synchronize access to the collection.</summary>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for iterating through the collection.</summary>
+      <returns>An <see cref="SystemCollections.IEnumerator"></see> object.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Add(System.Object)">
+      <summary>Adds the specified object to the end of the collection.</summary>
+      <param name="value">An object to be added to the collection.</param>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Clear">
+      <summary>Deletes the contents of the collection.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Contains(System.Object)">
+      <summary>Returns a bool indicating whether the specified object is in the collection.</summary>
+      <param name="value">An object.</param>
+      <returns>boolean</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#IndexOf(System.Object)">
+      <summary>Returns the index of the specified object in the collection, or -1 if it is not in the collection.</summary>
+      <param name="value">An object.</param>
+      <returns>An integer.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Insert(System.Int32,System.Object)">
+      <summary>Inserts the specified object at the specified position into the collection.</summary>
+      <param name="index">The position into which value should be inserted.</param>
+      <param name="value">An object</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#IsFixedSize">
+      <summary>Gets a value indicating whether the collection is fixed-size.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#IsReadOnly">
+      <summary>Gets a value indicating whether access to the collection is read-only.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Item(System.Int32)">
+      <summary>Gets the object at the specified index in the collection.</summary>
+      <param name="index">An integer.</param>
+      <returns></returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#Remove(System.Object)">
+      <summary>Removes the specified object from the collection.</summary>
+      <param name="value">The object to be removed from the collection.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#RemoveAt(System.Int32)">
+      <summary>Removes the object at the specified index from the collection.</summary>
+      <param name="index">The index of the object to be removed from the collection.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.UserPrincipal">
+      <summary>Encapsulates principals that are user accounts.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> class by using the specified context.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext,System.String,System.String,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal"></see> class by using the specified context, SAM account name, password, and enabled value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="samAccountName">The SAM account name for this user principal.</param>
+      <param name="password">The password for this account.</param>
+      <param name="enabled">A Boolean value that specifies whether the account is enabled.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.AdvancedSearchFilter">
+      <summary>Returns an <see cref="T:System.DirectoryServices.AccountManagement.AdvancedFilters"></see> object to set read-only properties before passing the object to the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see>.</summary>
+      <returns>An <see cref="System.DirectoryServices.AccountManagement.AdvancedFilters"></see> object.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.Current">
+      <summary>Gets a user principal object that represents the current user under which the thread is running.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> representing the current user.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.NoMatchingPrincipalException">The user principal object for the current user could not be found. The principal object may contain an access control list to prevent access by unauthorized users.</exception>
+      <exception cref="T:System.MultipleMatchesException">Multiple user principal objects matching the current user were found.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.EmailAddress">
+      <summary>Gets or sets the email address for this account.</summary>
+      <returns>The email address of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.EmployeeId">
+      <summary>Gets or sets the employee ID for this user principal.</summary>
+      <returns>The employee ID of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByBadPasswordAttempt(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> objects for users that have an incorrect password attempt recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByExpirationTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> objects for users that have an account expiration time in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a user principal object that matches the specified identity type, and value. This version of the <see cref="Overload:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity"></see> method determines the format of the identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityType">A <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the format of the identityValue parameter.</param>
+      <param name="identityValue">The identity of the user principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> object that matches the specified identity value and type, or null if no matches are found.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">Multiple user principal objects matching the current user object were found.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The identity value is not a valid <see cref="System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.String)">
+      <summary>Returns a user principal object that matches the specified identity value.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityValue">The identity of the user principal. This parameter can be any format that is contained in the <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> object that matches the specified identity value, or null if no matches are found.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.MultipleMatchesException">Multiple user principal objects matching the current user object were found.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByLockoutTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> objects for users that have an account lockout time in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByLogonTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> objects for users that have account logon recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.FindByPasswordSetTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> objects for users that have set their password within the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.UserPrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.UserPrincipal.GetAuthorizationGroups">
+      <summary>Returns a collection of principal objects that contains all the authorization groups of which this user is a member. This function only returns groups that are security groups; distribution groups are not returned.</summary>
+      <returns>A collection of <see cref="System.DirectoryServices.AccountManagement.Principal"></see> objects that contain the groups of which the user is a member, or null if the user does not belong to any groups.</returns>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">The attempt to retrieve authorization groups failed.</exception>
+      <exception cref="T:System.NotSupportedException">The retrieval of authorization groups is not supported by this operating system.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.GivenName">
+      <summary>Gets or sets the given name for the user principal.</summary>
+      <returns>The given name of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.MiddleName">
+      <summary>Gets or sets the middle name for the user principal.</summary>
+      <returns>The middle name of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.Surname">
+      <summary>Gets or sets the surname for the user principal.</summary>
+      <returns>The surname of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.UserPrincipal.VoiceTelephoneNumber">
+      <summary>Gets or sets the voice telephone number for the user principal.</summary>
+      <returns>The voice telephone number of the user principal.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.AdvancedFilters">
+      <summary>This class provides writable access to certain attributes so that users can modify read-only properties of the &amp;quot;dummy&amp;quot; principal object that is passed to a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see> object when using Query By Example.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.#ctor(System.DirectoryServices.AccountManagement.Principal)">
+      <summary>Instantiates a new <see cref="T:System.DirectoryServices.AccountManagement.AdvancedFilters"></see> object. Not intended to be called directly.</summary>
+      <param name="p">A <see cref="T:System.DirectoryServices.AccountManagement.Principal"></see> object.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.AccountExpirationDate(System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the query filter for the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AccountExpirationDate"></see> attribute to the specified time and comparison type.</summary>
+      <param name="expirationTime">A <see cref="T:System.DateTime"></see> object.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how expirationTime should be used in the comparison.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.AccountLockoutTime(System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AccountLockoutTime"></see> query filter to the specified time and comparison type.</summary>
+      <param name="lockoutTime">A <see cref="T:System.DateTime"></see> object.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how lockoutTime should be used in the comparison.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.AdvancedFilterSet(System.String,System.Object,System.Type,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Creates a query filter for a property in an extended class.</summary>
+      <param name="attribute">The name of the attribute</param>
+      <param name="value">An object.</param>
+      <param name="objectType">The object type of value.</param>
+      <param name="mt">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how value should be compared to the attribute&amp;#39;s value.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.BadLogonCount(System.Int32,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the query filter for the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.BadLogonCount"></see> attribute to the specified value and comparison type.</summary>
+      <param name="badLogonCount">An integer.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how badLogonCount should be compared to the attribute&amp;#39;s value.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.LastBadPasswordAttempt(System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the query filter for the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastBadPasswordAttempt"></see> attribute to the specified <see cref="T:System.DateTime"></see> and the specified comparison value.</summary>
+      <param name="lastAttempt">A <see cref="T:System.DateTime"></see> object.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how lastAttempt should be used in the comparison.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.LastLogonTime(System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the query filter for the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastLogon"></see> attribute to the specified <see cref="T:System.DateTime"></see> and the specified comparison value.</summary>
+      <param name="logonTime">A <see cref="T:System.DateTime"></see> object.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how logonTime should be used in the comparison.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AdvancedFilters.LastPasswordSetTime(System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Sets the query filter for the <see cref="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastPasswordSet"></see> attribute to the specified <see cref="T:System.DateTime"></see> and the specified comparison value.</summary>
+      <param name="passwordSetTime">A <see cref="T:System.DateTime"></see> object.</param>
+      <param name="match">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies how passwordSetTime should be used in the comparison.</param>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.AuthenticablePrincipal">
+      <summary>Encapsulates the account and contact data common to principals that can be authenticated.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> class by using the specified context. This constructor is called by derived-class constructors to initialize the base class and is not intended for use directly from your code.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext,System.String,System.String,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> class by using the specified context, SAM account name, password, and enabled value. This constructor is called by derived-class constructors to initialize the base class and is not intended for use directly from your code.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="samAccountName">The SAM account name for this principal.</param>
+      <param name="password">The password for this account.</param>
+      <param name="enabled">A Boolean value that specifies whether the account is enabled.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AccountExpirationDate">
+      <summary>Gets or sets a Nullable <see cref="T:System.DateTime"></see> that specifies the date and time that the account expires.</summary>
+      <returns>A <see cref="System.DateTime"></see> that specifies the date and time that the account expires, or null if the account never expires.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AccountLockoutTime">
+      <summary>Gets the Nullable <see cref="T:System.DateTime"></see> that specifies the date and time that the account was locked out.</summary>
+      <returns>A <see cref="System.DateTime"></see> that specifies the date and time that the account was locked out, or null if no lockout time is set on the account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AdvancedSearchFilter">
+      <summary>Returns an <see cref="System.DirectoryServices.AccountManagement.AdvancedSearchFilter"></see> object, for use with Query By Example to set read-only properties before passing the object to the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher"></see>.</summary>
+      <returns>An <see cref="System.DirectoryServices.AccountManagement.AdvancedSearchFilter"></see> object.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.AllowReversiblePasswordEncryption">
+      <summary>Gets or sets a Boolean value that specifies whether reversible password encryption is enabled for this account.</summary>
+      <returns>true if reversible password encryption is enabled for this account; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.BadLogonCount">
+      <summary>Gets the number of logon attempts using incorrect credentials for this account.</summary>
+      <returns>The number of logon attempts using incorrect credentials for this account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.Certificates">
+      <summary>Gets a <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> that contains the X509 certificates for this account.</summary>
+      <returns>A <see cref="System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> that contains the X509 certificates for this account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.ChangePassword(System.String,System.String)">
+      <summary>Changes the account password from the old password to the new password. Do not use this with a <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see>.</summary>
+      <param name="oldPassword">The password that is changed.</param>
+      <param name="newPassword">The new password.</param>
+      <exception cref="T:System.InvalidOperationException">The principal has not been persisted.</exception>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">The new password does not meet the complexity requirements.</exception>
+      <exception cref="T:System.NotSupportedException">The principal is not a user.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.DelegationPermitted">
+      <summary>Gets or sets a Nullable Boolean value that specifies whether the account may be delegated.</summary>
+      <returns>true if the account may be delegated; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.Enabled">
+      <summary>Gets or sets a Nullable Boolean value that specifies whether this account is enabled for authentication.</summary>
+      <returns>true if the principal is enabled, or null if the account has not been persisted; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+      <exception cref="T:System.ArgumentNullException">The application tried to set a null value for this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.ExpirePasswordNow">
+      <summary>Expires the password for this account. This will force the user to change his/her password at the next logon.</summary>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving the changes to the store.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByBadPasswordAttempt(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of authentication principal objects that have an incorrect password try recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> object that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the incorrect password try. This parameter is used with the type parameter to determine the range of time in which the returned objects have an incorrect logon try recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> objects, or an empty collection if no results are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByBadPasswordAttempt``1(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> collection of objects that have a bad password attempt within the specified date and time range. This is the template function for extended classes that wish to implement this functionality.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <typeparam name="T"></typeparam>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more objects of the appropriate principal type, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByExpirationTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of authentication principal objects that have an account expiration time recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the account expiration. This parameter is used with the type parameter to determine the range of time in which the returned objects have an account expiration recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> objects.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByExpirationTime``1(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> collection of objects that have an expiration time within the specified date and time range. This is the template function for extended classes that wish to implement this functionality.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <typeparam name="T"></typeparam>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more objects of the appropriate principal type, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByLockoutTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of authentication principal objects that have an account lockout time recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the account lockout. This parameter is used with the type parameter to determine the range of time in which the returned objects have an account lockout recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> objects.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByLockoutTime``1(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> collection of objects that have a lockout time within the specified date and time range. This is the template function for extended classes that wish to implement this functionality.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <typeparam name="T"></typeparam>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more objects of the appropriate principal type, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByLogonTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of authentication principal objects that have an account logon recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the logon record. This parameter is used with the type parameter to determine the range of time in which the returned objects have an account logon recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> objects.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByLogonTime``1(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> collection of objects that have a logon time within the specified date and time range. This is the template function for extended classes that wish to implement this functionality.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <typeparam name="T"></typeparam>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more objects of the appropriate principal type, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByPasswordSetTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a collection of authentication principal objects that have an account password set recorded in the specified date and time range.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more <see cref="System.DirectoryServices.AccountManagement.AuthenticablePrincipal"></see> objects.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.FindByPasswordSetTime``1(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> collection of objects that have a password set time within the specified date and time range.  This is the template function for extended classes that wish to implement this functionality.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> object that identifies the date and time of the password set. This parameter is used with the type parameter to determine the range of time in which the returned objects have a password set recorded.</param>
+      <param name="type">A <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> enumeration value that specifies the type of match that is applied to the time parameter.</param>
+      <typeparam name="T"></typeparam>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.PrincipalSearchResult`1"></see> that contains one or more objects of the appropriate principal type, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.HomeDirectory">
+      <summary>Gets or sets the home directory for this account.</summary>
+      <returns>The home directory for this account, or null if no home directory exists.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.HomeDrive">
+      <summary>Gets or sets the home drive for this account.</summary>
+      <returns>The home drive for the account, or null if no home drive exists.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.IsAccountLockedOut">
+      <summary>Returns a Boolean value that specifies whether the account is currently locked out.</summary>
+      <returns>true if the account is locked out; otherwise false.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastBadPasswordAttempt">
+      <summary>Gets the Nullable <see cref="T:System.DateTime"></see> that specifies the date and time of the last incorrect password attempt on this account.</summary>
+      <returns>A Nullable <see cref="System.DateTime"></see> that specifies the date and time of the last incorrect password attempt on this account, or null if no incorrect password tries are recorded.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastLogon">
+      <summary>Gets the Nullable <see cref="T:System.DateTime"></see> that specifies the date and time of the last logon for this account.</summary>
+      <returns>A Nullable <see cref="System.DateTime"></see> that specifies the date and time of the last logon for this account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.LastPasswordSet">
+      <summary>Gets the Nullable <see cref="T:System.DateTime"></see> that specifies the last date and time that the password was set for this account.</summary>
+      <returns>A Nullable <see cref="System.DateTime"></see> that specifies the last date and time that the password was set for this account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.PasswordNeverExpires">
+      <summary>Gets or sets a Boolean value that specifies whether the password expires for this account.</summary>
+      <returns>true if the password expires for this account; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.PasswordNotRequired">
+      <summary>Gets or sets a Boolean value that specifies whether a password is required for this account.</summary>
+      <returns>true if a password is required for this account; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.PermittedLogonTimes">
+      <summary>Gets or sets the times when the principal can logon.</summary>
+      <returns>The permitted logon times for this account.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.PermittedWorkstations">
+      <summary>Gets the list of workstations that this principal is permitted to log into.</summary>
+      <returns>The mutable list of workstations that this principal is permitted to log into.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.RefreshExpiredPassword">
+      <summary>Refreshes an expired password.</summary>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving the changes to the store.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.ScriptPath">
+      <summary>Gets or sets the script path for this account.</summary>
+      <returns>A path of the script for this account, or null if there is no script path.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.SetPassword(System.String)">
+      <summary>Sets the account password to the specified value.</summary>
+      <param name="newPassword">The new password.</param>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">Throws an exception if the caller does not have appropriate rights, the new password does not meet password complexity requirements, or for any other reason that the underlying stores reject the password change.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.SmartcardLogonRequired">
+      <summary>Gets or sets a Boolean value that specifies whether a smartcard is required to log on to the account.</summary>
+      <returns>true if a smartcard is required to log on to this account; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.UnlockAccount">
+      <summary>Unlocks the account if it is currently locked out.</summary>
+      <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving the changes to the store.</exception>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.AuthenticablePrincipal.UserCannotChangePassword">
+      <summary>Gets or sets a Boolean value that specifies whether the user can change the password for this account. Do not use this with a <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see>.</summary>
+      <returns>true if the user is not permitted to change the password; otherwise false.</returns>
+      <exception cref="T:System.InvalidOperationException">The underlying store does not support this property.</exception>
+      <exception cref="T:System.NotSupportedException">This principal object is not a user.</exception>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.ComputerPrincipal">
+      <summary>Encapsulates principals that are computer accounts.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> class and assigns it to the specified context.</summary>
+      <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.#ctor(System.DirectoryServices.AccountManagement.PrincipalContext,System.String,System.String,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> class by using the specified context, SAM account name, password, and enabled value.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="samAccountName">The SAM account name for this computer principal.</param>
+      <param name="password">The password for this account.</param>
+      <param name="enabled">A Boolean value that specifies whether the account is enabled.</param>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByBadPasswordAttempt(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult&amp;#39;1"></see> collection of <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that have had bad password attempts within the parameters specified.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> structure that is used in conjunction with the <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> to find computers with bad password attempts.</param>
+      <param name="type">The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies the type of comparison to use in the search.</param>
+      <returns>A <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that match the search parameters, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByExpirationTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult&amp;#39;1"></see> collection of <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that have an expiration time within the specified date and time range.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> structure that is used in conjunction with the <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> to filter search results.</param>
+      <param name="type">The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies the type of comparison to use in the search.</param>
+      <returns>A <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that match the search parameters, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.String)">
+      <summary>Returns a computer principal object that matches the specified identity value.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityValue">The identity of the computer. This parameter can be any format that is contained in the <see cref="System.DirectoryService.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object that matches the specified identity value, or null if no matches are found.</returns>
+      <exception cref="T:System.MultipleMatchesException">Multiple computer principal objects matching the current computer object were found.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByIdentity(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
+      <summary>Returns a computer principal object that matches the specified identity type and value. This version of the <see cref="Overload:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByIdentity"></see> method determines the format of the identity value.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="identityType">A <see cref="T:System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value that specifies the format of the identityValue parameter.</param>
+      <param name="identityValue">The identity of the computer. This parameter can be any format that is contained in the <see cref="System.DirectoryService.AccountManagement.IdentityType"></see> enumeration.</param>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ComputerPrincipal"></see> object that matches the specified identity value and type, or null if no matches are found.</returns>
+      <exception cref="T:System.MultipleMatchesException">Multiple computer principal objects matching the current computer object were found.</exception>
+      <exception cref="T:System.ComponenetModel.InvalidEnumerationOperatorException">The identity value is not a valid <see cref="System.DirectoryServices.AccountManagement.IdentityType"></see> enumeration value.</exception>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByLockoutTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult&amp;#39;1"></see> collection of <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that have a lockout time within the specified date and time range.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> structure that is used in conjunction with the <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> to filter search results.</param>
+      <param name="type">The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies the type of comparison to use in the search.</param>
+      <returns>A <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that match the search parameters, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByLogonTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult&amp;#39;1"></see> collection of <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that have a logon time within the specified date and time range.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> structure that is used in conjunction with the <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> to filter search results.</param>
+      <param name="type">The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies the type of comparison to use in the search.</param>
+      <returns>A <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that match the search parameters, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.ComputerPrincipal.FindByPasswordSetTime(System.DirectoryServices.AccountManagement.PrincipalContext,System.DateTime,System.DirectoryServices.AccountManagement.MatchType)">
+      <summary>Returns a <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult&amp;#39;1"></see> collection of <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that have a password set time within the specified date and time range.</summary>
+      <param name="context">The <see cref="System.DirectoryService.AccountManagement.PrincipalContext"></see> that specifies the server or domain against which operations are performed.</param>
+      <param name="time">A <see cref="T:System.DateTime"></see> structure that is used in conjunction with the <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> to filter search results.</param>
+      <param name="type">The <see cref="T:System.DirectoryServices.AccountManagement.MatchType"></see> that specifies the type of comparison to use in the search.</param>
+      <returns>A <see cref="System.DirectoryService.AccountManagement.PrincipalSearchResult'1"></see> that contains one or more <see cref="System.DirectoryService.AccountManagement.ComputerPincipal"></see> objects that match the search parameters, or an empty collection if no matches are found.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.ComputerPrincipal.ServicePrincipalNames">
+      <summary>Gets a collection of the Service Principal Names (SPN) for the computer account.</summary>
+      <returns>A collection of SPNs that specify the names of the accounts registered for this computer. The syntax for the SPN depends on the underlying store.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.ContextOptions">
+      <summary>Specifies the options that are used for binding to the server. The application can set multiple options that are linked with a bitwise OR operation.</summary>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.Negotiate">
+      <summary>The client is authenticated by using either Kerberos or NTLM. When the user name and password are not provided, the Account Management API binds to the object by using the security context of the calling thread, which is either the security context of the user account under which the application is running or of the client user account that the calling thread represents.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.Sealing">
+      <summary>The data is encrypted by using Kerberos.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.SecureSocketLayer">
+      <summary>The channel is encrypted by using the Secure Sockets Layer (SSL). Active Directory requires that the Certificate Services be installed to support SSL.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.ServerBind">
+      <summary>Specify this flag when you use the domain context type if the application is binding to a specific server name.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.Signing">
+      <summary>The integrity of the data is verified. This flag can only be used with the Negotiate context option and is not available with the simple bind option.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextOptions.SimpleBind">
+      <summary>The client is authenticated by using the Basic authentication.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.ContextType">
+      <summary>Specifies the type of store to which the principal belongs.</summary>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory">
+      <summary>The application directory store. This represents the AD LDS store.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextType.Domain">
+      <summary>The domain store. This represents the AD DS store.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.DirectoryServices.AccountManagement.ContextType.Machine">
+      <summary>The computer store. This represents the SAM store.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute">
+      <summary>Represents the schema object that is used to create an object of this type in the directory. This attribute is required for principal extensions and can only be set on classes.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute"></see> class with the specified object class value. The object created in the directory will be created with this object class type.</summary>
+      <param name="objectClass">The string that contains the object class value. The <see cref="P:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute.ObjectClass"></see> property is initialized to this value. The object class string represents the objectClass attribute for the application directory and domain directories.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute.Context">
+      <summary>This property is not implemented and always returns null.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value that specifies the type of store to which the attribute applies, or null if no context is set.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryObjectClassAttribute.ObjectClass">
+      <summary>Returns the object class value for the extended class.</summary>
+      <returns>The object class value for the extended class.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute">
+      <summary>Contains the data required by the store to map a principal property to a directory attribute. This attribute is required for principal extensions and can only be set on a property. It must be specified on every property that represents a directory attribute in the extended class.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute"></see> class with the schema attribute name.</summary>
+      <param name="schemaAttributeName">The name of the attribute that is set in the directory. The <see cref="P:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute.SchemaAttributeName"></see> property is initialized to this value. This property represents the ldapDisplayName for application directory and domain directories.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute.Context">
+      <summary>This property is not implemented and always returns null.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value that specifies the type of store to which this attribute applies, or null if no context is set.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryPropertyAttribute.SchemaAttributeName">
+      <summary>Returns the string that represents the attribute name in the directory.</summary>
+      <returns>The string that represents the attribute name in the directory.</returns>
+    </member>
+    <member name="T:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute">
+      <summary>The RDN prefix used to construct the RDN for the new object that is inserted into the store. The default RDN prefix of &amp;quot;CN&amp;quot; is used by the Account Management API if this attribute is not set. This attribute is optional and can only be set on principal extension classes.</summary>
+    </member>
+    <member name="M:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute"></see> class with the RDN prefix.</summary>
+      <param name="rdnPrefix">The RDN prefix. The <see cref="P:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute.RdnPrefix"></see> property is initialized to this value.</param>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute.Context">
+      <summary>This property is not implemented and always returns null.</summary>
+      <returns>A <see cref="System.DirectoryServices.AccountManagement.ContextType"></see> enumeration value that specifies the type of store to which this attribute applies, or null is no context is set.</returns>
+    </member>
+    <member name="P:System.DirectoryServices.AccountManagement.DirectoryRdnPrefixAttribute.RdnPrefix">
+      <summary>Returns the RDN prefix used to construct the RDN.</summary>
+      <returns>The RDN prefix used to construct the RDN.</returns>
+    </member>
+  </members>
+</doc>

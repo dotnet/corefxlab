@@ -1,0 +1,1369 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Net.WebClient</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.WriteStreamClosedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.WriteStreamClosed"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender"></param>
+      <param name="e"></param>
+    </member>
+    <member name="T:System.Net.WriteStreamClosedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.WriteStreamClosed"></see> event.</summary>
+    </member>
+    <member name="M:System.Net.WriteStreamClosedEventArgs.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.WriteStreamClosedEventArgs"></see> class.</summary>
+    </member>
+    <member name="P:System.Net.WriteStreamClosedEventArgs.Error">
+      <summary>Gets the error value when a write stream is closed.</summary>
+      <returns>Returns <see cref="T:System.Exception"></see>.</returns>
+    </member>
+    <member name="T:System.Net.WebClient">
+      <summary>Provides common methods for sending data to and receiving data from a resource identified by a URI.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.WebClient"></see> class.</summary>
+    </member>
+    <member name="P:System.Net.WebClient.AllowReadStreamBuffering">
+      <summary>Gets or sets a value that indicates whether to buffer the data read from the Internet resource for a <see cref="T:System.Net.WebClient"></see> instance.</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> to enable buffering of the data received from the Internet resource; <see langword="false"></see> to disable buffering. The default is <see langword="true"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebClient.AllowWriteStreamBuffering">
+      <summary>Gets or sets a value that indicates whether to buffer the data written to the Internet resource for a <see cref="T:System.Net.WebClient"></see> instance.</summary>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> to enable buffering of the data written to the Internet resource; <see langword="false"></see> to disable buffering. The default is <see langword="true"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebClient.BaseAddress">
+      <summary>Gets or sets the base URI for requests made by a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <returns>A <see cref="T:System.String"></see> containing the base URI for requests made by a <see cref="T:System.Net.WebClient"></see> or <see cref="F:System.String.Empty"></see> if no base address has been specified.</returns>
+      <exception cref="T:System.ArgumentException"><see cref="System.Net.WebClient.BaseAddress"></see> is set to an invalid URI. The inner exception may contain information that will help you locate the error.</exception>
+    </member>
+    <member name="P:System.Net.WebClient.CachePolicy">
+      <summary>Gets or sets the application&amp;#39;s cache policy for any resources obtained by this WebClient instance using <see cref="T:System.Net.WebRequest"></see> objects.</summary>
+      <returns>A <see cref="T:System.Net.Cache.RequestCachePolicy"></see> object that represents the application&amp;#39;s caching requirements.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.CancelAsync">
+      <summary>Cancels a pending asynchronous operation.</summary>
+    </member>
+    <member name="P:System.Net.WebClient.Credentials">
+      <summary>Gets or sets the network credentials that are sent to the host and used to authenticate the request.</summary>
+      <returns>An <see cref="T:System.Net.ICredentials"></see> containing the authentication credentials for the request. The default is <see langword="null"></see>.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadData(System.String)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified.</summary>
+      <param name="address">The URI from which to download data.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading data.</exception>
+      <exception cref="T:System.NotSupportedException">The method has been called simultaneously on multiple threads.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadData(System.Uri)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified.</summary>
+      <param name="address">The URI represented by the <see cref="T:System.Uri"></see> object, from which to download data.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadDataAsync(System.Uri)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified as an asynchronous operation.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> containing the URI to download.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadDataAsync(System.Uri,System.Object)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified as an asynchronous operation.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> containing the URI to download.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.DownloadDataCompleted">
+      <summary>Occurs when an asynchronous data download operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadDataTaskAsync(System.String)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadDataTaskAsync(System.Uri)">
+      <summary>Downloads the resource as a <see cref="T:System.Byte"></see> array from the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFile(System.Uri,System.String)">
+      <summary>Downloads the resource with the specified URI to a local file.</summary>
+      <param name="address">The URI specified as a <see cref="T:System.String"></see>, from which to download data.</param>
+      <param name="fileName">The name of the local file that is to receive the data.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="filename">filename</paramref> is <see langword="null"></see> or <see cref="System.String.Empty"></see>.  
+ -or-  
+ The file does not exist.  
+ -or-  
+ An error occurred while downloading data.</exception>
+      <exception cref="T:System.NotSupportedException">The method has been called simultaneously on multiple threads.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFile(System.String,System.String)">
+      <summary>Downloads the resource with the specified URI to a local file.</summary>
+      <param name="address">The URI from which to download data.</param>
+      <param name="fileName">The name of the local file that is to receive the data.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="filename">filename</paramref> is <see langword="null"></see> or <see cref="System.String.Empty"></see>.  
+ -or-  
+ The file does not exist.  
+ -or- An error occurred while downloading data.</exception>
+      <exception cref="T:System.NotSupportedException">The method has been called simultaneously on multiple threads.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFileAsync(System.Uri,System.String)">
+      <summary>Downloads, to a local file, the resource with the specified URI. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <param name="fileName">The name of the file to be placed on the local computer.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.InvalidOperationException">The local file specified by <paramref name="fileName">fileName</paramref> is in use by another thread.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFileAsync(System.Uri,System.String,System.Object)">
+      <summary>Downloads, to a local file, the resource with the specified URI. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <param name="fileName">The name of the file to be placed on the local computer.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.InvalidOperationException">The local file specified by <paramref name="fileName">fileName</paramref> is in use by another thread.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.DownloadFileCompleted">
+      <summary>Occurs when an asynchronous file download operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFileTaskAsync(System.String,System.String)">
+      <summary>Downloads the specified resource to a local file as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <param name="fileName">The name of the file to be placed on the local computer.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.InvalidOperationException">The local file specified by <paramref name="fileName">fileName</paramref> is in use by another thread.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadFileTaskAsync(System.Uri,System.String)">
+      <summary>Downloads the specified resource to a local file as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <param name="fileName">The name of the file to be placed on the local computer.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.InvalidOperationException">The local file specified by <paramref name="fileName">fileName</paramref> is in use by another thread.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.DownloadProgressChanged">
+      <summary>Occurs when an asynchronous download operation successfully transfers some or all of the data.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadString(System.String)">
+      <summary>Downloads the requested resource as a <see cref="T:System.String"></see>. The resource to download is specified as a <see cref="T:System.String"></see> containing the URI.</summary>
+      <param name="address">A <see cref="T:System.String"></see> containing the URI to download.</param>
+      <returns>A <see cref="T:System.String"></see> containing the requested resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.NotSupportedException">The method has been called simultaneously on multiple threads.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadString(System.Uri)">
+      <summary>Downloads the requested resource as a <see cref="T:System.String"></see>. The resource to download is specified as a <see cref="T:System.Uri"></see>.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> object containing the URI to download.</param>
+      <returns>A <see cref="T:System.String"></see> containing the requested resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+      <exception cref="T:System.NotSupportedException">The method has been called simultaneously on multiple threads.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadStringAsync(System.Uri)">
+      <summary>Downloads the resource specified as a <see cref="T:System.Uri"></see>. This method does not block the calling thread.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> containing the URI to download.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadStringAsync(System.Uri,System.Object)">
+      <summary>Downloads the specified string to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> containing the URI to download.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.DownloadStringCompleted">
+      <summary>Occurs when an asynchronous resource-download operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadStringTaskAsync(System.String)">
+      <summary>Downloads the resource as a <see cref="T:System.String"></see> from the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.DownloadStringTaskAsync(System.Uri)">
+      <summary>Downloads the resource as a <see cref="T:System.String"></see> from the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to download.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the downloaded resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading the resource.</exception>
+    </member>
+    <member name="P:System.Net.WebClient.Encoding">
+      <summary>Gets and sets the <see cref="T:System.Text.Encoding"></see> used to upload and download strings.</summary>
+      <returns>A <see cref="T:System.Text.Encoding"></see> that is used to encode strings. The default value of this property is the encoding returned by <see cref="P:System.Text.Encoding.Default"></see>.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.GetWebRequest(System.Uri)">
+      <summary>Returns a <see cref="T:System.Net.WebRequest"></see> object for the specified resource.</summary>
+      <param name="address">A <see cref="T:System.Uri"></see> that identifies the resource to request.</param>
+      <returns>A new <see cref="T:System.Net.WebRequest"></see> object for the specified resource.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.GetWebResponse(System.Net.WebRequest)">
+      <summary>Returns the <see cref="T:System.Net.WebResponse"></see> for the specified <see cref="T:System.Net.WebRequest"></see>.</summary>
+      <param name="request">A <see cref="T:System.Net.WebRequest"></see> that is used to obtain the response.</param>
+      <returns>A <see cref="T:System.Net.WebResponse"></see> containing the response for the specified <see cref="T:System.Net.WebRequest"></see>.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.GetWebResponse(System.Net.WebRequest,System.IAsyncResult)">
+      <summary>Returns the <see cref="T:System.Net.WebResponse"></see> for the specified <see cref="T:System.Net.WebRequest"></see> using the specified <see cref="T:System.IAsyncResult"></see>.</summary>
+      <param name="request">A <see cref="T:System.Net.WebRequest"></see> that is used to obtain the response.</param>
+      <param name="result">An <see cref="T:System.IAsyncResult"></see> object obtained from a previous call to <see cref="M:System.Net.WebRequest.BeginGetResponse(System.AsyncCallback,System.Object)"></see> .</param>
+      <returns>A <see cref="T:System.Net.WebResponse"></see> containing the response for the specified <see cref="T:System.Net.WebRequest"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebClient.Headers">
+      <summary>Gets or sets a collection of header name/value pairs associated with the request.</summary>
+      <returns>A <see cref="T:System.Net.WebHeaderCollection"></see> containing header name/value pairs associated with this request.</returns>
+    </member>
+    <member name="P:System.Net.WebClient.IsBusy">
+      <summary>Gets whether a Web request is in progress.</summary>
+      <returns><see langword="true"></see> if the Web request is still in progress; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.OnDownloadDataCompleted(System.Net.DownloadDataCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.DownloadDataCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.DownloadDataCompletedEventArgs"></see> object that contains event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnDownloadFileCompleted(System.ComponentModel.AsyncCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.DownloadFileCompleted"></see> event.</summary>
+      <param name="e">An <see cref="T:System.ComponentModel.AsyncCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnDownloadProgressChanged(System.Net.DownloadProgressChangedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.DownloadProgressChanged"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.DownloadProgressChangedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnDownloadStringCompleted(System.Net.DownloadStringCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.DownloadStringCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.DownloadStringCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnOpenReadCompleted(System.Net.OpenReadCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.OpenReadCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.OpenReadCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnOpenWriteCompleted(System.Net.OpenWriteCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.OpenWriteCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.OpenWriteCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnUploadDataCompleted(System.Net.UploadDataCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.UploadDataCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.UploadDataCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnUploadFileCompleted(System.Net.UploadFileCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.UploadFileCompleted"></see> event.</summary>
+      <param name="e">An <see cref="T:System.Net.UploadFileCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnUploadProgressChanged(System.Net.UploadProgressChangedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.UploadProgressChanged"></see> event.</summary>
+      <param name="e">An <see cref="T:System.Net.UploadProgressChangedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnUploadStringCompleted(System.Net.UploadStringCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.UploadStringCompleted"></see> event.</summary>
+      <param name="e">An <see cref="T:System.Net.UploadStringCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnUploadValuesCompleted(System.Net.UploadValuesCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.UploadValuesCompleted"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.UploadValuesCompletedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OnWriteStreamClosed(System.Net.WriteStreamClosedEventArgs)">
+      <summary>Raises the <see cref="E:System.Net.WebClient.WriteStreamClosed"></see> event.</summary>
+      <param name="e">A <see cref="T:System.Net.WriteStreamClosedEventArgs"></see> object containing event data.</param>
+    </member>
+    <member name="M:System.Net.WebClient.OpenRead(System.String)">
+      <summary>Opens a readable stream for the data downloaded from a resource with the URI specified as a <see cref="T:System.String"></see>.</summary>
+      <param name="address">The URI specified as a <see cref="T:System.String"></see> from which to download data.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to read data from a resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading data.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenRead(System.Uri)">
+      <summary>Opens a readable stream for the data downloaded from a resource with the URI specified as a <see cref="T:System.Uri"></see></summary>
+      <param name="address">The URI specified as a <see cref="T:System.Uri"></see> from which to download data.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to read data from a resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while downloading data.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenReadAsync(System.Uri)">
+      <summary>Opens a readable stream containing the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to retrieve.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and address is invalid.  
+ -or-  
+ An error occurred while downloading the resource.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenReadAsync(System.Uri,System.Object)">
+      <summary>Opens a readable stream containing the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to retrieve.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and address is invalid.  
+ -or-  
+ An error occurred while downloading the resource.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.OpenReadCompleted">
+      <summary>Occurs when an asynchronous operation to open a stream containing a resource completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.OpenReadTaskAsync(System.String)">
+      <summary>Opens a readable stream containing the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to retrieve.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to read data from a resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and address is invalid.  
+ -or-  
+ An error occurred while downloading the resource.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenReadTaskAsync(System.Uri)">
+      <summary>Opens a readable stream containing the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to retrieve.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to read data from a resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and address is invalid.  
+ -or-  
+ An error occurred while downloading the resource.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWrite(System.String)">
+      <summary>Opens a stream for writing data to the specified resource.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWrite(System.Uri)">
+      <summary>Opens a stream for writing data to the specified resource.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWrite(System.String,System.String)">
+      <summary>Opens a stream for writing data to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWrite(System.Uri,System.String)">
+      <summary>Opens a stream for writing data to the specified resource, by using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <returns>A <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteAsync(System.Uri,System.String,System.Object)">
+      <summary>Opens a stream for writing data to the specified resource, using the specified method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteAsync(System.Uri,System.String)">
+      <summary>Opens a stream for writing data to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteAsync(System.Uri)">
+      <summary>Opens a stream for writing data to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.OpenWriteCompleted">
+      <summary>Occurs when an asynchronous operation to open a stream to write data to a resource completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteTaskAsync(System.String)">
+      <summary>Opens a stream for writing data to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteTaskAsync(System.Uri)">
+      <summary>Opens a stream for writing data to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteTaskAsync(System.String,System.String)">
+      <summary>Opens a stream for writing data to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.OpenWriteTaskAsync(System.Uri,System.String)">
+      <summary>Opens a stream for writing data to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.IO.Stream"></see> used to write data to the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.</exception>
+    </member>
+    <member name="P:System.Net.WebClient.Proxy">
+      <summary>Gets or sets the proxy used by this <see cref="T:System.Net.WebClient"></see> object.</summary>
+      <returns>An <see cref="T:System.Net.IWebProxy"></see> instance used to send requests.</returns>
+      <exception cref="T:System.ArgumentNullException"><see cref="System.Net.WebClient.Proxy"></see> is set to <see langword="null"></see>.</exception>
+    </member>
+    <member name="P:System.Net.WebClient.QueryString">
+      <summary>Gets or sets a collection of query name/value pairs associated with the request.</summary>
+      <returns>A <see cref="T:System.Collections.Specialized.NameValueCollection"></see> that contains query name/value pairs associated with the request. If no pairs are associated with the request, the value is an empty <see cref="T:System.Collections.Specialized.NameValueCollection"></see>.</returns>
+    </member>
+    <member name="P:System.Net.WebClient.ResponseHeaders">
+      <summary>Gets a collection of header name/value pairs associated with the response.</summary>
+      <returns>A <see cref="T:System.Net.WebHeaderCollection"></see> containing header name/value pairs associated with the response, or <see langword="null"></see> if no response has been received.</returns>
+    </member>
+    <member name="M:System.Net.WebClient.UploadData(System.String,System.Byte[])">
+      <summary>Uploads a data buffer to a resource identified by a URI.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while sending the data.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadData(System.Uri,System.Byte[])">
+      <summary>Uploads a data buffer to a resource identified by a URI.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while sending the data.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadData(System.String,System.String,System.Byte[])">
+      <summary>Uploads a data buffer to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The HTTP method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while uploading the data.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadData(System.Uri,System.String,System.Byte[])">
+      <summary>Uploads a data buffer to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The HTTP method used to send the data to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while uploading the data.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataAsync(System.Uri,System.String,System.Byte[])">
+      <summary>Uploads a data buffer to a resource identified by a URI, using the specified method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataAsync(System.Uri,System.String,System.Byte[],System.Object)">
+      <summary>Uploads a data buffer to a resource identified by a URI, using the specified method and identifying token.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataAsync(System.Uri,System.Byte[])">
+      <summary>Uploads a data buffer to a resource identified by a URI, using the POST method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.UploadDataCompleted">
+      <summary>Occurs when an asynchronous data-upload operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataTaskAsync(System.String,System.Byte[])">
+      <summary>Uploads a data buffer that contains a <see cref="T:System.Byte"></see> array to the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the data buffer was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataTaskAsync(System.Uri,System.Byte[])">
+      <summary>Uploads a data buffer that contains a <see cref="T:System.Byte"></see> array to the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the data buffer was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataTaskAsync(System.String,System.String,System.Byte[])">
+      <summary>Uploads a data buffer that contains a <see cref="T:System.Byte"></see> array to the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the data buffer was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadDataTaskAsync(System.Uri,System.String,System.Byte[])">
+      <summary>Uploads a data buffer that contains a <see cref="T:System.Byte"></see> array to the URI specified as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the data.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The data buffer to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the data buffer was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFile(System.String,System.String)">
+      <summary>Uploads the specified local file to a resource with the specified URI.</summary>
+      <param name="address">The URI of the resource to receive the file. For example, ftp://localhost/samplefile.txt.</param>
+      <param name="fileName">The file to send to the resource. For example, &amp;quot;samplefile.txt&amp;quot;.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid characters, or does not exist.  
+ -or-  
+ An error occurred while uploading the file.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFile(System.Uri,System.String)">
+      <summary>Uploads the specified local file to a resource with the specified URI.</summary>
+      <param name="address">The URI of the resource to receive the file. For example, ftp://localhost/samplefile.txt.</param>
+      <param name="fileName">The file to send to the resource. For example, &amp;quot;samplefile.txt&amp;quot;.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid characters, or does not exist.  
+ -or-  
+ An error occurred while uploading the file.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFile(System.String,System.String,System.String)">
+      <summary>Uploads the specified local file to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the file.</param>
+      <param name="method">The method used to send the file to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The file to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid characters, or does not exist.  
+ -or-  
+ An error occurred while uploading the file.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFile(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified local file to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the file.</param>
+      <param name="method">The method used to send the file to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The file to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid characters, or does not exist.  
+ -or-  
+ An error occurred while uploading the file.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileAsync(System.Uri,System.String)">
+      <summary>Uploads the specified local file to the specified resource, using the POST method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="fileName">The file to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileAsync(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified local file to the specified resource, using the POST method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The file to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileAsync(System.Uri,System.String,System.String,System.Object)">
+      <summary>Uploads the specified local file to the specified resource, using the POST method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The file to send to the resource.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.UploadFileCompleted">
+      <summary>Occurs when an asynchronous file-upload operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileTaskAsync(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified local file to a resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The local file to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the file was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileTaskAsync(System.String,System.String,System.String)">
+      <summary>Uploads the specified local file to a resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The method used to send the data to the resource. If <see langword="null"></see>, the default is POST for http and STOR for ftp.</param>
+      <param name="fileName">The local file to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the file was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileTaskAsync(System.String,System.String)">
+      <summary>Uploads the specified local file to a resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="fileName">The local file to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the file was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadFileTaskAsync(System.Uri,System.String)">
+      <summary>Uploads the specified local file to a resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the file. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="fileName">The local file to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the body of the response received from the resource when the file was uploaded.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="fileName">fileName</paramref> is <see langword="null"></see>, is <see cref="System.String.Empty"></see>, contains invalid character, or the specified path to the file does not exist.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header begins with <see langword="multipart"></see>.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.UploadProgressChanged">
+      <summary>Occurs when an asynchronous upload operation successfully transfers some or all of the data.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.UploadString(System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource, using the POST method.</summary>
+      <param name="address">The URI of the resource to receive the string. For Http resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>A <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadString(System.Uri,System.String)">
+      <summary>Uploads the specified string to the specified resource, using the POST method.</summary>
+      <param name="address">The URI of the resource to receive the string. For Http resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>A <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadString(System.String,System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the string. This URI must identify a resource that can accept a request sent with the method method.</param>
+      <param name="method">The HTTP method used to send the string to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>A <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadString(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the string. This URI must identify a resource that can accept a request sent with the method method.</param>
+      <param name="method">The HTTP method used to send the string to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>A <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringAsync(System.Uri,System.String)">
+      <summary>Uploads the specified string to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="data">The string to be uploaded.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringAsync(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringAsync(System.Uri,System.String,System.String,System.Object)">
+      <summary>Uploads the specified string to the specified resource. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.UploadStringCompleted">
+      <summary>Occurs when an asynchronous string-upload operation completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringTaskAsync(System.Uri,System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringTaskAsync(System.String,System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringTaskAsync(System.String,System.String)">
+      <summary>Uploads the specified string to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadStringTaskAsync(System.Uri,System.String)">
+      <summary>Uploads the specified string to the specified resource as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the string. For HTTP resources, this URI must identify a resource that can accept a request sent with the POST method, such as a script or ASP page.</param>
+      <param name="data">The string to be uploaded.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.String"></see> containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValues(System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ The <see langword="Content-type"></see> header is not <see langword="null"></see> or &amp;quot;application/x-www-form-urlencoded&amp;quot;.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValues(System.Uri,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ The <see langword="Content-type"></see> header is not <see langword="null"></see> or &amp;quot;application/x-www-form-urlencoded&amp;quot;.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValues(System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header value is not <see langword="null"></see> and is not <see langword="application/x-www-form-urlencoded"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValues(System.Uri,System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI, using the specified method.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="method">The HTTP method used to send the file to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>A <see cref="T:System.Byte"></see> array containing the body of the response from the resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="data">data</paramref> is <see langword="null"></see>.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header value is not <see langword="null"></see> and is not <see langword="application/x-www-form-urlencoded"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesAsync(System.Uri,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the data in the specified name/value collection to the resource identified by the specified URI. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the collection. This URI must identify a resource that can accept a request sent with the default method.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesAsync(System.Uri,System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the data in the specified name/value collection to the resource identified by the specified URI, using the specified method. This method does not block the calling thread.</summary>
+      <param name="address">The URI of the resource to receive the collection. This URI must identify a resource that can accept a request sent with the method method.</param>
+      <param name="method">The method used to send the string to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesAsync(System.Uri,System.String,System.Collections.Specialized.NameValueCollection,System.Object)">
+      <summary>Uploads the data in the specified name/value collection to the resource identified by the specified URI, using the specified method. This method does not block the calling thread, and allows the caller to pass an object to the method that is invoked when the operation completes.</summary>
+      <param name="address">The URI of the resource to receive the collection. This URI must identify a resource that can accept a request sent with the method method.</param>
+      <param name="method">The HTTP method used to send the string to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <param name="userToken">A user-defined object that is passed to the method invoked when the asynchronous operation completes.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see> and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.</exception>
+    </member>
+    <member name="E:System.Net.WebClient.UploadValuesCompleted">
+      <summary>Occurs when an asynchronous upload of a name/value collection completes.</summary>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesTaskAsync(System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="method">The HTTP method used to send the collection to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ The <see langword="Content-type"></see> header is not <see langword="null"></see> or &amp;quot;application/x-www-form-urlencoded&amp;quot;.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesTaskAsync(System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ The <see langword="Content-type"></see> header is not <see langword="null"></see> or &amp;quot;application/x-www-form-urlencoded&amp;quot;.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesTaskAsync(System.Uri,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ The <see langword="Content-type"></see> header value is not <see langword="null"></see> and is not <see langword="application/x-www-form-urlencoded"></see>.</exception>
+    </member>
+    <member name="M:System.Net.WebClient.UploadValuesTaskAsync(System.Uri,System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Uploads the specified name/value collection to the resource identified by the specified URI as an asynchronous operation using a task object.</summary>
+      <param name="address">The URI of the resource to receive the collection.</param>
+      <param name="method">The HTTP method used to send the collection to the resource. If null, the default is POST for http and STOR for ftp.</param>
+      <param name="data">The <see cref="T:System.Collections.Specialized.NameValueCollection"></see> to send to the resource.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
+ The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result"></see> property on the task object returns a <see cref="T:System.Byte"></see> array containing the response sent by the server.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address">address</paramref> parameter is <see langword="null"></see>.  
+ -or-  
+ The <paramref name="data">data</paramref> parameter is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Net.WebException">The URI formed by combining <see cref="System.Net.WebClient.BaseAddress"></see>, and <paramref name="address">address</paramref> is invalid.  
+ -or-  
+ <paramref name="method">method</paramref> cannot be used to send content.  
+ -or-  
+ There was no response from the server hosting the resource.  
+ -or-  
+ An error occurred while opening the stream.  
+ -or-  
+ The <see langword="Content-type"></see> header is not <see langword="null"></see> or &amp;quot;application/x-www-form-urlencoded&amp;quot;.</exception>
+    </member>
+    <member name="P:System.Net.WebClient.UseDefaultCredentials">
+      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that controls whether the <see cref="P:System.Net.CredentialCache.DefaultCredentials"></see> are sent with requests.</summary>
+      <returns><see langword="true"></see> if the default credentials are used; otherwise <see langword="false"></see>. The default value is <see langword="false"></see>.</returns>
+    </member>
+    <member name="E:System.Net.WebClient.WriteStreamClosed">
+      <summary>Occurs when an asynchronous operation to write data to a resource using a write stream is closed.</summary>
+    </member>
+    <member name="T:System.Net.UploadValuesCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.UploadValuesCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.UploadValuesCompletedEventArgs"></see> that contains event data.</param>
+    </member>
+    <member name="T:System.Net.UploadValuesCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.UploadValuesCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.UploadValuesCompletedEventArgs.Result">
+      <summary>Gets the server reply to a data upload operation started by calling an <see cref="Overload:System.Net.WebClient.UploadValuesAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.Byte"></see> array containing the server reply.</returns>
+    </member>
+    <member name="T:System.Net.UploadStringCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.UploadStringCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.UploadStringCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.UploadStringCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.UploadStringCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.UploadStringCompletedEventArgs.Result">
+      <summary>Gets the server reply to a string upload operation that is started by calling an <see cref="Overload:System.Net.WebClient.UploadStringAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.Byte"></see> array that contains the server reply.</returns>
+    </member>
+    <member name="T:System.Net.UploadProgressChangedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.UploadProgressChanged"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.UploadProgressChangedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.UploadProgressChangedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.UploadProgressChanged"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+    </member>
+    <member name="P:System.Net.UploadProgressChangedEventArgs.BytesReceived">
+      <summary>Gets the number of bytes received.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes received.</returns>
+    </member>
+    <member name="P:System.Net.UploadProgressChangedEventArgs.BytesSent">
+      <summary>Gets the number of bytes sent.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes sent.</returns>
+    </member>
+    <member name="P:System.Net.UploadProgressChangedEventArgs.TotalBytesToReceive">
+      <summary>Gets the total number of bytes in a <see cref="T:System.Net.WebClient"></see> data upload operation.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes that will be received.</returns>
+    </member>
+    <member name="P:System.Net.UploadProgressChangedEventArgs.TotalBytesToSend">
+      <summary>Gets the total number of bytes to send.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes that will be sent.</returns>
+    </member>
+    <member name="T:System.Net.UploadFileCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.UploadFileCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.UploadFileCompletedEventArgs"></see> that contains event data.</param>
+    </member>
+    <member name="T:System.Net.UploadFileCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.UploadFileCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.UploadFileCompletedEventArgs.Result">
+      <summary>Gets the server reply to a data upload operation that is started by calling an <see cref="Overload:System.Net.WebClient.UploadFileAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.Byte"></see> array that contains the server reply.</returns>
+    </member>
+    <member name="T:System.Net.UploadDataCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.UploadDataCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.UploadDataCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.UploadDataCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.UploadDataCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.UploadDataCompletedEventArgs.Result">
+      <summary>Gets the server reply to a data upload operation started by calling an <see cref="Overload:System.Net.WebClient.UploadDataAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.Byte"></see> array containing the server reply.</returns>
+    </member>
+    <member name="T:System.Net.DownloadStringCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.DownloadStringCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.DownloadStringCompletedEventArgs"></see> that contains event data.</param>
+    </member>
+    <member name="T:System.Net.DownloadStringCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.DownloadStringCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.DownloadStringCompletedEventArgs.Result">
+      <summary>Gets the data that is downloaded by a <see cref="Overload:System.Net.WebClient.DownloadStringAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.String"></see> that contains the downloaded data.</returns>
+    </member>
+    <member name="T:System.Net.DownloadProgressChangedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.DownloadProgressChanged"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.DownloadProgressChangedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.DownloadProgressChangedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.DownloadProgressChanged"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+    </member>
+    <member name="P:System.Net.DownloadProgressChangedEventArgs.BytesReceived">
+      <summary>Gets the number of bytes received.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes received.</returns>
+    </member>
+    <member name="P:System.Net.DownloadProgressChangedEventArgs.TotalBytesToReceive">
+      <summary>Gets the total number of bytes in a <see cref="T:System.Net.WebClient"></see> data download operation.</summary>
+      <returns>An <see cref="T:System.Int64"></see> value that indicates the number of bytes that will be received.</returns>
+    </member>
+    <member name="T:System.Net.DownloadDataCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.DownloadDataCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.DownloadDataCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.DownloadDataCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.DownloadDataCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.DownloadDataCompletedEventArgs.Result">
+      <summary>Gets the data that is downloaded by a <see cref="Overload:System.Net.WebClient.DownloadDataAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.Byte"></see> array that contains the downloaded data.</returns>
+    </member>
+    <member name="T:System.Net.OpenWriteCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.OpenWriteCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.OpenWriteCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.OpenWriteCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.OpenWriteCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.OpenWriteCompletedEventArgs.Result">
+      <summary>Gets a writable stream that is used to send data to a server.</summary>
+      <returns>A <see cref="T:System.IO.Stream"></see> where you can write data to be uploaded.</returns>
+    </member>
+    <member name="T:System.Net.OpenReadCompletedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Net.WebClient.OpenReadCompleted"></see> event of a <see cref="T:System.Net.WebClient"></see>.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:System.Net.OpenReadCompletedEventArgs"></see> containing event data.</param>
+    </member>
+    <member name="T:System.Net.OpenReadCompletedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Net.WebClient.OpenReadCompleted"></see> event.</summary>
+    </member>
+    <member name="P:System.Net.OpenReadCompletedEventArgs.Result">
+      <summary>Gets a readable stream that contains data downloaded by a <see cref="Overload:System.Net.WebClient.DownloadDataAsync"></see> method.</summary>
+      <returns>A <see cref="T:System.IO.Stream"></see> that contains the downloaded data.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,1562 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Net.Security</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Security.SslStream">
+      <summary>Provides a stream used for client-server communication that uses the Secure Socket Layer (SSL) security protocol to authenticate the server and optionally the client.</summary>
+    </member>
+    <member name="M:System.Net.Security.SslStream.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.SslStream"></see> class using the specified <see cref="T:System.IO.Stream"></see>.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="innerStream">innerStream</paramref> is not readable.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is not writable.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.SslStream"></see> class using the specified <see cref="T:System.IO.Stream"></see> and stream closure behavior.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen">A Boolean value that indicates the closure behavior of the <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data. This parameter indicates if the inner stream is left open.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="innerStream">innerStream</paramref> is not readable.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is not writable.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.#ctor(System.IO.Stream,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.SslStream"></see> class using the specified <see cref="T:System.IO.Stream"></see>, stream closure behavior and certificate validation delegate.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen">A Boolean value that indicates the closure behavior of the <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data. This parameter indicates if the inner stream is left open.</param>
+      <param name="userCertificateValidationCallback">A <see cref="T:System.Net.Security.RemoteCertificateValidationCallback"></see> delegate responsible for validating the certificate supplied by the remote party.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="innerStream">innerStream</paramref> is not readable.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is not writable.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.#ctor(System.IO.Stream,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback,System.Net.Security.LocalCertificateSelectionCallback)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.SslStream"></see> class using the specified <see cref="T:System.IO.Stream"></see>, stream closure behavior, certificate validation delegate and certificate selection delegate.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen">A Boolean value that indicates the closure behavior of the <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data. This parameter indicates if the inner stream is left open.</param>
+      <param name="userCertificateValidationCallback">A <see cref="T:System.Net.Security.RemoteCertificateValidationCallback"></see> delegate responsible for validating the certificate supplied by the remote party.</param>
+      <param name="userCertificateSelectionCallback">A <see cref="T:System.Net.Security.LocalCertificateSelectionCallback"></see> delegate responsible for selecting the certificate used for authentication.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="innerStream">innerStream</paramref> is not readable.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is not writable.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.#ctor(System.IO.Stream,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback,System.Net.Security.LocalCertificateSelectionCallback,System.Net.Security.EncryptionPolicy)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.SslStream"></see> class using the specified <see cref="T:System.IO.Stream"></see></summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen">A Boolean value that indicates the closure behavior of the <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.SslStream"></see> for sending and receiving data. This parameter indicates if the inner stream is left open.</param>
+      <param name="userCertificateValidationCallback">A <see cref="T:System.Net.Security.RemoteCertificateValidationCallback"></see> delegate responsible for validating the certificate supplied by the remote party.</param>
+      <param name="userCertificateSelectionCallback">A <see cref="T:System.Net.Security.LocalCertificateSelectionCallback"></see> delegate responsible for selecting the certificate used for authentication.</param>
+      <param name="encryptionPolicy">The <see cref="T:System.Net.Security.EncryptionPolicy"></see> to use.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="innerStream">innerStream</paramref> is not readable.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is not writable.  
+ -or-  
+ <paramref name="encryptionPolicy">encryptionPolicy</paramref> is not valid.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClient(System.String)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection.</summary>
+      <param name="targetHost">The name of the server that shares this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetHost">targetHost</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClient(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Boolean)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection. The authentication process uses the specified certificate collection, and the system default SSL protocol.</summary>
+      <param name="targetHost">The name of the server that will share this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> that contains client certificates.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClient(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Authentication.SslProtocols,System.Boolean)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection. The authentication process uses the specified certificate collection and SSL protocol.</summary>
+      <param name="targetHost">The name of the server that will share this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> that contains client certificates.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClientAsync(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Authentication.SslProtocols,System.Boolean)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection as an asynchronous operation. The authentication process uses the specified certificate collection and SSL protocol.</summary>
+      <param name="targetHost">The name of the server that will share this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> that contains client certificates.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClientAsync(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Boolean)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection as an asynchronous operation. The authentication process uses the specified certificate collection and the system default SSL protocol.</summary>
+      <param name="targetHost">The name of the server that will share this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> that contains client certificates.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClientAsync(System.String)">
+      <summary>Called by clients to authenticate the server and optionally the client in a client-server connection as an asynchronous operation.</summary>
+      <param name="targetHost">The name of the server that shares this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetHost">targetHost</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsClientAsync(System.Net.Security.SslClientAuthenticationOptions,System.Threading.CancellationToken)">
+      <param name="sslClientAuthenticationOptions"></param>
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificate.</summary>
+      <param name="serverCertificate">The certificate used to authenticate the server.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Client authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.AuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Boolean)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificates and requirements, and using the sytem default security protocol.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Client authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.AuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Security.Authentication.SslProtocols,System.Boolean)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificates, requirements and security protocol.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="enabledSslProtocols">enabledSslProtocols</paramref> is not a valid <see cref="System.Security.Authentication.SslProtocols"></see> value.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Client authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.AuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Security.Authentication.SslProtocols,System.Boolean)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificates, requirements and security protocol as an asynchronous operation.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Boolean)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificates, requirements and security protocol as an asynchronous operation.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Called by servers to authenticate the server and optionally the client in a client-server connection using the specified certificate as an asynchronous operation.</summary>
+      <param name="serverCertificate">The certificate used to authenticate the server.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Client authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.AuthenticateAsServerAsync*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.AuthenticateAsServerAsync(System.Net.Security.SslServerAuthenticationOptions,System.Threading.CancellationToken)">
+      <param name="sslServerAuthenticationOptions"></param>
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsClient(System.String,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the server and optionally the client.</summary>
+      <param name="targetHost">The name of the server that shares this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetHost">targetHost</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsClient(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Boolean,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the server and optionally the client using the specified certificates and the system default security protocol.</summary>
+      <param name="targetHost">The name of the server that shares this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> containing client certificates.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetHost">targetHost</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsClient(System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Authentication.SslProtocols,System.Boolean,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the server and optionally the client using the specified certificates and security protocol.</summary>
+      <param name="targetHost">The name of the server that shares this <see cref="T:System.Net.Security.SslStream"></see>.</param>
+      <param name="clientCertificates">The <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> containing client certificates.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetHost">targetHost</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="enabledSslProtocols">enabledSslProtocols</paramref> is not a valid <see cref="System.Security.Authentication.SslProtocols"></see> value.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the client and optionally the server in a client-server connection.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Client authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.BeginAuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Boolean,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the server and optionally the client using the specified certificates and requirements, and the system default security protocol.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.BeginAuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate,System.Boolean,System.Security.Authentication.SslProtocols,System.Boolean,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the server and optionally the client using the specified certificates, requirements and security protocol.</summary>
+      <param name="serverCertificate">The X509Certificate used to authenticate the server.</param>
+      <param name="clientCertificateRequired">A <see cref="T:System.Boolean"></see> value that specifies whether the client is asked for a certificate for authentication. Note that this is only a request -- if no certificate is provided, the server still accepts the connection request.</param>
+      <param name="enabledSslProtocols">The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</param>
+      <param name="checkCertificateRevocation">A <see cref="T:System.Boolean"></see> value that specifies whether the certificate revocation list is checked during authentication.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serverCertificate">serverCertificate</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="enabledSslProtocols">enabledSslProtocols</paramref> is not a valid <see cref="System.Security.Authentication.SslProtocols"></see> value.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ -or-  
+ Server authentication using this <see cref="System.Net.Security.SslStream"></see> was tried previously.  
+ -or-  
+ Authentication is already in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="System.Net.Security.SslStream.BeginAuthenticateAsServer*"></see> method is not supported on Windows 95, Windows 98, or Windows Millennium.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous read operation that reads data from the stream and stores it in the specified array.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that receives the bytes read from the stream.</param>
+      <param name="offset">The zero-based location in buffer at which to begin storing the data read from this stream.</param>
+      <param name="count">The maximum number of bytes to read from the stream.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the read operation is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the read operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object that indicates the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref>
+    <paramref name="&amp;lt;">&amp;lt;</paramref>
+    <paramref name="0">0</paramref>.  
+ <paramref name="-or-">-or-</paramref><paramref name="offset">offset</paramref> &amp;gt; the length of <paramref name="buffer">buffer</paramref>.  
+ -or-  
+ <paramref name="offset">offset</paramref> + count &amp;gt; the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The read operation failed.  
+ -or-  
+ Encryption is in use, but the data could not be decrypted.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a read operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous write operation that writes <see cref="T:System.Byte"></see>s from the specified buffer to the stream.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that supplies the bytes to be written to the stream.</param>
+      <param name="offset">The zero-based location in buffer at which to begin reading bytes to be written to the stream.</param>
+      <param name="count">An <see cref="T:System.Int32"></see> value that specifies the number of bytes to read from buffer.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the write operation is complete.</param>
+      <param name="asyncState">A user-defined object that contains information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref>
+    <paramref name="&amp;lt;">&amp;lt;</paramref>
+    <paramref name="0">0</paramref>.  
+ <paramref name="-or-">-or-</paramref><paramref name="offset">offset</paramref> &amp;gt; the length of <paramref name="buffer">buffer</paramref>.  
+ -or-  
+ <paramref name="offset">offset</paramref> + count &amp;gt; the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a write operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CanRead">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is readable.</summary>
+      <returns><see langword="true"></see> if authentication has occurred and the underlying stream is readable; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CanSeek">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is seekable.</summary>
+      <returns>This property always returns <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CanTimeout">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream supports time-outs.</summary>
+      <returns><see langword="true"></see> if the underlying stream supports time-outs; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CanWrite">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is writable.</summary>
+      <returns><see langword="true"></see> if authentication has occurred and the underlying stream is writable; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CheckCertRevocationStatus">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the certificate revocation list is checked during the certificate validation process.</summary>
+      <returns><see langword="true"></see> if the certificate revocation list is checked; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CipherAlgorithm">
+      <summary>Gets a value that identifies the bulk encryption algorithm used by this <see cref="T:System.Net.Security.SslStream"></see>.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.CipherAlgorithmType"></see> value.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.Net.Security.SslStream.CipherAlgorithm"></see> property was accessed before the completion of the authentication process or the authentication process failed.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.CipherStrength">
+      <summary>Gets a value that identifies the strength of the cipher algorithm used by this <see cref="T:System.Net.Security.SslStream"></see>.</summary>
+      <returns>An <see cref="T:System.Int32"></see> value that specifies the strength of the algorithm, in bits.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Security.SslStream"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="M:System.Net.Security.SslStream.EndAuthenticateAsClient(System.IAsyncResult)">
+      <summary>Ends a pending asynchronous server authentication operation started with a previous call to <see cref="Overload:System.Net.Security.SslStream.BeginAuthenticateAsServer"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="Overload:System.Net.Security.SslStream.BeginAuthenticateAsServer"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.SslStream.BeginAuthenticateAsServer*"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no pending server authentication to complete.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.EndAuthenticateAsServer(System.IAsyncResult)">
+      <summary>Ends a pending asynchronous client authentication operation started with a previous call to <see cref="Overload:System.Net.Security.SslStream.BeginAuthenticateAsClient"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="Overload:System.Net.Security.SslStream.BeginAuthenticateAsClient"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.SslStream.BeginAuthenticateAsClient*"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed and left this object in an unusable state.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no pending client authentication to complete.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.EndRead(System.IAsyncResult)">
+      <summary>Ends an asynchronous read operation started with a previous call to <see cref="M:System.Net.Security.SslStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="M:System.Net.Security.SslStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see></param>
+      <returns>A <see cref="T:System.Int32"></see> value that specifies the number of bytes read from the underlying stream.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.SslStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+      <exception cref="T:System.IO.IOException">The read operation failed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.EndWrite(System.IAsyncResult)">
+      <summary>Ends an asynchronous write operation started with a previous call to <see cref="M:System.Net.Security.SslStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="M:System.Net.Security.SslStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see></param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.SslStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Flush">
+      <summary>Causes any buffered data to be written to the underlying device.</summary>
+    </member>
+    <member name="M:System.Net.Security.SslStream.FlushAsync(System.Threading.CancellationToken)">
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.HashAlgorithm">
+      <summary>Gets the algorithm used for generating message authentication codes (MACs).</summary>
+      <returns>A <see cref="T:System.Security.Authentication.HashAlgorithmType"></see> value.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.Net.Security.SslStream.HashAlgorithm"></see> property was accessed before the completion of the authentication process or the authentication process failed.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.HashStrength">
+      <summary>Gets a value that identifies the strength of the hash algorithm used by this instance.</summary>
+      <returns>An <see cref="T:System.Int32"></see> value that specifies the strength of the <see cref="T:System.Security.Authentication.HashAlgorithmType"></see> algorithm, in bits. Valid values are 128 or 160.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.IsAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether authentication was successful.</summary>
+      <returns><see langword="true"></see> if successful authentication occurred; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.IsEncrypted">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether this <see cref="T:System.Net.Security.SslStream"></see> uses data encryption.</summary>
+      <returns><see langword="true"></see> if data is encrypted before being transmitted over the network and decrypted when it reaches the remote endpoint; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.IsMutuallyAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether both server and client have been authenticated.</summary>
+      <returns><see langword="true"></see> if the server has been authenticated; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.IsServer">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the local side of the connection used by this <see cref="T:System.Net.Security.SslStream"></see> was authenticated as the server.</summary>
+      <returns><see langword="true"></see> if the local endpoint was successfully authenticated as the server side of the authenticated connection; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.IsSigned">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the data sent using this stream is signed.</summary>
+      <returns><see langword="true"></see> if the data is signed before being transmitted; otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.KeyExchangeAlgorithm">
+      <summary>Gets the key exchange algorithm used by this <see cref="T:System.Net.Security.SslStream"></see>.</summary>
+      <returns>An <see cref="T:System.Security.Authentication.ExchangeAlgorithmType"></see> value.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.KeyExchangeStrength">
+      <summary>Gets a value that identifies the strength of the key exchange algorithm used by this instance.</summary>
+      <returns>An <see cref="T:System.Int32"></see> value that specifies the strength of the <see cref="T:System.Security.Authentication.ExchangeAlgorithmType"></see> algorithm, in bits.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.Length">
+      <summary>Gets the length of the underlying stream.</summary>
+      <returns>A <see cref="T:System.Int64"></see>.  
+ The length of the underlying stream.</returns>
+      <exception cref="T:System.NotSupportedException">Getting the value of this property is not supported when the underlying stream is a <see cref="System.Net.Sockets.NetworkStream"></see>.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.LocalCertificate">
+      <summary>Gets the certificate used to authenticate the local endpoint.</summary>
+      <returns>An X509Certificate object that represents the certificate supplied for authentication or <see langword="null"></see> if no certificate was supplied.</returns>
+      <exception cref="T:System.InvalidOperationException">Authentication failed or has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.NegotiatedApplicationProtocol">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.Position">
+      <summary>Gets or sets the current position in the underlying stream.</summary>
+      <returns>A <see cref="T:System.Int64"></see>.  
+ The current position in the underlying stream.</returns>
+      <exception cref="T:System.NotSupportedException">Setting this property is not supported.  
+ -or-  
+ Getting the value of this property is not supported when the underlying stream is a <see cref="System.Net.Sockets.NetworkStream"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Reads data from this stream and stores it in the specified array.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that receives the bytes read from this stream.</param>
+      <param name="offset">A <see cref="T:System.Int32"></see> that contains the zero-based location in buffer at which to begin storing the data read from this stream.</param>
+      <param name="count">A <see cref="T:System.Int32"></see> that contains the maximum number of bytes to read from this stream.</param>
+      <returns>A <see cref="T:System.Int32"></see> value that specifies the number of bytes read. When there is no more data to be read, returns 0.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref>
+    <paramref name="&amp;lt;">&amp;lt;</paramref>
+    <paramref name="0">0</paramref>.  
+ <paramref name="-or-">-or-</paramref><paramref name="offset">offset</paramref> &amp;gt; the length of <paramref name="buffer">buffer</paramref>.  
+ -or-  
+ <paramref name="offset">offset</paramref> + count &amp;gt; the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The read operation failed. Check the inner exception, if present to determine the cause of the failure.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a read operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.ReadTimeout">
+      <summary>Gets or sets the amount of time a read operation blocks waiting for data.</summary>
+      <returns>A <see cref="T:System.Int32"></see> that specifies the amount of time that elapses before a synchronous read operation fails.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.RemoteCertificate">
+      <summary>Gets the certificate used to authenticate the remote endpoint.</summary>
+      <returns>An X509Certificate object that represents the certificate supplied for authentication or <see langword="null"></see> if no certificate was supplied.</returns>
+      <exception cref="T:System.InvalidOperationException">Authentication failed or has not occurred.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Throws a <see cref="T:System.NotSupportedException"></see>.</summary>
+      <param name="offset">This value is ignored.</param>
+      <param name="origin">This value is ignored.</param>
+      <returns>Always throws a <see cref="T:System.NotSupportedException"></see>.</returns>
+      <exception cref="T:System.NotSupportedException">Seeking is not supported by <see cref="System.Net.Security.SslStream"></see> objects.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.SetLength(System.Int64)">
+      <summary>Sets the length of the underlying stream.</summary>
+      <param name="value">An <see cref="T:System.Int64"></see> value that specifies the length of the stream.</param>
+    </member>
+    <member name="M:System.Net.Security.SslStream.ShutdownAsync">
+      <summary>Shuts down this SslStream.</summary>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.SslProtocol">
+      <summary>Gets a value that indicates the security protocol used to authenticate this connection.</summary>
+      <returns>The <see cref="T:System.Security.Authentication.SslProtocols"></see> value that represents the protocol used for authentication.</returns>
+    </member>
+    <member name="P:System.Net.Security.SslStream.TransportContext">
+      <summary>Gets the <see cref="T:System.Net.TransportContext"></see> used for authentication using extended protection.</summary>
+      <returns>The <see cref="T:System.Net.TransportContext"></see> object that contains the channel binding token (CBT) used for extended protection.</returns>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Write(System.Byte[])">
+      <summary>Writes the specified data to this stream.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that supplies the bytes written to the stream.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a write operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="M:System.Net.Security.SslStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Write the specified number of <see cref="T:System.Byte"></see>s to the underlying stream using the specified buffer and offset.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that supplies the bytes written to the stream.</param>
+      <param name="offset">A <see cref="T:System.Int32"></see> that contains the zero-based location in buffer at which to begin reading bytes to be written to the stream.</param>
+      <param name="count">A <see cref="T:System.Int32"></see> that contains the number of bytes to read from buffer.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref>
+    <paramref name="&amp;lt;">&amp;lt;</paramref>
+    <paramref name="0">0</paramref>.  
+ <paramref name="-or-">-or-</paramref><paramref name="offset">offset</paramref> &amp;gt; the length of <paramref name="buffer">buffer</paramref>.  
+ -or-  
+ <paramref name="offset">offset</paramref> + count &amp;gt; the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a write operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.SslStream.WriteTimeout">
+      <summary>Gets or sets the amount of time a write operation blocks waiting for data.</summary>
+      <returns>A <see cref="T:System.Int32"></see> that specifies the amount of time that elapses before a synchronous write operation fails.</returns>
+    </member>
+    <member name="T:System.Net.Security.SslServerAuthenticationOptions">
+      
+    </member>
+    <member name="M:System.Net.Security.SslServerAuthenticationOptions.#ctor">
+      
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.AllowRenegotiation">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.ApplicationProtocols">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.CertificateRevocationCheckMode">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.ClientCertificateRequired">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.EnabledSslProtocols">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.EncryptionPolicy">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.RemoteCertificateValidationCallback">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.ServerCertificate">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslServerAuthenticationOptions.ServerCertificateSelectionCallback">
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.SslClientAuthenticationOptions">
+      
+    </member>
+    <member name="M:System.Net.Security.SslClientAuthenticationOptions.#ctor">
+      
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.AllowRenegotiation">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.ApplicationProtocols">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.CertificateRevocationCheckMode">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.ClientCertificates">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.EnabledSslProtocols">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.EncryptionPolicy">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.LocalCertificateSelectionCallback">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.RemoteCertificateValidationCallback">
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslClientAuthenticationOptions.TargetHost">
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.SslApplicationProtocol">
+      
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.#ctor(System.Byte[])">
+      <param name="protocol"></param>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.#ctor(System.String)">
+      <param name="protocol"></param>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.Equals(System.Net.Security.SslApplicationProtocol)">
+      <param name="other"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.Equals(System.Object)">
+      <param name="obj"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.GetHashCode">
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.SslApplicationProtocol.Http11">
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.SslApplicationProtocol.Http2">
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.op_Equality(System.Net.Security.SslApplicationProtocol,System.Net.Security.SslApplicationProtocol)">
+      <param name="left"></param>
+      <param name="right"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.op_Inequality(System.Net.Security.SslApplicationProtocol,System.Net.Security.SslApplicationProtocol)">
+      <param name="left"></param>
+      <param name="right"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.SslApplicationProtocol.Protocol">
+      <returns></returns>
+    </member>
+    <member name="M:System.Net.Security.SslApplicationProtocol.ToString">
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.ServerCertificateSelectionCallback">
+      <param name="sender"></param>
+      <param name="hostName"></param>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.RemoteCertificateValidationCallback">
+      <summary>Verifies the remote Secure Sockets Layer (SSL) certificate used for authentication.</summary>
+      <param name="sender">An object that contains state information for this validation.</param>
+      <param name="certificate">The certificate used to authenticate the remote party.</param>
+      <param name="chain">The chain of certificate authorities associated with the remote certificate.</param>
+      <param name="sslPolicyErrors">One or more errors associated with the remote certificate.</param>
+      <returns>A <see cref="T:System.Boolean"></see> value that determines whether the specified certificate is accepted for authentication.</returns>
+    </member>
+    <member name="T:System.Net.Security.ProtectionLevel">
+      <summary>Indicates the security services requested for an authenticated stream.</summary>
+    </member>
+    <member name="F:System.Net.Security.ProtectionLevel.EncryptAndSign">
+      <summary>Encrypt and sign data to help ensure the confidentiality and integrity of transmitted data.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.ProtectionLevel.None">
+      <summary>Authentication only.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.ProtectionLevel.Sign">
+      <summary>Sign data to help ensure the integrity of transmitted data.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.NegotiateStream">
+      <summary>Provides a stream that uses the Negotiate security protocol to authenticate the client, and optionally the server, in client-server communication.</summary>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.NegotiateStream"></see> class using the specified <see cref="T:System.IO.Stream"></see>.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.NegotiateStream"></see> for sending and receiving data.</param>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.NegotiateStream"></see> class using the specified <see cref="T:System.IO.Stream"></see> and stream closure behavior.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.NegotiateStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen"><see langword="true"></see> to indicate that closing this <see cref="T:System.Net.Security.NegotiateStream"></see> has no effect on innerstream; <see langword="false"></see> to indicate that closing this <see cref="T:System.Net.Security.NegotiateStream"></see> also closes innerStream.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClient">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection.</summary>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClient(System.Net.NetworkCredential,System.String)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified client credential.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClient(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified client credential and the channel binding.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClient(System.Net.NetworkCredential,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credentials and authentication options.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="allowedImpersonationLevel">allowedImpersonationLevel</paramref> is not a valid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is null.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClient(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credential, authentication options, and channel binding.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="allowedImpersonationLevel">allowedImpersonationLevel</paramref> is not a valid value.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClientAsync">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation.</summary>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClientAsync(System.Net.NetworkCredential,System.String)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified client credential.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClientAsync(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified client credential and the channel binding.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClientAsync(System.Net.NetworkCredential,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified credentials and authentication options.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="allowedImpersonationLevel">allowedImpersonationLevel</paramref> is not a valid value.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is null.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsClientAsync(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by clients to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified credential, authentication options, and channel binding.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="targetName">targetName</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="allowedImpersonationLevel">allowedImpersonationLevel</paramref> is not a valid value.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServer(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified server credentials, authentication options, and extended protection policy.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to try to r-authenticate.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServer(System.Net.NetworkCredential,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified server credentials and authentication options.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the server.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to try to r-authenticate.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServer">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection.</summary>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServer(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified extended protection policy.</summary>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServerAsync">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation.</summary>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServerAsync(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified extended protection policy.</summary>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServerAsync(System.Net.NetworkCredential,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified server credentials and authentication options.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the server.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to try to r-authenticate.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.AuthenticateAsServerAsync(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel)">
+      <summary>Called by servers to authenticate the client, and optionally the server, in a client-server connection as an asynchronous operation. The authentication process uses the specified server credentials, authentication options, and extended protection policy.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>  
+ The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to try to r-authenticate.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credentials, authentication options, and channel binding. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient(System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. This method does not block.</summary>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient(System.Net.NetworkCredential,System.String,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credentials. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ChannelBinding,System.String,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credentials and channel binding. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="binding">The <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that is used for extended protection.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient(System.Net.NetworkCredential,System.String,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel,System.AsyncCallback,System.Object)">
+      <summary>Called by clients to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified credentials and authentication options. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="targetName">The Service Principal Name (SPN) that uniquely identifies the server to authenticate.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="allowedImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.  
+ - or -  
+ <paramref name="targetName">targetName</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the server. You cannot use the stream to retry authentication as the client.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer(System.Net.NetworkCredential,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified server credentials and authentication options. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer(System.Net.NetworkCredential,System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy,System.Net.Security.ProtectionLevel,System.Security.Principal.TokenImpersonationLevel,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified server credentials, authentication options, and extended protection policy. This method does not block.</summary>
+      <param name="credential">The <see cref="T:System.Net.NetworkCredential"></see> that is used to establish the identity of the client.</param>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <param name="requiredProtectionLevel">One of the <see cref="T:System.Net.Security.ProtectionLevel"></see> values, indicating the security services for the stream.</param>
+      <param name="requiredImpersonationLevel">One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values, indicating how the server can use the client&amp;#39;s credentials to access resources.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="credential">credential</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="requiredImpersonationLevel">requiredImpersonationLevel</paramref> must be <see cref="System.Security.Principal.TokenImpersonationLevel.Identification"></see>, <see cref="System.Security.Principal.TokenImpersonationLevel.Impersonation"></see>, or <see cref="System.Security.Principal.TokenImpersonationLevel.Delegation"></see>,</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has already occurred.  
+ - or -  
+ This stream was used previously to attempt authentication as the client. You cannot use the stream to retry authentication as the server.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer(System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. This method does not block.</summary>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy,System.AsyncCallback,System.Object)">
+      <summary>Called by servers to begin an asynchronous operation to authenticate the client, and optionally the server, in a client-server connection. The authentication process uses the specified extended protection policy. This method does not block.</summary>
+      <param name="policy">The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> that is used for extended protection.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the authentication is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding"></see> and <see cref="System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames"></see> on the extended protection policy passed in the <paramref name="policy">policy</paramref> parameter are both <see langword="null"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.NotSupportedException">Windows 95 and Windows 98 are not supported.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <paramref name="policy">policy</paramref> parameter was set to <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always"></see> on a platform that does not support extended protection.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous read operation that reads data from the stream and stores it in the specified array.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that receives the bytes read from the stream.</param>
+      <param name="offset">The zero-based location in buffer at which to begin storing the data read from this stream.</param>
+      <param name="count">The maximum number of bytes to read from the stream.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the read operation is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the read operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref> is less than 0.  
+ - or -  
+ <paramref name="offset">offset</paramref> is greater than the length of <paramref name="buffer">buffer</paramref>.  
+ - or -  
+ <paramref name="offset">offset</paramref> plus <paramref name="count">count</paramref> is greater than the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The read operation failed.  
+ - or -  
+ Encryption is in use, but the data could not be decrypted.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a read operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <summary>Begins an asynchronous write operation that writes <see cref="T:System.Byte"></see>s from the specified buffer to the stream.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that supplies the bytes to be written to the stream.</param>
+      <param name="offset">The zero-based location in buffer at which to begin reading bytes to be written to the stream.</param>
+      <param name="count">An <see cref="T:System.Int32"></see> value that specifies the number of bytes to read from buffer.</param>
+      <param name="asyncCallback">An <see cref="T:System.AsyncCallback"></see> delegate that references the method to invoke when the write operation is complete.</param>
+      <param name="asyncState">A user-defined object containing information about the write operation. This object is passed to the asyncCallback delegate when the operation completes.</param>
+      <returns>An <see cref="T:System.IAsyncResult"></see> object indicating the status of the asynchronous operation.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset is less than 0">offset is less than 0</paramref>.  
+ - or -  
+ <paramref name="offset">offset</paramref> is greater than the length of <paramref name="buffer">buffer</paramref>.  
+ - or -  
+ <paramref name="offset">offset</paramref> plus count is greater than the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.  
+ - or -  
+ Encryption is in use, but the data could not be encrypted.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a write operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.CanRead">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is readable.</summary>
+      <returns><see langword="true"></see> if authentication has occurred and the underlying stream is readable; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.CanSeek">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is seekable.</summary>
+      <returns>This property always returns <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.CanTimeout">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream supports time-outs.</summary>
+      <returns><see langword="true"></see> if the underlying stream supports time-outs; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.CanWrite">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the underlying stream is writable.</summary>
+      <returns><see langword="true"></see> if authentication has occurred and the underlying stream is writable; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Security.NegotiateStream"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.EndAuthenticateAsClient(System.IAsyncResult)">
+      <summary>Ends a pending asynchronous client authentication operation that was started with a call to <see cref="Overload:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="Overload:System.Net.Security.NegotiateStream.BeginAuthenticateAsClient"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.NegotiateStream.BeginAuthenticateAsClient*"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no pending client authentication to complete.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.EndAuthenticateAsServer(System.IAsyncResult)">
+      <summary>Ends a pending asynchronous client authentication operation that was started with a call to <see cref="Overload:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="Overload:System.Net.Security.NegotiateStream.BeginAuthenticateAsServer"></see>.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="asyncResult">asyncResult</paramref> was not created by a call to <see cref="System.Net.Security.NegotiateStream.BeginAuthenticateAsServer*"></see>.</exception>
+      <exception cref="T:System.Security.Authentication.AuthenticationException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.Security.Authentication.InvalidCredentialException">The authentication failed. You can use this object to retry the authentication.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no pending authentication to complete.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.EndRead(System.IAsyncResult)">
+      <summary>Ends an asynchronous read operation that was started with a call to <see cref="M:System.Net.Security.NegotiateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="M:System.Net.Security.NegotiateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see></param>
+      <returns>A <see cref="T:System.Int32"></see> value that specifies the number of bytes read from the underlying stream.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The asyncResult was not created by a call to <see cref="System.Net.Security.NegotiateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+      <exception cref="T:System.IO.IOException">The read operation failed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.EndWrite(System.IAsyncResult)">
+      <summary>Ends an asynchronous write operation that was started with a call to <see cref="M:System.Net.Security.NegotiateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</summary>
+      <param name="asyncResult">An <see cref="T:System.IAsyncResult"></see> instance returned by a call to <see cref="M:System.Net.Security.NegotiateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see></param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asyncResult">asyncResult</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The asyncResult was not created by a call to <see cref="System.Net.Security.NegotiateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see>.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.Flush">
+      <summary>Causes any buffered data to be written to the underlying device.</summary>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.FlushAsync(System.Threading.CancellationToken)">
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.ImpersonationLevel">
+      <summary>Gets a value that indicates how the server can use the client&amp;#39;s credentials.</summary>
+      <returns>One of the <see cref="T:System.Security.Principal.TokenImpersonationLevel"></see> values.</returns>
+      <exception cref="T:System.InvalidOperationException">Authentication failed or has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.IsAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether authentication was successful.</summary>
+      <returns><see langword="true"></see> if successful authentication occurred; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.IsEncrypted">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether this <see cref="T:System.Net.Security.NegotiateStream"></see> uses data encryption.</summary>
+      <returns><see langword="true"></see> if data is encrypted before being transmitted over the network and decrypted when it reaches the remote endpoint; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.IsMutuallyAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether both the server and the client have been authenticated.</summary>
+      <returns><see langword="true"></see> if the server has been authenticated; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.IsServer">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the local side of the connection used by this <see cref="T:System.Net.Security.NegotiateStream"></see> was authenticated as the server.</summary>
+      <returns><see langword="true"></see> if the local endpoint was successfully authenticated as the server side of the authenticated connection; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.IsSigned">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the data sent using this stream is signed.</summary>
+      <returns><see langword="true"></see> if the data is signed before being transmitted; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.Length">
+      <summary>Gets the length of the underlying stream.</summary>
+      <returns>A <see cref="T:System.Int64"></see> that specifies the length of the underlying stream.</returns>
+      <exception cref="T:System.NotSupportedException">Getting the value of this property is not supported when the underlying stream is a <see cref="System.Net.Sockets.NetworkStream"></see>.</exception>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.Position">
+      <summary>Gets or sets the current position in the underlying stream.</summary>
+      <returns>A <see cref="T:System.Int64"></see> that specifies the current position in the underlying stream.</returns>
+      <exception cref="T:System.NotSupportedException">Setting this property is not supported.  
+ - or -  
+ Getting the value of this property is not supported when the underlying stream is a <see cref="System.Net.Sockets.NetworkStream"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Reads data from this stream and stores it in the specified array.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that receives the bytes read from the stream.</param>
+      <param name="offset">A <see cref="T:System.Int32"></see> containing the zero-based location in buffer at which to begin storing the data read from this stream.</param>
+      <param name="count">A <see cref="T:System.Int32"></see> containing the maximum number of bytes to read from the stream.</param>
+      <returns>A <see cref="T:System.Int32"></see> value that specifies the number of bytes read from the underlying stream. When there is no more data to be read, returns 0.</returns>
+      <exception cref="T:System.IO.IOException">The read operation failed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+      <exception cref="T:System.NotSupportedException">A <see cref="System.Net.Security.NegotiateStream.Read(System.Byte[],System.Int32,System.Int32)"></see> operation is already in progress.</exception>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.ReadTimeout">
+      <summary>Gets or sets the amount of time a read operation blocks waiting for data.</summary>
+      <returns>A <see cref="T:System.Int32"></see> that specifies the amount of time that will elapse before a read operation fails.</returns>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.RemoteIdentity">
+      <summary>Gets information about the identity of the remote party sharing this authenticated stream.</summary>
+      <returns>An <see cref="T:System.Security.Principal.IIdentity"></see> object that describes the identity of the remote endpoint.</returns>
+      <exception cref="T:System.InvalidOperationException">Authentication failed or has not occurred.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <summary>Throws <see cref="T:System.NotSupportedException"></see>.</summary>
+      <param name="offset">This value is ignored.</param>
+      <param name="origin">This value is ignored.</param>
+      <returns>Always throws a <see cref="T:System.NotSupportedException"></see>.</returns>
+      <exception cref="T:System.NotSupportedException">Seeking is not supported on <see cref="System.Net.Security.NegotiateStream"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.SetLength(System.Int64)">
+      <summary>Sets the length of the underlying stream.</summary>
+      <param name="value">An <see cref="T:System.Int64"></see> value that specifies the length of the stream.</param>
+    </member>
+    <member name="M:System.Net.Security.NegotiateStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Write the specified number of <see cref="T:System.Byte"></see>s to the underlying stream using the specified buffer and offset.</summary>
+      <param name="buffer">A <see cref="T:System.Byte"></see> array that supplies the bytes written to the stream.</param>
+      <param name="offset">An <see cref="T:System.Int32"></see> containing the zero-based location in buffer at which to begin reading bytes to be written to the stream.</param>
+      <param name="count">A <see cref="T:System.Int32"></see> containing the number of bytes to read from buffer.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="buffer">buffer</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset is less than 0">offset is less than 0</paramref>.  
+ - or -  
+ <paramref name="offset">offset</paramref> is greater than the length of <paramref name="buffer">buffer</paramref>.  
+ - or -  
+ <paramref name="offset">offset</paramref> plus count is greater than the length of <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.IO.IOException">The write operation failed.  
+ - or -  
+ Encryption is in use, but the data could not be encrypted.</exception>
+      <exception cref="T:System.NotSupportedException">There is already a write operation in progress.</exception>
+      <exception cref="T:System.ObjectDisposedException">This object has been closed.</exception>
+      <exception cref="T:System.InvalidOperationException">Authentication has not occurred.</exception>
+    </member>
+    <member name="P:System.Net.Security.NegotiateStream.WriteTimeout">
+      <summary>Gets or sets the amount of time a write operation blocks waiting for data.</summary>
+      <returns>A <see cref="T:System.Int32"></see> that specifies the amount of time that will elapse before a write operation fails.</returns>
+    </member>
+    <member name="T:System.Net.Security.LocalCertificateSelectionCallback">
+      <summary>Selects the local Secure Sockets Layer (SSL) certificate used for authentication.</summary>
+      <param name="sender">An object that contains state information for this validation.</param>
+      <param name="targetHost">The host server specified by the client.</param>
+      <param name="localCertificates">An <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see> containing local certificates.</param>
+      <param name="remoteCertificate">The certificate used to authenticate the remote party.</param>
+      <param name="acceptableIssuers">A <see cref="T:System.String"></see> array of certificate issuers acceptable to the remote party.</param>
+      <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate"></see> used for establishing an SSL connection.</returns>
+    </member>
+    <member name="T:System.Net.Security.EncryptionPolicy">
+      <summary>The EncryptionPolicy to use.</summary>
+    </member>
+    <member name="F:System.Net.Security.EncryptionPolicy.AllowNoEncryption">
+      <summary>Prefer that full encryption be used, but allow a NULL cipher (no encryption) if the server agrees.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.EncryptionPolicy.NoEncryption">
+      <summary>Allow no encryption and request that a NULL cipher be used if the other endpoint can handle a NULL cipher.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Net.Security.EncryptionPolicy.RequireEncryption">
+      <summary>Require encryption and never allow a NULL cipher.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Net.Security.AuthenticatedStream">
+      <summary>Provides methods for passing credentials across a stream and requesting or performing authentication for client-server applications.</summary>
+    </member>
+    <member name="M:System.Net.Security.AuthenticatedStream.#ctor(System.IO.Stream,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Security.AuthenticatedStream"></see> class.</summary>
+      <param name="innerStream">A <see cref="T:System.IO.Stream"></see> object used by the <see cref="T:System.Net.Security.AuthenticatedStream"></see> for sending and receiving data.</param>
+      <param name="leaveInnerStreamOpen">A <see cref="T:System.Boolean"></see> that indicates whether closing this <see cref="T:System.Net.Security.AuthenticatedStream"></see> object also closes innerStream.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="innerStream">innerStream</paramref> is <see langword="null"></see>.  
+ -or-  
+ <paramref name="innerStream">innerStream</paramref> is equal to <see cref="System.IO.Stream.Null"></see>.</exception>
+    </member>
+    <member name="M:System.Net.Security.AuthenticatedStream.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.Security.AuthenticatedStream"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing"><see langword="true"></see> to release both managed and unmanaged resources; <see langword="false"></see> to release only unmanaged resources.</param>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.InnerStream">
+      <summary>Gets the stream used by this <see cref="T:System.Net.Security.AuthenticatedStream"></see> for sending and receiving data.</summary>
+      <returns>A <see cref="T:System.IO.Stream"></see> object.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.IsAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether authentication was successful.</summary>
+      <returns><see langword="true"></see> if successful authentication occurred; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.IsEncrypted">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether data sent using this <see cref="T:System.Net.Security.AuthenticatedStream"></see> is encrypted.</summary>
+      <returns><see langword="true"></see> if data is encrypted before being transmitted over the network and decrypted when it reaches the remote endpoint; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.IsMutuallyAuthenticated">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether both server and client have been authenticated.</summary>
+      <returns><see langword="true"></see> if the client and server have been authenticated; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.IsServer">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the local side of the connection was authenticated as the server.</summary>
+      <returns><see langword="true"></see> if the local endpoint was authenticated as the server side of a client-server authenticated connection; <see langword="false"></see> if the local endpoint was authenticated as the client.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.IsSigned">
+      <summary>Gets a <see cref="T:System.Boolean"></see> value that indicates whether the data sent using this stream is signed.</summary>
+      <returns><see langword="true"></see> if the data is signed before being transmitted; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Net.Security.AuthenticatedStream.LeaveInnerStreamOpen">
+      <summary>Gets whether the stream used by this <see cref="T:System.Net.Security.AuthenticatedStream"></see> for sending and receiving data has been left open.</summary>
+      <returns><see langword="true"></see> if the inner stream has been left open; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="T:System.Security.Authentication.InvalidCredentialException">
+      <summary>The exception that is thrown when authentication fails for an authentication stream and cannot be retried.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.InvalidCredentialException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.InvalidCredentialException"></see> class with no message.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.InvalidCredentialException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.InvalidCredentialException"></see> class with the specified message.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the authentication failure.</param>
+    </member>
+    <member name="M:System.Security.Authentication.InvalidCredentialException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.InvalidCredentialException"></see> class from the specified instances of the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> classes.</summary>
+      <param name="serializationInfo">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance that contains the information required to deserialize the new <see cref="T:System.Security.Authentication.InvalidCredentialException"></see> instance.</param>
+      <param name="streamingContext">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instance.</param>
+    </member>
+    <member name="M:System.Security.Authentication.InvalidCredentialException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.InvalidCredentialException"></see> class with the specified message and inner exception.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the authentication failure.</param>
+      <param name="innerException">The <see cref="T:System.Exception"></see> that is the cause of the current exception.</param>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> class is a read-only collection of service principal names.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.#ctor(System.Collections.ICollection)">
+      <summary>Initializes a new read-only instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> class based on an existing <see cref="T:System.Collections.ICollection"></see>.</summary>
+      <param name="items">An instance of the <see cref="T:System.Collections.ICollection"></see> class that contains the specified values of service names to be used to initialize the class.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="item">item</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="item">item</paramref> is empty.</exception>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.Contains(System.String)">
+      <summary>Returns a value indicating whether the specified string occurs within this <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance.</summary>
+      <param name="searchServiceName">The string to seek.</param>
+      <returns>Returns <see cref="T:System.Boolean"></see>.  
+ <see langword="true"></see> if the <paramref name="searchServiceName">searchServiceName</paramref> parameter occurs within this <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance; otherwise, <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.Count">
+      <returns></returns>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.GetEnumerator">
+      <returns></returns>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.Merge(System.Collections.IEnumerable)">
+      <summary>Merges the current <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> with the specified values to create a new <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> containing the union.</summary>
+      <param name="serviceNames">An instance of the <see cref="T:System.Collections.IEnumerable"></see> class that contains the specified values of service names to be merged.</param>
+      <returns>A new <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance that contains the union of the existing <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance merged with the specified values.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serviceNames">serviceNames</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="serviceNames">serviceNames</paramref> is empty.</exception>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.Merge(System.String)">
+      <summary>Merges the current <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> with the specified values to create a new <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> containing the union.</summary>
+      <param name="serviceName">A string that contains the specified values of service names to be used to initialize the class.</param>
+      <returns>A new <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance that contains the union of the existing <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> instance merged with the specified values.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="serviceNames">serviceNames</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="serviceNames">serviceNames</paramref> is empty.</exception>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <param name="array"></param>
+      <param name="index"></param>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.System#Collections#ICollection#IsSynchronized">
+      <returns></returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ServiceNameCollection.System#Collections#ICollection#SyncRoot">
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ProtectionScenario">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ProtectionScenario"></see> enumeration specifies the protection scenario enforced by the policy.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ProtectionScenario.TransportSelected">
+      <summary>The transport will select between a secure and standard protection scenario depending on the type of channel used. For secure protection, integrated Windows authentication is wrapped in a secure channel and has an exactly matching channel binding token with no Service Provider Name (SPN) validation. For standard protection, integrated Windows authentication is optionally wrapped in a secure channel with an optional channel binding token and SPN validation is required. So if the request comes through a secure channel, the channel binding token (CBT) is checked, otherwise the SPN is checked.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.ProtectionScenario.TrustedProxy">
+      <summary>Integrated Windows authentication is wrapped in a secure channel terminated by a trusted proxy and has a channel binding token with SPN validation required. This requires the presence of a CBT, but the CBT is not checked while the SPN is checked.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> enumeration specifies when the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> should be enforced.</summary>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Always">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> is always enforced. Clients that don’t support extended protection will fail to authenticate.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Never">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> is never enforced and extended protection is disabled.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Authentication.ExtendedProtection.PolicyEnforcement.WhenSupported">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> is enforced only if the client and server supports extended protection.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy">
+      <summary>The <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class represents the extended protection policy used by the server to validate incoming client connections.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.#ctor(System.Security.Authentication.ExtendedProtection.PolicyEnforcement)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class that specifies when the extended protection policy should be enforced.</summary>
+      <param name="policyEnforcement">A <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> value that indicates when the extended protection policy should be enforced.</param>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class from a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> object that contains the required data to populate the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see>.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance that contains the information that is required to serialize the new <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> instance.</param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the source of the serialized stream that is associated with the new <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> instance.</param>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.#ctor(System.Security.Authentication.ExtendedProtection.PolicyEnforcement,System.Security.Authentication.ExtendedProtection.ChannelBinding)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class that specifies when the extended protection policy should be enforced and the channel binding token (CBT) to be used.</summary>
+      <param name="policyEnforcement">A <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> value that indicates when the extended protection policy should be enforced.</param>
+      <param name="customChannelBinding">A <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that contains a custom channel binding to use for validation.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="policyEnforcement">policyEnforcement</paramref> is specified as <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Never"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="customChannelBinding">customChannelBinding</paramref> is <see langword="null"></see>.</exception>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.#ctor(System.Security.Authentication.ExtendedProtection.PolicyEnforcement,System.Security.Authentication.ExtendedProtection.ProtectionScenario,System.Collections.ICollection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class that specifies when the extended protection policy should be enforced, the kind of protection enforced by the policy, and a custom Service Provider Name (SPN) list that is used to match against a client&amp;#39;s SPN.</summary>
+      <param name="policyEnforcement">A <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> value that indicates when the extended protection policy should be enforced.</param>
+      <param name="protectionScenario">A <see cref="T:System.Security.Authentication.ExtendedProtection.ProtectionScenario"></see> value that indicates the kind of protection enforced by the policy.</param>
+      <param name="customServiceNames">A <see cref="T:System.Collections.ICollection"></see> that contains the custom SPN list that is used to match against a client&amp;#39;s SPN.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="policyEnforcement">policyEnforcement</paramref> is specified as <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Never"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="customServiceNames">customServiceNames</paramref> is <see langword="null"></see> or an empty list.</exception>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.#ctor(System.Security.Authentication.ExtendedProtection.PolicyEnforcement,System.Security.Authentication.ExtendedProtection.ProtectionScenario,System.Security.Authentication.ExtendedProtection.ServiceNameCollection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> class that specifies when the extended protection policy should be enforced, the kind of protection enforced by the policy, and a custom Service Provider Name (SPN) list that is used to match against a client&amp;#39;s SPN.</summary>
+      <param name="policyEnforcement">A <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> value that indicates when the extended protection policy should be enforced.</param>
+      <param name="protectionScenario">A <see cref="T:System.Security.Authentication.ExtendedProtection.ProtectionScenario"></see> value that indicates the kind of protection enforced by the policy.</param>
+      <param name="customServiceNames">A <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> that contains the custom SPN list that is used to match against a client&amp;#39;s SPN.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="policyEnforcement">policyEnforcement</paramref> is specified as <see cref="System.Security.Authentication.ExtendedProtection.PolicyEnforcement.Never"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="customServiceNames">customServiceNames</paramref> is <see langword="null"></see> or an empty list.</exception>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomChannelBinding">
+      <summary>Gets a custom channel binding token (CBT) to use for validation.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ChannelBinding"></see> that contains a custom channel binding to use for validation.</returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.CustomServiceNames">
+      <summary>Gets the custom Service Provider Name (SPN) list used to match against a client&amp;#39;s SPN.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ServiceNameCollection"></see> that contains the custom SPN list that is used to match against a client&amp;#39;s SPN.</returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.OSSupportsExtendedProtection">
+      <summary>Indicates whether the operating system supports integrated windows authentication with extended protection.</summary>
+      <returns><see langword="true"></see> if the operating system supports integrated windows authentication with extended protection, otherwise <see langword="false"></see>.</returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.PolicyEnforcement">
+      <summary>Gets when the extended protection policy should be enforced.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.PolicyEnforcement"></see> value that indicates when the extended protection policy should be enforced.</returns>
+    </member>
+    <member name="P:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.ProtectionScenario">
+      <summary>Gets the kind of protection enforced by the extended protection policy.</summary>
+      <returns>A <see cref="T:System.Security.Authentication.ExtendedProtection.ProtectionScenario"></see> value that indicates the kind of protection enforced by the policy.</returns>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.ToString">
+      <summary>Gets a string representation for the extended protection policy instance.</summary>
+      <returns>A <see cref="T:System.String"></see> instance that contains the representation of the <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> instance.</returns>
+    </member>
+    <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> object with the required data to serialize an <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> object.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> object that holds the serialized data for an <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see> object.</param>
+      <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains the destination of the serialized stream that is associated with the new <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy"></see>.</param>
+    </member>
+    <member name="T:System.Security.Authentication.AuthenticationException">
+      <summary>The exception that is thrown when authentication fails for an authentication stream.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.AuthenticationException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.AuthenticationException"></see> class with no message.</summary>
+    </member>
+    <member name="M:System.Security.Authentication.AuthenticationException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.AuthenticationException"></see> class with the specified message.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the authentication failure.</param>
+    </member>
+    <member name="M:System.Security.Authentication.AuthenticationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.AuthenticationException"></see> class from the specified instances of the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> and <see cref="T:System.Runtime.Serialization.StreamingContext"></see> classes.</summary>
+      <param name="serializationInfo">A <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> instance that contains the information required to deserialize the new <see cref="T:System.Security.Authentication.AuthenticationException"></see> instance.</param>
+      <param name="streamingContext">A <see cref="T:System.Runtime.Serialization.StreamingContext"></see> instance.</param>
+    </member>
+    <member name="M:System.Security.Authentication.AuthenticationException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Authentication.AuthenticationException"></see> class with the specified message and inner exception.</summary>
+      <param name="message">A <see cref="T:System.String"></see> that describes the authentication failure.</param>
+      <param name="innerException">The <see cref="T:System.Exception"></see> that is the cause of the current exception.</param>
+    </member>
+  </members>
+</doc>

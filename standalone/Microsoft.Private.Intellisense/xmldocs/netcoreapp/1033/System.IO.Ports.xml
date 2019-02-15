@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.IO.Ports</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.Ports.Handshake">
+      <summary>Specifies the control protocol used in establishing a serial port communication for a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.Handshake.None">
+      <summary>No control is used for the handshake.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Handshake.RequestToSend">
+      <summary>Request-to-Send (RTS) hardware flow control is used. RTS signals that data is available for transmission. If the input buffer becomes full, the RTS line will be set to false. The RTS line will be set to true when more room becomes available in the input buffer.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Handshake.RequestToSendXOnXOff">
+      <summary>Both the Request-to-Send (RTS) hardware control and the XON/XOFF software controls are used.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Handshake.XOnXOff">
+      <summary>The XON/XOFF software control protocol is used. The XOFF control is sent to stop the transmission of data. The XON control is sent to resume the transmission. These software controls are used instead of Request to Send (RTS) and Clear to Send (CTS) hardware controls.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Ports.Parity">
+      <summary>Specifies the parity bit for a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.Parity.Even">
+      <summary>Sets the parity bit so that the count of bits set is an even number.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Parity.Mark">
+      <summary>Leaves the parity bit set to 1.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Parity.None">
+      <summary>No parity check occurs.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Parity.Odd">
+      <summary>Sets the parity bit so that the count of bits set is an odd number.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.Parity.Space">
+      <summary>Leaves the parity bit set to 0.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialData">
+      <summary>Specifies the type of character that was received on the serial port of the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.SerialData.Chars">
+      <summary>A character was received and placed in the input buffer.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialData.Eof">
+      <summary>The end of file character was received and placed in the input buffer.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialDataReceivedEventArgs">
+      <summary>Provides data for the <see cref="E:System.IO.Ports.SerialPort.DataReceived"></see> event.</summary>
+    </member>
+    <member name="P:System.IO.Ports.SerialDataReceivedEventArgs.EventType">
+      <summary>Gets or sets the event type.</summary>
+      <returns>One of the <see cref="System.IO.Ports.SerialData"></see> values.</returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialDataReceivedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.IO.Ports.SerialPort.DataReceived"></see> event of a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <param name="sender">The sender of the event, which is the <see cref="T:System.IO.Ports.SerialPort"></see> object.</param>
+      <param name="e">A <see cref="T:System.IO.Ports.SerialDataReceivedEventArgs"></see> object that contains the event data.</param>
+    </member>
+    <member name="T:System.IO.Ports.SerialError">
+      <summary>Specifies errors that occur on the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.SerialError.Frame">
+      <summary>The hardware detected a framing error.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialError.Overrun">
+      <summary>A character-buffer overrun has occurred. The next character is lost.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialError.RXOver">
+      <summary>An input buffer overflow has occurred. There is either no room in the input buffer, or a character was received after the end-of-file (EOF) character.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialError.RXParity">
+      <summary>The hardware detected a parity error.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialError.TXFull">
+      <summary>The application tried to transmit a character, but the output buffer was full.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialErrorReceivedEventArgs">
+      <summary>Prepares data for the <see cref="E:System.IO.Ports.SerialPort.ErrorReceived"></see> event.</summary>
+    </member>
+    <member name="P:System.IO.Ports.SerialErrorReceivedEventArgs.EventType">
+      <summary>Gets or sets the event type.</summary>
+      <returns>One of the <see cref="System.IO.Ports.SerialError"></see> values.</returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialErrorReceivedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.IO.Ports.SerialPort.ErrorReceived"></see> event of a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <param name="sender">The sender of the event, which is the <see cref="T:System.IO.Ports.SerialPort"></see> object.</param>
+      <param name="e">A <see cref="T:System.IO.Ports.SerialErrorReceivedEventArgs"></see> object that contains the event data.</param>
+    </member>
+    <member name="T:System.IO.Ports.SerialPinChange">
+      <summary>Specifies the type of change that occurred on the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.SerialPinChange.Break">
+      <summary>A break was detected on input.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialPinChange.CDChanged">
+      <summary>The Carrier Detect (CD) signal changed state. This signal is used to indicate whether a modem is connected to a working phone line and a data carrier signal is detected.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialPinChange.CtsChanged">
+      <summary>The Clear to Send (CTS) signal changed state. This signal is used to indicate whether data can be sent over the serial port.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialPinChange.DsrChanged">
+      <summary>The Data Set Ready (DSR) signal changed state. This signal is used to indicate whether the device on the serial port is ready to operate.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.SerialPinChange.Ring">
+      <summary>A ring indicator was detected.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialPinChangedEventArgs">
+      <summary>Provides data for the <see cref="E:System.IO.Ports.SerialPort.PinChanged"></see> event.</summary>
+    </member>
+    <member name="P:System.IO.Ports.SerialPinChangedEventArgs.EventType">
+      <summary>Gets or sets the event type.</summary>
+      <returns>One of the <see cref="System.IO.Ports.SerialPinChange"></see> values.</returns>
+    </member>
+    <member name="T:System.IO.Ports.SerialPinChangedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.IO.Ports.SerialPort.PinChanged"></see> event of a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <param name="sender">The source of the event, which is the <see cref="T:System.IO.Ports.SerialPort"></see> object.</param>
+      <param name="e">A <see cref="T:System.IO.Ports.SerialPinChangedEventArgs"></see> object that contains the event data.</param>
+    </member>
+    <member name="T:System.IO.Ports.SerialPort">
+      <summary>Represents a serial port resource.</summary>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class.</summary>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.ComponentModel.IContainer)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified <see cref="T:System.ComponentModel.IContainer"></see> object.</summary>
+      <param name="container">An interface to a container.</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified port name.</summary>
+      <param name="portName">The port to use (for example, COM1).</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified port name and baud rate.</summary>
+      <param name="portName">The port to use (for example, COM1).</param>
+      <param name="baudRate">The baud rate.</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified port name, baud rate, and parity bit.</summary>
+      <param name="portName">The port to use (for example, COM1).</param>
+      <param name="baudRate">The baud rate.</param>
+      <param name="parity">One of the <see cref="P:System.IO.Ports.SerialPort.Parity"></see> values.</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified port name, baud rate, parity bit, and data bits.</summary>
+      <param name="portName">The port to use (for example, COM1).</param>
+      <param name="baudRate">The baud rate.</param>
+      <param name="parity">One of the <see cref="P:System.IO.Ports.SerialPort.Parity"></see> values.</param>
+      <param name="dataBits">The data bits value.</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity,System.Int32,System.IO.Ports.StopBits)">
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Ports.SerialPort"></see> class using the specified port name, baud rate, parity bit, data bits, and stop bit.</summary>
+      <param name="portName">The port to use (for example, COM1).</param>
+      <param name="baudRate">The baud rate.</param>
+      <param name="parity">One of the <see cref="P:System.IO.Ports.SerialPort.Parity"></see> values.</param>
+      <param name="dataBits">The data bits value.</param>
+      <param name="stopBits">One of the <see cref="P:System.IO.Ports.SerialPort.StopBits"></see> values.</param>
+      <exception cref="T:System.IO.IOException">The specified port could not be found or opened.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.BaseStream">
+      <summary>Gets the underlying <see cref="T:System.IO.Stream"></see> object for a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <returns>A <see cref="System.IO.Stream"></see> object.</returns>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+      <exception cref="T:System.NotSupportedException">The stream is in a .NET Compact Framework application and one of the following methods was called:  
+ <see cref="System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see><see cref="System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"></see><see cref="System.IO.Stream.EndRead(System.IAsyncResult)"></see><see cref="System.IO.Stream.EndWrite(System.IAsyncResult)"></see>  
+
+ The .NET Compact Framework does not support the asynchronous model with base streams.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.BaudRate">
+      <summary>Gets or sets the serial baud rate.</summary>
+      <returns>The baud rate.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The baud rate specified is less than or equal to zero, or is greater than the maximum allowable baud rate for the device.</exception>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.BreakState">
+      <summary>Gets or sets the break signal state.</summary>
+      <returns>true if the port is in a break state; otherwise, false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.BytesToRead">
+      <summary>Gets the number of bytes of data in the receive buffer.</summary>
+      <returns>The number of bytes of data in the receive buffer.</returns>
+      <exception cref="T:System.InvalidOperationException">The port is not open.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.BytesToWrite">
+      <summary>Gets the number of bytes of data in the send buffer.</summary>
+      <returns>The number of bytes of data in the send buffer.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.CDHolding">
+      <summary>Gets the state of the Carrier Detect line for the port.</summary>
+      <returns>true if the carrier is detected; otherwise, false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Close">
+      <summary>Closes the port connection, sets the <see cref="P:System.IO.Ports.SerialPort.IsOpen"></see> property to false, and disposes of the internal <see cref="T:System.IO.Stream"></see> object.</summary>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.CtsHolding">
+      <summary>Gets the state of the Clear-to-Send line.</summary>
+      <returns>true if the Clear-to-Send line is detected; otherwise, false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.DataBits">
+      <summary>Gets or sets the standard length of data bits per byte.</summary>
+      <returns>The data bits length.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The data bits value is less than 5 or more than 8.</exception>
+    </member>
+    <member name="E:System.IO.Ports.SerialPort.DataReceived">
+      <summary>Indicates that data has been received through a port represented by the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.DiscardInBuffer">
+      <summary>Discards data from the serial driver&amp;#39;s receive buffer.</summary>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.DiscardNull">
+      <summary>Gets or sets a value indicating whether null bytes are ignored when transmitted between the port and the receive buffer.</summary>
+      <returns>true if null bytes are ignored; otherwise false. The default is false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.DiscardOutBuffer">
+      <summary>Discards data from the serial driver&amp;#39;s transmit buffer.</summary>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Dispose(System.Boolean)">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.IO.Ports.SerialPort"></see> and optionally releases the managed resources.</summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.DsrHolding">
+      <summary>Gets the state of the Data Set Ready (DSR) signal.</summary>
+      <returns>true if a Data Set Ready signal has been sent to the port; otherwise, false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="System.IO.Ports.SerialPort.Open"></see> method has not been called or the <see cref="System.IO.Ports.SerialPort.Close"></see> method has been called.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.DtrEnable">
+      <summary>Gets or sets a value that enables the Data Terminal Ready (DTR) signal during serial communication.</summary>
+      <returns>true to enable Data Terminal Ready (DTR); otherwise, false. The default is false.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.Encoding">
+      <summary>Gets or sets the byte encoding for pre- and post-transmission conversion of text.</summary>
+      <returns>An <see cref="System.Text.Encoding"></see> object. The default is <see cref="System.Text.ASCIIEncoding"></see>.</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="System.IO.Ports.SerialPort.Encoding"></see> property was set to null.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="System.IO.Ports.SerialPort.Encoding"></see> property was set to an encoding that is not <see cref="System.Text.ASCIIEncoding"></see>, <see cref="System.Text.UTF8Encoding"></see>, <see cref="System.Text.UTF32Encoding"></see>, <see cref="System.Text.UnicodeEncoding"></see>, one of the Windows single byte encodings, or one of the Windows double byte encodings.</exception>
+    </member>
+    <member name="E:System.IO.Ports.SerialPort.ErrorReceived">
+      <summary>Indicates that an error has occurred with a port represented by a <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.GetPortNames">
+      <summary>Gets an array of serial port names for the current computer.</summary>
+      <returns>An array of serial port names for the current computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">The serial port names could not be queried.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.Handshake">
+      <summary>Gets or sets the handshaking protocol for serial port transmission of data using a value from <see cref="T:System.IO.Ports.Handshake"></see>.</summary>
+      <returns>One of the <see cref="System.IO.Ports.Handshake"></see> values. The default is None.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value passed is not a valid value in the <see cref="System.IO.Ports.Handshake"></see> enumeration.</exception>
+    </member>
+    <member name="F:System.IO.Ports.SerialPort.InfiniteTimeout">
+      <summary>Indicates that no time-out should occur.</summary>
+      <returns></returns>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.IsOpen">
+      <summary>Gets a value indicating the open or closed status of the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <returns>true if the serial port is open; otherwise, false. The default is false.</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="System.IO.Ports.SerialPort.IsOpen"></see> value passed is null.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="System.IO.Ports.SerialPort.IsOpen"></see> value passed is an empty string (&amp;quot;&amp;quot;).</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.NewLine">
+      <summary>Gets or sets the value used to interpret the end of a call to the <see cref="M:System.IO.Ports.SerialPort.ReadLine"></see> and <see cref="M:System.IO.Ports.SerialPort.WriteLine(System.String)"></see> methods.</summary>
+      <returns>A value that represents the end of a line. The default is a line feed, <see cref="System.Environment.NewLine"></see>.</returns>
+      <exception cref="T:System.ArgumentException">The property value is empty.</exception>
+      <exception cref="T:System.ArgumentNullException">The property value is null.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Open">
+      <summary>Opens a new serial port connection.</summary>
+      <exception cref="T:System.UnauthorizedAccessException">Access is denied to the port.  
+ - or -  
+ The current process, or another process on the system, already has the specified COM port open either by a <see cref="System.IO.Ports.SerialPort"></see> instance or in unmanaged code.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">One or more of the properties for this instance are invalid. For example, the <see cref="System.IO.Ports.SerialPort.Parity"></see>, <see cref="System.IO.Ports.SerialPort.DataBits"></see>, or <see cref="System.IO.Ports.SerialPort.Handshake"></see> properties are not valid values; the <see cref="System.IO.Ports.SerialPort.BaudRate"></see> is less than or equal to zero; the <see cref="System.IO.Ports.SerialPort.ReadTimeout"></see> or <see cref="System.IO.Ports.SerialPort.WriteTimeout"></see> property is less than zero and is not <see cref="System.IO.Ports.SerialPort.InfiniteTimeout"></see>.</exception>
+      <exception cref="T:System.ArgumentException">The port name does not begin with &amp;quot;COM&amp;quot;.  
+ - or -  
+ The file type of the port is not supported.</exception>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port on the current instance of the <see cref="System.IO.Ports.SerialPort"></see> is already open.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.Parity">
+      <summary>Gets or sets the parity-checking protocol.</summary>
+      <returns>One of the enumeration values that represents the parity-checking protocol. The default is <see cref="System.IO.Ports.Parity.None"></see>.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.Parity"></see> value passed is not a valid value in the <see cref="System.IO.Ports.Parity"></see> enumeration.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.ParityReplace">
+      <summary>Gets or sets the byte that replaces invalid bytes in a data stream when a parity error occurs.</summary>
+      <returns>A byte that replaces invalid bytes.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="E:System.IO.Ports.SerialPort.PinChanged">
+      <summary>Indicates that a non-data signal event has occurred on the port represented by the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.PortName">
+      <summary>Gets or sets the port for communications, including but not limited to all available COM ports.</summary>
+      <returns>The communications port. The default is COM1.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="System.IO.Ports.SerialPort.PortName"></see> property was set to a value with a length of zero.  
+ -or-  
+ The <see cref="System.IO.Ports.SerialPort.PortName"></see> property was set to a value that starts with &amp;quot;\\&amp;quot;.  
+ -or-  
+ The port name was not valid.</exception>
+      <exception cref="T:System.ArgumentNullException">The <see cref="System.IO.Ports.SerialPort.PortName"></see> property was set to null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is open.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Read(System.Byte[],System.Int32,System.Int32)">
+      <summary>Reads a number of bytes from the <see cref="T:System.IO.Ports.SerialPort"></see> input buffer and writes those bytes into a byte array at the specified offset.</summary>
+      <param name="buffer">The byte array to write the input to.</param>
+      <param name="offset">The offset in buffer at which to write the bytes.</param>
+      <param name="count">The maximum number of bytes to read. Fewer bytes are read if count is greater than the number of bytes in the input buffer.</param>
+      <returns>The number of bytes read.</returns>
+      <exception cref="T:System.ArgumentNullException">The buffer passed is null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> parameters are outside a valid region of the <paramref name="buffer">buffer</paramref> being passed. Either <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref> plus <paramref name="count">count</paramref> is greater than the length of the <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.TimeoutException">No bytes were available to read.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Read(System.Char[],System.Int32,System.Int32)">
+      <summary>Reads a number of characters from the <see cref="T:System.IO.Ports.SerialPort"></see> input buffer and writes them into an array of characters at a given offset.</summary>
+      <param name="buffer">The character array to write the input to.</param>
+      <param name="offset">The offset in buffer at which to write the characters.</param>
+      <param name="count">The maximum number of characters to read. Fewer characters are read if count is greater than the number of characters in the input buffer.</param>
+      <returns>The number of characters read.</returns>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref> plus <paramref name="count">count</paramref> is greater than the length of the buffer.  
+ - or -  
+ <paramref name="count">count</paramref> is 1 and there is a surrogate character in the buffer.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="buffer">buffer</paramref> passed is null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> parameters are outside a valid region of the <paramref name="buffer">buffer</paramref> being passed. Either <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> is less than zero.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.TimeoutException">No characters were available to read.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.ReadBufferSize">
+      <summary>Gets or sets the size of the <see cref="T:System.IO.Ports.SerialPort"></see> input buffer.</summary>
+      <returns>The buffer size, in bytes. The default value is 4096; the maximum value is that of a positive int, or 2147483647.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.ReadBufferSize"></see> value set is less than or equal to zero.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.IO.Ports.SerialPort.ReadBufferSize"></see> property was set while the stream was open.</exception>
+      <exception cref="T:System.IO.IOException">The <see cref="System.IO.Ports.SerialPort.ReadBufferSize"></see> property was set to an odd integer value.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.ReadByte">
+      <summary>Synchronously reads one byte from the <see cref="T:System.IO.Ports.SerialPort"></see> input buffer.</summary>
+      <returns>The byte, cast to an <see cref="System.Int32"></see>, or -1 if the end of the stream has been read.</returns>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.  
+ - or -  
+ No byte was read.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.ReadChar">
+      <summary>Synchronously reads one character from the <see cref="T:System.IO.Ports.SerialPort"></see> input buffer.</summary>
+      <returns>The character that was read.</returns>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.  
+ - or -  
+ No character was available in the allotted time-out period.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.ReadExisting">
+      <summary>Reads all immediately available bytes, based on the encoding, in both the stream and the input buffer of the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+      <returns>The contents of the stream and the input buffer of the <see cref="System.IO.Ports.SerialPort"></see> object.</returns>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.ReadLine">
+      <summary>Reads up to the <see cref="P:System.IO.Ports.SerialPort.NewLine"></see> value in the input buffer.</summary>
+      <returns>The contents of the input buffer up to the first occurrence of a <see cref="System.IO.Ports.SerialPort.NewLine"></see> value.</returns>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.TimeoutException">The operation did not complete before the time-out period ended.  
+ - or -  
+ No bytes were read.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.ReadTimeout">
+      <summary>Gets or sets the number of milliseconds before a time-out occurs when a read operation does not finish.</summary>
+      <returns>The number of milliseconds before a time-out occurs when a read operation does not finish.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The read time-out value is less than zero and not equal to <see cref="System.IO.Ports.SerialPort.InfiniteTimeout"></see>.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.ReadTo(System.String)">
+      <summary>Reads a string up to the specified <paramref name="value">value</paramref> in the input buffer.</summary>
+      <param name="value">A value that indicates where the read operation stops.</param>
+      <returns>The contents of the input buffer up to the specified <paramref name="value">value</paramref>.</returns>
+      <exception cref="T:System.ArgumentException">The length of the <paramref name="value">value</paramref> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="value">value</paramref> parameter is null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.TimeoutException">The operation did not complete before the time-out period ended.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.ReceivedBytesThreshold">
+      <summary>Gets or sets the number of bytes in the internal input buffer before a <see cref="E:System.IO.Ports.SerialPort.DataReceived"></see> event occurs.</summary>
+      <returns>The number of bytes in the internal input buffer before a <see cref="System.IO.Ports.SerialPort.DataReceived"></see> event is fired. The default is 1.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.ReceivedBytesThreshold"></see> value is less than or equal to zero.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.RtsEnable">
+      <summary>Gets or sets a value indicating whether the Request to Send (RTS) signal is enabled during serial communication.</summary>
+      <returns>true to enable Request to Transmit (RTS); otherwise, false. The default is false.</returns>
+      <exception cref="T:System.InvalidOperationException">The value of the <see cref="System.IO.Ports.SerialPort.RtsEnable"></see> property was set or retrieved while the <see cref="System.IO.Ports.SerialPort.Handshake"></see> property is set to the <see cref="System.IO.Ports.Handshake.RequestToSend"></see> value or the <see cref="System.IO.Ports.Handshake.RequestToSendXOnXOff"></see> value.</exception>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.StopBits">
+      <summary>Gets or sets the standard number of stopbits per byte.</summary>
+      <returns>One of the <see cref="System.IO.Ports.StopBits"></see> values.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.StopBits"></see> value is  <see cref="System.IO.Ports.StopBits.None"></see>.</exception>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Write(System.String)">
+      <summary>Writes the specified string to the serial port.</summary>
+      <param name="text"></param>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="str">str</paramref> is null.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Write(System.Byte[],System.Int32,System.Int32)">
+      <summary>Writes a specified number of bytes to the serial port using data from a buffer.</summary>
+      <param name="buffer">The byte array that contains the data to write to the port.</param>
+      <param name="offset">The zero-based byte offset in the buffer parameter at which to begin copying bytes to the port.</param>
+      <param name="count">The number of bytes to write.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="buffer">buffer</paramref> passed is null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> parameters are outside a valid region of the <paramref name="buffer">buffer</paramref> being passed. Either <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref> plus <paramref name="count">count</paramref> is greater than the length of the <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.Write(System.Char[],System.Int32,System.Int32)">
+      <summary>Writes a specified number of characters to the serial port using data from a buffer.</summary>
+      <param name="buffer">The character array that contains the data to write to the port.</param>
+      <param name="offset">The zero-based byte offset in the buffer parameter at which to begin copying bytes to the port.</param>
+      <param name="count">The number of characters to write.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="buffer">buffer</paramref> passed is null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> parameters are outside a valid region of the <paramref name="buffer">buffer</paramref> being passed. Either <paramref name="offset">offset</paramref> or <paramref name="count">count</paramref> is less than zero.</exception>
+      <exception cref="T:System.ArgumentException"><paramref name="offset">offset</paramref> plus <paramref name="count">count</paramref> is greater than the length of the <paramref name="buffer">buffer</paramref>.</exception>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.WriteBufferSize">
+      <summary>Gets or sets the size of the serial port output buffer.</summary>
+      <returns>The size of the output buffer. The default is 2048.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.WriteBufferSize"></see> value is less than or equal to zero.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="System.IO.Ports.SerialPort.WriteBufferSize"></see> property was set while the stream was open.</exception>
+      <exception cref="T:System.IO.IOException">The <see cref="System.IO.Ports.SerialPort.WriteBufferSize"></see> property was set to an odd integer value.</exception>
+    </member>
+    <member name="M:System.IO.Ports.SerialPort.WriteLine(System.String)">
+      <summary>Writes the specified string and the <see cref="P:System.IO.Ports.SerialPort.NewLine"></see> value to the output buffer.</summary>
+      <param name="text"></param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="str">str</paramref> parameter is null.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
+      <exception cref="T:System.TimeoutException">The <see cref="System.IO.Ports.SerialPort.WriteLine(System.String)"></see> method could not write to the stream.</exception>
+    </member>
+    <member name="P:System.IO.Ports.SerialPort.WriteTimeout">
+      <summary>Gets or sets the number of milliseconds before a time-out occurs when a write operation does not finish.</summary>
+      <returns>The number of milliseconds before a time-out occurs. The default is <see cref="System.IO.Ports.SerialPort.InfiniteTimeout"></see>.</returns>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+ - or -  
+ An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="System.IO.Ports.SerialPort"></see> object were invalid.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="System.IO.Ports.SerialPort.WriteTimeout"></see> value is less than zero and not equal to <see cref="System.IO.Ports.SerialPort.InfiniteTimeout"></see>.</exception>
+    </member>
+    <member name="T:System.IO.Ports.StopBits">
+      <summary>Specifies the number of stop bits used on the <see cref="T:System.IO.Ports.SerialPort"></see> object.</summary>
+    </member>
+    <member name="F:System.IO.Ports.StopBits.None">
+      <summary>No stop bits are used. This value is not supported by the <see cref="P:System.IO.Ports.SerialPort.StopBits"></see> property.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.StopBits.One">
+      <summary>One stop bit is used.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.StopBits.OnePointFive">
+      <summary>1.5 stop bits are used.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.IO.Ports.StopBits.Two">
+      <summary>Two stop bits are used.</summary>
+      <returns></returns>
+    </member>
+  </members>
+</doc>

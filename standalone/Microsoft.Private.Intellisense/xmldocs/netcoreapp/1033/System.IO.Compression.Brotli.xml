@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.IO.Compression.Brotli</name>
+  </assembly>
+  <members>
+    <member name="T:System.IO.Compression.BrotliStream">
+      
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionLevel)">
+      <param name="stream"></param>
+      <param name="compressionLevel"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)">
+      <param name="stream"></param>
+      <param name="mode"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionLevel,System.Boolean)">
+      <param name="stream"></param>
+      <param name="compressionLevel"></param>
+      <param name="leaveOpen"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)">
+      <param name="stream"></param>
+      <param name="mode"></param>
+      <param name="leaveOpen"></param>
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.BaseStream">
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+      <param name="asyncCallback"></param>
+      <param name="asyncState"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+      <param name="asyncCallback"></param>
+      <param name="asyncState"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.CanRead">
+      <returns></returns>
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.CanSeek">
+      <returns></returns>
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.CanWrite">
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.EndRead(System.IAsyncResult)">
+      <param name="asyncResult"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.EndWrite(System.IAsyncResult)">
+      <param name="asyncResult"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.Flush">
+      
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.Length">
+      <returns></returns>
+    </member>
+    <member name="P:System.IO.Compression.BrotliStream.Position">
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <param name="offset"></param>
+      <param name="origin"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.SetLength(System.Int64)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+      <param name="buffer"></param>
+      <param name="offset"></param>
+      <param name="count"></param>
+      <param name="cancellationToken"></param>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Compression.BrotliEncoder">
+      
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.#ctor(System.Int32,System.Int32)">
+      <param name="quality"></param>
+      <param name="window"></param>
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.Compress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
+      <param name="source"></param>
+      <param name="destination"></param>
+      <param name="bytesConsumed"></param>
+      <param name="bytesWritten"></param>
+      <param name="isFinalBlock"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.Dispose">
+      
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.Flush(System.Span{System.Byte},System.Int32@)">
+      <param name="destination"></param>
+      <param name="bytesWritten"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.GetMaxCompressedLength(System.Int32)">
+      <param name="inputSize"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.TryCompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+      <param name="source"></param>
+      <param name="destination"></param>
+      <param name="bytesWritten"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliEncoder.TryCompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32,System.Int32)">
+      <param name="source"></param>
+      <param name="destination"></param>
+      <param name="bytesWritten"></param>
+      <param name="quality"></param>
+      <param name="window"></param>
+      <returns></returns>
+    </member>
+    <member name="T:System.IO.Compression.BrotliDecoder">
+      
+    </member>
+    <member name="M:System.IO.Compression.BrotliDecoder.Decompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+      <param name="source"></param>
+      <param name="destination"></param>
+      <param name="bytesConsumed"></param>
+      <param name="bytesWritten"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliDecoder.Dispose">
+      
+    </member>
+    <member name="M:System.IO.Compression.BrotliDecoder.TryDecompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+      <param name="source"></param>
+      <param name="destination"></param>
+      <param name="bytesWritten"></param>
+      <returns></returns>
+    </member>
+  </members>
+</doc>

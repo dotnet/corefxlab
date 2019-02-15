@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Composition.Convention</name>
+  </assembly>
+  <members>
+    <member name="T:System.Composition.Convention.ConventionBuilder">
+      <summary>Provides methods for creating and configuring rules to define CLR objects as Managed Extensibility Framework (MEF) parts.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Convention.ConventionBuilder"></see> class.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForType(System.Type)">
+      <summary>Creates a rule that applies to the specified type.</summary>
+      <param name="type">The type.</param>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForType``1">
+      <summary>Creates a rule that applies to the specified generic type.</summary>
+      <typeparam name="T">The generic type.</typeparam>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForTypesDerivedFrom(System.Type)">
+      <summary>Creates a rule that applies to all types that implement, or are derived from, the specified type.</summary>
+      <param name="type">The type.</param>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForTypesDerivedFrom``1">
+      <summary>Creates a rule that applies to all types that implement, or are derived from, the specified generic type.</summary>
+      <typeparam name="T">The generic type.</typeparam>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForTypesMatching(System.Predicate{System.Type})">
+      <summary>Creates a rule that applies to types that match the specified predicate.</summary>
+      <param name="typeFilter">The predicate to match.</param>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.ForTypesMatching``1(System.Predicate{System.Type})">
+      <summary>Creates a rule that applies to types that match the specified predicate and generic type.</summary>
+      <param name="typeFilter">The predicate to match.</param>
+      <typeparam name="T">The type to match.</typeparam>
+      <returns>An object that can be used to further configure the rule.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.GetCustomAttributes(System.Type,System.Reflection.MemberInfo)">
+      <summary>Retrieves the list of custom attributes applied to the specified member of the specified type.</summary>
+      <param name="reflectedType">The type.</param>
+      <param name="member">The member to inspect.</param>
+      <returns>A collection of custom attributes.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ConventionBuilder.GetCustomAttributes(System.Type,System.Reflection.ParameterInfo)">
+      <summary>Retrieves the list of custom attributes applied to the specified parameter of the specified type.</summary>
+      <param name="reflectedType">The type.</param>
+      <param name="parameter">The parameter to inspect.</param>
+      <returns>A collection of custom attributes.</returns>
+    </member>
+    <member name="T:System.Composition.Convention.ExportConventionBuilder">
+      <summary>Configures an export that is associated with a part.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AddMetadata(System.String,System.Func{System.Type,System.Object})">
+      <summary>Adds metadata that has the specified name and value to the export.</summary>
+      <param name="name">The name of the metadata to add.</param>
+      <param name="getValueFromPartType">A function that provides the value of the metadata to add.</param>
+      <returns>An export builder containing the metadata that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AddMetadata(System.String,System.Object)">
+      <summary>Adds metadata that has the specified name and value to the export.</summary>
+      <param name="name">The name of the metadata to add.</param>
+      <param name="value">The value of the metadata to add.</param>
+      <returns>An export builder containing the metadata that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AsContractName(System.Func{System.Type,System.String})">
+      <summary>Specifies the contract name for the export based on the result of the specified function on the export type.</summary>
+      <param name="getContractNameFromPartType">The function that provides the contract name.</param>
+      <returns>An export builder containing the contract name that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AsContractName(System.String)">
+      <summary>Specifies the contract name for the export.</summary>
+      <param name="contractName">The contract name.</param>
+      <returns>An export builder containing the contract name that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AsContractType(System.Type)">
+      <summary>Specifies the contract type for the export.</summary>
+      <param name="type">The type.</param>
+      <returns>An export builder containing the contract type that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ExportConventionBuilder.AsContractType``1">
+      <summary>Specifies the contract type for the export as a generic type.</summary>
+      <typeparam name="T">The generic type.</typeparam>
+      <returns>An export builder containing the contract type that allows for further configuration.</returns>
+    </member>
+    <member name="T:System.Composition.Convention.ImportConventionBuilder">
+      <summary>Configures an import that is associated with a part.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AddMetadataConstraint(System.String,System.Func{System.Type,System.Object})">
+      <summary>Adds a constraint to the import requiring the specified metadata name and the value provided by the specified function on the part type.</summary>
+      <param name="name">The required metadata name.</param>
+      <param name="getConstraintValueFromPartType">A function that provides the required metadata value.</param>
+      <returns>An import builder containing the constraint that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AddMetadataConstraint(System.String,System.Object)">
+      <summary>Adds a constraint to the import requiring the specified metadata name and value.</summary>
+      <param name="name">The required metadata name.</param>
+      <param name="value">The required metadata value.</param>
+      <returns>An import builder containing the constraint that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AllowDefault">
+      <summary>Allows the import to receive the default value for its type if the contract cannot be supplied by another part.</summary>
+      <returns>An import builder that allows default values and can be further configured.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AsContractName(System.Func{System.Type,System.String})">
+      <summary>Sets the contract name of the import to the value provided by the specified function on the part type.</summary>
+      <param name="getContractNameFromPartType">A function that provides the contract name of the import.</param>
+      <returns>An import builder containing the contract name that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AsContractName(System.String)">
+      <summary>Sets the contract name of the import to the specified string.</summary>
+      <param name="contractName">The contract name of the import.</param>
+      <returns>An import builder containing the contract name that allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AsMany">
+      <summary>Configures the import to receive a collection of exports.</summary>
+      <returns>An import builder that can receive a collection of exports and allows for further configuration.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ImportConventionBuilder.AsMany(System.Boolean)">
+      <summary>Configures the import to receive a collection of exports, possibly representing all available matching exports.</summary>
+      <param name="isMany">true to provide all available matching exports; otherwise, false.</param>
+      <returns>An import builder that can receive a collection of exports and allows for further configuration.</returns>
+    </member>
+    <member name="T:System.Composition.Convention.ParameterImportConventionBuilder">
+      <summary>Represents a helper type that is used when configuring a <see cref="T:System.Composition.Convention.PartConventionBuilder`1"></see>.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.ParameterImportConventionBuilder.Import``1">
+      <summary>Imports the specified type.</summary>
+      <typeparam name="T">The type to import.</typeparam>
+      <returns>The imported instance.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.ParameterImportConventionBuilder.Import``1(System.Action{System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Imports the specified generic type by using the specified configuration.</summary>
+      <param name="configure">The configuration for the import.</param>
+      <typeparam name="T">The type to import.</typeparam>
+      <returns>The imported instance.</returns>
+    </member>
+    <member name="T:System.Composition.Convention.PartConventionBuilder`1">
+      <summary>Configures a type as a Managed Extensibility Framework (MEF) part, with strongly typed return values.</summary>
+      <typeparam name="T">The type of the part.</typeparam>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ExportProperty(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+      <summary>Exports a specified property.</summary>
+      <param name="propertySelector">A function that selects the property to export.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ExportProperty(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Action{System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Exports a specified property with the specified configuration.</summary>
+      <param name="propertySelector">A function that selects the property to export.</param>
+      <param name="exportConfiguration">An action that configures the exported property.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="propertySelector">propertySelector</paramref> expression must be a <see cref="System.Linq.Expressions.MemberExpression"></see> for accessing a property.</exception>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ExportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+      <summary>Exports a specified property as a specified contract type.</summary>
+      <param name="propertySelector">A function that selects the property to export.</param>
+      <typeparam name="TContract">The contract type.</typeparam>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="propertySelector">propertySelector</paramref> expression must be a <see cref="System.Linq.Expressions.MemberExpression"></see> for accessing a property.</exception>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ExportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Action{System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Exports a specified property as a specified contract type by using the specified configuration.</summary>
+      <param name="propertySelector">A function that selects the property to export.</param>
+      <param name="exportConfiguration">An action that configures the exported property.</param>
+      <typeparam name="TContract">The contract type.</typeparam>
+      <returns>An object that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ImportProperty(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+      <summary>Imports a specified property.</summary>
+      <param name="propertySelector">A function that selects the property to import.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ImportProperty(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Action{System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Imports a specified property by using the specified configuration.</summary>
+      <param name="propertySelector">A function that selects the property to import.</param>
+      <param name="importConfiguration">An action that configures the imported property.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="propertySelector">propertySelector</paramref> expression must be a <see cref="System.Linq.Expressions.MemberExpression"></see> for accessing a property.</exception>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+      <summary>Imports a specified property with the specified contract type.</summary>
+      <param name="propertySelector">A function that selects the property to import.</param>
+      <typeparam name="TContract">The contract type.</typeparam>
+      <returns>An object that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Action{System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Imports a specified property with the specified contract type and configuration.</summary>
+      <param name="propertySelector">A function that selects the property to import.</param>
+      <param name="importConfiguration">An action that configures the imported property.</param>
+      <typeparam name="TContract">The contract type.</typeparam>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="propertySelector">propertySelector</paramref> expression must be a <see cref="System.Linq.Expressions.MemberExpression"></see> for accessing a property.</exception>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.NotifyImportsSatisfied(System.Linq.Expressions.Expression{System.Action{`0}})">
+      <summary>Selects a method to be called when composition is complete.</summary>
+      <param name="methodSelector">An action that selects the method to call.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="methodSelector">methodSelector</paramref> expression must be a void method with no arguments.</exception>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder`1.SelectConstructor(System.Linq.Expressions.Expression{System.Func{System.Composition.Convention.ParameterImportConventionBuilder,`0}})">
+      <summary>Selects a constructor to be used in composition.</summary>
+      <param name="constructorSelector">A function that selects a constructor.</param>
+      <returns>An object that can be used to further configure the part.</returns>
+      <exception cref="T:System.Argument">The <paramref name="constructorSelector">constructorSelector</paramref> expression must use the new operator.</exception>
+    </member>
+    <member name="T:System.Composition.Convention.PartConventionBuilder">
+      <summary>Configures a type as a Managed Extensibility Framework (MEF) part.</summary>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.AddPartMetadata(System.String,System.Func{System.Type,System.Object})">
+      <summary>Adds metadata that has the specified name and value to the part. The value is returned by a function that maps the part type to the metadata value.</summary>
+      <param name="name">The name of the metadata to add.</param>
+      <param name="getValueFromPartType">A function that returns the metadata value on the part type.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.AddPartMetadata(System.String,System.Object)">
+      <summary>Adds metadata that has the specified name and value to the part.</summary>
+      <param name="name">The metadata name.</param>
+      <param name="value">The metadata value.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Export">
+      <summary>Exports the part with its concrete type as the contract type.</summary>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Export(System.Action{System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Exports the part that has the specified configuration.</summary>
+      <param name="exportConfiguration">An action that configures the part.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Export``1">
+      <summary>Exports the part that has the specified contract type.</summary>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Export``1(System.Action{System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Exports the part that has the specified contract type by using the specified configuration.</summary>
+      <param name="exportConfiguration">An action that configures the part.</param>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportInterfaces">
+      <summary>Selects all interfaces on the part type to be exported.</summary>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportInterfaces(System.Predicate{System.Type})">
+      <summary>Selects interfaces on the part type to be exported according to the specified filter.</summary>
+      <param name="interfaceFilter">A predicate that specifies the interfaces to be selected.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportInterfaces(System.Predicate{System.Type},System.Action{System.Type,System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Selects interfaces on the part type to be exported according to the specified filter, using the specified export configuration.</summary>
+      <param name="interfaceFilter">A predicate that specifies the interfaces to be selected.</param>
+      <param name="exportConfiguration">An action that configures the exports.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportProperties(System.Predicate{System.Reflection.PropertyInfo},System.Action{System.Reflection.PropertyInfo,System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Selects the properties on the part to export according to the specified predicate, using the specified export configuration.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to export.</param>
+      <param name="exportConfiguration">An action that configures the exports.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportProperties(System.Predicate{System.Reflection.PropertyInfo})">
+      <summary>Selects the properties on the part to export according to the specified predicate.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to export.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportProperties``1(System.Predicate{System.Reflection.PropertyInfo})">
+      <summary>Selects the properties on the part to export according to the specified predicate, using the specified contract type.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to export.</param>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ExportProperties``1(System.Predicate{System.Reflection.PropertyInfo},System.Action{System.Reflection.PropertyInfo,System.Composition.Convention.ExportConventionBuilder})">
+      <summary>Selects the properties on the part to export according to the specified predicate, using the specified contract type and export configuration.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to export.</param>
+      <param name="exportConfiguration">An action that configures the exports.</param>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ImportProperties(System.Predicate{System.Reflection.PropertyInfo})">
+      <summary>Selects the properties on the part to import according to the specified predicate.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to import.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ImportProperties(System.Predicate{System.Reflection.PropertyInfo},System.Action{System.Reflection.PropertyInfo,System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Selects the properties on the part to import according to the specified predicate, using the specified import configuration.</summary>
+      <param name="propertyFilter">A predicate that specifies the properites to import.</param>
+      <param name="importConfiguration">An action that configures the imports.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ImportProperties``1(System.Predicate{System.Reflection.PropertyInfo})">
+      <summary>Selects the properties on the part to import according to the specified predicate, using the specified contract type.</summary>
+      <param name="propertyFilter">A predicate that specifies the properties to import.</param>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.ImportProperties``1(System.Predicate{System.Reflection.PropertyInfo},System.Action{System.Reflection.PropertyInfo,System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Selects the properties on the part to import according to the specified predicate, using the specified contract type and import configuration.</summary>
+      <param name="propertyFilter">A predicate that specifies the properties to import.</param>
+      <param name="importConfiguration">An action that configures the imports.</param>
+      <typeparam name="T">The contract type.</typeparam>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.NotifyImportsSatisfied(System.Predicate{System.Reflection.MethodInfo})">
+      <summary>Select methods to be used as a notification when composition is complete.</summary>
+      <param name="methodFilter">A predicate that selects the methods.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.SelectConstructor(System.Func{System.Collections.Generic.IEnumerable{System.Reflection.ConstructorInfo},System.Reflection.ConstructorInfo})">
+      <summary>Selects the constructor used to initialize the part by using the specified function.</summary>
+      <param name="constructorSelector">A function that returns a single constructor.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.SelectConstructor(System.Func{System.Collections.Generic.IEnumerable{System.Reflection.ConstructorInfo},System.Reflection.ConstructorInfo},System.Action{System.Reflection.ParameterInfo,System.Composition.Convention.ImportConventionBuilder})">
+      <summary>Selects the constructor used to initialize the part by using the specified function and import configuration.</summary>
+      <param name="constructorSelector">A function that returns a single constructor.</param>
+      <param name="importConfiguration">A method that configures the constructor&amp;#39;s imports.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Shared">
+      <summary>Marks the part as being shared throughout the entire composition.</summary>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+    <member name="M:System.Composition.Convention.PartConventionBuilder.Shared(System.String)">
+      <summary>Marks the part as being shared within the specified boundary.</summary>
+      <param name="sharingBoundary">The boundary.</param>
+      <returns>A part builder that can be used to further configure the part.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,760 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Security.Cryptography.Pkcs</name>
+  </assembly>
+  <members>
+    <member name="T:System.Security.Cryptography.CryptographicAttributeObject">
+      <summary>Contains a type and a collection of values associated with that type.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObject.#ctor(System.Security.Cryptography.Oid)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> class using an attribute represented by the specified <see cref="T:System.Security.Cryptography.Oid"></see> object.</summary>
+      <param name="oid">The attribute to store in this <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObject.#ctor(System.Security.Cryptography.Oid,System.Security.Cryptography.AsnEncodedDataCollection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> class using an attribute represented by the specified <see cref="T:System.Security.Cryptography.Oid"></see> object and the set of values associated with that attribute represented by the specified <see cref="T:System.Security.Cryptography.AsnEncodedDataCollection"></see> collection.</summary>
+      <param name="oid">The attribute to store in this <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object.</param>
+      <param name="values">The set of values associated with the attribute represented by the oid parameter.</param>
+      <exception cref="T:System.InvalidOperationException">The collection contains duplicate items.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObject.Oid">
+      <summary>Gets the <see cref="T:System.Security.Cryptography.Oid"></see> object that specifies the object identifier for the attribute.</summary>
+      <returns>The object identifier for the attribute.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObject.Values">
+      <summary>Gets the <see cref="T:System.Security.Cryptography.AsnEncodedDataCollection"></see> collection that contains the set of values that are associated with the attribute.</summary>
+      <returns>The set of values that is associated with the attribute.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.CryptographicAttributeObjectCollection">
+      <summary>Contains a set of <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> objects.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.#ctor(System.Security.Cryptography.CryptographicAttributeObject)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> class, adding a specified <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> to the collection.</summary>
+      <param name="attribute">A <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object that is added to the collection.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.Add(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Adds the specified <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object to the collection.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object to add to the collection.</param>
+      <returns>true if the method returns the zero-based index of the added item; otherwise, false.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asnEncodedData">asnEncodedData</paramref> is null.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.Add(System.Security.Cryptography.CryptographicAttributeObject)">
+      <summary>Adds the specified <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object to the collection.</summary>
+      <param name="attribute">The <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object to add to the collection.</param>
+      <returns>true if the method returns the zero-based index of the added item; otherwise, false.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asnEncodedData">asnEncodedData</paramref> is null.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+      <exception cref="T:System.InvalidOperationException">The specified item already exists in the collection.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.CopyTo(System.Security.Cryptography.CryptographicAttributeObject[],System.Int32)">
+      <summary>Copies the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection to an array of <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> objects.</summary>
+      <param name="array">An array of <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> objects that the collection is copied to.</param>
+      <param name="index">The zero-based index in array to which the collection is to be copied.</param>
+      <exception cref="T:System.ArgumentException">One of the arguments provided to a method was not valid.</exception>
+      <exception cref="T:System.ArgumentNullException">null was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of an argument was outside the allowable range of values as defined by the called method.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectCollection.Count">
+      <summary>Gets the number of items in the collection.</summary>
+      <returns>The number of items in the collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.GetEnumerator">
+      <summary>Gets a <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectEnumerator"></see> object for the collection.</summary>
+      <returns>true if the method returns a <see cref="System.Security.Cryptography.CryptographicAttributeObjectEnumerator"></see> object that can be used to enumerate the collection; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectCollection.Item(System.Int32)">
+      <summary>Gets the <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object at the specified index in the collection.</summary>
+      <param name="index">An <see cref="T:System.Int32"></see> value that represents the zero-based index of the <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object to retrieve.</param>
+      <returns>The <see cref="System.Security.Cryptography.CryptographicAttributeObject"></see> object at the specified index.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.Remove(System.Security.Cryptography.CryptographicAttributeObject)">
+      <summary>Removes the specified <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object from the collection.</summary>
+      <param name="attribute">The <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object to remove from the collection.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="attribute">attribute</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copies the elements of this <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection to an <see cref="T:System.Array"></see> array, starting at a particular index.</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array"></see> array that is the destination of the elements copied from this <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see>. The <see cref="T:System.Array"></see> array must have zero-based indexing.</param>
+      <param name="index">The zero-based index in array at which copying begins.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectCollection.System#Collections#ICollection#IsSynchronized">
+      <returns></returns>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectCollection.System#Collections#ICollection#SyncRoot">
+      <returns></returns>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator that iterates through the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</summary>
+      <returns>An <see cref="System.Collections.IEnumerator"></see> object that can be used to iterate through the <see cref="System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.CryptographicAttributeObjectEnumerator">
+      <summary>Provides enumeration functionality for the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection. This class cannot be inherited.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectEnumerator.Current">
+      <summary>Gets the current <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object from the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.CryptographicAttributeObject"></see> object that represents the current cryptographic attribute in the <see cref="System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectEnumerator.MoveNext">
+      <summary>Advances the enumeration to the next <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object in the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</summary>
+      <returns>true if the enumeration successfully moved to the next <see cref="System.Security.Cryptography.CryptographicAttributeObject"></see> object; false if the enumerator is at the end of the enumeration.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.CryptographicAttributeObjectEnumerator.Reset">
+      <summary>Resets the enumeration to the first <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object in the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.CryptographicAttributeObjectEnumerator.System#Collections#IEnumerator#Current">
+      <summary>Gets the current <see cref="T:System.Security.Cryptography.CryptographicAttributeObject"></see> object from the <see cref="T:System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.CryptographicAttributeObject"></see> object that represents the current cryptographic attribute in the <see cref="System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> class defines the algorithm used for a cryptographic operation.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> class by using a set of default parameters.</summary>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor(System.Security.Cryptography.Oid)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor(System.Security.Cryptography.Oid)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> class with the specified algorithm identifier.</summary>
+      <param name="oid">An object identifier for the algorithm.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor(System.Security.Cryptography.Oid,System.Int32)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.#ctor(System.Security.Cryptography.Oid,System.Int32)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> class with the specified algorithm identifier and key length.</summary>
+      <param name="oid">An object identifier for the algorithm.</param>
+      <param name="keyLength">The length, in bits, of the key.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.KeyLength">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.KeyLength"></see> property sets or retrieves the key length, in bits. This property is not used for algorithms that use a fixed key length.</summary>
+      <returns>An int value that represents the key length, in bits.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.Oid">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.AlgorithmIdentifier.Oid"></see> property sets or retrieves the <see cref="T:System.Security.Cryptography.Oid"></see> object that specifies the object identifier for the algorithm.</summary>
+      <returns>An <see cref="System.Security.Cryptography.Oid"></see> object that represents the algorithm.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.CmsRecipient">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> class defines the recipient of a CMS/PKCS #7 message.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipient.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipient.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate2)"></see> constructor constructs an instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> class by using the specified recipient certificate.</summary>
+      <param name="certificate">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2"></see> object that represents the recipient certificate.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipient.#ctor(System.Security.Cryptography.Pkcs.SubjectIdentifierType,System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipient.#ctor(System.Security.Cryptography.Pkcs.SubjectIdentifierType,System.Security.Cryptography.X509Certificates.X509Certificate2)"></see> constructor constructs an instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> class by using the specified recipient identifier type and recipient certificate.</summary>
+      <param name="recipientIdentifierType">A member of the <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifierType"></see> enumeration that specifies the type of the identifier of the recipient.</param>
+      <param name="certificate">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2"></see> object that represents the recipient certificate.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipient.Certificate">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipient.Certificate"></see> property retrieves the certificate associated with the recipient.</summary>
+      <returns>An <see cref="System.Security.Cryptography.X509Certificates.X509Certificate2"></see> object that holds the certificate associated with the recipient.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipient.RecipientIdentifierType">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipient.RecipientIdentifierType"></see> property retrieves the type of the identifier of the recipient.</summary>
+      <returns>A member of the <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifierType"></see> enumeration that specifies the type of the identifier of the recipient.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> class represents a set of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> objects. <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> implements the <see cref="T:System.Collections.ICollection"></see> interface.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor(System.Security.Cryptography.Pkcs.CmsRecipient)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor(System.Security.Cryptography.Pkcs.CmsRecipient)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> class and adds the specified recipient.</summary>
+      <param name="recipient">An instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> class that represents the specified CMS/PKCS #7 recipient.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor(System.Security.Cryptography.Pkcs.SubjectIdentifierType,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.#ctor(System.Security.Cryptography.Pkcs.SubjectIdentifierType,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> class and adds recipients based on the specified subject identifier and set of certificates that identify the recipients.</summary>
+      <param name="recipientIdentifierType">A member of the <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifierType"></see> enumeration that specifies the type of subject identifier.</param>
+      <param name="certificates">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> collection that contains the certificates that identify the recipients.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Add(System.Security.Cryptography.Pkcs.CmsRecipient)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Add(System.Security.Cryptography.Pkcs.CmsRecipient)"></see> method adds a recipient to the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <param name="recipient">A <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object that represents the recipient to add to the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</param>
+      <returns>If the method succeeds, the method returns an <see cref="System.Int32"></see> value that represents the zero-based position where the recipient is to be inserted.  
+ If the method fails, it throws an exception.</returns>
+      <exception cref="T:System.ArgumentNullException"><paramref name="recipient">recipient</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.CopyTo(System.Array,System.Int32)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.CopyTo(System.Array,System.Int32)"></see> method copies the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection to an array.</summary>
+      <param name="array">An <see cref="T:System.Array"></see> object to which the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection is to be copied.</param>
+      <param name="index">The zero-based index in array where the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection is copied.</param>
+      <exception cref="T:System.ArgumentException">
+<paramref name="array">array</paramref> is not large enough to hold the specified elements.  
+
+-or-  
+
+<paramref name="array">array</paramref> does not contain the proper number of dimensions.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="array">array</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index">index</paramref> is outside the range of elements in <paramref name="array">array</paramref>.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.CopyTo(System.Security.Cryptography.Pkcs.CmsRecipient[],System.Int32)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.CopyTo(System.Security.Cryptography.Pkcs.CmsRecipient[],System.Int32)"></see> method copies the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection to a <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> array.</summary>
+      <param name="array">An array of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> objects where the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection is to be copied.</param>
+      <param name="index">The zero-based index for the array of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> objects in array to which the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection is copied.</param>
+      <exception cref="T:System.ArgumentException">
+<paramref name="array">array</paramref> is not large enough to hold the specified elements.  
+
+-or-  
+
+<paramref name="array">array</paramref> does not contain the proper number of dimensions.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="array">array</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index">index</paramref> is outside the range of elements in <paramref name="array">array</paramref>.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Count">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Count"></see> property retrieves the number of items in the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>An <see cref="System.Int32"></see> value that represents the number of items in the collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.GetEnumerator">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.GetEnumerator"></see> method returns a <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> object for the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> object that can be used to enumerate the <see cref="System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Item(System.Int32)">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Item(System.Int32)"></see> property retrieves the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object at the specified index in the collection.</summary>
+      <param name="index">An <see cref="T:System.Int32"></see> value that represents the index in the collection. The index is zero based.</param>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.CmsRecipient"></see> object at the specified index.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of an argument was outside the allowable range of values as defined by the called method.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Remove(System.Security.Cryptography.Pkcs.CmsRecipient)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Remove(System.Security.Cryptography.Pkcs.CmsRecipient)"></see> method removes a recipient from the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <param name="recipient">A <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object that represents the recipient to remove from the collection.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="recipient">recipient</paramref> is null.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.System#Collections#ICollection#IsSynchronized">
+      <returns></returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientCollection.System#Collections#ICollection#SyncRoot">
+      <returns></returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.System#Collections#IEnumerable#GetEnumerator"></see> method returns a <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> object for the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> object that can be used to enumerate the <see cref="System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> class provides enumeration functionality for the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection. <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator"></see> implements the <see cref="T:System.Collections.IEnumerator"></see> interface.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.Current">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.Current"></see> property retrieves the current <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object from the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.CmsRecipient"></see> object that represents the current recipient in the <see cref="System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.MoveNext">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.MoveNext"></see> method advances the enumeration to the next <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object in the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>true if the enumeration successfully moved to the next <see cref="System.Security.Cryptography.Pkcs.CmsRecipient"></see> object; false if the enumeration moved past the last item in the enumeration.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.Reset">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.Reset"></see> method resets the enumeration to the first <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object in the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.System#Collections#IEnumerator#Current">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.CmsRecipientEnumerator.System#Collections#IEnumerator#Current"></see> property retrieves the current <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object from the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.CmsRecipient"></see> object that represents the current recipient in the <see cref="System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.ContentInfo">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> class represents the CMS/PKCS #7 ContentInfo data structure as defined in the CMS/PKCS #7 standards document. This data structure is the basis for all CMS/PKCS #7 messages.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.ContentInfo.#ctor(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.ContentInfo.#ctor(System.Byte[])"></see> constructor  creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> class by using an array of byte values as the data and a default <paramref name="object identifier">object identifier</paramref> (OID) that represents the content type.</summary>
+      <param name="content">An array of byte values that represents the data from which to create the <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> object.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference  was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.ContentInfo.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.ContentInfo.#ctor(System.Security.Cryptography.Oid,System.Byte[])"></see> constructor  creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> class by using the specified content type and an array of byte values as the data.</summary>
+      <param name="contentType">An <see cref="T:System.Security.Cryptography.Oid"></see> object that contains an object identifier (OID) that specifies the content type of the content. This can be data, digestedData, encryptedData, envelopedData, hashedData, signedAndEnvelopedData, or signedData.  For more information, see  Remarks.</param>
+      <param name="content">An array of byte values that represents the data from which to create the <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> object.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference  was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.ContentInfo.Content">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.ContentInfo.Content"></see> property  retrieves the content of the CMS/PKCS #7 message.</summary>
+      <returns>An array of byte values that represents the content data.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.ContentInfo.ContentType">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.ContentInfo.ContentType"></see> property  retrieves the <see cref="T:System.Security.Cryptography.Oid"></see> object that contains the <paramref name="object identifier">object identifier</paramref> (OID)  of the content type of the inner content of the CMS/PKCS #7 message.</summary>
+      <returns>An <see cref="System.Security.Cryptography.Oid"></see> object that contains the OID value that represents the content type.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.ContentInfo.GetContentType(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.ContentInfo.GetContentType(System.Byte[])"></see> static method  retrieves the outer content type of the encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> message represented by an array of byte values.</summary>
+      <param name="encodedMessage">An array of byte values that represents the encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> message from which to retrieve the outer content type.</param>
+      <returns>If the method succeeds, the method returns an <see cref="System.Security.Cryptography.Oid"></see> object that contains the outer content type of the specified encoded <see cref="System.Security.Cryptography.Pkcs.ContentInfo"></see> message.  
+ If the method fails, it throws an exception.</returns>
+      <exception cref="T:System.ArgumentNullException">A null reference  was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error occurred during a cryptographic operation.</exception>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.EnvelopedCms">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> class represents a CMS/PKCS #7 structure for enveloped data.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> class.</summary>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor(System.Security.Cryptography.Pkcs.ContentInfo)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor(System.Security.Cryptography.Pkcs.ContentInfo)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> class by using the specified content information as the inner content type.</summary>
+      <param name="contentInfo">An instance of the <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.ContentInfo"></see> class that represents the content and its type.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor(System.Security.Cryptography.Pkcs.ContentInfo,System.Security.Cryptography.Pkcs.AlgorithmIdentifier)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.#ctor(System.Security.Cryptography.Pkcs.ContentInfo,System.Security.Cryptography.Pkcs.AlgorithmIdentifier)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> class by using the specified content information and encryption algorithm. The specified content information is to be used as the inner content type.</summary>
+      <param name="contentInfo">A  <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo"></see> object that represents the content and its type.</param>
+      <param name="encryptionAlgorithm">An <see cref="T:System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> object that specifies the encryption algorithm.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.Certificates">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.Certificates"></see> property retrieves the set of certificates associated with the enveloped CMS/PKCS #7 message.</summary>
+      <returns>An <see cref="System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> collection that represents the X.509 certificates used with the enveloped CMS/PKCS #7 message. If no certificates exist, the property value is an empty collection.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.ContentEncryptionAlgorithm">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.ContentEncryptionAlgorithm"></see> property retrieves the identifier of the algorithm used to encrypt the content.</summary>
+      <returns>An <see cref="System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> object that represents the algorithm identifier.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.ContentInfo">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.ContentInfo"></see> property retrieves the inner content information for the enveloped CMS/PKCS #7 message.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.ContentInfo"></see> object that represents the inner content information from the enveloped CMS/PKCS #7 message.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decode(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decode(System.Byte[])"></see> method decodes the specified enveloped CMS/PKCS #7 message and resets all member variables in the <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> object.</summary>
+      <param name="encodedMessage">An array of byte values that represent the information to be decoded.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method decrypts the contents of the decoded enveloped CMS/PKCS #7 message by using the private key associated with the certificate identified by the specified recipient information and by using the specified certificate collection.  The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method searches the specified certificate collection and the My certificate store for the proper certificate to use for the decryption.</summary>
+      <param name="recipientInfo">A <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object that represents the recipient information to use for the decryption.</param>
+      <param name="extraStore">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> collection that represents additional certificates to use for the decryption. The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo,System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method searches this certificate collection and the My certificate store for the proper certificate to use for the decryption.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+      <exception cref="T:System.InvalidOperationException">A method call was invalid for the object&amp;#39;s current state.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method decrypts the contents of the decoded enveloped CMS/PKCS #7 message by using the specified certificate collection. The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method searches the specified certificate collection and the My certificate store for the proper certificate to use for the decryption.</summary>
+      <param name="extraStore">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"></see> collection that represents additional certificates to use for the decryption. The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)"></see> method searches this certificate collection and the My certificate store for the proper certificate to use for the decryption.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+      <exception cref="T:System.InvalidOperationException">A method call was invalid for the object&amp;#39;s current state.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt"></see> method decrypts the contents of the decoded enveloped CMS/PKCS #7 message. The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt"></see> method searches the current user and computer My stores for the appropriate certificate and private key.</summary>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+      <exception cref="T:System.InvalidOperationException">A method call was invalid for the object&amp;#39;s current state.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo)"></see> method decrypts the contents of the decoded enveloped CMS/PKCS #7 message by using the private key associated with the certificate identified by the specified recipient information.</summary>
+      <param name="recipientInfo">A <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object that represents the recipient information that identifies the certificate associated with the private key to use for the decryption.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+      <exception cref="T:System.InvalidOperationException">A method call was invalid for the object&amp;#39;s current state.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encode">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encode"></see> method encodes the contents of the enveloped CMS/PKCS #7 message and returns it as an array of byte values. Encryption must be done before encoding.</summary>
+      <returns>If the method succeeds, the method returns an array of byte values that represent the encoded information.  
+ If the method fails, it throws an exception.</returns>
+      <exception cref="T:System.InvalidOperationException">A method call was invalid for the object&amp;#39;s current state.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encrypt(System.Security.Cryptography.Pkcs.CmsRecipient)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encrypt(System.Security.Cryptography.Pkcs.CmsRecipient)"></see> method encrypts the contents of the CMS/PKCS #7 message by using the specified recipient information.</summary>
+      <param name="recipient">A <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see> object that represents the recipient information.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encrypt(System.Security.Cryptography.Pkcs.CmsRecipientCollection)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.EnvelopedCms.Encrypt(System.Security.Cryptography.Pkcs.CmsRecipientCollection)"></see> method encrypts the contents of the CMS/PKCS #7 message by using the information for the specified list of recipients. The message is encrypted by using a message encryption key with a symmetric encryption algorithm such as triple DES. The message encryption key is then encrypted with the public key of each recipient.</summary>
+      <param name="recipients">A <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection"></see> collection that represents the information for the list of recipients.</param>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.RecipientInfos">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.RecipientInfos"></see> property retrieves the recipient information associated with the enveloped CMS/PKCS #7 message.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection that represents the recipient information. If no recipients exist, the property value is an empty collection.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.UnprotectedAttributes">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.UnprotectedAttributes"></see> property retrieves the unprotected (unencrypted) attributes associated with the enveloped CMS/PKCS #7 message. Unprotected attributes are not encrypted, and so do not have data confidentiality within an <see cref="T:System.Security.Cryptography.Pkcs.EnvelopedCms"></see> object.</summary>
+      <returns>A <see cref="System.Security.Cryptography.CryptographicAttributeObjectCollection"></see> collection that represents the unprotected attributes. If no unprotected attributes exist, the property value is an empty collection.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.EnvelopedCms.Version">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.EnvelopedCms.Version"></see> property retrieves the version of the enveloped CMS/PKCS #7 message.</summary>
+      <returns>An int value that represents the version of the enveloped CMS/PKCS #7 message.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo"></see> class defines key agreement recipient information. Key agreement algorithms typically use the Diffie-Hellman key agreement algorithm, in which the two parties that establish a shared cryptographic key both take part in its generation and, by definition, agree on that key. This is in contrast to key transport algorithms, in which one party generates the key unilaterally and sends, or transports it, to the other party.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.Date">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.Date"></see> property retrieves the date and time of the start of the key agreement protocol by the originator.</summary>
+      <returns>The date and time of the start of the key agreement protocol by the originator.</returns>
+      <exception cref="T:System.InvalidOperationException">The recipient identifier type is not a subject key identifier.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.EncryptedKey">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.EncryptedKey"></see> property retrieves the encrypted recipient keying material.</summary>
+      <returns>An array of byte values that contain the encrypted recipient keying material.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.KeyEncryptionAlgorithm">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.KeyEncryptionAlgorithm"></see> property retrieves the algorithm used to perform the key agreement.</summary>
+      <returns>The value of the algorithm used to perform the key agreement.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.OriginatorIdentifierOrKey">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.OriginatorIdentifierOrKey"></see> property retrieves information about the originator of the key agreement for key agreement algorithms that warrant it.</summary>
+      <returns>An object that contains information about the originator of the key agreement.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.OtherKeyAttribute">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.OtherKeyAttribute"></see> property retrieves attributes of the keying material.</summary>
+      <returns>The attributes of the keying material.</returns>
+      <exception cref="T:System.InvalidOperationException">The recipient identifier type is not a subject key identifier.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.RecipientIdentifier">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.RecipientIdentifier"></see> property retrieves the identifier of the recipient.</summary>
+      <returns>The identifier of the recipient.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.Version">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo.Version"></see> property retrieves the version of the key agreement recipient. This is automatically set for  objects in this class, and the value  implies that the recipient is taking part in a key agreement algorithm.</summary>
+      <returns>The version of the <see cref="System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo"></see> object.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo"></see> class defines key transport recipient information.        Key transport algorithms typically use the RSA algorithm, in which  an originator establishes a shared cryptographic key with a recipient by generating that key and  then transporting it to the recipient. This is in contrast to key agreement algorithms, in which the two parties that will be using a cryptographic key both take part in its generation, thereby mutually agreeing to that key.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.EncryptedKey">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.EncryptedKey"></see> property retrieves the encrypted key for this key transport recipient.</summary>
+      <returns>An array of byte values that represents the encrypted key.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.KeyEncryptionAlgorithm">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.KeyEncryptionAlgorithm"></see> property retrieves the key encryption algorithm used to encrypt the content encryption key.</summary>
+      <returns>An  <see cref="System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> object that stores the key encryption algorithm identifier.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.RecipientIdentifier">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.RecipientIdentifier"></see> property retrieves the subject identifier associated with the encrypted content.</summary>
+      <returns>A   <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifier"></see> object that  stores the identifier of the recipient taking part in the key transport.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.Version">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo.Version"></see> property retrieves the version of the key transport recipient. The version of the key transport recipient is automatically set for  objects in this class, and the value  implies that the recipient is taking part in a key transport algorithm.</summary>
+      <returns>An int value that represents the version of the key transport <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject">
+      <summary>Represents an attribute used for CMS/PKCS #7 and PKCS #9 operations.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.#ctor(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> class using a specified <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object as its attribute type and value.</summary>
+      <param name="asnEncodedData">An object that contains the PKCS #9 attribute type and value to use.</param>
+      <exception cref="T:System.ArgumentException">The length of the <paramref name="Value">Value</paramref> member of the <paramref name="Oid">Oid</paramref> member of <paramref name="asnEncodedData">asnEncodedData</paramref> is zero.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="Oid">Oid</paramref> member of <paramref name="asnEncodedData">asnEncodedData</paramref> is null.  
+ -or-  
+ The <paramref name="Value">Value</paramref> member of the <paramref name="Oid">Oid</paramref> member of <paramref name="asnEncodedData">asnEncodedData</paramref> is null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> class using a specified <see cref="T:System.Security.Cryptography.Oid"></see> object as the attribute type and a specified ASN.1 encoded data as the attribute value.</summary>
+      <param name="oid">An object that represents the PKCS #9 attribute type.</param>
+      <param name="encodedData">An array of byte values that represents the PKCS #9 attribute value.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.#ctor(System.String,System.Byte[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> class using a specified string representation of an object identifier (OID) as the attribute type and a specified ASN.1 encoded data as the attribute value.</summary>
+      <param name="oid">The string representation of an OID that represents the PKCS #9 attribute type.</param>
+      <param name="encodedData">An array of byte values that contains the PKCS #9 attribute value.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies a PKCS #9 attribute type and value for this <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> from the specified <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">An object that contains the PKCS #9 attribute type and value to use.</param>
+      <exception cref="T:System.ArgumentException"><paramref name="asnEncodeData">asnEncodeData</paramref> does not represent a compatible attribute type.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="asnEncodedData">asnEncodedData</paramref> is null.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.Oid">
+      <summary>Gets an <see cref="T:System.Security.Cryptography.Oid"></see> object that represents the type of attribute associated with this <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> object.</summary>
+      <returns>An object that represents the type of attribute associated with this <see cref="System.Security.Cryptography.Pkcs.Pkcs9AttributeObject"></see> object.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9ContentType">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9ContentType"></see> class defines the type of the content of a CMS/PKCS #7 message.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9ContentType.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9ContentType.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9ContentType"></see> class.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9ContentType.ContentType">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.Pkcs9ContentType.ContentType"></see> property gets an <see cref="T:System.Security.Cryptography.Oid"></see> object that contains the content type.</summary>
+      <returns>An  <see cref="System.Security.Cryptography.Oid"></see> object that contains the content type.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9ContentType.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies information from an <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object from which to copy information.</param>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription"></see> class defines the description of the content of a CMS/PKCS #7 message.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor(System.Byte[])"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription"></see> class by using the specified array of byte values as the encoded description of the content of a CMS/PKCS #7 message.</summary>
+      <param name="encodedDocumentDescription">An array of byte values that specifies the encoded description of the CMS/PKCS #7 message.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor(System.String)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.#ctor(System.String)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription"></see> class by using the specified description of the content of a CMS/PKCS #7 message.</summary>
+      <param name="documentDescription">An instance of the <see cref="T:System.String"></see> class that specifies the description for the CMS/PKCS #7 message.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies information from an <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object from which to copy information.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.DocumentDescription">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.Pkcs9DocumentDescription.DocumentDescription"></see> property retrieves the document description.</summary>
+      <returns>A <see cref="System.String"></see> object that contains the document description.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentName">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentName"></see> class defines the name of a CMS/PKCS #7 message.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentName"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor(System.Byte[])"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentName"></see> class by using the specified array of byte values as the encoded name of the content of a CMS/PKCS #7 message.</summary>
+      <param name="encodedDocumentName">An array of byte values that specifies the encoded name of the CMS/PKCS #7 message.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor(System.String)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.#ctor(System.String)"></see> constructor creates an instance of the  <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9DocumentName"></see> class by using the specified name for the CMS/PKCS #7 message.</summary>
+      <param name="documentName">A  <see cref="T:System.String"></see> object that specifies the name for the CMS/PKCS #7 message.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies information from an <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object from which to copy information.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.DocumentName">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.Pkcs9DocumentName.DocumentName"></see> property retrieves the document name.</summary>
+      <returns>A <see cref="System.String"></see> object that contains the document name.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest"></see> class defines the message digest of a CMS/PKCS #7 message.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies information from an <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object from which to copy information.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest.MessageDigest">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.Pkcs9MessageDigest.MessageDigest"></see> property retrieves the message digest.</summary>
+      <returns>An array of byte values that contains the message digest.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime"></see> class defines the signing date and time of a signature. A <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime"></see> object can  be used as an authenticated attribute of a <see cref="T:System.Security.Cryptography.Pkcs.CmsSigner"></see> object when an authenticated date and time are to accompany a digital signature.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime"></see> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor(System.Byte[])">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor(System.Byte[])"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime"></see> class by using the specified array of byte values as the encoded signing date and time of the content of a CMS/PKCS #7 message.</summary>
+      <param name="encodedSigningTime">An array of byte values that specifies the encoded signing date and time of the CMS/PKCS #7 message.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor(System.DateTime)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.#ctor(System.DateTime)"></see> constructor creates an instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9SigningTime"></see> class by using the specified signing date and time.</summary>
+      <param name="signingTime">A <see cref="T:System.DateTime"></see> structure that represents the signing date and time of the signature.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copies information from a <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object.</summary>
+      <param name="asnEncodedData">The <see cref="T:System.Security.Cryptography.AsnEncodedData"></see> object from which to copy information.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.SigningTime">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.Pkcs9SigningTime.SigningTime"></see> property retrieves a <see cref="T:System.DateTime"></see> structure that represents the date and time that the message was signed.</summary>
+      <returns>A <see cref="System.DateTime"></see> structure that contains the date and time the document was signed.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.PublicKeyInfo">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.PublicKeyInfo"></see> class represents information associated with a public key.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.PublicKeyInfo.Algorithm">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.PublicKeyInfo.Algorithm"></see> property retrieves the algorithm identifier associated with the public key.</summary>
+      <returns>An <see cref="System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> object that represents the algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.PublicKeyInfo.KeyValue">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.PublicKeyInfo.KeyValue"></see> property retrieves the value of the encoded public component of the public key pair.</summary>
+      <returns>An array of byte values  that represents the encoded public component of the public key pair.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.RecipientInfo">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> class represents information about a CMS/PKCS #7 message recipient. The <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> class is an abstract class inherited by the <see cref="T:System.Security.Cryptography.Pkcs.KeyAgreeRecipientInfo"></see> and <see cref="T:System.Security.Cryptography.Pkcs.KeyTransRecipientInfo"></see> classes.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfo.EncryptedKey">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfo.EncryptedKey"></see> abstract property retrieves the encrypted recipient keying material.</summary>
+      <returns>An array of byte values that contain the encrypted recipient keying material.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfo.KeyEncryptionAlgorithm">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfo.KeyEncryptionAlgorithm"></see> abstract property retrieves the algorithm used to perform the key establishment.</summary>
+      <returns>An <see cref="System.Security.Cryptography.Pkcs.AlgorithmIdentifier"></see> object that contains the value of the algorithm used to establish the key between the originator and recipient of the CMS/PKCS #7 message.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfo.RecipientIdentifier">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfo.RecipientIdentifier"></see> abstract property retrieves the identifier of the recipient.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifier"></see> object that contains the identifier of the recipient.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfo.Type">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfo.Type"></see> property retrieves the type of the recipient. The type of the recipient determines which of two major protocols is used to establish a key between the originator and the recipient of a CMS/PKCS #7 message.</summary>
+      <returns>A value of the <see cref="System.Security.Cryptography.Pkcs.RecipientInfoType"></see> enumeration that defines the type of the recipient.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfo.Version">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfo.Version"></see> abstract property retrieves the version of the recipient information. Derived classes automatically set this property for their objects, and the value indicates whether it is using PKCS #7 or Cryptographic Message Syntax (CMS) to protect messages. The version also implies whether the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object establishes a cryptographic key by a key agreement algorithm or a key transport algorithm.</summary>
+      <returns>An <see cref="System.Int32"></see> value that represents the version of the <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> class represents a collection of <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> objects. <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> implements the <see cref="T:System.Collections.ICollection"></see> interface.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.CopyTo(System.Array,System.Int32)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.CopyTo(System.Array,System.Int32)"></see> method copies the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection to an array.</summary>
+      <param name="array">An <see cref="T:System.Array"></see> object to which  the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection is to be copied.</param>
+      <param name="index">The zero-based index in array where the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection is copied.</param>
+      <exception cref="T:System.ArgumentException">One of the arguments provided to a method was not valid.</exception>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of an argument was outside the allowable range of values as defined by the called method.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.CopyTo(System.Security.Cryptography.Pkcs.RecipientInfo[],System.Int32)">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.CopyTo(System.Security.Cryptography.Pkcs.RecipientInfo[],System.Int32)"></see> method copies the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection to a <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> array.</summary>
+      <param name="array">An array of <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> objects where the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection is to be copied.</param>
+      <param name="index">The zero-based index in array where the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection is copied.</param>
+      <exception cref="T:System.ArgumentException">One of the arguments provided to a method was not valid.</exception>
+      <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of an argument was outside the allowable range of values as defined by the called method.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.Count">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.Count"></see> property retrieves the number of items in the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>An int value that represents the number of items in the collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.GetEnumerator">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.GetEnumerator"></see> method returns a <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> object for the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> object that can be used to enumerate the <see cref="System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.Item(System.Int32)">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.Item(System.Int32)"></see> property retrieves the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object at the specified index in the collection.</summary>
+      <param name="index">An int value that represents the index in the collection. The index is zero based.</param>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object at the specified index.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of an argument was outside the allowable range of values as defined by the called method.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.System#Collections#ICollection#IsSynchronized">
+      <returns></returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoCollection.System#Collections#ICollection#SyncRoot">
+      <returns></returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoCollection.System#Collections#IEnumerable#GetEnumerator"></see> method returns a <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> object for the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> object that can be used to enumerate the <see cref="System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> class provides enumeration functionality for the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection. <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator"></see> implements the <see cref="T:System.Collections.IEnumerator"></see> interface.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.Current">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.Current"></see> property retrieves the current <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object from the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object that represents the current recipient information structure in the <see cref="System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.MoveNext">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.MoveNext"></see> method advances the enumeration to the next <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object in the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>This method returns a bool that specifies whether the enumeration successfully advanced. If the enumeration successfully moved to the next <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object, the method returns true. If the enumeration moved past the last item in the enumeration, it returns false.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.Reset">
+      <summary>The <see cref="M:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.Reset"></see> method resets the enumeration to the first <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object in the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.System#Collections#IEnumerator#Current">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.RecipientInfoEnumerator.System#Collections#IEnumerator#Current"></see> property retrieves the current <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfo"></see> object from the <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</summary>
+      <returns>A <see cref="System.Security.Cryptography.Pkcs.RecipientInfo"></see> object that represents the current recipient information structure in the <see cref="System.Security.Cryptography.Pkcs.RecipientInfoCollection"></see> collection.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.RecipientInfoType">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.RecipientInfoType"></see> enumeration defines the types of recipient information.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.RecipientInfoType.KeyAgreement">
+      <summary>Key agreement recipient information.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.RecipientInfoType.KeyTransport">
+      <summary>Key transport recipient information.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.RecipientInfoType.Unknown">
+      <summary>The recipient information type is unknown.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifier">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifier"></see> class defines the type of the identifier of a subject, such as a <see cref="T:System.Security.Cryptography.Pkcs.CmsSigner"></see> or a <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see>.  The subject can be identified by the certificate issuer and serial number or the subject key.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type"></see> property retrieves the type of subject identifier. The subject can be identified by the certificate issuer and serial number or the subject key.</summary>
+      <returns>A member of the <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifierType"></see> enumeration that identifies the type of subject.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value"></see> property retrieves the value of the subject identifier. Use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type"></see> property to determine the type of subject identifier, and use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value"></see> property to retrieve the corresponding value.</summary>
+      <returns>An <see cref="System.Object"></see> object that represents the value of the subject identifier. This <see cref="System.Object"></see> can be one of the following objects as determined by the <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifier.Type"></see> property.  
+ <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifier.Type"></see> property  
+
+  Object  
+
+  IssuerAndSerialNumber  
+
+ <see cref="System.Security.Cryptography.Xml.X509IssuerSerial"></see> SubjectKeyIdentifier  
+
+ <see cref="System.String"></see></returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey"></see> class defines the type of the identifier of a subject, such as a <see cref="T:System.Security.Cryptography.Pkcs.CmsSigner"></see> or a <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient"></see>.  The subject can be identified by the certificate issuer and serial number, the hash of the subject key, or the subject key.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type"></see> property retrieves the type of subject identifier or key. The subject can be identified by the certificate issuer and serial number, the hash of the subject key, or the subject key.</summary>
+      <returns>A member of the <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType"></see> enumeration that specifies the type of subject identifier.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value">
+      <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value"></see> property retrieves the value of the subject identifier or  key. Use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type"></see> property to determine the type of subject identifier or key, and use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value"></see> property to retrieve the corresponding value.</summary>
+      <returns>An <see cref="System.Object"></see> object that represents the value of the subject identifier or key. This <see cref="System.Object"></see> can be one of the following objects as determined by the <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type"></see> property.  
+ <see cref="System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type"></see> property  
+
+  Object  
+
+  IssuerAndSerialNumber  
+
+ <see cref="System.Security.Cryptography.Xml.X509IssuerSerial"></see> SubjectKeyIdentifier  
+
+ <see cref="System.String"></see> PublicKeyInfo  
+
+ <see cref="System.Security.Cryptography.Pkcs.PublicKeyInfo"></see></returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType"></see> enumeration defines how a subject is identified.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType.IssuerAndSerialNumber">
+      <summary>The subject is identified by the certificate issuer and serial number.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType.PublicKeyInfo">
+      <summary>The subject is identified by the public key.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType.SubjectKeyIdentifier">
+      <summary>The subject is identified by the hash of the subject key.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType.Unknown">
+      <summary>The type is unknown.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifierType">
+      <summary>The <see cref="T:System.Security.Cryptography.Pkcs.SubjectIdentifierType"></see> enumeration defines the type of subject identifier.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierType.IssuerAndSerialNumber">
+      <summary>The subject is identified by the certificate issuer and serial number.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierType.NoSignature">
+      <summary>The subject is identified as taking part in an integrity check operation that uses only a hashing algorithm.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierType.SubjectKeyIdentifier">
+      <summary>The subject is identified by the hash of the subject&amp;#39;s public key. The hash algorithm used is determined by the signature algorithm suite in the subject&amp;#39;s certificate.</summary>
+      <returns></returns>
+    </member>
+    <member name="F:System.Security.Cryptography.Pkcs.SubjectIdentifierType.Unknown">
+      <summary>The type of subject identifier is unknown.</summary>
+      <returns></returns>
+    </member>
+    <member name="T:System.Security.Cryptography.Xml.X509IssuerSerial">
+      <summary>Represents the &amp;lt;X509IssuerSerial&amp;gt; element of an XML digital signature.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.Xml.X509IssuerSerial.IssuerName">
+      <summary>Gets or sets an X.509 certificate issuer&amp;#39;s distinguished name.</summary>
+      <returns>An X.509 certificate issuer&amp;#39;s distinguished name.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.Xml.X509IssuerSerial.SerialNumber">
+      <summary>Gets or sets an X.509 certificate issuer&amp;#39;s serial number.</summary>
+      <returns>An X.509 certificate issuer&amp;#39;s serial number.</returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Json</name>
+  </assembly>
+  <members>
+    <member name="T:System.Json.JsonArray">
+      
+    </member>
+    <member name="M:System.Json.JsonArray.#ctor(System.Collections.Generic.IEnumerable{System.Json.JsonValue})">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.#ctor(System.Json.JsonValue[])">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.Add(System.Json.JsonValue)">
+      <param name="item"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.AddRange(System.Collections.Generic.IEnumerable{System.Json.JsonValue})">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.AddRange(System.Json.JsonValue[])">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.Clear">
+      
+    </member>
+    <member name="M:System.Json.JsonArray.Contains(System.Json.JsonValue)">
+      <param name="item"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.CopyTo(System.Json.JsonValue[],System.Int32)">
+      <param name="array"></param>
+      <param name="arrayIndex"></param>
+    </member>
+    <member name="P:System.Json.JsonArray.Count">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.IndexOf(System.Json.JsonValue)">
+      <param name="item"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.Insert(System.Int32,System.Json.JsonValue)">
+      <param name="index"></param>
+      <param name="item"></param>
+    </member>
+    <member name="P:System.Json.JsonArray.IsReadOnly">
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonArray.Item(System.Int32)">
+      <param name="index"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonArray.JsonType">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.Remove(System.Json.JsonValue)">
+      <param name="item"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.RemoveAt(System.Int32)">
+      <param name="index"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.Save(System.IO.Stream)">
+      <param name="stream"></param>
+    </member>
+    <member name="M:System.Json.JsonArray.System#Collections#Generic#IEnumerable{System#Json#JsonValue}#GetEnumerator">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonArray.System#Collections#IEnumerable#GetEnumerator">
+      <returns></returns>
+    </member>
+    <member name="T:System.Json.JsonObject">
+      
+    </member>
+    <member name="M:System.Json.JsonObject.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue}})">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.#ctor(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue}[])">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.Add(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue})">
+      <param name="pair"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.Add(System.String,System.Json.JsonValue)">
+      <param name="key"></param>
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.AddRange(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue}})">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.AddRange(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue}[])">
+      <param name="items"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.Clear">
+      
+    </member>
+    <member name="M:System.Json.JsonObject.ContainsKey(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue}[],System.Int32)">
+      <param name="array"></param>
+      <param name="arrayIndex"></param>
+    </member>
+    <member name="P:System.Json.JsonObject.Count">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.GetEnumerator">
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonObject.Item(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonObject.JsonType">
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonObject.Keys">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.Remove(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.Save(System.IO.Stream)">
+      <param name="stream"></param>
+    </member>
+    <member name="M:System.Json.JsonObject.TryGetValue(System.String,System.Json.JsonValue@)">
+      <param name="key"></param>
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonObject.Values">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String@System#Json#JsonValue}}#Contains(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue})">
+      <param name="item"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonObject.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String@System#Json#JsonValue}}#IsReadOnly">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String@System#Json#JsonValue}}#Remove(System.Collections.Generic.KeyValuePair{System.String,System.Json.JsonValue})">
+      <param name="item"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonObject.System#Collections#IEnumerable#GetEnumerator">
+      <returns></returns>
+    </member>
+    <member name="T:System.Json.JsonPrimitive">
+      
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Boolean)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Uri)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.UInt64)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.UInt32)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.UInt16)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.TimeSpan)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.String)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Single)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.SByte)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Int64)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Int16)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Guid)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Double)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Decimal)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.DateTimeOffset)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.DateTime)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Char)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Byte)">
+      <param name="value"></param>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.#ctor(System.Int32)">
+      <param name="value"></param>
+    </member>
+    <member name="P:System.Json.JsonPrimitive.JsonType">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonPrimitive.Save(System.IO.Stream)">
+      <param name="stream"></param>
+    </member>
+    <member name="T:System.Json.JsonType">
+      
+    </member>
+    <member name="F:System.Json.JsonType.Array">
+      <returns></returns>
+    </member>
+    <member name="F:System.Json.JsonType.Boolean">
+      <returns></returns>
+    </member>
+    <member name="F:System.Json.JsonType.Number">
+      <returns></returns>
+    </member>
+    <member name="F:System.Json.JsonType.Object">
+      <returns></returns>
+    </member>
+    <member name="F:System.Json.JsonType.String">
+      <returns></returns>
+    </member>
+    <member name="T:System.Json.JsonValue">
+      
+    </member>
+    <member name="M:System.Json.JsonValue.#ctor">
+      
+    </member>
+    <member name="M:System.Json.JsonValue.ContainsKey(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonValue.Count">
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonValue.Item(System.Int32)">
+      <param name="index"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonValue.Item(System.String)">
+      <param name="key"></param>
+      <returns></returns>
+    </member>
+    <member name="P:System.Json.JsonValue.JsonType">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.Load(System.IO.Stream)">
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.Load(System.IO.TextReader)">
+      <param name="textReader"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Int64">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.SByte">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Single">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.String">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.TimeSpan">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.UInt16">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.UInt32">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.UInt64">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.String)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.SByte)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Single)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Int32">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.TimeSpan)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.UInt16)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.UInt32)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.UInt64)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Uri)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Uri">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Int16">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Double">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Double)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Boolean)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Byte)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Char)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.DateTime)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.DateTimeOffset)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Decimal)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Guid">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Int16)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Guid)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Int64)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Boolean">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Byte">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Char">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.DateTime">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.DateTimeOffset">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Json.JsonValue)~System.Decimal">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.op_Implicit(System.Int32)~System.Json.JsonValue">
+      <param name="value"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.Parse(System.String)">
+      <param name="jsonString"></param>
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.Save(System.IO.Stream)">
+      <param name="stream"></param>
+    </member>
+    <member name="M:System.Json.JsonValue.Save(System.IO.TextWriter)">
+      <param name="textWriter"></param>
+    </member>
+    <member name="M:System.Json.JsonValue.ToString">
+      <returns></returns>
+    </member>
+    <member name="M:System.Json.JsonValue.System#Collections#IEnumerable#GetEnumerator">
+      <returns></returns>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?><doc>
+  <assembly>
+    <name>System.Composition.TypedParts</name>
+  </assembly>
+  <members>
+    <member name="T:System.Composition.CompositionContextExtensions">
+      <summary>Adds methods to the composition context that are specific to the typed parts model.</summary>
+    </member>
+    <member name="M:System.Composition.CompositionContextExtensions.SatisfyImports(System.Composition.CompositionContext,System.Object)">
+      <summary>Satisfies the imports of the specified object from the specified context.</summary>
+      <param name="compositionContext">The context to draw exports from.</param>
+      <param name="objectWithLooseImports">The object to satisfy imports on.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="compositionContext">compositionContext</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="objectWithLooseImports">objectWithLooseImports</paramref> is null.</exception>
+      <exception cref="T:System.Composition.Hosting.CompositionFailedException"><paramref name="objectWithLooseImports">objectWithLooseImports</paramref> has a missing dependency.</exception>
+    </member>
+    <member name="M:System.Composition.CompositionContextExtensions.SatisfyImports(System.Composition.CompositionContext,System.Object,System.Composition.Convention.AttributedModelProvider)">
+      <summary>Satisfies the imports of the specified object from the specified context, using the specified conventions.</summary>
+      <param name="compositionContext">The context to draw exports from.</param>
+      <param name="objectWithLooseImports">The object to satisfy imports on.</param>
+      <param name="conventions">Conventions to use when satisfying imports.</param>
+      <exception cref="T:System.ArgumentNullException"><paramref name="compositionContext">compositionContext</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="objectWithLooseImports">objectWithLooseImports</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException"><paramref name="conventions">conventions</paramref> is null.</exception>
+      <exception cref="T:System.Composition.Hosting.CompositionFailedException"><paramref name="objectWithLooseImports">objectWithLooseImports</paramref> has a missing dependency.</exception>
+    </member>
+    <member name="T:System.Composition.Hosting.ContainerConfiguration">
+      <summary>Configures and constructs a lightweight container.</summary>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.ContainerConfiguration"></see> class.</summary>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.CreateContainer">
+      <summary>Creates the container.</summary>
+      <returns>The created container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithAssemblies(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+      <summary>Adds part types from the specified collection of assemblies to the container.</summary>
+      <param name="assemblies">The assemblies to add part types from.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithAssemblies(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Composition.Convention.AttributedModelProvider)">
+      <summary>Adds part types from the specified collection of assemblies to the container, using the specified conventions.</summary>
+      <param name="assemblies">The assemblies to add part types from.</param>
+      <param name="conventions">The conventions to use for part types.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithAssembly(System.Reflection.Assembly)">
+      <summary>Adds part types from the specified assembly to the container.</summary>
+      <param name="assembly">The assembly to add part types from.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithAssembly(System.Reflection.Assembly,System.Composition.Convention.AttributedModelProvider)">
+      <summary>Adds part types from the specified assembly to the container, using the specified conventions.</summary>
+      <param name="assembly">The assembly to add part types from.</param>
+      <param name="conventions">The conventions to use for part types.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithDefaultConventions(System.Composition.Convention.AttributedModelProvider)">
+      <summary>Specifies the default conventions to use for added parts.</summary>
+      <param name="conventions">The conventions to use for part types.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithPart(System.Type)">
+      <summary>Adds a specified part type to the container.</summary>
+      <param name="partType">The part type to add.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithPart(System.Type,System.Composition.Convention.AttributedModelProvider)">
+      <summary>Adds a specified part type to the container.</summary>
+      <param name="partType">The part type to add.</param>
+      <param name="conventions">The conventions to use for the part type.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithPart``1">
+      <summary>Adds the specified type to the container.</summary>
+      <typeparam name="TPart">The type to add.</typeparam>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithPart``1(System.Composition.Convention.AttributedModelProvider)">
+      <summary>Adds the specified type to the container using the specified conventions.</summary>
+      <param name="conventions">The conventions to use for the part type.</param>
+      <typeparam name="TPart">The type to add.</typeparam>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithParts(System.Collections.Generic.IEnumerable{System.Type})">
+      <summary>Adds the specified part types to the container.</summary>
+      <param name="partTypes">A collection of part types to add.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithParts(System.Type[])">
+      <summary>Adds the specified array of part types to the container.</summary>
+      <param name="partTypes">An array of part types to add.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithParts(System.Collections.Generic.IEnumerable{System.Type},System.Composition.Convention.AttributedModelProvider)">
+      <summary>Adds the specified part types to the container using the specified conventions.</summary>
+      <param name="partTypes">A collection of part types to add.</param>
+      <param name="conventions">The conventions to use for part types.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+    <member name="M:System.Composition.Hosting.ContainerConfiguration.WithProvider(System.Composition.Hosting.Core.ExportDescriptorProvider)">
+      <summary>Adds the specified provider to the container.</summary>
+      <param name="exportDescriptorProvider">The provider to add.</param>
+      <returns>An object that can be used to further configure the container.</returns>
+    </member>
+  </members>
+</doc>
