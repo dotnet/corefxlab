@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json.Serialization.Converters;
@@ -38,6 +39,10 @@ namespace System.Text.Json.Serialization
                     else if (propertyType == typeof(decimal))
                     {
                         jsonInfo = new JsonPropertyInfoDecimal(classType, propertyType, propertyInfo, options);
+                    }
+                    else if (propertyType == typeof(DateTime))
+                    {
+                        jsonInfo = new JsonPropertyInfoDateTime(classType, propertyType, propertyInfo, options);
                     }
                     else if (propertyType == typeof(double))
                     {
@@ -91,6 +96,10 @@ namespace System.Text.Json.Serialization
                     {
                         jsonInfo = new JsonPropertyInfoDecimalNullable(classType, propertyType, propertyInfo, options);
                     }
+                    else if (propertyType == typeof(DateTime?))
+                    {
+                        jsonInfo = new JsonPropertyInfoDateTimeNullable(classType, propertyType, propertyInfo, options);
+                    }
                     else if (propertyType == typeof(double?))
                     {
                         jsonInfo = new JsonPropertyInfoDoubleNullable(classType, propertyType, propertyInfo, options);
@@ -132,7 +141,7 @@ namespace System.Text.Json.Serialization
                 if (jsonInfo == null)
                 {
                     Type genericPropertyType = typeof(JsonPropertyInfo<>).MakeGenericType(propertyType);
-                    jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] { classType, propertyType, propertyInfo, options, null });
+                    jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] {classType, propertyType, propertyInfo, options, null});
                     // todo: add whole-type converter support
                 }
             }
@@ -140,27 +149,46 @@ namespace System.Text.Json.Serialization
             {
                 Type genericPropertyType = typeof(JsonPropertyInfo<>).MakeGenericType(propertyType);
                 Type collectionElementType = GetElementType(propertyType);
-                jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] { classType, propertyType, propertyInfo, options, collectionElementType });
+                jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] {classType, propertyType, propertyInfo, options, collectionElementType});
             }
             else
             {
                 Debug.Assert(propertyClassType == ClassType.Object);
                 Type genericPropertyType = typeof(JsonPropertyInfo<>).MakeGenericType(propertyType);
-                jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] { classType, propertyType, propertyInfo, options, null });
+                jsonInfo = (JsonPropertyInfo)Activator.CreateInstance(genericPropertyType, new object[] {classType, propertyType, propertyInfo, options, null});
             }
 
-            if (propertyInfo != null) //todo: why can this be null?
+            if (propertyInfo != null)
             {
                 string propertyName = jsonInfo.NameConverter == null ? propertyInfo.Name : jsonInfo.NameConverter.Write(propertyInfo.Name);
 
-                // No need to call helper method to encode here since property names are valid UTF16 and no escaping necessary.
-                var bytes = Encoding.UTF8.GetBytes(propertyName);
-                jsonInfo.Name = bytes;
+                // At this point propertyName is valid UTF16, so just call the simple UTF16->UTF8 encoder.
+                byte[] propertyNameBytes = Encoding.UTF8.GetBytes(propertyName);
+                jsonInfo.Name = propertyNameBytes;
 
-                _property_refs.Add(new PropertyRef(GetKey(bytes), jsonInfo));
+                // Cache the escaped name.
+                // remove for corefxlab, we don't have the helper
+                //int valueIdx = JsonWriterHelper.NeedsEscaping(propertyNameBytes);
+                //if (valueIdx != -1)
+                //{
+                //    int length = JsonWriterHelper.GetMaxEscapedLength(propertyNameBytes.Length, valueIdx);
+
+                //    byte[] tempArray = ArrayPool<byte>.Shared.Rent(length);
+
+                //    JsonWriterHelper.EscapeString(propertyNameBytes, tempArray, valueIdx, out int written);
+                //    jsonInfo.EscapedName = new byte[written];
+                //    tempArray.CopyTo(jsonInfo.EscapedName, 0);
+
+                //    ArrayPool<byte>.Shared.Return(tempArray);
+
+                //    jsonInfo.HasEscapedName = true;
+                //}
+
+                _property_refs.Add(new PropertyRef(GetKey(propertyNameBytes), jsonInfo));
             }
             else
             {
+                // A single property or an IEnumerable
                 _property_refs.Add(new PropertyRef(0, jsonInfo));
             }
         }

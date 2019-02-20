@@ -6,15 +6,15 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonSerializer
     {
-        public static T ReadString<T>(string json, JsonSerializerOptions options = null)
+        public static TValue Parse<TValue>(string json, JsonSerializerOptions options = null)
         {
             if (json == null)
                 throw new ArgumentNullException(nameof(json));
 
-            return (T)ReadInternal(json, typeof(T), options);
+            return (TValue)ParseCore(json, typeof(TValue), options);
         }
 
-        public static object ReadString(string json, Type returnType, JsonSerializerOptions options = null)
+        public static object Parse(string json, Type returnType, JsonSerializerOptions options = null)
         {
             if (json == null)
                 throw new ArgumentNullException(nameof(json));
@@ -22,10 +22,10 @@ namespace System.Text.Json.Serialization
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return ReadInternal(json, returnType, options);
+            return ParseCore(json, returnType, options);
         }
 
-        private static object ReadInternal(string json, Type returnType, JsonSerializerOptions options = null)
+        private static object ParseCore(string json, Type returnType, JsonSerializerOptions options = null)
         {
             if (options == null)
                 options = s_defaultSettings;
@@ -34,7 +34,7 @@ namespace System.Text.Json.Serialization
             byte[] jsonBytes = s_utf8Encoding.GetBytes(json);
             var state = new JsonReaderState(options: options.ReaderOptions);
             var reader = new Utf8JsonReader(jsonBytes, isFinalBlock: true, state);
-            return Read(reader, returnType, options);
+            return ReadCore(reader, returnType, options);
         }
     }
 }

@@ -11,28 +11,28 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ReadClassWithStringArray()
         {
-            TestClassWithStringArray obj = JsonSerializer.Read<TestClassWithStringArray>(TestClassWithStringArray.s_data);
+            TestClassWithStringArray obj = JsonSerializer.Parse<TestClassWithStringArray>(TestClassWithStringArray.s_data);
             obj.Verify();
         }
 
         [Fact]
         public static void ReadClassWithObjectList()
         {
-            TestClassWithObjectList obj = JsonSerializer.Read<TestClassWithObjectList>(TestClassWithObjectList.s_data);
+            TestClassWithObjectList obj = JsonSerializer.Parse<TestClassWithObjectList>(TestClassWithObjectList.s_data);
             obj.Verify();
         }
 
         [Fact]
         public static void ReadClassWithObjectArray()
         {
-            TestClassWithObjectArray obj = JsonSerializer.Read<TestClassWithObjectArray>(TestClassWithObjectArray.s_data);
+            TestClassWithObjectArray obj = JsonSerializer.Parse<TestClassWithObjectArray>(TestClassWithObjectArray.s_data);
             obj.Verify();
         }
 
         [Fact]
         public static void ReadClassWithGenericList()
         {
-            TestClassWithGenericList obj = JsonSerializer.Read<TestClassWithGenericList>(TestClassWithGenericList.s_data);
+            TestClassWithGenericList obj = JsonSerializer.Parse<TestClassWithGenericList>(TestClassWithGenericList.s_data);
             obj.Verify();
         }
     }

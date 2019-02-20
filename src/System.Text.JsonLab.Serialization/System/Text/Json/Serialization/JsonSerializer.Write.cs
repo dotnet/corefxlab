@@ -10,33 +10,6 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonSerializer
     {
-        private static void VerifyValueAndType(object value, Type type)
-        {
-            if (type == null)
-            {
-                if (value != null)
-                {
-                    throw new ArgumentNullException(nameof(type));
-                }
-            }
-            else if (value != null)
-            {
-                if (!type.IsAssignableFrom(value.GetType()))
-                {
-                    throw new ArgumentException("todo - type must derive from value", nameof(type));
-                }
-            }
-        }
-
-        private static void WriteNull(
-            ref JsonWriterState writerState,
-            IBufferWriter<byte> bufferWriter)
-        {
-            Utf8JsonWriter writer = new Utf8JsonWriter(bufferWriter, writerState);
-            writer.WriteNullValue();
-            writer.Flush(true);
-        }
-
         private static bool Write(
             ref JsonWriterState writerState,
             IBufferWriter<byte> bufferWriter,

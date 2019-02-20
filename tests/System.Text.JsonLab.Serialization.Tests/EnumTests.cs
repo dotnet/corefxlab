@@ -21,7 +21,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void EnumAsStringFail()
         {
-            Assert.Throws<InvalidOperationException>(() => JsonSerializer.ReadString<SimpleTestClass>(s_jsonStringEnum));
+            Assert.Throws<JsonReaderException>(() => JsonSerializer.Parse<SimpleTestClass>(s_jsonStringEnum));
         }
 
         [Fact]
@@ -30,14 +30,14 @@ namespace System.Text.Json.Serialization.Tests
             var options = new JsonSerializerOptions();
             options.AddAttribute(typeof(SimpleTestClass), new JsonEnumConverterAttribute(treatAsString: true));
 
-            SimpleTestClass obj = JsonSerializer.ReadString<SimpleTestClass>(s_jsonStringEnum, options);
+            SimpleTestClass obj = JsonSerializer.Parse<SimpleTestClass>(s_jsonStringEnum, options);
             Assert.Equal(SampleEnum.Two, obj.MyEnum);
         }
 
         [Fact]
         public static void EnumAsInt()
         {
-            SimpleTestClass obj = JsonSerializer.ReadString<SimpleTestClass>(s_jsonIntEnum);
+            SimpleTestClass obj = JsonSerializer.Parse<SimpleTestClass>(s_jsonIntEnum);
             Assert.Equal(SampleEnum.Two, obj.MyEnum);
         }
     }

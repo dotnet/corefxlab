@@ -4,11 +4,11 @@
 
 namespace System.Text.Json.Serialization
 {
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public class JsonPropertyAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false)]
+    public class JsonPropertyValueAttribute : Attribute
     {
-        public bool? SkipNullValuesOnRead { get; set; }
-        public bool? SkipNullValuesOnWrite { get; set; }
-        public bool? CaseInsensitivePropertyNames { get; set; }
+        public bool? IgnoreNullValueOnRead { get; set; }
+        public bool? IgnoreNullValueOnWrite { get; set; }
+        public bool? CaseInsensitivePropertyName { get; set; }
     }
 }

@@ -12,14 +12,14 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void NullObjectInputFail()
         {
-            Assert.Throws<ArgumentNullException>(() => JsonSerializer.Read<string>((ReadOnlySpan<byte>)null));
+            Assert.Throws<ArgumentNullException>(() => JsonSerializer.Parse<string>((ReadOnlySpan<byte>)null));
         }
 
         [Theory]
         [MemberData(nameof(ReadSuccessCases))]
         public static void Read(Type classType, byte[] data)
         {
-            object obj = JsonSerializer.Read(data, classType);
+            object obj = JsonSerializer.Parse(data, classType);
             Assert.IsAssignableFrom(typeof(ITestClass), obj);
             ((ITestClass)obj).Verify();
         }
@@ -27,20 +27,20 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ReadGenericApi()
         {
-            SimpleTestClass obj = JsonSerializer.Read<SimpleTestClass>(SimpleTestClass.s_data);
+            SimpleTestClass obj = JsonSerializer.Parse<SimpleTestClass>(SimpleTestClass.s_data);
             obj.Verify();
         }
 
         [Fact]
         public static void VerifyValueFail()
         {
-            Assert.Throws<ArgumentNullException>(() => JsonSerializer.Write(new object(), (Type)null));
+            Assert.Throws<ArgumentNullException>(() => JsonSerializer.ToString(new object(), (Type)null));
         }
 
         [Fact]
         public static void VerifyTypeFail()
         {
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Write(1, typeof(string)));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.ToString(1, typeof(string)));
         }
 
         [Fact]
@@ -49,12 +49,12 @@ namespace System.Text.Json.Serialization.Tests
             var encodedNull = Encoding.UTF8.GetBytes(@"null");
 
             {
-                byte[] output = JsonSerializer.Write(null);
+                byte[] output = JsonSerializer.ToBytes(null, null);
                 Assert.Equal(encodedNull, output);
             }
 
             {
-                byte[] output = JsonSerializer.Write(null, typeof(NullTests));
+                byte[] output = JsonSerializer.ToBytes(null, typeof(NullTests));
                 Assert.Equal(encodedNull, output);
             }
         }

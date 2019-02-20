@@ -1,8 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+
 #if BUILDING_INBOX_LIBRARY
 
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -40,8 +42,8 @@ namespace System.Text.Json.Serialization
         public override JsonPropertyInfo<TValue>.GetterDelegate CreateGetter<TValue>(PropertyInfo propertyInfo)
         {
             MethodInfo realMethod = propertyInfo.GetGetMethod();
-            if (realMethod == null)
-                return null; // Exception will be raised later if called
+
+            Debug.Assert(realMethod != null); // We previously verified
 
             var dynamicMethod = new DynamicMethod(
                 realMethod.Name,
@@ -68,8 +70,8 @@ namespace System.Text.Json.Serialization
         public override JsonPropertyInfo<TValue>.SetterDelegate CreateSetter<TValue>(PropertyInfo propertyInfo)
         {
             MethodInfo realMethod = propertyInfo.GetSetMethod();
-            if (realMethod == null)
-                return null; // Exception will be raised later if called
+
+            Debug.Assert(realMethod != null); // We previously verified
 
             var dynamicMethod = new DynamicMethod(
                 realMethod.Name,

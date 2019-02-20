@@ -13,27 +13,27 @@ namespace System.Text.Json.Serialization
     public static partial class JsonSerializer
     {
         [System.CLSCompliantAttribute(false)]
-        public static Task<T> ReadAsync<T>(PipeReader utf8Reader, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static ValueTask<TValue> ReadAsync<TValue>(PipeReader utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Reader == null)
-                throw new ArgumentNullException(nameof(utf8Reader));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
-            return ReadAsync<T>(utf8Reader, typeof(T), options, cancellationToken);
+            return ReadAsync<TValue>(utf8Json, typeof(TValue), options, cancellationToken);
         }
 
         [System.CLSCompliantAttribute(false)]
-        public static Task<object> ReadAsync(PipeReader utf8Reader, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static ValueTask<object> ReadAsync(PipeReader utf8Json, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Reader == null)
-                throw new ArgumentNullException(nameof(utf8Reader));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return ReadAsync<object>(utf8Reader, returnType, options, cancellationToken);
+            return ReadAsync<object>(utf8Json, returnType, options, cancellationToken);
         }
 
-        private static async Task<T> ReadAsync<T>(PipeReader utf8Reader, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        private static async ValueTask<TValue> ReadAsync<TValue>(PipeReader utf8Json, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
             if (options == null)
                 options = s_defaultSettings;
@@ -53,10 +53,10 @@ namespace System.Text.Json.Serialization
             ReadResult result;
             do
             {
-                result = await utf8Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                result = await utf8Json.ReadAsync(cancellationToken).ConfigureAwait(false);
                 ReadOnlySequence<byte> buffer = result.Buffer;
 
-                Read(
+                ReadCore(
                     ref readerState,
                     returnType,
                     result.IsCompleted,
@@ -66,13 +66,13 @@ namespace System.Text.Json.Serialization
                     ref previous,
                     ref arrayIndex);
 
-                utf8Reader.AdvanceTo(buffer.GetPosition(readerState.BytesConsumed), buffer.End);
+                utf8Json.AdvanceTo(buffer.GetPosition(readerState.BytesConsumed), buffer.End);
             } while (!result.IsCompleted);
 
-            return (T)current.ReturnValue;
+            return (TValue)current.ReturnValue;
         }
 
-        private static void Read(
+        private static void ReadCore(
             ref JsonReaderState readerState,
             Type returnType,
             bool isFinalBlock,
@@ -84,8 +84,7 @@ namespace System.Text.Json.Serialization
         {
             Utf8JsonReader reader = new Utf8JsonReader(buffer, isFinalBlock, readerState);
 
-            Read(
-                returnType,
+            ReadCore(
                 options,
                 ref reader,
                 ref current,

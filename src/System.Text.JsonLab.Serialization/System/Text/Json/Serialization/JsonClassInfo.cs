@@ -26,7 +26,7 @@ namespace System.Text.Json.Serialization
         public Type Type { get; private set; }
         public ClassType ClassType { get; private set; }
 
-        public EnumerableConverterAttribute EnumerableConverter { get; private set; }
+        public JsonEnumerableConverter EnumerableConverter { get; private set; }
 
         // If enumerable, the info for the element type.
         public JsonClassInfo ElementClassInfo { get; set; }
@@ -41,9 +41,14 @@ namespace System.Text.Json.Serialization
             // Ignore properties on enumerable.
             if (ClassType == ClassType.Object)
             {
-                foreach (PropertyInfo propertyInfo in type.GetProperties())
+                foreach (PropertyInfo propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                 {
-                    AddProperty(propertyInfo.PropertyType, propertyInfo, type, options);
+                    // For now we only support public getters\setters
+                    if (propertyInfo.GetMethod?.IsPublic == true ||
+                        propertyInfo.SetMethod?.IsPublic == true)
+                    {
+                        AddProperty(propertyInfo.PropertyType, propertyInfo, type, options);
+                    }
                 }
             }
             else if (ClassType == ClassType.Enumerable)
@@ -108,13 +113,10 @@ namespace System.Text.Json.Serialization
                 }
             }
 
-            if (info == null)
+            if (info != null)
             {
-                string stringPropertyName = JsonReaderHelper.TranscodeHelper(propertyName);
-                throw new InvalidOperationException($"todo: invalid property {stringPropertyName}");
+                _property_refs_sorted.Add(new PropertyRef(key, info));
             }
-
-            _property_refs_sorted.Add(new PropertyRef(key, info));
 
             return info;
         }

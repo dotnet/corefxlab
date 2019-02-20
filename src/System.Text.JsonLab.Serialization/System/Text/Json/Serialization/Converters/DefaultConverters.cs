@@ -10,9 +10,8 @@ namespace System.Text.Json.Serialization.Converters
 {
     internal static class DefaultConverters
     {
-        public static readonly JsonDateConverterAttribute s_dateConverterAttibute = new JsonDateConverterAttribute();
-        public static readonly JsonEnumConverterAttribute s_enumConverterAttibute = new JsonEnumConverterAttribute();
         public static readonly JsonArrayConverterAttribute s_arrayConverterAttibute = new JsonArrayConverterAttribute();
+        public static readonly JsonEnumConverterAttribute s_enumConverterAttibute = new JsonEnumConverterAttribute();
 
         public static TAttribute GetPolicy<TAttribute>(
             Type parentClassType,
@@ -51,30 +50,30 @@ namespace System.Text.Json.Serialization.Converters
             Type parentClassType,
             PropertyInfo propertyInfo,
             JsonSerializerOptions options,
-            Func<JsonPropertyAttribute, TValue> selector)
+            Func<JsonPropertyValueAttribute, TValue> selector)
         {
             TValue value;
 
-            JsonPropertyAttribute attr = null;
+            JsonPropertyValueAttribute attr = null;
             if (propertyInfo != null)
             {
                 // Use Property first
-                attr = options.GetAttributes<JsonPropertyAttribute>(propertyInfo).FirstOrDefault();
+                attr = options.GetAttributes<JsonPropertyValueAttribute>(propertyInfo).FirstOrDefault();
             }
 
             if (attr == null || (value = selector(attr)) == default)
             {
                 // Then class type
-                attr = options.GetAttributes<JsonPropertyAttribute>(parentClassType, inherit: true).FirstOrDefault();
+                attr = options.GetAttributes<JsonPropertyValueAttribute>(parentClassType, inherit: true).FirstOrDefault();
                 if (attr == null || (value = selector(attr)) == default)
                 {
                     // Then declaring assembly
-                    attr = options.GetAttributes<JsonPropertyAttribute>(parentClassType.Assembly).FirstOrDefault();
+                    attr = options.GetAttributes<JsonPropertyValueAttribute>(parentClassType.Assembly).FirstOrDefault();
 
                     if (attr == null || (value = selector(attr)) == default)
                     {
                         // Then global
-                        attr = options.GetAttributes<JsonPropertyAttribute>(JsonSerializerOptions.GlobalAttributesProvider).FirstOrDefault();
+                        attr = options.GetAttributes<JsonPropertyValueAttribute>(JsonSerializerOptions.GlobalAttributesProvider).FirstOrDefault();
 
                         if (attr == null)
                         {
@@ -91,7 +90,7 @@ namespace System.Text.Json.Serialization.Converters
             return value;
         }
 
-        public static EnumerableConverterAttribute GetEnumerableConverter(
+        public static JsonEnumerableConverter GetEnumerableConverter(
             Type parentClassType,
             PropertyInfo propertyInfo,
             Type propertyType,
@@ -111,27 +110,27 @@ namespace System.Text.Json.Serialization.Converters
                 enumerableType = propertyType;
             }
 
-            EnumerableConverterAttribute attr = null;
+            JsonEnumerableConverterAttribute attr = null;
             if (propertyInfo != null)
             {
                 // Use Property first
-                attr = options.GetAttributes<EnumerableConverterAttribute>(propertyInfo).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
+                attr = options.GetAttributes<JsonEnumerableConverterAttribute>(propertyInfo).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
             }
 
             if (attr == null)
             {
                 // Then class type
-                attr = options.GetAttributes<EnumerableConverterAttribute>(parentClassType, inherit: true).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
+                attr = options.GetAttributes<JsonEnumerableConverterAttribute>(parentClassType, inherit: true).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
 
                 if (attr == null)
                 {
                     // Then declaring assembly
-                    attr = options.GetAttributes<EnumerableConverterAttribute>(parentClassType.Assembly).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
+                    attr = options.GetAttributes<JsonEnumerableConverterAttribute>(parentClassType.Assembly).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
 
                     if (attr == null)
                     {
                         // Then global
-                        attr = options.GetAttributes<EnumerableConverterAttribute>(JsonSerializerOptions.GlobalAttributesProvider).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
+                        attr = options.GetAttributes<JsonEnumerableConverterAttribute>(JsonSerializerOptions.GlobalAttributesProvider).Where(a => a.EnumerableType == enumerableType).FirstOrDefault();
 
                         // Then default
                         if (enumerableType == typeof(Array))
@@ -142,10 +141,15 @@ namespace System.Text.Json.Serialization.Converters
                 }
             }
 
-            return attr;
+            if (attr != null)
+            {
+                return attr.CreateConverter();
+            }
+
+            return null;
         }
 
-        public static PropertyValueConverterAttribute GetPropertyValueConverter(
+        public static JsonValueConverterAttribute GetPropertyValueConverter(
             Type parentClassType,
             PropertyInfo propertyInfo,
             Type propertyType,
@@ -156,7 +160,7 @@ namespace System.Text.Json.Serialization.Converters
                 propertyType = Nullable.GetUnderlyingType(propertyType);
             }
 
-            PropertyValueConverterAttribute attr = GetPropertyValueConverterInternal(parentClassType, propertyInfo, options, propertyType);
+            JsonValueConverterAttribute attr = GetPropertyValueConverterInternal(parentClassType, propertyInfo, options, propertyType);
 
             // For Enums, support both the type Enum plus strongly-typed Enums.
             if (attr == null && (propertyType.IsEnum || propertyType == typeof(Enum)))
@@ -171,7 +175,7 @@ namespace System.Text.Json.Serialization.Converters
             return attr;
         }
 
-        private static PropertyValueConverterAttribute GetPropertyValueConverterInternal(
+        private static JsonValueConverterAttribute GetPropertyValueConverterInternal(
             Type parentClassType,
             PropertyInfo propertyInfo,
             JsonSerializerOptions options,
@@ -182,34 +186,25 @@ namespace System.Text.Json.Serialization.Converters
                 propertyType = Nullable.GetUnderlyingType(propertyType);
             }
 
-            PropertyValueConverterAttribute attr = null;
+            JsonValueConverterAttribute attr = null;
             if (propertyInfo != null)
             {
                 // Use Property first
-                attr = options.GetAttributes<PropertyValueConverterAttribute>(propertyInfo).Where(a => a.PropertyType == propertyType).FirstOrDefault();
+                attr = options.GetAttributes<JsonValueConverterAttribute>(propertyInfo).Where(a => a.PropertyType == propertyType).FirstOrDefault();
 
                 if (attr == null)
                 {
                     // Then class type
-                    attr = options.GetAttributes<PropertyValueConverterAttribute>(parentClassType, inherit: true).Where(a => a.PropertyType == propertyType).FirstOrDefault();
+                    attr = options.GetAttributes<JsonValueConverterAttribute>(parentClassType, inherit: true).Where(a => a.PropertyType == propertyType).FirstOrDefault();
                     if (attr == null)
                     {
                         // Then declaring assembly
-                        attr = options.GetAttributes<PropertyValueConverterAttribute>(parentClassType.Assembly).Where(a => a.PropertyType == propertyType).FirstOrDefault();
+                        attr = options.GetAttributes<JsonValueConverterAttribute>(parentClassType.Assembly).Where(a => a.PropertyType == propertyType).FirstOrDefault();
 
                         if (attr == null)
                         {
                             // Then global
-                            attr = options.GetAttributes<PropertyValueConverterAttribute>(JsonSerializerOptions.GlobalAttributesProvider).Where(a => a.PropertyType == propertyType).FirstOrDefault();
-
-                            if (attr == null)
-                            {
-                                // Then default
-                                if (propertyType == typeof(DateTime))
-                                {
-                                    attr = DefaultConverters.s_dateConverterAttibute;
-                                }
-                            }
+                            attr = options.GetAttributes<JsonValueConverterAttribute>(JsonSerializerOptions.GlobalAttributesProvider).Where(a => a.PropertyType == propertyType).FirstOrDefault();
                         }
                     }
                 }

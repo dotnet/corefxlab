@@ -102,7 +102,7 @@ namespace System.Text.Json.Serialization
                 // Set the PropertyInfo so we can obtain the property name in order to write it.
                 current.PropertyInfo = previousPropertyInfo;
             }
-            else if (!propertyInfo.SkipNullValuesOnWrite(options))
+            else if (!propertyInfo.IgnoreNullPropertyValueOnWrite(options))
             {
                 writer.WriteNull(propertyInfo.Name);
             }

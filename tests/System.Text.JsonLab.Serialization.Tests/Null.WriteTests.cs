@@ -12,7 +12,7 @@ namespace System.Text.Json.Serialization.Tests
         public static void DefaultWriteOptions()
         {
             var input = new TestClassWithNull();
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal(@"{""MyString"":null}", json);
         }
 
@@ -20,10 +20,10 @@ namespace System.Text.Json.Serialization.Tests
         public static void OverrideWriteOnOption()
         {
             JsonSerializerOptions options = new JsonSerializerOptions();
-            options.SkipNullValuesOnWrite = true;
+            options.IgnoreNullPropertyValueOnWrite = true;
 
             var input = new TestClassWithNull();
-            string json = JsonSerializer.WriteString(input, options);
+            string json = JsonSerializer.ToString(input, options);
             Assert.Equal(@"{}", json);
         }
 
@@ -31,12 +31,12 @@ namespace System.Text.Json.Serialization.Tests
         public static void OverrideWriteOnAttribute()
         {
             JsonSerializerOptions options = new JsonSerializerOptions();
-            JsonPropertyAttribute attr = new JsonPropertyAttribute();
-            attr.SkipNullValuesOnWrite = true;
+            JsonPropertyValueAttribute attr = new JsonPropertyValueAttribute();
+            attr.IgnoreNullValueOnWrite = true;
             options.AddAttribute(typeof(TestClassWithNull), attr);
 
             var input = new TestClassWithNull();
-            string json = JsonSerializer.WriteString(input, options);
+            string json = JsonSerializer.ToString(input, options);
             Assert.Equal(@"{}", json);
         }
     }

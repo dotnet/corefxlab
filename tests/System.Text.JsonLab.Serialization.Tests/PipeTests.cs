@@ -54,7 +54,7 @@ namespace System.Text.Json.Serialization.Tests
 
             Pipe pipe = new Pipe(new PipeOptions(readerScheduler: PipeScheduler.Inline, writerScheduler: PipeScheduler.Inline));
             Task toTask = JsonSerializer.WriteAsync(objOriginal, pipe.Writer);
-            Task<LargeDataTestClass> fromTask = JsonSerializer.ReadAsync<LargeDataTestClass>(pipe.Reader);
+            ValueTask<LargeDataTestClass> fromTask = JsonSerializer.ReadAsync<LargeDataTestClass>(pipe.Reader);
 
             await toTask;
             pipe.Writer.Complete();
@@ -70,7 +70,7 @@ namespace System.Text.Json.Serialization.Tests
         {
             Pipe pipe = new Pipe(new PipeOptions(readerScheduler: PipeScheduler.Inline, writerScheduler: PipeScheduler.Inline));
 
-            Task<bool> task = JsonSerializer.ReadAsync<bool>(pipe.Reader);
+            ValueTask<bool> task = JsonSerializer.ReadAsync<bool>(pipe.Reader);
 
             await pipe.Writer.WriteAsync(Encoding.UTF8.GetBytes(@"t"));
             await pipe.Writer.WriteAsync(Encoding.UTF8.GetBytes(@"r"));

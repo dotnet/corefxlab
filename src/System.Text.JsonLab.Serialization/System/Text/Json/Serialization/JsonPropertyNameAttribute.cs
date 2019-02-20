@@ -7,7 +7,7 @@ using System.Text.Json.Serialization.Policies;
 namespace System.Text.Json.Serialization
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public class JsonPropertyNameAttribute : PropertyNamePolicyAttribute
+    public class JsonPropertyNameAttribute : JsonPropertyNamePolicyAttribute
     {
         public JsonPropertyNameAttribute() { }
 

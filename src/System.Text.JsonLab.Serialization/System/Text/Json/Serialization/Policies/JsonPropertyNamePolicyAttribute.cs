@@ -4,8 +4,8 @@
 
 namespace System.Text.Json.Serialization.Policies
 {
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class PropertyNamePolicyAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false)]
+    public abstract class JsonPropertyNamePolicyAttribute : Attribute
     {
         public abstract string Read(string value);
         public abstract string Write(string value);

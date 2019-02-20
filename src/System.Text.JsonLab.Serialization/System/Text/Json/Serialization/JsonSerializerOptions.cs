@@ -62,10 +62,10 @@ namespace System.Text.Json.Serialization
         public JsonReaderOptions ReaderOptions { get; set; }
         public JsonWriterOptions WriterOptions { get; set; }
 #else
-        // Temporary for corefxlab
         internal JsonReaderOptions ReaderOptions { get; set; }
         internal JsonWriterOptions WriterOptions { get; set; }
 #endif
+
         public JsonClassMaterializer ClassMaterializer
         {
             get
@@ -109,14 +109,14 @@ namespace System.Text.Json.Serialization
             }
         }
 
-        public bool SkipNullValuesOnWrite { get; set; }
-        public bool SkipNullValuesOnRead { get; set; }
-        public bool CaseInsensitivePropertyNames { get; set; }
+        public bool IgnoreNullPropertyValueOnWrite { get; set; }
+        public bool IgnoreNullPropertyValueOnRead { get; set; }
+        public bool CaseInsensitivePropertyName { get; set; }
 
         // Used internally for performance to avoid checking BufferSizeUnspecified.
         internal int EffectiveBufferSize { get; private set; } = BufferSizeDefault;
 
-        //todo: throw exception if we try to add attributes once (de)serialization occurred.
+        //todo: throw exception if we try to add attributes or change the Ignore\Case properties above once (de)serialization occurred. That allows this instance to be shared across users.
 
         /// <summary>
         /// Add a global attribute.

@@ -15,8 +15,8 @@ namespace System.Text.Json.Serialization.Tests
             customer.Initialize();
             customer.Verify();
 
-            string json = JsonSerializer.WriteString(customer);
-            Customer deserializedCustomer = JsonSerializer.ReadString<Customer>(json);
+            string json = JsonSerializer.ToString(customer);
+            Customer deserializedCustomer = JsonSerializer.Parse<Customer>(json);
             deserializedCustomer.Verify();
         }
 
@@ -30,9 +30,9 @@ namespace System.Text.Json.Serialization.Tests
             Person person = customer;
 
             // Generic inference used <TValue> = <Person>
-            string json = JsonSerializer.WriteString(person);
+            string json = JsonSerializer.ToString(person);
 
-            Customer deserializedCustomer = JsonSerializer.ReadString<Customer>(json);
+            Customer deserializedCustomer = JsonSerializer.Parse<Customer>(json);
 
             // We only serialized the Person base class, so the Customer fields should be default.
             Assert.Equal(typeof(Customer), deserializedCustomer.GetType());
@@ -49,9 +49,9 @@ namespace System.Text.Json.Serialization.Tests
 
             Person person = customer;
 
-            string json = JsonSerializer.WriteString(person, person.GetType());
+            string json = JsonSerializer.ToString(person, person.GetType());
 
-            Customer deserializedCustomer = JsonSerializer.ReadString<Customer>(json);
+            Customer deserializedCustomer = JsonSerializer.Parse<Customer>(json);
 
             // We serialized the Customer
             Assert.Equal(typeof(Customer), deserializedCustomer.GetType());
@@ -71,9 +71,9 @@ namespace System.Text.Json.Serialization.Tests
             Customer customer = usaCustomer;
 
             // Generic inference used <TValue> = <Customer>
-            string json = JsonSerializer.WriteString(customer);
+            string json = JsonSerializer.ToString(customer);
 
-            UsaCustomer deserializedCustomer = JsonSerializer.ReadString<UsaCustomer>(json);
+            UsaCustomer deserializedCustomer = JsonSerializer.Parse<UsaCustomer>(json);
 
             // We only serialized the Customer base class
             Assert.Equal(typeof(UsaCustomer), deserializedCustomer.GetType());

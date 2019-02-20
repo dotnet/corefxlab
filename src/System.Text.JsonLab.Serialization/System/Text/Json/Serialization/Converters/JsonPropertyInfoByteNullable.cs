@@ -6,28 +6,36 @@ using System.Reflection;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoByteNullable : JsonPropertyInfo<byte?>, IJsonSerializerInternal<byte?>
+    internal class JsonPropertyInfoByteNullable : JsonPropertyInfo<byte?>, IJsonValueConverter<byte?>
     {
         public JsonPropertyInfoByteNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
             base(classType, propertyType, propertyInfo, options)
         { }
 
-        public byte? Read(ref Utf8JsonReader reader)
+        public bool TryRead(Type valueType, ref Utf8JsonReader reader, out byte? value)
         {
+            if (reader.TokenType != JsonTokenType.Number)
+            {
+                value = default;
+                return false;
+            }
+
             checked
             {
-                return (byte?)reader.GetInt32();
+                value = (byte?)reader.GetInt32();
             }
+
+            return true;
         }
 
-        public void Write(ref Utf8JsonWriter writer, byte? value)
+        public void Write(byte? value, ref Utf8JsonWriter writer)
         {
             writer.WriteNumberValue(value.Value);
         }
 
-        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, byte? value)
+        public void Write(Span<byte> escapedPropertyName, byte? value, ref Utf8JsonWriter writer)
         {
-            writer.WriteNumber(name, value.Value);
+            writer.WriteNumber(escapedPropertyName, value.Value);
         }
     }
 }
