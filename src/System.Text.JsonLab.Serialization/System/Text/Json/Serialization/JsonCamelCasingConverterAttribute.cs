@@ -6,8 +6,8 @@ using System.Text.Json.Serialization.Policies;
 
 namespace System.Text.Json.Serialization
 {
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public class JsonCamelCasingConverterAttribute : PropertyNamePolicyAttribute
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false)]
+    public class JsonCamelCasingConverterAttribute : JsonPropertyNamePolicyAttribute
     {
         public JsonCamelCasingConverterAttribute() { }
 

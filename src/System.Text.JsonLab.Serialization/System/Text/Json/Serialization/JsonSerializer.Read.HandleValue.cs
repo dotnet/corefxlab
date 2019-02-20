@@ -10,14 +10,13 @@ namespace System.Text.Json.Serialization
     public static partial class JsonSerializer
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HandleValue(JsonSerializerOptions options, ref Utf8JsonReader reader, ref ReadObjectState current)
+        private static bool HandleValue(JsonTokenType tokenType, JsonSerializerOptions options, ref Utf8JsonReader reader, ref ReadObjectState current)
         {
-            Debug.Assert(current.PropertyInfo != null);
-
+            if (current.PropertyInfo == null)
+                return false;
+            
             bool lastCall = (!current.IsEnumerable() && !current.IsPropertyEnumerable() && current.ReturnValue == null);
-
-            current.PropertyInfo.Read(options, ref current, ref reader);
-
+            current.PropertyInfo.Read(tokenType, options, ref current, ref reader);
             return lastCall;
         }
     }

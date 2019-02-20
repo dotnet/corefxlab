@@ -11,7 +11,7 @@ namespace System.Text.Json.Serialization
     public static partial class JsonSerializer
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void HandleStartObject(JsonSerializerOptions options, Type returnType, ref ReadObjectState current, ref List<ReadObjectState> previous, ref int arrayIndex)
+        private static void HandleStartObject(JsonSerializerOptions options, ref ReadObjectState current, ref List<ReadObjectState> previous, ref int arrayIndex)
         {
             Type objType;
 
@@ -38,10 +38,6 @@ namespace System.Text.Json.Serialization
             }
             else
             {
-                // Initial object type
-                objType = returnType;
-
-                Debug.Assert(current.ClassInfo != null);
                 current.ReturnValue = current.ClassInfo.CreateObject();
             }
         }

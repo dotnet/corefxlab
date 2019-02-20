@@ -11,22 +11,22 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonSerializer
     {
-        public static Task WriteAsync<TValue>(TValue value, Stream utf8Stream, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static Task WriteAsync<TValue>(TValue value, Stream utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            return WriteAsyncInternal(value, typeof(TValue), utf8Stream, options, cancellationToken);
+            return WriteAsyncCore(value, typeof(TValue), utf8Json, options, cancellationToken);
         }
 
-        public static Task WriteAsync(object value, Type type, Stream utf8Stream, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static Task WriteAsync(object value, Type type, Stream utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Stream == null)
-                throw new ArgumentNullException(nameof(utf8Stream));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
             VerifyValueAndType(value, type);
 
-            return WriteAsyncInternal(value, type, utf8Stream, options, cancellationToken);
+            return WriteAsyncCore(value, type, utf8Json, options, cancellationToken);
         }
 
-        private static async Task WriteAsyncInternal(object value, Type type, Stream utf8Stream, JsonSerializerOptions options, CancellationToken cancellationToken)
+        private static async Task WriteAsyncCore(object value, Type type, Stream utf8Json, JsonSerializerOptions options, CancellationToken cancellationToken)
         {
             if (options == null)
                 options = s_defaultSettings;
@@ -39,10 +39,10 @@ namespace System.Text.Json.Serialization
                 {
                     WriteNull(ref writerState, bufferWriter);
 #if BUILDING_INBOX_LIBRARY
-                    await utf8Stream.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
+                    await utf8Json.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
 #else
                     // todo: stackalloc?
-                    await utf8Stream.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
+                    await utf8Json.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
 #endif
                     return;
                 }
@@ -72,10 +72,10 @@ namespace System.Text.Json.Serialization
 
                     isFinalBlock = Write(ref writerState, bufferWriter, flushThreshold, options, ref current, ref previous, ref arrayIndex);
 #if BUILDING_INBOX_LIBRARY
-                    await utf8Stream.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
+                    await utf8Json.WriteAsync(bufferWriter.WrittenMemory, cancellationToken).ConfigureAwait(false);
 #else
                     // todo: stackalloc?
-                    await utf8Stream.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
+                    await utf8Json.WriteAsync(bufferWriter.WrittenMemory.ToArray(), 0, bufferWriter.WrittenMemory.Length, cancellationToken).ConfigureAwait(false);
 #endif
                     bufferWriter.Clear();
                 } while (!isFinalBlock);

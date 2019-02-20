@@ -12,36 +12,36 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void Primitives()
         {
-            int i = JsonSerializer.Read<int>(Encoding.UTF8.GetBytes(@"1"));
+            int i = JsonSerializer.Parse<int>(Encoding.UTF8.GetBytes(@"1"));
             Assert.Equal(1, i);
 
-            int i2 = JsonSerializer.ReadString<int>("2");
+            int i2 = JsonSerializer.Parse<int>("2");
             Assert.Equal(2, i2);
 
-            long l = JsonSerializer.Read<long>(Encoding.UTF8.GetBytes(long.MaxValue.ToString()));
+            long l = JsonSerializer.Parse<long>(Encoding.UTF8.GetBytes(long.MaxValue.ToString()));
             Assert.Equal(long.MaxValue, l);
 
-            long l2 = JsonSerializer.ReadString<long>(long.MaxValue.ToString());
+            long l2 = JsonSerializer.Parse<long>(long.MaxValue.ToString());
             Assert.Equal(long.MaxValue, l2);
 
-            string s = JsonSerializer.Read<string>(Encoding.UTF8.GetBytes(@"""Hello"""));
+            string s = JsonSerializer.Parse<string>(Encoding.UTF8.GetBytes(@"""Hello"""));
             Assert.Equal("Hello", s);
 
-            string s2 = JsonSerializer.ReadString<string>(@"""Hello""");
+            string s2 = JsonSerializer.Parse<string>(@"""Hello""");
             Assert.Equal("Hello", s2);
         }
 
         [Fact]
         public static void PrimitivesFail()
         {
-            Assert.Throws<JsonReaderException>(() => JsonSerializer.Read<int>(Encoding.UTF8.GetBytes(@"a")));
-            Assert.Throws<JsonReaderException>(() => JsonSerializer.Read<int[]>(Encoding.UTF8.GetBytes(@"[1,a]")));
+            Assert.Throws<JsonReaderException>(() => JsonSerializer.Parse<int>(Encoding.UTF8.GetBytes(@"a")));
+            Assert.Throws<JsonReaderException>(() => JsonSerializer.Parse<int[]>(Encoding.UTF8.GetBytes(@"[1,a]")));
         }
 
         [Fact]
         public static void PrimitiveArray()
         {
-            int[] i = JsonSerializer.Read<int[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
+            int[] i = JsonSerializer.Parse<int[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
             Assert.Equal(1, i[0]);
             Assert.Equal(2, i[1]);
         }
@@ -49,7 +49,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ArrayWithEnums()
         {
-            SampleEnum[] i = JsonSerializer.Read<SampleEnum[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
+            SampleEnum[] i = JsonSerializer.Parse<SampleEnum[]>(Encoding.UTF8.GetBytes(@"[1,2]"));
             Assert.Equal(SampleEnum.One, i[0]);
             Assert.Equal(SampleEnum.Two, i[1]);
         }
@@ -58,10 +58,10 @@ namespace System.Text.Json.Serialization.Tests
         public static void PrimitiveArrayFail()
         {
             // Invalid data
-            Assert.Throws<InvalidOperationException>(() => JsonSerializer.Read<int[]>(Encoding.UTF8.GetBytes(@"[1,""a""]")));
+            Assert.Throws<JsonReaderException>(() => JsonSerializer.Parse<int[]>(Encoding.UTF8.GetBytes(@"[1,""a""]")));
 
             // Multidimensional arrays currently not supported
-            Assert.Throws<InvalidOperationException>(() => JsonSerializer.Read<int[,]>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]")));
+            Assert.Throws<JsonReaderException>(() => JsonSerializer.Parse<int[,]>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]")));
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace System.Text.Json.Serialization.Tests
                 SimpleTestClass.s_json +
                 "]";
 
-            SimpleTestClass[] i = JsonSerializer.Read<SimpleTestClass[]>(Encoding.UTF8.GetBytes(data));
+            SimpleTestClass[] i = JsonSerializer.Parse<SimpleTestClass[]>(Encoding.UTF8.GetBytes(data));
 
             i[0].Verify();
             i[1].Verify();
@@ -83,7 +83,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void PrimitiveJaggedArray()
         {
-            int[][] i = JsonSerializer.Read<int[][]>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+            int[][] i = JsonSerializer.Parse<int[][]>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
             Assert.Equal(1, i[0][0]);
             Assert.Equal(2, i[0][1]);
             Assert.Equal(3, i[1][0]);
@@ -93,7 +93,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ListOfList()
         {
-            List<List<int>> result = JsonSerializer.Read<List<List<int>>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+            List<List<int>> result = JsonSerializer.Parse<List<List<int>>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
 
             Assert.Equal(1, result[0][0]);
             Assert.Equal(2, result[0][1]);
@@ -104,7 +104,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ListOfArray()
         {
-            List<int[]> result = JsonSerializer.Read<List<int[]>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+            List<int[]> result = JsonSerializer.Parse<List<int[]>>(Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
 
             Assert.Equal(1, result[0][0]);
             Assert.Equal(2, result[0][1]);
@@ -115,7 +115,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void ArrayOfList()
         {
-            List<int>[] result = JsonSerializer.Read<List<int>[]> (Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
+            List<int>[] result = JsonSerializer.Parse<List<int>[]> (Encoding.UTF8.GetBytes(@"[[1,2],[3,4]]"));
 
             Assert.Equal(1, result[0][0]);
             Assert.Equal(2, result[0][1]);
@@ -126,7 +126,7 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void PrimitiveList()
         {
-            List<int> i = JsonSerializer.Read<List<int>>(Encoding.UTF8.GetBytes(@"[1,2]"));
+            List<int> i = JsonSerializer.Parse<List<int>>(Encoding.UTF8.GetBytes(@"[1,2]"));
             Assert.Equal(1, i[0]);
             Assert.Equal(2, i[1]);
         }

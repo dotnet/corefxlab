@@ -6,11 +6,8 @@ using System.Collections;
 
 namespace System.Text.Json.Serialization.Policies
 {
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public abstract class EnumerableConverterAttribute : Attribute
+    public abstract class JsonEnumerableConverter
     {
-        public EnumerableConverterAttribute() { }
-        public Type EnumerableType { get; protected set; }
         public abstract IEnumerable CreateFromList(Type elementType, IList sourceList);
     }
 }

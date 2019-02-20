@@ -15,33 +15,8 @@ namespace System.Text.Json.Serialization
 
         private static readonly JsonSerializerOptions s_defaultSettings = new JsonSerializerOptions();
 
-        private static object Read(
-            Utf8JsonReader reader,
-            Type returnType,
-            JsonSerializerOptions options)
-        {
-            if (options == null)
-                options = s_defaultSettings;
-
-            List<ReadObjectState> previous = null;
-            int arrayIndex = 0;
-
-            ReadObjectState current = default;
-            JsonClassInfo classInfo = options.GetOrAddClass(returnType);
-            current.ClassInfo = classInfo;
-            if (classInfo.ClassType != ClassType.Object)
-            {
-                current.PropertyInfo = classInfo.GetPolicyProperty();
-            }
-
-            Read(returnType, options, ref reader, ref current, ref previous, ref arrayIndex);
-
-            return current.ReturnValue;
-        }
-
         // todo: refactor this method to split by ClassType(Enumerable, Object, or Value) like Write()
-        private static void Read(
-            Type returnType, //todo: we shouldn't need to pass this since we can now get it from current.ClassInfo.PropertyPolicy
+        private static void ReadCore(
             JsonSerializerOptions options,
             ref Utf8JsonReader reader,
             ref ReadObjectState current,
@@ -51,10 +26,12 @@ namespace System.Text.Json.Serialization
             while (reader.Read())
             {
                 JsonTokenType tokenType = reader.TokenType;
+
                 if (tokenType >= JsonTokenType.String && tokenType <= JsonTokenType.False)
                 {
                     Debug.Assert(tokenType == JsonTokenType.String || tokenType == JsonTokenType.Number || tokenType == JsonTokenType.True || tokenType == JsonTokenType.False);
-                    if (HandleValue(options, ref reader, ref current))
+
+                    if (HandleValue(tokenType, options, ref reader, ref current))
                     {
                         // todo: verify bytes read == bytes processed.
                         return;
@@ -71,7 +48,7 @@ namespace System.Text.Json.Serialization
                 }
                 else if (tokenType == JsonTokenType.StartObject)
                 {
-                    HandleStartObject(options, returnType, ref current, ref previous, ref arrayIndex);
+                    HandleStartObject(options, ref current, ref previous, ref arrayIndex);
                 }
                 else if (tokenType == JsonTokenType.EndObject)
                 {
@@ -83,7 +60,7 @@ namespace System.Text.Json.Serialization
                 }
                 else if (tokenType == JsonTokenType.StartArray)
                 {
-                    HandleStartArray(options, ref current, ref previous, ref arrayIndex);
+                    HandleStartArray(options, ref reader, ref current, ref previous, ref arrayIndex);
                 }
                 else if (tokenType == JsonTokenType.EndArray)
                 {

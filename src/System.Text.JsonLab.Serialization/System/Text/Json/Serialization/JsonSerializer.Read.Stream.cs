@@ -15,26 +15,26 @@ namespace System.Text.Json.Serialization
     {
         private const int HalfMaxValue = int.MaxValue / 2;
 
-        public static Task<T> ReadAsync<T>(Stream utf8Stream, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static ValueTask<TValue> ReadAsync<TValue>(Stream utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Stream == null)
-                throw new ArgumentNullException(nameof(utf8Stream));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
-            return ReadAsync<T>(utf8Stream, typeof(T), options, cancellationToken);
+            return ReadAsync<TValue>(utf8Json, typeof(TValue), options, cancellationToken);
         }
 
-        public static Task<object> ReadAsync(Stream utf8Stream, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static ValueTask<object> ReadAsync(Stream utf8Json, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Stream == null)
-                throw new ArgumentNullException(nameof(utf8Stream));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
 
-            return ReadAsync<object>(utf8Stream, returnType, options, cancellationToken);
+            return ReadAsync<object>(utf8Json, returnType, options, cancellationToken);
         }
 
-        private static async Task<T> ReadAsync<T>(Stream utf8Stream, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        private static async ValueTask<TValue> ReadAsync<TValue>(Stream utf8Json, Type returnType, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
             if (options == null)
                 options = s_defaultSettings;
@@ -63,14 +63,13 @@ namespace System.Text.Json.Serialization
                 do
                 {
                     int bytesToRead = bufferSize - bytesRemaining;
-                    bytesRead = await utf8Stream.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
+                    bytesRead = await utf8Json.ReadAsync(buffer, bytesRemaining, bytesToRead, cancellationToken).ConfigureAwait(false);
 
                     int deserializeBufferSize = bytesRemaining + bytesRead;
                     isFinalBlock = (bytesRead == 0);
 
-                    Read(
+                    ReadCore(
                         ref readerState,
-                        returnType,
                         isFinalBlock,
                         buffer,
                         deserializeBufferSize,
@@ -81,7 +80,7 @@ namespace System.Text.Json.Serialization
 
                     if (isFinalBlock)
                     {
-                        return (T)current.ReturnValue;
+                        return (TValue)current.ReturnValue;
                     }
 
                     // We have to shift or expand the buffer because there wasn't enough data to complete deserialization.
@@ -118,9 +117,8 @@ namespace System.Text.Json.Serialization
             throw new InvalidOperationException("todo");
         }
 
-        private static void Read(
+        private static void ReadCore(
             ref JsonReaderState readerState,
-            Type returnType,
             bool isFinalBlock,
             byte[] buffer,
             int bytesToRead,
@@ -131,8 +129,7 @@ namespace System.Text.Json.Serialization
         {
             Utf8JsonReader reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesToRead), isFinalBlock, readerState);
 
-            Read(
-                returnType,
+            ReadCore(
                 options,
                 ref reader,
                 ref current,

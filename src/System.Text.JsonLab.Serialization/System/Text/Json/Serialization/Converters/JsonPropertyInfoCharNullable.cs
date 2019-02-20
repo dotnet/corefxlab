@@ -7,18 +7,25 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.Json.Serialization.Converters
 {
-    internal class JsonPropertyInfoCharNullable : JsonPropertyInfo<char?>, IJsonSerializerInternal<char?>
+    internal class JsonPropertyInfoCharNullable : JsonPropertyInfo<char?>, IJsonValueConverter<char?>
     {
         public JsonPropertyInfoCharNullable(Type classType, Type propertyType, PropertyInfo propertyInfo, JsonSerializerOptions options) :
             base(classType, propertyType, propertyInfo, options)
         { }
 
-        public char? Read(ref Utf8JsonReader reader)
+        public bool TryRead(Type valueType, ref Utf8JsonReader reader, out char? value)
         {
-            return reader.GetString()[0];
+            if (reader.TokenType != JsonTokenType.String)
+            {
+                value = default;
+                return false;
+            }
+
+            value = reader.GetString()[0];
+            return true;
         }
 
-        public void Write(ref Utf8JsonWriter writer, char? value)
+        public void Write(char? value, ref Utf8JsonWriter writer)
         {
 #if BUILDING_INBOX_LIBRARY
             char tempChar = value.Value;
@@ -29,14 +36,14 @@ namespace System.Text.Json.Serialization.Converters
 #endif
         }
 
-        public void Write(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, char? value)
+        public void Write(Span<byte> escapedPropertyName, char? value, ref Utf8JsonWriter writer)
         {
 #if BUILDING_INBOX_LIBRARY
             char tempChar = value.Value;
             Span<char> tempSpan = MemoryMarshal.CreateSpan<char>(ref tempChar, 1);
-            writer.WriteString(name, tempSpan);
+            writer.WriteString(escapedPropertyName, tempSpan);
 #else
-            writer.WriteString(name, value.ToString());
+            writer.WriteString(escapedPropertyName, value.ToString());
 #endif
         }
     }

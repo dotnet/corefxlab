@@ -13,7 +13,7 @@ namespace System.Text.Json.Serialization.Tests
         {
             var options = new JsonSerializerOptions();
             options.ClassMaterializer = JsonClassMaterializer.Reflection;
-            SimpleTestClass obj = JsonSerializer.Read<SimpleTestClass>(SimpleTestClass.s_data, options);
+            SimpleTestClass obj = JsonSerializer.Parse<SimpleTestClass>(SimpleTestClass.s_data, options);
             obj.Verify();
         }
     }

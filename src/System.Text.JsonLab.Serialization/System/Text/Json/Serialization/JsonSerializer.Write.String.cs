@@ -6,21 +6,21 @@ namespace System.Text.Json.Serialization
 {
     public static partial class JsonSerializer
     {
-        public static string WriteString<TValue>(TValue value, JsonSerializerOptions options = null)
+        public static string ToString<TValue>(TValue value, JsonSerializerOptions options = null)
         {
-            return WriteStringInternal(value, typeof(TValue), options);
+            return ToStringInternal(value, typeof(TValue), options);
         }
 
-        public static string WriteString(object value, Type type, JsonSerializerOptions options = null)
+        public static string ToString(object value, Type type, JsonSerializerOptions options = null)
         {
             VerifyValueAndType(value, type);
 
-            return WriteStringInternal(value, type, options);
+            return ToStringInternal(value, type, options);
         }
 
-        private static string WriteStringInternal(object value, Type type, JsonSerializerOptions options)
+        private static string ToStringInternal(object value, Type type, JsonSerializerOptions options)
         {
-            Span<byte> jsonBytes = WriteInternal(value, type, options);
+            Span<byte> jsonBytes = WriteCore(value, type, options);
             string stringJson = JsonReaderHelper.TranscodeHelper(jsonBytes);
             return stringJson;
         }

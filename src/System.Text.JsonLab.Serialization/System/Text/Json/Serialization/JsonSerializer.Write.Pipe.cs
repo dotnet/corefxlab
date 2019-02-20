@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+
 using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Threading;
@@ -12,23 +13,23 @@ namespace System.Text.Json.Serialization
     public static partial class JsonSerializer
     {
         [System.CLSCompliantAttribute(false)]
-        public static Task WriteAsync<TValue>(TValue value, PipeWriter utf8Writer, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static Task WriteAsync<TValue>(TValue value, PipeWriter utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            return WriteAsyncInternal(value, typeof(TValue), utf8Writer, options, cancellationToken);
+            return WriteAsyncCore(value, typeof(TValue), utf8Json, options, cancellationToken);
         }
 
         [System.CLSCompliantAttribute(false)]
-        public static Task WriteAsync(object value, Type type, PipeWriter utf8Writer, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+        public static Task WriteAsync(object value, Type type, PipeWriter utf8Json, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
         {
-            if (utf8Writer == null)
-                throw new ArgumentNullException(nameof(utf8Writer));
+            if (utf8Json == null)
+                throw new ArgumentNullException(nameof(utf8Json));
 
             VerifyValueAndType(value, type);
 
-            return WriteAsyncInternal(value, type, utf8Writer, options, cancellationToken);
+            return WriteAsyncCore(value, type, utf8Json, options, cancellationToken);
         }
 
-        private static async Task WriteAsyncInternal(object value, Type type, PipeWriter utf8Writer, JsonSerializerOptions options, CancellationToken cancellationToken)
+        private static async Task WriteAsyncCore(object value, Type type, PipeWriter utf8Json, JsonSerializerOptions options, CancellationToken cancellationToken)
         {
             if (options == null)
                 options = s_defaultSettings;
@@ -37,12 +38,12 @@ namespace System.Text.Json.Serialization
 
             // Allocate the initial buffer. We don't want to use the existing buffer as there may be very few bytes left
             // and we won't be able to calculate flushThreshold appropriately.
-            Memory<byte> memory = utf8Writer.GetMemory(options.EffectiveBufferSize);
+            Memory<byte> memory = utf8Json.GetMemory(options.EffectiveBufferSize);
 
             if (value == null)
             {
-                WriteNull(ref writerState, utf8Writer);
-                await utf8Writer.FlushAsync(cancellationToken).ConfigureAwait(false);
+                WriteNull(ref writerState, utf8Json);
+                await utf8Json.FlushAsync(cancellationToken).ConfigureAwait(false);
                 return;
             }
 
@@ -67,8 +68,8 @@ namespace System.Text.Json.Serialization
 
             do
             {
-                isFinalBlock = Write(ref writerState, utf8Writer, flushThreshold, options, ref current, ref previous, ref arrayIndex);
-                await utf8Writer.FlushAsync(cancellationToken).ConfigureAwait(false);
+                isFinalBlock = Write(ref writerState, utf8Json, flushThreshold, options, ref current, ref previous, ref arrayIndex);
+                await utf8Json.FlushAsync(cancellationToken).ConfigureAwait(false);
             } while (!isFinalBlock);
         }
     }

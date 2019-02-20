@@ -10,11 +10,15 @@ namespace System.Text.Json.Serialization
 {
     internal abstract class JsonPropertyInfo
     {
-        public PropertyNamePolicyAttribute NameConverter;
-        private bool? _skipNullValuesOnRead;
-        private bool? _skipNullValuesOnWrite;
-        public byte[] Name = default;
+        public JsonPropertyNamePolicyAttribute NameConverter;
+        private bool? _ignoreNullPropertyValueOnRead;
+        private bool? _ignoreNullPropertyValueOnWrite;
+
         public ClassType ClassType;
+
+        public byte[] Name = default;
+        public byte[] EscapedName = default;
+        public bool HasEscapedName = false;
         
         // todo: to avoid hashtable lookups, cache this:
         //public JsonClassInfo ClassInfo;
@@ -34,7 +38,7 @@ namespace System.Text.Json.Serialization
             CanBeNull = IsNullableType || !propertyType.IsValueType;
         }
 
-        public EnumerableConverterAttribute EnumerableConverter { get; private set; }
+        public JsonEnumerableConverter EnumerableConverter { get; private set; }
 
         public PropertyInfo PropertyInfo { get; private set; }
 
@@ -48,43 +52,43 @@ namespace System.Text.Json.Serialization
 
         public bool CanBeNull { get; private set; }
 
-        public bool SkipNullValuesOnRead(JsonSerializerOptions options)
+        public bool IgnoreNullPropertyValueOnRead(JsonSerializerOptions options)
         {
-            if (_skipNullValuesOnRead.HasValue)
+            if (_ignoreNullPropertyValueOnRead.HasValue)
             {
-                return _skipNullValuesOnRead.Value;
+                return _ignoreNullPropertyValueOnRead.Value;
             }
 
-            return options.SkipNullValuesOnRead;
+            return options.IgnoreNullPropertyValueOnRead;
         }
 
-        public bool SkipNullValuesOnWrite(JsonSerializerOptions options)
+        public bool IgnoreNullPropertyValueOnWrite(JsonSerializerOptions options)
         {
-            if (_skipNullValuesOnWrite.HasValue)
+            if (_ignoreNullPropertyValueOnWrite.HasValue)
             {
-                return _skipNullValuesOnWrite.Value;
+                return _ignoreNullPropertyValueOnWrite.Value;
             }
 
-            return options.SkipNullValuesOnWrite;
+            return options.IgnoreNullPropertyValueOnWrite;
         }
 
         public abstract object GetValueAsObject(object obj, JsonSerializerOptions options);
         public abstract void SetValueAsObject(object obj, object value, JsonSerializerOptions options);
 
-        public abstract void Read(JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader);
+        public abstract void Read(JsonTokenType tokenType, JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader);
 
-        protected internal abstract void ReadEnumerable(JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader);
+        protected internal abstract void ReadEnumerable(JsonTokenType tokenType, JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader);
 
         public abstract void Write(JsonSerializerOptions options, ref WriteObjectState current, ref Utf8JsonWriter writer);
 
         protected internal abstract void WriteEnumerable(JsonSerializerOptions options, ref WriteObjectState current, ref Utf8JsonWriter writer);
 
-        public abstract PropertyValueConverterAttribute GetValueConverter();
+        //public abstract JsonValueConverterAttribute GetValueConverter();
 
         public virtual void GetPolicies(JsonSerializerOptions options)
         {
             {
-                PropertyNamePolicyAttribute attr = DefaultConverters.GetPolicy<PropertyNamePolicyAttribute>(ParentClassType, PropertyInfo, options);
+                JsonPropertyNamePolicyAttribute attr = DefaultConverters.GetPolicy<JsonPropertyNamePolicyAttribute>(ParentClassType, PropertyInfo, options);
                 if (attr != null)
                 {
                     NameConverter = attr;
@@ -92,8 +96,8 @@ namespace System.Text.Json.Serialization
             }
 
             {
-                _skipNullValuesOnRead = DefaultConverters.GetPropertyClassAssemblyPolicy(ParentClassType, PropertyInfo, options, attr => attr.SkipNullValuesOnRead);
-                _skipNullValuesOnWrite = DefaultConverters.GetPropertyClassAssemblyPolicy(ParentClassType, PropertyInfo, options, attr => attr.SkipNullValuesOnWrite);
+                _ignoreNullPropertyValueOnRead = DefaultConverters.GetPropertyClassAssemblyPolicy(ParentClassType, PropertyInfo, options, attr => attr.IgnoreNullValueOnRead);
+                _ignoreNullPropertyValueOnWrite = DefaultConverters.GetPropertyClassAssemblyPolicy(ParentClassType, PropertyInfo, options, attr => attr.IgnoreNullValueOnWrite);
             }
 
             if (ElementClassInfo != null)

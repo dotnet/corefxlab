@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Text.Json.Serialization.Converters;
 using System.Text.Json.Serialization.Policies;
 
 namespace System.Text.Json.Serialization
@@ -10,13 +11,16 @@ namespace System.Text.Json.Serialization
     /// <summary>
     /// Converter for <see cref="Enum"/> types.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public sealed class JsonEnumConverterAttribute : PropertyValueConverterAttribute
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true)]
+    public class JsonEnumConverterAttribute : JsonValueConverterAttribute
     {
-        /// <summary>
-        /// Determines how an enum should be converted to\from a <see cref="string"/>. By default, enums are <see cref="long"/>.
-        /// </summary>
-        public bool TreatAsString { get; set; }
+        private static readonly JsonValueConverter<object> s_stringConverter = new DefaultEnumConverter<object>(true);
+        private static readonly JsonValueConverter<object> s_longConverter = new DefaultEnumConverter<object>(false);
+
+        public JsonEnumConverterAttribute()
+        {
+            PropertyType = typeof(Enum);
+        }
 
         public JsonEnumConverterAttribute(bool treatAsString = default)
         {
@@ -24,83 +28,37 @@ namespace System.Text.Json.Serialization
             PropertyType = typeof(Enum);
         }
 
-#if BUILDING_INBOX_LIBRARY 
-        public override object GetRead(ref Utf8JsonReader reader, Type propertyType)
-#else
-        internal override object GetRead(ref Utf8JsonReader reader, Type propertyType)
-#endif
+        /// <summary>
+        /// Determines how an enum should be converted to\from a <see cref="string"/>. By default, enums are <see cref="long"/>.
+        /// </summary>
+        public bool TreatAsString { get; set; }
+#if BUILDING_INBOX_LIBRARY
+
+        public override JsonValueConverter<TValue> GetConverter<TValue>()
         {
-            if (TreatAsString)
-            {
-#if !BUILDING_INBOX_LIBRARY 
-                throw new NotImplementedException("TODO: EnumConverter is not yet supported on .NET Standard 2.0."); 
-#else
-                string enumString = reader.GetString();
-                if (Enum.TryParse(propertyType, enumString, out object objValue))
-                {
-                    return (Enum)objValue;
-                }
-
-                throw new InvalidOperationException($"todo:could not convert value to string-based Enum {propertyType}");
-#endif
-            }
-
-            ulong value = reader.GetUInt64();
-            Enum enumObject = (Enum)Enum.ToObject(propertyType, value);
-            return enumObject;
+            return new DefaultEnumConverter<TValue>(TreatAsString);
         }
 
-#if BUILDING_INBOX_LIBRARY 
-        public override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
-#else
-        internal override void SetWrite(ref Utf8JsonWriter writer, ReadOnlySpan<byte> name, object value)
-#endif
+        public override JsonValueConverter<object> GetConverter()
         {
-            Debug.Assert(value is Enum);
-
             if (TreatAsString)
-            {
-                string enumString = value.ToString();
-                if (name.IsEmpty)
-                {
-                    writer.WriteStringValue(enumString);
-                }
-                else
-                {
-                    writer.WriteString(name, enumString);
-                }
-            }
-            else
-            {
-                Type underlyingType = Enum.GetUnderlyingType(value.GetType());
+                return s_stringConverter;
 
-                if (underlyingType == typeof(ulong))
-                {
-                    // Keep +sign
-                    ulong ulongValue = Convert.ToUInt64(value);
-                    if (name.IsEmpty)
-                    {
-                        writer.WriteNumberValue(ulongValue);
-                    }
-                    else
-                    {
-                        writer.WriteNumber(name, ulongValue);
-                    }
-                }
-                else
-                {
-                    // long can hold the signed\unsigned values of other integer types
-                    long longValue = Convert.ToInt64(value);
-                    if (name.IsEmpty)
-                    {
-                        writer.WriteNumberValue(longValue);
-                    }
-                    else
-                    {
-                        writer.WriteNumber(name, longValue);
-                    }
-                }
-            }
+            return s_longConverter;
         }
+#else
+        internal override JsonValueConverter<TValue> GetConverter<TValue>()
+        {
+            return new DefaultEnumConverter<TValue>(TreatAsString);
+        }
+
+        internal override JsonValueConverter<object> GetConverter()
+        {
+            if (TreatAsString)
+                return s_stringConverter;
+
+            return s_longConverter;
+        }
+#endif
     }
 }

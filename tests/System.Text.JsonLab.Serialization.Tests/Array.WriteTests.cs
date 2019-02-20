@@ -17,16 +17,16 @@ namespace System.Text.Json.Serialization.Tests
                 TestClassWithStringArray obj = new TestClassWithStringArray();
                 obj.Initialize();
                 obj.Verify();
-                json = JsonSerializer.WriteString(obj);
+                json = JsonSerializer.ToString(obj);
             }
 
             {
-                TestClassWithStringArray obj = JsonSerializer.ReadString<TestClassWithStringArray>(json);
+                TestClassWithStringArray obj = JsonSerializer.Parse<TestClassWithStringArray>(json);
                 obj.Verify();
             }
 
             {
-                TestClassWithStringArray obj = JsonSerializer.Read<TestClassWithStringArray>(TestClassWithStringArray.s_data);
+                TestClassWithStringArray obj = JsonSerializer.Parse<TestClassWithStringArray>(TestClassWithStringArray.s_data);
                 obj.Verify();
             }
         }
@@ -40,16 +40,16 @@ namespace System.Text.Json.Serialization.Tests
                 TestClassWithGenericList obj = new TestClassWithGenericList();
                 obj.Initialize();
                 obj.Verify();
-                json = JsonSerializer.WriteString(obj);
+                json = JsonSerializer.ToString(obj);
             }
 
             {
-                TestClassWithGenericList obj = JsonSerializer.ReadString<TestClassWithGenericList>(json);
+                TestClassWithGenericList obj = JsonSerializer.Parse<TestClassWithGenericList>(json);
                 obj.Verify();
             }
 
             {
-                TestClassWithGenericList obj = JsonSerializer.Read<TestClassWithGenericList>(TestClassWithGenericList.s_data);
+                TestClassWithGenericList obj = JsonSerializer.Parse<TestClassWithGenericList>(TestClassWithGenericList.s_data);
                 obj.Verify();
             }
         }
@@ -63,16 +63,16 @@ namespace System.Text.Json.Serialization.Tests
                 TestClassWithObjectList obj = new TestClassWithObjectList();
                 obj.Initialize();
                 obj.Verify();
-                json = JsonSerializer.WriteString(obj);
+                json = JsonSerializer.ToString(obj);
             }
 
             {
-                TestClassWithObjectList obj = JsonSerializer.ReadString<TestClassWithObjectList>(json);
+                TestClassWithObjectList obj = JsonSerializer.Parse<TestClassWithObjectList>(json);
                 obj.Verify();
             }
 
             {
-                TestClassWithObjectList obj = JsonSerializer.Read<TestClassWithObjectList>(TestClassWithObjectList.s_data);
+                TestClassWithObjectList obj = JsonSerializer.Parse<TestClassWithObjectList>(TestClassWithObjectList.s_data);
                 obj.Verify();
             }
         }

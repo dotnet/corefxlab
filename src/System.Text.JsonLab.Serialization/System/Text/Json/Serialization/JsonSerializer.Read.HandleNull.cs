@@ -31,7 +31,7 @@ namespace System.Text.Json.Serialization
                 return true;
             }
 
-            if (!propertyInfo.SkipNullValuesOnRead(options))
+            if (!propertyInfo.IgnoreNullPropertyValueOnRead(options))
             {
                 current.PropertyInfo.SetValueAsObject(current.ReturnValue, null, options);
             }

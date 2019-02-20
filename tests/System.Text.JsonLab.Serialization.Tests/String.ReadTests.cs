@@ -12,19 +12,19 @@ namespace System.Text.Json.Serialization.Tests
         public static void NullObjectInputFail()
         {
 
-            Assert.Throws<ArgumentNullException>(() => JsonSerializer.ReadString<string>(null));
+            Assert.Throws<ArgumentNullException>(() => JsonSerializer.Parse<string>((string)null));
         }
 
         [Fact]
         public static void NullLiteralObjectInput()
         {
             {
-                string obj = JsonSerializer.ReadString<string>("null");
+                string obj = JsonSerializer.Parse<string>("null");
                 Assert.Null(obj);
             }
 
             {
-                string obj = JsonSerializer.ReadString<string>(@"""null""");
+                string obj = JsonSerializer.Parse<string>(@"""null""");
                 Assert.Equal("null", obj);
             }
         }
@@ -32,14 +32,14 @@ namespace System.Text.Json.Serialization.Tests
         [Fact]
         public static void EmptyStringInput()
         {
-            string obj = JsonSerializer.ReadString<string>(@"""""");
+            string obj = JsonSerializer.Parse<string>(@"""""");
             Assert.Equal(string.Empty, obj);
         }
 
         [Fact]
         public static void ReadSimpleClass()
         {
-            SimpleTestClass obj = JsonSerializer.ReadString<SimpleTestClass>(SimpleTestClass.s_json);
+            SimpleTestClass obj = JsonSerializer.Parse<SimpleTestClass>(SimpleTestClass.s_json);
             obj.Verify();
         }
     }

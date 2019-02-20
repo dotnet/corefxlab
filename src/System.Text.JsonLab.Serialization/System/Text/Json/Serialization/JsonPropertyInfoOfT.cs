@@ -13,7 +13,10 @@ namespace System.Text.Json.Serialization
     {
         public delegate TValue GetterDelegate(object obj);
         public delegate void SetterDelegate(object obj, TValue value);
-        public PropertyValueConverterAttribute ValueConverter { get; private set; }
+        public JsonValueConverter<TValue> ValueConverter { get; private set; }
+
+        public bool HasGetter { get; private set; }
+        public bool HasSetter { get; private set; }
 
         public GetterDelegate Get { get; private set; }
         public SetterDelegate Set { get; private set; }
@@ -23,11 +26,23 @@ namespace System.Text.Json.Serialization
         {
             if (propertyInfo != null)
             {
-                Get = options.ClassMaterializerStrategy.CreateGetter<TValue>(propertyInfo);
-                Set = options.ClassMaterializerStrategy.CreateSetter<TValue>(propertyInfo);
+                if (propertyInfo.GetMethod?.IsPublic == true)
+                {
+                    HasGetter = true;
+                    Get = options.ClassMaterializerStrategy.CreateGetter<TValue>(propertyInfo);
+                }
+
+                if (propertyInfo.SetMethod?.IsPublic == true)
+                {
+                    HasSetter = true;
+                    Set = options.ClassMaterializerStrategy.CreateSetter<TValue>(propertyInfo);
+                }
             }
             else
             {
+                HasGetter = true;
+                HasSetter = true;
+
                 // Used when current.obj contains the return value and this is the property policy.
                 Get = delegate (object obj)
                 {
@@ -49,21 +64,21 @@ namespace System.Text.Json.Serialization
             Debug.Assert(Set != null);
             TValue typedValue = (TValue)value;
 
-            if (typedValue != null || !SkipNullValuesOnWrite(options))
+            if (typedValue != null || !IgnoreNullPropertyValueOnWrite(options))
             {
                 Set(obj, (TValue)value);
             }
         }
 
-        public override void Read(JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader)
+        public override void Read(JsonTokenType tokenType, JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader)
         {
             if (ElementClassInfo != null)
             {
                 // Forward the setter to the value-based JsonPropertyInfo.
                 JsonPropertyInfo propertyInfo = ElementClassInfo.GetPolicyProperty();
-                propertyInfo.ReadEnumerable(options, ref current, ref reader);
+                propertyInfo.ReadEnumerable(tokenType, options, ref current, ref reader);
             }
-            else
+            else if (HasSetter)
             {
                 if (ValueConverter != null)
                 {
@@ -73,24 +88,32 @@ namespace System.Text.Json.Serialization
                         propertyType = Nullable.GetUnderlyingType(propertyType);
                     }
 
-                    object value = ValueConverter.GetRead(ref reader, propertyType);
-                    if (value != null || !SkipNullValuesOnRead(options))
+                    if (!ValueConverter.TryRead(propertyType, ref reader, out TValue value))
+                    {
+                        throw new JsonReaderException("todo: unable to read value (propertypath)", 0,0);
+                    }
+
+                    if (value != null || !IgnoreNullPropertyValueOnRead(options))
                     {
                         SetValueAsObject(current.ReturnValue, value, options);
                     }
                 }
                 else
                 {
-                    if (this is IJsonSerializerInternal<TValue> converter)
+                    if (this is IJsonValueConverter<TValue> converter)
                     {
-                        TValue value = converter.Read(ref reader);
+                        if (!converter.TryRead(PropertyType, ref reader, out TValue value))
+                        {
+                            throw new JsonReaderException("todo: unable to read value (propertypath)", 0,0);
+                        }
+
                         if (current.ReturnValue == null)
                         {
                             current.ReturnValue = value;
                         }
                         else
                         {
-                            if (value != null || !SkipNullValuesOnRead(options))
+                            if (value != null || !IgnoreNullPropertyValueOnRead(options))
                             {
                                 Set(current.ReturnValue, value);
                             }
@@ -104,7 +127,7 @@ namespace System.Text.Json.Serialization
             }
         }
 
-        protected internal override void ReadEnumerable(JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader)
+        protected internal override void ReadEnumerable(JsonTokenType tokenType, JsonSerializerOptions options, ref ReadObjectState current, ref Utf8JsonReader reader)
         {
             if (ValueConverter != null)
             {
@@ -113,14 +136,23 @@ namespace System.Text.Json.Serialization
                 {
                     propertyType = Nullable.GetUnderlyingType(propertyType);
                 }
-                object value = ValueConverter.GetRead(ref reader, propertyType);
+
+                if (!ValueConverter.TryRead(propertyType, ref reader, out TValue value))
+                {
+                    throw new JsonReaderException("todo: unable to read value (propertypath)", 0,0);
+                }
+
                 ReadObjectState.SetReturnValue(value, options, ref current);
             }
             else
             {
-                if (this is IJsonSerializerInternal<TValue> converter)
+                if (this is IJsonValueConverter<TValue> converter)
                 {
-                    TValue value = converter.Read(ref reader);
+                    if (!converter.TryRead(PropertyType, ref reader, out TValue value))
+                    {
+                        throw new JsonReaderException("todo: unable to read value (propertypath)", 0,0);
+                    }
+
                     ReadObjectState.SetReturnValue(value, options, ref current);
                 }
                 else
@@ -139,7 +171,7 @@ namespace System.Text.Json.Serialization
                 JsonPropertyInfo propertyInfo = ElementClassInfo.GetPolicyProperty();
                 propertyInfo.WriteEnumerable(options, ref current, ref writer);
             }
-            else
+            else if (HasGetter)
             {
                 if (ValueConverter != null)
                 {
@@ -150,14 +182,28 @@ namespace System.Text.Json.Serialization
                         {
                             writer.WriteNullValue();
                         }
-                        else if (!SkipNullValuesOnWrite(options))
+                        else if (!IgnoreNullPropertyValueOnWrite(options))
                         {
                             writer.WriteNull(Name);
                         }
                     }
                     else
                     {
-                        ValueConverter.SetWrite(ref writer, Name, value);
+                        if (Name != null)
+                        {
+                            if (HasEscapedName)
+                            {
+                                ValueConverter.Write(EscapedName, value, ref writer);
+                            }
+                            else
+                            {
+                                ValueConverter.Write(Name, value, ref writer);
+                            }
+                        }
+                        else
+                        {
+                            ValueConverter.Write(value, ref writer);
+                        }
                     }
                 }
                 else
@@ -170,22 +216,36 @@ namespace System.Text.Json.Serialization
                         {
                             writer.WriteNullValue();
                         }
-                        else if (!SkipNullValuesOnWrite(options))
+                        else if (!IgnoreNullPropertyValueOnWrite(options))
                         {
-                            writer.WriteNull(Name);
+                            if (HasEscapedName)
+                            {
+                                writer.WriteNull(EscapedName);
+                            }
+                            else
+                            {
+                                writer.WriteNull(Name);
+                            }
                         }
                     }
                     else
                     {
-                        if (this is IJsonSerializerInternal<TValue> converter)
+                        if (this is IJsonValueConverter<TValue> converter)
                         {
-                            if (Name == null)
+                            if (Name != null)
                             {
-                                converter.Write(ref writer, value);
+                                if (HasEscapedName)
+                                {
+                                    converter.Write(EscapedName, value, ref writer);
+                                }
+                                else
+                                {
+                                    converter.Write(Name, value, ref writer);
+                                }
                             }
-                            else if (!SkipNullValuesOnWrite(options))
+                            else
                             {
-                                converter.Write(ref writer, Name, value);
+                                converter.Write(value, ref writer);
                             }
                         }
                         else
@@ -210,12 +270,26 @@ namespace System.Text.Json.Serialization
                 }
                 else
                 {
-                    ValueConverter.SetWrite(ref writer, Name, value);
+                    if (Name != null)
+                    {
+                        if (HasEscapedName)
+                        {
+                            ValueConverter.Write(EscapedName, (TValue)value, ref writer);
+                        }
+                        else
+                        {
+                            ValueConverter.Write(Name, (TValue)value, ref writer);
+                        }
+                    }
+                    else
+                    {
+                        ValueConverter.Write((TValue)value, ref writer);
+                    }
                 }
             }
             else
             {
-                if (this is IJsonSerializerInternal<TValue> converter)
+                if (this is IJsonValueConverter<TValue> converter)
                 {
                     Debug.Assert(current.Enumerator != null);
                     TValue value = (TValue)current.Enumerator.Current;
@@ -225,7 +299,7 @@ namespace System.Text.Json.Serialization
                     }
                     else
                     {
-                        converter.Write(ref writer, value);
+                        converter.Write(value, ref writer);
                     }
                 }
                 else
@@ -235,10 +309,10 @@ namespace System.Text.Json.Serialization
             }
         }
 
-        public override PropertyValueConverterAttribute GetValueConverter()
-        {
-            return ValueConverter;
-        }
+        //public override PropertyValueConverter<TValue> GetValueConverter()
+        //{
+        //    return ValueConverter;
+        //}
 
         public override void GetPolicies(JsonSerializerOptions options)
         {
@@ -248,10 +322,15 @@ namespace System.Text.Json.Serialization
             base.GetPolicies(options);
         }
 
-        protected PropertyValueConverterAttribute GetPropertyValueConverter(JsonSerializerOptions options)
+        protected JsonValueConverter<TValue> GetPropertyValueConverter(JsonSerializerOptions options)
         {
-            PropertyValueConverterAttribute attr = DefaultConverters.GetPropertyValueConverter(ParentClassType, PropertyInfo, PropertyType, options);
-            return attr;
+            JsonValueConverterAttribute attr = DefaultConverters.GetPropertyValueConverter(ParentClassType, PropertyInfo, PropertyType, options);
+            if (attr != null)
+            {
+                return attr.GetConverter<TValue>();
+            }
+
+            return null;
         }
     }
 }

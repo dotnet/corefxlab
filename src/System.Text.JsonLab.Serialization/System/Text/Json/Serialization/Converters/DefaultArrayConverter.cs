@@ -4,12 +4,13 @@
 
 using System.Collections;
 using System.Linq;
+using System.Text.Json.Serialization.Policies;
 
-namespace System.Text.Json.Serialization.Policies
+namespace System.Text.Json.Serialization.Converters
 {
-    internal static class ArrayConverter
+    internal class DefaultArrayConverter : JsonEnumerableConverter
     {
-        public static IEnumerable CreateFromList(Type elementType, IList sourceList)
+        public override IEnumerable CreateFromList(Type elementType, IList sourceList)
         {
             Array array;
 

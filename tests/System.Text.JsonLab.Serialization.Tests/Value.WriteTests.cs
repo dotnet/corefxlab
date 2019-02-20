@@ -13,32 +13,32 @@ namespace System.Text.Json.Serialization.Tests
         public static void Primitives()
         {
             {
-                string json = JsonSerializer.WriteString(1);
+                string json = JsonSerializer.ToString(1);
                 Assert.Equal("1", json);
             }
 
             {
-                Span<byte> json = JsonSerializer.Write(1);
+                Span<byte> json = JsonSerializer.ToBytes(1);
                 Assert.Equal(Encoding.UTF8.GetBytes("1"), json.ToArray());
             }
 
             {
-                string json = JsonSerializer.WriteString(long.MaxValue);
+                string json = JsonSerializer.ToString(long.MaxValue);
                 Assert.Equal(long.MaxValue.ToString(), json);
             }
 
             {
-                Span<byte> json = JsonSerializer.Write(long.MaxValue);
+                Span<byte> json = JsonSerializer.ToBytes(long.MaxValue);
                 Assert.Equal(Encoding.UTF8.GetBytes(long.MaxValue.ToString()), json.ToArray());
             }
 
             {
-                string json = JsonSerializer.WriteString("Hello");
+                string json = JsonSerializer.ToString("Hello");
                 Assert.Equal(@"""Hello""", json);
             }
 
             {
-                Span<byte> json = JsonSerializer.Write("Hello");
+                Span<byte> json = JsonSerializer.ToBytes("Hello");
                 Assert.Equal(Encoding.UTF8.GetBytes(@"""Hello"""), json.ToArray());
             }
         }
@@ -47,7 +47,7 @@ namespace System.Text.Json.Serialization.Tests
         public static void PrimitiveArray()
         {
             var input = new int[] { 0, 1 };
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[0,1]", json);
         }
 
@@ -55,7 +55,7 @@ namespace System.Text.Json.Serialization.Tests
         public static void ArrayWithEnums()
         {
             var input = new SampleEnum[] { SampleEnum.One, SampleEnum.Two };
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[1,2]", json);
         }
 
@@ -72,11 +72,11 @@ namespace System.Text.Json.Serialization.Tests
                 input[1].Initialize();
                 input[1].Verify();
 
-                json = JsonSerializer.WriteString(input);
+                json = JsonSerializer.ToString(input);
             }
 
             {
-                SimpleTestClass[] output = JsonSerializer.ReadString<SimpleTestClass[]>(json);
+                SimpleTestClass[] output = JsonSerializer.Parse<SimpleTestClass[]>(json);
                 Assert.Equal(2, output.Length);
                 output[0].Verify();
                 output[1].Verify();
@@ -90,7 +90,7 @@ namespace System.Text.Json.Serialization.Tests
             input[0] = new int[] { 1, 2 };
             input[1] = new int[] { 3, 4 };
 
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[[1,2],[3,4]]", json);
         }
 
@@ -103,7 +103,7 @@ namespace System.Text.Json.Serialization.Tests
                 new List<int>() { 3, 4 }
             };
 
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[[1,2],[3,4]]", json);
         }
 
@@ -116,7 +116,7 @@ namespace System.Text.Json.Serialization.Tests
                 new int[] { 3, 4 }
             };
 
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[[1,2],[3,4]]", json);
         }
 
@@ -127,7 +127,7 @@ namespace System.Text.Json.Serialization.Tests
             input[0] = new List<int>() { 1, 2 };
             input[1] = new List<int>() { 3, 4 };
 
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[[1,2],[3,4]]", json);
         }
 
@@ -136,7 +136,7 @@ namespace System.Text.Json.Serialization.Tests
         {
             var input = new List<int> { 1, 2 };
 
-            string json = JsonSerializer.WriteString(input);
+            string json = JsonSerializer.ToString(input);
             Assert.Equal("[1,2]", json);
         }
     }

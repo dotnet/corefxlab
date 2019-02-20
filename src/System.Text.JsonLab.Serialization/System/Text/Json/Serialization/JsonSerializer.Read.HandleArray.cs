@@ -15,6 +15,7 @@ namespace System.Text.Json.Serialization
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void HandleStartArray(
             JsonSerializerOptions options,
+            ref Utf8JsonReader reader,
             ref ReadObjectState current,
             ref List<ReadObjectState> previous,
             ref int arrayIndex)
@@ -22,7 +23,7 @@ namespace System.Text.Json.Serialization
             Type arrayType = current.PropertyInfo.PropertyType;
             if (!typeof(IEnumerable).IsAssignableFrom(arrayType) || (arrayType.IsArray && arrayType.GetArrayRank() > 1))
             {
-                throw new InvalidOperationException($"todo: type {arrayType.ToString()} is not convertable to array.");
+                throw new JsonReaderException($"todo: type {arrayType.ToString()} is not convertable to array.", 0,0);
             }
 
             Debug.Assert(current.IsPropertyEnumerable());
@@ -85,7 +86,7 @@ namespace System.Text.Json.Serialization
             bool setPropertyDirectly;
             if (current.TempEnumerableValues != null)
             {
-                EnumerableConverterAttribute converter = current.PropertyInfo.EnumerableConverter;
+                JsonEnumerableConverter converter = current.PropertyInfo.EnumerableConverter;
                 if (converter == null)
                 {
                     converter = current.ClassInfo.EnumerableConverter;

@@ -15,7 +15,7 @@ namespace System.Text.Json.Serialization.Tests
             obj.Initialize();
 
             // We don't allow cycles; we throw InvalidOperation instead of an unrecoverable StackOverflow.
-            Assert.Throws<InvalidOperationException>(() => JsonSerializer.Write(obj));
+            Assert.Throws<InvalidOperationException>(() => JsonSerializer.ToString(obj));
         }
     }
 }
