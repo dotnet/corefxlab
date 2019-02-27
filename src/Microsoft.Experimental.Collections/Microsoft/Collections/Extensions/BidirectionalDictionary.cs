@@ -215,7 +215,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
-                TryInsert(firstKey, value, false);
+                TryInsert(firstKey, value, returnFalseOnExisting: false);
             }
         }
 
@@ -255,17 +255,8 @@ namespace Microsoft.Collections.Extensions
         /// <param name="secondKeyComparer">The <see cref="IEqualityComparer{TSecond}" /> implementation to use when comparing second keys, or null to use the default <see cref="EqualityComparer{TSecond}" /> for the type of the second key.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>
         public BidirectionalDictionary(int capacity, IEqualityComparer<TFirst> firstKeyComparer, IEqualityComparer<TSecond> secondKeyComparer)
+            : this(capacity > 0 ? HashHelpers.GetPrime(capacity) : (capacity == 0 ? 0 : throw new ArgumentOutOfRangeException(nameof(capacity))), firstKeyComparer, secondKeyComparer, null)
         {
-            if (capacity < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(capacity));
-            }
-
-            int size = capacity > 0 ? HashHelpers.GetPrime(capacity) : 0;
-
-            _comparer = Initialize(size, firstKeyComparer);
-            _shared = new BidirectionalDictionaryShared();
-            _reverse = new BidirectionalDictionary<TSecond, TFirst>(this, size, secondKeyComparer);
         }
 
         /// <summary>
@@ -301,14 +292,7 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
-        private BidirectionalDictionary(BidirectionalDictionary<TSecond, TFirst> reverse, int size, IEqualityComparer<TFirst> comparer)
-        {
-            _comparer = Initialize(size, comparer);
-            _shared = reverse._shared;
-            _reverse = reverse;
-        }
-
-        private IEqualityComparer<TFirst> Initialize(int size, IEqualityComparer<TFirst> comparer)
+        private BidirectionalDictionary(int size, IEqualityComparer<TFirst> firstKeyComparer, IEqualityComparer<TSecond> secondKeyComparer, BidirectionalDictionary<TSecond, TFirst> reverse)
         {
             if (size > 0)
             {
@@ -320,7 +304,20 @@ namespace Microsoft.Collections.Extensions
                 _buckets = HashHelpers.SizeOneIntArray;
                 _entries = BidirectionalDictionaryEntry<TFirst>.InitialEntries;
             }
-            return comparer != EqualityComparer<TFirst>.Default ? comparer : null;
+            if (firstKeyComparer != EqualityComparer<TFirst>.Default)
+            {
+                _comparer = firstKeyComparer;
+            }
+            if (reverse == null)
+            {
+                _shared = new BidirectionalDictionaryShared();
+                _reverse = new BidirectionalDictionary<TSecond, TFirst>(size, secondKeyComparer, firstKeyComparer, this);
+            }
+            else
+            {
+                _shared = reverse._shared;
+                _reverse = reverse;
+            }
         }
 
         /// <summary>
@@ -336,7 +333,7 @@ namespace Microsoft.Collections.Extensions
             {
                 throw new ArgumentNullException(nameof(secondKey));
             }
-            return TryInsert(firstKey, secondKey, true);
+            return TryInsert(firstKey, secondKey, returnFalseOnExisting: true);
         }
 
         /// <summary>
@@ -457,8 +454,8 @@ namespace Microsoft.Collections.Extensions
             {
                 BidirectionalDictionaryShared shared = _shared;
                 int count = shared.Count;
-                BidirectionalDictionaryEntry<TFirst>.Resize(ref _buckets, ref _entries, newSize, count, true);
-                BidirectionalDictionaryEntry<TSecond>.Resize(ref _reverse._buckets, ref _reverse._entries, newSize, count, true);
+                BidirectionalDictionaryEntry<TFirst>.Resize(ref _buckets, ref _entries, newSize, count, compact: true);
+                BidirectionalDictionaryEntry<TSecond>.Resize(ref _reverse._buckets, ref _reverse._entries, newSize, count, compact: true);
                 shared.Count = Count;
                 shared.FreeCount = 0;
                 shared.FreeList = -1;
