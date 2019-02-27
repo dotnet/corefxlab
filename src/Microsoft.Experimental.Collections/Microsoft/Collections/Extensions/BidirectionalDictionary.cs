@@ -148,15 +148,12 @@ namespace Microsoft.Collections.Extensions
     /// <typeparam name="TSecond">The type of the second keys in the dictionary.</typeparam>
     public partial class BidirectionalDictionary<TFirst, TSecond> : IDictionary<TFirst, TSecond>, IReadOnlyDictionary<TFirst, TSecond>
     {
-        private int[] _firstKeyBuckets;
-        private int[] _secondKeyBuckets;
-        private BidirectionalDictionaryEntry<TFirst>[] _firstKeyEntries;
-        private BidirectionalDictionaryEntry<TSecond>[] _secondKeyEntries;
-        private readonly IEqualityComparer<TFirst> _firstKeyComparer;
-        private readonly IEqualityComparer<TSecond> _secondKeyComparer;
+        private int[] _buckets;
+        private BidirectionalDictionaryEntry<TFirst>[] _entries;
+        private readonly IEqualityComparer<TFirst> _comparer;
         private readonly BidirectionalDictionaryShared _shared;
+        private readonly BidirectionalDictionary<TSecond, TFirst> _reverse;
         private KeyCollection _firstKeys;
-        private BidirectionalDictionary<TSecond, TFirst> _reverse;
 
         /// <summary>
         /// Gets the number of key pairs contained in the <see cref="BidirectionalDictionary{TFirst, TSecond}" />.
@@ -168,13 +165,13 @@ namespace Microsoft.Collections.Extensions
         /// Gets the <see cref="IEqualityComparer{TFirst}" /> that is used to determine equality of first keys for the dictionary.
         /// </summary>
         /// <returns>The <see cref="IEqualityComparer{TFirst}" /> generic interface implementation that is used to determine equality of first keys for the current <see cref="BidirectionalDictionary{TFirst, TSecond}" /> and to provide hash values for the first keys.</returns>
-        public IEqualityComparer<TFirst> FirstKeyComparer => _firstKeyComparer ?? EqualityComparer<TFirst>.Default;
+        public IEqualityComparer<TFirst> FirstKeyComparer => _comparer ?? EqualityComparer<TFirst>.Default;
 
         /// <summary>
         /// Gets the <see cref="IEqualityComparer{TSecond}" /> that is used to determine equality of second keys for the dictionary.
         /// </summary>
         /// <returns>The <see cref="IEqualityComparer{TSecond}" /> generic interface implementation that is used to determine equality of second keys for the current <see cref="BidirectionalDictionary{TFirst, TSecond}" /> and to provide hash values for the second keys.</returns>
-        public IEqualityComparer<TSecond> SecondKeyComparer => _secondKeyComparer ?? EqualityComparer<TSecond>.Default;
+        public IEqualityComparer<TSecond> SecondKeyComparer => _reverse.FirstKeyComparer;
 
         /// <summary>
         /// Gets a collection containing the first keys in the <see cref="BidirectionalDictionary{TFirst, TSecond}" />.
@@ -186,12 +183,12 @@ namespace Microsoft.Collections.Extensions
         /// Gets a collection containing the second keys in the <see cref="BidirectionalDictionary{TFirst, TSecond}" />.
         /// </summary>
         /// <returns>An <see cref="BidirectionalDictionary{TFirst, TSecond}.KeyCollection" /> containing the second keys in the <see cref="BidirectionalDictionary{TFirst, TSecond}" />.</returns>
-        public BidirectionalDictionary<TSecond, TFirst>.KeyCollection SecondKeys => Reverse.FirstKeys;
+        public BidirectionalDictionary<TSecond, TFirst>.KeyCollection SecondKeys => _reverse.FirstKeys;
 
         /// <summary>
         /// Gets the reverse view of the <see cref="BidirectionalDictionary{TFirst, TSecond}" /> so that the first key becomes the second key and the second key becomes the first key.
         /// </summary>
-        public BidirectionalDictionary<TSecond, TFirst> Reverse => _reverse ?? (_reverse = new BidirectionalDictionary<TSecond, TFirst>(this));
+        public BidirectionalDictionary<TSecond, TFirst> Reverse => _reverse;
 
         /// <summary>
         /// Gets or sets the second key associated with the specified first key as an O(1) operation.
@@ -205,12 +202,12 @@ namespace Microsoft.Collections.Extensions
         {
             get
             {
-                int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(_firstKeyBuckets, _firstKeyEntries, _firstKeyComparer, firstKey, out _);
+                int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(_buckets, _entries, _comparer, firstKey, out _);
                 if (index < 0)
                 {
                     throw new KeyNotFoundException(string.Format(Strings.Arg_KeyNotFoundWithKey, firstKey.ToString()));
                 }
-                return _secondKeyEntries[index].Key;
+                return _reverse._entries[index].Key;
             }
             set
             {
@@ -265,30 +262,10 @@ namespace Microsoft.Collections.Extensions
             }
 
             int size = capacity > 0 ? HashHelpers.GetPrime(capacity) : 0;
-            if (size > 0)
-            {
-                _firstKeyBuckets = new int[size];
-                _firstKeyEntries = new BidirectionalDictionaryEntry<TFirst>[size];
-                _secondKeyBuckets = new int[size];
-                _secondKeyEntries = new BidirectionalDictionaryEntry<TSecond>[size];
-            }
-            else
-            {
-                _firstKeyBuckets = HashHelpers.SizeOneIntArray;
-                _firstKeyEntries = BidirectionalDictionaryEntry<TFirst>.InitialEntries;
-                _secondKeyBuckets = HashHelpers.SizeOneIntArray;
-                _secondKeyEntries = BidirectionalDictionaryEntry<TSecond>.InitialEntries;
-            }
 
-            if (firstKeyComparer != EqualityComparer<TFirst>.Default)
-            {
-                _firstKeyComparer = firstKeyComparer;
-            }
-            if (secondKeyComparer != EqualityComparer<TSecond>.Default)
-            {
-                _secondKeyComparer = secondKeyComparer;
-            }
+            _comparer = Initialize(size, firstKeyComparer);
             _shared = new BidirectionalDictionaryShared();
+            _reverse = new BidirectionalDictionary<TSecond, TFirst>(this, size, secondKeyComparer);
         }
 
         /// <summary>
@@ -324,16 +301,26 @@ namespace Microsoft.Collections.Extensions
             }
         }
 
-        private BidirectionalDictionary(BidirectionalDictionary<TSecond, TFirst> reverse)
+        private BidirectionalDictionary(BidirectionalDictionary<TSecond, TFirst> reverse, int size, IEqualityComparer<TFirst> comparer)
         {
-            _firstKeyBuckets = reverse._secondKeyBuckets;
-            _secondKeyBuckets = reverse._firstKeyBuckets;
-            _firstKeyEntries = reverse._secondKeyEntries;
-            _secondKeyEntries = reverse._firstKeyEntries;
-            _firstKeyComparer = reverse._secondKeyComparer;
-            _secondKeyComparer = reverse._firstKeyComparer;
+            _comparer = Initialize(size, comparer);
             _shared = reverse._shared;
             _reverse = reverse;
+        }
+
+        private IEqualityComparer<TFirst> Initialize(int size, IEqualityComparer<TFirst> comparer)
+        {
+            if (size > 0)
+            {
+                _buckets = new int[size];
+                _entries = new BidirectionalDictionaryEntry<TFirst>[size];
+            }
+            else
+            {
+                _buckets = HashHelpers.SizeOneIntArray;
+                _entries = BidirectionalDictionaryEntry<TFirst>.InitialEntries;
+            }
+            return comparer != EqualityComparer<TFirst>.Default ? comparer : null;
         }
 
         /// <summary>
@@ -359,10 +346,10 @@ namespace Microsoft.Collections.Extensions
         {
             BidirectionalDictionaryShared shared = _shared;
             int count = shared.Count;
-            Array.Clear(_firstKeyBuckets, 0, _firstKeyBuckets.Length);
-            Array.Clear(_firstKeyEntries, 0, count);
-            Array.Clear(_secondKeyBuckets, 0, _secondKeyBuckets.Length);
-            Array.Clear(_secondKeyEntries, 0, count);
+            Array.Clear(_buckets, 0, _buckets.Length);
+            Array.Clear(_entries, 0, count);
+            Array.Clear(_reverse._buckets, 0, _reverse._buckets.Length);
+            Array.Clear(_reverse._entries, 0, count);
             shared.Count = 0;
             shared.FreeList = -1;
             shared.FreeCount = 0;
@@ -375,7 +362,7 @@ namespace Microsoft.Collections.Extensions
         /// <param name="firstKey">The first key to locate in the <see cref="BidirectionalDictionary{TFirst, TSecond}" />.</param>
         /// <returns>true if the <see cref="BidirectionalDictionary{TFirst, TSecond}" /> contains a key pair with the specified first key; otherwise, false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="firstKey" /> is null.</exception>
-        public bool ContainsKey(TFirst firstKey) => BidirectionalDictionaryEntry<TFirst>.IndexOf(_firstKeyBuckets, _firstKeyEntries, _firstKeyComparer, firstKey, out _) >= 0;
+        public bool ContainsKey(TFirst firstKey) => BidirectionalDictionaryEntry<TFirst>.IndexOf(_buckets, _entries, _comparer, firstKey, out _) >= 0;
 
         /// <summary>
         /// Resizes the internal data structure if necessary to ensure no additional resizing to support the specified capacity.
@@ -390,15 +377,15 @@ namespace Microsoft.Collections.Extensions
                 throw new ArgumentOutOfRangeException(nameof(capacity));
             }
 
-            if (_firstKeyEntries.Length >= capacity)
+            if (_entries.Length >= capacity)
             {
-                return _firstKeyEntries.Length;
+                return _entries.Length;
             }
             int newSize = HashHelpers.GetPrime(capacity);
             BidirectionalDictionaryShared shared = _shared;
             int count = shared.Count;
-            BidirectionalDictionaryEntry<TFirst>.Resize(ref _firstKeyBuckets, ref _firstKeyEntries, newSize, count);
-            BidirectionalDictionaryEntry<TSecond>.Resize(ref _secondKeyBuckets, ref _secondKeyEntries, newSize, count);
+            BidirectionalDictionaryEntry<TFirst>.Resize(ref _buckets, ref _entries, newSize, count);
+            BidirectionalDictionaryEntry<TSecond>.Resize(ref _reverse._buckets, ref _reverse._entries, newSize, count);
             ++shared.Version;
             return newSize;
         }
@@ -426,15 +413,15 @@ namespace Microsoft.Collections.Extensions
         /// <exception cref="ArgumentNullException"><paramref name="firstKey" /> is null.</exception>
         public bool Remove(TFirst firstKey, out TSecond secondKey)
         {
-            int[] firstKeyBuckets = _firstKeyBuckets;
-            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _firstKeyEntries;
-            int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(firstKeyBuckets, firstKeyEntries, _firstKeyComparer, firstKey, out _);
+            int[] firstKeyBuckets = _buckets;
+            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _entries;
+            int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(firstKeyBuckets, firstKeyEntries, _comparer, firstKey, out _);
             if (index >= 0)
             {
                 ref BidirectionalDictionaryEntry<TFirst> firstKeyEntry = ref BidirectionalDictionaryEntry<TFirst>.RemoveEntryFromBucket(firstKeyBuckets, firstKeyEntries, index);
                 firstKeyEntry.Key = default;
                 firstKeyEntry.HashCode = default;
-                ref BidirectionalDictionaryEntry<TSecond> secondKeyEntry = ref BidirectionalDictionaryEntry<TSecond>.RemoveEntryFromBucket(_secondKeyBuckets, _secondKeyEntries, index);
+                ref BidirectionalDictionaryEntry<TSecond> secondKeyEntry = ref BidirectionalDictionaryEntry<TSecond>.RemoveEntryFromBucket(_reverse._buckets, _reverse._entries, index);
                 secondKey = secondKeyEntry.Key;
                 secondKeyEntry.Key = default;
                 secondKeyEntry.HashCode = default;
@@ -466,12 +453,12 @@ namespace Microsoft.Collections.Extensions
             }
 
             int newSize = HashHelpers.GetPrime(capacity);
-            if (newSize < _firstKeyEntries.Length)
+            if (newSize < _entries.Length)
             {
                 BidirectionalDictionaryShared shared = _shared;
                 int count = shared.Count;
-                BidirectionalDictionaryEntry<TFirst>.Resize(ref _firstKeyBuckets, ref _firstKeyEntries, newSize, count, true);
-                BidirectionalDictionaryEntry<TSecond>.Resize(ref _secondKeyBuckets, ref _secondKeyEntries, newSize, count, true);
+                BidirectionalDictionaryEntry<TFirst>.Resize(ref _buckets, ref _entries, newSize, count, true);
+                BidirectionalDictionaryEntry<TSecond>.Resize(ref _reverse._buckets, ref _reverse._entries, newSize, count, true);
                 shared.Count = Count;
                 shared.FreeCount = 0;
                 shared.FreeList = -1;
@@ -488,10 +475,10 @@ namespace Microsoft.Collections.Extensions
         /// <exception cref="ArgumentNullException"><paramref name="firstKey" /> is null.</exception>
         public bool TryGetValue(TFirst firstKey, out TSecond secondKey)
         {
-            int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(_firstKeyBuckets, _firstKeyEntries, _firstKeyComparer, firstKey, out _);
+            int index = BidirectionalDictionaryEntry<TFirst>.IndexOf(_buckets, _entries, _comparer, firstKey, out _);
             if (index >= 0)
             {
-                secondKey = _secondKeyEntries[index].Key;
+                secondKey = _reverse._entries[index].Key;
                 return true;
             }
             secondKey = default;
@@ -500,16 +487,16 @@ namespace Microsoft.Collections.Extensions
 
         private bool TryInsert(TFirst firstKey, TSecond secondKey, bool returnFalseOnExisting)
         {
-            int[] firstKeyBuckets = _firstKeyBuckets;
-            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _firstKeyEntries;
-            int i = BidirectionalDictionaryEntry<TFirst>.IndexOf(firstKeyBuckets, firstKeyEntries, _firstKeyComparer, firstKey, out uint firstKeyHashCode);
+            int[] firstKeyBuckets = _buckets;
+            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _entries;
+            int i = BidirectionalDictionaryEntry<TFirst>.IndexOf(firstKeyBuckets, firstKeyEntries, _comparer, firstKey, out uint firstKeyHashCode);
             if (returnFalseOnExisting && i >= 0)
             {
                 return false;
             }
-            int[] secondKeyBuckets = _secondKeyBuckets;
-            BidirectionalDictionaryEntry<TSecond>[] secondKeyEntries = _secondKeyEntries;
-            int j = BidirectionalDictionaryEntry<TSecond>.IndexOf(secondKeyBuckets, secondKeyEntries, _secondKeyComparer, secondKey, out uint secondKeyHashCode);
+            int[] secondKeyBuckets = _reverse._buckets;
+            BidirectionalDictionaryEntry<TSecond>[] secondKeyEntries = _reverse._entries;
+            int j = BidirectionalDictionaryEntry<TSecond>.IndexOf(secondKeyBuckets, secondKeyEntries, _reverse._comparer, secondKey, out uint secondKeyHashCode);
             if (j >= 0)
             {
                 if (returnFalseOnExisting)
@@ -551,12 +538,12 @@ namespace Microsoft.Collections.Extensions
                     if (firstKeyEntries.Length == index || firstKeyEntries.Length == 1)
                     {
                         int newSize = HashHelpers.ExpandPrime(firstKeyEntries.Length);
-                        BidirectionalDictionaryEntry<TFirst>.Resize(ref _firstKeyBuckets, ref _firstKeyEntries, newSize, index);
-                        BidirectionalDictionaryEntry<TSecond>.Resize(ref _secondKeyBuckets, ref _secondKeyEntries, newSize, index);
-                        firstKeyBuckets = _firstKeyBuckets;
-                        firstKeyEntries = _firstKeyEntries;
-                        secondKeyBuckets = _secondKeyBuckets;
-                        secondKeyEntries = _secondKeyEntries;
+                        BidirectionalDictionaryEntry<TFirst>.Resize(ref _buckets, ref _entries, newSize, index);
+                        BidirectionalDictionaryEntry<TSecond>.Resize(ref _reverse._buckets, ref _reverse._entries, newSize, index);
+                        firstKeyBuckets = _buckets;
+                        firstKeyEntries = _entries;
+                        secondKeyBuckets = _reverse._buckets;
+                        secondKeyEntries = _reverse._entries;
                     }
                     ++shared.Count;
                 }
@@ -618,8 +605,8 @@ namespace Microsoft.Collections.Extensions
             }
 
             int count = _shared.Count;
-            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _firstKeyEntries;
-            BidirectionalDictionaryEntry<TSecond>[] secondKeyEntries = _secondKeyEntries;
+            BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _entries;
+            BidirectionalDictionaryEntry<TSecond>[] secondKeyEntries = _reverse._entries;
             int currentArrayIndex = arrayIndex;
             for (int i = 0; i < count; ++i)
             {
@@ -684,13 +671,13 @@ namespace Microsoft.Collections.Extensions
                     throw new InvalidOperationException(Strings.InvalidOperation_EnumFailedVersion);
                 }
 
-                BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _bidirectionalDictionary._firstKeyEntries;
+                BidirectionalDictionaryEntry<TFirst>[] firstKeyEntries = _bidirectionalDictionary._entries;
                 while ((uint)_index < (uint)shared.Count)
                 {
                     BidirectionalDictionaryEntry<TFirst> entry = firstKeyEntries[_index];
                     if (entry.Next >= -1)
                     {
-                        _current = new KeyValuePair<TFirst, TSecond>(entry.Key, _bidirectionalDictionary._secondKeyEntries[_index].Key);
+                        _current = new KeyValuePair<TFirst, TSecond>(entry.Key, _bidirectionalDictionary._reverse._entries[_index].Key);
                         ++_index;
                         return true;
                     }
