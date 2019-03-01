@@ -62,11 +62,11 @@ namespace Microsoft.Collections.Extensions
                 }
 
                 int count = _bidirectionalDictionary._shared.Count;
-                BidirectionalDictionaryEntry<TFirst>[] entries = _bidirectionalDictionary._entries;
+                Entry[] entries = _bidirectionalDictionary._entries;
                 int currentArrayIndex = arrayIndex;
                 for (int i = 0; i < count; ++i)
                 {
-                    BidirectionalDictionaryEntry<TFirst> entry = entries[i];
+                    Entry entry = entries[i];
                     if (entry.Next >= -1)
                     {
                         array[currentArrayIndex++] = entry.Key;
@@ -126,10 +126,10 @@ namespace Microsoft.Collections.Extensions
                         throw new InvalidOperationException(Strings.InvalidOperation_EnumFailedVersion);
                     }
 
-                    BidirectionalDictionaryEntry<TFirst>[] entries = _bidirectionalDictionary._entries;
+                    Entry[] entries = _bidirectionalDictionary._entries;
                     while ((uint)_index < (uint)shared.Count)
                     {
-                        BidirectionalDictionaryEntry<TFirst> entry = entries[_index++];
+                        Entry entry = entries[_index++];
 
                         if (entry.Next >= -1)
                         {
