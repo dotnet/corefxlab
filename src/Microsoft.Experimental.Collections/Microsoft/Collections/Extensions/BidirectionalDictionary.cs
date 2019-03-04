@@ -31,12 +31,6 @@ namespace Microsoft.Collections.Extensions
             public int Next; // the index of the next item in the same bucket, -1 if last
         }
 
-        // We want to initialize without allocating arrays. We also want to avoid null checks.
-        // Array.Empty would give divide by zero in modulo operation. So we use static one element arrays.
-        // The first add will cause a resize replacing these with real arrays of three elements.
-        // Arrays are wrapped in a class to avoid being duplicated for each <TKey, TValue>
-        private static readonly Entry[] s_initialEntries = new Entry[1];
-
         private int[] _buckets;
         private Entry[] _entries;
         private readonly IEqualityComparer<TFirst> _comparer;
@@ -191,7 +185,7 @@ namespace Microsoft.Collections.Extensions
             else
             {
                 _buckets = HashHelpers.SizeOneIntArray;
-                _entries = s_initialEntries;
+                _entries = Array.Empty<Entry>();
             }
             if (firstKeyComparer != EqualityComparer<TFirst>.Default)
             {
@@ -427,7 +421,7 @@ namespace Microsoft.Collections.Extensions
                 {
                     index = shared.Count;
                     // Check if resize is needed
-                    if (firstKeyEntries.Length == index || firstKeyEntries.Length == 1)
+                    if (firstKeyEntries.Length == index)
                     {
                         int newSize = HashHelpers.ExpandPrime(firstKeyEntries.Length);
                         Resize(newSize, index);
