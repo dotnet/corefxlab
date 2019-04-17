@@ -6,14 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Microsoft.Data
 {
+    /// <summary>
+    /// A basic store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class DataFrameBuffer<T>
         where T : struct
     {
         // TODO: Change this to Memory<T>
         public Memory<byte> Memory { get; private set; }
+
         private readonly int _size;
 
         private int Capacity => Memory.Length / _size;
@@ -36,7 +42,6 @@ namespace Microsoft.Data
                 throw new ArgumentException($"{numberOfValues} exceeds buffer capacity", nameof(numberOfValues));
             }
             Memory = new byte[numberOfValues * _size];
-            Length = 0;
         }
 
         public void Append(T value)
@@ -49,6 +54,7 @@ namespace Microsoft.Data
             Span[Length] = value;
             if (Length < MaxCapacity) ++Length;
         }
+
         // TODO: Implement Append(Range of values)?
         public void EnsureCapacity(int numberOfValues)
         {
@@ -94,15 +100,17 @@ namespace Microsoft.Data
                 return true;
             }
         }
+
         public override string ToString()
         {
-            string ret = "";
+            StringBuilder sb = new StringBuilder();
             Span<T> span = Span;
             for (int i = 0; i < Length; i++)
             {
-                ret += span[i] + " ";
+                sb.Append(span[i]).Append(" ");
             }
-            return ret;
+            return sb.ToString();
         }
+
     }
 }

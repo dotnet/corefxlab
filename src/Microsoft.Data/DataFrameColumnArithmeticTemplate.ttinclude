@@ -97,7 +97,6 @@
         new MethodConfiguration("LessThan", MethodType.ComparisonScalar, "<", isNumeric:true),
     };
 
-
      public class MethodConfiguration
     {
         public MethodConfiguration(string methodName, MethodType methodType, string op = null, bool isNumeric = false, bool isBitwise = false)

@@ -7,20 +7,28 @@ using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
+    /// <summary>
+    /// A column to hold primitive values such as int, float etc. Other value types are not really supported
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PrimitiveDataFrameColumn<T> : BaseDataFrameColumn
         where T : struct
     {
         internal PrimitiveDataFrameColumnContainer<T> _columnContainer;
+
         public Type DataType = typeof(T);
+
         internal PrimitiveDataFrameColumn(string name, PrimitiveDataFrameColumnContainer<T> column) : base(name, column.Length)
         {
             _columnContainer = column;
         }
+
         public PrimitiveDataFrameColumn(string name, IEnumerable<T> values) : base(name)
         {
             _columnContainer = new PrimitiveDataFrameColumnContainer<T>(values);
             Length = _columnContainer.Length;
         }
+
         public PrimitiveDataFrameColumn(string name, bool isNullable = true) : base(name)
         {
             _columnContainer = new PrimitiveDataFrameColumnContainer<T>();
@@ -49,11 +57,14 @@ namespace Microsoft.Data
                 _columnContainer[rowIndex] = (T)value;
             }
         }
+
         public void Add(T value) => _columnContainer.Add(value);
+
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";
         }
+
         public PrimitiveDataFrameColumn<T> Clone()
         {
             PrimitiveDataFrameColumnContainer<T> newColumnContainer = _columnContainer.Clone();
@@ -65,5 +76,6 @@ namespace Microsoft.Data
             PrimitiveDataFrameColumnContainer<bool> newColumnContainer = _columnContainer.CreateBoolContainerForCompareOps();
             return new PrimitiveDataFrameColumn<bool>(Name, newColumnContainer);
         }
+
     }
 }

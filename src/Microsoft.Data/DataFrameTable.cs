@@ -15,16 +15,19 @@ namespace Microsoft.Data
         private IList<BaseDataFrameColumn> _columns;
 
         private List<string> _columnNames = new List<string>();
-        private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>();
+
+        private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
         public long RowCount { get; private set; } = 0;
+
         public int ColumnCount { get; private set; } = 0;
+
         public DataFrameTable()
         {
             _columns = new List<BaseDataFrameColumn>();
         }
 
-        public DataFrameTable(IList<BaseDataFrameColumn> columns)
+        private DataFrameTable(IList<BaseDataFrameColumn> columns)
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _columns = columns;
@@ -42,7 +45,9 @@ namespace Microsoft.Data
         }
 
         public DataFrameTable(BaseDataFrameColumn column) : this(new List<BaseDataFrameColumn> { column }) { }
+
         public BaseDataFrameColumn Column(int columnIndex) => _columns[columnIndex];
+
         public IList<object> GetRow(long rowIndex)
         {
             var ret = new List<object>();
@@ -64,6 +69,7 @@ namespace Microsoft.Data
             BaseDataFrameColumn newColumn = new PrimitiveDataFrameColumn<T>(columnName, column);
             InsertColumn(columnIndex, newColumn);
         }
+
         public void InsertColumn(int columnIndex, BaseDataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
@@ -85,6 +91,7 @@ namespace Microsoft.Data
             _columns.Insert(columnIndex, column);
             ColumnCount++;
         }
+
         public void SetColumn(int columnIndex, BaseDataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
@@ -105,6 +112,7 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary[column.Name] = columnIndex;
             _columns[columnIndex] = column;
         }
+
         public void RemoveColumn(int columnIndex)
         {
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
@@ -112,6 +120,7 @@ namespace Microsoft.Data
             _columns.RemoveAt(columnIndex);
             ColumnCount--;
         }
+
         public void RemoveColumn(string columnName)
         {
             int columnIndex = GetColumnIndex(columnName);
@@ -129,5 +138,6 @@ namespace Microsoft.Data
             }
             return -1;
         }
+
     }
 }

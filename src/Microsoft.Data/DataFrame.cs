@@ -8,43 +8,44 @@ using System.Collections.Generic;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A DataFrame 
+    /// A DataFrame to support indexing, binary operations, sorting, selection and other APIs. This will eventually also expose an IDataView for ML.NET
     /// </summary>
     public partial class DataFrame
     {
-        internal DataFrameTable _table;
+        private DataFrameTable _table;
         public DataFrame()
         {
             _table = new DataFrameTable();
         }
 
         public long RowCount => _table.RowCount;
+
         public int ColumnCount => _table.ColumnCount;
+
         public IList<string> Columns()
         {
-            var ret = new List<string>();
+            var ret = new List<string>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
                 ret.Add(_table.Column(i).Name);
             }
             return ret;
         }
+
         public BaseDataFrameColumn Column(int index) => _table.Column(index);
+        
         public void InsertColumn(int columnIndex, BaseDataFrameColumn column) => _table.InsertColumn(columnIndex, column);
+
         public void SetColumn(int columnIndex, BaseDataFrameColumn column) => _table.SetColumn(columnIndex, column);
+
         public void RemoveColumn(int columnIndex) => _table.RemoveColumn(columnIndex);
+
         public void RemoveColumn(string columnName) => _table.RemoveColumn(columnName);
         
         public object this[long rowIndex, int columnIndex]
         {
-            get
-            {
-                return _table.Column(columnIndex)[rowIndex];
-            }
-            set
-            {
-                _table.Column(columnIndex)[rowIndex] = value;
-            }
+            get => _table.Column(columnIndex)[rowIndex];
+            set => _table.Column(columnIndex)[rowIndex] = value;
         }
 
         #region Operators
