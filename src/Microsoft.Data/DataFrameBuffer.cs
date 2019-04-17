@@ -87,9 +87,9 @@ namespace Microsoft.Data
             {
                 if (startIndex > Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
                 long endIndex = Math.Min(Length, startIndex + length);
-                for (int ii = startIndex; ii < endIndex; ii++)
+                for (int i = startIndex; i < endIndex; i++)
                 {
-                    returnList.Add(Span[ii]);
+                    returnList.Add(Span[i]);
                 }
                 return true;
             }
@@ -98,9 +98,9 @@ namespace Microsoft.Data
         {
             string ret = "";
             Span<T> span = Span;
-            for (int ii = 0; ii < Length; ii++)
+            for (int i = 0; i < Length; i++)
             {
-                ret += span[ii] + " ";
+                ret += span[i] + " ";
             }
             return ret;
         }

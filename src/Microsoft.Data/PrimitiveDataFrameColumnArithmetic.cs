@@ -157,9 +157,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (bool)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -168,9 +168,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (bool)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -179,9 +179,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (bool)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -190,9 +190,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (bool)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -201,9 +201,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (bool)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -212,9 +212,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (bool)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (bool)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -231,9 +231,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -242,9 +242,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -253,9 +253,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -264,9 +264,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -310,9 +310,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -321,9 +321,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -332,9 +332,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -343,9 +343,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -354,9 +354,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -365,9 +365,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -376,9 +376,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -387,9 +387,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -398,9 +398,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -409,9 +409,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -420,9 +420,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -431,9 +431,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -442,9 +442,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -453,9 +453,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -464,9 +464,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (byte)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -475,9 +475,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (byte)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -486,9 +486,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (byte)(buffer.Span[i] << value);
                 }
             }
         }
@@ -497,9 +497,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (byte)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (byte)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -508,9 +508,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -519,9 +519,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -530,9 +530,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -541,9 +541,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -552,9 +552,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -563,9 +563,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -574,9 +574,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -585,9 +585,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -596,9 +596,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -607,9 +607,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -618,9 +618,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -629,9 +629,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -643,9 +643,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -654,9 +654,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -665,9 +665,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -676,9 +676,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -687,9 +687,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -698,9 +698,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -709,9 +709,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -720,9 +720,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -731,9 +731,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -742,9 +742,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -753,9 +753,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -764,9 +764,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -775,9 +775,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -786,9 +786,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -797,9 +797,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (char)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -808,9 +808,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (char)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -819,9 +819,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (char)(buffer.Span[i] << value);
                 }
             }
         }
@@ -830,9 +830,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (char)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (char)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -841,9 +841,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -852,9 +852,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -863,9 +863,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -874,9 +874,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -885,9 +885,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -896,9 +896,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -907,9 +907,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -918,9 +918,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -929,9 +929,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -940,9 +940,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -951,9 +951,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -962,9 +962,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -976,9 +976,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -987,9 +987,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -998,9 +998,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1009,9 +1009,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -1020,9 +1020,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1031,9 +1031,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -1042,9 +1042,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1053,9 +1053,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -1064,9 +1064,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1075,9 +1075,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (decimal)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (decimal)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -1118,9 +1118,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1129,9 +1129,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -1140,9 +1140,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1151,9 +1151,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -1162,9 +1162,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1173,9 +1173,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -1184,9 +1184,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1195,9 +1195,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -1206,9 +1206,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1217,9 +1217,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -1228,9 +1228,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1239,9 +1239,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -1253,9 +1253,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (double)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1264,9 +1264,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (double)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -1275,9 +1275,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (double)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1286,9 +1286,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (double)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -1297,9 +1297,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (double)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1308,9 +1308,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (double)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -1319,9 +1319,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (double)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1330,9 +1330,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (double)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -1341,9 +1341,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (double)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1352,9 +1352,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (double)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (double)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -1395,9 +1395,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1406,9 +1406,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -1417,9 +1417,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1428,9 +1428,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -1439,9 +1439,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1450,9 +1450,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -1461,9 +1461,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1472,9 +1472,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -1483,9 +1483,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1494,9 +1494,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -1505,9 +1505,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1516,9 +1516,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -1530,9 +1530,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (float)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1541,9 +1541,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (float)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -1552,9 +1552,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (float)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1563,9 +1563,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (float)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -1574,9 +1574,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (float)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1585,9 +1585,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (float)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -1596,9 +1596,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (float)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1607,9 +1607,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (float)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -1618,9 +1618,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (float)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1629,9 +1629,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (float)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (float)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -1672,9 +1672,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1683,9 +1683,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -1694,9 +1694,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1705,9 +1705,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -1716,9 +1716,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1727,9 +1727,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -1738,9 +1738,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1749,9 +1749,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -1760,9 +1760,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1771,9 +1771,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -1782,9 +1782,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1793,9 +1793,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -1807,9 +1807,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1818,9 +1818,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -1829,9 +1829,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1840,9 +1840,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -1851,9 +1851,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1862,9 +1862,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -1873,9 +1873,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1884,9 +1884,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -1895,9 +1895,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1906,9 +1906,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -1917,9 +1917,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1928,9 +1928,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -1939,9 +1939,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1950,9 +1950,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -1961,9 +1961,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (int)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -1972,9 +1972,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (int)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -1983,9 +1983,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (int)(buffer.Span[i] << value);
                 }
             }
         }
@@ -1994,9 +1994,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (int)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (int)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -2005,9 +2005,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2016,9 +2016,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -2027,9 +2027,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2038,9 +2038,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -2049,9 +2049,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2060,9 +2060,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -2071,9 +2071,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2082,9 +2082,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -2093,9 +2093,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2104,9 +2104,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -2115,9 +2115,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2126,9 +2126,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -2140,9 +2140,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2151,9 +2151,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -2162,9 +2162,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2173,9 +2173,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -2184,9 +2184,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2195,9 +2195,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -2206,9 +2206,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2217,9 +2217,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -2228,9 +2228,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2239,9 +2239,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -2250,9 +2250,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2261,9 +2261,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -2272,9 +2272,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2283,9 +2283,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -2294,9 +2294,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (long)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2305,9 +2305,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (long)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -2316,9 +2316,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (long)(buffer.Span[i] << value);
                 }
             }
         }
@@ -2327,9 +2327,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (long)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (long)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -2338,9 +2338,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2349,9 +2349,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -2360,9 +2360,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2371,9 +2371,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -2382,9 +2382,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2393,9 +2393,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -2404,9 +2404,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2415,9 +2415,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -2426,9 +2426,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2437,9 +2437,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -2448,9 +2448,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2459,9 +2459,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -2473,9 +2473,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2484,9 +2484,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -2495,9 +2495,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2506,9 +2506,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -2517,9 +2517,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2528,9 +2528,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -2539,9 +2539,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2550,9 +2550,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -2561,9 +2561,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2572,9 +2572,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -2583,9 +2583,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2594,9 +2594,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -2605,9 +2605,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2616,9 +2616,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -2627,9 +2627,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2638,9 +2638,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -2649,9 +2649,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] << value);
                 }
             }
         }
@@ -2660,9 +2660,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (sbyte)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (sbyte)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -2671,9 +2671,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2682,9 +2682,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -2693,9 +2693,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2704,9 +2704,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -2715,9 +2715,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2726,9 +2726,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -2737,9 +2737,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2748,9 +2748,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -2759,9 +2759,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2770,9 +2770,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -2781,9 +2781,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2792,9 +2792,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -2806,9 +2806,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2817,9 +2817,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -2828,9 +2828,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2839,9 +2839,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -2850,9 +2850,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2861,9 +2861,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -2872,9 +2872,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2883,9 +2883,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -2894,9 +2894,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2905,9 +2905,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -2916,9 +2916,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2927,9 +2927,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -2938,9 +2938,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2949,9 +2949,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -2960,9 +2960,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (short)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -2971,9 +2971,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (short)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -2982,9 +2982,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (short)(buffer.Span[i] << value);
                 }
             }
         }
@@ -2993,9 +2993,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (short)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (short)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -3004,9 +3004,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3015,9 +3015,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -3026,9 +3026,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3037,9 +3037,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -3048,9 +3048,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3059,9 +3059,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -3070,9 +3070,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3081,9 +3081,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -3092,9 +3092,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3103,9 +3103,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -3114,9 +3114,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3125,9 +3125,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -3139,9 +3139,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3150,9 +3150,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -3161,9 +3161,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3172,9 +3172,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -3183,9 +3183,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3194,9 +3194,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -3205,9 +3205,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3216,9 +3216,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -3227,9 +3227,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3238,9 +3238,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -3249,9 +3249,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3260,9 +3260,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -3271,9 +3271,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3282,9 +3282,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -3293,9 +3293,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (uint)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3304,9 +3304,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (uint)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -3315,9 +3315,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (uint)(buffer.Span[i] << value);
                 }
             }
         }
@@ -3326,9 +3326,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (uint)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (uint)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -3337,9 +3337,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3348,9 +3348,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -3359,9 +3359,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3370,9 +3370,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -3381,9 +3381,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3392,9 +3392,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -3403,9 +3403,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3414,9 +3414,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -3425,9 +3425,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3436,9 +3436,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -3447,9 +3447,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3458,9 +3458,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -3472,9 +3472,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3483,9 +3483,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -3494,9 +3494,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3505,9 +3505,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -3516,9 +3516,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3527,9 +3527,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -3538,9 +3538,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3549,9 +3549,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -3560,9 +3560,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3571,9 +3571,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -3582,9 +3582,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3593,9 +3593,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -3604,9 +3604,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3615,9 +3615,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -3626,9 +3626,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3637,9 +3637,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -3648,9 +3648,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] << value);
                 }
             }
         }
@@ -3659,9 +3659,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ulong)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (ulong)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -3670,9 +3670,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3681,9 +3681,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -3692,9 +3692,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3703,9 +3703,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -3714,9 +3714,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3725,9 +3725,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -3736,9 +3736,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3747,9 +3747,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -3758,9 +3758,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3769,9 +3769,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -3780,9 +3780,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3791,9 +3791,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }
@@ -3805,9 +3805,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] + right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] + right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3816,9 +3816,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] + scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] + scalar);
                 }
             }
         }
@@ -3827,9 +3827,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] - right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] - right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3838,9 +3838,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] - scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] - scalar);
                 }
             }
         }
@@ -3849,9 +3849,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] * right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] * right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3860,9 +3860,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] * scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] * scalar);
                 }
             }
         }
@@ -3871,9 +3871,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] / right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] / right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3882,9 +3882,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] / scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] / scalar);
                 }
             }
         }
@@ -3893,9 +3893,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] % right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] % right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3904,9 +3904,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] % scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] % scalar);
                 }
             }
         }
@@ -3915,9 +3915,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] & right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] & right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3926,9 +3926,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] & scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] & scalar);
                 }
             }
         }
@@ -3937,9 +3937,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] | right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] | right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3948,9 +3948,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] | scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] | scalar);
                 }
             }
         }
@@ -3959,9 +3959,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] ^ right.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] ^ right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -3970,9 +3970,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] ^ scalar);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] ^ scalar);
                 }
             }
         }
@@ -3981,9 +3981,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] << value);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] << value);
                 }
             }
         }
@@ -3992,9 +3992,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.Span[ii] = (ushort)(buffer.Span[ii] >> value);
+                    buffer.Span[i] = (ushort)(buffer.Span[i] >> value);
                 }
             }
         }
@@ -4003,9 +4003,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] == right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4014,9 +4014,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] == scalar);
+                    ret[i] = (buffer.Span[i] == scalar);
                 }
             }
         }
@@ -4025,9 +4025,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] != right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4036,9 +4036,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] != scalar);
+                    ret[i] = (buffer.Span[i] != scalar);
                 }
             }
         }
@@ -4047,9 +4047,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] >= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4058,9 +4058,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] >= scalar);
+                    ret[i] = (buffer.Span[i] >= scalar);
                 }
             }
         }
@@ -4069,9 +4069,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <= right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4080,9 +4080,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] <= scalar);
+                    ret[i] = (buffer.Span[i] <= scalar);
                 }
             }
         }
@@ -4091,9 +4091,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] > right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4102,9 +4102,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] > scalar);
+                    ret[i] = (buffer.Span[i] > scalar);
                 }
             }
         }
@@ -4113,9 +4113,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < right.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] < right.Buffers[bb].Span[i]);
                 }
             }
         }
@@ -4124,9 +4124,9 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret[ii] = (buffer.Span[ii] < scalar);
+                    ret[i] = (buffer.Span[i] < scalar);
                 }
             }
         }

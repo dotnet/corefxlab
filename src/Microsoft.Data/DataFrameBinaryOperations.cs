@@ -20,14 +20,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Add(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Add(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -37,14 +37,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Add(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -58,14 +58,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Subtract(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Subtract(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -75,14 +75,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Subtract(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -96,14 +96,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Multiply(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Multiply(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -113,14 +113,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Multiply(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -134,14 +134,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Divide(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Divide(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -151,14 +151,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Divide(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -172,14 +172,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Modulo(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Modulo(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -189,14 +189,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Modulo(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -210,14 +210,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.And(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.And(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -227,14 +227,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.And(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -248,14 +248,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Or(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Or(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -265,14 +265,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Or(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -286,14 +286,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
-                    newColumn._columnContainer.Xor(values[ii]);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newColumn._columnContainer.Xor(values[i]);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -303,14 +303,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.Xor(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -320,14 +320,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.LeftShift(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -337,14 +337,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     var newColumn = column.Clone();
                     newColumn._columnContainer.RightShift(value);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -358,14 +358,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.Equals(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.Equals(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -375,14 +375,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.Equals(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -396,14 +396,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.NotEquals(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.NotEquals(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -413,14 +413,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.NotEquals(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -434,14 +434,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.GreaterThanOrEqual(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.GreaterThanOrEqual(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -451,14 +451,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.GreaterThanOrEqual(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -472,14 +472,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.LessThanOrEqual(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.LessThanOrEqual(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -489,14 +489,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.LessThanOrEqual(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -510,14 +510,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.GreaterThan(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.GreaterThan(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -527,14 +527,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.GreaterThan(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -548,14 +548,14 @@ namespace Microsoft.Data
                 throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
             }
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-                    column._columnContainer.LessThan(values[ii], newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    column._columnContainer.LessThan(values[i], newColumn._columnContainer);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;
@@ -565,14 +565,14 @@ namespace Microsoft.Data
             where T : struct
         {
             var newDataFrame = new DataFrame();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(ii) as PrimitiveDataFrameColumn<T>;
+                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
                 if (column != null)
                 {
                     PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
                     column._columnContainer.LessThan(value, newColumn._columnContainer);
-                    newDataFrame.InsertColumn(ii, newColumn);
+                    newDataFrame.InsertColumn(i, newColumn);
                 }
             }
             return newDataFrame;

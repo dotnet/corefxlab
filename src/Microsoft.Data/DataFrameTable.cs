@@ -46,9 +46,9 @@ namespace Microsoft.Data
         public IList<object> GetRow(long rowIndex)
         {
             var ret = new List<object>();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                ret.Add(Column(ii)[rowIndex]);
+                ret.Add(Column(i)[rowIndex]);
             }
             return ret;
         }

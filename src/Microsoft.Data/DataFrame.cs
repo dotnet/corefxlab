@@ -23,9 +23,9 @@ namespace Microsoft.Data
         public IList<string> Columns()
         {
             var ret = new List<string>();
-            for (int ii = 0; ii < ColumnCount; ii++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                ret.Add(_table.Column(ii).Name);
+                ret.Add(_table.Column(i).Name);
             }
             return ret;
         }
@@ -70,9 +70,9 @@ namespace Microsoft.Data
         public IList<IList<object>> Head(int numberOfRows)
         {
             var ret = new List<IList<object>>();
-            for (int ii = 0; ii < numberOfRows; ii++)
+            for (int i= 0; i< numberOfRows; i++)
             {
-                ret.Add(this[ii]);
+                ret.Add(this[i]);
             }
             return ret;
         }
@@ -80,9 +80,9 @@ namespace Microsoft.Data
         public IList<IList<object>> Tail(int numberOfRows)
         {
             var ret = new List<IList<object>>();
-            for (long ii = RowCount - numberOfRows; ii < RowCount; ii++)
+            for (long i = RowCount - numberOfRows; i < RowCount; i++)
             {
-                ret.Add(this[ii]);
+                ret.Add(this[i]);
             }
             return ret;
         }

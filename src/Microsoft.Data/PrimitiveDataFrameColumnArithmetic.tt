@@ -56,16 +56,16 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < <#= method.Op1Name #>.Buffers.Count; bb++)
             {
                 var buffer = <#= method.Op1Name #>.Buffers[bb];
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
-                    buffer.Span[ii] = (<#=type.TypeName#>)(buffer.Span[ii] <#= method.Operator #> <#= method.Op2Name #>);
+                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else if (method.MethodType == MethodType.Binary) { #>
-                    buffer.Span[ii] = (<#=type.TypeName#>)(buffer.Span[ii] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[ii]);
+                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
 <# } else if (method.MethodType == MethodType.Comparison) { #>
-                    ret[ii] = (buffer.Span[ii] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[ii]);
+                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
-                    ret[ii] = (buffer.Span[ii] <#= method.Operator #> <#= method.Op2Name #>);
+                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else {#>
                     throw new NotImplementedException();
 <# } #>

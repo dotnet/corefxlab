@@ -112,7 +112,7 @@ namespace Microsoft.Data
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("");
+            StringBuilder sb = new StringBuilder();
             foreach (var buffer in Buffers)
             {
                 sb.Append(buffer.ToString());
@@ -134,9 +134,9 @@ namespace Microsoft.Data
                 ret.Buffers.Add(newBuffer);
                 var span = buffer.Span;
                 ret.Length += buffer.Length;
-                for (int ii = 0; ii < buffer.Length; ii++)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    newBuffer.Append(span[ii]);
+                    newBuffer.Append(span[i]);
                 }
             }
             return ret;
