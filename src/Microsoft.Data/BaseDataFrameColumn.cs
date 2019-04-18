@@ -25,10 +25,11 @@ namespace Microsoft.Data
             get => _length;
             protected set
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     throw new ArgumentException();
                 }
+                _length = value;
             }
         }
 
