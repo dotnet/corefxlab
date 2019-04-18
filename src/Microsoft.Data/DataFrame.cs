@@ -12,7 +12,7 @@ namespace Microsoft.Data
     /// </summary>
     public partial class DataFrame
     {
-        private DataFrameTable _table;
+        private readonly DataFrameTable _table;
         public DataFrame()
         {
             _table = new DataFrameTable();
@@ -22,14 +22,17 @@ namespace Microsoft.Data
 
         public int ColumnCount => _table.ColumnCount;
 
-        public IList<string> Columns()
+        public IList<string> Columns
         {
-            var ret = new List<string>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            get
             {
-                ret.Add(_table.Column(i).Name);
+                var ret = new List<string>(ColumnCount);
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    ret.Add(_table.Column(i).Name);
+                }
+                return ret;
             }
-            return ret;
         }
 
         public BaseDataFrameColumn Column(int index) => _table.Column(index);

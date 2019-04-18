@@ -25,10 +25,7 @@ namespace Microsoft.Data
             get => _length;
             protected set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentException();
-                }
+                if (value < 0) throw new ArgumentOutOfRangeException();
                 _length = value;
             }
         }
@@ -40,6 +37,5 @@ namespace Microsoft.Data
         public virtual object this[long rowIndex] { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
 
         public virtual object this[long startIndex, int length] { get { throw new NotImplementedException(); } }
-
     }
 }

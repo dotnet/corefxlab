@@ -72,7 +72,7 @@ namespace Microsoft.Data
         public void InsertColumn(int columnIndex, BaseDataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if (columnIndex < 0 || columnIndex > _columns.Count)
+            if ((uint)columnIndex > _columns.Count)
             {
                 throw new ArgumentException($"Invalid columnIndex {columnIndex} passed into Table.AddColumn");
             }
@@ -94,7 +94,7 @@ namespace Microsoft.Data
         public void SetColumn(int columnIndex, BaseDataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if (columnIndex < 0 || columnIndex >= ColumnCount)
+            if ((uint)columnIndex >= ColumnCount)
             {
                 throw new ArgumentException($"Invalid columnIndex {columnIndex} passed in to Table.SetColumn");
             }
@@ -131,7 +131,7 @@ namespace Microsoft.Data
 
         public int GetColumnIndex(string columnName)
         {
-            if (_columnNameToIndexDictionary.TryGetValue(columnName, out int columnIndex) )
+            if (_columnNameToIndexDictionary.TryGetValue(columnName, out int columnIndex))
             {
                 return columnIndex;
             }

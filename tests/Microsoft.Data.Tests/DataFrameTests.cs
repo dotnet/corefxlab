@@ -27,8 +27,8 @@ namespace Microsoft.Data.Tests
             var foo = dataFrame[0, 0];
             Assert.Equal(0, dataFrame[0, 0]);
             Assert.Equal(11, dataFrame[1, 1]);
-            Assert.Equal(2, dataFrame.Columns().Count);
-            Assert.Equal("Int1", dataFrame.Columns()[0]);
+            Assert.Equal(2, dataFrame.Columns.Count);
+            Assert.Equal("Int1", dataFrame.Columns[0]);
 
             var headList = dataFrame.Head(5);
             Assert.Equal(14, (int)headList[4][1]);
