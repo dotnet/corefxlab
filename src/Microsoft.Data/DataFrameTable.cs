@@ -18,9 +18,9 @@ namespace Microsoft.Data
 
         private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        public long RowCount { get; private set; } = 0;
+        public long RowCount { get; private set; }
 
-        public int ColumnCount { get; private set; } = 0;
+        public int ColumnCount { get; private set; }
 
         public DataFrameTable()
         {
@@ -35,11 +35,10 @@ namespace Microsoft.Data
             if (columns.Count > 0)
             {
                 RowCount = columns[0].Length;
-                int cc = 0;
-                foreach (var column in columns)
+                for (var i = 0; i < columns.Count; i++)
                 {
-                    _columnNames.Add(column.Name);
-                    _columnNameToIndexDictionary.Add(column.Name, cc++);
+                    _columnNames.Add(columns[i].Name);
+                    _columnNameToIndexDictionary.Add(columns[i].Name, i);
                 }
             }
         }
@@ -62,7 +61,7 @@ namespace Microsoft.Data
             where T : struct
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if (columnIndex < 0 || columnIndex > _columns.Count)
+            if ((uint)columnIndex > _columns.Count)
             {
                 throw new ArgumentException($"Invalid columnIndex {columnIndex} passed into Table.AddColumn");
             }
