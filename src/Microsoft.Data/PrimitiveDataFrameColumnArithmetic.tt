@@ -40,7 +40,7 @@ namespace Microsoft.Data
                 return (IPrimitiveDataFrameColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
             }
 <# } #>
-            return null;
+            throw new NotSupportedException();
         }
     }
 

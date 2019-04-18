@@ -106,7 +106,7 @@ namespace Microsoft.Data
             {
                 return (IPrimitiveDataFrameColumnArithmetic<T>)new UShortArithmetic();
             }
-            return null;
+            throw new NotSupportedException();
         }
     }
 

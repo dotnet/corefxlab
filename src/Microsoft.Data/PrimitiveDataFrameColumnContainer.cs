@@ -41,6 +41,7 @@ namespace Microsoft.Data
                 Length++;
             }
         }
+
         public PrimitiveDataFrameColumnContainer(IEnumerable<T> values)
         {
             values = values ?? throw new ArgumentNullException(nameof(values));
@@ -60,7 +61,9 @@ namespace Microsoft.Data
                 Length++;
             }
         }
+
         public PrimitiveDataFrameColumnContainer() { }
+
         public long Length;
         //TODO:
         public long NullCount => throw new NotImplementedException();
@@ -96,6 +99,7 @@ namespace Microsoft.Data
                 return ret;
             }
         }
+
         public T this[long rowIndex]
         {
             get
