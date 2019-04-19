@@ -1,0 +1,83 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="DataFrameColumnArithmeticTemplate.ttinclude" #>
+
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+
+namespace Microsoft.Data
+{
+    internal interface IPrimitiveDataFrameColumnArithmetic<T>
+        where T : struct
+    {
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+       <#= method.GetMethodSignature("PrimitiveDataFrameColumnContainer", "T")#>;
+<# } #>
+    }
+
+    internal static class PrimitiveDataFrameColumnArithmetic<T>
+        where T : struct
+    {
+        public static IPrimitiveDataFrameColumnArithmetic<T> Instance => PrimitiveDataFrameColumnArithmetic.GetArithmetic<T>();
+    }
+
+    internal static class PrimitiveDataFrameColumnArithmetic
+    {
+        public static IPrimitiveDataFrameColumnArithmetic<T> GetArithmetic<T>()
+            where T : struct
+        {
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+            <#=GenerateIfStatementHeader(type)#>
+            {
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
+            }
+<# } #>
+            throw new NotSupportedException();
+        }
+    }
+
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+    internal class <#=type.ClassPrefix#>Arithmetic : IPrimitiveDataFrameColumnArithmetic<<#=type.TypeName#>>
+    {
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+        public <#= method.GetMethodSignature("PrimitiveDataFrameColumnContainer", type.TypeName) #>
+        {
+<# if ((method.IsNumeric && !type.SupportsNumeric) || (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
+            throw new NotSupportedException();
+<# } else if (method.Operator != null) { #>
+            for (int bb = 0 ; bb < <#= method.Op1Name #>.Buffers.Count; bb++)
+            {
+                var buffer = <#= method.Op1Name #>.Buffers[bb];
+                for (int i = 0; i < buffer.Length; i++)
+                {
+<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
+                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
+<# } else if (method.MethodType == MethodType.Binary) { #>
+                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
+<# } else if (method.MethodType == MethodType.Comparison) { #>
+                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
+<# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
+                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
+<# } else {#>
+                    throw new NotImplementedException();
+<# } #>
+                }
+            }
+<# } #>
+        }
+<# } #>
+    }
+<# } #>
+
+
+
+
+}
