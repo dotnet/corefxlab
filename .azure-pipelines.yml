@@ -1,0 +1,33 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+
+pr:
+- master
+
+jobs:
+- template: /pipelines/corefxlab-base.yml
+  parameters:
+    name: Windows_NT
+    displayName: Innerloop Windows_NT
+    targetOS: Windows_NT
+    pool:
+      name: Hosted VS2017
+
+- template: /pipelines/corefxlab-base.yml
+  parameters:
+    name: MacOS
+    displayName: Innerloop OSX
+    targetOS: OSX
+    pool:
+      name: Hosted macOS
+
+- template: /pipelines/corefxlab-base.yml
+  parameters:
+    name: Ubuntu1604
+    displayName: Innerloop Ubuntu16.04
+    targetOS: Ubuntu
+    pool:
+      name: Hosted Ubuntu 1604

@@ -1,0 +1,27 @@
+parameters:
+  name: ''
+  displayName: ''
+  targetOS: ''
+  pool: {}
+
+jobs:
+  - job: ${{ parameters.name }}
+    displayName: ${{ parameters.displayName }}
+    variables:
+      ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
+        _buildScript: build.cmd
+      ${{ if ne(parameters.targetOS, 'Windows_NT') }}:
+        _buildScript: ./build.sh
+
+    pool: ${{ parameters.pool }}
+
+    strategy:
+      matrix:
+        x64_Debug:
+          _BuildConfig: Debug
+        x64_Release:
+          _BuildConfig: Release
+
+    steps:
+      - script: $(_buildScript) $(_BuildConfig)
+        displayName: Build and Test
