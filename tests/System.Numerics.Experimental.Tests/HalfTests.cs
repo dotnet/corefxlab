@@ -360,5 +360,16 @@ namespace System.Numerics.Experimental.Tests
             }
             Assert.Equal(expected, value.Equals(obj));
         }
+
+        [Theory]
+        [InlineData(long.MaxValue)]
+        [InlineData(long.MinValue)]
+        [InlineData(0)]
+        [InlineData(42)]
+        public static void ImplicitConversion_UInt64(long l, ushort expected)
+        {
+            Half h = (ulong)l;
+            Assert.Equal(HalfToUInt16Bits(h), expected);
+        }
     }
 }

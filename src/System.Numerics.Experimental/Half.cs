@@ -84,6 +84,9 @@ namespace System.Numerics.Experimental
             m_value = value;
         }
 
+        private Half(bool sign, ushort exp, ushort sig)
+            => m_value = (ushort)((sign ? 1 : 0 << SignShift) + (exp << ExponentShift) + sig);
+
         private sbyte Exponent
         {
             get
@@ -353,5 +356,247 @@ namespace System.Numerics.Experimental
         {
             throw new NotImplementedException();
         }
+
+        // -----------------------Start of to-half conversions-------------------------
+
+        public static implicit operator Half(int i)
+        {
+            bool sign = i < 0;
+            Half h = (uint)(sign ? -i : i); // Math.Abs but doesn't throw exception, because we cast it to uint anyway
+            return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
+        }
+
+        public static implicit operator Half(uint i)
+        {
+            if (i == 0)
+                return default;
+
+            int shiftDist = BitOperations.LeadingZeroCount(i) - 21;
+            if (shiftDist >= 0)
+                return new Half(false, (ushort)(0x18 - shiftDist), (ushort) (i << shiftDist));
+
+            shiftDist += 4;
+            uint sig = shiftDist < 0 ? ShiftRightJam(i, -shiftDist) : i << shiftDist;
+            return RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig);
+        }
+
+        public static implicit operator Half(long l)
+        {
+            bool sign = l < 0;
+            Half h = (ulong)(sign ? -l : l); // Math.Abs but doesn't throw exception, because we cast it to ulong anyway
+            return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
+        }
+
+        public static implicit operator Half(ulong l)
+        {
+            if (l == 0)
+                return default;
+
+            int shiftDist = BitOperations.LeadingZeroCount(l) - 53;
+
+            if (shiftDist >= 0)
+                return new Half(false, (ushort)(0x18 - shiftDist), (ushort)(l << shiftDist));
+
+            shiftDist += 4;
+            ushort sig = (ushort)(shiftDist < 0 ? ShiftRightJam(l, -shiftDist) : l << shiftDist);
+            return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), sig));
+        }
+
+        public static implicit operator Half(short s)
+        {
+            return (int) s;
+        }
+
+        public static implicit operator Half(ushort s)
+        {
+            return (uint) s;
+        }
+
+        public static implicit operator Half(byte b)
+        {
+            return (uint) b;
+        }
+
+        public static implicit operator Half(sbyte b)
+        {
+            return (int) b;
+        }
+
+        private const uint SingleSignMask = 0xF0000000;
+        private const int SingleSignShiftBit = 31;
+        private const int SingleExpMask = 0x7F800000;
+        private const int SingleExpShiftBit = 23;
+        private const uint SingleSigMask = 0x7FFFFF;
+        private const int SingleSigShiftBit = 0;
+
+        public static explicit operator Half(float f)
+        {
+            const int singleMaxExponent = 0xFF;
+
+            uint floatInt = (uint)BitConverter.SingleToInt32Bits(f);
+            bool sign = (floatInt & SingleSignMask) >> SingleSignShiftBit != 0;
+            int exp = ((int)floatInt & SingleExpMask) >> SingleExpShiftBit;
+            uint sig = floatInt & SingleSigMask;
+
+            if (exp == singleMaxExponent)
+            {
+                if (sig != 0) // NaN
+                    return CreateHalfNaN(sign, (ulong)sig << 41); // 41: bits required to shift the significand bits to the left end
+                return sign ? NegativeInfinity : PositiveInfinity;
+            }
+
+            uint sigHalf = sig >> 9 | ((sig & 0x1FFU) != 0 ? 1U : 0U); // RightShiftJam
+
+            if ((exp | (int)sigHalf) == 0) // TODO: is f == 0 faster?
+                return new Half(sign, 0, 0);
+            return RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000));
+        }
+
+        private const ulong DoubleSignMask = 0xF0000000_00000000;
+        private const int DoubleSignShiftBit = 63;
+        private const long DoubleExpMask = 0x7FF80000_00000000;
+        private const int DoubleExpShiftBit = 52;
+        private const ulong DoubleSigMask = 0x000FFFFF_FFFFFFFF;
+        private const int DoubleSigShiftBit = 0;
+
+        public static explicit operator Half(double d)
+        {
+            ulong doubleInt = (ulong)BitConverter.DoubleToInt64Bits(d);
+            bool sign = (doubleInt & DoubleSignMask) >> DoubleSignShiftBit != 0;
+            int exp = (int)(((long)doubleInt & DoubleExpMask) >> DoubleExpShiftBit);
+            ulong sig = doubleInt & DoubleSigMask;
+
+            if (exp == 0x7FF)
+            {
+                if (sig != 0) // NaN
+                    return CreateHalfNaN(sign, sig << 12); // 12: bits required to shift the significand bits to the left end
+                return sign ? NegativeInfinity : PositiveInfinity;
+            }
+
+            uint sigHalf = (uint)ShiftRightJam(sig, 38);
+            if ((exp | (int)sigHalf) == 0) // TODO: Is d == 0 faster?
+                return new Half(sign, 0, 0);
+            return RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000));
+        }
+
+        // -----------------------Start of from-half conversions-------------------------
+
+        public static explicit operator int(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator uint(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator long(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator ulong(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator short(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator ushort(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator byte(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator sbyte(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static implicit operator float(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static implicit operator double(Half h)
+        {
+            throw new NotImplementedException();
+        }
+
+        #region Utilities
+
+        // TODO: Worth bringing the `ShortShiftRightJam`? looks like some perf difference only
+        // If any bits are lost by shifting, "jam" them into the LSB.
+        // if dist > bit count, Will be 1 or 0  depending on i 
+        // (unlike bitwise operators that masks the lower 5 bits)
+        private static uint ShiftRightJam(uint i, int dist)
+            => dist < 31 ? i >> dist | (i << (-dist & 31) != 0 ? 1U : 0U) : (i != 0 ? 1U : 0U);
+
+        private static ulong ShiftRightJam(ulong l, int dist)
+            => dist < 63 ? l >> dist | (l << (-dist & 63) != 0 ? 1UL : 0UL) : (l != 0 ? 1UL : 0UL);
+
+        private static ushort RoundPackToHalf(bool sign, short exp, ushort sig)
+        {
+            const int roundIncrement = 0x8; // Depends on rounding mode but it's always towards closest / ties to even
+            int roundBits = sig & 0xF;
+
+            if ((uint) exp >= 0x1D)
+            {
+                if (exp < 0)
+                {
+                    sig = (ushort)ShiftRightJam(sig, -exp);
+                    exp = 0;
+                }
+                else if (exp > 0x1D || sig + roundIncrement >= 0x8000) // Overflow
+                    return sign ? NegativeInfinityBits : PositiveInfinityBits;
+            }
+
+            sig = (ushort)((sig + roundIncrement) >> 4);
+            sig &= (ushort)~(((roundBits ^ 8) != 0 ? 1 : 0) & 1);
+
+            if (sig == 0)
+                exp = 0;
+
+            return new Half(sign, (ushort)exp, sig).m_value;
+        }
+
+        // Significand bits should be shifted towards to the left end before calling these methods
+        // Creates Quiet NaN if significand == 0
+        private static Half CreateHalfNaN(bool sign, ulong significand)
+        {
+            uint signInt = (sign ? 1U : 0U) << SignShift;
+            const uint expInt = PositiveQNaNBits;
+            uint sigInt = (uint)(significand >> 54); // 54: bits to shift to place bits at significand bits
+
+            return new Half((ushort)(signInt | expInt | sigInt));
+        }
+
+        private static float CreateSingleNaN(bool sign, ulong significand)
+        {
+            uint signInt = (sign ? 1U : 0U) << SingleSignShiftBit;
+            const uint expInt = 0x7FC00000;
+            uint sigInt = (uint)(significand >> 41); // 41: bits to shift to place bits at significand bits
+
+            return BitConverter.Int32BitsToSingle((int)(signInt | expInt | sigInt));
+        }
+
+        private static double CreateDoubleNaN(bool sign, ulong significand)
+        {
+            ulong signInt = (sign ? 1UL : 0UL) << DoubleSignShiftBit;
+            const ulong expInt = 0x7FF80000_00000000;
+            ulong sigInt = significand >> 12; // 12: bits to shift to place bits at significand bits
+
+            return BitConverter.Int64BitsToDouble((long) (signInt | expInt | sigInt));
+        }
+
+        #endregion
     }
 }
