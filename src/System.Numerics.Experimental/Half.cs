@@ -422,7 +422,7 @@ namespace System.Numerics.Experimental
             return (int) b;
         }
 
-        private const uint SingleSignMask = 0xF0000000;
+        private const uint SingleSignMask = 0x80000000;
         private const int SingleSignShiftBit = 31;
         private const int SingleExpMask = 0x7F800000;
         private const int SingleExpShiftBit = 23;
@@ -452,7 +452,7 @@ namespace System.Numerics.Experimental
             return RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000));
         }
 
-        private const ulong DoubleSignMask = 0xF0000000_00000000;
+        private const ulong DoubleSignMask = 0x80000000_00000000;
         private const int DoubleSignShiftBit = 63;
         private const long DoubleExpMask = 0x7FF80000_00000000;
         private const int DoubleExpShiftBit = 52;
@@ -483,25 +483,83 @@ namespace System.Numerics.Experimental
 
         public static explicit operator int(Half h)
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0)
+                return 0;
+
+            if (exp == MaxExponent)
+                return int.MinValue; // Architecture-dependent; x86's behaviour
+
+            int alignedSig = (int) (sig | 0x4000) << shiftDist;
+            alignedSig >>= 10;
+            return sign ? -alignedSig : alignedSig;
         }
 
-        public static explicit operator uint(Half h)
+        public static explicit operator uint(Half h) // 0 for every case
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            if (sign)
+                return (uint)(int)h; // Matching the behaviour of neg. float/double -> ulong
+            // TODO: Confirm this behaviour when h is negative
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0)
+                return 0;
+
+            if (exp == MaxExponent)
+                return uint.MaxValue; // Architecture-dependent; x86's behaviour
+            // TODO: I think it just returns 0 in C#
+
+            uint alignedSig = (sig | 0x0400) << shiftDist;
+            return alignedSig >> 10;
         }
 
         public static explicit operator long(Half h)
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0)
+                return 0;
+
+            if (exp == MaxExponent)
+                return long.MinValue; // Architecture-dependent; x86's behaviour
+
+            int alignedSig = (int) (sig | 0x0400) << shiftDist;
+            alignedSig >>= 10;
+            return sign ? -alignedSig : alignedSig;
         }
 
-        public static explicit operator ulong(Half h)
+        public static explicit operator ulong(Half h) // 0 for PosInfinity/NaN, long.MinValue for NegInfinity
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            if (sign)
+                return (ulong)(long)h; // Matching the behaviour of neg. float/double -> ulong
+            // TODO: Confirm this behaviour when h is negative
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0)
+                return 0;
+
+            if (exp == MaxExponent)
+                return ulong.MaxValue; // Architecture-dependent; x86's behaviour
+            // TODO: Need to check
+
+            uint alignedSig = (sig | 0x0400) << shiftDist;
+            return alignedSig >> 10;
         }
 
-        public static explicit operator short(Half h)
+        /*public static explicit operator short(Half h)
         {
             throw new NotImplementedException();
         }
@@ -519,16 +577,54 @@ namespace System.Numerics.Experimental
         public static explicit operator sbyte(Half h)
         {
             throw new NotImplementedException();
-        }
+        }*/ // TODO: not sure what should happen here
 
         public static implicit operator float(Half h)
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            if (exp == MaxExponent)
+            {
+                if (sig != 0)
+                    return CreateSingleNaN(sign, (ulong) sig << 54);
+                return sign ? float.NegativeInfinity : float.PositiveInfinity;
+            }
+
+            if (exp == 0)
+            {
+                if (sig == 0)
+                    return BitConverter.Int32BitsToSingle(unchecked((int)(sign ? SingleSignMask : 0))); // Positive / Negative zero
+                (exp, sig) = NormSubnormalF16Sig(sig);
+                exp -= 1;
+            }
+
+            return CreateSingle(sign, (byte)(exp + 0x70), sig << 13);
         }
 
         public static implicit operator double(Half h)
         {
-            throw new NotImplementedException();
+            bool sign = IsNegative(h);
+            int exp = h.Exponent;
+            uint sig = h.Significand;
+
+            if (exp == MaxExponent)
+            {
+                if (sig != 0)
+                    return CreateDoubleNaN(sign, (ulong) sig << 54);
+                return sign ? double.NegativeInfinity : double.PositiveInfinity;
+            }
+
+            if (exp == 0)
+            {
+                if (sig == 0)
+                    return BitConverter.Int64BitsToDouble(unchecked((long) (sign ? DoubleSignMask : 0))); // Positive / Negative zero
+                (exp, sig) = NormSubnormalF16Sig(sig);
+                exp -= 1;
+            }
+
+            return CreateDouble(sign, (ushort)(exp + 0x3F0), sig << 42);
         }
 
         #region Utilities
@@ -595,6 +691,53 @@ namespace System.Numerics.Experimental
             ulong sigInt = significand >> 12; // 12: bits to shift to place bits at significand bits
 
             return BitConverter.Int64BitsToDouble((long) (signInt | expInt | sigInt));
+        }
+
+        private static int RoundToInt32(bool sign, ulong sig)
+        {
+            const int roundIncrement = 0x800;
+            uint roundBits = (uint)(sig & 0xFFF);
+            sig += roundIncrement;
+
+            if ((sig & 0xFFFFF000_00000000) != 0)
+                return int.MinValue; //goto Invalid = what does it actually mean? Value too large?
+            uint sig32 = (uint)(sig >> 12);
+
+            if (roundBits == 0x800)
+                sig32 &= ~1U;
+            int z = (int) (sign ? (uint)-sig32 : sig32);
+            if (z != 0 && (z < 0) ^ sign)
+                return int.MinValue; //goto Invalid
+
+            return z;
+        }
+
+        private static uint RoundToUInt32(bool sign, ulong sig)
+        {
+            const int roundIncrement = 0x800;
+            uint roundBits = (uint)(sig & 0xFFF);
+            sig += roundIncrement;
+            if ((sig & 0xFFFFF000_00000000) != 0)
+                return uint.MaxValue; //goto Invalid
+            uint z = (uint) (sig >> 12);
+            if (roundBits == 0x800)
+                z &= ~1U;
+            if (sign && z != 0)
+                return uint.MaxValue; //goto invalid
+
+            return z;
+        }
+
+        private static float CreateSingle(bool sign, byte exp, uint frac)
+            => BitConverter.Int32BitsToSingle((int)(((sign ? 1U : 0U) << SingleSignShiftBit) | ((uint) exp << SingleExpShiftBit) | frac));
+
+        private static double CreateDouble(bool sign, ushort exp, ulong frac)
+            => BitConverter.Int64BitsToDouble((long)(((sign ? 1UL : 0UL) << DoubleSignShiftBit) | ((ulong)exp << DoubleExpShiftBit) | frac));
+
+        private static (int Exp, uint Sig) NormSubnormalF16Sig(uint sig) // TODO: better names? I have no idea what this does
+        {
+            int shiftDist = BitOperations.LeadingZeroCount(sig) - 16 - 5; // No LZCNT for 16-bit
+            return (1 - shiftDist, sig << shiftDist);
         }
 
         #endregion
