@@ -361,12 +361,25 @@ namespace System.Numerics.Experimental.Tests
             Assert.Equal(expected, value.Equals(obj));
         }
 
+        public static IEnumerable<object[]> ImplicitConversion_FromInt64_TestData()
+        {
+            yield return new object[] { 65504L, (ushort)0b0_11110_1111111111U }; // Half.MaxValue
+            yield return new object[] { -65504L, (ushort)0b1_11110_1111111111U }; // Half.MinValue
+            yield return new object[] { 1L, (ushort)0b0_10000_0000000000U }; // 1
+            yield return new object[] { -1L, (ushort)0b1_10000_0000000000U }; // -1
+            yield return new object[] { 0, (ushort)0b0_00000_0000000000U }; // 0
+            yield return new object[] { long.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { long.MinValue, (ushort)0b1_11111_0000000000 }; // OverFlow
+        }
+
         [Theory]
-        [InlineData(long.MaxValue)]
-        [InlineData(long.MinValue)]
-        [InlineData(0)]
-        [InlineData(42)]
-        public static void ImplicitConversion_UInt64(long l, ushort expected)
+        public static void ImplicitConversion_FromInt64(long l, ushort expected)
+        {
+            Half h = l;
+            Assert.Equal(HalfToUInt16Bits(h), expected);
+        }
+
+        public static void ImplicitConversion_FromUInt64(ulong l, ushort expected)
         {
             Half h = (ulong)l;
             Assert.Equal(HalfToUInt16Bits(h), expected);
