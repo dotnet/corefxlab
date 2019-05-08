@@ -367,22 +367,248 @@ namespace System.Numerics.Experimental.Tests
             yield return new object[] { -65504L, (ushort)0b1_11110_1111111111U }; // Half.MinValue
             yield return new object[] { 1L, (ushort)0b0_10000_0000000000U }; // 1
             yield return new object[] { -1L, (ushort)0b1_10000_0000000000U }; // -1
-            yield return new object[] { 0, (ushort)0b0_00000_0000000000U }; // 0
+            yield return new object[] { 0L, (ushort)0b0_00000_0000000000U }; // 0
             yield return new object[] { long.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
             yield return new object[] { long.MinValue, (ushort)0b1_11111_0000000000 }; // OverFlow
+            yield return new object[] { 65504L + 16, (ushort) 0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { -(65504L + 16), (ushort)0b1_11111_0000000000 }; // Overflow
+            yield return new object[] { 65504L + 16 - 1, (ushort)0b0_11110_1111111111 }; // MaxValue
+            yield return new object[] { -(65504L + 16 -1), (ushort)0b1_11110_1111111111 }; // MinValue
+            yield return new object[] { 65504L + 16 + 1, (ushort) 0b0_11111_0000000000 }; // MaxValue + half the increment unit + 1, should overflow
+            yield return new object[] { -(65504L + 16 + 1), (ushort)0b1_11111_0000000000 }; // MinValue - half the increment unit - 1, should overflow
         }
 
+        [MemberData(nameof(ImplicitConversion_FromInt64_TestData))]
         [Theory]
         public static void ImplicitConversion_FromInt64(long l, ushort expected)
         {
             Half h = l;
-            Assert.Equal(HalfToUInt16Bits(h), expected);
+            Assert.Equal(expected, HalfToUInt16Bits(h));
         }
 
+        public static IEnumerable<object[]> ImplicitConversion_FromUInt64_TestData()
+        {
+            unchecked
+            {
+                yield return new object[] { 65504UL, (ushort)0b0_11110_1111111111 }; // Half.MaxValue
+                yield return new object[] { (ulong)-65504L, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { 1UL, (ushort)0b0_10000_0000000000U }; // 1
+                yield return new object[] { (ulong)-1L, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { 0UL, (ushort)0b0_00000_0000000000 }; // 0
+                yield return new object[] { (ulong)long.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { (ulong)long.MinValue, (ushort)0b0_11111_0000000000 }; // OverFlow
+                yield return new object[] { 65504UL + 16, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { (ulong)-(65504L + 16), (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { 65504UL + 16 - 1, (ushort)0b0_11110_1111111111 }; // MaxValue
+                yield return new object[] { (ulong)-(65504L + 16 - 1), (ushort)0b0_11111_0000000000 }; // OverFlow
+                yield return new object[] { 65504UL + 16 + 1, (ushort)0b0_11111_0000000000 }; // MaxValue + half the increment unit + 1, should overflow
+                yield return new object[] { (ulong)-(65504L + 16 + 1), (ushort)0b0_11111_0000000000 }; // Overflow
+            }
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromInt64_TestData))]
+        [Theory]
         public static void ImplicitConversion_FromUInt64(ulong l, ushort expected)
         {
-            Half h = (ulong)l;
-            Assert.Equal(HalfToUInt16Bits(h), expected);
+            Half h = l;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
         }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromInt32_TestData()
+        {
+            yield return new object[] { 65504, (ushort)0b0_11110_1111111111U }; // Half.MaxValue
+            yield return new object[] { -65504, (ushort)0b1_11110_1111111111U }; // Half.MinValue
+            yield return new object[] { 1, (ushort)0b0_10000_0000000000U }; // 1
+            yield return new object[] { -1, (ushort)0b1_10000_0000000000U }; // -1
+            yield return new object[] { 0, (ushort)0b0_00000_0000000000U }; // 0
+            yield return new object[] { int.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { int.MinValue, (ushort)0b1_11111_0000000000 }; // OverFlow
+            yield return new object[] { 65504 + 16, (ushort)0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { -(65504 + 16), (ushort)0b1_11111_0000000000 }; // Overflow
+            yield return new object[] { 65504 + 16 - 1, (ushort)0b0_11110_1111111111 }; // MaxValue
+            yield return new object[] { -(65504 + 16 - 1), (ushort)0b1_11110_1111111111 }; // MinValue
+            yield return new object[] { 65504 + 16 + 1, (ushort)0b0_11111_0000000000 }; // MaxValue + half the increment unit + 1, should overflow
+            yield return new object[] { -(65504 + 16 + 1), (ushort)0b1_11111_0000000000 }; // MinValue - half the increment unit - 1, should overflow
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromInt32_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromInt32(int i, ushort expected)
+        {
+            Half h = i;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromUInt32_TestData()
+        {
+            unchecked
+            {
+                yield return new object[] { 65504U, (ushort)0b0_11110_1111111111 }; // Half.MaxValue
+                yield return new object[] { (uint)-65504, (ushort)0b0_11111_1111111111 }; // Half.MinValue
+                yield return new object[] { 1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (uint)-1, (ushort)0b0_11111_0000000000 }; // Overflow 
+                yield return new object[] { 0U, (ushort)0b0_00000_0000000000 }; // 0
+                yield return new object[] { (uint)int.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { (uint)int.MinValue, (ushort)0b0_11111_0000000000 }; // OverFlow
+                yield return new object[] { uint.MaxValue, (ushort)0b0_11111_0000000000 };
+                yield return new object[] { 65504U + 16, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { (uint)-(65504 + 16), (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { 65504U + 16 - 1, (ushort)0b0_11110_1111111111 }; // MaxValue
+                yield return new object[] { (uint)-(65504 + 16 - 1), (ushort)0b0_11110_1111111111 }; // MinValue
+                yield return new object[] { 65504U + 16 + 1, (ushort)0b0_11111_0000000000 }; // MaxValue + half the increment unit + 1, should overflow
+                yield return new object[] { (uint)-(65504 + 16 + 1), (ushort)0b0_11111_0000000000 }; // MinValue - half the increment unit - 1, should overflow
+            }
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromUInt32_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromUInt32(uint i, ushort expected)
+        {
+            Half h = i;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromInt16_TestData()
+        {
+                yield return new object[] { (short)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (short)-1, (ushort)0b0_11111_0000000000 }; // Overflow 
+                yield return new object[] { (short)0U, (ushort)0b0_00000_0000000000 }; // 0
+                yield return new object[] { short.MaxValue, (ushort)0b0_11110_0000000000 }; // rounds to 32768
+                yield return new object[] { short.MinValue, (ushort)0b1_11111_0000000000 }; // -32768
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromInt16_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromInt16(short s, ushort expected)
+        {
+            Half h = s;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromUInt16_TestData()
+        {
+            unchecked
+            {
+                yield return new object[] { (ushort)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (ushort)-1, (ushort)0b0_11111_0000000000 }; // Overflow
+                yield return new object[] { (ushort)0U, (ushort)0b0_00000_0000000000 }; // 0
+                yield return new object[] { (ushort)short.MaxValue, (ushort)0b0_11110_0000000000 }; // rounds to 32768
+                yield return new object[] { (ushort)short.MinValue, (ushort)0b0_11110_0000000000 }; // 32768
+                yield return new object[] { ushort.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+            }
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromUInt16_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromUInt16(ushort s, ushort expected)
+        {
+            Half h = s;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromByte_TestData()
+        {
+            unchecked
+            {
+                yield return new object[] { (byte)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (byte)-1, (ushort)0b0_10110_1111110111 }; // 255
+                yield return new object[] { (byte)0U, (ushort)0b0_00000_0000000000 }; // 0
+                yield return new object[] { (byte)sbyte.MaxValue, (ushort)0b0_10101_1111110000 }; // 127
+                yield return new object[] { (byte)sbyte.MinValue, (ushort)0b0_10110_0010000000 }; // 128
+                yield return new object[] { byte.MaxValue, (ushort)0b0_10110_1111110111 }; // 255
+            }
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromByte_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromByte(byte b, ushort expected)
+        {
+            Half h = b;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ImplicitConversion_FromSByte_TestData()
+        {
+            yield return new object[] { (sbyte)1U, (ushort)0b0_10000_0000000000 }; // 1
+            yield return new object[] { (sbyte)-1, (ushort)0b1_10000_0000000000 }; // -1
+            yield return new object[] { (sbyte)0U, (ushort)0b0_00000_0000000000 }; // 0
+            yield return new object[] { sbyte.MaxValue, (ushort)0b0_10101_1111110000 }; // 127
+            yield return new object[] { sbyte.MinValue, (ushort)0b1_10110_0010000000 }; // -128
+        }
+
+        [MemberData(nameof(ImplicitConversion_FromByte_TestData))]
+        [Theory]
+        public static void ImplicitConversion_FromSByte(sbyte b, ushort expected)
+        {
+            Half h = b;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static void ExplicitConversion_FromSingle(float f, ushort expected)
+        {
+            Half h = (Half)f;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static void ExplicitConversion_FromDouble(double d, ushort expected)
+        {
+            Half h = (Half)d;
+            Assert.Equal(expected, HalfToUInt16Bits(h));
+        }
+
+        public static void ExplicitConversion_ToInt64(ushort value, long expected)
+        {
+            long l = (long)UInt16BitsToHalf(value);
+            Assert.Equal(expected, l);
+        }
+
+        public static void ExplicitConversion_ToUInt64(ushort value, ulong expected)
+        {
+            ulong l = (ulong)UInt16BitsToHalf(value);
+            Assert.Equal(expected, l);
+        }
+
+        public static void ExplicitConversion_ToInt32(ushort value, int expected)
+        {
+            int i = (int)UInt16BitsToHalf(value);
+            Assert.Equal(expected, i);
+        }
+
+        public static void ExplicitConversion_ToUInt16(ushort value, ushort expected)
+        {
+            uint i = (uint)UInt16BitsToHalf(value);
+            Assert.Equal(expected, i);
+        }
+
+        public static void ExplicitConversion_ToInt16(ushort value, short expected)
+        {
+            short i = (short)UInt16BitsToHalf(value);
+            Assert.Equal(expected, i);
+        }
+
+        public static void ExplicitConversion_ToByte(ushort value, byte expected)
+        {
+            byte i = (byte)UInt16BitsToHalf(value);
+            Assert.Equal(expected, i);
+        }
+
+        public static void ExplicitConversion_ToSByte(ushort value, sbyte expected)
+        {
+            sbyte i = (sbyte)UInt16BitsToHalf(value);
+            Assert.Equal(expected, i);
+        }
+
+        public static void ImplicitConversion_ToSingle(ushort value, float expected)
+        {
+            float f = UInt16BitsToHalf(value);
+            Assert.Equal(expected, f);
+        }
+
+        public static void ImplicitConversion_ToDouble(ushort value, double expected)
+        {
+            double d = UInt16BitsToHalf(value);
+            Assert.Equal(expected, d);
+        }
+
     }
 }

@@ -559,25 +559,26 @@ namespace System.Numerics.Experimental
             return alignedSig >> 10;
         }
 
-        /*public static explicit operator short(Half h)
+        // TODO: confirm behaviours
+        public static explicit operator short(Half h)
         {
-            throw new NotImplementedException();
+            return (short) (int) h;
         }
 
         public static explicit operator ushort(Half h)
         {
-            throw new NotImplementedException();
+            return (ushort)(short)(int)h;
         }
 
         public static explicit operator byte(Half h)
         {
-            throw new NotImplementedException();
+            return (byte)(sbyte)(int)h;
         }
 
         public static explicit operator sbyte(Half h)
         {
-            throw new NotImplementedException();
-        }*/ // TODO: not sure what should happen here
+            return (sbyte)(int)h;
+        } // TODO: not sure what should happen here
 
         public static implicit operator float(Half h)
         {
