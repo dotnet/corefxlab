@@ -112,7 +112,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Experimenta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame", "src\Microsoft.Data\Microsoft.Data.DataFrame.csproj", "{AD22AAD4-FCB0-4DB4-BC38-AB6ACD153899}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame.Tests", "tests\Microsoft.Data.Tests\Microsoft.Data.DataFrame.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame.Tests", "tests\Microsoft.Data.DataFrame.Tests\Microsoft.Data.DataFrame.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
