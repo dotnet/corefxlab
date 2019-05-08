@@ -16,7 +16,7 @@ namespace Microsoft.Data
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
-            return _Clone(sortIndices, ascending);
+            return _Clone(sortIndices, !ascending);
         }
 
         public override BaseColumn GetAscendingSortIndices()
