@@ -4,10 +4,12 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#@ include file="DataFrameColumnArithmeticTemplate.ttinclude" #>
+<#@ include file="ColumnArithmeticTemplate.ttinclude" #>
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+
+// Generated from DataFrameBinaryOperations.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
@@ -21,12 +23,13 @@ namespace Microsoft.Data
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
         public DataFrame <#=method.MethodName#><T>(T value)
+            where T : unmanaged
 <# } else if (method.MethodType == MethodType.BinaryInt) { #>
-        public DataFrame <#=method.MethodName#><T>(int value)
+        public DataFrame <#=method.MethodName#>(int value)
 <# } else { #>
         public DataFrame <#=method.MethodName#><T>(IReadOnlyList<T> values)
+            where T : unmanaged
 <# } #>
-            where T : struct
         {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
 <# } else { #>
@@ -38,31 +41,17 @@ namespace Microsoft.Data
             var newDataFrame = new DataFrame();
             for (int i = 0; i < ColumnCount; i++)
             {
-                PrimitiveDataFrameColumn<T> column = _table.Column(i) as PrimitiveDataFrameColumn<T>;
-                if (column != null)
-                {
-<# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
-                    PrimitiveDataFrameColumn<bool> newColumn = column.CreateBoolColumnForCompareOps();
-<# if (method.MethodType == MethodType.ComparisonScalar) { #>
-                    column._columnContainer.<#=method.MethodName#>(value, newColumn._columnContainer);
+                BaseColumn baseColumn = _table.Column(i);
+<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
+                var newColumn = baseColumn.<#=method.MethodName#>(value);
 <# } else { #>
-                    column._columnContainer.<#=method.MethodName#>(values[i], newColumn._columnContainer);
+                var newColumn = baseColumn.<#=method.MethodName#>(values[i]);
 <# } #>
-<# } else if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
-                    var newColumn = column.Clone();
-                    newColumn._columnContainer.<#=method.MethodName#>(value);
-<# } else { #>
-                    var newColumn = column.Clone();
-                    newColumn._columnContainer.<#=method.MethodName#>(values[i]);
-<# } #>
-                    newDataFrame.InsertColumn(i, newColumn);
-                }
+                newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
         }
-
 <# } #>
-
         #endregion
     }
 }

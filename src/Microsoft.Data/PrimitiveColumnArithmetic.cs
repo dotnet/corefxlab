@@ -4,155 +4,157 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+// Generated from PrimitiveColumnArithmetic.tt. Do not modify directly
+
 using System;
 
 namespace Microsoft.Data
 {
-    internal interface IPrimitiveDataFrameColumnArithmetic<T>
+    internal interface IPrimitiveColumnArithmetic<T>
         where T : struct
     {
-       void Add(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Add(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Subtract(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Subtract(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Multiply(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Multiply(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Divide(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Divide(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Modulo(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Modulo(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void And(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void And(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Or(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Or(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void Xor(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right);
-       void Xor(PrimitiveDataFrameColumnContainer<T> column, T scalar);
-       void LeftShift(PrimitiveDataFrameColumnContainer<T> column, int value);
-       void RightShift(PrimitiveDataFrameColumnContainer<T> column, int value);
-       void Equals(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void Equals(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
-       void NotEquals(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void NotEquals(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
-       void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
-       void LessThanOrEqual(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void LessThanOrEqual(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
-       void GreaterThan(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void GreaterThan(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
-       void LessThan(PrimitiveDataFrameColumnContainer<T> left, PrimitiveDataFrameColumnContainer<T> right, PrimitiveDataFrameColumnContainer<bool> ret);
-       void LessThan(PrimitiveDataFrameColumnContainer<T> column, T scalar, PrimitiveDataFrameColumnContainer<bool> ret);
+       void Add(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Add(PrimitiveColumnContainer<T> column, T scalar);
+       void Subtract(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Subtract(PrimitiveColumnContainer<T> column, T scalar);
+       void Multiply(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Multiply(PrimitiveColumnContainer<T> column, T scalar);
+       void Divide(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Divide(PrimitiveColumnContainer<T> column, T scalar);
+       void Modulo(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Modulo(PrimitiveColumnContainer<T> column, T scalar);
+       void And(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void And(PrimitiveColumnContainer<T> column, T scalar);
+       void Or(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Or(PrimitiveColumnContainer<T> column, T scalar);
+       void Xor(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
+       void Xor(PrimitiveColumnContainer<T> column, T scalar);
+       void LeftShift(PrimitiveColumnContainer<T> column, int value);
+       void RightShift(PrimitiveColumnContainer<T> column, int value);
+       void Equals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void Equals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void NotEquals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void NotEquals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void GreaterThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void GreaterThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void LessThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void LessThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void GreaterThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void GreaterThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void LessThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void LessThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
     }
 
-    internal static class PrimitiveDataFrameColumnArithmetic<T>
+    internal static class PrimitiveColumnArithmetic<T>
         where T : struct
     {
-        public static IPrimitiveDataFrameColumnArithmetic<T> Instance => PrimitiveDataFrameColumnArithmetic.GetArithmetic<T>();
+        public static IPrimitiveColumnArithmetic<T> Instance { get; } = PrimitiveColumnArithmetic.GetArithmetic<T>();
     }
 
-    internal static class PrimitiveDataFrameColumnArithmetic
+    internal static class PrimitiveColumnArithmetic
     {
-        public static IPrimitiveDataFrameColumnArithmetic<T> GetArithmetic<T>()
+        public static IPrimitiveColumnArithmetic<T> GetArithmetic<T>()
             where T : struct
         {
             if (typeof(T) == typeof(bool))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new BoolArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new BoolArithmetic();
             }
             else if (typeof(T) == typeof(byte))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new ByteArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new ByteArithmetic();
             }
             else if (typeof(T) == typeof(char))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new CharArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new CharArithmetic();
             }
             else if (typeof(T) == typeof(decimal))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new DecimalArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new DecimalArithmetic();
             }
             else if (typeof(T) == typeof(double))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new DoubleArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new DoubleArithmetic();
             }
             else if (typeof(T) == typeof(float))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new FloatArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new FloatArithmetic();
             }
             else if (typeof(T) == typeof(int))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new IntArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new IntArithmetic();
             }
             else if (typeof(T) == typeof(long))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new LongArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new LongArithmetic();
             }
             else if (typeof(T) == typeof(sbyte))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new SByteArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new SByteArithmetic();
             }
             else if (typeof(T) == typeof(short))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new ShortArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new ShortArithmetic();
             }
             else if (typeof(T) == typeof(uint))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new UIntArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new UIntArithmetic();
             }
             else if (typeof(T) == typeof(ulong))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new ULongArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new ULongArithmetic();
             }
             else if (typeof(T) == typeof(ushort))
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new UShortArithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new UShortArithmetic();
             }
             throw new NotSupportedException();
         }
     }
 
-    internal class BoolArithmetic : IPrimitiveDataFrameColumnArithmetic<bool>
+    internal class BoolArithmetic : IPrimitiveColumnArithmetic<bool>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Add(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
-        public void Add(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Add(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             throw new NotSupportedException();
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Subtract(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Subtract(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             throw new NotSupportedException();
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Multiply(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Multiply(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             throw new NotSupportedException();
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Divide(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Divide(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             throw new NotSupportedException();
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Modulo(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Modulo(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             throw new NotSupportedException();
         }
-        public void And(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void And(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -163,7 +165,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void And(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -174,7 +176,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Or(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -185,7 +187,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Or(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -196,7 +198,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right)
+        public void Xor(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -207,7 +209,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<bool> column, bool scalar)
+        public void Xor(PrimitiveColumnContainer<bool> column, bool scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -218,15 +220,15 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<bool> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<bool> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<bool> column, int value)
+        public void RightShift(PrimitiveColumnContainer<bool> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -237,7 +239,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -248,7 +250,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -259,7 +261,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -270,42 +272,42 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<bool> left, PrimitiveDataFrameColumnContainer<bool> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<bool> column, bool scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
     }
-    internal class ByteArithmetic : IPrimitiveDataFrameColumnArithmetic<byte>
+    internal class ByteArithmetic : IPrimitiveColumnArithmetic<byte>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Add(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -316,7 +318,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Add(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -327,7 +329,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Subtract(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -338,7 +340,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Subtract(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -349,7 +351,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Multiply(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -360,7 +362,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Multiply(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -371,7 +373,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Divide(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -382,7 +384,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Divide(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -393,7 +395,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Modulo(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -404,7 +406,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Modulo(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -415,7 +417,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void And(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -426,7 +428,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void And(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -437,7 +439,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Or(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -448,7 +450,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Or(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -459,7 +461,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right)
+        public void Xor(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -470,7 +472,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<byte> column, byte scalar)
+        public void Xor(PrimitiveColumnContainer<byte> column, byte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -481,7 +483,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<byte> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<byte> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -492,7 +494,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<byte> column, int value)
+        public void RightShift(PrimitiveColumnContainer<byte> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -503,7 +505,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -514,7 +516,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -525,7 +527,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -536,7 +538,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -547,7 +549,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -558,7 +560,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -569,7 +571,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -580,7 +582,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -591,7 +593,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -602,7 +604,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -613,7 +615,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<byte> left, PrimitiveDataFrameColumnContainer<byte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -624,7 +626,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<byte> column, byte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -636,9 +638,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class CharArithmetic : IPrimitiveDataFrameColumnArithmetic<char>
+    internal class CharArithmetic : IPrimitiveColumnArithmetic<char>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Add(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -649,7 +651,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Add(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -660,7 +662,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Subtract(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -671,7 +673,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Subtract(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -682,7 +684,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Multiply(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -693,7 +695,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Multiply(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -704,7 +706,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Divide(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -715,7 +717,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Divide(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -726,7 +728,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Modulo(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -737,7 +739,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Modulo(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -748,7 +750,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void And(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -759,7 +761,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void And(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -770,7 +772,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Or(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -781,7 +783,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Or(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -792,7 +794,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right)
+        public void Xor(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -803,7 +805,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<char> column, char scalar)
+        public void Xor(PrimitiveColumnContainer<char> column, char scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -814,7 +816,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<char> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<char> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -825,7 +827,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<char> column, int value)
+        public void RightShift(PrimitiveColumnContainer<char> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -836,7 +838,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -847,7 +849,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -858,7 +860,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -869,7 +871,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -880,7 +882,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -891,7 +893,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -902,7 +904,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -913,7 +915,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -924,7 +926,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -935,7 +937,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -946,7 +948,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<char> left, PrimitiveDataFrameColumnContainer<char> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -957,7 +959,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<char> column, char scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -969,9 +971,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class DecimalArithmetic : IPrimitiveDataFrameColumnArithmetic<decimal>
+    internal class DecimalArithmetic : IPrimitiveColumnArithmetic<decimal>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Add(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -982,7 +984,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Add(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -993,7 +995,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Subtract(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1004,7 +1006,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Subtract(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1015,7 +1017,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Multiply(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1026,7 +1028,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Multiply(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1037,7 +1039,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Divide(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1048,7 +1050,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Divide(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1059,7 +1061,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Modulo(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1070,7 +1072,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Modulo(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1081,39 +1083,39 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void And(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             throw new NotSupportedException();
         }
-        public void And(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void And(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Or(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Or(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right)
+        public void Xor(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar)
+        public void Xor(PrimitiveColumnContainer<decimal> column, decimal scalar)
         {
             throw new NotSupportedException();
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<decimal> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<decimal> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<decimal> column, int value)
+        public void RightShift(PrimitiveColumnContainer<decimal> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1124,7 +1126,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1135,7 +1137,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1146,7 +1148,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1157,7 +1159,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1168,7 +1170,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1179,7 +1181,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1190,7 +1192,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1201,7 +1203,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1212,7 +1214,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1223,7 +1225,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<decimal> left, PrimitiveDataFrameColumnContainer<decimal> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1234,7 +1236,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<decimal> column, decimal scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1246,9 +1248,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class DoubleArithmetic : IPrimitiveDataFrameColumnArithmetic<double>
+    internal class DoubleArithmetic : IPrimitiveColumnArithmetic<double>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Add(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1259,7 +1261,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Add(PrimitiveColumnContainer<double> column, double scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1270,7 +1272,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Subtract(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1281,7 +1283,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Subtract(PrimitiveColumnContainer<double> column, double scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1292,7 +1294,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Multiply(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1303,7 +1305,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Multiply(PrimitiveColumnContainer<double> column, double scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1314,7 +1316,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Divide(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1325,7 +1327,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Divide(PrimitiveColumnContainer<double> column, double scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1336,7 +1338,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Modulo(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1347,7 +1349,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Modulo(PrimitiveColumnContainer<double> column, double scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1358,39 +1360,39 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void And(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             throw new NotSupportedException();
         }
-        public void And(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void And(PrimitiveColumnContainer<double> column, double scalar)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Or(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Or(PrimitiveColumnContainer<double> column, double scalar)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right)
+        public void Xor(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<double> column, double scalar)
+        public void Xor(PrimitiveColumnContainer<double> column, double scalar)
         {
             throw new NotSupportedException();
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<double> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<double> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<double> column, int value)
+        public void RightShift(PrimitiveColumnContainer<double> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1401,7 +1403,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1412,7 +1414,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1423,7 +1425,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1434,7 +1436,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1445,7 +1447,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1456,7 +1458,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1467,7 +1469,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1478,7 +1480,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1489,7 +1491,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1500,7 +1502,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<double> left, PrimitiveDataFrameColumnContainer<double> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1511,7 +1513,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<double> column, double scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1523,9 +1525,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class FloatArithmetic : IPrimitiveDataFrameColumnArithmetic<float>
+    internal class FloatArithmetic : IPrimitiveColumnArithmetic<float>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Add(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1536,7 +1538,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Add(PrimitiveColumnContainer<float> column, float scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1547,7 +1549,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Subtract(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1558,7 +1560,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Subtract(PrimitiveColumnContainer<float> column, float scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1569,7 +1571,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Multiply(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1580,7 +1582,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Multiply(PrimitiveColumnContainer<float> column, float scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1591,7 +1593,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Divide(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1602,7 +1604,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Divide(PrimitiveColumnContainer<float> column, float scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1613,7 +1615,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Modulo(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1624,7 +1626,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Modulo(PrimitiveColumnContainer<float> column, float scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1635,39 +1637,39 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void And(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             throw new NotSupportedException();
         }
-        public void And(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void And(PrimitiveColumnContainer<float> column, float scalar)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Or(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             throw new NotSupportedException();
         }
-        public void Or(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Or(PrimitiveColumnContainer<float> column, float scalar)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right)
+        public void Xor(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             throw new NotSupportedException();
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<float> column, float scalar)
+        public void Xor(PrimitiveColumnContainer<float> column, float scalar)
         {
             throw new NotSupportedException();
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<float> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<float> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<float> column, int value)
+        public void RightShift(PrimitiveColumnContainer<float> column, int value)
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1678,7 +1680,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1689,7 +1691,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1700,7 +1702,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1711,7 +1713,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1722,7 +1724,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1733,7 +1735,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1744,7 +1746,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1755,7 +1757,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1766,7 +1768,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1777,7 +1779,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<float> left, PrimitiveDataFrameColumnContainer<float> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1788,7 +1790,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<float> column, float scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1800,9 +1802,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class IntArithmetic : IPrimitiveDataFrameColumnArithmetic<int>
+    internal class IntArithmetic : IPrimitiveColumnArithmetic<int>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Add(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1813,7 +1815,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Add(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1824,7 +1826,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Subtract(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1835,7 +1837,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Subtract(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1846,7 +1848,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Multiply(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1857,7 +1859,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Multiply(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1868,7 +1870,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Divide(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1879,7 +1881,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Divide(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1890,7 +1892,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Modulo(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1901,7 +1903,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Modulo(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1912,7 +1914,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void And(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1923,7 +1925,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void And(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1934,7 +1936,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Or(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1945,7 +1947,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Or(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1956,7 +1958,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right)
+        public void Xor(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -1967,7 +1969,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<int> column, int scalar)
+        public void Xor(PrimitiveColumnContainer<int> column, int scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1978,7 +1980,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<int> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<int> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -1989,7 +1991,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<int> column, int value)
+        public void RightShift(PrimitiveColumnContainer<int> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2000,7 +2002,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2011,7 +2013,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2022,7 +2024,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2033,7 +2035,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2044,7 +2046,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2055,7 +2057,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2066,7 +2068,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2077,7 +2079,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2088,7 +2090,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2099,7 +2101,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2110,7 +2112,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<int> left, PrimitiveDataFrameColumnContainer<int> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2121,7 +2123,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<int> column, int scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2133,9 +2135,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class LongArithmetic : IPrimitiveDataFrameColumnArithmetic<long>
+    internal class LongArithmetic : IPrimitiveColumnArithmetic<long>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Add(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2146,7 +2148,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Add(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2157,7 +2159,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Subtract(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2168,7 +2170,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Subtract(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2179,7 +2181,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Multiply(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2190,7 +2192,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Multiply(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2201,7 +2203,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Divide(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2212,7 +2214,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Divide(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2223,7 +2225,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Modulo(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2234,7 +2236,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Modulo(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2245,7 +2247,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void And(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2256,7 +2258,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void And(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2267,7 +2269,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Or(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2278,7 +2280,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Or(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2289,7 +2291,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right)
+        public void Xor(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2300,7 +2302,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<long> column, long scalar)
+        public void Xor(PrimitiveColumnContainer<long> column, long scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2311,7 +2313,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<long> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<long> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2322,7 +2324,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<long> column, int value)
+        public void RightShift(PrimitiveColumnContainer<long> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2333,7 +2335,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2344,7 +2346,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2355,7 +2357,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2366,7 +2368,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2377,7 +2379,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2388,7 +2390,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2399,7 +2401,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2410,7 +2412,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2421,7 +2423,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2432,7 +2434,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2443,7 +2445,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<long> left, PrimitiveDataFrameColumnContainer<long> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2454,7 +2456,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<long> column, long scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2466,9 +2468,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class SByteArithmetic : IPrimitiveDataFrameColumnArithmetic<sbyte>
+    internal class SByteArithmetic : IPrimitiveColumnArithmetic<sbyte>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Add(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2479,7 +2481,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Add(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2490,7 +2492,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Subtract(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2501,7 +2503,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Subtract(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2512,7 +2514,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Multiply(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2523,7 +2525,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Multiply(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2534,7 +2536,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Divide(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2545,7 +2547,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Divide(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2556,7 +2558,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Modulo(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2567,7 +2569,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Modulo(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2578,7 +2580,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void And(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2589,7 +2591,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void And(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2600,7 +2602,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Or(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2611,7 +2613,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Or(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2622,7 +2624,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right)
+        public void Xor(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2633,7 +2635,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar)
+        public void Xor(PrimitiveColumnContainer<sbyte> column, sbyte scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2644,7 +2646,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<sbyte> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<sbyte> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2655,7 +2657,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<sbyte> column, int value)
+        public void RightShift(PrimitiveColumnContainer<sbyte> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2666,7 +2668,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2677,7 +2679,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2688,7 +2690,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2699,7 +2701,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2710,7 +2712,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2721,7 +2723,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2732,7 +2734,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2743,7 +2745,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2754,7 +2756,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2765,7 +2767,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2776,7 +2778,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<sbyte> left, PrimitiveDataFrameColumnContainer<sbyte> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2787,7 +2789,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<sbyte> column, sbyte scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2799,9 +2801,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class ShortArithmetic : IPrimitiveDataFrameColumnArithmetic<short>
+    internal class ShortArithmetic : IPrimitiveColumnArithmetic<short>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Add(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2812,7 +2814,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Add(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2823,7 +2825,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Subtract(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2834,7 +2836,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Subtract(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2845,7 +2847,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Multiply(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2856,7 +2858,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Multiply(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2867,7 +2869,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Divide(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2878,7 +2880,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Divide(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2889,7 +2891,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Modulo(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2900,7 +2902,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Modulo(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2911,7 +2913,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void And(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2922,7 +2924,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void And(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2933,7 +2935,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Or(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2944,7 +2946,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Or(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2955,7 +2957,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right)
+        public void Xor(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -2966,7 +2968,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<short> column, short scalar)
+        public void Xor(PrimitiveColumnContainer<short> column, short scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2977,7 +2979,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<short> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<short> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2988,7 +2990,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<short> column, int value)
+        public void RightShift(PrimitiveColumnContainer<short> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -2999,7 +3001,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3010,7 +3012,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3021,7 +3023,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3032,7 +3034,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3043,7 +3045,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3054,7 +3056,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3065,7 +3067,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3076,7 +3078,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3087,7 +3089,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3098,7 +3100,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3109,7 +3111,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<short> left, PrimitiveDataFrameColumnContainer<short> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3120,7 +3122,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<short> column, short scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3132,9 +3134,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class UIntArithmetic : IPrimitiveDataFrameColumnArithmetic<uint>
+    internal class UIntArithmetic : IPrimitiveColumnArithmetic<uint>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Add(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3145,7 +3147,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Add(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3156,7 +3158,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Subtract(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3167,7 +3169,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Subtract(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3178,7 +3180,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Multiply(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3189,7 +3191,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Multiply(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3200,7 +3202,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Divide(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3211,7 +3213,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Divide(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3222,7 +3224,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Modulo(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3233,7 +3235,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Modulo(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3244,7 +3246,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void And(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3255,7 +3257,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void And(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3266,7 +3268,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Or(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3277,7 +3279,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Or(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3288,7 +3290,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right)
+        public void Xor(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3299,7 +3301,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<uint> column, uint scalar)
+        public void Xor(PrimitiveColumnContainer<uint> column, uint scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3310,7 +3312,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<uint> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<uint> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3321,7 +3323,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<uint> column, int value)
+        public void RightShift(PrimitiveColumnContainer<uint> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3332,7 +3334,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3343,7 +3345,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3354,7 +3356,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3365,7 +3367,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3376,7 +3378,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3387,7 +3389,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3398,7 +3400,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3409,7 +3411,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3420,7 +3422,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3431,7 +3433,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3442,7 +3444,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<uint> left, PrimitiveDataFrameColumnContainer<uint> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3453,7 +3455,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<uint> column, uint scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3465,9 +3467,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class ULongArithmetic : IPrimitiveDataFrameColumnArithmetic<ulong>
+    internal class ULongArithmetic : IPrimitiveColumnArithmetic<ulong>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Add(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3478,7 +3480,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Add(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3489,7 +3491,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Subtract(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3500,7 +3502,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Subtract(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3511,7 +3513,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Multiply(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3522,7 +3524,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Multiply(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3533,7 +3535,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Divide(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3544,7 +3546,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Divide(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3555,7 +3557,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Modulo(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3566,7 +3568,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Modulo(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3577,7 +3579,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void And(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3588,7 +3590,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void And(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3599,7 +3601,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Or(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3610,7 +3612,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Or(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3621,7 +3623,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right)
+        public void Xor(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3632,7 +3634,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar)
+        public void Xor(PrimitiveColumnContainer<ulong> column, ulong scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3643,7 +3645,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<ulong> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<ulong> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3654,7 +3656,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<ulong> column, int value)
+        public void RightShift(PrimitiveColumnContainer<ulong> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3665,7 +3667,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3676,7 +3678,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3687,7 +3689,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3698,7 +3700,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3709,7 +3711,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3720,7 +3722,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3731,7 +3733,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3742,7 +3744,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3753,7 +3755,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3764,7 +3766,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3775,7 +3777,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<ulong> left, PrimitiveDataFrameColumnContainer<ulong> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3786,7 +3788,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<ulong> column, ulong scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3798,9 +3800,9 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class UShortArithmetic : IPrimitiveDataFrameColumnArithmetic<ushort>
+    internal class UShortArithmetic : IPrimitiveColumnArithmetic<ushort>
     {
-        public void Add(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Add(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3811,7 +3813,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Add(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Add(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3822,7 +3824,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Subtract(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3833,7 +3835,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Subtract(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Subtract(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3844,7 +3846,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Multiply(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3855,7 +3857,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Multiply(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Multiply(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3866,7 +3868,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Divide(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3877,7 +3879,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Divide(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Divide(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3888,7 +3890,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Modulo(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3899,7 +3901,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Modulo(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Modulo(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3910,7 +3912,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void And(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3921,7 +3923,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void And(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void And(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3932,7 +3934,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Or(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3943,7 +3945,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Or(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Or(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3954,7 +3956,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right)
+        public void Xor(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -3965,7 +3967,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Xor(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar)
+        public void Xor(PrimitiveColumnContainer<ushort> column, ushort scalar)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3976,7 +3978,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LeftShift(PrimitiveDataFrameColumnContainer<ushort> column, int value)
+        public void LeftShift(PrimitiveColumnContainer<ushort> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3987,7 +3989,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void RightShift(PrimitiveDataFrameColumnContainer<ushort> column, int value)
+        public void RightShift(PrimitiveColumnContainer<ushort> column, int value)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -3998,7 +4000,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4009,7 +4011,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void Equals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -4020,7 +4022,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4031,7 +4033,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void NotEquals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -4042,7 +4044,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4053,7 +4055,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -4064,7 +4066,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4075,7 +4077,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -4086,7 +4088,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4097,7 +4099,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void GreaterThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
@@ -4108,7 +4110,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<ushort> left, PrimitiveDataFrameColumnContainer<ushort> right, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
@@ -4119,7 +4121,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveDataFrameColumnContainer<ushort> column, ushort scalar, PrimitiveDataFrameColumnContainer<bool> ret)
+        public void LessThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {

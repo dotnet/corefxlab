@@ -12,7 +12,7 @@ namespace Microsoft.Data
     /// </summary>
     internal class DataFrameTable
     {
-        private IList<BaseDataFrameColumn> _columns;
+        private IList<BaseColumn> _columns;
 
         private List<string> _columnNames = new List<string>();
 
@@ -24,10 +24,10 @@ namespace Microsoft.Data
 
         public DataFrameTable()
         {
-            _columns = new List<BaseDataFrameColumn>();
+            _columns = new List<BaseColumn>();
         }
 
-        private DataFrameTable(IList<BaseDataFrameColumn> columns)
+        public DataFrameTable(IList<BaseColumn> columns)
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _columns = columns;
@@ -43,9 +43,9 @@ namespace Microsoft.Data
             }
         }
 
-        public DataFrameTable(BaseDataFrameColumn column) : this(new List<BaseDataFrameColumn> { column }) { }
+        public DataFrameTable(BaseColumn column) : this(new List<BaseColumn> { column }) { }
 
-        public BaseDataFrameColumn Column(int columnIndex) => _columns[columnIndex];
+        public BaseColumn Column(int columnIndex) => _columns[columnIndex];
 
         public IList<object> GetRow(long rowIndex)
         {
@@ -58,27 +58,27 @@ namespace Microsoft.Data
         }
 
         public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
-            where T : struct
+            where T : unmanaged
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)
             {
-                throw new ArgumentException($"Invalid columnIndex {columnIndex} passed into Table.AddColumn");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
-            BaseDataFrameColumn newColumn = new PrimitiveDataFrameColumn<T>(columnName, column);
+            BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
             InsertColumn(columnIndex, newColumn);
         }
 
-        public void InsertColumn(int columnIndex, BaseDataFrameColumn column)
+        public void InsertColumn(int columnIndex, BaseColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)
             {
-                throw new ArgumentException($"Invalid columnIndex {columnIndex} passed into Table.AddColumn");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
             if (RowCount > 0 && column.Length != RowCount)
             {
-                throw new ArgumentException($"Column's length {column.Length} must match Table's length {RowCount}");
+                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {
@@ -91,16 +91,16 @@ namespace Microsoft.Data
             ColumnCount++;
         }
 
-        public void SetColumn(int columnIndex, BaseDataFrameColumn column)
+        public void SetColumn(int columnIndex, BaseColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex >= ColumnCount)
             {
-                throw new ArgumentException($"Invalid columnIndex {columnIndex} passed in to Table.SetColumn");
+                throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
             if (RowCount > 0 && column.Length != RowCount)
             {
-                throw new ArgumentException($"Column's length {column.Length} must match table's length {RowCount}");
+                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {

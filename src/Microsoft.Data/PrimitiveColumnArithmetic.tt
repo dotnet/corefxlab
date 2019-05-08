@@ -5,39 +5,41 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#@ include file="DataFrameColumnArithmeticTemplate.ttinclude" #>
+<#@ include file="ColumnArithmeticTemplate.ttinclude" #>
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+// Generated from PrimitiveColumnArithmetic.tt. Do not modify directly
+
 using System;
 
 namespace Microsoft.Data
 {
-    internal interface IPrimitiveDataFrameColumnArithmetic<T>
+    internal interface IPrimitiveColumnArithmetic<T>
         where T : struct
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-       <#= method.GetMethodSignature("PrimitiveDataFrameColumnContainer", "T")#>;
+       <#= method.GetMethodSignature("PrimitiveColumnContainer", "T")#>;
 <# } #>
     }
 
-    internal static class PrimitiveDataFrameColumnArithmetic<T>
+    internal static class PrimitiveColumnArithmetic<T>
         where T : struct
     {
-        public static IPrimitiveDataFrameColumnArithmetic<T> Instance => PrimitiveDataFrameColumnArithmetic.GetArithmetic<T>();
+        public static IPrimitiveColumnArithmetic<T> Instance = PrimitiveColumnArithmetic.GetArithmetic<T>();
     }
 
-    internal static class PrimitiveDataFrameColumnArithmetic
+    internal static class PrimitiveColumnArithmetic
     {
-        public static IPrimitiveDataFrameColumnArithmetic<T> GetArithmetic<T>()
+        public static IPrimitiveColumnArithmetic<T> GetArithmetic<T>()
             where T : struct
         {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
             <#=GenerateIfStatementHeader(type)#>
             {
-                return (IPrimitiveDataFrameColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
+                return (IPrimitiveColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
             }
 <# } #>
             throw new NotSupportedException();
@@ -45,10 +47,10 @@ namespace Microsoft.Data
     }
 
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
-    internal class <#=type.ClassPrefix#>Arithmetic : IPrimitiveDataFrameColumnArithmetic<<#=type.TypeName#>>
+    internal class <#=type.ClassPrefix#>Arithmetic : IPrimitiveColumnArithmetic<<#=type.TypeName#>>
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        public <#= method.GetMethodSignature("PrimitiveDataFrameColumnContainer", type.TypeName) #>
+        public <#= method.GetMethodSignature("PrimitiveColumnContainer", type.TypeName) #>
         {
 <# if ((method.IsNumeric && !type.SupportsNumeric) || (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
