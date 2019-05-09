@@ -365,8 +365,8 @@ namespace System.Numerics.Experimental.Tests
         {
             yield return new object[] { 65504L, (ushort)0b0_11110_1111111111U }; // Half.MaxValue
             yield return new object[] { -65504L, (ushort)0b1_11110_1111111111U }; // Half.MinValue
-            yield return new object[] { 1L, (ushort)0b0_10000_0000000000U }; // 1
-            yield return new object[] { -1L, (ushort)0b1_10000_0000000000U }; // -1
+            yield return new object[] { 1L, (ushort)0b0_01111_0000000000U }; // 1
+            yield return new object[] { -1L, (ushort)0b1_01111_0000000000U }; // -1
             yield return new object[] { 0L, (ushort)0b0_00000_0000000000U }; // 0
             yield return new object[] { long.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
             yield return new object[] { long.MinValue, (ushort)0b1_11111_0000000000 }; // OverFlow
@@ -392,7 +392,7 @@ namespace System.Numerics.Experimental.Tests
             {
                 yield return new object[] { 65504UL, (ushort)0b0_11110_1111111111 }; // Half.MaxValue
                 yield return new object[] { (ulong)-65504L, (ushort)0b0_11111_0000000000 }; // Overflow
-                yield return new object[] { 1UL, (ushort)0b0_10000_0000000000U }; // 1
+                yield return new object[] { 1UL, (ushort)0b0_01111_0000000000U }; // 1
                 yield return new object[] { (ulong)-1L, (ushort)0b0_11111_0000000000 }; // Overflow
                 yield return new object[] { 0UL, (ushort)0b0_00000_0000000000 }; // 0
                 yield return new object[] { (ulong)long.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
@@ -418,8 +418,8 @@ namespace System.Numerics.Experimental.Tests
         {
             yield return new object[] { 65504, (ushort)0b0_11110_1111111111U }; // Half.MaxValue
             yield return new object[] { -65504, (ushort)0b1_11110_1111111111U }; // Half.MinValue
-            yield return new object[] { 1, (ushort)0b0_10000_0000000000U }; // 1
-            yield return new object[] { -1, (ushort)0b1_10000_0000000000U }; // -1
+            yield return new object[] { 1, (ushort)0b0_01111_0000000000U }; // 1
+            yield return new object[] { -1, (ushort)0b1_01111_0000000000U }; // -1
             yield return new object[] { 0, (ushort)0b0_00000_0000000000U }; // 0
             yield return new object[] { int.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
             yield return new object[] { int.MinValue, (ushort)0b1_11111_0000000000 }; // OverFlow
@@ -445,7 +445,7 @@ namespace System.Numerics.Experimental.Tests
             {
                 yield return new object[] { 65504U, (ushort)0b0_11110_1111111111 }; // Half.MaxValue
                 yield return new object[] { (uint)-65504, (ushort)0b0_11111_1111111111 }; // Half.MinValue
-                yield return new object[] { 1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { 1U, (ushort)0b0_01111_0000000000 }; // 1
                 yield return new object[] { (uint)-1, (ushort)0b0_11111_0000000000 }; // Overflow 
                 yield return new object[] { 0U, (ushort)0b0_00000_0000000000 }; // 0
                 yield return new object[] { (uint)int.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
@@ -470,7 +470,7 @@ namespace System.Numerics.Experimental.Tests
 
         public static IEnumerable<object[]> ImplicitConversion_FromInt16_TestData()
         {
-                yield return new object[] { (short)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (short)1U, (ushort)0b0_01111_0000000000 }; // 1
                 yield return new object[] { (short)-1, (ushort)0b0_11111_0000000000 }; // Overflow 
                 yield return new object[] { (short)0U, (ushort)0b0_00000_0000000000 }; // 0
                 yield return new object[] { short.MaxValue, (ushort)0b0_11110_0000000000 }; // rounds to 32768
@@ -489,7 +489,7 @@ namespace System.Numerics.Experimental.Tests
         {
             unchecked
             {
-                yield return new object[] { (ushort)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (ushort)1U, (ushort)0b0_01111_0000000000 }; // 1
                 yield return new object[] { (ushort)-1, (ushort)0b0_11111_0000000000 }; // Overflow
                 yield return new object[] { (ushort)0U, (ushort)0b0_00000_0000000000 }; // 0
                 yield return new object[] { (ushort)short.MaxValue, (ushort)0b0_11110_0000000000 }; // rounds to 32768
@@ -510,7 +510,7 @@ namespace System.Numerics.Experimental.Tests
         {
             unchecked
             {
-                yield return new object[] { (byte)1U, (ushort)0b0_10000_0000000000 }; // 1
+                yield return new object[] { (byte)1U, (ushort)0b0_01111_0000000000 }; // 1
                 yield return new object[] { (byte)-1, (ushort)0b0_10110_1111110111 }; // 255
                 yield return new object[] { (byte)0U, (ushort)0b0_00000_0000000000 }; // 0
                 yield return new object[] { (byte)sbyte.MaxValue, (ushort)0b0_10101_1111110000 }; // 127
@@ -529,8 +529,8 @@ namespace System.Numerics.Experimental.Tests
 
         public static IEnumerable<object[]> ImplicitConversion_FromSByte_TestData()
         {
-            yield return new object[] { (sbyte)1U, (ushort)0b0_10000_0000000000 }; // 1
-            yield return new object[] { (sbyte)-1, (ushort)0b1_10000_0000000000 }; // -1
+            yield return new object[] { (sbyte)1U, (ushort)0b0_01111_0000000000 }; // 1
+            yield return new object[] { (sbyte)-1, (ushort)0b1_01111_0000000000 }; // -1
             yield return new object[] { (sbyte)0U, (ushort)0b0_00000_0000000000 }; // 0
             yield return new object[] { sbyte.MaxValue, (ushort)0b0_10101_1111110000 }; // 127
             yield return new object[] { sbyte.MinValue, (ushort)0b1_10110_0010000000 }; // -128
@@ -544,12 +544,64 @@ namespace System.Numerics.Experimental.Tests
             Assert.Equal(expected, HalfToUInt16Bits(h));
         }
 
+        public static IEnumerable<object[]> ExplicitConversion_FromSingle_TestData()
+        {
+            yield return new object[] { MathF.PI, (ushort)0b0_10000_1001001000 }; // 3.140625
+            yield return new object[] { MathF.E, (ushort)0b0_10000_0101110000 }; // 2.71875
+            yield return new object[] { -MathF.PI, (ushort)0b1_10000_1001001000 }; // -3.140625
+            yield return new object[] { -MathF.E, (ushort)0b1_10000_0101110000 }; // -2.71875
+            yield return new object[] { float.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { float.MinValue, (ushort)0b1_11111_0000000000 }; // Overflow
+            yield return new object[] { float.NaN, (ushort)0b1_11111_1000000000 }; // Quiet Negative NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FC00000), (ushort)0b0_11111_1000000000 }; // Quiet Positive NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(unchecked((int)0xFFD55555)), (ushort)0b1_11111_1010101010 }; // Signalling Nositive NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FD55555), (ushort)0b0_11111_1010101010 }; // Signalling Positive NaN
+            yield return new object[] { float.Epsilon, (ushort)0b0_00000_0000000000 }; // Underflow
+            yield return new object[] { -float.Epsilon, (ushort)0b1_00000_0000000000 }; // Underflow
+            yield return new object[] { 1f, (ushort)0b0_01111_0000000000 }; // 1
+            yield return new object[] { -1f, (ushort)0b1_01111_0000000000 }; // -1
+            yield return new object[] { 0f, (ushort)0b1_00000_0000000000 }; // 0
+            yield return new object[] { BitConverter.Int32BitsToSingle(unchecked((int)0x80000000)), (ushort)0b1_00000_0000000000 }; // -0
+            yield return new object[] { 42f, (ushort)0b0_10100_0101000000 }; // 42
+            yield return new object[] { -42f, (ushort)0b1_10100_0101000000 }; // -42
+            yield return new object[] { 0.1f, (ushort)0b0_01011_1001100110 }; // 0.0999755859375
+            yield return new object[] { -0.1f, (ushort)0b1_01011_1001100110 }; // -0.0999755859375
+        }
+
+        [MemberData(nameof(ExplicitConversion_FromSingle_TestData))]
+        [Theory]
         public static void ExplicitConversion_FromSingle(float f, ushort expected)
         {
             Half h = (Half)f;
             Assert.Equal(expected, HalfToUInt16Bits(h));
         }
 
+        public static IEnumerable<object[]> ExplicitConversion_FromDouble_TestData()
+        {
+            yield return new object[] { Math.PI, (ushort)0b0_10000_1001001000 }; // 3.140625
+            yield return new object[] { Math.E, (ushort)0b0_10000_0101110000 }; // 2.71875
+            yield return new object[] { -Math.PI, (ushort)0b1_10000_1001001000 }; // -3.140625
+            yield return new object[] { -Math.E, (ushort)0b1_10000_0101110000 }; // -2.71875
+            yield return new object[] { double.MaxValue, (ushort)0b0_11111_0000000000 }; // Overflow
+            yield return new object[] { double.MinValue, (ushort)0b1_11111_0000000000 }; // Overflow
+            yield return new object[] { double.NaN, (ushort)0b1_11111_1000000000 }; // Quiet Negative NaN
+            yield return new object[] { BitConverter.Int64BitsToDouble(0x7FF80000_00000000), (ushort)0b0_11111_1000000000 }; // Quiet Positive NaN
+            yield return new object[] { BitConverter.Int64BitsToDouble(unchecked((long)0xFFFAAAAA_AAAAAAAA)), (ushort)0b1_11111_1010101010 }; // Signalling Negative NaN
+            yield return new object[] { BitConverter.Int64BitsToDouble(0x7FFAAAAA_AAAAAAAA), (ushort)0b0_11111_1010101010 }; // Signalling Positive NaN
+            yield return new object[] { double.Epsilon, (ushort)0b0_00000_0000000000 }; // Underflow
+            yield return new object[] { -double.Epsilon, (ushort)0b1_00000_0000000000 }; // Underflow
+            yield return new object[] { 1d, (ushort)0b0_01111_0000000000 }; // 1
+            yield return new object[] { -1d, (ushort)0b1_01111_0000000000 }; // -1
+            yield return new object[] { 0d, (ushort)0b1_00000_0000000000 }; // 0
+            yield return new object[] { BitConverter.Int64BitsToDouble(unchecked((int)0x80000000_00000000)), (ushort)0b1_00000_0000000000 }; // -0
+            yield return new object[] { 42d, (ushort)0b0_10100_0101000000 }; // 42
+            yield return new object[] { -42d, (ushort)0b1_10100_0101000000 }; // -42
+            yield return new object[] { 0.1d, (ushort)0b0_01011_1001100110 }; // 0.0999755859375
+            yield return new object[] { -0.1d, (ushort)0b1_01011_1001100110 }; // -0.0999755859375
+        }
+
+        [MemberData(nameof(ExplicitConversion_FromDouble_TestData))]
+        [Theory]
         public static void ExplicitConversion_FromDouble(double d, ushort expected)
         {
             Half h = (Half)d;
