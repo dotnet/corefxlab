@@ -88,22 +88,18 @@ namespace Microsoft.Data
                 }
                 int sortIndex = sortAndBufferIndex.Item1;
                 int bufferIndex = sortAndBufferIndex.Item2;
-                //long bufferSortIndex = bufferSortIndices[bufferIndex][sortIndex];
                 long bufferSortIndex = getBufferSortIndex(bufferIndex, sortIndex);
-                //bufferSortIndex += bufferIndex * buffers[0].Count;
                 columnSortIndices.Append(bufferSortIndex);
-                //if (nextSortIndex < bufferSortIndices[bufferIndex].Length)
                 if (sortIndex + 1 < getBufferLengthAtIndex(bufferIndex))
                 {
                     int nextSortIndex = sortIndex + 1;
-                    //T nextValue = buffer[bufferSortIndices[bufferIndex][nextSortIndex]];
                     T nextValue = getValueAtBuffer(bufferIndex, nextSortIndex);
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(nextValue, new List<Tuple<int, int>>() { new Tuple<int, int>((int)nextSortIndex, bufferIndex) });
                 }
             }
 
         }
-        internal int FloorLog2PlusOne(int n)
+        private int FloorLog2PlusOne(int n)
         {
             Debug.Assert(n >= 2);
             int result = 2;

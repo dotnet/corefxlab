@@ -139,11 +139,15 @@ namespace Microsoft.Data
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
+            int longestColumnName = 0;
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                longestColumnName = Math.Max(longestColumnName, Column(i).Name.Length);
+            }
             for (int i = 0; i < ColumnCount; i++)
             {
                 // Left align by 10
-                // TODO: Bug here if Name.Length > 10. The alignment will go out of whack
-                sb.Append(string.Format("{0,-10}", Column(i).Name));
+                sb.Append(string.Format($"0,{-longestColumnName}", Column(i).Name));
             }
             sb.AppendLine();
             long numberOfRows = Math.Min(RowCount, 25);
@@ -152,7 +156,7 @@ namespace Microsoft.Data
                 IList<object> row = this[i];
                 foreach (object obj in row)
                 {
-                    sb.Append(string.Format("{0,-10}", obj.ToString()));
+                    sb.Append(string.Format($"0,{-longestColumnName}", obj.ToString()));
                 }
                 sb.AppendLine();
             }

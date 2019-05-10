@@ -101,6 +101,10 @@ namespace Microsoft.Data
             }
             else
             {
+                if (mapIndices.Length != Length)
+                {
+                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
+                }
                 PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
                 if (invertMapIndices == false)
                 {

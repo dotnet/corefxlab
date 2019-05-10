@@ -189,25 +189,36 @@ namespace Microsoft.Data.Tests
         {
             var df = new DataFrame();
             var dataFrameColumn1 = new PrimitiveColumn<bool>("Bool1", Enumerable.Range(0, 10).Select(x => true));
+            var dataFrameColumn2 = new PrimitiveColumn<bool>("Bool2", Enumerable.Range(0, 10).Select(x => true));
             df.InsertColumn(0, dataFrameColumn1);
+            df.InsertColumn(1, dataFrameColumn2);
 
             // bool + int should throw
             Assert.Throws<System.NotSupportedException>(() => df.Add(5));
             // Left shift should throw
             Assert.Throws<System.NotSupportedException>(() => df.LeftShift(5));
 
+            IReadOnlyList<bool> listOfBools = new List<bool>() { true, false };
             // bool equals and And should work
             var newdf = df.Equals(true);
             Assert.Equal(true, newdf[4, 0]);
+            var newdf1 = df.Equals(listOfBools);
+            Assert.Equal(false, newdf1[4, 1]);
 
             newdf = df.And(true);
             Assert.Equal(true, newdf[4, 0]);
+            newdf1 = df.And(listOfBools);
+            Assert.Equal(false, newdf1[4, 1]);
 
             newdf = df.Or(true);
             Assert.Equal(true, newdf[4, 0]);
+            newdf1 = df.Or(listOfBools);
+            Assert.Equal(true, newdf1[4, 1]);
 
             newdf = df.Xor(true);
             Assert.Equal(false, newdf[4, 0]);
+            newdf1 = df.Xor(listOfBools);
+            Assert.Equal(true, newdf1[4, 1]);
         }
 
         [Fact]
@@ -358,6 +369,7 @@ namespace Microsoft.Data.Tests
             Assert.True(any);
             Assert.False(all);
 
+            // Test the computation results
             df["Double"][0] = 100.0;
             df["Double"].CumulativeMax();
             Assert.Equal(100.0, df["Double"][9]);
@@ -377,11 +389,28 @@ namespace Microsoft.Data.Tests
             Assert.Equal((uint)0, df["Uint"].Product());
             Assert.Equal((ushort)165, df["Ushort"].Sum());
 
-
             df["Double"][0] = 100.1;
             Assert.Equal(100.1, df["Double"][0]);
             df["Double"].Round();
             Assert.Equal(100.0, df["Double"][0]);
+
+            // Test that none of the numeric column types throw
+            for (int i = 0; i < df.ColumnCount; i++)
+            {
+                BaseColumn column = df.Column(i);
+                if (column.DataType == typeof(bool) || column.DataType == typeof(string))
+                {
+                    continue;
+                }
+                column.CumulativeMax();
+                column.CumulativeMin();
+                column.CumulativeProduct();
+                column.CumulativeSum();
+                column.Max();
+                column.Min();
+                column.Product();
+                column.Sum();
+            }
         }
 
         [Fact]
