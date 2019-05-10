@@ -628,6 +628,17 @@ namespace System.Numerics.Experimental
             return CreateDouble(sign, (ushort)(exp + 0x3F0), sig << 42);
         }
 
+        // IEEE 754 specifies NaNs to be propagated
+        public static Half operator -(Half h)
+        {
+            return IsNaN(h) ? h : new Half((ushort)(h.m_value ^ SignMask));
+        }
+
+        public static Half operator +(Half h)
+        {
+            return h;
+        }
+
         #region Utilities
 
         // TODO: Worth bringing the `ShortShiftRightJam`? looks like some perf difference only
