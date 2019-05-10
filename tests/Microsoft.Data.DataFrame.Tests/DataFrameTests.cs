@@ -161,6 +161,65 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void TestBinaryOperationsWithColumns()
+        {
+            int length = 10;
+            var df1 = MakeDataFrameWithNumericColumns(length);
+            var df2 = MakeDataFrameWithNumericColumns(length);
+
+            BaseColumn newColumn;
+            BaseColumn verify;
+            for (int i = 0; i < df1.ColumnCount; i++)
+            {
+                newColumn = df1[df1.Column(i).Name] + df2[df2.Column(i).Name];
+                verify = newColumn.Equals(df1.Column(i) * 2);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] - df2[df2.Column(i).Name];
+                verify = newColumn.Equals(0);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] * df2[df2.Column(i).Name];
+                verify = newColumn.Equals(df1.Column(i) * df1.Column(i));
+                Assert.Equal(true, verify[0]);
+
+                var df1Column = df1.Column(i) + 1;
+                var df2Column = df2.Column(i) + 1;
+                newColumn = df1Column / df2Column;
+                verify = newColumn.Equals(1);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1Column % df2Column;
+                verify = newColumn.Equals(0);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] == df2[df2.Column(i).Name];
+                verify = newColumn.Equals(true);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] != df2[df2.Column(i).Name];
+                verify = newColumn.Equals(false);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] >= df2[df2.Column(i).Name];
+                verify = newColumn.Equals(true);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] <= df2[df2.Column(i).Name];
+                verify = newColumn.Equals(true);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] > df2[df2.Column(i).Name];
+                verify = newColumn.Equals(false);
+                Assert.Equal(true, verify[0]);
+
+                newColumn = df1[df1.Column(i).Name] < df2[df2.Column(i).Name];
+                verify = newColumn.Equals(false);
+                Assert.Equal(true, verify[0]);
+            }
+        }
+
+        [Fact]
         public void TestBinaryOperationsWithConversions()
         {
             DataFrame df = DataFrameTests.MakeDataFrameWithTwoColumns(10);
