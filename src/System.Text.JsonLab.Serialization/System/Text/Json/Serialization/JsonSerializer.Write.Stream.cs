@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     public static partial class JsonSerializer
     {

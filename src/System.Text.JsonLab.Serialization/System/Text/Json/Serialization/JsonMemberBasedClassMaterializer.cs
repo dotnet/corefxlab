@@ -4,7 +4,7 @@
 
 using System.Reflection;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     internal abstract class JsonMemberBasedClassMaterializer
     {

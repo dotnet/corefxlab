@@ -5,8 +5,9 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Reflection;
+using System.Text.Json;
 
-namespace System.Text.Json.Serialization.Converters
+namespace System.Text.JsonLab.Serialization.Converters
 {
     internal class JsonPropertyInfoDateTime : JsonPropertyInfo<DateTime>, IJsonValueConverter<DateTime>
     {

@@ -5,10 +5,11 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     public static partial class JsonSerializer
     {

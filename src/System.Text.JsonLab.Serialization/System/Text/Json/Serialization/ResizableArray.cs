@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 // Todo: this is a copy of class in the test project. We need to detemine best implementation for sync.
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     // a List<T> like type designed to be embeded in other types
     internal struct ResizableArray<T>

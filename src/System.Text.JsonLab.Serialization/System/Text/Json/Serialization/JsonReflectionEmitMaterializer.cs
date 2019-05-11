@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     internal class JsonReflectionEmitMaterializer : JsonMemberBasedClassMaterializer
     {

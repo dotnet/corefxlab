@@ -4,8 +4,9 @@
 
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
-namespace System.Text.Json.Serialization.Converters
+namespace System.Text.JsonLab.Serialization.Converters
 {
     internal class JsonPropertyInfoChar : JsonPropertyInfo<char>, IJsonValueConverter<char>
     {

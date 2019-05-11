@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace System.Text.Json.Serialization.Policies
+namespace System.Text.JsonLab.Serialization.Policies
 {
     public abstract class JsonEnumerableConverter
     {

@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     public static partial class JsonSerializer
     {

@@ -2,9 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Text.Json.Serialization.Policies;
+using System.Text.Json;
+using System.Text.JsonLab.Serialization.Policies;
 
-namespace System.Text.Json.Serialization.Converters
+namespace System.Text.JsonLab.Serialization.Converters
 {
     internal class DefaultEnumConverter<TValue> : JsonValueConverter<TValue>
     {

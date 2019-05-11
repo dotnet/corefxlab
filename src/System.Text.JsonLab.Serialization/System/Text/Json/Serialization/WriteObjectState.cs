@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     internal struct WriteObjectState
     {

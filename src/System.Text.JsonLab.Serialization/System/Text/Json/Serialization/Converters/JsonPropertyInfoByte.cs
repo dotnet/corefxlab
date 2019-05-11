@@ -3,8 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Reflection;
+using System.Text.Json;
 
-namespace System.Text.Json.Serialization.Converters
+namespace System.Text.JsonLab.Serialization.Converters
 {
     internal class JsonPropertyInfoByte : JsonPropertyInfo<byte>, IJsonValueConverter<byte>
     {

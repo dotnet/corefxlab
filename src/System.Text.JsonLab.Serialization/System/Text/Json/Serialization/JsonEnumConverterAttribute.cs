@@ -3,10 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Policies;
+using System.Text.JsonLab.Serialization.Converters;
+using System.Text.JsonLab.Serialization.Policies;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     /// <summary>
     /// Converter for <see cref="Enum"/> types.

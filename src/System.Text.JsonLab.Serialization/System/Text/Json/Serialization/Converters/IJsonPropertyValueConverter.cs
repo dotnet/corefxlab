@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.Text.Json.Serialization.Converters
+using System.Text.Json;
+
+namespace System.Text.JsonLab.Serialization.Converters
 {
     /// <summary>
     /// Internal converter interface for well-known types that allows the converter instance to also be a JsonPropertyInfo<typeparamref name="TValue"/>.

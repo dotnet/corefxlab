@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Policies;
+using System.Text.JsonLab.Serialization.Converters;
+using System.Text.JsonLab.Serialization.Policies;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     internal partial class JsonClassInfo
     {

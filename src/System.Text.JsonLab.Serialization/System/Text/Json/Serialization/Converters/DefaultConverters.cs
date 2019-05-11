@@ -4,9 +4,9 @@
 
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization.Policies;
+using System.Text.JsonLab.Serialization.Policies;
 
-namespace System.Text.Json.Serialization.Converters
+namespace System.Text.JsonLab.Serialization.Converters
 {
     internal static class DefaultConverters
     {

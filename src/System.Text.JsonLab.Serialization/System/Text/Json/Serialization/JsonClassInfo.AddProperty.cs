@@ -5,9 +5,9 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Json.Serialization.Converters;
+using System.Text.JsonLab.Serialization.Converters;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     internal partial class JsonClassInfo
     {

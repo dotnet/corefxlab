@@ -6,7 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json.Serialization
+namespace System.Text.JsonLab.Serialization
 {
     // Note: this is an internal class that will be replaced with a shared version.
     internal sealed class ArrayBufferWriter<T> : IBufferWriter<T>, IDisposable
