@@ -60,6 +60,24 @@ namespace System.Numerics.Experimental
         private const ushort MaxValueBits = 0x7BFF;
 
         //
+        // Constants for manipulating the internal bit representation of float / double
+        //
+
+        private const ulong DoubleSignMask = 0x80000000_00000000;
+        private const int DoubleSignShiftBit = 63;
+        private const long DoubleExpMask = 0x7FF80000_00000000;
+        private const int DoubleExpShiftBit = 52;
+        private const ulong DoubleSigMask = 0x000FFFFF_FFFFFFFF;
+        private const int DoubleSigShiftBit = 0;
+
+        private const uint SingleSignMask = 0x80000000;
+        private const int SingleSignShiftBit = 31;
+        private const int SingleExpMask = 0x7F800000;
+        private const int SingleExpShiftBit = 23;
+        private const uint SingleSigMask = 0x7FFFFF;
+        private const int SingleSigShiftBit = 0;
+
+        //
         // Well-defined and commonly used values
         //
 
@@ -359,81 +377,72 @@ namespace System.Numerics.Experimental
 
         // -----------------------Start of to-half conversions-------------------------
 
-        public static implicit operator Half(int i)
+        public static implicit operator Half(int value)
         {
-            bool sign = i < 0;
-            Half h = (uint)(sign ? -i : i); // Math.Abs but doesn't throw exception, because we cast it to uint anyway
+            bool sign = value < 0;
+            Half h = (uint)(sign ? -value : value); // Math.Abs but doesn't throw exception, because we cast it to uint anyway
             return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
         }
 
-        public static implicit operator Half(uint i)
+        public static implicit operator Half(uint value)
         {
-            if (i == 0)
-                return default;
-
-            int shiftDist = BitOperations.LeadingZeroCount(i) - 21;
+            int shiftDist = BitOperations.LeadingZeroCount(value) - 21;
             if (shiftDist >= 0)
-                return new Half(false, (ushort)(0x18 - shiftDist), (ushort) (i << shiftDist));
+                return value != 0?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort) (value << shiftDist)):
+                    default;
 
             shiftDist += 4;
-            uint sig = shiftDist < 0 ? ShiftRightJam(i, -shiftDist) : i << shiftDist;
+            uint sig = shiftDist < 0 ? ShiftRightJam(value, -shiftDist) : value << shiftDist;
             return RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig);
         }
 
-        public static implicit operator Half(long l)
+        public static implicit operator Half(long value)
         {
-            bool sign = l < 0;
-            Half h = (ulong)(sign ? -l : l); // Math.Abs but doesn't throw exception, because we cast it to ulong anyway
+            bool sign = value < 0;
+            Half h = (ulong)(sign ? -value : value); // Math.Abs but doesn't throw exception, because we cast it to ulong anyway
             return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
         }
 
-        public static implicit operator Half(ulong l)
+        public static implicit operator Half(ulong value)
         {
-            if (l == 0)
-                return default;
-
-            int shiftDist = BitOperations.LeadingZeroCount(l) - 53;
+            int shiftDist = BitOperations.LeadingZeroCount(value) - 53;
 
             if (shiftDist >= 0)
-                return new Half(false, (ushort)(0x18 - shiftDist), (ushort)(l << shiftDist));
+                return value != 0?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)):
+                    default;
 
             shiftDist += 4;
-            ushort sig = (ushort)(shiftDist < 0 ? ShiftRightJam(l, -shiftDist) : l << shiftDist);
+            ushort sig = (ushort)(shiftDist < 0 ? ShiftRightJam(value, -shiftDist) : value << shiftDist);
             return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), sig));
         }
 
-        public static implicit operator Half(short s)
+        public static implicit operator Half(short value)
         {
-            return (int) s;
+            return (int) value;
         }
 
-        public static implicit operator Half(ushort s)
+        public static implicit operator Half(ushort value)
         {
-            return (uint) s;
+            return (uint) value;
         }
 
-        public static implicit operator Half(byte b)
+        public static implicit operator Half(byte value)
         {
-            return (uint) b;
+            return (uint) value;
         }
 
-        public static implicit operator Half(sbyte b)
+        public static implicit operator Half(sbyte value)
         {
-            return (int) b;
+            return (int) value;
         }
 
-        private const uint SingleSignMask = 0x80000000;
-        private const int SingleSignShiftBit = 31;
-        private const int SingleExpMask = 0x7F800000;
-        private const int SingleExpShiftBit = 23;
-        private const uint SingleSigMask = 0x7FFFFF;
-        private const int SingleSigShiftBit = 0;
-
-        public static explicit operator Half(float f)
+        public static explicit operator Half(float value)
         {
             const int singleMaxExponent = 0xFF;
 
-            uint floatInt = (uint)BitConverter.SingleToInt32Bits(f);
+            uint floatInt = (uint)BitConverter.SingleToInt32Bits(value);
             bool sign = (floatInt & SingleSignMask) >> SingleSignShiftBit != 0;
             int exp = ((int)floatInt & SingleExpMask) >> SingleExpShiftBit;
             uint sig = floatInt & SingleSigMask;
@@ -447,21 +456,14 @@ namespace System.Numerics.Experimental
 
             uint sigHalf = sig >> 9 | ((sig & 0x1FFU) != 0 ? 1U : 0U); // RightShiftJam
 
-            if ((exp | (int)sigHalf) == 0) // TODO: is f == 0 faster?
+            if ((exp | (int)sigHalf) == 0)
                 return new Half(sign, 0, 0);
             return RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000));
         }
-
-        private const ulong DoubleSignMask = 0x80000000_00000000;
-        private const int DoubleSignShiftBit = 63;
-        private const long DoubleExpMask = 0x7FF80000_00000000;
-        private const int DoubleExpShiftBit = 52;
-        private const ulong DoubleSigMask = 0x000FFFFF_FFFFFFFF;
-        private const int DoubleSigShiftBit = 0;
-
-        public static explicit operator Half(double d)
+        
+        public static explicit operator Half(double value)
         {
-            ulong doubleInt = (ulong)BitConverter.DoubleToInt64Bits(d);
+            ulong doubleInt = (ulong)BitConverter.DoubleToInt64Bits(value);
             bool sign = (doubleInt & DoubleSignMask) >> DoubleSignShiftBit != 0;
             int exp = (int)(((long)doubleInt & DoubleExpMask) >> DoubleExpShiftBit);
             ulong sig = doubleInt & DoubleSigMask;
@@ -474,18 +476,18 @@ namespace System.Numerics.Experimental
             }
 
             uint sigHalf = (uint)ShiftRightJam(sig, 38);
-            if ((exp | (int)sigHalf) == 0) // TODO: Is d == 0 faster?
+            if ((exp | (int)sigHalf) == 0) // TODO: Is value == 0 faster?
                 return new Half(sign, 0, 0);
             return RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000));
         }
 
         // -----------------------Start of from-half conversions-------------------------
 
-        public static explicit operator int(Half h)
+        public static explicit operator int(Half value)
         {
-            bool sign = IsNegative(h);
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0)
@@ -499,14 +501,14 @@ namespace System.Numerics.Experimental
             return sign ? -alignedSig : alignedSig;
         }
 
-        public static explicit operator uint(Half h) // 0 for every case
+        public static explicit operator uint(Half value) // 0 for every case
         {
-            bool sign = IsNegative(h);
+            bool sign = IsNegative(value);
             if (sign)
-                return (uint)(int)h; // Matching the behaviour of neg. float/double -> ulong
-            // TODO: Confirm this behaviour when h is negative
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+                return (uint)(int)value; // Matching the behaviour of neg. float/double -> ulong
+            // TODO: Confirm this behaviour when value is negative
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0)
@@ -520,11 +522,11 @@ namespace System.Numerics.Experimental
             return alignedSig >> 10;
         }
 
-        public static explicit operator long(Half h)
+        public static explicit operator long(Half value)
         {
-            bool sign = IsNegative(h);
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0)
@@ -538,14 +540,14 @@ namespace System.Numerics.Experimental
             return sign ? -alignedSig : alignedSig;
         }
 
-        public static explicit operator ulong(Half h) // 0 for PosInfinity/NaN, long.MinValue for NegInfinity
+        public static explicit operator ulong(Half value) // 0 for PosInfinity/NaN, long.MinValue for NegInfinity
         {
-            bool sign = IsNegative(h);
+            bool sign = IsNegative(value);
             if (sign)
-                return (ulong)(long)h; // Matching the behaviour of neg. float/double -> ulong
-            // TODO: Confirm this behaviour when h is negative
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+                return (ulong)(long)value; // Matching the behaviour of neg. float/double -> ulong
+            // TODO: Confirm this behaviour when value is negative
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0)
@@ -560,31 +562,31 @@ namespace System.Numerics.Experimental
         }
 
         // TODO: confirm behaviours
-        public static explicit operator short(Half h)
+        public static explicit operator short(Half value)
         {
-            return (short) (int) h;
+            return (short) (int) value;
         }
 
-        public static explicit operator ushort(Half h)
+        public static explicit operator ushort(Half value)
         {
-            return (ushort)(short)(int)h;
+            return (ushort)(short)(int)value;
         }
 
-        public static explicit operator byte(Half h)
+        public static explicit operator byte(Half value)
         {
-            return (byte)(sbyte)(int)h;
+            return (byte)(sbyte)(int)value;
         }
 
-        public static explicit operator sbyte(Half h)
+        public static explicit operator sbyte(Half value)
         {
-            return (sbyte)(int)h;
+            return (sbyte)(int)value;
         } // TODO: not sure what should happen here
 
-        public static implicit operator float(Half h)
+        public static implicit operator float(Half value)
         {
-            bool sign = IsNegative(h);
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             if (exp == MaxExponent)
             {
@@ -604,11 +606,11 @@ namespace System.Numerics.Experimental
             return CreateSingle(sign, (byte)(exp + 0x70), sig << 13);
         }
 
-        public static implicit operator double(Half h)
+        public static implicit operator double(Half value)
         {
-            bool sign = IsNegative(h);
-            int exp = h.Exponent;
-            uint sig = h.Significand;
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
 
             if (exp == MaxExponent)
             {
@@ -629,14 +631,14 @@ namespace System.Numerics.Experimental
         }
 
         // IEEE 754 specifies NaNs to be propagated
-        public static Half operator -(Half h)
+        public static Half operator -(Half value)
         {
-            return IsNaN(h) ? h : new Half((ushort)(h.m_value ^ SignMask));
+            return IsNaN(value) ? value : new Half((ushort)(value.m_value ^ SignMask));
         }
 
-        public static Half operator +(Half h)
+        public static Half operator +(Half value)
         {
-            return h;
+            return value;
         }
 
         #region Utilities
@@ -712,7 +714,7 @@ namespace System.Numerics.Experimental
             sig += roundIncrement;
 
             if ((sig & 0xFFFFF000_00000000) != 0)
-                return int.MinValue; //goto Invalid = what does it actually mean? Value too large?
+                return int.MinValue; // Overflow
             uint sig32 = (uint)(sig >> 12);
 
             if (roundBits == 0x800)
@@ -730,7 +732,7 @@ namespace System.Numerics.Experimental
             uint roundBits = (uint)(sig & 0xFFF);
             sig += roundIncrement;
             if ((sig & 0xFFFFF000_00000000) != 0)
-                return uint.MaxValue; //goto Invalid
+                return uint.MaxValue; // Overflow
             uint z = (uint) (sig >> 12);
             if (roundBits == 0x800)
                 z &= ~1U;
