@@ -636,7 +636,7 @@ namespace System.Numerics.Experimental
                 exp -= 1;
             }
 
-            return CreateDouble(sign, (ushort)(exp + 0x3F0), sig << 42);
+            return CreateDouble(sign, (ushort)(exp + 0x3F0), (ulong)sig << 42);
         }
 
         // IEEE 754 specifies NaNs to be propagated
