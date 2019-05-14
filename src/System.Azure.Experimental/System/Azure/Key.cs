@@ -59,3 +59,4 @@ namespace System.Azure.Authentication
         }
     }
 }
+
