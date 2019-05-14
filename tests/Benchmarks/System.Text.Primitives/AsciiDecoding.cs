@@ -18,7 +18,7 @@ namespace System.Text.Primitives.Benchmarks
         public void Setup() => bytes = Encoding.ASCII.GetBytes(Text);
 
         [Benchmark]
-        public string AsciiToStringPrimitives() => Buffers.Text.Encodings.Ascii.ToUtf16String(bytes);
+        public string AsciiToStringPrimitives() => Buffers.Text.TextEncodings.Ascii.ToUtf16String(bytes);
 
         [Benchmark(Baseline = true)]
         public string AsciiToStringClr() => Encoding.ASCII.GetString(bytes);

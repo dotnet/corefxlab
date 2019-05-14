@@ -17,7 +17,7 @@ namespace System.Buffers.Writer
             int totalConsumed = 0;
             while (true)
             {
-                var status = Encodings.Utf16.ToUtf8(utf16Bytes.Slice(totalConsumed), Buffer, out int consumed, out int written);
+                var status = TextEncodings.Utf16.ToUtf8(utf16Bytes.Slice(totalConsumed), Buffer, out int consumed, out int written);
                 switch (status)
                 {
                     case OperationStatus.Done:

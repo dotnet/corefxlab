@@ -46,7 +46,7 @@ namespace System.Text.Formatting
             resourceStream.Read(index, 0, indexSize);
 
             byte[] idBytes = new byte[maxIdLength];
-            var status = Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(localeId.AsSpan()), idBytes, out int consumed, out int idByteCount);
+            var status = TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(localeId.AsSpan()), idBytes, out int consumed, out int idByteCount);
             if (status != System.Buffers.OperationStatus.Done)
                 throw new Exception("bad locale id");
 

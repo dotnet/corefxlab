@@ -23,24 +23,24 @@ namespace System.Buffers.Tests
             var writer = BufferWriter.Create(buffer);
 
             writer.WrittenCount = 0;
-            writer.Write("AaBc", new TransformationFormat(Encodings.Ascii.ToLowercase, Encodings.Ascii.ToUppercase));
-            Assert.Equal("AABC", Encodings.Utf8.ToString(writer.Written));
+            writer.Write("AaBc", new TransformationFormat(TextEncodings.Ascii.ToLowercase, TextEncodings.Ascii.ToUppercase));
+            Assert.Equal("AABC", TextEncodings.Utf8.ToString(writer.Written));
 
             writer.WrittenCount = 0;
-            writer.Write("AaBc", new TransformationFormat(Encodings.Ascii.ToLowercase));
-            Assert.Equal("aabc", Encodings.Utf8.ToString(writer.Written));
+            writer.Write("AaBc", new TransformationFormat(TextEncodings.Ascii.ToLowercase));
+            Assert.Equal("aabc", TextEncodings.Utf8.ToString(writer.Written));
 
             writer.WrittenCount = 0;
-            writer.Write("AaBc", new TransformationFormat(Encodings.Ascii.ToUppercase));
-            Assert.Equal("AABC", Encodings.Utf8.ToString(writer.Written));
+            writer.Write("AaBc", new TransformationFormat(TextEncodings.Ascii.ToUppercase));
+            Assert.Equal("AABC", TextEncodings.Utf8.ToString(writer.Written));
 
             writer.WrittenCount = 0;
             writer.Write("AaBc", new TransformationFormat(
-                Encodings.Ascii.ToUppercase,
+                TextEncodings.Ascii.ToUppercase,
                 Base64Experimental.Utf8ToBytesDecoder,
                 Base64Experimental.BytesToUtf8Encoder)
             );
-            Assert.Equal("AABC", Encodings.Utf8.ToString(writer.Written));
+            Assert.Equal("AABC", TextEncodings.Utf8.ToString(writer.Written));
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace System.Buffers.Tests
             ulonger.Upper = 1;
 
             writer.WriteBytes(ulonger, s_base64);
-            var result = Encodings.Utf8.ToString(writer.Written);
+            var result = TextEncodings.Utf8.ToString(writer.Written);
             Assert.Equal("//////////8BAAAAAAAAAA==", result);
 
             var ulongerSpan = new Span<UInt128>(new UInt128[1]);
@@ -70,7 +70,7 @@ namespace System.Buffers.Tests
             Span<byte> buffer = stackalloc byte[256];
             var writer = BufferWriter.Create(buffer);
             writer.WriteLine(now, 'R');
-            var result = Encodings.Utf8.ToString(writer.Written);
+            var result = TextEncodings.Utf8.ToString(writer.Written);
             Assert.Equal(string.Format("{0:R}\n", now), result);
         }
     }

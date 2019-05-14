@@ -1743,7 +1743,7 @@ namespace System.Text.JsonLab
             public string GetValueAsString()
             {
                 //TODO: Perform additional validation and unescaping if necessary
-                return Buffers.Text.Encodings.Utf8.ToString(Value);
+                return Buffers.Text.TextEncodings.Utf8.ToString(Value);
             }
 
             public int GetValueAsInt32()

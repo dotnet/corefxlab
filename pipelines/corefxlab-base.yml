@@ -1,0 +1,60 @@
+parameters:
+  name: ''
+  displayName: ''
+  targetOS: ''
+  pool: {}
+  isOfficialBuild: false
+
+jobs:
+  - job: ${{ parameters.name }}
+    displayName: ${{ parameters.displayName }}
+    variables:
+      - ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
+        - name: _buildScript
+          value: build.cmd
+      - ${{ if ne(parameters.targetOS, 'Windows_NT') }}:
+        - name: _buildScript
+          value: ./build.sh
+      
+      - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
+        - name: _buildArguments
+          value: -Configuration $(_BuildConfig) -BuildVersion $(Build.BuildNumber)
+        - name: _SignType
+          value: real
+        - name: _TeamName
+          value: DotNetCore
+        - group: DotNet-MyGet-Publish
+
+      - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+        - name: _buildArguments
+          value: $(_BuildConfig)
+
+    pool: ${{ parameters.pool }}
+
+    strategy:
+      matrix:
+        ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+          x64_Debug:
+            _BuildConfig: Debug
+
+        x64_Release:
+          _BuildConfig: Release
+
+    steps:
+      - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
+        - task: MicroBuildSigningPlugin@2
+          displayName: Install MicroBuild plugin
+          inputs:
+            signType: $(_SignType)
+            zipSources: false
+            feedSource: https://dnceng.pkgs.visualstudio.com/_packaging/MicroBuildToolset/nuget/v3/index.json
+          env:
+            TeamName: $(_TeamName)
+          condition: and(in(variables['_SignType'], 'real', 'test'), eq(variables['Agent.Os'], 'Windows_NT'))
+
+      - script: $(_buildScript) $(_buildArguments)
+        displayName: Build and Test
+      
+      - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
+        - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType)
+          displayName: Build and publish packages

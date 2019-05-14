@@ -9,7 +9,7 @@ using System.Buffers.Text;
 using System.Buffers.Writer;
 using System.Text.Encodings.Web.Utf8;
 using System.Text.Utf8;
-using static System.Buffers.Text.Encodings;
+using static System.Buffers.Text.TextEncodings;
 
 namespace System.Azure.Authentication
 {   

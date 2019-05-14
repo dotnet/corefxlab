@@ -153,8 +153,8 @@ namespace System.Text.Http.Parser.Tests
 
         public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
         {
-            var nameString = Encodings.Ascii.ToUtf16String(name);
-            var valueString = Encodings.Ascii.ToUtf16String(value);
+            var nameString = TextEncodings.Ascii.ToUtf16String(name);
+            var valueString = TextEncodings.Ascii.ToUtf16String(value);
             Headers.Add(nameString, valueString);
         }
 
@@ -162,9 +162,9 @@ namespace System.Text.Http.Parser.Tests
         {
             Method = method;
             Version = version;
-            Path = Encodings.Ascii.ToUtf16String(path);
-            Query = Encodings.Ascii.ToUtf16String(query);
-            Target = Encodings.Ascii.ToUtf16String(target);
+            Path = TextEncodings.Ascii.ToUtf16String(path);
+            Query = TextEncodings.Ascii.ToUtf16String(query);
+            Target = TextEncodings.Ascii.ToUtf16String(target);
         }
     }
 }

@@ -134,7 +134,7 @@ namespace System.Buffers.Text
             bytesConsumed = 0;
             while (srcLength > bytesConsumed)
             {
-                if(Encodings.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written) == OperationStatus.InvalidData)                     goto ExitFailed;
+                if(TextEncodings.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written) == OperationStatus.InvalidData)                     goto ExitFailed;
 
                 srcBytes = srcBytes.Slice(consumed);
                 bytesConsumed += consumed;
