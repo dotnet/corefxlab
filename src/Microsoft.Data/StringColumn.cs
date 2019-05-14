@@ -21,7 +21,8 @@ namespace Microsoft.Data
             _stringBuffers.Add(new List<string>());
         }
 
-        public StringColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string)) {
+        public StringColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string))
+        {
             values = values ?? throw new ArgumentNullException(nameof(values));
             if (_stringBuffers.Count == 0)
             {
@@ -117,7 +118,8 @@ namespace Microsoft.Data
             foreach (var buffer in _stringBuffers)
             {
                 var sortIndices = new int[buffer.Count];
-                for (int i = 0; i < buffer.Count; i++) sortIndices[i] = i;
+                for (int i = 0; i < buffer.Count; i++)
+                    sortIndices[i] = i;
                 // TODO: Refactor the sort routine to also work with IList?
                 string[] array = buffer.ToArray();
                 IntrospectiveSort(array, array.Length, sortIndices, comparer);
@@ -136,7 +138,7 @@ namespace Microsoft.Data
                 }
                 else
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(value, new List<Tuple<int, int>>() {new Tuple<int, int>(0, i) });
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(value, new List<Tuple<int, int>>() { new Tuple<int, int>(0, i) });
                 }
             }
             columnSortIndices = new PrimitiveColumn<long>("SortIndices");
@@ -150,8 +152,10 @@ namespace Microsoft.Data
         {
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long)) throw new ArgumentException($"Expected sortIndices to be a PrimitiveColumn<long>");
-                if (mapIndices.Length != Length) throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long))
+                    throw new ArgumentException($"Expected sortIndices to be a PrimitiveColumn<long>");
+                if (mapIndices.Length != Length)
+                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
                 return _Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return _Clone();
@@ -177,7 +181,8 @@ namespace Microsoft.Data
             }
             else
             {
-                if (mapIndices.Length != Length) throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.Length != Length)
+                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
                 if (invertMapIndex == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)

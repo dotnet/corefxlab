@@ -53,7 +53,7 @@ namespace Microsoft.Data.Tests
             BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
             BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
 
-            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn});
+            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
             return dataFrame;
         }
@@ -100,17 +100,17 @@ namespace Microsoft.Data.Tests
             Assert.Equal("IntColumn", dataFrame.Column(0).Name);
             Assert.Equal(10, dataFrame.Column(1).Length);
             Assert.Equal("FloatColumn", dataFrame.Column(1).Name);
-            
+
             BaseColumn bigColumn = new PrimitiveColumn<float>("BigColumn", Enumerable.Range(0, 11).Select(x => (float)x));
             BaseColumn repeatedName = new PrimitiveColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
-            Assert.Throws<ArgumentException>( () => dataFrame.InsertColumn(2, bigColumn));
-            Assert.Throws<ArgumentException>( () => dataFrame.InsertColumn(2, repeatedName));
-            Assert.Throws<ArgumentOutOfRangeException>( () => dataFrame.InsertColumn(10, repeatedName));
+            Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, bigColumn));
+            Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, repeatedName));
+            Assert.Throws<ArgumentOutOfRangeException>(() => dataFrame.InsertColumn(10, repeatedName));
 
             Assert.Equal(2, dataFrame.ColumnCount);
             BaseColumn intColumnCopy = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             Assert.Throws<System.ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
-            
+
             BaseColumn differentIntColumn = new PrimitiveColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
             dataFrame.SetColumn(1, differentIntColumn);
             Assert.True(object.ReferenceEquals(differentIntColumn, dataFrame.Column(1)));
@@ -482,14 +482,14 @@ namespace Microsoft.Data.Tests
 
             // Sort by "Int" in ascending order
             var sortedDf = df.Sort("Int");
-            Assert.Equal(-1,   sortedDf["Int"][0]);
-            Assert.Equal(100,  sortedDf["Int"][18]);
+            Assert.Equal(-1, sortedDf["Int"][0]);
+            Assert.Equal(100, sortedDf["Int"][18]);
             Assert.Equal(2000, sortedDf["Int"][19]);
 
             // Sort by "Int" in descending order
             sortedDf = df.Sort("Int", false);
-            Assert.Equal(-1,   sortedDf["Int"][19]);
-            Assert.Equal(100,  sortedDf["Int"][1]);
+            Assert.Equal(-1, sortedDf["Int"][19]);
+            Assert.Equal(100, sortedDf["Int"][1]);
             Assert.Equal(2000, sortedDf["Int"][0]);
 
             // Sort by "String" in ascending order

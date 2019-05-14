@@ -30,7 +30,8 @@ namespace Microsoft.Data
             foreach (DataFrameBuffer<T> buffer in _columnContainer.Buffers)
             {
                 var sortIndices = new int[buffer.Length];
-                for (int i = 0; i < buffer.Length; i++) sortIndices[i] = i;
+                for (int i = 0; i < buffer.Length; i++)
+                    sortIndices[i] = i;
                 IntrospectiveSort(buffer.Span, buffer.Length, sortIndices, comparer);
                 bufferSortIndices.Add(sortIndices);
             }
@@ -47,7 +48,7 @@ namespace Microsoft.Data
                 }
                 else
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(value, new List<Tuple<int, int>>() {new Tuple<int, int>(0, i) });
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(value, new List<Tuple<int, int>>() { new Tuple<int, int>(0, i) });
                 }
             }
             columnSortIndices = new PrimitiveColumn<long>("SortIndices");

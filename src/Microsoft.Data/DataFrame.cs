@@ -42,7 +42,7 @@ namespace Microsoft.Data
         }
 
         public BaseColumn Column(int index) => _table.Column(index);
-        
+
         public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column);
 
         public void SetColumn(int columnIndex, BaseColumn column) => _table.SetColumn(columnIndex, column);
@@ -50,7 +50,7 @@ namespace Microsoft.Data
         public void RemoveColumn(int columnIndex) => _table.RemoveColumn(columnIndex);
 
         public void RemoveColumn(string columnName) => _table.RemoveColumn(columnName);
-        
+
         public object this[long rowIndex, int columnIndex]
         {
             get => _table.Column(columnIndex)[rowIndex];
@@ -72,7 +72,8 @@ namespace Microsoft.Data
             get
             {
                 int columnIndex = _table.GetColumnIndex(columnName);
-                if (columnIndex == -1) throw new ArgumentException($"{columnName} does not exist");
+                if (columnIndex == -1)
+                    throw new ArgumentException($"{columnName} does not exist");
                 return _table.Column(columnIndex);
             }
             set
@@ -94,7 +95,7 @@ namespace Microsoft.Data
         public IList<IList<object>> Head(int numberOfRows)
         {
             var ret = new List<IList<object>>();
-            for (int i= 0; i< numberOfRows; i++)
+            for (int i = 0; i < numberOfRows; i++)
             {
                 ret.Add(this[i]);
             }

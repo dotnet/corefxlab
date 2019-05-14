@@ -32,10 +32,11 @@ namespace Microsoft.Data
             _columnContainer = new PrimitiveColumnContainer<T>(length);
         }
 
-        public override object this[long startIndex, int length] {
+        public override object this[long startIndex, int length]
+        {
             get
             {
-                if (startIndex > Length )
+                if (startIndex > Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(startIndex));
                 }
@@ -85,8 +86,10 @@ namespace Microsoft.Data
         {
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long)) throw new ArgumentException($"Expected sortIndices to be a PrimitiveColumn<long>");
-                if (mapIndices.Length != Length) throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long))
+                    throw new ArgumentException($"Expected sortIndices to be a PrimitiveColumn<long>");
+                if (mapIndices.Length != Length)
+                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
                 return _Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return _Clone();

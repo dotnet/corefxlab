@@ -199,7 +199,7 @@ namespace Microsoft.Data
         internal PrimitiveColumnContainer<double> CloneAsDoubleContainer()
         {
             var ret = new PrimitiveColumnContainer<double>();
-            foreach(var buffer in Buffers)
+            foreach (var buffer in Buffers)
             {
                 ret.Length += buffer.Length;
                 DataFrameBuffer<double> newBuffer = new DataFrameBuffer<double>();
@@ -217,7 +217,7 @@ namespace Microsoft.Data
         internal PrimitiveColumnContainer<decimal> CloneAsDecimalContainer()
         {
             var ret = new PrimitiveColumnContainer<decimal>();
-            foreach(var buffer in Buffers)
+            foreach (var buffer in Buffers)
             {
                 ret.Length += buffer.Length;
                 DataFrameBuffer<decimal> newBuffer = new DataFrameBuffer<decimal>();

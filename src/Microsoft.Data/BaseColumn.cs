@@ -28,7 +28,8 @@ namespace Microsoft.Data
             get => _length;
             protected set
             {
-                if (value < 0) throw new ArgumentOutOfRangeException();
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException();
                 _length = value;
             }
         }
@@ -196,12 +197,14 @@ namespace Microsoft.Data
 
             while (left < right)
             {
-                while (left < (hi - 1) && comparer.Compare(span[sortIndices[++left]], pivot) < 0) ;
+                while (left < (hi - 1) && comparer.Compare(span[sortIndices[++left]], pivot) < 0)
+                    ;
                 // Check if bad comparable/comparer
                 if (left == (hi - 1) && comparer.Compare(span[sortIndices[left]], pivot) < 0)
                     throw new ArgumentException("Bad comparer");
 
-                while (right > lo && comparer.Compare(pivot, span[sortIndices[--right]]) < 0) ;
+                while (right > lo && comparer.Compare(pivot, span[sortIndices[--right]]) < 0)
+                    ;
                 // Check if bad comparable/comparer
                 if (right == lo && comparer.Compare(pivot, span[sortIndices[right]]) < 0)
                     throw new ArgumentException("Bad comparer");
