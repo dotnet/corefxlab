@@ -78,6 +78,15 @@ namespace System.Numerics.Experimental
         private const int SingleSigShiftBit = 0;
 
         //
+        // Constants that should be returned if values that cannot be represented are converted
+        //
+
+        private const long IllegalValueToInt64 = long.MinValue;
+        private const ulong IllegalValueToUInt64 = ulong.MinValue;
+        private const int IllegalValueToInt32 = int.MinValue;
+        private const uint IllegalValueToUInt32 = uint.MinValue;
+
+        //
         // Well-defined and commonly used values
         //
 
@@ -398,7 +407,7 @@ namespace System.Numerics.Experimental
 
             shiftDist += 4;
             uint sig = shiftDist < 0 ? ShiftRightJam(value, -shiftDist) : value << shiftDist;
-            return RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig);
+            return new Half(RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig));
         }
 
         public static implicit operator Half(long value)
@@ -448,7 +457,7 @@ namespace System.Numerics.Experimental
 
             uint floatInt = (uint)BitConverter.SingleToInt32Bits(value);
             bool sign = (floatInt & SingleSignMask) >> SingleSignShiftBit != 0;
-            int exp = ((int)floatInt & SingleExpMask) >> SingleExpShiftBit;
+            int exp = (int)(floatInt & SingleExpMask) >> SingleExpShiftBit;
             uint sig = floatInt & SingleSigMask;
 
             if (exp == singleMaxExponent)
@@ -462,17 +471,19 @@ namespace System.Numerics.Experimental
 
             if ((exp | (int)sigHalf) == 0)
                 return new Half(sign, 0, 0);
-            return RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000));
+            return new Half(RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000)));
         }
         
         public static explicit operator Half(double value)
         {
+            const int doubleMaxExponent = 0x7FF;
+            
             ulong doubleInt = (ulong)BitConverter.DoubleToInt64Bits(value);
             bool sign = (doubleInt & DoubleSignMask) >> DoubleSignShiftBit != 0;
-            int exp = (int)(((long)doubleInt & DoubleExpMask) >> DoubleExpShiftBit);
+            int exp = (int)((doubleInt & DoubleExpMask) >> DoubleExpShiftBit);
             ulong sig = doubleInt & DoubleSigMask;
 
-            if (exp == 0x7FF)
+            if (exp == doubleMaxExponent)
             {
                 if (sig != 0) // NaN
                     return CreateHalfNaN(sign, sig << 12); // 12: bits required to shift the significand bits to the left end
@@ -480,9 +491,9 @@ namespace System.Numerics.Experimental
             }
 
             uint sigHalf = (uint)ShiftRightJam(sig, 38);
-            if ((exp | (int)sigHalf) == 0) // TODO: Is value == 0 faster?
+            if ((exp | (int)sigHalf) == 0)
                 return new Half(sign, 0, 0);
-            return RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000));
+            return new Half(RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000)));
         }
 
         // -----------------------Start of from-half conversions-------------------------
@@ -498,9 +509,9 @@ namespace System.Numerics.Experimental
                 return 0;
 
             if (exp == MaxExponent)
-                return int.MinValue; // Architecture-dependent; x86's behaviour
+                return IllegalValueToInt32;
 
-            int alignedSig = (int) (sig | 0x4000) << shiftDist;
+            int alignedSig = (int) (sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
             return sign ? -alignedSig : alignedSig;
         }
@@ -508,9 +519,6 @@ namespace System.Numerics.Experimental
         public static explicit operator uint(Half value) // 0 for every case
         {
             bool sign = IsNegative(value);
-            if (sign)
-                return (uint)(int)value; // Matching the behaviour of neg. float/double -> ulong
-            // TODO: Confirm this behaviour when value is negative
             int exp = value.Exponent;
             uint sig = value.Significand;
 
@@ -519,11 +527,11 @@ namespace System.Numerics.Experimental
                 return 0;
 
             if (exp == MaxExponent)
-                return uint.MaxValue; // Architecture-dependent; x86's behaviour
-            // TODO: I think it just returns 0 in C#
+                return IllegalValueToUInt32;
 
             uint alignedSig = (sig | 0x0400) << shiftDist;
-            return alignedSig >> 10;
+            alignedSig >>= 10;
+            return (uint)(sign ? -(int)alignedSig : (int)alignedSig);
         }
 
         public static explicit operator long(Half value)
@@ -533,11 +541,11 @@ namespace System.Numerics.Experimental
             uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
-            if (shiftDist < 0)
+            if (shiftDist < 0) // value < 1
                 return 0;
 
             if (exp == MaxExponent)
-                return long.MinValue; // Architecture-dependent; x86's behaviour
+                return IllegalValueToInt64;
 
             int alignedSig = (int) (sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
@@ -547,22 +555,19 @@ namespace System.Numerics.Experimental
         public static explicit operator ulong(Half value) // 0 for PosInfinity/NaN, long.MinValue for NegInfinity
         {
             bool sign = IsNegative(value);
-            if (sign)
-                return (ulong)(long)value; // Matching the behaviour of neg. float/double -> ulong
-            // TODO: Confirm this behaviour when value is negative
             int exp = value.Exponent;
             uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
-            if (shiftDist < 0)
+            if (shiftDist < 0) // value < 1
                 return 0;
 
             if (exp == MaxExponent)
-                return ulong.MaxValue; // Architecture-dependent; x86's behaviour
-            // TODO: Need to check
+                return IllegalValueToUInt64;
 
             uint alignedSig = (sig | 0x0400) << shiftDist;
-            return alignedSig >> 10;
+            alignedSig >>= 10;
+            return (ulong)(sign ? -alignedSig : alignedSig);
         }
 
         // TODO: confirm behaviours
@@ -674,7 +679,7 @@ namespace System.Numerics.Experimental
             }
 
             sig = (ushort)((sig + roundIncrement) >> 4);
-            sig &= (ushort)~(((roundBits ^ 8) != 0 ? 1 : 0) & 1);
+            sig &= (ushort)~(((roundBits ^ 8) != 0 ? 0 : 1) & 1);
 
             if (sig == 0)
                 exp = 0;

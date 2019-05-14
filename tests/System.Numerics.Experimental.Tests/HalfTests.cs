@@ -454,7 +454,7 @@ namespace System.Numerics.Experimental.Tests
 
         [MemberData(nameof(ImplicitConversion_FromInt32_TestData))]
         [Theory]
-        public static void ImplicitConversion_FromInt32(int i, ushort expected)
+        public static void ImplicitConversion_FromInt32(int i, Half expected)
         {
             Half h = i;
             Assert.Equal(expected, h);
@@ -478,9 +478,9 @@ namespace System.Numerics.Experimental.Tests
                         (65504U + 16, Half.PositiveInfinity), // Overflow
                         ((uint)-(65504 + 16), Half.PositiveInfinity), // Overflow
                         (65504U + 16 - 1, Half.MaxValue), // MaxValue
-                        ((uint)-(65504 + 16 - 1), Half.MaxValue), // MinValue
-                        (65504U + 16 + 1, Half.PositiveInfinity), // MaxValue + half the increment unit + 1, should overflow
-                        ((uint)-(65504 + 16 + 1), Half.PositiveInfinity) // MinValue - half the increment unit - 1, should overflow
+                        ((uint)-(65504 + 16 - 1), Half.PositiveInfinity), // Overflow
+                        (65504U + 16 + 1, Half.PositiveInfinity), // Overflow
+                        ((uint)-(65504 + 16 + 1), Half.PositiveInfinity) // Overflow
                     }
                 );
 
@@ -555,11 +555,10 @@ namespace System.Numerics.Experimental.Tests
                     new[]
                     {
                         ((byte)1U, UInt16BitsToHalf(0b0_01111_0000000000)), // 1
-                        ((byte)-1, UInt16BitsToHalf(0b0_10110_1111110111)), // 255
                         ((byte)0U, (ushort)0), // 0
                         ((byte)sbyte.MaxValue, UInt16BitsToHalf(0b0_10101_1111110000)), // 127
-                        ((byte)sbyte.MinValue, UInt16BitsToHalf(0b0_10110_0010000000)), // 128
-                        (byte.MaxValue, UInt16BitsToHalf(0b0_10110_1111110111)), // 255
+                        ((byte)sbyte.MinValue, UInt16BitsToHalf(0b0_10110_0000000000)), // 128
+                        (byte.MaxValue, UInt16BitsToHalf(0b0_10110_1111111000)), // 255
                     }
                 );
 
@@ -569,10 +568,10 @@ namespace System.Numerics.Experimental.Tests
 
         [MemberData(nameof(ImplicitConversion_FromByte_TestData))]
         [Theory]
-        public static void ImplicitConversion_FromByte(byte b, ushort expected)
+        public static void ImplicitConversion_FromByte(byte b, Half expected)
         {
             Half h = b;
-            Assert.Equal(expected, HalfToUInt16Bits(h));
+            Assert.Equal(expected, h);
         }
 
         public static IEnumerable<object[]> ImplicitConversion_FromSByte_TestData()
@@ -583,7 +582,7 @@ namespace System.Numerics.Experimental.Tests
                 (-1, UInt16BitsToHalf(0b1_01111_0000000000)), // -1
                 ((sbyte)0U, (ushort)0), // 0
                 (sbyte.MaxValue, UInt16BitsToHalf(0b0_10101_1111110000)), // 127
-                (sbyte.MinValue, UInt16BitsToHalf(0b1_10110_0010000000)), // -128
+                (sbyte.MinValue, UInt16BitsToHalf(0b1_10110_0000000000)), // -128
             };
 
             foreach ((sbyte original, Half expected) in data)
@@ -786,9 +785,9 @@ namespace System.Numerics.Experimental.Tests
 
         [MemberData(nameof(ExplicitConversion_ToUInt64_TestData))]
         [Theory]
-        public static void ExplicitConversion_ToUInt64(ushort value, ulong expected)
+        public static void ExplicitConversion_ToUInt64(Half value, ulong expected)
         {
-            ulong l = (ulong)UInt16BitsToHalf(value);
+            ulong l = (ulong)value;
             Assert.Equal(expected, l);
         }
 
@@ -880,9 +879,9 @@ namespace System.Numerics.Experimental.Tests
 
         [MemberData(nameof(ExplicitConversion_ToUInt32_TestData))]
         [Theory]
-        public static void ExplicitConversion_ToUInt32(Half value, int expected)
+        public static void ExplicitConversion_ToUInt32(Half value, uint expected)
         {
-            int i = (int)value;
+            uint i = (uint)value;
             Assert.Equal(expected, i);
         }
 
@@ -892,8 +891,8 @@ namespace System.Numerics.Experimental.Tests
             {
                 (UInt16BitsToHalf(0b0_01111_0000000000), 1), // 1
                 (UInt16BitsToHalf(0b1_01111_0000000000), -1), // -1
-                (Half.MaxValue, IllegalValueToInt16), // Half.MaxValue - Out of range
-                (Half.MinValue, IllegalValueToInt16), // Half.MinValue - Out of range
+                (Half.MaxValue, unchecked((short)(65504 & 0xFFFF))), // Half.MaxValue -> -32, 65504 bitmasked
+                (Half.MinValue, -65504 & 0xFFFF), // Half.MinValue -> 32, -65504 bitmasked
                 (UInt16BitsToHalf(0b0_01011_1001100110), 0), // 0.1 -> 0 
                 (UInt16BitsToHalf(0b1_01011_1001100110), 0), // -0.1 -> 0
                 (UInt16BitsToHalf(0b0_10100_0101000000), 42), // 42
@@ -939,8 +938,8 @@ namespace System.Numerics.Experimental.Tests
                     {
                         (UInt16BitsToHalf(0b0_01111_0000000000), (ushort)1), // 1
                         (UInt16BitsToHalf(0b1_01111_0000000000), (ushort)-1), // -1 in two's complement
-                        (Half.MaxValue, IllegalValueToUInt16), // Half.MaxValue - Out of range
-                        (Half.MinValue, IllegalValueToUInt16), // Half.MinValue - Out of range
+                        (Half.MaxValue, (ushort)65504), // Half.MaxValue -> 65504
+                        (Half.MinValue, (ushort)(-65504 & 0xFFFF)), // Half.MinValue -> 32, -65504 bitmasked
                         (UInt16BitsToHalf(0b0_01011_1001100110), (ushort)0), // 0.1 -> 0 
                         (UInt16BitsToHalf(0b1_01011_1001100110), (ushort)0), // -0.1 -> 0
                         (UInt16BitsToHalf(0b0_10100_0101000000), (ushort)42), // 42
@@ -977,7 +976,7 @@ namespace System.Numerics.Experimental.Tests
         [Theory]
         public static void ExplicitConversion_ToUInt16(Half value, ushort expected)
         {
-            uint i = (uint)value;
+            ushort i = (ushort)value;
             Assert.Equal(expected, i);
         }
 
@@ -990,8 +989,8 @@ namespace System.Numerics.Experimental.Tests
                     {
                         (UInt16BitsToHalf(0b0_01111_0000000000), (byte)1), // 1
                         (UInt16BitsToHalf(0b1_01111_0000000000), (byte)-1), // -1
-                        (Half.MaxValue, IllegalValueToByte), // Half.MaxValue -> Out of range
-                        (Half.MinValue, IllegalValueToByte), // Half.MinValue -> Out of range
+                        (Half.MaxValue, (byte)(65504 & 0xFF)), // Half.MaxValue -> 224, 65504 bitmasked
+                        (Half.MinValue, (byte)(-65504 & 0xFF)), // Half.MinValue -> 32, -65504 bitmasked
                         (UInt16BitsToHalf(0b0_01011_1001100110), (byte)0), // 0.1 -> 0 
                         (UInt16BitsToHalf(0b1_01011_1001100110), (byte)0), // -0.1 -> 0
                         (UInt16BitsToHalf(0b0_10100_0101000000), (byte)42), // 42
@@ -1036,8 +1035,8 @@ namespace System.Numerics.Experimental.Tests
             {
                 (UInt16BitsToHalf(0b0_01111_0000000000), 1), // 1
                 (UInt16BitsToHalf(0b1_01111_0000000000), -1), // -1
-                (Half.MaxValue, IllegalValueToSByte), // Half.MaxValue -> Out of range
-                (Half.MinValue, IllegalValueToSByte), // Half.MinValue -> Out of range
+                (Half.MaxValue, unchecked((sbyte)(65504 & 0xFF))), // Half.MaxValue -> -32, -65504 bitmasked
+                (Half.MinValue, (sbyte)(-65504 & 0xFF)), // Half.MinValue -> 32, -65504 bitmasked
                 (UInt16BitsToHalf(0b0_01011_1001100110), 0), // 0.1 -> 0 
                 (UInt16BitsToHalf(0b1_01011_1001100110), 0), // -0.1 -> 0
                 (UInt16BitsToHalf(0b0_10100_0101000000), 42), // 42
@@ -1203,7 +1202,7 @@ namespace System.Numerics.Experimental.Tests
         [Theory]
         public static void UnaryNegativeOperator(Half value, Half expected)
         {
-            Assert.Equal(HalfToUInt16Bits(value), HalfToUInt16Bits(expected));
+            Assert.Equal(HalfToUInt16Bits(-value), HalfToUInt16Bits(expected));
         }
 
         public static IEnumerable<object[]> UnaryPositiveOperator_TestData()
