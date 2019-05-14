@@ -425,16 +425,16 @@ namespace System.Text.Http.Parser.Tests
 
             public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
             {
-                Headers[Encodings.Ascii.ToUtf16String(name)] = Encodings.Ascii.ToUtf16String(value);
+                Headers[TextEncodings.Ascii.ToUtf16String(name)] = TextEncodings.Ascii.ToUtf16String(value);
             }
 
             public void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded)
             {
-                Method = method != Http.Method.Custom ? method.ToString().ToUpper() : Encodings.Ascii.ToUtf16String(customMethod);
+                Method = method != Http.Method.Custom ? method.ToString().ToUpper() : TextEncodings.Ascii.ToUtf16String(customMethod);
                 Version = ToString(version);
-                RawTarget = Encodings.Ascii.ToUtf16String(target);
-                RawPath = Encodings.Ascii.ToUtf16String(path);
-                Query = Encodings.Ascii.ToUtf16String(query);
+                RawTarget = TextEncodings.Ascii.ToUtf16String(target);
+                RawPath = TextEncodings.Ascii.ToUtf16String(path);
+                Query = TextEncodings.Ascii.ToUtf16String(query);
                 PathEncoded = pathEncoded;
             }
 

@@ -49,7 +49,7 @@ namespace System.Buffers.Text
             var utf16Bytes = MemoryMarshal.AsBytes(hack.AsSpan());
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                var status = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out bytesWritten);
+                var status = TextEncodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out bytesWritten);
                 return status == OperationStatus.Done;
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -65,7 +65,7 @@ namespace System.Buffers.Text
             {
                 // TODO: This is currently pretty expensive. Can this be done more efficiently?
                 //       Note: removing the hack might solve this problem a very different way.
-                var status = Encodings.Utf16.ToUtf8Length(utf16Bytes, out int needed);
+                var status = TextEncodings.Utf16.ToUtf8Length(utf16Bytes, out int needed);
                 if (status != OperationStatus.Done)
                 {
                     bytesWritten = 0;
@@ -74,7 +74,7 @@ namespace System.Buffers.Text
 
                 Span<byte> temp = stackalloc byte[needed];
 
-                status = Encodings.Utf16.ToUtf8(utf16Bytes, temp, out int consumed, out written);
+                status = TextEncodings.Utf16.ToUtf8(utf16Bytes, temp, out int consumed, out written);
                 if (status != OperationStatus.Done)
                 {
                     bytesWritten = 0;

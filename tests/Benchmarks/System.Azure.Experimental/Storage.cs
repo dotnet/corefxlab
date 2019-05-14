@@ -107,7 +107,7 @@ namespace System.Azure.Experimental.Benchmarks
             }
             else
             {
-                if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(verb.AsSpan()), output, out consumed, out written) != OperationStatus.Done)
+                if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(verb.AsSpan()), output, out consumed, out written) != OperationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -131,7 +131,7 @@ namespace System.Azure.Experimental.Benchmarks
             bytesWritten += written + 1;
             free = output.Slice(bytesWritten);
 
-            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(canonicalizedResource.AsSpan()), free, out consumed, out written) != OperationStatus.Done)
+            if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(canonicalizedResource.AsSpan()), free, out consumed, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
