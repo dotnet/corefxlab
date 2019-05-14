@@ -96,7 +96,7 @@ namespace System.Azure.Experimental.Benchmarks
             s_type.CopyTo(buffer);
             totalWritten += s_type.Length;
 
-            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(keyType.AsSpan()), buffer.Slice(totalWritten), out int consumed, out int written) != OperationStatus.Done)
+            if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(keyType.AsSpan()), buffer.Slice(totalWritten), out int consumed, out int written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -105,7 +105,7 @@ namespace System.Azure.Experimental.Benchmarks
             s_ver.CopyTo(buffer.Slice(totalWritten));
             totalWritten += s_ver.Length;
 
-            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(tokenVersion.AsSpan()), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
+            if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(tokenVersion.AsSpan()), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -136,11 +136,11 @@ namespace System.Azure.Experimental.Benchmarks
             }
             else
             {
-                if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(verb.AsSpan()), payload, out consumed, out written) != OperationStatus.Done)
+                if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(verb.AsSpan()), payload, out consumed, out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
-                if (Encodings.Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
+                if (TextEncodings.Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
@@ -151,11 +151,11 @@ namespace System.Azure.Experimental.Benchmarks
 
             var bufferSlice = payload.Slice(totalWritten);
 
-            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(resourceType.AsSpan()), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(resourceType.AsSpan()), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
-            if (Encodings.Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
+            if (TextEncodings.Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -163,7 +163,7 @@ namespace System.Azure.Experimental.Benchmarks
             totalWritten += written + 1;
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(resourceId.AsSpan()), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(resourceId.AsSpan()), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }

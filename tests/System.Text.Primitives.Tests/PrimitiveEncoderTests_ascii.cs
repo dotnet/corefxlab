@@ -15,7 +15,7 @@ namespace System.Text.Encoders.Tests
         public void AsciiToUtf16StringBasics(string original)
         {
             var encoded = (Span<byte>)Encoding.ASCII.GetBytes(original);
-            var decoded = Encodings.Ascii.ToUtf16String(encoded);
+            var decoded = TextEncodings.Ascii.ToUtf16String(encoded);
             Assert.Equal(original, decoded);
         }
 
@@ -26,7 +26,7 @@ namespace System.Text.Encoders.Tests
                 var encoded = (Span<byte>)new byte[100];
                 for (int encodedByte = 0; encodedByte < 128; encodedByte++) {
                     encoded[index] = (byte)encodedByte;
-                    var result = Encodings.Ascii.ToUtf16String(encoded);
+                    var result = TextEncodings.Ascii.ToUtf16String(encoded);
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace System.Text.Encoders.Tests
                     encoded[0] = (byte)encodedByte;
                     bool exception = false;
                     try {
-                        var result = Encodings.Ascii.ToUtf16String(encoded);
+                        var result = TextEncodings.Ascii.ToUtf16String(encoded);
                     }
                     catch(ArgumentException) {
                         exception = true;

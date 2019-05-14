@@ -75,7 +75,7 @@ namespace System.Text.Http.Parser.Internal
             Debug.Assert(str.Length == 8, "String must be exactly 8 (ASCII) characters long.");
 
             Span<byte> span = stackalloc byte[8];
-            Encodings.Utf16.ToUtf8(AsBytes(str.AsSpan()), span, out int consumed, out int written);
+            TextEncodings.Utf16.ToUtf8(AsBytes(str.AsSpan()), span, out int consumed, out int written);
             return Read<ulong>(span);
         }
 

@@ -19,7 +19,7 @@ namespace System.Azure.Authentication
 
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
-            var result = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
+            var result = TextEncodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
             if (result != OperationStatus.Done)
             {
                 throw new ArgumentOutOfRangeException(nameof(key), $"ToUtf8 returned {result}");
@@ -45,7 +45,7 @@ namespace System.Azure.Authentication
 
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
-            var result = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
+            var result = TextEncodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
             if (result != OperationStatus.Done)
             {
                 throw new ArgumentOutOfRangeException(nameof(key), $"ToUtf8 returned {result}");

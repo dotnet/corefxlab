@@ -5,7 +5,7 @@
 using System;
 using System.Text.Http.Parser;
 using System.Collections.Sequences;
-using static System.Buffers.Text.Encodings;
+using static System.Buffers.Text.TextEncodings;
 
 namespace Microsoft.Net
 {

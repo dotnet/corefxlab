@@ -48,7 +48,7 @@ namespace System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus UsingTextEncoder()
         {
-            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(_utf16Source, _utf8Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.TextEncodings.Utf16.ToUtf8(_utf16Source, _utf8Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

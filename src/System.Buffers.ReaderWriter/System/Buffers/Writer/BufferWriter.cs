@@ -63,7 +63,7 @@ namespace System.Buffers.Writer
         }
 
         public override string ToString()
-            => Encodings.Utf8.ToString(Written);
+            => TextEncodings.Utf8.ToString(Written);
 
         public class BufferTooSmallException : Exception
         {

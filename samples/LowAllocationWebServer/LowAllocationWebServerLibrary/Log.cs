@@ -4,7 +4,7 @@
 
 using Microsoft.Net;
 using System.Buffers;
-using static System.Buffers.Text.Encodings;
+using static System.Buffers.Text.TextEncodings;
 
 namespace System.Diagnostics
 {
