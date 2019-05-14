@@ -112,7 +112,7 @@ namespace System.Numerics.Experimental
         }
 
         private Half(bool sign, ushort exp, ushort sig)
-            => m_value = (ushort)((sign ? 1 : 0 << SignShift) + (exp << ExponentShift) + sig);
+            => m_value = (ushort)(((sign ? 1 : 0) << SignShift) + (exp << ExponentShift) + sig);
 
         private sbyte Exponent
         {
