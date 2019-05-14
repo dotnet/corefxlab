@@ -362,12 +362,16 @@ namespace System.Numerics.Experimental
 
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return $"0x{m_value:X4}";
+            // return ToString(format: null, formatProvider: null);
+            // TODO: Implement this
         }
 
         public string ToString(string format = null, IFormatProvider formatProvider = null)
         {
-            throw new NotImplementedException();
+            return $"0x{m_value:X4}";
+            // throw new NotImplementedException();
+            // TODO: Implement this
         }
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider formatProvider)
