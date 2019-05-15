@@ -28,7 +28,7 @@ namespace Microsoft.Data
     internal static class PrimitiveColumnArithmetic<T>
         where T : struct
     {
-        public static IPrimitiveColumnArithmetic<T> Instance = PrimitiveColumnArithmetic.GetArithmetic<T>();
+        public static IPrimitiveColumnArithmetic<T> Instance { get; } = PrimitiveColumnArithmetic.GetArithmetic<T>();
     }
 
     internal static class PrimitiveColumnArithmetic

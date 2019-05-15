@@ -78,7 +78,7 @@ namespace Microsoft.Data
             }
             if (RowCount > 0 && column.Length != RowCount)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {
@@ -100,7 +100,7 @@ namespace Microsoft.Data
             }
             if (RowCount > 0 && column.Length != RowCount)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {

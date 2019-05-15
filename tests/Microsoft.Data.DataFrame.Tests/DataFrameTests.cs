@@ -3,16 +3,15 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Microsoft.Data;
+using System.Linq;
 using Xunit;
 
 namespace Microsoft.Data.Tests
 {
     public class DataFrameTests
     {
-        static public DataFrame MakeDataFrameWithTwoColumns(int length)
+        public static DataFrame MakeDataFrameWithTwoColumns(int length)
         {
             BaseColumn dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
             BaseColumn dataFrameColumn2 = new PrimitiveColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
@@ -22,7 +21,7 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
-        static public DataFrame MakeDataFrameWithAllColumnTypes(int length)
+        public static DataFrame MakeDataFrameWithAllColumnTypes(int length)
         {
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
@@ -30,7 +29,7 @@ namespace Microsoft.Data.Tests
             return df;
         }
 
-        static public DataFrame MakeDataFrameWithNumericAndStringColumns(int length)
+        public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length)
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length);
             BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
@@ -38,7 +37,7 @@ namespace Microsoft.Data.Tests
             return df;
         }
 
-        static public DataFrame MakeDataFrameWithNumericColumns(int length)
+        public static DataFrame MakeDataFrameWithNumericColumns(int length)
         {
             BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
             BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
@@ -109,7 +108,7 @@ namespace Microsoft.Data.Tests
 
             Assert.Equal(2, dataFrame.ColumnCount);
             BaseColumn intColumnCopy = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
-            Assert.Throws<System.ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
+            Assert.Throws<ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
 
             BaseColumn differentIntColumn = new PrimitiveColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
             dataFrame.SetColumn(1, differentIntColumn);
@@ -235,12 +234,12 @@ namespace Microsoft.Data.Tests
             Assert.True(dtype == typeof(decimal));
 
             // int + bool should throw
-            Assert.Throws<System.NotSupportedException>(() => df.Add(true));
+            Assert.Throws<NotSupportedException>(() => df.Add(true));
 
             var dataFrameColumn1 = new PrimitiveColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
             df.SetColumn(0, dataFrameColumn1);
             // Double + comparison ops should throw
-            Assert.Throws<System.NotSupportedException>(() => df.And(true));
+            Assert.Throws<NotSupportedException>(() => df.And(true));
         }
 
         [Fact]
@@ -253,9 +252,9 @@ namespace Microsoft.Data.Tests
             df.InsertColumn(1, dataFrameColumn2);
 
             // bool + int should throw
-            Assert.Throws<System.NotSupportedException>(() => df.Add(5));
+            Assert.Throws<NotSupportedException>(() => df.Add(5));
             // Left shift should throw
-            Assert.Throws<System.NotSupportedException>(() => df.LeftShift(5));
+            Assert.Throws<NotSupportedException>(() => df.LeftShift(5));
 
             IReadOnlyList<bool> listOfBools = new List<bool>() { true, false };
             // bool equals and And should work
@@ -318,8 +317,8 @@ namespace Microsoft.Data.Tests
             Assert.Equal(tempDf[0, 0], (byte)df[0, 0] + 1.1m);
             Assert.True(typeof(decimal) == tempDf["Int"].DataType);
 
-            Assert.Throws<System.NotSupportedException>(() => df + true);
-            Assert.Throws<System.NotSupportedException>(() => df & 5);
+            Assert.Throws<NotSupportedException>(() => df + true);
+            Assert.Throws<NotSupportedException>(() => df & 5);
 
             tempDf = df - 1.1;
             Assert.Equal(tempDf[0, 0], (byte)df[0, 0] - 1.1);
@@ -457,8 +456,28 @@ namespace Microsoft.Data.Tests
             for (int i = 0; i < df.ColumnCount; i++)
             {
                 BaseColumn column = df.Column(i);
-                if (column.DataType == typeof(bool) || column.DataType == typeof(string))
+                if (column.DataType == typeof(bool))
                 {
+                    Assert.Throws<NotSupportedException>(() => column.CumulativeMax());
+                    Assert.Throws<NotSupportedException>(() => column.CumulativeMin());
+                    Assert.Throws<NotSupportedException>(() => column.CumulativeProduct());
+                    Assert.Throws<NotSupportedException>(() => column.CumulativeSum());
+                    Assert.Throws<NotSupportedException>(() => column.Max());
+                    Assert.Throws<NotSupportedException>(() => column.Min());
+                    Assert.Throws<NotSupportedException>(() => column.Product());
+                    Assert.Throws<NotSupportedException>(() => column.Sum());
+                    continue;
+                }
+                else if (column.DataType == typeof(string))
+                {
+                    Assert.Throws<NotImplementedException>(() => column.CumulativeMax());
+                    Assert.Throws<NotImplementedException>(() => column.CumulativeMin());
+                    Assert.Throws<NotImplementedException>(() => column.CumulativeProduct());
+                    Assert.Throws<NotImplementedException>(() => column.CumulativeSum());
+                    Assert.Throws<NotImplementedException>(() => column.Max());
+                    Assert.Throws<NotImplementedException>(() => column.Min());
+                    Assert.Throws<NotImplementedException>(() => column.Product());
+                    Assert.Throws<NotImplementedException>(() => column.Sum());
                     continue;
                 }
                 column.CumulativeMax();

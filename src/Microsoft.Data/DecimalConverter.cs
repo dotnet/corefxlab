@@ -12,7 +12,7 @@ namespace Microsoft.Data
     internal static class DecimalConverter<T>
         where T : struct
     {
-        public static IDecimalConverter<T> Instance => DecimalConverter.GetDecimalConverter<T>();
+        public static IDecimalConverter<T> Instance { get; } = DecimalConverter.GetDecimalConverter<T>();
     }
     internal static class DecimalConverter
     {

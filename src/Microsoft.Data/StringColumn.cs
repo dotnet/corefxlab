@@ -49,7 +49,7 @@ namespace Microsoft.Data
         {
             if (rowIndex > Length)
             {
-                throw new ArgumentOutOfRangeException(strings.ColumnIndexOutOfRange, nameof(rowIndex));
+                throw new ArgumentOutOfRangeException(Strings.ColumnIndexOutOfRange, nameof(rowIndex));
             }
             int curArrayIndex = 0;
             int numBuffers = _stringBuffers.Count;
@@ -61,58 +61,65 @@ namespace Microsoft.Data
             return curArrayIndex;
         }
 
-        public override object this[long rowIndex]
+        protected override object GetValue(long rowIndex)
         {
-            get
+            int bufferIndex = GetBufferIndexContainingRowIndex(ref rowIndex);
+            return _stringBuffers[bufferIndex][(int)rowIndex];
+        }
+
+        protected override object GetValue(long startIndex, int length)
+        {
+            var ret = new List<string>();
+            int bufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
+            while (ret.Count < length && bufferIndex < _stringBuffers.Count)
+            {
+                for (int i = (int)startIndex; ret.Count < length && i < _stringBuffers[bufferIndex].Count; i++)
+                {
+                    ret.Add(_stringBuffers[bufferIndex][i]);
+                }
+                bufferIndex++;
+                startIndex = 0;
+            }
+            return ret;
+        }
+
+        protected override void SetValue(long rowIndex, object value)
+        {
+            if (value is string)
             {
                 int bufferIndex = GetBufferIndexContainingRowIndex(ref rowIndex);
-                return _stringBuffers[bufferIndex][(int)rowIndex];
+                _stringBuffers[bufferIndex][(int)rowIndex] = (string)value;
             }
-            set
+            else
             {
-                if (value is string)
-                {
-                    int bufferIndex = GetBufferIndexContainingRowIndex(ref rowIndex);
-                    _stringBuffers[bufferIndex][(int)rowIndex] = (string)value;
-                }
-                else
-                {
-                    throw new ArgumentException("Expected value to be a string", nameof(value));
-                }
+                throw new ArgumentException(Strings.MismatchedValueType + " string", nameof(value));
             }
         }
 
-        public override object this[long startIndex, int length]
+        public new string this[long rowIndex]
         {
-            get
-            {
-                var ret = new List<string>();
-                int bufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
-                while (ret.Count < length && bufferIndex < _stringBuffers.Count)
-                {
-                    for (int i = (int)startIndex; ret.Count < length && i < _stringBuffers[bufferIndex].Count; i++)
-                    {
-                        ret.Add(_stringBuffers[bufferIndex][i]);
-                    }
-                    bufferIndex++;
-                    startIndex = 0;
-                }
-                return ret;
-            }
+            get => (string)GetValue(rowIndex);
+            set => SetValue(rowIndex, value);
         }
+
+        public new string this[long startIndex, int length]
+        {
+            get => (string)GetValue(startIndex, length);
+        }
+
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
-            return Clone(columnSortIndices, !ascending);
+            return Clone((BaseColumn)columnSortIndices, !ascending);
         }
 
         public override BaseColumn GetAscendingSortIndices()
         {
-            _GetSortIndices(Comparer<string>.Default, out PrimitiveColumn<long> columnSortIndices);
+            GetSortIndices(Comparer<string>.Default, out PrimitiveColumn<long> columnSortIndices);
             return columnSortIndices;
 
         }
-        private void _GetSortIndices(Comparer<string> comparer, out PrimitiveColumn<long> columnSortIndices)
+        private void GetSortIndices(Comparer<string> comparer, out PrimitiveColumn<long> columnSortIndices)
         {
             List<int[]> bufferSortIndices = new List<int[]>(_stringBuffers.Count);
             foreach (var buffer in _stringBuffers)
@@ -153,15 +160,15 @@ namespace Microsoft.Data
             if (!(mapIndices is null))
             {
                 if (mapIndices.DataType != typeof(long))
-                    throw new ArgumentException($"Expected sortIndices to be a PrimitiveColumn<long>");
+                    throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
                 if (mapIndices.Length != Length)
-                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
-                return _Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
-            return _Clone();
+            return Clone();
         }
 
-        public StringColumn _Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
             StringColumn ret = new StringColumn(Name, Length);
             if (mapIndices is null)
@@ -182,7 +189,7 @@ namespace Microsoft.Data
             else
             {
                 if (mapIndices.Length != Length)
-                    throw new ArgumentException(strings.MismatchedColumnLengths, nameof(mapIndices));
+                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
                 if (invertMapIndex == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)

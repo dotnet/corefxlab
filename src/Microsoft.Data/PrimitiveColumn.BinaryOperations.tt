@@ -27,7 +27,7 @@ namespace Microsoft.Data
             {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
                 case PrimitiveColumn<<#=type.TypeName#>> <#=type.TypeName#>Column:
-                    return _<#=method.MethodName#>(column as PrimitiveColumn<<#=type.TypeName#>>);
+                    return <#=method.MethodName#>Implementation(column as PrimitiveColumn<<#=type.TypeName#>>);
 <# } #>
                 default:
                     throw new NotSupportedException();
@@ -37,35 +37,35 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
         public override BaseColumn <#=method.MethodName#><U>(U value)
         {
-            return _<#=method.MethodName#>(value);
+            return <#=method.MethodName#>Implementation(value);
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
         public override BaseColumn <#=method.MethodName#>(int value)
         {
-            return _<#=method.MethodName#>(value);
+            return <#=method.MethodName#>Implementation(value);
         }
 <# } #>
 <# } #>
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
-        internal BaseColumn _<#=method.MethodName#><U>(U value)
+        internal BaseColumn <#=method.MethodName#>Implementation<U>(U value)
             where U : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
-        internal BaseColumn _<#=method.MethodName#><U>(PrimitiveColumn<U> column)
+        internal BaseColumn <#=method.MethodName#>Implementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        internal BaseColumn _<#=method.MethodName#>(int value)
+        internal BaseColumn <#=method.MethodName#>Implementation(int value)
 <# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
 <# } else { #>
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>

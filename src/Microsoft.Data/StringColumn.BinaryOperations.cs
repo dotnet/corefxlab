@@ -17,9 +17,9 @@ namespace Microsoft.Data
             // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            StringColumn ret = _Clone();
+            StringColumn ret = Clone();
             for (long i = 0; i < Length; i++)
             {
                 ret[i] += column[i].ToString();
@@ -29,7 +29,7 @@ namespace Microsoft.Data
 
         public override BaseColumn Add<T>(T value)
         {
-            StringColumn ret = _Clone();
+            StringColumn ret = Clone();
             string valString = value.ToString();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {
@@ -48,7 +48,7 @@ namespace Microsoft.Data
             // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
@@ -74,7 +74,7 @@ namespace Microsoft.Data
             // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)

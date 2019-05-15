@@ -18,548 +18,548 @@ namespace Microsoft.Data
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Add(column as PrimitiveColumn<bool>);
+                    return AddImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Add(column as PrimitiveColumn<byte>);
+                    return AddImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Add(column as PrimitiveColumn<char>);
+                    return AddImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Add(column as PrimitiveColumn<decimal>);
+                    return AddImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Add(column as PrimitiveColumn<double>);
+                    return AddImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Add(column as PrimitiveColumn<float>);
+                    return AddImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Add(column as PrimitiveColumn<int>);
+                    return AddImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Add(column as PrimitiveColumn<long>);
+                    return AddImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Add(column as PrimitiveColumn<sbyte>);
+                    return AddImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Add(column as PrimitiveColumn<short>);
+                    return AddImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Add(column as PrimitiveColumn<uint>);
+                    return AddImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Add(column as PrimitiveColumn<ulong>);
+                    return AddImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Add(column as PrimitiveColumn<ushort>);
+                    return AddImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Add<U>(U value)
         {
-            return _Add(value);
+            return AddImplementation(value);
         }
         public override BaseColumn Subtract(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Subtract(column as PrimitiveColumn<bool>);
+                    return SubtractImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Subtract(column as PrimitiveColumn<byte>);
+                    return SubtractImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Subtract(column as PrimitiveColumn<char>);
+                    return SubtractImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Subtract(column as PrimitiveColumn<decimal>);
+                    return SubtractImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Subtract(column as PrimitiveColumn<double>);
+                    return SubtractImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Subtract(column as PrimitiveColumn<float>);
+                    return SubtractImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Subtract(column as PrimitiveColumn<int>);
+                    return SubtractImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Subtract(column as PrimitiveColumn<long>);
+                    return SubtractImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Subtract(column as PrimitiveColumn<sbyte>);
+                    return SubtractImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Subtract(column as PrimitiveColumn<short>);
+                    return SubtractImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Subtract(column as PrimitiveColumn<uint>);
+                    return SubtractImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Subtract(column as PrimitiveColumn<ulong>);
+                    return SubtractImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Subtract(column as PrimitiveColumn<ushort>);
+                    return SubtractImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Subtract<U>(U value)
         {
-            return _Subtract(value);
+            return SubtractImplementation(value);
         }
         public override BaseColumn Multiply(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Multiply(column as PrimitiveColumn<bool>);
+                    return MultiplyImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Multiply(column as PrimitiveColumn<byte>);
+                    return MultiplyImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Multiply(column as PrimitiveColumn<char>);
+                    return MultiplyImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Multiply(column as PrimitiveColumn<decimal>);
+                    return MultiplyImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Multiply(column as PrimitiveColumn<double>);
+                    return MultiplyImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Multiply(column as PrimitiveColumn<float>);
+                    return MultiplyImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Multiply(column as PrimitiveColumn<int>);
+                    return MultiplyImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Multiply(column as PrimitiveColumn<long>);
+                    return MultiplyImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Multiply(column as PrimitiveColumn<sbyte>);
+                    return MultiplyImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Multiply(column as PrimitiveColumn<short>);
+                    return MultiplyImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Multiply(column as PrimitiveColumn<uint>);
+                    return MultiplyImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Multiply(column as PrimitiveColumn<ulong>);
+                    return MultiplyImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Multiply(column as PrimitiveColumn<ushort>);
+                    return MultiplyImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Multiply<U>(U value)
         {
-            return _Multiply(value);
+            return MultiplyImplementation(value);
         }
         public override BaseColumn Divide(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Divide(column as PrimitiveColumn<bool>);
+                    return DivideImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Divide(column as PrimitiveColumn<byte>);
+                    return DivideImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Divide(column as PrimitiveColumn<char>);
+                    return DivideImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Divide(column as PrimitiveColumn<decimal>);
+                    return DivideImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Divide(column as PrimitiveColumn<double>);
+                    return DivideImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Divide(column as PrimitiveColumn<float>);
+                    return DivideImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Divide(column as PrimitiveColumn<int>);
+                    return DivideImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Divide(column as PrimitiveColumn<long>);
+                    return DivideImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Divide(column as PrimitiveColumn<sbyte>);
+                    return DivideImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Divide(column as PrimitiveColumn<short>);
+                    return DivideImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Divide(column as PrimitiveColumn<uint>);
+                    return DivideImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Divide(column as PrimitiveColumn<ulong>);
+                    return DivideImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Divide(column as PrimitiveColumn<ushort>);
+                    return DivideImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Divide<U>(U value)
         {
-            return _Divide(value);
+            return DivideImplementation(value);
         }
         public override BaseColumn Modulo(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Modulo(column as PrimitiveColumn<bool>);
+                    return ModuloImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Modulo(column as PrimitiveColumn<byte>);
+                    return ModuloImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Modulo(column as PrimitiveColumn<char>);
+                    return ModuloImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Modulo(column as PrimitiveColumn<decimal>);
+                    return ModuloImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Modulo(column as PrimitiveColumn<double>);
+                    return ModuloImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Modulo(column as PrimitiveColumn<float>);
+                    return ModuloImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Modulo(column as PrimitiveColumn<int>);
+                    return ModuloImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Modulo(column as PrimitiveColumn<long>);
+                    return ModuloImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Modulo(column as PrimitiveColumn<sbyte>);
+                    return ModuloImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Modulo(column as PrimitiveColumn<short>);
+                    return ModuloImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Modulo(column as PrimitiveColumn<uint>);
+                    return ModuloImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Modulo(column as PrimitiveColumn<ulong>);
+                    return ModuloImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Modulo(column as PrimitiveColumn<ushort>);
+                    return ModuloImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Modulo<U>(U value)
         {
-            return _Modulo(value);
+            return ModuloImplementation(value);
         }
         public override BaseColumn And(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _And(column as PrimitiveColumn<bool>);
+                    return AndImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _And(column as PrimitiveColumn<byte>);
+                    return AndImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _And(column as PrimitiveColumn<char>);
+                    return AndImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _And(column as PrimitiveColumn<decimal>);
+                    return AndImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _And(column as PrimitiveColumn<double>);
+                    return AndImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _And(column as PrimitiveColumn<float>);
+                    return AndImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _And(column as PrimitiveColumn<int>);
+                    return AndImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _And(column as PrimitiveColumn<long>);
+                    return AndImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _And(column as PrimitiveColumn<sbyte>);
+                    return AndImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _And(column as PrimitiveColumn<short>);
+                    return AndImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _And(column as PrimitiveColumn<uint>);
+                    return AndImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _And(column as PrimitiveColumn<ulong>);
+                    return AndImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _And(column as PrimitiveColumn<ushort>);
+                    return AndImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn And<U>(U value)
         {
-            return _And(value);
+            return AndImplementation(value);
         }
         public override BaseColumn Or(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Or(column as PrimitiveColumn<bool>);
+                    return OrImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Or(column as PrimitiveColumn<byte>);
+                    return OrImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Or(column as PrimitiveColumn<char>);
+                    return OrImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Or(column as PrimitiveColumn<decimal>);
+                    return OrImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Or(column as PrimitiveColumn<double>);
+                    return OrImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Or(column as PrimitiveColumn<float>);
+                    return OrImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Or(column as PrimitiveColumn<int>);
+                    return OrImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Or(column as PrimitiveColumn<long>);
+                    return OrImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Or(column as PrimitiveColumn<sbyte>);
+                    return OrImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Or(column as PrimitiveColumn<short>);
+                    return OrImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Or(column as PrimitiveColumn<uint>);
+                    return OrImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Or(column as PrimitiveColumn<ulong>);
+                    return OrImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Or(column as PrimitiveColumn<ushort>);
+                    return OrImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Or<U>(U value)
         {
-            return _Or(value);
+            return OrImplementation(value);
         }
         public override BaseColumn Xor(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Xor(column as PrimitiveColumn<bool>);
+                    return XorImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Xor(column as PrimitiveColumn<byte>);
+                    return XorImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Xor(column as PrimitiveColumn<char>);
+                    return XorImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Xor(column as PrimitiveColumn<decimal>);
+                    return XorImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Xor(column as PrimitiveColumn<double>);
+                    return XorImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Xor(column as PrimitiveColumn<float>);
+                    return XorImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Xor(column as PrimitiveColumn<int>);
+                    return XorImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Xor(column as PrimitiveColumn<long>);
+                    return XorImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Xor(column as PrimitiveColumn<sbyte>);
+                    return XorImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Xor(column as PrimitiveColumn<short>);
+                    return XorImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Xor(column as PrimitiveColumn<uint>);
+                    return XorImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Xor(column as PrimitiveColumn<ulong>);
+                    return XorImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Xor(column as PrimitiveColumn<ushort>);
+                    return XorImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Xor<U>(U value)
         {
-            return _Xor(value);
+            return XorImplementation(value);
         }
         public override BaseColumn LeftShift(int value)
         {
-            return _LeftShift(value);
+            return LeftShiftImplementation(value);
         }
         public override BaseColumn RightShift(int value)
         {
-            return _RightShift(value);
+            return RightShiftImplementation(value);
         }
         public override BaseColumn Equals(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _Equals(column as PrimitiveColumn<bool>);
+                    return EqualsImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _Equals(column as PrimitiveColumn<byte>);
+                    return EqualsImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _Equals(column as PrimitiveColumn<char>);
+                    return EqualsImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _Equals(column as PrimitiveColumn<decimal>);
+                    return EqualsImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _Equals(column as PrimitiveColumn<double>);
+                    return EqualsImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _Equals(column as PrimitiveColumn<float>);
+                    return EqualsImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _Equals(column as PrimitiveColumn<int>);
+                    return EqualsImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _Equals(column as PrimitiveColumn<long>);
+                    return EqualsImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _Equals(column as PrimitiveColumn<sbyte>);
+                    return EqualsImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _Equals(column as PrimitiveColumn<short>);
+                    return EqualsImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _Equals(column as PrimitiveColumn<uint>);
+                    return EqualsImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _Equals(column as PrimitiveColumn<ulong>);
+                    return EqualsImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _Equals(column as PrimitiveColumn<ushort>);
+                    return EqualsImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn Equals<U>(U value)
         {
-            return _Equals(value);
+            return EqualsImplementation(value);
         }
         public override BaseColumn NotEquals(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _NotEquals(column as PrimitiveColumn<bool>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _NotEquals(column as PrimitiveColumn<byte>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _NotEquals(column as PrimitiveColumn<char>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _NotEquals(column as PrimitiveColumn<decimal>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _NotEquals(column as PrimitiveColumn<double>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _NotEquals(column as PrimitiveColumn<float>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _NotEquals(column as PrimitiveColumn<int>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _NotEquals(column as PrimitiveColumn<long>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _NotEquals(column as PrimitiveColumn<sbyte>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _NotEquals(column as PrimitiveColumn<short>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _NotEquals(column as PrimitiveColumn<uint>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _NotEquals(column as PrimitiveColumn<ulong>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _NotEquals(column as PrimitiveColumn<ushort>);
+                    return NotEqualsImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn NotEquals<U>(U value)
         {
-            return _NotEquals(value);
+            return NotEqualsImplementation(value);
         }
         public override BaseColumn GreaterThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<bool>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<byte>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<char>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<decimal>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<double>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<float>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<int>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<long>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<sbyte>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<short>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<uint>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<ulong>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _GreaterThanOrEqual(column as PrimitiveColumn<ushort>);
+                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn GreaterThanOrEqual<U>(U value)
         {
-            return _GreaterThanOrEqual(value);
+            return GreaterThanOrEqualImplementation(value);
         }
         public override BaseColumn LessThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<bool>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<byte>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<char>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<decimal>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<double>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<float>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<int>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<long>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<sbyte>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<short>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<uint>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<ulong>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _LessThanOrEqual(column as PrimitiveColumn<ushort>);
+                    return LessThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn LessThanOrEqual<U>(U value)
         {
-            return _LessThanOrEqual(value);
+            return LessThanOrEqualImplementation(value);
         }
         public override BaseColumn GreaterThan(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _GreaterThan(column as PrimitiveColumn<bool>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _GreaterThan(column as PrimitiveColumn<byte>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _GreaterThan(column as PrimitiveColumn<char>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _GreaterThan(column as PrimitiveColumn<decimal>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _GreaterThan(column as PrimitiveColumn<double>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _GreaterThan(column as PrimitiveColumn<float>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _GreaterThan(column as PrimitiveColumn<int>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _GreaterThan(column as PrimitiveColumn<long>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _GreaterThan(column as PrimitiveColumn<sbyte>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _GreaterThan(column as PrimitiveColumn<short>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _GreaterThan(column as PrimitiveColumn<uint>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _GreaterThan(column as PrimitiveColumn<ulong>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _GreaterThan(column as PrimitiveColumn<ushort>);
+                    return GreaterThanImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn GreaterThan<U>(U value)
         {
-            return _GreaterThan(value);
+            return GreaterThanImplementation(value);
         }
         public override BaseColumn LessThan(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return _LessThan(column as PrimitiveColumn<bool>);
+                    return LessThanImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return _LessThan(column as PrimitiveColumn<byte>);
+                    return LessThanImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return _LessThan(column as PrimitiveColumn<char>);
+                    return LessThanImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return _LessThan(column as PrimitiveColumn<decimal>);
+                    return LessThanImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return _LessThan(column as PrimitiveColumn<double>);
+                    return LessThanImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return _LessThan(column as PrimitiveColumn<float>);
+                    return LessThanImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return _LessThan(column as PrimitiveColumn<int>);
+                    return LessThanImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return _LessThan(column as PrimitiveColumn<long>);
+                    return LessThanImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return _LessThan(column as PrimitiveColumn<sbyte>);
+                    return LessThanImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return _LessThan(column as PrimitiveColumn<short>);
+                    return LessThanImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return _LessThan(column as PrimitiveColumn<uint>);
+                    return LessThanImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return _LessThan(column as PrimitiveColumn<ulong>);
+                    return LessThanImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return _LessThan(column as PrimitiveColumn<ushort>);
+                    return LessThanImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
         public override BaseColumn LessThan<U>(U value)
         {
-            return _LessThan(value);
+            return LessThanImplementation(value);
         }
 
-        internal BaseColumn _Add<U>(PrimitiveColumn<U> column)
+        internal BaseColumn AddImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -626,7 +626,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Add<U>(U value)
+        internal BaseColumn AddImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -694,12 +694,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Subtract<U>(PrimitiveColumn<U> column)
+        internal BaseColumn SubtractImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -766,7 +766,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Subtract<U>(U value)
+        internal BaseColumn SubtractImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -834,12 +834,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Multiply<U>(PrimitiveColumn<U> column)
+        internal BaseColumn MultiplyImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -906,7 +906,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Multiply<U>(U value)
+        internal BaseColumn MultiplyImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -974,12 +974,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Divide<U>(PrimitiveColumn<U> column)
+        internal BaseColumn DivideImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1046,7 +1046,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Divide<U>(U value)
+        internal BaseColumn DivideImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1114,12 +1114,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Modulo<U>(PrimitiveColumn<U> column)
+        internal BaseColumn ModuloImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1186,7 +1186,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Modulo<U>(U value)
+        internal BaseColumn ModuloImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1254,12 +1254,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _And<U>(PrimitiveColumn<U> column)
+        internal BaseColumn AndImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1287,7 +1287,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _And<U>(U value)
+        internal BaseColumn AndImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1316,12 +1316,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Or<U>(PrimitiveColumn<U> column)
+        internal BaseColumn OrImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1349,7 +1349,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Or<U>(U value)
+        internal BaseColumn OrImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1378,12 +1378,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Xor<U>(PrimitiveColumn<U> column)
+        internal BaseColumn XorImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1411,7 +1411,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Xor<U>(U value)
+        internal BaseColumn XorImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1440,7 +1440,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _LeftShift(int value)
+        internal BaseColumn LeftShiftImplementation(int value)
         {
             switch (typeof(T))
             {
@@ -1501,7 +1501,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _RightShift(int value)
+        internal BaseColumn RightShiftImplementation(int value)
         {
             switch (typeof(T))
             {
@@ -1562,12 +1562,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Equals<U>(PrimitiveColumn<U> column)
+        internal BaseColumn EqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1643,7 +1643,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _Equals<U>(U value)
+        internal BaseColumn EqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1720,12 +1720,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _NotEquals<U>(PrimitiveColumn<U> column)
+        internal BaseColumn NotEqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1801,7 +1801,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _NotEquals<U>(U value)
+        internal BaseColumn NotEqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1878,12 +1878,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _GreaterThanOrEqual<U>(PrimitiveColumn<U> column)
+        internal BaseColumn GreaterThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -1953,7 +1953,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _GreaterThanOrEqual<U>(U value)
+        internal BaseColumn GreaterThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2024,12 +2024,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _LessThanOrEqual<U>(PrimitiveColumn<U> column)
+        internal BaseColumn LessThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -2099,7 +2099,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _LessThanOrEqual<U>(U value)
+        internal BaseColumn LessThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2170,12 +2170,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _GreaterThan<U>(PrimitiveColumn<U> column)
+        internal BaseColumn GreaterThanImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -2245,7 +2245,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _GreaterThan<U>(U value)
+        internal BaseColumn GreaterThanImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2316,12 +2316,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _LessThan<U>(PrimitiveColumn<U> column)
+        internal BaseColumn LessThanImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
             {
-                throw new ArgumentException(strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             switch (typeof(T))
             {
@@ -2391,7 +2391,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn _LessThan<U>(U value)
+        internal BaseColumn LessThanImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))

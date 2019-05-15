@@ -106,7 +106,7 @@ namespace Microsoft.Data
         {
             if (rowIndex > Length)
             {
-                throw new ArgumentOutOfRangeException(strings.ColumnIndexOutOfRange, nameof(rowIndex));
+                throw new ArgumentOutOfRangeException(Strings.ColumnIndexOutOfRange, nameof(rowIndex));
             }
             int curArrayIndex = 0;
             int numBuffers = Buffers.Count;

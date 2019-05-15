@@ -40,18 +40,20 @@ namespace Microsoft.Data
 
         public Type DataType { get; }
 
-        public virtual object this[long rowIndex]
+        public object this[long rowIndex]
         {
             get => GetValue(rowIndex);
             set => SetValue(rowIndex, value);
         }
 
         protected virtual object GetValue(long rowIndex) => throw new NotImplementedException();
+        protected virtual object GetValue(long startIndex, int length) => throw new NotImplementedException();
+
         protected virtual void SetValue(long rowIndex, object value) => throw new NotImplementedException();
 
-        public virtual object this[long startIndex, int length]
+        public object this[long startIndex, int length]
         {
-            get => throw new NotImplementedException();
+            get => GetValue(startIndex, length);
         }
 
         /// <summary>
@@ -66,10 +68,14 @@ namespace Microsoft.Data
 
         public virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
-        protected delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
-        protected delegate T GetValueAtBuffer<T>(int bufferIndex, int valueIndex);
-        protected delegate int GetBufferLengthAtIndex(int bufferIndex);
-        protected void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex, PrimitiveColumn<long> columnSortIndices, GetBufferSortIndex getBufferSortIndex, GetValueAtBuffer<T> getValueAtBuffer, GetBufferLengthAtIndex getBufferLengthAtIndex)
+        internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
+        internal delegate T GetValueAtBuffer<T>(int bufferIndex, int valueIndex);
+        internal delegate int GetBufferLengthAtIndex(int bufferIndex);
+        internal void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex,
+                                                            PrimitiveColumn<long> columnSortIndices,
+                                                            GetBufferSortIndex getBufferSortIndex,
+                                                            GetValueAtBuffer<T> getValueAtBuffer,
+                                                            GetBufferLengthAtIndex getBufferLengthAtIndex)
         {
             while (heapOfValueAndListOfTupleOfSortAndBufferIndex.Count > 0)
             {
@@ -100,7 +106,7 @@ namespace Microsoft.Data
             }
 
         }
-        private int FloorLog2PlusOne(int n)
+        internal static int FloorLog2PlusOne(int n)
         {
             Debug.Assert(n >= 2);
             int result = 2;
@@ -113,7 +119,7 @@ namespace Microsoft.Data
             return result;
         }
 
-        protected void IntrospectiveSort<T>(
+        internal static void IntrospectiveSort<T>(
             Span<T> span,
             int length,
             Span<int> sortIndices,
@@ -123,7 +129,7 @@ namespace Microsoft.Data
             IntroSortRecursive(span, 0, length - 1, depthLimit, sortIndices, comparer);
         }
 
-        private static void IntroSortRecursive<T>(
+        internal static void IntroSortRecursive<T>(
             Span<T> span,
             int lo, int hi, int depthLimit,
             Span<int> sortIndices,

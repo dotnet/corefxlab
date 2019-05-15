@@ -12,7 +12,7 @@ namespace Microsoft.Data
     internal static class DoubleConverter<T>
         where T : struct
     {
-        public static IDoubleConverter<T> Instance => DoubleConverter.GetDoubleConverter<T>();
+        public static IDoubleConverter<T> Instance { get; } = DoubleConverter.GetDoubleConverter<T>();
     }
     internal static class DoubleConverter
     {

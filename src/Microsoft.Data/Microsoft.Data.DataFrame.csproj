@@ -153,17 +153,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PrimitiveColumnContainer.BinaryOperations.tt</DependentUpon>
     </Compile>
-    <Compile Update="strings.Designer.cs">
+    <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>strings.resx</DependentUpon>
+      <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="strings.resx">
+    <EmbeddedResource Update="Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>strings.Designer.cs</LastGenOutput>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Microsoft.Data</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>

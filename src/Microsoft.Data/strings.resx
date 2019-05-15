@@ -123,4 +123,7 @@
   <data name="MismatchedColumnLengths" xml:space="preserve">
     <value>Column lengths are mismatched</value>
   </data>
+  <data name="MismatchedValueType" xml:space="preserve">
+    <value>Expected value to be of type</value>
+  </data>
 </root>
