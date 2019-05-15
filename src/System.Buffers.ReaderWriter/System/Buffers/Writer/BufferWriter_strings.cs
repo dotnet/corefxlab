@@ -147,7 +147,7 @@ namespace System.Buffers.Writer
                 Span<byte> utf8Span = stackalloc byte[4];
                 Span<char> utf16Span = stackalloc char[1];
                 utf16Span[0] = character;
-                if(Encodings.Utf8.FromUtf16(MemoryMarshal.AsBytes(utf16Span), utf8Span, out int consumed, out int written) == OperationStatus.Done)
+                if(TextEncodings.Utf8.FromUtf16(MemoryMarshal.AsBytes(utf16Span), utf8Span, out int consumed, out int written) == OperationStatus.Done)
                 {
                     var encoded = utf8Span.Slice(0, written);
                     while (!encoded.TryCopyTo(Free))
@@ -161,7 +161,7 @@ namespace System.Buffers.Writer
 
         private bool TryWrite(string text, out int written)
         {
-            var status = Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(text.AsSpan()), Free, out _, out written);
+            var status = TextEncodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(text.AsSpan()), Free, out _, out written);
 
             switch (status)
             {

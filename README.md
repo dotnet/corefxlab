@@ -55,6 +55,12 @@ over converting the buffer to a string, indexing into the string, and then parsi
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
 
+* **System.Collections.Generic.MultiValueDictionary**.
+The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
+and ease of use functions. It can also be compared to a Lookup with the exception that the `MultiValueDictionary` is mutable. It allows custom 
+setting of the internal collections so that uniqueness of values can be chosen by specifying either a `HashSet<TValue>` or `List<TValue>`. Some of the
+design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
+
 More libraries are coming soon. Stay tuned!
 
 [blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
@@ -63,12 +69,6 @@ More libraries are coming soon. Stay tuned!
 
 The following projects were moved to the archived_projects directory since they do not have any stewards and are no longer under active development.
 We will no longer publish new packages for these to MyGet and possibly remove them all together in the future.
-
-* **System.Collections.Generic.MultiValueDictionary**.
-The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
-and ease of use functions. It can also be compared to a Lookup with the exception that the `MultiValueDictionary` is mutable. It allows custom 
-setting of the internal collections so that uniqueness of values can be chosen by specifying either a `HashSet<TValue>` or `List<TValue>`. Some of the
-design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 * **System.CommandLine**.
 The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](archived_projects/src/System.CommandLine/README.md) for more information.

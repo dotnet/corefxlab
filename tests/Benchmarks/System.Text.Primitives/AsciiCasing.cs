@@ -23,15 +23,15 @@ namespace System.Text.Primitives.Benchmarks
         }
 
         [Benchmark]
-        public OperationStatus AsciiToLowerInPlace() => Buffers.Text.Encodings.Ascii.ToLowerInPlace(_bytes, out int bytesChanged);
+        public OperationStatus AsciiToLowerInPlace() => Buffers.Text.TextEncodings.Ascii.ToLowerInPlace(_bytes, out int bytesChanged);
 
         [Benchmark]
-        public OperationStatus AsciiToLower() => Buffers.Text.Encodings.Ascii.ToLower(_bytes, _output, out int bytesChanged);
+        public OperationStatus AsciiToLower() => Buffers.Text.TextEncodings.Ascii.ToLower(_bytes, _output, out int bytesChanged);
 
         [Benchmark]
-        public OperationStatus AsciiToUpperInPlace() => Buffers.Text.Encodings.Ascii.ToUpperInPlace(_bytes, out int bytesChanged);
+        public OperationStatus AsciiToUpperInPlace() => Buffers.Text.TextEncodings.Ascii.ToUpperInPlace(_bytes, out int bytesChanged);
 
         [Benchmark]
-        public OperationStatus AsciiToUpper() => Buffers.Text.Encodings.Ascii.ToUpper(_bytes, _output, out int bytesChanged);
+        public OperationStatus AsciiToUpper() => Buffers.Text.TextEncodings.Ascii.ToUpper(_bytes, _output, out int bytesChanged);
     }
 }

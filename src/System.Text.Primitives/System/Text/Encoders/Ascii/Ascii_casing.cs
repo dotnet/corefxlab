@@ -6,7 +6,7 @@ using System.Buffers.Operations;
 
 namespace System.Buffers.Text
 {
-    public static partial class Encodings
+    public static partial class TextEncodings
     {
         public static partial class Ascii
         {
