@@ -45,3 +45,4 @@ namespace System.Collections.Sequences
         public T Current => _current;
     }
 }
+
