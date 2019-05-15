@@ -70,7 +70,7 @@ namespace System.Text.Utf8
 
         public ReadOnlySpan<byte> Bytes => _buffer;
 
-        public override string ToString() => Encodings.Utf8.ToString(Bytes);
+        public override string ToString() => TextEncodings.Utf8.ToString(Bytes);
 
         public bool ReferenceEquals(Utf8Span other) => Bytes == other._buffer;
 

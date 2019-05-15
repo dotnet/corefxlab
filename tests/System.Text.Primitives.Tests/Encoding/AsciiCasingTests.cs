@@ -20,7 +20,7 @@ namespace System.Buffers.Tests
             buffer.AsSpan().CopyTo(copy);
             var output = new byte[buffer.Length];
 
-            var status = Encodings.Ascii.ToUpper(buffer, output, out int processedBytes);
+            var status = TextEncodings.Ascii.ToUpper(buffer, output, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -39,7 +39,7 @@ namespace System.Buffers.Tests
             var copy = new byte[buffer.Length];
             buffer.AsSpan().CopyTo(copy);
 
-            var status = Encodings.Ascii.ToUpperInPlace(buffer, out int processedBytes);
+            var status = TextEncodings.Ascii.ToUpperInPlace(buffer, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -57,7 +57,7 @@ namespace System.Buffers.Tests
             buffer.AsSpan().CopyTo(copy);
             var output = new byte[buffer.Length];
 
-            var status = Encodings.Ascii.ToLower(buffer, output, out int processedBytes);
+            var status = TextEncodings.Ascii.ToLower(buffer, output, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -76,7 +76,7 @@ namespace System.Buffers.Tests
             var copy = new byte[buffer.Length];
             buffer.AsSpan().CopyTo(copy);
 
-            var status = Encodings.Ascii.ToLowerInPlace(buffer, out int processedBytes);
+            var status = TextEncodings.Ascii.ToLowerInPlace(buffer, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 

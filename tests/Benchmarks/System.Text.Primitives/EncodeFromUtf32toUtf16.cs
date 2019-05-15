@@ -35,7 +35,7 @@ namespace System.Text.Primitives.Benchmarks
             _utf32Encoding = Encoding.UTF32;
             _utf32Source = Text.Encoding.UTF32.GetBytes(inputString);
 
-            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf16Length(_utf32Source, out int needed);
+            OperationStatus status = Buffers.Text.TextEncodings.Utf32.ToUtf16Length(_utf32Source, out int needed);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
@@ -51,7 +51,7 @@ namespace System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus EncodeFromUtf32toUtf16UsingTextEncoder()
         {
-            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf16(_utf32Source, _utf16Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.TextEncodings.Utf32.ToUtf16(_utf32Source, _utf16Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

@@ -52,7 +52,7 @@ namespace System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus UsingTextEncoder()
         {
-            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.TextEncodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

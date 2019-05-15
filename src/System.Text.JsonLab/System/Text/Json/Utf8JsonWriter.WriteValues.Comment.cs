@@ -303,7 +303,7 @@ namespace System.Text.JsonLab
             int partialConsumed = 0;
             while (true)
             {
-                OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
+                OperationStatus status = Buffers.Text.TextEncodings.Utf16.ToUtf8(byteSpan.Slice(partialConsumed), _buffer.Slice(idx), out int consumed, out int written);
                 idx += written;
                 if (status == OperationStatus.Done)
                 {
