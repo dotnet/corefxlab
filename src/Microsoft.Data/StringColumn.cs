@@ -113,7 +113,7 @@ namespace Microsoft.Data
             return Clone((BaseColumn)columnSortIndices, !ascending);
         }
 
-        public override BaseColumn GetAscendingSortIndices()
+        internal override BaseColumn GetAscendingSortIndices()
         {
             GetSortIndices(Comparer<string>.Default, out PrimitiveColumn<long> columnSortIndices);
             return columnSortIndices;

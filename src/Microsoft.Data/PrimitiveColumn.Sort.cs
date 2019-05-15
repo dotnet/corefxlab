@@ -16,7 +16,7 @@ namespace Microsoft.Data
             return _Clone(sortIndices, !ascending);
         }
 
-        public override BaseColumn GetAscendingSortIndices()
+        internal override BaseColumn GetAscendingSortIndices()
         {
             // Is Comparer<T>.Default guaranteed to sort in ascending order?
             _GetSortIndices(Comparer<T>.Default, out PrimitiveColumn<long> sortIndices);

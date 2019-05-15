@@ -66,7 +66,7 @@ namespace Microsoft.Data
 
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
 
-        public virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
+        internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
         internal delegate T GetValueAtBuffer<T>(int bufferIndex, int valueIndex);

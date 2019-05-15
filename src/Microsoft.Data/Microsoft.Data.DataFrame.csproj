@@ -57,10 +57,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PrimitiveColumn.Computations.cs</LastGenOutput>
     </None>
-    <None Update="PrimitiveColumnArithmetic - Copy.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PrimitiveColumnArithmetic - Copy.cs</LastGenOutput>
-    </None>
     <None Update="PrimitiveColumnArithmetic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PrimitiveColumnArithmetic.cs</LastGenOutput>
