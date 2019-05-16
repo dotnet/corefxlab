@@ -80,7 +80,6 @@ namespace Microsoft.Data
             while (heapOfValueAndListOfTupleOfSortAndBufferIndex.Count > 0)
             {
                 KeyValuePair<T, List<Tuple<int, int>>> minElement = heapOfValueAndListOfTupleOfSortAndBufferIndex.ElementAt(0);
-                T value = minElement.Key;
                 List<Tuple<int, int>> tuplesOfSortAndBufferIndex = minElement.Value;
                 Tuple<int, int> sortAndBufferIndex;
                 if (tuplesOfSortAndBufferIndex.Count == 1)
@@ -194,7 +193,6 @@ namespace Microsoft.Data
             Sort3(span, lo, middle, hi, sortIndices, comparer);
 
             TKey pivot = span[sortIndices[middle]];
-            int pivotIndex = sortIndices[middle];
 
             int left = lo;
             int right = hi - 1;

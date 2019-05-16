@@ -574,13 +574,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Add(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
                     }
@@ -603,7 +603,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
@@ -611,13 +611,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Add((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Add(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
                         }
@@ -642,13 +642,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Add(value);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
                     }
@@ -671,7 +671,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Add(value);
                         return newColumn;
                     }
@@ -679,13 +679,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Add(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
                         }
@@ -714,13 +714,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Subtract(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
                     }
@@ -743,7 +743,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
@@ -751,13 +751,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Subtract((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Subtract(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
                         }
@@ -782,13 +782,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(value);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
                     }
@@ -811,7 +811,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(value);
                         return newColumn;
                     }
@@ -819,13 +819,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Subtract(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
                         }
@@ -854,13 +854,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Multiply(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
                     }
@@ -883,7 +883,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
@@ -891,13 +891,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Multiply((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Multiply(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
                         }
@@ -922,13 +922,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(value);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
                     }
@@ -951,7 +951,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(value);
                         return newColumn;
                     }
@@ -959,13 +959,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Multiply(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
                         }
@@ -994,13 +994,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Divide(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
                     }
@@ -1023,7 +1023,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
@@ -1031,13 +1031,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Divide((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Divide(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
                         }
@@ -1062,13 +1062,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(value);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
                     }
@@ -1091,7 +1091,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(value);
                         return newColumn;
                     }
@@ -1099,13 +1099,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Divide(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
                         }
@@ -1134,13 +1134,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Modulo(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
                     }
@@ -1163,7 +1163,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
@@ -1171,13 +1171,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Modulo((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Modulo(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
                         }
@@ -1202,13 +1202,13 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(value);
                         return newColumn;
                     }
                     else 
                     {
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
                     }
@@ -1231,7 +1231,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn = primitiveColumn._Clone();
+                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(value);
                         return newColumn;
                     }
@@ -1239,13 +1239,13 @@ namespace Microsoft.Data
                     {
                         if (typeof(U) == typeof(decimal))
                         {
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
                         }
                         else
                         {
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Modulo(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
                         }
@@ -1268,7 +1268,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.And(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1297,7 +1297,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.And(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1330,7 +1330,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.Or(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1359,7 +1359,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.Or(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1392,7 +1392,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.Xor(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1421,7 +1421,7 @@ namespace Microsoft.Data
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>)._Clone();
+                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
                     retColumn._columnContainer.Xor(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1448,12 +1448,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type byteType when byteType == typeof(byte):
                     PrimitiveColumn<byte> byteColumn = this as PrimitiveColumn<byte>;
-                    var newbyteColumn = byteColumn._Clone();
+                    var newbyteColumn = byteColumn.Clone();
                     newbyteColumn._columnContainer.LeftShift(value);
                     return newbyteColumn;
                 case Type charType when charType == typeof(char):
                     PrimitiveColumn<char> charColumn = this as PrimitiveColumn<char>;
-                    var newcharColumn = charColumn._Clone();
+                    var newcharColumn = charColumn.Clone();
                     newcharColumn._columnContainer.LeftShift(value);
                     return newcharColumn;
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1464,37 +1464,37 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveColumn<int> intColumn = this as PrimitiveColumn<int>;
-                    var newintColumn = intColumn._Clone();
+                    var newintColumn = intColumn.Clone();
                     newintColumn._columnContainer.LeftShift(value);
                     return newintColumn;
                 case Type longType when longType == typeof(long):
                     PrimitiveColumn<long> longColumn = this as PrimitiveColumn<long>;
-                    var newlongColumn = longColumn._Clone();
+                    var newlongColumn = longColumn.Clone();
                     newlongColumn._columnContainer.LeftShift(value);
                     return newlongColumn;
                 case Type sbyteType when sbyteType == typeof(sbyte):
                     PrimitiveColumn<sbyte> sbyteColumn = this as PrimitiveColumn<sbyte>;
-                    var newsbyteColumn = sbyteColumn._Clone();
+                    var newsbyteColumn = sbyteColumn.Clone();
                     newsbyteColumn._columnContainer.LeftShift(value);
                     return newsbyteColumn;
                 case Type shortType when shortType == typeof(short):
                     PrimitiveColumn<short> shortColumn = this as PrimitiveColumn<short>;
-                    var newshortColumn = shortColumn._Clone();
+                    var newshortColumn = shortColumn.Clone();
                     newshortColumn._columnContainer.LeftShift(value);
                     return newshortColumn;
                 case Type uintType when uintType == typeof(uint):
                     PrimitiveColumn<uint> uintColumn = this as PrimitiveColumn<uint>;
-                    var newuintColumn = uintColumn._Clone();
+                    var newuintColumn = uintColumn.Clone();
                     newuintColumn._columnContainer.LeftShift(value);
                     return newuintColumn;
                 case Type ulongType when ulongType == typeof(ulong):
                     PrimitiveColumn<ulong> ulongColumn = this as PrimitiveColumn<ulong>;
-                    var newulongColumn = ulongColumn._Clone();
+                    var newulongColumn = ulongColumn.Clone();
                     newulongColumn._columnContainer.LeftShift(value);
                     return newulongColumn;
                 case Type ushortType when ushortType == typeof(ushort):
                     PrimitiveColumn<ushort> ushortColumn = this as PrimitiveColumn<ushort>;
-                    var newushortColumn = ushortColumn._Clone();
+                    var newushortColumn = ushortColumn.Clone();
                     newushortColumn._columnContainer.LeftShift(value);
                     return newushortColumn;
                 default:
@@ -1509,12 +1509,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type byteType when byteType == typeof(byte):
                     PrimitiveColumn<byte> byteColumn = this as PrimitiveColumn<byte>;
-                    var newbyteColumn = byteColumn._Clone();
+                    var newbyteColumn = byteColumn.Clone();
                     newbyteColumn._columnContainer.RightShift(value);
                     return newbyteColumn;
                 case Type charType when charType == typeof(char):
                     PrimitiveColumn<char> charColumn = this as PrimitiveColumn<char>;
-                    var newcharColumn = charColumn._Clone();
+                    var newcharColumn = charColumn.Clone();
                     newcharColumn._columnContainer.RightShift(value);
                     return newcharColumn;
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1525,37 +1525,37 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveColumn<int> intColumn = this as PrimitiveColumn<int>;
-                    var newintColumn = intColumn._Clone();
+                    var newintColumn = intColumn.Clone();
                     newintColumn._columnContainer.RightShift(value);
                     return newintColumn;
                 case Type longType when longType == typeof(long):
                     PrimitiveColumn<long> longColumn = this as PrimitiveColumn<long>;
-                    var newlongColumn = longColumn._Clone();
+                    var newlongColumn = longColumn.Clone();
                     newlongColumn._columnContainer.RightShift(value);
                     return newlongColumn;
                 case Type sbyteType when sbyteType == typeof(sbyte):
                     PrimitiveColumn<sbyte> sbyteColumn = this as PrimitiveColumn<sbyte>;
-                    var newsbyteColumn = sbyteColumn._Clone();
+                    var newsbyteColumn = sbyteColumn.Clone();
                     newsbyteColumn._columnContainer.RightShift(value);
                     return newsbyteColumn;
                 case Type shortType when shortType == typeof(short):
                     PrimitiveColumn<short> shortColumn = this as PrimitiveColumn<short>;
-                    var newshortColumn = shortColumn._Clone();
+                    var newshortColumn = shortColumn.Clone();
                     newshortColumn._columnContainer.RightShift(value);
                     return newshortColumn;
                 case Type uintType when uintType == typeof(uint):
                     PrimitiveColumn<uint> uintColumn = this as PrimitiveColumn<uint>;
-                    var newuintColumn = uintColumn._Clone();
+                    var newuintColumn = uintColumn.Clone();
                     newuintColumn._columnContainer.RightShift(value);
                     return newuintColumn;
                 case Type ulongType when ulongType == typeof(ulong):
                     PrimitiveColumn<ulong> ulongColumn = this as PrimitiveColumn<ulong>;
-                    var newulongColumn = ulongColumn._Clone();
+                    var newulongColumn = ulongColumn.Clone();
                     newulongColumn._columnContainer.RightShift(value);
                     return newulongColumn;
                 case Type ushortType when ushortType == typeof(ushort):
                     PrimitiveColumn<ushort> ushortColumn = this as PrimitiveColumn<ushort>;
-                    var newushortColumn = ushortColumn._Clone();
+                    var newushortColumn = ushortColumn.Clone();
                     newushortColumn._columnContainer.RightShift(value);
                     return newushortColumn;
                 default:
@@ -1595,7 +1595,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Equals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -1627,14 +1627,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Equals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Equals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -1672,7 +1672,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.Equals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -1704,14 +1704,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.Equals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.Equals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
@@ -1753,7 +1753,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.NotEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -1785,14 +1785,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.NotEquals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.NotEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -1830,7 +1830,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.NotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -1862,14 +1862,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.NotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.NotEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
@@ -1905,7 +1905,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.GreaterThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -1937,14 +1937,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.GreaterThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.GreaterThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -1976,7 +1976,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.GreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2008,14 +2008,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.GreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.GreaterThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2051,7 +2051,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.LessThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2083,14 +2083,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.LessThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.LessThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2122,7 +2122,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.LessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2154,14 +2154,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.LessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.LessThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2197,7 +2197,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.GreaterThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2229,14 +2229,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.GreaterThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.GreaterThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2268,7 +2268,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.GreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2300,14 +2300,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.GreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.GreaterThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2343,7 +2343,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.LessThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2375,14 +2375,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.LessThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.LessThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
@@ -2414,7 +2414,7 @@ namespace Microsoft.Data
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.LessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
@@ -2446,14 +2446,14 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.LessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.LessThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }

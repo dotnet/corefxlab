@@ -36,7 +36,7 @@ namespace Microsoft.Data
 
         public void Append(string value)
         {
-            var lastBuffer = _stringBuffers[_stringBuffers.Count - 1];
+            List<string> lastBuffer = _stringBuffers[_stringBuffers.Count - 1];
             if (lastBuffer.Count == int.MaxValue)
             {
                 lastBuffer = new List<string>();
@@ -136,7 +136,7 @@ namespace Microsoft.Data
         private void GetSortIndices(Comparer<string> comparer, out PrimitiveColumn<long> columnSortIndices)
         {
             List<int[]> bufferSortIndices = new List<int[]>(_stringBuffers.Count);
-            foreach (var buffer in _stringBuffers)
+            foreach (List<string> buffer in _stringBuffers)
             {
                 var sortIndices = new int[buffer.Count];
                 for (int i = 0; i < buffer.Count; i++)
@@ -148,7 +148,7 @@ namespace Microsoft.Data
             }
             // Simple merge sort to build the full column's sort indices
             SortedDictionary<string, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<string, List<Tuple<int, int>>>(comparer);
-            var buffers = _stringBuffers;
+            List<List<string>> buffers = _stringBuffers;
             for (int i = 0; i < buffers.Count; i++)
             {
                 List<string> buffer = buffers[i];

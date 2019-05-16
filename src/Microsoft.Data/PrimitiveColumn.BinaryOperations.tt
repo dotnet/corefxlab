@@ -176,22 +176,22 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
 <# } else { #>
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.<#=method.MethodName#>(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
 <# } #>
 <# } else if (method.IsBitwise == true) { #>
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar) { #>
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
                         return decimalColumn;
 <# } else { #>
-                        var decimalColumn = CloneAsDecimalColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                         decimalColumn._columnContainer.<#=method.MethodName#>(column.CloneAsDecimalColumn()._columnContainer);
                         return decimalColumn;
 <# } #>
@@ -246,22 +246,22 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
 <# } else { #>
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.<#=method.MethodName#>((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
 <# } #>
 <# } else if (method.IsBitwise == true) { #>
                             throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar) { #>
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
                             return decimalColumn;
 <# } else { #>
-                            var decimalColumn = CloneAsDecimalColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
                             decimalColumn._columnContainer.<#=method.MethodName#>((column as PrimitiveColumn<decimal>)._columnContainer);
                             return decimalColumn;
 <# } #>
@@ -271,22 +271,22 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.<#=method.MethodName#>(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
 <# } else { #>
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.<#=method.MethodName#>(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
 <# } #>
 <# } else if (method.IsBitwise == true) { #>
                             throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.<#=method.MethodName#>(DoubleConverter<U>.Instance.GetDouble(value));
                             return doubleColumn;
 <# } else { #>
-                            var doubleColumn = CloneAsDoubleColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
                             doubleColumn._columnContainer.<#=method.MethodName#>(column.CloneAsDoubleColumn()._columnContainer);
                             return doubleColumn;
 <# } #>

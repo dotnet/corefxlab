@@ -108,12 +108,12 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
                 if (mapIndices.Length != Length)
                     throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
-                return _Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
-            return _Clone();
+            return Clone();
         }
 
-        public PrimitiveColumn<T> _Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
+        public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
         {
             if (mapIndices is null)
             {
@@ -165,7 +165,7 @@ namespace Microsoft.Data
 
         public void ApplyElementwise(Func<T, T> func)
         {
-            foreach (var buffer in _columnContainer.Buffers)
+            foreach (DataFrameBuffer<T> buffer in _columnContainer.Buffers)
             {
                 Span<T> span = buffer.Span;
                 for (int i = 0; i < buffer.Length; i++)

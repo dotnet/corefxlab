@@ -49,8 +49,8 @@ namespace Microsoft.Data
             {
                 Buffers.Add(new DataFrameBuffer<T>());
             }
-            var curBuffer = Buffers[Buffers.Count - 1];
-            foreach (var value in values)
+            DataFrameBuffer<T> curBuffer = Buffers[Buffers.Count - 1];
+            foreach (T value in values)
             {
                 if (curBuffer.Length == curBuffer.MaxCapacity)
                 {
@@ -70,7 +70,7 @@ namespace Microsoft.Data
                 {
                     Buffers.Add(new DataFrameBuffer<T>());
                 }
-                var lastBuffer = Buffers[Buffers.Count - 1];
+                DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
                 if (lastBuffer.Length == lastBuffer.MaxCapacity)
                 {
                     lastBuffer = new DataFrameBuffer<T>();
@@ -90,7 +90,7 @@ namespace Microsoft.Data
             {
                 Buffers.Add(new DataFrameBuffer<T>());
             }
-            var lastBuffer = Buffers[Buffers.Count - 1];
+            DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
             if (lastBuffer.Length == lastBuffer.MaxCapacity)
             {
                 lastBuffer = new DataFrameBuffer<T>();
@@ -123,7 +123,6 @@ namespace Microsoft.Data
             get
             {
                 var ret = new List<T>(length);
-                long endIndex = startIndex + length;
                 int arrayIndex = GetArrayContainingRowIndex(ref startIndex);
                 bool temp = Buffers[arrayIndex][(int)startIndex, length, ret];
                 while (ret.Count < length)
@@ -152,7 +151,7 @@ namespace Microsoft.Data
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var buffer in Buffers)
+            foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 sb.Append(buffer.ToString());
                 // Can this run out of memory? Just being safe here
@@ -171,7 +170,7 @@ namespace Microsoft.Data
             {
                 DataFrameBuffer<T> newBuffer = new DataFrameBuffer<T>();
                 ret.Buffers.Add(newBuffer);
-                var span = buffer.Span;
+                Span<T> span = buffer.Span;
                 ret.Length += buffer.Length;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -184,7 +183,7 @@ namespace Microsoft.Data
         internal PrimitiveColumnContainer<bool> CloneAsBoolContainer()
         {
             var ret = new PrimitiveColumnContainer<bool>();
-            foreach (var buffer in Buffers)
+            foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 DataFrameBuffer<bool> newBuffer = new DataFrameBuffer<bool>();
                 ret.Buffers.Add(newBuffer);
@@ -199,13 +198,13 @@ namespace Microsoft.Data
         internal PrimitiveColumnContainer<double> CloneAsDoubleContainer()
         {
             var ret = new PrimitiveColumnContainer<double>();
-            foreach (var buffer in Buffers)
+            foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 ret.Length += buffer.Length;
                 DataFrameBuffer<double> newBuffer = new DataFrameBuffer<double>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
-                var span = buffer.Span;
+                Span<T> span = buffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     newBuffer.Append(DoubleConverter<T>.Instance.GetDouble(span[i]));
@@ -217,13 +216,13 @@ namespace Microsoft.Data
         internal PrimitiveColumnContainer<decimal> CloneAsDecimalContainer()
         {
             var ret = new PrimitiveColumnContainer<decimal>();
-            foreach (var buffer in Buffers)
+            foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 ret.Length += buffer.Length;
                 DataFrameBuffer<decimal> newBuffer = new DataFrameBuffer<decimal>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
-                var span = buffer.Span;
+                Span<T> span = buffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     newBuffer.Append(DecimalConverter<T>.Instance.GetDecimal(span[i]));
