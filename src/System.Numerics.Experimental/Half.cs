@@ -60,24 +60,6 @@ namespace System.Numerics.Experimental
         private const ushort MaxValueBits = 0x7BFF;
 
         //
-        // Constants for manipulating the internal bit representation of float / double
-        //
-
-        private const ulong DoubleSignMask = 0x80000000_00000000;
-        private const int DoubleSignShiftBit = 63;
-        private const long DoubleExpMask = 0x7FF80000_00000000;
-        private const int DoubleExpShiftBit = 52;
-        private const ulong DoubleSigMask = 0x000FFFFF_FFFFFFFF;
-        private const int DoubleSigShiftBit = 0;
-
-        private const uint SingleSignMask = 0x80000000;
-        private const int SingleSignShiftBit = 31;
-        private const int SingleExpMask = 0x7F800000;
-        private const int SingleExpShiftBit = 23;
-        private const uint SingleSigMask = 0x7FFFFF;
-        private const int SingleSigShiftBit = 0;
-
-        //
         // Constants that should be returned if values that cannot be represented are converted
         //
 
@@ -406,7 +388,7 @@ namespace System.Numerics.Experimental
                     default;
 
             shiftDist += 4;
-            uint sig = shiftDist < 0 ? ShiftRightJam(value, -shiftDist) : value << shiftDist;
+            uint sig = shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist;
             return new Half(RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig));
         }
 
@@ -427,7 +409,7 @@ namespace System.Numerics.Experimental
                     default;
 
             shiftDist += 4;
-            ushort sig = (ushort)(shiftDist < 0 ? ShiftRightJam(value, -shiftDist) : value << shiftDist);
+            ushort sig = (ushort)(shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist);
             return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), sig));
         }
 
@@ -455,15 +437,15 @@ namespace System.Numerics.Experimental
         {
             const int singleMaxExponent = 0xFF;
 
-            uint floatInt = (uint)BitConverter.SingleToInt32Bits(value);
-            bool sign = (floatInt & SingleSignMask) >> SingleSignShiftBit != 0;
-            int exp = (int)(floatInt & SingleExpMask) >> SingleExpShiftBit;
-            uint sig = floatInt & SingleSigMask;
+            uint floatInt = Ieee754Helpers.ToUInt32(value);
+            bool sign = (floatInt & Ieee754Helpers.SingleSignMask) >> Ieee754Helpers.SingleSignShift != 0;
+            int exp = (int)(floatInt & Ieee754Helpers.SingleExponentMask) >> Ieee754Helpers.SingleExponentShift;
+            uint sig = floatInt & Ieee754Helpers.SingleSignificandMask;
 
             if (exp == singleMaxExponent)
             {
                 if (sig != 0) // NaN
-                    return CreateHalfNaN(sign, (ulong)sig << 41); // 41: bits required to shift the significand bits to the left end
+                    return Ieee754Helpers.CreateHalfNaN(sign, (ulong)sig << 41); // Shift the significand bits to the left end
                 return sign ? NegativeInfinity : PositiveInfinity;
             }
 
@@ -478,19 +460,19 @@ namespace System.Numerics.Experimental
         {
             const int doubleMaxExponent = 0x7FF;
             
-            ulong doubleInt = (ulong)BitConverter.DoubleToInt64Bits(value);
-            bool sign = (doubleInt & DoubleSignMask) >> DoubleSignShiftBit != 0;
-            int exp = (int)((doubleInt & DoubleExpMask) >> DoubleExpShiftBit);
-            ulong sig = doubleInt & DoubleSigMask;
+            ulong doubleInt = Ieee754Helpers.ToUInt64(value);
+            bool sign = (doubleInt & Ieee754Helpers.DoubleSignMask) >> Ieee754Helpers.DoubleSignShift != 0;
+            int exp = (int)((doubleInt & Ieee754Helpers.DoubleExponentMask) >> Ieee754Helpers.DoubleExponentShift);
+            ulong sig = doubleInt & Ieee754Helpers.DoubleSignificandMask;
 
             if (exp == doubleMaxExponent)
             {
                 if (sig != 0) // NaN
-                    return CreateHalfNaN(sign, sig << 12); // 12: bits required to shift the significand bits to the left end
+                    return Ieee754Helpers.CreateHalfNaN(sign, sig << 12); // Shift the significand bits to the left end
                 return sign ? NegativeInfinity : PositiveInfinity;
             }
 
-            uint sigHalf = (uint)ShiftRightJam(sig, 38);
+            uint sigHalf = (uint)Ieee754Helpers.ShiftRightJam(sig, 38);
             if ((exp | (int)sigHalf) == 0)
                 return new Half(sign, 0, 0);
             return new Half(RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000)));
@@ -505,7 +487,7 @@ namespace System.Numerics.Experimental
             uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
-            if (shiftDist < 0)
+            if (shiftDist < 0) // Value < 1
                 return 0;
 
             if (exp == MaxExponent)
@@ -523,7 +505,7 @@ namespace System.Numerics.Experimental
             uint sig = value.Significand;
 
             int shiftDist = exp - 0x0F;
-            if (shiftDist < 0)
+            if (shiftDist < 0) // Value < 1
                 return 0;
 
             if (exp == MaxExponent)
@@ -570,10 +552,9 @@ namespace System.Numerics.Experimental
             return (ulong)(sign ? -alignedSig : alignedSig);
         }
 
-        // TODO: confirm behaviours
         public static explicit operator short(Half value)
         {
-            return (short) (int) value;
+            return (short)(int) value;
         }
 
         public static explicit operator ushort(Half value)
@@ -589,7 +570,7 @@ namespace System.Numerics.Experimental
         public static explicit operator sbyte(Half value)
         {
             return (sbyte)(int)value;
-        } // TODO: not sure what should happen here
+        }
 
         public static implicit operator float(Half value)
         {
@@ -600,19 +581,19 @@ namespace System.Numerics.Experimental
             if (exp == MaxExponent)
             {
                 if (sig != 0)
-                    return CreateSingleNaN(sign, (ulong) sig << 54);
+                    return Ieee754Helpers.CreateSingleNaN(sign, (ulong) sig << 54);
                 return sign ? float.NegativeInfinity : float.PositiveInfinity;
             }
 
             if (exp == 0)
             {
                 if (sig == 0)
-                    return BitConverter.Int32BitsToSingle(unchecked((int)(sign ? SingleSignMask : 0))); // Positive / Negative zero
+                    return Ieee754Helpers.CreateSingle(sign ? Ieee754Helpers.SingleSignMask : 0); // Positive / Negative zero
                 (exp, sig) = NormSubnormalF16Sig(sig);
                 exp -= 1;
             }
 
-            return CreateSingle(sign, (byte)(exp + 0x70), sig << 13);
+            return Ieee754Helpers.CreateSingle(sign, (byte)(exp + 0x70), sig << 13);
         }
 
         public static implicit operator double(Half value)
@@ -624,19 +605,19 @@ namespace System.Numerics.Experimental
             if (exp == MaxExponent)
             {
                 if (sig != 0)
-                    return CreateDoubleNaN(sign, (ulong) sig << 54);
+                    return Ieee754Helpers.CreateDoubleNaN(sign, (ulong) sig << 54);
                 return sign ? double.NegativeInfinity : double.PositiveInfinity;
             }
 
             if (exp == 0)
             {
                 if (sig == 0)
-                    return BitConverter.Int64BitsToDouble(unchecked((long) (sign ? DoubleSignMask : 0))); // Positive / Negative zero
+                    return Ieee754Helpers.CreateDouble(sign ? Ieee754Helpers.DoubleSignMask : 0); // Positive / Negative zero
                 (exp, sig) = NormSubnormalF16Sig(sig);
                 exp -= 1;
             }
 
-            return CreateDouble(sign, (ushort)(exp + 0x3F0), (ulong)sig << 42);
+            return Ieee754Helpers.CreateDouble(sign, (ushort)(exp + 0x3F0), (ulong)sig << 42);
         }
 
         // IEEE 754 specifies NaNs to be propagated
@@ -652,16 +633,6 @@ namespace System.Numerics.Experimental
 
         #region Utilities
 
-        // TODO: Worth bringing the `ShortShiftRightJam`? looks like some perf difference only
-        // If any bits are lost by shifting, "jam" them into the LSB.
-        // if dist > bit count, Will be 1 or 0  depending on i 
-        // (unlike bitwise operators that masks the lower 5 bits)
-        private static uint ShiftRightJam(uint i, int dist)
-            => dist < 31 ? i >> dist | (i << (-dist & 31) != 0 ? 1U : 0U) : (i != 0 ? 1U : 0U);
-
-        private static ulong ShiftRightJam(ulong l, int dist)
-            => dist < 63 ? l >> dist | (l << (-dist & 63) != 0 ? 1UL : 0UL) : (l != 0 ? 1UL : 0UL);
-
         private static ushort RoundPackToHalf(bool sign, short exp, ushort sig)
         {
             const int roundIncrement = 0x8; // Depends on rounding mode but it's always towards closest / ties to even
@@ -671,7 +642,7 @@ namespace System.Numerics.Experimental
             {
                 if (exp < 0)
                 {
-                    sig = (ushort)ShiftRightJam(sig, -exp);
+                    sig = (ushort)Ieee754Helpers.ShiftRightJam(sig, -exp);
                     exp = 0;
                 }
                 else if (exp > 0x1D || sig + roundIncrement >= 0x8000) // Overflow
@@ -687,77 +658,7 @@ namespace System.Numerics.Experimental
             return new Half(sign, (ushort)exp, sig).m_value;
         }
 
-        // Significand bits should be shifted towards to the left end before calling these methods
-        // Creates Quiet NaN if significand == 0
-        private static Half CreateHalfNaN(bool sign, ulong significand)
-        {
-            uint signInt = (sign ? 1U : 0U) << SignShift;
-            const uint expInt = PositiveQNaNBits;
-            uint sigInt = (uint)(significand >> 54); // 54: bits to shift to place bits at significand bits
-
-            return new Half((ushort)(signInt | expInt | sigInt));
-        }
-
-        private static float CreateSingleNaN(bool sign, ulong significand)
-        {
-            uint signInt = (sign ? 1U : 0U) << SingleSignShiftBit;
-            const uint expInt = 0x7FC00000;
-            uint sigInt = (uint)(significand >> 41); // 41: bits to shift to place bits at significand bits
-
-            return BitConverter.Int32BitsToSingle((int)(signInt | expInt | sigInt));
-        }
-
-        private static double CreateDoubleNaN(bool sign, ulong significand)
-        {
-            ulong signInt = (sign ? 1UL : 0UL) << DoubleSignShiftBit;
-            const ulong expInt = 0x7FF80000_00000000;
-            ulong sigInt = significand >> 12; // 12: bits to shift to place bits at significand bits
-
-            return BitConverter.Int64BitsToDouble((long) (signInt | expInt | sigInt));
-        }
-
-        private static int RoundToInt32(bool sign, ulong sig)
-        {
-            const int roundIncrement = 0x800;
-            uint roundBits = (uint)(sig & 0xFFF);
-            sig += roundIncrement;
-
-            if ((sig & 0xFFFFF000_00000000) != 0)
-                return int.MinValue; // Overflow
-            uint sig32 = (uint)(sig >> 12);
-
-            if (roundBits == 0x800)
-                sig32 &= ~1U;
-            int z = (int) (sign ? (uint)-sig32 : sig32);
-            if (z != 0 && (z < 0) ^ sign)
-                return int.MinValue; //goto Invalid
-
-            return z;
-        }
-
-        private static uint RoundToUInt32(bool sign, ulong sig)
-        {
-            const int roundIncrement = 0x800;
-            uint roundBits = (uint)(sig & 0xFFF);
-            sig += roundIncrement;
-            if ((sig & 0xFFFFF000_00000000) != 0)
-                return uint.MaxValue; // Overflow
-            uint z = (uint) (sig >> 12);
-            if (roundBits == 0x800)
-                z &= ~1U;
-            if (sign && z != 0)
-                return uint.MaxValue; //goto invalid
-
-            return z;
-        }
-
-        private static float CreateSingle(bool sign, byte exp, uint frac)
-            => BitConverter.Int32BitsToSingle((int)(((sign ? 1U : 0U) << SingleSignShiftBit) | ((uint) exp << SingleExpShiftBit) | frac));
-
-        private static double CreateDouble(bool sign, ushort exp, ulong frac)
-            => BitConverter.Int64BitsToDouble((long)(((sign ? 1UL : 0UL) << DoubleSignShiftBit) | ((ulong)exp << DoubleExpShiftBit) | frac));
-
-        private static (int Exp, uint Sig) NormSubnormalF16Sig(uint sig) // TODO: better names? I have no idea what this does
+        private static (int Exp, uint Sig) NormSubnormalF16Sig(uint sig)
         {
             int shiftDist = BitOperations.LeadingZeroCount(sig) - 16 - 5; // No LZCNT for 16-bit
             return (1 - shiftDist, sig << shiftDist);
