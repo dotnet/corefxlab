@@ -102,9 +102,23 @@ namespace Microsoft.Data
             set => SetValue(rowIndex, value);
         }
 
-        public new string this[long startIndex, int length]
+        public new List<string> this[long startIndex, int length]
         {
-            get => (string)GetValue(startIndex, length);
+            get
+            {
+                var ret = new List<string>();
+                int bufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
+                while (ret.Count < length && bufferIndex < _stringBuffers.Count)
+                {
+                    for (int i = (int)startIndex; ret.Count < length && i < _stringBuffers[bufferIndex].Count; i++)
+                    {
+                        ret.Add(_stringBuffers[bufferIndex][i]);
+                    }
+                    bufferIndex++;
+                    startIndex = 0;
+                }
+                return ret;
+            }
         }
 
         public override BaseColumn Sort(bool ascending = true)

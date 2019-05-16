@@ -32,9 +32,16 @@ namespace Microsoft.Data
             _columnContainer = new PrimitiveColumnContainer<T>(length);
         }
 
-        public new T this[long startIndex, int length]
+        public new IList<T> this[long startIndex, int length]
         {
-            get => (T)GetValue(startIndex, length);
+            get
+            {
+                if (startIndex > Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(startIndex));
+                }
+                return _columnContainer[startIndex, length];
+            }
         }
 
         protected override object GetValue(long startIndex, int length)
@@ -65,8 +72,21 @@ namespace Microsoft.Data
 
         public new T this[long rowIndex]
         {
-            get => (T)GetValue(rowIndex);
-            set => SetValue(rowIndex, value);
+            get
+            {
+                return _columnContainer[rowIndex];
+            }
+            set
+            {
+                if (value.GetType() == typeof(T))
+                {
+                    _columnContainer[rowIndex] = value;
+                }
+                else
+                {
+                    throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
+                }
+            }
         }
 
         public void Append(T value)
