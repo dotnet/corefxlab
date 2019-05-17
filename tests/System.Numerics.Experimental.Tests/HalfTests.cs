@@ -383,7 +383,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((long original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromInt64_TestData))]
@@ -418,7 +420,9 @@ namespace System.Numerics.Experimental.Tests
                 );
 
             foreach ((ulong original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromUInt64_TestData))]
@@ -449,7 +453,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((int original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromInt32_TestData))]
@@ -485,7 +491,9 @@ namespace System.Numerics.Experimental.Tests
                 );
 
             foreach ((uint original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromUInt32_TestData))]
@@ -508,7 +516,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((short original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromInt16_TestData))]
@@ -536,7 +546,9 @@ namespace System.Numerics.Experimental.Tests
                 );
 
             foreach ((ushort original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromUInt16_TestData))]
@@ -563,7 +575,9 @@ namespace System.Numerics.Experimental.Tests
                 );
 
             foreach ((byte original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromByte_TestData))]
@@ -586,7 +600,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((sbyte original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_FromSByte_TestData))]
@@ -629,7 +645,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((float original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_FromSingle_TestData))]
@@ -674,7 +692,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((double original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_FromDouble_TestData))]
@@ -729,7 +749,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, long expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToInt64_TestData))]
@@ -780,7 +802,9 @@ namespace System.Numerics.Experimental.Tests
                     });
 
             foreach ((Half original, ulong expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToUInt64_TestData))]
@@ -826,7 +850,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, int expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToInt32_TestData))]
@@ -874,7 +900,9 @@ namespace System.Numerics.Experimental.Tests
             );
 
             foreach ((Half original, uint expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToUInt32_TestData))]
@@ -918,7 +946,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, short expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToInt16_TestData))]
@@ -969,7 +999,9 @@ namespace System.Numerics.Experimental.Tests
                 );
 
             foreach ((Half original, ushort expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToUInt16_TestData))]
@@ -1018,7 +1050,9 @@ namespace System.Numerics.Experimental.Tests
                     }
                 );
             foreach ((Half original, byte expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToByte_TestData))]
@@ -1061,7 +1095,9 @@ namespace System.Numerics.Experimental.Tests
                 (UInt16BitsToHalf(0b1_01111_1000000001), -1), // -1.5009765625 -> -1
             };
             foreach ((Half original, sbyte expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ExplicitConversion_ToSByte_TestData))]
@@ -1105,7 +1141,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, float expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_ToSingle_TestData))]
@@ -1149,7 +1187,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, double expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(ImplicitConversion_ToDouble_TestData))]
@@ -1195,7 +1235,9 @@ namespace System.Numerics.Experimental.Tests
             };
 
             foreach ((Half original, Half expected) in data)
+            {
                 yield return new object[] { original, expected };
+            }
         }
 
         [MemberData(nameof(UnaryNegativeOperator_TestData))]

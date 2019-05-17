@@ -84,7 +84,9 @@ namespace System.Numerics.Experimental
             return CreateDouble(signInt | NaNBits | sigInt);
         }
 
-        // TODO: Worth bringing the `ShortShiftRightJam`? looks like some perf difference only; maybe it is?
+        // TODO: Worth bringing the `ShortShiftRightJam`? looks like some perf difference only.
+        // Functional difference is that dist must be [0..32), maybe as part of micro-optimisations
+
         // If any bits are lost by shifting, "jam" them into the LSB.
         // if dist > bit count, Will be 1 or 0 depending on i
         // (unlike bitwise operators that masks the lower 5 bits)

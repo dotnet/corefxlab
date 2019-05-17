@@ -383,13 +383,15 @@ namespace System.Numerics.Experimental
         {
             int shiftDist = BitOperations.LeadingZeroCount(value) - 21;
             if (shiftDist >= 0)
-                return value != 0?
-                    new Half(false, (ushort)(0x18 - shiftDist), (ushort) (value << shiftDist)):
+            {
+                return value != 0 ?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)) :
                     default;
+            }
 
             shiftDist += 4;
             uint sig = shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist;
-            return new Half(RoundPackToHalf(false, (short) (0x1C - shiftDist), (ushort) sig));
+            return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), (ushort)sig));
         }
 
         public static implicit operator Half(long value)
@@ -404,9 +406,11 @@ namespace System.Numerics.Experimental
             int shiftDist = BitOperations.LeadingZeroCount(value) - 53;
 
             if (shiftDist >= 0)
-                return value != 0?
-                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)):
+            {
+                return value != 0 ?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)) :
                     default;
+            }
 
             shiftDist += 4;
             ushort sig = (ushort)(shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist);
@@ -415,22 +419,22 @@ namespace System.Numerics.Experimental
 
         public static implicit operator Half(short value)
         {
-            return (int) value;
+            return (int)value;
         }
 
         public static implicit operator Half(ushort value)
         {
-            return (uint) value;
+            return (uint)value;
         }
 
         public static implicit operator Half(byte value)
         {
-            return (uint) value;
+            return (uint)value;
         }
 
         public static implicit operator Half(sbyte value)
         {
-            return (int) value;
+            return (int)value;
         }
 
         public static explicit operator Half(float value)
@@ -445,14 +449,19 @@ namespace System.Numerics.Experimental
             if (exp == singleMaxExponent)
             {
                 if (sig != 0) // NaN
+                {
                     return Ieee754Helpers.CreateHalfNaN(sign, (ulong)sig << 41); // Shift the significand bits to the left end
+                }
                 return sign ? NegativeInfinity : PositiveInfinity;
             }
 
             uint sigHalf = sig >> 9 | ((sig & 0x1FFU) != 0 ? 1U : 0U); // RightShiftJam
 
             if ((exp | (int)sigHalf) == 0)
+            {
                 return new Half(sign, 0, 0);
+            }
+
             return new Half(RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000)));
         }
         
@@ -468,13 +477,17 @@ namespace System.Numerics.Experimental
             if (exp == doubleMaxExponent)
             {
                 if (sig != 0) // NaN
+                {
                     return Ieee754Helpers.CreateHalfNaN(sign, sig << 12); // Shift the significand bits to the left end
+                }
                 return sign ? NegativeInfinity : PositiveInfinity;
             }
 
             uint sigHalf = (uint)Ieee754Helpers.ShiftRightJam(sig, 38);
             if ((exp | (int)sigHalf) == 0)
+            {
                 return new Half(sign, 0, 0);
+            }
             return new Half(RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000)));
         }
 
@@ -488,12 +501,16 @@ namespace System.Numerics.Experimental
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0) // Value < 1
+            {
                 return 0;
+            }
 
             if (exp == MaxExponent)
+            {
                 return IllegalValueToInt32;
+            }
 
-            int alignedSig = (int) (sig | 0x0400) << shiftDist;
+            int alignedSig = (int)(sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
             return sign ? -alignedSig : alignedSig;
         }
@@ -506,10 +523,14 @@ namespace System.Numerics.Experimental
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0) // Value < 1
+            {
                 return 0;
+            }
 
             if (exp == MaxExponent)
+            {
                 return IllegalValueToUInt32;
+            }
 
             uint alignedSig = (sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
@@ -524,10 +545,14 @@ namespace System.Numerics.Experimental
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0) // value < 1
+            {
                 return 0;
+            }
 
             if (exp == MaxExponent)
+            {
                 return IllegalValueToInt64;
+            }
 
             int alignedSig = (int) (sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
@@ -542,10 +567,14 @@ namespace System.Numerics.Experimental
 
             int shiftDist = exp - 0x0F;
             if (shiftDist < 0) // value < 1
+            {
                 return 0;
+            }
 
             if (exp == MaxExponent)
+            {
                 return IllegalValueToUInt64;
+            }
 
             uint alignedSig = (sig | 0x0400) << shiftDist;
             alignedSig >>= 10;
@@ -554,7 +583,7 @@ namespace System.Numerics.Experimental
 
         public static explicit operator short(Half value)
         {
-            return (short)(int) value;
+            return (short)(int)value;
         }
 
         public static explicit operator ushort(Half value)
@@ -581,14 +610,18 @@ namespace System.Numerics.Experimental
             if (exp == MaxExponent)
             {
                 if (sig != 0)
-                    return Ieee754Helpers.CreateSingleNaN(sign, (ulong) sig << 54);
+                {
+                    return Ieee754Helpers.CreateSingleNaN(sign, (ulong)sig << 54);
+                }
                 return sign ? float.NegativeInfinity : float.PositiveInfinity;
             }
 
             if (exp == 0)
             {
                 if (sig == 0)
+                {
                     return Ieee754Helpers.CreateSingle(sign ? Ieee754Helpers.SingleSignMask : 0); // Positive / Negative zero
+                }
                 (exp, sig) = NormSubnormalF16Sig(sig);
                 exp -= 1;
             }
@@ -605,14 +638,18 @@ namespace System.Numerics.Experimental
             if (exp == MaxExponent)
             {
                 if (sig != 0)
-                    return Ieee754Helpers.CreateDoubleNaN(sign, (ulong) sig << 54);
+                {
+                    return Ieee754Helpers.CreateDoubleNaN(sign, (ulong)sig << 54);
+                }
                 return sign ? double.NegativeInfinity : double.PositiveInfinity;
             }
 
             if (exp == 0)
             {
                 if (sig == 0)
+                {
                     return Ieee754Helpers.CreateDouble(sign ? Ieee754Helpers.DoubleSignMask : 0); // Positive / Negative zero
+                }
                 (exp, sig) = NormSubnormalF16Sig(sig);
                 exp -= 1;
             }
@@ -646,14 +683,18 @@ namespace System.Numerics.Experimental
                     exp = 0;
                 }
                 else if (exp > 0x1D || sig + roundIncrement >= 0x8000) // Overflow
+                {
                     return sign ? NegativeInfinityBits : PositiveInfinityBits;
+                }
             }
 
             sig = (ushort)((sig + roundIncrement) >> 4);
             sig &= (ushort)~(((roundBits ^ 8) != 0 ? 0 : 1) & 1);
 
             if (sig == 0)
+            {
                 exp = 0;
+            }
 
             return new Half(sign, (ushort)exp, sig).m_value;
         }
