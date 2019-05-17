@@ -60,6 +60,15 @@ namespace System.Numerics.Experimental
         private const ushort MaxValueBits = 0x7BFF;
 
         //
+        // Constants that should be returned if values that cannot be represented are converted
+        //
+
+        private const long IllegalValueToInt64 = long.MinValue;
+        private const ulong IllegalValueToUInt64 = ulong.MinValue;
+        private const int IllegalValueToInt32 = int.MinValue;
+        private const uint IllegalValueToUInt32 = uint.MinValue;
+
+        //
         // Well-defined and commonly used values
         //
 
@@ -83,6 +92,9 @@ namespace System.Numerics.Experimental
         {
             m_value = value;
         }
+
+        private Half(bool sign, ushort exp, ushort sig)
+            => m_value = (ushort)(((sign ? 1 : 0) << SignShift) + (exp << ExponentShift) + sig);
 
         private sbyte Exponent
         {
@@ -341,17 +353,358 @@ namespace System.Numerics.Experimental
 
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return $"0x{m_value:X4}";
+            // return ToString(format: null, formatProvider: null);
+            // TODO: Implement this
         }
 
         public string ToString(string format = null, IFormatProvider formatProvider = null)
         {
-            throw new NotImplementedException();
+            return $"0x{m_value:X4}";
+            // throw new NotImplementedException();
+            // TODO: Implement this
         }
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider formatProvider)
         {
             throw new NotImplementedException();
         }
+
+        // -----------------------Start of to-half conversions-------------------------
+
+        public static implicit operator Half(int value)
+        {
+            bool sign = value < 0;
+            Half h = (uint)(sign ? -value : value); // Math.Abs but doesn't throw exception, because we cast it to uint anyway
+            return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
+        }
+
+        public static implicit operator Half(uint value)
+        {
+            int shiftDist = BitOperations.LeadingZeroCount(value) - 21;
+            if (shiftDist >= 0)
+            {
+                return value != 0 ?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)) :
+                    default;
+            }
+
+            shiftDist += 4;
+            uint sig = shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist;
+            return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), (ushort)sig));
+        }
+
+        public static implicit operator Half(long value)
+        {
+            bool sign = value < 0;
+            Half h = (ulong)(sign ? -value : value); // Math.Abs but doesn't throw exception, because we cast it to ulong anyway
+            return sign ? new Half((ushort)(h.m_value | SignMask)) : h;
+        }
+
+        public static implicit operator Half(ulong value)
+        {
+            int shiftDist = BitOperations.LeadingZeroCount(value) - 53;
+
+            if (shiftDist >= 0)
+            {
+                return value != 0 ?
+                    new Half(false, (ushort)(0x18 - shiftDist), (ushort)(value << shiftDist)) :
+                    default;
+            }
+
+            shiftDist += 4;
+            ushort sig = (ushort)(shiftDist < 0 ? Ieee754Helpers.ShiftRightJam(value, -shiftDist) : value << shiftDist);
+            return new Half(RoundPackToHalf(false, (short)(0x1C - shiftDist), sig));
+        }
+
+        public static implicit operator Half(short value)
+        {
+            return (int)value;
+        }
+
+        public static implicit operator Half(ushort value)
+        {
+            return (uint)value;
+        }
+
+        public static implicit operator Half(byte value)
+        {
+            return (uint)value;
+        }
+
+        public static implicit operator Half(sbyte value)
+        {
+            return (int)value;
+        }
+
+        public static explicit operator Half(float value)
+        {
+            const int singleMaxExponent = 0xFF;
+
+            uint floatInt = Ieee754Helpers.ToUInt32(value);
+            bool sign = (floatInt & Ieee754Helpers.SingleSignMask) >> Ieee754Helpers.SingleSignShift != 0;
+            int exp = (int)(floatInt & Ieee754Helpers.SingleExponentMask) >> Ieee754Helpers.SingleExponentShift;
+            uint sig = floatInt & Ieee754Helpers.SingleSignificandMask;
+
+            if (exp == singleMaxExponent)
+            {
+                if (sig != 0) // NaN
+                {
+                    return Ieee754Helpers.CreateHalfNaN(sign, (ulong)sig << 41); // Shift the significand bits to the left end
+                }
+                return sign ? NegativeInfinity : PositiveInfinity;
+            }
+
+            uint sigHalf = sig >> 9 | ((sig & 0x1FFU) != 0 ? 1U : 0U); // RightShiftJam
+
+            if ((exp | (int)sigHalf) == 0)
+            {
+                return new Half(sign, 0, 0);
+            }
+
+            return new Half(RoundPackToHalf(sign, (short)(exp - 0x71), (ushort)(sigHalf | 0x4000)));
+        }
+        
+        public static explicit operator Half(double value)
+        {
+            const int doubleMaxExponent = 0x7FF;
+            
+            ulong doubleInt = Ieee754Helpers.ToUInt64(value);
+            bool sign = (doubleInt & Ieee754Helpers.DoubleSignMask) >> Ieee754Helpers.DoubleSignShift != 0;
+            int exp = (int)((doubleInt & Ieee754Helpers.DoubleExponentMask) >> Ieee754Helpers.DoubleExponentShift);
+            ulong sig = doubleInt & Ieee754Helpers.DoubleSignificandMask;
+
+            if (exp == doubleMaxExponent)
+            {
+                if (sig != 0) // NaN
+                {
+                    return Ieee754Helpers.CreateHalfNaN(sign, sig << 12); // Shift the significand bits to the left end
+                }
+                return sign ? NegativeInfinity : PositiveInfinity;
+            }
+
+            uint sigHalf = (uint)Ieee754Helpers.ShiftRightJam(sig, 38);
+            if ((exp | (int)sigHalf) == 0)
+            {
+                return new Half(sign, 0, 0);
+            }
+            return new Half(RoundPackToHalf(sign, (short)(exp - 0x3F1), (ushort)(sigHalf | 0x4000)));
+        }
+
+        // -----------------------Start of from-half conversions-------------------------
+
+        public static explicit operator int(Half value)
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0) // Value < 1
+            {
+                return 0;
+            }
+
+            if (exp == MaxExponent)
+            {
+                return IllegalValueToInt32;
+            }
+
+            int alignedSig = (int)(sig | 0x0400) << shiftDist;
+            alignedSig >>= 10;
+            return sign ? -alignedSig : alignedSig;
+        }
+
+        public static explicit operator uint(Half value) // 0 for every case
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0) // Value < 1
+            {
+                return 0;
+            }
+
+            if (exp == MaxExponent)
+            {
+                return IllegalValueToUInt32;
+            }
+
+            uint alignedSig = (sig | 0x0400) << shiftDist;
+            alignedSig >>= 10;
+            return (uint)(sign ? -(int)alignedSig : (int)alignedSig);
+        }
+
+        public static explicit operator long(Half value)
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0) // value < 1
+            {
+                return 0;
+            }
+
+            if (exp == MaxExponent)
+            {
+                return IllegalValueToInt64;
+            }
+
+            int alignedSig = (int) (sig | 0x0400) << shiftDist;
+            alignedSig >>= 10;
+            return sign ? -alignedSig : alignedSig;
+        }
+
+        public static explicit operator ulong(Half value) // 0 for PosInfinity/NaN, long.MinValue for NegInfinity
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            int shiftDist = exp - 0x0F;
+            if (shiftDist < 0) // value < 1
+            {
+                return 0;
+            }
+
+            if (exp == MaxExponent)
+            {
+                return IllegalValueToUInt64;
+            }
+
+            uint alignedSig = (sig | 0x0400) << shiftDist;
+            alignedSig >>= 10;
+            return (ulong)(sign ? -alignedSig : alignedSig);
+        }
+
+        public static explicit operator short(Half value)
+        {
+            return (short)(int)value;
+        }
+
+        public static explicit operator ushort(Half value)
+        {
+            return (ushort)(short)(int)value;
+        }
+
+        public static explicit operator byte(Half value)
+        {
+            return (byte)(sbyte)(int)value;
+        }
+
+        public static explicit operator sbyte(Half value)
+        {
+            return (sbyte)(int)value;
+        }
+
+        public static implicit operator float(Half value)
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            if (exp == MaxExponent)
+            {
+                if (sig != 0)
+                {
+                    return Ieee754Helpers.CreateSingleNaN(sign, (ulong)sig << 54);
+                }
+                return sign ? float.NegativeInfinity : float.PositiveInfinity;
+            }
+
+            if (exp == 0)
+            {
+                if (sig == 0)
+                {
+                    return Ieee754Helpers.CreateSingle(sign ? Ieee754Helpers.SingleSignMask : 0); // Positive / Negative zero
+                }
+                (exp, sig) = NormSubnormalF16Sig(sig);
+                exp -= 1;
+            }
+
+            return Ieee754Helpers.CreateSingle(sign, (byte)(exp + 0x70), sig << 13);
+        }
+
+        public static implicit operator double(Half value)
+        {
+            bool sign = IsNegative(value);
+            int exp = value.Exponent;
+            uint sig = value.Significand;
+
+            if (exp == MaxExponent)
+            {
+                if (sig != 0)
+                {
+                    return Ieee754Helpers.CreateDoubleNaN(sign, (ulong)sig << 54);
+                }
+                return sign ? double.NegativeInfinity : double.PositiveInfinity;
+            }
+
+            if (exp == 0)
+            {
+                if (sig == 0)
+                {
+                    return Ieee754Helpers.CreateDouble(sign ? Ieee754Helpers.DoubleSignMask : 0); // Positive / Negative zero
+                }
+                (exp, sig) = NormSubnormalF16Sig(sig);
+                exp -= 1;
+            }
+
+            return Ieee754Helpers.CreateDouble(sign, (ushort)(exp + 0x3F0), (ulong)sig << 42);
+        }
+
+        // IEEE 754 specifies NaNs to be propagated
+        public static Half operator -(Half value)
+        {
+            return IsNaN(value) ? value : new Half((ushort)(value.m_value ^ SignMask));
+        }
+
+        public static Half operator +(Half value)
+        {
+            return value;
+        }
+
+        #region Utilities
+
+        private static ushort RoundPackToHalf(bool sign, short exp, ushort sig)
+        {
+            const int roundIncrement = 0x8; // Depends on rounding mode but it's always towards closest / ties to even
+            int roundBits = sig & 0xF;
+
+            if ((uint) exp >= 0x1D)
+            {
+                if (exp < 0)
+                {
+                    sig = (ushort)Ieee754Helpers.ShiftRightJam(sig, -exp);
+                    exp = 0;
+                }
+                else if (exp > 0x1D || sig + roundIncrement >= 0x8000) // Overflow
+                {
+                    return sign ? NegativeInfinityBits : PositiveInfinityBits;
+                }
+            }
+
+            sig = (ushort)((sig + roundIncrement) >> 4);
+            sig &= (ushort)~(((roundBits ^ 8) != 0 ? 0 : 1) & 1);
+
+            if (sig == 0)
+            {
+                exp = 0;
+            }
+
+            return new Half(sign, (ushort)exp, sig).m_value;
+        }
+
+        private static (int Exp, uint Sig) NormSubnormalF16Sig(uint sig)
+        {
+            int shiftDist = BitOperations.LeadingZeroCount(sig) - 16 - 5; // No LZCNT for 16-bit
+            return (1 - shiftDist, sig << shiftDist);
+        }
+
+        #endregion
     }
 }
