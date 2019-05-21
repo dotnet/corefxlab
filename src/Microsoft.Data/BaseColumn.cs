@@ -34,7 +34,11 @@ namespace Microsoft.Data
             }
         }
 
-        public long NullCount { get; protected set; }
+        public virtual long NullCount
+        {
+            get => throw new NotImplementedException();
+            protected set => throw new NotImplementedException();
+        }
 
         public string Name { get; set; }
 
@@ -64,17 +68,19 @@ namespace Microsoft.Data
         /// <returns></returns>
         public virtual BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false) => throw new NotImplementedException();
 
+        internal virtual BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false) => throw new NotImplementedException();
+
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
-        internal delegate T GetValueAtBuffer<T>(int bufferIndex, int valueIndex);
+        internal delegate Tuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);
         internal delegate int GetBufferLengthAtIndex(int bufferIndex);
         internal void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex,
                                                             PrimitiveColumn<long> columnSortIndices,
                                                             GetBufferSortIndex getBufferSortIndex,
-                                                            GetValueAtBuffer<T> getValueAtBuffer,
+                                                            GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer,
                                                             GetBufferLengthAtIndex getBufferLengthAtIndex)
         {
             while (heapOfValueAndListOfTupleOfSortAndBufferIndex.Count > 0)
@@ -99,8 +105,12 @@ namespace Microsoft.Data
                 if (sortIndex + 1 < getBufferLengthAtIndex(bufferIndex))
                 {
                     int nextSortIndex = sortIndex + 1;
-                    T nextValue = getValueAtBuffer(bufferIndex, nextSortIndex);
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(nextValue, new List<Tuple<int, int>>() { new Tuple<int, int>((int)nextSortIndex, bufferIndex) });
+                    Tuple<T, int> nextValueAndBufferSortIndex = getValueAndBufferSortIndexAtBuffer(bufferIndex, nextSortIndex);
+                    T nextValue = nextValueAndBufferSortIndex.Item1;
+                    if (nextValue != null)
+                    {
+                        heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(nextValue, new List<Tuple<int, int>>() { new Tuple<int, int>((int)nextValueAndBufferSortIndex.Item2, bufferIndex) });
+                    }
                 }
             }
 

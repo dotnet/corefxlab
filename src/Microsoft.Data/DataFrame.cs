@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Microsoft.Data
@@ -131,7 +132,9 @@ namespace Microsoft.Data
             List<BaseColumn> newColumns = new List<BaseColumn>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
-                var newColumn = Column(i).Clone(sortIndices, !ascending);
+                BaseColumn oldColumn = Column(i);
+                BaseColumn newColumn = oldColumn.CloneAndAppendNulls(sortIndices, !ascending);
+                Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
             }
             return new DataFrame(newColumns);

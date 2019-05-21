@@ -43,9 +43,9 @@ namespace Microsoft.Data
             {
                 BaseColumn baseColumn = _table.Column(i);
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
-                var newColumn = baseColumn.<#=method.MethodName#>(value);
+                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value);
 <# } else { #>
-                var newColumn = baseColumn.<#=method.MethodName#>(values[i]);
+                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(values[i]);
 <# } #>
                 newDataFrame.InsertColumn(i, newColumn);
             }

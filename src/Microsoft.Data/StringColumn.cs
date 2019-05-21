@@ -4,8 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.Data
 {
@@ -18,7 +16,17 @@ namespace Microsoft.Data
 
         public StringColumn(string name, long length) : base(name, length, typeof(string))
         {
-            _stringBuffers.Add(new List<string>());
+            int numberOfBuffersRequired = Math.Max((int)(length / int.MaxValue), 1);
+            for (int i = 0; i < numberOfBuffersRequired; i++)
+            {
+                long bufferLen = length - _stringBuffers.Count * int.MaxValue;
+                List<string> buffer = new List<string>((int)Math.Min(int.MaxValue, bufferLen));
+                _stringBuffers.Add(buffer);
+                for (int j = 0; j < bufferLen; j++)
+                {
+                    buffer.Add(default);
+                }
+            }
         }
 
         public StringColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string))
@@ -34,6 +42,9 @@ namespace Microsoft.Data
             }
         }
 
+        private long _nullCount;
+        public override long NullCount => _nullCount;
+
         public void Append(string value)
         {
             List<string> lastBuffer = _stringBuffers[_stringBuffers.Count - 1];
@@ -43,6 +54,8 @@ namespace Microsoft.Data
                 _stringBuffers.Add(lastBuffer);
             }
             lastBuffer.Add(value);
+            if (value == null)
+                _nullCount++;
             Length++;
         }
         private int GetBufferIndexContainingRowIndex(ref long rowIndex)
@@ -51,14 +64,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentOutOfRangeException(Strings.ColumnIndexOutOfRange, nameof(rowIndex));
             }
-            int curArrayIndex = 0;
-            int numBuffers = _stringBuffers.Count;
-            while (curArrayIndex < numBuffers && rowIndex > _stringBuffers[curArrayIndex].Count)
-            {
-                rowIndex -= _stringBuffers[curArrayIndex].Count;
-                curArrayIndex++;
-            }
-            return curArrayIndex;
+            return (int)(rowIndex / int.MaxValue);
         }
 
         protected override object GetValue(long rowIndex)
@@ -85,10 +91,18 @@ namespace Microsoft.Data
 
         protected override void SetValue(long rowIndex, object value)
         {
-            if (value is string)
+            if (value == null || value is string)
             {
                 int bufferIndex = GetBufferIndexContainingRowIndex(ref rowIndex);
+                var oldValue = this[rowIndex];
                 _stringBuffers[bufferIndex][(int)rowIndex] = (string)value;
+                if (oldValue != (string)value)
+                {
+                    if (value == null)
+                        _nullCount++;
+                    if (oldValue == null && _nullCount > 0)
+                        _nullCount--;
+                }
             }
             else
             {
@@ -124,15 +138,15 @@ namespace Microsoft.Data
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
-            return Clone((BaseColumn)columnSortIndices, !ascending);
+            return CloneAndAppendNulls((BaseColumn)columnSortIndices, !ascending);
         }
 
         internal override BaseColumn GetAscendingSortIndices()
         {
             GetSortIndices(Comparer<string>.Default, out PrimitiveColumn<long> columnSortIndices);
             return columnSortIndices;
-
         }
+
         private void GetSortIndices(Comparer<string> comparer, out PrimitiveColumn<long> columnSortIndices)
         {
             List<int[]> bufferSortIndices = new List<int[]>(_stringBuffers.Count);
@@ -140,31 +154,48 @@ namespace Microsoft.Data
             {
                 var sortIndices = new int[buffer.Count];
                 for (int i = 0; i < buffer.Count; i++)
+                {
                     sortIndices[i] = i;
+                }
                 // TODO: Refactor the sort routine to also work with IList?
                 string[] array = buffer.ToArray();
                 IntrospectiveSort(array, array.Length, sortIndices, comparer);
                 bufferSortIndices.Add(sortIndices);
             }
             // Simple merge sort to build the full column's sort indices
+            Tuple<string, int> GetFirstNonNullValueStartingAtIndex(int stringBufferIndex, int startIndex)
+            {
+                string value = _stringBuffers[stringBufferIndex][bufferSortIndices[stringBufferIndex][startIndex]];
+                while (value == null && ++startIndex < bufferSortIndices[stringBufferIndex].Length)
+                {
+                    value = _stringBuffers[stringBufferIndex][bufferSortIndices[stringBufferIndex][startIndex]];
+                }
+                return new Tuple<string, int>(value, startIndex);
+            }
+
             SortedDictionary<string, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<string, List<Tuple<int, int>>>(comparer);
             List<List<string>> buffers = _stringBuffers;
             for (int i = 0; i < buffers.Count; i++)
             {
                 List<string> buffer = buffers[i];
-                string value = buffer[bufferSortIndices[i][0]];
-                if (heapOfValueAndListOfTupleOfSortAndBufferIndex.ContainsKey(value))
+                Tuple<string, int> valueAndBufferSortIndex = GetFirstNonNullValueStartingAtIndex(i, 0);
+                if (valueAndBufferSortIndex.Item1 == null)
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex[value].Add(new Tuple<int, int>(0, i));
+                    // All nulls
+                    continue;
+                }
+                if (heapOfValueAndListOfTupleOfSortAndBufferIndex.ContainsKey(valueAndBufferSortIndex.Item1))
+                {
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex[valueAndBufferSortIndex.Item1].Add(new Tuple<int, int>(valueAndBufferSortIndex.Item2, i));
                 }
                 else
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(value, new List<Tuple<int, int>>() { new Tuple<int, int>(0, i) });
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferSortIndex.Item1, new List<Tuple<int, int>>() { new Tuple<int, int>(valueAndBufferSortIndex.Item2, i) });
                 }
             }
             columnSortIndices = new PrimitiveColumn<long>("SortIndices");
-            GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => bufferSortIndices[bufferIndex][sortIndex]);
-            GetValueAtBuffer<string> getValueAtBuffer = new GetValueAtBuffer<string>((int bufferIndex, int sortIndex) => _stringBuffers[bufferIndex][bufferSortIndices[bufferIndex][sortIndex]]);
+            GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Length);
+            GetValueAndBufferSortIndexAtBuffer<string> getValueAtBuffer = new GetValueAndBufferSortIndexAtBuffer<string>((int bufferIndex, int sortIndex) => GetFirstNonNullValueStartingAtIndex(bufferIndex, sortIndex));
             GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Length);
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAtBuffer, getBufferLengthAtIndex);
         }
@@ -175,47 +206,50 @@ namespace Microsoft.Data
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
-                if (mapIndices.Length != Length)
+                if (mapIndices.Length >= Length)
                     throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
                 return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return Clone();
         }
 
+        internal override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        {
+            StringColumn ret = Clone(mapIndices, invertMapIndices) as StringColumn;
+            for (long i = 0; i < NullCount; i++)
+            {
+                ret.Append(null);
+            }
+            return ret;
+        }
+
         private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
-            StringColumn ret = new StringColumn(Name, Length);
+            StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
             if (mapIndices is null)
             {
-                // The runtime can potentially optimize this branch? If not, just get rid of this and use the indexers
-                for (int i = 0; i < _stringBuffers.Count; i++)
+                for (long i = 0; i < Length; i++)
                 {
-                    List<string> buffer = _stringBuffers[i];
-                    List<string> newBuffer = new List<string>(buffer.Count);
-                    ret._stringBuffers.Add(newBuffer);
-                    int bufferLen = buffer.Count;
-                    for (int j = 0; j < bufferLen; j++)
-                    {
-                        newBuffer.Add(buffer[j]);
-                    }
+                    ret[i] = this[i];
                 }
             }
             else
             {
-                if (mapIndices.Length != Length)
+                if (mapIndices.Length >= Length)
                     throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
                 if (invertMapIndex == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append((string)this[(long)mapIndices[i]]);
+                        ret[i] = this[(long)mapIndices[i]];
                     }
                 }
                 else
                 {
-                    for (long i = Length - 1; i >= 0; i--)
+                    long mapIndicesLengthIndex = mapIndices.Length - 1;
+                    for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append((string)this[(long)mapIndices[i]]);
+                        ret[i] = this[(long)mapIndices[mapIndicesLengthIndex - i]];
                     }
                 }
             }
