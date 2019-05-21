@@ -52,7 +52,8 @@ namespace Microsoft.Data
             }
             EnsureCapacity(1);
             Span[Length] = value;
-            if (Length < MaxCapacity) ++Length;
+            if (Length < MaxCapacity)
+                ++Length;
         }
 
         // TODO: Implement Append(Range of values)?
@@ -77,12 +78,14 @@ namespace Microsoft.Data
         {
             get
             {
-                if (index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+                if (index > Length)
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 return Span[index];
             }
             set
             {
-                if (index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+                if (index > Length)
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 Span[index] = value;
             }
         }
@@ -91,7 +94,8 @@ namespace Microsoft.Data
         {
             get
             {
-                if (startIndex > Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
+                if (startIndex > Length)
+                    throw new ArgumentOutOfRangeException(nameof(startIndex));
                 long endIndex = Math.Min(Length, startIndex + length);
                 for (int i = startIndex; i < endIndex; i++)
                 {

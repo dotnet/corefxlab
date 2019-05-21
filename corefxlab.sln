@@ -1,9 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.28810.153
+VisualStudioVersion = 16.0.28827.37
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E7EB061-B9BC-4DA2-B5E5-859AA7C67695}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 	EndProjectSection
@@ -108,7 +109,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Experimenta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame", "src\Microsoft.Data\Microsoft.Data.DataFrame.csproj", "{AD22AAD4-FCB0-4DB4-BC38-AB6ACD153899}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame.Tests", "tests\Microsoft.Data.Tests\Microsoft.Data.DataFrame.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame.Tests", "tests\Microsoft.Data.DataFrame.Tests\Microsoft.Data.DataFrame.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

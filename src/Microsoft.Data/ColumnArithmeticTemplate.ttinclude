@@ -36,18 +36,18 @@
     public TypeConfiguration[] typeConfiguration = new []
     {
         new TypeConfiguration("bool", oneLiteral:"true", zeroLiteral:"false", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),
-        new TypeConfiguration("byte"),
-        new TypeConfiguration("char", oneLiteral:"(char)1", zeroLiteral:"(char)0"),
-        new TypeConfiguration("decimal", supportsBitwise: false),
-        new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false),
-        new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false),
-        new TypeConfiguration("int"),
-        new TypeConfiguration("long"),
-        new TypeConfiguration("sbyte", classPrefix:"SByte"),
-        new TypeConfiguration("short"),
-        new TypeConfiguration("uint", classPrefix:"UInt", unsupportedMethods: new[] {"UnaryMinus"}),
-        new TypeConfiguration("ulong", classPrefix:"ULong", unsupportedMethods: new[] {"UnaryMinus"}),
-        new TypeConfiguration("ushort", classPrefix:"UShort", unsupportedMethods: new[] {"UnaryMinus"})
+        new TypeConfiguration("byte", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("char", oneLiteral:"(char)1", zeroLiteral:"(char)0", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("decimal", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("int", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("long", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("sbyte", classPrefix:"SByte", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("short", unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("uint", classPrefix:"UInt", unsupportedMethods: new[] {"UnaryMinus", "All", "Any"}),
+        new TypeConfiguration("ulong", classPrefix:"ULong", unsupportedMethods: new[] {"UnaryMinus", "All", "Any"}),
+        new TypeConfiguration("ushort", classPrefix:"UShort", unsupportedMethods: new[] {"UnaryMinus", "All", "Any"})
     };
 
     public enum MethodType
@@ -59,8 +59,26 @@
        Binary,
        Comparison,
        ComparisonScalar,
-       Contraction
+       Contraction,
+       ElementwiseComputation,
+       Reduction
     }
+
+    public MethodConfiguration[] computationMethodConfiguration = new [] 
+    {
+        new MethodConfiguration("Abs", MethodType.ElementwiseComputation, "Math.Abs", isNumeric: true),
+        new MethodConfiguration("All", MethodType.Reduction, "", isBitwise: true),
+        new MethodConfiguration("Any", MethodType.Reduction, "", isBitwise: true),
+        new MethodConfiguration("CumulativeMax", MethodType.ElementwiseComputation, "", isNumeric:true),
+        new MethodConfiguration("CumulativeMin", MethodType.ElementwiseComputation, "", isNumeric:true),
+        new MethodConfiguration("CumulativeProduct", MethodType.ElementwiseComputation, "", isNumeric:true),
+        new MethodConfiguration("CumulativeSum", MethodType.ElementwiseComputation, "", isNumeric:true),
+        new MethodConfiguration("Max", MethodType.Reduction, "", isNumeric:true, hasReturnValue:true),
+        new MethodConfiguration("Min", MethodType.Reduction, "", isNumeric:true, hasReturnValue:true),
+        new MethodConfiguration("Product", MethodType.Reduction, "*", isNumeric:true, hasReturnValue:true),
+        new MethodConfiguration("Sum", MethodType.Reduction, "+", isNumeric:true, hasReturnValue:true),
+        new MethodConfiguration("Round", MethodType.ElementwiseComputation, "Math.Round", isNumeric:true),
+    };
 
     public MethodConfiguration[] methodConfiguration = new [] 
     {
@@ -99,17 +117,18 @@
 
      public class MethodConfiguration
     {
-        public MethodConfiguration(string methodName, MethodType methodType, string op = null, bool isNumeric = false, bool isBitwise = false)
+        public MethodConfiguration(string methodName, MethodType methodType, string op = null, bool isNumeric = false, bool isBitwise = false, bool hasReturnValue = false)
         {
             MethodName = methodName;
             MethodType = methodType;
             Operator = op;
             IsNumeric = isNumeric;
             IsBitwise = isBitwise;
+            HasReturnValue = hasReturnValue;
         }
 
         public string ResultName => "result";
-        
+
         public string Op1Name 
         {
             get
@@ -121,6 +140,8 @@
                     case MethodType.BinaryScalar:
                     case MethodType.BinaryInt:
                     case MethodType.ComparisonScalar:
+                    case MethodType.ElementwiseComputation:
+                    case MethodType.Reduction:
                         return "column";
                     case MethodType.Binary:
                     case MethodType.Comparison:
@@ -168,9 +189,23 @@
         public string GetSingleArgumentMethodSignature(string columnType, string genericType)
         {
             var arguments = GetSingleParameterMethodArguments(columnType, genericType);
-            return $"PrimitiveDataFrameColumnContainer<T> {MethodName}({arguments})";
+            return $"PrimitiveColumnContainer<T> {MethodName}({arguments})";
         }
-        
+
+        public string GetComputationOrReductionMethodSignature(string columnType, string genericType)
+        {
+            var arguments = GetMethodArguments(columnType, genericType);
+            switch (MethodType)
+            {
+                case MethodType.ElementwiseComputation:
+                    return $"{columnType}<{genericType}> {MethodName}({arguments})";
+                case MethodType.Reduction:
+                    return $"{genericType} {MethodName}({arguments})";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
         public string GetMethodArguments(string dataFrameType, string genericType)
         {
             switch (MethodType)
@@ -190,6 +225,9 @@
                     return $"{dataFrameType}<{genericType}> {Op1Name}, {dataFrameType}<{genericType}> {Op2Name}, {dataFrameType}<bool> ret";
                 case MethodType.Contraction:
                     return $"{dataFrameType}<{genericType}> {Op1Name}, {dataFrameType}<{genericType}> {Op2Name}, int[] leftAxes, int[] rightAxes";
+                case MethodType.ElementwiseComputation:
+                case MethodType.Reduction:
+                    return $"";
                 default:
                     throw new ArgumentException();
             }
@@ -223,5 +261,6 @@
         
         public bool IsNumeric { get; }
         public bool IsBitwise { get; }
+        public bool HasReturnValue { get; }
     }
 #>
