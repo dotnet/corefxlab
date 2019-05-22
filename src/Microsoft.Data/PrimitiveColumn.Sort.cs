@@ -14,8 +14,7 @@ namespace Microsoft.Data
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
-            PrimitiveColumn<T> ret = Clone(sortIndices, !ascending);
-            return ret;
+            return CloneAndAppendNulls(sortIndices, !ascending);
         }
 
         internal override BaseColumn GetAscendingSortIndices()
@@ -55,6 +54,12 @@ namespace Microsoft.Data
             {
                 DataFrameBuffer<T> buffer = buffers[i];
                 Tuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
+                long columnIndex = valueAndBufferIndex.Item2 + i * bufferSortIndices[0].Length;
+                if (!IsValid(columnIndex))
+                {
+                    // All nulls
+                    continue;
+                }
                 if (heapOfValueAndListOfTupleOfSortAndBufferIndex.ContainsKey(valueAndBufferIndex.Item1))
                 {
                     heapOfValueAndListOfTupleOfSortAndBufferIndex[valueAndBufferIndex.Item1].Add(new Tuple<int, int>(valueAndBufferIndex.Item2, i));

@@ -568,5 +568,39 @@ namespace Microsoft.Data.Tests
             Assert.Equal("4", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
         }
+
+        [Fact]
+        public void TestPrimitiveColumnSort()
+        {
+            // Primitive Column Sort
+            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int", 0);
+            Assert.Equal(0, intColumn.NullCount);
+            for (int i = 0; i < 5; i++)
+            {
+                intColumn.Append(null);
+            }
+            Assert.Equal(5, intColumn.NullCount);
+            // Should handle all nulls
+            PrimitiveColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            Assert.Equal(5, sortedIntColumn.NullCount);
+            Assert.Null(sortedIntColumn[0]);
+
+            for (int i = 0; i < 5; i++)
+            {
+                intColumn.Append(i);
+            }
+            Assert.Equal(5, intColumn.NullCount);
+
+            // Ascending sort
+            sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            Assert.Equal(0, sortedIntColumn[0]);
+            Assert.Null(sortedIntColumn[9]);
+
+            // Descending sort
+            sortedIntColumn = intColumn.Sort(false) as PrimitiveColumn<int>;
+            Assert.Equal(4, sortedIntColumn[0]);
+            Assert.Null(sortedIntColumn[9]);
+
+        }
     }
 }
