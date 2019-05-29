@@ -34,10 +34,10 @@ namespace Microsoft.Data
             }
         }
 
-        public virtual long NullCount
+        public abstract long NullCount
         {
-            get => throw new NotImplementedException();
-            protected set => throw new NotImplementedException();
+            get;
+            protected set;
         }
 
         public string Name { get; set; }
@@ -50,10 +50,10 @@ namespace Microsoft.Data
             set => SetValue(rowIndex, value);
         }
 
-        protected virtual object GetValue(long rowIndex) => throw new NotImplementedException();
-        protected virtual object GetValue(long startIndex, int length) => throw new NotImplementedException();
+        protected abstract object GetValue(long rowIndex);
+        protected abstract object GetValue(long startIndex, int length);
 
-        protected virtual void SetValue(long rowIndex, object value) => throw new NotImplementedException();
+        protected abstract void SetValue(long rowIndex, object value);
 
         public object this[long startIndex, int length]
         {
@@ -75,9 +75,9 @@ namespace Microsoft.Data
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
-        internal delegate Tuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);
+        internal delegate ValueTuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);
         internal delegate int GetBufferLengthAtIndex(int bufferIndex);
-        internal void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex,
+        internal void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex,
                                                             PrimitiveColumn<long> columnSortIndices,
                                                             GetBufferSortIndex getBufferSortIndex,
                                                             GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer,
@@ -85,9 +85,9 @@ namespace Microsoft.Data
         {
             while (heapOfValueAndListOfTupleOfSortAndBufferIndex.Count > 0)
             {
-                KeyValuePair<T, List<Tuple<int, int>>> minElement = heapOfValueAndListOfTupleOfSortAndBufferIndex.ElementAt(0);
-                List<Tuple<int, int>> tuplesOfSortAndBufferIndex = minElement.Value;
-                Tuple<int, int> sortAndBufferIndex;
+                KeyValuePair<T, List<ValueTuple<int, int>>> minElement = heapOfValueAndListOfTupleOfSortAndBufferIndex.ElementAt(0);
+                List<ValueTuple<int, int>> tuplesOfSortAndBufferIndex = minElement.Value;
+                (int sortIndex, int bufferIndex) sortAndBufferIndex;
                 if (tuplesOfSortAndBufferIndex.Count == 1)
                 {
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Remove(minElement.Key);
@@ -98,18 +98,18 @@ namespace Microsoft.Data
                     sortAndBufferIndex = tuplesOfSortAndBufferIndex[tuplesOfSortAndBufferIndex.Count - 1];
                     tuplesOfSortAndBufferIndex.RemoveAt(tuplesOfSortAndBufferIndex.Count - 1);
                 }
-                int sortIndex = sortAndBufferIndex.Item1;
-                int bufferIndex = sortAndBufferIndex.Item2;
+                int sortIndex = sortAndBufferIndex.sortIndex;
+                int bufferIndex = sortAndBufferIndex.bufferIndex;
                 long bufferSortIndex = getBufferSortIndex(bufferIndex, sortIndex);
                 columnSortIndices.Append(bufferSortIndex);
                 if (sortIndex + 1 < getBufferLengthAtIndex(bufferIndex))
                 {
                     int nextSortIndex = sortIndex + 1;
-                    Tuple<T, int> nextValueAndBufferSortIndex = getValueAndBufferSortIndexAtBuffer(bufferIndex, nextSortIndex);
-                    T nextValue = nextValueAndBufferSortIndex.Item1;
+                    (T value, int bufferSortIndex) nextValueAndBufferSortIndex = getValueAndBufferSortIndexAtBuffer(bufferIndex, nextSortIndex);
+                    T nextValue = nextValueAndBufferSortIndex.value;
                     if (nextValue != null)
                     {
-                        heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(nextValue, new List<Tuple<int, int>>() { new Tuple<int, int>((int)nextValueAndBufferSortIndex.Item2, bufferIndex) });
+                        heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(nextValue, new List<ValueTuple<int, int>>() { (nextValueAndBufferSortIndex.bufferSortIndex, bufferIndex) });
                     }
                 }
             }

@@ -15,8 +15,8 @@ namespace Microsoft.Data.Tests
         {
             BaseColumn dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
             BaseColumn dataFrameColumn2 = new PrimitiveColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
-            dataFrameColumn1[length/2] = null;
-            dataFrameColumn2[length/2] = null;
+            dataFrameColumn1[length / 2] = null;
+            dataFrameColumn2[length / 2] = null;
             Data.DataFrame dataFrame = new Data.DataFrame();
             dataFrame.InsertColumn(0, dataFrameColumn1);
             dataFrame.InsertColumn(1, dataFrameColumn2);

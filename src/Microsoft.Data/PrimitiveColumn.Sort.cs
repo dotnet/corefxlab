@@ -37,7 +37,7 @@ namespace Microsoft.Data
                 bufferSortIndices.Add(sortIndices);
             }
             // Simple merge sort to build the full column's sort indices
-            Tuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
+            ValueTuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
             {
                 T value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
                 long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * _columnContainer.Buffers[0].MaxCapacity;
@@ -46,14 +46,14 @@ namespace Microsoft.Data
                     value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
                     rowIndex = startIndex + bufferIndex * _columnContainer.Buffers[0].MaxCapacity;
                 }
-                return new Tuple<T, int>(value, startIndex);
+                return (value, startIndex);
             }
-            SortedDictionary<T, List<Tuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<Tuple<int, int>>>(comparer);
+            SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<ValueTuple<int, int>>>(comparer);
             IList<DataFrameBuffer<T>> buffers = _columnContainer.Buffers;
             for (int i = 0; i < buffers.Count; i++)
             {
                 DataFrameBuffer<T> buffer = buffers[i];
-                Tuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
+                ValueTuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
                 long columnIndex = valueAndBufferIndex.Item2 + i * bufferSortIndices[0].Length;
                 if (!IsValid(columnIndex))
                 {
@@ -62,11 +62,11 @@ namespace Microsoft.Data
                 }
                 if (heapOfValueAndListOfTupleOfSortAndBufferIndex.ContainsKey(valueAndBufferIndex.Item1))
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex[valueAndBufferIndex.Item1].Add(new Tuple<int, int>(valueAndBufferIndex.Item2, i));
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex[valueAndBufferIndex.Item1].Add((valueAndBufferIndex.Item2, i));
                 }
                 else
                 {
-                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferIndex.Item1, new List<Tuple<int, int>>() { new Tuple<int, int>(valueAndBufferIndex.Item2, i) });
+                    heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferIndex.Item1, new List<ValueTuple<int, int>>() { (valueAndBufferIndex.Item2, i) });
                 }
             }
             columnSortIndices = new PrimitiveColumn<long>("SortIndices");

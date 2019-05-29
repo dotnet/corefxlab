@@ -124,7 +124,7 @@ namespace Microsoft.Data
 
         private void SetBit(long index, bool value)
         {
-            if (index < 0 || index > Length)
+            if ((uint)index > Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -135,7 +135,7 @@ namespace Microsoft.Data
 
             // Set the bit
             index -= bitMapIndex * Buffers[0].MaxCapacity;
-            int bitMapBufferIndex = (int)index / 8;
+            int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length >= bitMapBufferIndex);
             if (bitMapBuffer.Length == bitMapBufferIndex)
                 bitMapBuffer.Append(0);
@@ -162,14 +162,14 @@ namespace Microsoft.Data
                     // New entry from an append
                     NullCount++;
                 }
-                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)(index % 8)));
+                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index % 8)));
             }
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
 
         private bool GetBit(long index)
         {
-            if (index < 0 || index > Length)
+            if ((uint)index > Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -180,7 +180,7 @@ namespace Microsoft.Data
 
             // Get the bit
             index -= bitMapIndex * Buffers[0].MaxCapacity;
-            int bitMapBufferIndex = (int)index / 8;
+            int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
             return ((curBitMap >> ((int)index % 8)) & 1) != 0;
