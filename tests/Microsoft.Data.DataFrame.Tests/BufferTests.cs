@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using System.Linq;
 using Xunit;
 
@@ -71,6 +72,35 @@ namespace Microsoft.Data.Tests
             {
                 Assert.True(dataFrameColumn1.IsValid(i));
             }
+        }
+
+        [Fact]
+        public void TestAppendMany()
+        {
+            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1");
+            intColumn.AppendMany(null, 5);
+            Assert.Equal(5, intColumn.NullCount);
+            Assert.Equal(5, intColumn.Length);
+            for (int i = 0; i < intColumn.Length; i++)
+            {
+                Assert.False(intColumn.IsValid(i));
+            }
+
+            intColumn.AppendMany(5, 5);
+            Assert.Equal(5, intColumn.NullCount);
+            Assert.Equal(10, intColumn.Length);
+            for (int i = 5; i < intColumn.Length; i++)
+            {
+                Assert.True(intColumn.IsValid(i));
+            }
+
+            intColumn[2] = 10;
+            Assert.Equal(4, intColumn.NullCount);
+            Assert.True(intColumn.IsValid(2));
+
+            intColumn[7] = null;
+            Assert.Equal(5, intColumn.NullCount);
+            Assert.False(intColumn.IsValid(7));
         }
     }
 }

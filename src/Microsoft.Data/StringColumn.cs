@@ -58,6 +58,7 @@ namespace Microsoft.Data
                 _nullCount++;
             Length++;
         }
+
         private int GetBufferIndexContainingRowIndex(ref long rowIndex)
         {
             if (rowIndex > Length)
@@ -206,14 +207,14 @@ namespace Microsoft.Data
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
-                if (mapIndices.Length >= Length)
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.Length > Length)
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return Clone();
         }
 
-        internal override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        public override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
         {
             StringColumn ret = Clone(mapIndices, invertMapIndices) as StringColumn;
             for (long i = 0; i < NullCount; i++)
@@ -235,8 +236,8 @@ namespace Microsoft.Data
             }
             else
             {
-                if (mapIndices.Length >= Length)
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.Length > Length)
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (invertMapIndex == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)

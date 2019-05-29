@@ -163,8 +163,6 @@ namespace Microsoft.Data.Tests
             Assert.Equal(false, df.LessThan(5)[5, 0]);
             Assert.Equal(false, df.LessThan(listOfInts)[5, 0]);
 
-            // TODO: Test binary ops with the null value
-
             // The original DF is untouched
             Assert.Equal(0, df[0, 0]);
         }
@@ -575,11 +573,9 @@ namespace Microsoft.Data.Tests
             // Primitive Column Sort
             PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int", 0);
             Assert.Equal(0, intColumn.NullCount);
-            for (int i = 0; i < 5; i++)
-            {
-                intColumn.Append(null);
-            }
+            intColumn.AppendMany(null, 5);
             Assert.Equal(5, intColumn.NullCount);
+
             // Should handle all nulls
             PrimitiveColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
             Assert.Equal(5, sortedIntColumn.NullCount);

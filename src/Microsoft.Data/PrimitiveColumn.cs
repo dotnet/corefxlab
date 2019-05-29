@@ -96,16 +96,18 @@ namespace Microsoft.Data
             Length++;
         }
 
+        public void AppendMany(T? value, long count)
+        {
+            _columnContainer.AppendMany(value, count);
+            Length += count;
+        }
+
         public override long NullCount
         {
             get
             {
                 Debug.Assert(_columnContainer.NullCount >= 0);
                 return _columnContainer.NullCount;
-            }
-            protected set
-            {
-                _columnContainer.NullCount = value;
             }
         }
 
@@ -122,20 +124,17 @@ namespace Microsoft.Data
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
-                if (mapIndices.Length >= Length)
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.Length > Length)
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return Clone();
         }
 
-        internal override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        public override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
         {
             PrimitiveColumn<T> ret = Clone(mapIndices, invertMapIndices) as PrimitiveColumn<T>;
-            for (long i = 0; i < NullCount; i++)
-            {
-                ret.Append(null);
-            }
+            ret.AppendMany(null, NullCount);
             return ret;
         }
 
@@ -150,7 +149,7 @@ namespace Microsoft.Data
             {
                 if (mapIndices.Length > Length)
                 {
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 }
                 PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
                 if (invertMapIndices == false)

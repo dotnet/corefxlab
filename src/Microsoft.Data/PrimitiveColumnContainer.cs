@@ -46,7 +46,7 @@ namespace Microsoft.Data
                     NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
                 }
                 curBuffer.Append(values[i]);
-                SetBit(Length, true);
+                SetValidityBit(Length, true);
                 Length++;
             }
         }
@@ -69,7 +69,7 @@ namespace Microsoft.Data
                     NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
                 }
                 curBuffer.Append(value);
-                SetBit(Length, true);
+                SetValidityBit(Length, true);
                 Length++;
             }
         }
@@ -93,7 +93,7 @@ namespace Microsoft.Data
                 int allocatable = (int)Math.Min(length, lastBuffer.MaxCapacity);
                 lastBuffer.EnsureCapacity(allocatable);
                 DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
-                lastNullBitMapBuffer.EnsureCapacity(allocatable);
+                lastNullBitMapBuffer.EnsureCapacity((int)Math.Ceiling(allocatable / 8.0));
                 lastBuffer.Length = allocatable;
                 lastNullBitMapBuffer.Length = allocatable;
                 length -= allocatable;
@@ -116,13 +116,58 @@ namespace Microsoft.Data
                 NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
             }
             lastBuffer.Append(value ?? default);
-            SetBit(Length, value.HasValue ? true : false);
+            SetValidityBit(Length, value.HasValue ? true : false);
             Length++;
         }
 
-        public bool IsValid(long index) => NullCount == 0 || GetBit(index);
+        public void AppendMany(T? value, long count)
+        {
+            if (!value.HasValue)
+            {
+                NullCount += count;
+            }
+            while (count > 0)
+            {
+                if (Buffers.Count == 0)
+                {
+                    Buffers.Add(new DataFrameBuffer<T>());
+                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                }
+                DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
+                if (lastBuffer.Length == lastBuffer.MaxCapacity)
+                {
+                    lastBuffer = new DataFrameBuffer<T>();
+                    Buffers.Add(lastBuffer);
+                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                }
+                int allocatable = (int)Math.Min(count, lastBuffer.MaxCapacity);
+                lastBuffer.EnsureCapacity(allocatable);
+                lastBuffer.Span.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
+                lastBuffer.Length += allocatable;
+                Length += allocatable;
 
-        private void SetBit(long index, bool value)
+                DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
+                int nullBitMapAllocatable = (int)Math.Ceiling(allocatable / 8.0);
+                lastNullBitMapBuffer.EnsureCapacity(nullBitMapAllocatable);
+                for (long i = Length - count; i < Length; i++)
+                {
+                    SetValidityBit(i, value.HasValue ? true : false, false);
+                }
+                lastNullBitMapBuffer.Length += nullBitMapAllocatable;
+                count -= allocatable;
+            }
+        }
+
+        public bool IsValid(long index) => NullCount == 0 || GetValidityBit(index);
+
+        /// <summary>
+        /// A null value has an unset bit
+        /// A NON-null value has a set bit
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        /// <param name="modifyNullCounts"> Used at the moment when the nullBitMapBuffer was just instantiated(and values initialized to 0) and we need a way to differentiate between the just instantiated bits and set bits</param>
+        private void SetValidityBit(long index, bool value, bool modifyNullCounts = true)
         {
             if ((uint)index > Length)
             {
@@ -144,7 +189,7 @@ namespace Microsoft.Data
             if (value)
             {
                 newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index % 8)));
-                if ((curBitMap >> ((int)(index % 8)) & 1) == 0 && index < Length && NullCount > 0)
+                if (modifyNullCounts && (curBitMap >> ((int)(index % 8)) & 1) == 0 && index < Length && NullCount > 0)
                 {
                     // Old value was null.
                     NullCount--;
@@ -152,12 +197,12 @@ namespace Microsoft.Data
             }
             else
             {
-                if ((curBitMap >> ((int)(index % 8)) & 1) == 1 && index < Length)
-                { 
+                if (modifyNullCounts && (curBitMap >> ((int)(index % 8)) & 1) == 1 && index < Length)
+                {
                     // old value was NOT null and new value is null
                     NullCount++;
                 }
-                else if (index == Length)
+                else if (modifyNullCounts && index == Length)
                 {
                     // New entry from an append
                     NullCount++;
@@ -167,9 +212,9 @@ namespace Microsoft.Data
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
 
-        private bool GetBit(long index)
+        private bool GetValidityBit(long index)
         {
-            if ((uint)index > Length)
+            if ((uint)index >= Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -187,7 +232,7 @@ namespace Microsoft.Data
         }
 
         public long Length;
-        //TODO:
+
         public long NullCount;
         private int GetArrayContainingRowIndex(ref long rowIndex)
         {
@@ -198,17 +243,15 @@ namespace Microsoft.Data
             return (int)(rowIndex / Buffers[0].MaxCapacity);
         }
 
-        public IList<T> this[long startIndex, int length]
+        public IList<T?> this[long startIndex, int length]
         {
             get
             {
-                var ret = new List<T>(length);
+                var ret = new List<T?>(length);
                 long endIndex = Math.Min(Length, startIndex + length);
                 for (long i = startIndex; i < endIndex; i++)
                 {
-                    T? value = this[i];
-                    if (value.HasValue)
-                        ret.Add(value.Value);
+                    ret.Add(this[i]);
                 }
                 return ret;
             }
@@ -231,12 +274,12 @@ namespace Microsoft.Data
                 if (value.HasValue)
                 {
                     Buffers[arrayIndex][(int)rowIndex] = value.Value;
-                    SetBit(rowIndex, true);
+                    SetValidityBit(rowIndex, true);
                 }
                 else
                 {
                     Buffers[arrayIndex][(int)rowIndex] = default;
-                    SetBit(rowIndex, false);
+                    SetValidityBit(rowIndex, false);
                 }
             }
         }
