@@ -152,11 +152,15 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 }
                 PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
+                ret._columnContainer._modifyNullCountWhileIndexing = false;
                 if (invertMapIndices == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret[i] = _columnContainer[mapIndices._columnContainer[i].Value].Value;
+                        T? value = _columnContainer[mapIndices._columnContainer[i].Value];
+                        ret[i] = value;
+                        if (!value.HasValue)
+                            ret._columnContainer.NullCount++;
                     }
                 }
                 else
@@ -164,9 +168,13 @@ namespace Microsoft.Data
                     long mapIndicesIndex = mapIndices.Length - 1;
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret[i] = _columnContainer[mapIndices._columnContainer[mapIndicesIndex - i].Value].Value;
+                        T? value = _columnContainer[mapIndices._columnContainer[mapIndicesIndex - i].Value];
+                        ret[i] = value;
+                        if (!value.HasValue)
+                            ret._columnContainer.NullCount++;
                     }
                 }
+                ret._columnContainer._modifyNullCountWhileIndexing = true;
                 return ret;
             }
         }

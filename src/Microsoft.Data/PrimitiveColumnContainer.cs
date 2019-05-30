@@ -22,6 +22,9 @@ namespace Microsoft.Data
         // A set bit implies a valid value. An unset bit => null value
         public IList<DataFrameBuffer<byte>> NullBitMapBuffers = new List<DataFrameBuffer<byte>>();
 
+        // Need a way to differentiate between columns initialized with default values and those with null values in SetValidityBit
+        internal bool _modifyNullCountWhileIndexing = true;
+
         public PrimitiveColumnContainer(T[] values)
         {
             values = values ?? throw new ArgumentNullException(nameof(values));
@@ -149,10 +152,12 @@ namespace Microsoft.Data
                 DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
                 int nullBitMapAllocatable = (int)Math.Ceiling(allocatable / 8.0);
                 lastNullBitMapBuffer.EnsureCapacity(nullBitMapAllocatable);
+                _modifyNullCountWhileIndexing = false;
                 for (long i = Length - count; i < Length; i++)
                 {
-                    SetValidityBit(i, value.HasValue ? true : false, false);
+                    SetValidityBit(i, value.HasValue ? true : false);
                 }
+                _modifyNullCountWhileIndexing = true;
                 lastNullBitMapBuffer.Length += nullBitMapAllocatable;
                 count -= allocatable;
             }
@@ -166,8 +171,7 @@ namespace Microsoft.Data
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        /// <param name="modifyNullCounts"> Used at the moment when the nullBitMapBuffer was just instantiated(and values initialized to 0) and we need a way to differentiate between the just instantiated bits and set bits</param>
-        private void SetValidityBit(long index, bool value, bool modifyNullCounts = true)
+        private void SetValidityBit(long index, bool value)
         {
             if ((uint)index > Length)
             {
@@ -189,7 +193,7 @@ namespace Microsoft.Data
             if (value)
             {
                 newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index % 8)));
-                if (modifyNullCounts && (curBitMap >> ((int)(index % 8)) & 1) == 0 && index < Length && NullCount > 0)
+                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index % 8)) & 1) == 0 && index < Length && NullCount > 0)
                 {
                     // Old value was null.
                     NullCount--;
@@ -197,12 +201,12 @@ namespace Microsoft.Data
             }
             else
             {
-                if (modifyNullCounts && (curBitMap >> ((int)(index % 8)) & 1) == 1 && index < Length)
+                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index % 8)) & 1) == 1 && index < Length)
                 {
                     // old value was NOT null and new value is null
                     NullCount++;
                 }
-                else if (modifyNullCounts && index == Length)
+                else if (_modifyNullCountWhileIndexing && index == Length)
                 {
                     // New entry from an append
                     NullCount++;
@@ -339,6 +343,7 @@ namespace Microsoft.Data
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
             return ret;
         }
 
@@ -355,6 +360,7 @@ namespace Microsoft.Data
                 ret.Length += buffer.Length;
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
             return ret;
         }
 
@@ -374,6 +380,7 @@ namespace Microsoft.Data
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
             return ret;
         }
 
@@ -393,6 +400,7 @@ namespace Microsoft.Data
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
             return ret;
         }
     }

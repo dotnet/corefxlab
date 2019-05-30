@@ -55,7 +55,7 @@ namespace Microsoft.Data
                 DataFrameBuffer<T> buffer = buffers[i];
                 ValueTuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
                 long columnIndex = valueAndBufferIndex.Item2 + i * bufferSortIndices[0].Length;
-                if (!IsValid(columnIndex))
+                if (columnIndex == Length)
                 {
                     // All nulls
                     continue;

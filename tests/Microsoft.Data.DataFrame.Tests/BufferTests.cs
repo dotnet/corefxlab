@@ -67,7 +67,7 @@ namespace Microsoft.Data.Tests
         {
             PrimitiveColumn<int> dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             dataFrameColumn1.Append(null);
-            Assert.False(dataFrameColumn1.IsValid(11));
+            Assert.False(dataFrameColumn1.IsValid(10));
             for (long i = 0; i < dataFrameColumn1.Length - 1; i++)
             {
                 Assert.True(dataFrameColumn1.IsValid(i));
