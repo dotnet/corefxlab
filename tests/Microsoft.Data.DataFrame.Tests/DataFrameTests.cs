@@ -598,5 +598,66 @@ namespace Microsoft.Data.Tests
             Assert.Null(sortedIntColumn[9]);
 
         }
+
+        [Fact]
+        public void TestJoin()
+        {
+            DataFrame left = MakeDataFrameWithAllColumnTypes(10);
+            DataFrame right = MakeDataFrameWithAllColumnTypes(5);
+
+            // Tests with right.RowCount < left.RowCount
+            // Left join
+            DataFrame join = left.Join(right);
+            Assert.Equal(join.RowCount, left.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(join["Int_right"][6]);
+
+            // Right join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(join.RowCount, right.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join["Int_right"][3], right["Int"][3]);
+            Assert.Null(join["Int_right"][2]);
+
+            // Outer join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Outer);
+            Assert.Equal(join.RowCount, left.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(join["Int_right"][6]);
+
+            // Inner join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(join.RowCount, right.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join["Int_right"][3], right["Int"][3]);
+            Assert.Null(join["Int_right"][2]);
+
+            // Tests with right.RowCount > left.RowCount
+            // Left join
+            right = MakeDataFrameWithAllColumnTypes(15);
+            join = left.Join(right);
+            Assert.Equal(join.RowCount, left.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join["Int_right"][6], right["Int"][6]);
+
+            // Right join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(join.RowCount, right.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join["Int_right"][2], right["Int"][2]);
+            Assert.Null(join["Int_left"][12]);
+
+            // Outer join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Outer);
+            Assert.Equal(join.RowCount, right.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(join["Int_left"][12]);
+
+            // Inner join
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(join.RowCount, left.RowCount);
+            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join["Int_right"][2], right["Int"][2]);
+        }
     }
 }

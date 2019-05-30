@@ -129,6 +129,7 @@ namespace Microsoft.Data
             {
                 NullCount += count;
             }
+
             while (count > 0)
             {
                 if (Buffers.Count == 0)
@@ -150,7 +151,7 @@ namespace Microsoft.Data
                 Length += allocatable;
 
                 DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
-                int nullBitMapAllocatable = (int)Math.Ceiling(allocatable / 8.0);
+                int nullBitMapAllocatable = (int)(((uint)allocatable + 7) / 8);
                 lastNullBitMapBuffer.EnsureCapacity(nullBitMapAllocatable);
                 _modifyNullCountWhileIndexing = false;
                 for (long i = Length - count; i < Length; i++)
@@ -173,7 +174,7 @@ namespace Microsoft.Data
         /// <param name="value"></param>
         private void SetValidityBit(long index, bool value)
         {
-            if ((uint)index > Length)
+            if ((ulong)index > (ulong)Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -192,8 +193,8 @@ namespace Microsoft.Data
             byte newBitMap;
             if (value)
             {
-                newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index % 8)));
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index % 8)) & 1) == 0 && index < Length && NullCount > 0)
+                newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index & 7))); //bit hack for index % 8
+                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 0 && index < Length && NullCount > 0)
                 {
                     // Old value was null.
                     NullCount--;
@@ -201,7 +202,7 @@ namespace Microsoft.Data
             }
             else
             {
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index % 8)) & 1) == 1 && index < Length)
+                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 1 && index < Length)
                 {
                     // old value was NOT null and new value is null
                     NullCount++;
@@ -211,7 +212,7 @@ namespace Microsoft.Data
                     // New entry from an append
                     NullCount++;
                 }
-                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index % 8)));
+                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index & 7)));
             }
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
@@ -232,7 +233,7 @@ namespace Microsoft.Data
             int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
-            return ((curBitMap >> ((int)index % 8)) & 1) != 0;
+            return ((curBitMap >> ((int)index & 7)) & 1) != 0;
         }
 
         public long Length;

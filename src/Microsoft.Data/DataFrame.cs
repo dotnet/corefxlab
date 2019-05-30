@@ -9,6 +9,14 @@ using System.Text;
 
 namespace Microsoft.Data
 {
+    public enum JoinAlgorithm
+    {
+        Left,
+        Right,
+        Outer,
+        Inner
+    }
+
     /// <summary>
     /// A DataFrame to support indexing, binary operations, sorting, selection and other APIs. This will eventually also expose an IDataView for ML.NET
     /// </summary>
@@ -115,12 +123,12 @@ namespace Microsoft.Data
         // TODO: Add strongly typed versions of these APIs
         #endregion
 
-        private DataFrame Clone()
+        private DataFrame Clone(BaseColumn mapIndices = null, bool invertMapIndices = false)
         {
             List<BaseColumn> newColumns = new List<BaseColumn>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
-                newColumns.Add(Column(i).Clone());
+                newColumns.Add(Column(i).Clone(mapIndices, invertMapIndices));
             }
             return new DataFrame(newColumns);
         }
@@ -133,11 +141,122 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn oldColumn = Column(i);
-                BaseColumn newColumn = oldColumn.CloneAndAppendNulls(sortIndices, !ascending);
+                BaseColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
                 Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
             }
             return new DataFrame(newColumns);
+        }
+
+        private void SetSuffixForDuplicatedColumnNames(DataFrame dataFrame, BaseColumn column, string leftSuffix, string rightSuffix)
+        {
+            int index = dataFrame._table.GetColumnIndex(column.Name);
+            if (index != -1)
+            {
+                // Pre-existing column. Change name
+                BaseColumn existingColumn = dataFrame.Column(index);
+                dataFrame._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
+                column.Name += rightSuffix;
+            }
+        }
+
+        public DataFrame Join(DataFrame other, string leftSuffix = "_left", string rightSuffix = "_right", JoinAlgorithm joinAlgorithm = JoinAlgorithm.Left)
+        {
+            DataFrame ret = new DataFrame();
+            if (joinAlgorithm == JoinAlgorithm.Left)
+            {
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn newColumn = Column(i).Clone();
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+                long minLength = Math.Min(RowCount, other.RowCount);
+                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", minLength);
+                for (long i = 0; i < minLength; i++)
+                {
+                    mapIndices[i] = i;
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn newColumn;
+                    if (other.RowCount < RowCount)
+                    {
+                        newColumn = other.Column(i).Clone(numberOfNullsToAppend: RowCount - other.RowCount);
+                    }
+                    else
+                    {
+                        newColumn = other.Column(i).Clone(mapIndices);
+                    }
+                    SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+            }
+            else if (joinAlgorithm == JoinAlgorithm.Right)
+            {
+                long minLength = Math.Min(RowCount, other.RowCount);
+                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", minLength);
+                for (long i = 0; i < minLength; i++)
+                {
+                    mapIndices[i] = i;
+                }
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn newColumn;
+                    if (RowCount < other.RowCount)
+                    {
+                        newColumn = Column(i).Clone(numberOfNullsToAppend: other.RowCount - RowCount);
+                    }
+                    else
+                    {
+                        newColumn = Column(i).Clone(mapIndices);
+                    }
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn newColumn = other.Column(i).Clone();
+                    SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+            }
+            else if (joinAlgorithm == JoinAlgorithm.Outer)
+            {
+                long newRowCount = Math.Max(RowCount, other.RowCount);
+                long numberOfNulls = newRowCount - RowCount;
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn newColumn = Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+                numberOfNulls = newRowCount - other.RowCount;
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn newColumn = other.Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+            }
+            else if (joinAlgorithm == JoinAlgorithm.Inner)
+            {
+                long newRowCount = Math.Min(RowCount, other.RowCount);
+                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", newRowCount);
+                for (long i = 0; i < newRowCount; i++)
+                {
+                    mapIndices[i] = i;
+                }
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn newColumn = Column(i).Clone(mapIndices);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn newColumn = other.Column(i).Clone(mapIndices);
+                    SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, newColumn);
+                }
+            }
+            return ret;
         }
 
         public override string ToString()

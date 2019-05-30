@@ -57,6 +57,16 @@ namespace Microsoft.Data
             return ret;
         }
 
+        public void SetColumnName(BaseColumn column, string newName)
+        {
+            string currentName = column.Name;
+            int currentIndex = _columnNameToIndexDictionary[currentName];
+            column.Name = newName;
+            _columnNameToIndexDictionary.Remove(currentName);
+            _columnNameToIndexDictionary.Add(newName, currentIndex);
+        }
+
+
         public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
             where T : unmanaged
         {
