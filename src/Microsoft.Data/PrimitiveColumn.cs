@@ -33,7 +33,7 @@ namespace Microsoft.Data
             _columnContainer = new PrimitiveColumnContainer<T>(length);
         }
 
-        public new IList<T> this[long startIndex, int length]
+        public new IList<T?> this[long startIndex, int length]
         {
             get
             {
