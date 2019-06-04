@@ -744,5 +744,68 @@ namespace Microsoft.Data.Tests
             Assert.Equal(join["Int_right"][2], right["Int"][2]);
             VerifyJoin(join, left, right, JoinAlgorithm.Inner);
         }
+
+        [Fact]
+        public void TestMerge()
+        {
+            DataFrame left = MakeDataFrameWithAllColumnTypes(10);
+            DataFrame right = MakeDataFrameWithAllColumnTypes(5);
+
+            // Tests with right.RowCount < left.RowCount
+            // Left merge
+            DataFrame merge = left.Merge<int>(right, "Int", "Int");
+            Assert.Equal(10, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_right"][6]);
+            Assert.Null(merge["Int_left"][5]);
+
+            // Right merge
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(5, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][3], right["Int"][3]);
+            Assert.Null(merge["Int_right"][2]);
+
+            // Outer merge
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Outer);
+            Assert.Equal(merge.RowCount, left.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_right"][6]);
+
+            // Inner merge
+            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(merge.RowCount, right.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][3]);
+            Assert.Null(merge["Int_right"][4]);
+
+            // Tests with right.RowCount > left.RowCount
+            // Left merge
+            right = MakeDataFrameWithAllColumnTypes(15);
+            merge = left.Merge<int>(right, "Int", "Int");
+            Assert.Equal(merge.RowCount, left.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][6], right["Int"][6]);
+
+            // Right merge
+            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(merge.RowCount, right.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][2]);
+            Assert.Null(merge["Int_left"][12]);
+
+            // Outer merge
+            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.Outer);
+            Assert.Equal(16, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_left"][12]);
+            Assert.Null(merge["Int_left"][5]);
+
+            // Inner merge
+            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(9, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][2]);
+        }
     }
 }

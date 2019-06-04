@@ -18,7 +18,7 @@ namespace Microsoft.Data
 
         private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        public long RowCount { get; private set; }
+        public long RowCount { get; internal set; }
 
         public int ColumnCount { get; private set; }
 
@@ -147,5 +147,82 @@ namespace Microsoft.Data
             return -1;
         }
 
+        public void AppendRow(long index, string[] values)
+        {
+            if (values.Length != ColumnCount)
+            {
+                throw new ArgumentException($"Expected values.Length {values.Length} to be the number of columns in the table {ColumnCount}");
+            }
+            for (int i = 0; i < values.Length; i++)
+            {
+                string value = values[i];
+                BaseColumn column = Column(i);
+                bool parse;
+                switch (column.DataType)
+                {
+                    case Type boolType when boolType == typeof(bool):
+                        parse = bool.TryParse(value, out bool boolAppend);
+                        (column as PrimitiveColumn<bool>).Append(parse ? boolAppend : default);
+                        continue;
+                    case Type byteType when byteType == typeof(byte):
+                        parse = byte.TryParse(value, out byte byteAppend);
+                        (column as PrimitiveColumn<byte>).Append(parse ? byteAppend : default);
+                        continue;
+                    case Type charType when charType == typeof(char):
+                        parse = char.TryParse(value, out char charAppend);
+                        (column as PrimitiveColumn<char>).Append(parse ? charAppend : default);
+                        continue;
+                    case Type decimalType when decimalType == typeof(decimal):
+                        parse = decimal.TryParse(value, out decimal decimalAppend);
+                        (column as PrimitiveColumn<decimal>).Append(parse ? decimalAppend : default);
+                        continue;
+                    case Type doubleType when doubleType == typeof(double):
+                        parse = double.TryParse(value, out double doubleAppend);
+                        (column as PrimitiveColumn<double>).Append(parse ? doubleAppend : default);
+                        continue;
+                    case Type floatType when floatType == typeof(float):
+                        parse = float.TryParse(value, out float floatAppend);
+                        (column as PrimitiveColumn<float>).Append(parse ? floatAppend : default);
+                        continue;
+                    case Type intType when intType == typeof(int):
+                        parse = int.TryParse(value, out int intAppend);
+                        (column as PrimitiveColumn<int>).Append(parse ? intAppend : default);
+                        continue;
+                    case Type longType when longType == typeof(long):
+                        parse = long.TryParse(value, out long longAppend);
+                        (column as PrimitiveColumn<long>).Append(parse ? longAppend : default);
+                        continue;
+                    case Type sbyteType when sbyteType == typeof(sbyte):
+                        parse = sbyte.TryParse(value, out sbyte sbyteAppend);
+                        (column as PrimitiveColumn<sbyte>).Append(parse ? sbyteAppend : default);
+                        continue;
+                    case Type shortType when shortType == typeof(short):
+                        parse = short.TryParse(value, out short shortAppend);
+                        (column as PrimitiveColumn<short>).Append(parse ? shortAppend : default);
+                        continue;
+                    case Type uintType when uintType == typeof(uint):
+                        parse = uint.TryParse(value, out uint uintAppend);
+                        (column as PrimitiveColumn<uint>).Append(parse ? uintAppend : default);
+                        continue;
+                    case Type ulongType when ulongType == typeof(ulong):
+                        parse = ulong.TryParse(value, out ulong ulongAppend);
+                        (column as PrimitiveColumn<ulong>).Append(parse ? ulongAppend : default);
+                        continue;
+                    case Type ushortType when ushortType == typeof(ushort):
+                        parse = ushort.TryParse(value, out ushort ushortAppend);
+                        (column as PrimitiveColumn<ushort>).Append(parse ? ushortAppend : default);
+                        continue;
+                    case Type stringType when stringType == typeof(string):
+                        (column as StringColumn).Append(string.IsNullOrEmpty(value) ? null : value);
+                        continue;
+                    default:
+                        long currentColumnLength = column.Length;
+                        column.Resize(currentColumnLength + 1);
+                        column[currentColumnLength] = value;
+                        continue;
+                }
+            }
+            RowCount++;
+        }
     }
 }

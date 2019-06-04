@@ -61,11 +61,38 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot resize down.
+        /// </summary>
+        public static string CannotResizeDown {
+            get {
+                return ResourceManager.GetString("CannotResizeDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index cannot be greater than the Column&apos;s Length.
         /// </summary>
         public static string ColumnIndexOutOfRange {
             get {
                 return ResourceManager.GetString("ColumnIndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty file.
+        /// </summary>
+        public static string EmptyFile {
+            get {
+                return ResourceManager.GetString("EmptyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line {0} has less columns than expected..
+        /// </summary>
+        public static string LessColumnsThatExpected {
+            get {
+                return ResourceManager.GetString("LessColumnsThatExpected", resourceCulture);
             }
         }
         

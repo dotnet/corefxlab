@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Collections.Extensions;
 
 namespace Microsoft.Data
 {
@@ -88,6 +89,12 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
                 }
             }
+        }
+
+        public override void Resize(long length)
+        {
+            _columnContainer.Resize(length);
+            Length = _columnContainer.Length;
         }
 
         public void Append(T? value)
@@ -194,6 +201,23 @@ namespace Microsoft.Data
         {
             PrimitiveColumnContainer<decimal> newColumnContainer = _columnContainer.CloneAsDecimalContainer();
             return new PrimitiveColumn<decimal>(Name, newColumnContainer);
+        }
+
+        public override MultiValueDictionary<TKey, long> HashColumnValues<TKey>()
+        {
+            if (typeof(TKey) == typeof(T))
+            {
+                MultiValueDictionary<T, long> multimap = new MultiValueDictionary<T, long>(EqualityComparer<T>.Default);
+                for (long i = 0; i < Length; i++)
+                {
+                    multimap.Add(this[i] ?? default, i);
+                }
+                return multimap as MultiValueDictionary<TKey, long>;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void ApplyElementwise(Func<T, T> func)
