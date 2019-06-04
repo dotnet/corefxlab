@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Microsoft.Data
 {
@@ -27,12 +28,12 @@ namespace Microsoft.Data
             Length = _columnContainer.Length;
         }
 
-        public PrimitiveColumn(string name, long length = 0, bool isNullable = true) : base(name, length, typeof(T))
+        public PrimitiveColumn(string name, long length = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(length);
         }
 
-        public new IList<T> this[long startIndex, int length]
+        public new IList<T?> this[long startIndex, int length]
         {
             get
             {
@@ -60,9 +61,9 @@ namespace Microsoft.Data
 
         protected override void SetValue(long rowIndex, object value)
         {
-            if (value.GetType() == typeof(T))
+            if (value == null || value.GetType() == typeof(T))
             {
-                _columnContainer[rowIndex] = (T)value;
+                _columnContainer[rowIndex] = (T?)value;
             }
             else
             {
@@ -70,7 +71,7 @@ namespace Microsoft.Data
             }
         }
 
-        public new T this[long rowIndex]
+        public new T? this[long rowIndex]
         {
             get
             {
@@ -78,7 +79,7 @@ namespace Microsoft.Data
             }
             set
             {
-                if (value.GetType() == typeof(T))
+                if (value == null || value.GetType() == typeof(T))
                 {
                     _columnContainer[rowIndex] = value;
                 }
@@ -89,11 +90,28 @@ namespace Microsoft.Data
             }
         }
 
-        public void Append(T value)
+        public void Append(T? value)
         {
             _columnContainer.Append(value);
             Length++;
         }
+
+        public void AppendMany(T? value, long count)
+        {
+            _columnContainer.AppendMany(value, count);
+            Length += count;
+        }
+
+        public override long NullCount
+        {
+            get
+            {
+                Debug.Assert(_columnContainer.NullCount >= 0);
+                return _columnContainer.NullCount;
+            }
+        }
+
+        public bool IsValid(long index) => _columnContainer.IsValid(index);
 
         public override string ToString()
         {
@@ -106,11 +124,18 @@ namespace Microsoft.Data
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
-                if (mapIndices.Length != Length)
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                if (mapIndices.Length > Length)
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
             return Clone();
+        }
+
+        public override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        {
+            PrimitiveColumn<T> ret = Clone(mapIndices, invertMapIndices) as PrimitiveColumn<T>;
+            ret.AppendMany(null, NullCount);
+            return ret;
         }
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
@@ -122,25 +147,34 @@ namespace Microsoft.Data
             }
             else
             {
-                if (mapIndices.Length != Length)
+                if (mapIndices.Length > Length)
                 {
-                    throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(mapIndices));
+                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 }
-                PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+                PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
+                ret._columnContainer._modifyNullCountWhileIndexing = false;
                 if (invertMapIndices == false)
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(_columnContainer[mapIndices._columnContainer[i]]);
+                        T? value = _columnContainer[mapIndices._columnContainer[i].Value];
+                        ret[i] = value;
+                        if (!value.HasValue)
+                            ret._columnContainer.NullCount++;
                     }
                 }
                 else
                 {
-                    for (long i = Length - 1; i >= 0; i--)
+                    long mapIndicesIndex = mapIndices.Length - 1;
+                    for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(_columnContainer[mapIndices._columnContainer[i]]);
+                        T? value = _columnContainer[mapIndices._columnContainer[mapIndicesIndex - i].Value];
+                        ret[i] = value;
+                        if (!value.HasValue)
+                            ret._columnContainer.NullCount++;
                     }
                 }
+                ret._columnContainer._modifyNullCountWhileIndexing = true;
                 return ret;
             }
         }

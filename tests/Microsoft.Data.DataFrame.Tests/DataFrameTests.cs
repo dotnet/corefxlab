@@ -15,6 +15,8 @@ namespace Microsoft.Data.Tests
         {
             BaseColumn dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
             BaseColumn dataFrameColumn2 = new PrimitiveColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
+            dataFrameColumn1[length / 2] = null;
+            dataFrameColumn2[length / 2] = null;
             Data.DataFrame dataFrame = new Data.DataFrame();
             dataFrame.InsertColumn(0, dataFrameColumn1);
             dataFrame.InsertColumn(1, dataFrameColumn2);
@@ -26,6 +28,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
+            boolColumn[length / 2] = null;
             return df;
         }
 
@@ -34,6 +37,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithNumericColumns(length);
             BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             df.InsertColumn(df.ColumnCount, stringColumn);
+            stringColumn[length / 2] = null;
             return df;
         }
 
@@ -54,13 +58,17 @@ namespace Microsoft.Data.Tests
 
             DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
+            for (int i = 0; i < dataFrame.ColumnCount; i++)
+            {
+                dataFrame.Column(i)[length / 2] = null;
+            }
             return dataFrame;
         }
 
         [Fact]
         public void TestIndexer()
         {
-            Data.DataFrame dataFrame = MakeDataFrameWithTwoColumns(length: 10);
+            DataFrame dataFrame = MakeDataFrameWithTwoColumns(length: 10);
             var foo = dataFrame[0, 0];
             Assert.Equal(0, dataFrame[0, 0]);
             Assert.Equal(11, dataFrame[1, 1]);
@@ -122,7 +130,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestBinaryOperations()
         {
-            DataFrame df = DataFrameTests.MakeDataFrameWithTwoColumns(10);
+            DataFrame df = MakeDataFrameWithTwoColumns(12);
             // Binary ops always return a copy
             Assert.Equal(5, df.Add(5)[0, 0]);
             IReadOnlyList<int> listOfInts = new List<int>() { 5, 5 };
@@ -146,8 +154,8 @@ namespace Microsoft.Data.Tests
             Assert.Equal(true, df.Equals(listOfInts)[5, 0]);
             Assert.Equal(true, df.NotEquals(5)[4, 0]);
             Assert.Equal(true, df.NotEquals(listOfInts)[4, 0]);
-            Assert.Equal(true, df.GreaterThanOrEqual(5)[6, 0]);
-            Assert.Equal(true, df.GreaterThanOrEqual(listOfInts)[6, 0]);
+            Assert.Equal(true, df.GreaterThanOrEqual(5)[7, 0]);
+            Assert.Equal(true, df.GreaterThanOrEqual(listOfInts)[7, 0]);
             Assert.Equal(true, df.LessThanOrEqual(5)[4, 0]);
             Assert.Equal(true, df.LessThanOrEqual(listOfInts)[4, 0]);
             Assert.Equal(false, df.GreaterThan(5)[5, 0]);
@@ -381,7 +389,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestProjectionAndAppend()
         {
-            DataFrame df = DataFrameTests.MakeDataFrameWithTwoColumns(10);
+            DataFrame df = MakeDataFrameWithTwoColumns(10);
 
             df["Int3"] = df["Int1"] * 2 + df["Int2"];
             Assert.Equal(16, df["Int3"][2]);
@@ -440,12 +448,12 @@ namespace Microsoft.Data.Tests
             Assert.Equal((uint)0, df["Uint"][9]);
 
             df["Ushort"].CumulativeSum();
-            Assert.Equal((ushort)45, df["Ushort"][9]);
+            Assert.Equal((ushort)40, df["Ushort"][9]);
 
             Assert.Equal(100.0, df["Double"].Max());
             Assert.Equal(-10.0f, df["Float"].Min());
             Assert.Equal((uint)0, df["Uint"].Product());
-            Assert.Equal((ushort)165, df["Ushort"].Sum());
+            Assert.Equal((ushort)140, df["Ushort"].Sum());
 
             df["Double"][0] = 100.1;
             Assert.Equal(100.1, df["Double"][0]);
@@ -501,26 +509,94 @@ namespace Microsoft.Data.Tests
 
             // Sort by "Int" in ascending order
             var sortedDf = df.Sort("Int");
+            Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(-1, sortedDf["Int"][0]);
-            Assert.Equal(100, sortedDf["Int"][18]);
-            Assert.Equal(2000, sortedDf["Int"][19]);
+            Assert.Equal(100, sortedDf["Int"][17]);
+            Assert.Equal(2000, sortedDf["Int"][18]);
 
             // Sort by "Int" in descending order
             sortedDf = df.Sort("Int", false);
-            Assert.Equal(-1, sortedDf["Int"][19]);
+            Assert.Null(sortedDf["Int"][19]);
+            Assert.Equal(-1, sortedDf["Int"][18]);
             Assert.Equal(100, sortedDf["Int"][1]);
             Assert.Equal(2000, sortedDf["Int"][0]);
 
             // Sort by "String" in ascending order
             sortedDf = df.Sort("String");
-            Assert.Equal(100, sortedDf["Int"][0]);
-            Assert.Equal(8, sortedDf["Int"][18]);
-            Assert.Equal(9, sortedDf["Int"][19]);
+            Assert.Null(sortedDf["Int"][19]);
+            Assert.Equal(1, sortedDf["Int"][1]);
+            Assert.Equal(8, sortedDf["Int"][17]);
+            Assert.Equal(9, sortedDf["Int"][18]);
 
             sortedDf = df.Sort("String", false);
-            Assert.Equal(100, sortedDf["Int"][19]);
+            Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(8, sortedDf["Int"][1]);
             Assert.Equal(9, sortedDf["Int"][0]);
+        }
+
+        [Fact]
+        public void TestStringColumnSort()
+        {
+            // StringColumn specific sort tests
+            StringColumn strColumn = new StringColumn("String", 0);
+            Assert.Equal(0, strColumn.NullCount);
+            for (int i = 0; i < 5; i++)
+            {
+                strColumn.Append(null);
+            }
+            Assert.Equal(5, strColumn.NullCount);
+            // Should handle all nulls
+            StringColumn sortedStrColumn = strColumn.Sort() as StringColumn;
+            Assert.Equal(5, sortedStrColumn.NullCount);
+            Assert.Null(sortedStrColumn[0]);
+
+            for (int i = 0; i < 5; i++)
+            {
+                strColumn.Append(i.ToString());
+            }
+            Assert.Equal(5, strColumn.NullCount);
+
+            // Ascending sort
+            sortedStrColumn = strColumn.Sort() as StringColumn;
+            Assert.Equal("0", sortedStrColumn[0]);
+            Assert.Null(sortedStrColumn[9]);
+
+            // Descending sort
+            sortedStrColumn = strColumn.Sort(false) as StringColumn;
+            Assert.Equal("4", sortedStrColumn[0]);
+            Assert.Null(sortedStrColumn[9]);
+        }
+
+        [Fact]
+        public void TestPrimitiveColumnSort()
+        {
+            // Primitive Column Sort
+            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int", 0);
+            Assert.Equal(0, intColumn.NullCount);
+            intColumn.AppendMany(null, 5);
+            Assert.Equal(5, intColumn.NullCount);
+
+            // Should handle all nulls
+            PrimitiveColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            Assert.Equal(5, sortedIntColumn.NullCount);
+            Assert.Null(sortedIntColumn[0]);
+
+            for (int i = 0; i < 5; i++)
+            {
+                intColumn.Append(i);
+            }
+            Assert.Equal(5, intColumn.NullCount);
+
+            // Ascending sort
+            sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            Assert.Equal(0, sortedIntColumn[0]);
+            Assert.Null(sortedIntColumn[9]);
+
+            // Descending sort
+            sortedIntColumn = intColumn.Sort(false) as PrimitiveColumn<int>;
+            Assert.Equal(4, sortedIntColumn[0]);
+            Assert.Null(sortedIntColumn[9]);
+
         }
     }
 }

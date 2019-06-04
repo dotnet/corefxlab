@@ -70,6 +70,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MapIndices exceeds column length.
+        /// </summary>
+        public static string MapIndicesExceedsColumnLenth {
+            get {
+                return ResourceManager.GetString("MapIndicesExceedsColumnLenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column lengths are mismatched.
         /// </summary>
         public static string MismatchedColumnLengths {

@@ -120,6 +120,9 @@
   <data name="ColumnIndexOutOfRange" xml:space="preserve">
     <value>Index cannot be greater than the Column's Length</value>
   </data>
+  <data name="MapIndicesExceedsColumnLenth" xml:space="preserve">
+    <value>MapIndices exceeds column length</value>
+  </data>
   <data name="MismatchedColumnLengths" xml:space="preserve">
     <value>Column lengths are mismatched</value>
   </data>

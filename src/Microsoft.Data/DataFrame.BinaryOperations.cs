@@ -25,7 +25,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Add(values[i]);
+                BaseColumn newColumn = baseColumn.Add(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -37,7 +37,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Add(value);
+                BaseColumn newColumn = baseColumn.Add(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -53,7 +53,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Subtract(values[i]);
+                BaseColumn newColumn = baseColumn.Subtract(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -65,7 +65,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Subtract(value);
+                BaseColumn newColumn = baseColumn.Subtract(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -81,7 +81,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Multiply(values[i]);
+                BaseColumn newColumn = baseColumn.Multiply(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -93,7 +93,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Multiply(value);
+                BaseColumn newColumn = baseColumn.Multiply(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -109,7 +109,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Divide(values[i]);
+                BaseColumn newColumn = baseColumn.Divide(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -121,7 +121,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Divide(value);
+                BaseColumn newColumn = baseColumn.Divide(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -137,7 +137,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Modulo(values[i]);
+                BaseColumn newColumn = baseColumn.Modulo(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -149,7 +149,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Modulo(value);
+                BaseColumn newColumn = baseColumn.Modulo(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -165,7 +165,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.And(values[i]);
+                BaseColumn newColumn = baseColumn.And(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -177,7 +177,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.And(value);
+                BaseColumn newColumn = baseColumn.And(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -193,7 +193,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Or(values[i]);
+                BaseColumn newColumn = baseColumn.Or(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -205,7 +205,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Or(value);
+                BaseColumn newColumn = baseColumn.Or(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -221,7 +221,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Xor(values[i]);
+                BaseColumn newColumn = baseColumn.Xor(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -233,7 +233,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Xor(value);
+                BaseColumn newColumn = baseColumn.Xor(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -244,7 +244,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.LeftShift(value);
+                BaseColumn newColumn = baseColumn.LeftShift(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -255,7 +255,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.RightShift(value);
+                BaseColumn newColumn = baseColumn.RightShift(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -271,7 +271,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Equals(values[i]);
+                BaseColumn newColumn = baseColumn.Equals(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -283,7 +283,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.Equals(value);
+                BaseColumn newColumn = baseColumn.Equals(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -299,7 +299,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.NotEquals(values[i]);
+                BaseColumn newColumn = baseColumn.NotEquals(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -311,7 +311,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.NotEquals(value);
+                BaseColumn newColumn = baseColumn.NotEquals(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -327,7 +327,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.GreaterThanOrEqual(values[i]);
+                BaseColumn newColumn = baseColumn.GreaterThanOrEqual(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -339,7 +339,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.GreaterThanOrEqual(value);
+                BaseColumn newColumn = baseColumn.GreaterThanOrEqual(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -355,7 +355,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.LessThanOrEqual(values[i]);
+                BaseColumn newColumn = baseColumn.LessThanOrEqual(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -367,7 +367,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.LessThanOrEqual(value);
+                BaseColumn newColumn = baseColumn.LessThanOrEqual(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -383,7 +383,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.GreaterThan(values[i]);
+                BaseColumn newColumn = baseColumn.GreaterThan(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -395,7 +395,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.GreaterThan(value);
+                BaseColumn newColumn = baseColumn.GreaterThan(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -411,7 +411,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.LessThan(values[i]);
+                BaseColumn newColumn = baseColumn.LessThan(values[i]);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
@@ -423,7 +423,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                var newColumn = baseColumn.LessThan(value);
+                BaseColumn newColumn = baseColumn.LessThan(value);
                 newDataFrame.InsertColumn(i, newColumn);
             }
             return newDataFrame;
