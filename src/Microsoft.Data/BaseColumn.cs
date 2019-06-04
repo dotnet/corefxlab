@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Microsoft.Collections.Extensions;
 
 namespace Microsoft.Data
 {
@@ -59,6 +60,8 @@ namespace Microsoft.Data
             get => GetValue(startIndex, length);
         }
 
+        public virtual void Resize(long length) => throw new NotImplementedException();
+
         /// <summary>
         /// Clone column to produce a copy potentially changing the order by supplying mapIndices and an invert flag
         /// </summary>
@@ -68,6 +71,8 @@ namespace Microsoft.Data
         public virtual BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
 
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
+
+        public virtual MultiValueDictionary<TKey, long> HashColumnValues<TKey>() => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

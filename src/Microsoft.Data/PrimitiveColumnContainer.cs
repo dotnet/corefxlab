@@ -104,6 +104,13 @@ namespace Microsoft.Data
             }
         }
 
+        public void Resize(long length)
+        {
+            if (length < Length)
+                throw new ArgumentException(Strings.CannotResizeDown, nameof(length));
+            AppendMany(default, length - Length);
+        }
+
         public void Append(T? value)
         {
             if (Buffers.Count == 0)
