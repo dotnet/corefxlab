@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CannotResizeDown" xml:space="preserve">
+    <value>Cannot resize down</value>
+  </data>
   <data name="ColumnIndexOutOfRange" xml:space="preserve">
     <value>Index cannot be greater than the Column's Length</value>
+  </data>
+  <data name="EmptyFile" xml:space="preserve">
+    <value>Empty file</value>
+  </data>
+  <data name="LessColumnsThatExpected" xml:space="preserve">
+    <value>Line {0} has less columns than expected.</value>
   </data>
   <data name="MapIndicesExceedsColumnLenth" xml:space="preserve">
     <value>MapIndices exceeds column length</value>

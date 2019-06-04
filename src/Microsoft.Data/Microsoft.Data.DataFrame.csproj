@@ -18,6 +18,11 @@
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="Microsoft.ML" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
   </ItemGroup>
   
   <ItemGroup>

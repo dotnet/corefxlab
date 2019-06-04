@@ -45,6 +45,17 @@ namespace Microsoft.Data
         private long _nullCount;
         public override long NullCount => _nullCount;
 
+        public override void Resize(long length)
+        {
+            if (length < Length)
+                throw new ArgumentException(Strings.CannotResizeDown, nameof(length));
+
+            for (long i = Length; i < length; i++)
+            {
+                Append(null);
+            }
+        }
+
         public void Append(string value)
         {
             List<string> lastBuffer = _stringBuffers[_stringBuffers.Count - 1];
