@@ -138,7 +138,7 @@ One thing that's nice about `DispatchProxy` is that it allows for us to load a t
 ### The Type-Isolation barrier, and Client/Server send options
 One of the problems with getting proxies like this working is getting past the type-isolation barrier from ALCs. For example, if you want to use type `Foo`, loading `Foo` directly vs using an ALC generates what the runtime says are completely different types, even if the implementation is the same. 
 
-![](../img/ALCContextError.png)
+![](../img/ALCContextError.PNG)
 
 This happens for any non-simple types that attempt to cross the barrier, which is why API needs to use reflection to get the type of the ProxyObject instead of being able to grab the equivalent type in the user context.
 
