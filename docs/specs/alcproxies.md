@@ -130,7 +130,7 @@ This design is dependent on the ability for the `ProxyBuilder` to create dynamic
 
 ### Variant for ALC Revisions with `DispatchProxy`
 
-![](./designUML1.svg)
+![](../img/ALCProxyAlternate.svg)
 
 One thing that's nice about `DispatchProxy` is that it allows for us to load a target Type directly from the target ALC to the user ALC, allowing us to remove the `ServerObject`, and instead just call the object's methods directly. This only works for in-process communications, though, and by removing `ServerObject`, we may lose the ability to allow for consistent unloadability (due to how the `TargetObject` may return objects), so this approach needs to be investigated further.
 
