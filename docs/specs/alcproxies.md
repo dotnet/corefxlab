@@ -247,7 +247,19 @@ Language features such as `in`, `ref`, and `out` should be investigated further,
 
 That said, these and other language features should be investigated for the future to be implemented.
 
+#### Object Lifetime
+When a proxy is created using the API, a new instance of the object type requested is created alongside the proxy, and linked to it. The current design for the API is that already created objects cannot be linked to a new proxy, there must be a new object created if it is going to be used across the type barrier. 
+
+When an ALC is unloaded, technically the `ProxyObject` will still exist in the user ALC, but any attempt to use methods in the proxy should throw an error to the user, as there is nothing to actually call the methods on.
+
+## Verification
+This project is a bit harder to test past integration tests, as the most important thing to test is to ensure that the communication between `ClientObject` and `ServerObject` is correct, which can't be unit tested easily. Integration tests should attempt to run methods from proxied targets both in and out of process, passing in a mix of primitive and non-primitive objects as arguments and return types. Separate from that, we should be able to Moq "serialization and deserialization" (the decoding steps from the client and server, not neccesarily with normal serializers) by taking sample messages sent through other tests, making changes, and ensuring that messages are still decoded and encoded correctly.
+
 ## Open Questions
 * The current prototype for proof-of-concept has the `ServerObject` using `Reflection.Invoke()` to call the TargetObject methods, is there a more performant solution to running the methods of TargetObject?
 * How should the API deal with generic types when creating our different proxy classes?
 * Is there anything special that we need to do to deal with other language features, such as lambdas?
+* Do we have a way to deal with the user ALC being destroyed before the target ALC? How do we react to that problem?
+
+## Extra Goals
+* Can we get out-of-process proxies to specify an ALC to be added to in the receiving process?
