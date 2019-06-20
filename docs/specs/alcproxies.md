@@ -198,9 +198,20 @@ There are a few guidelines we're depending on to make sure versioning works for 
 There may be cases where the main program attempts to make a method call to an older plugin, where the method doesn't exist. When the API makes a call to `TargetObject` through `ServerObject`, it will be using `Reflection.Invoke`, meaning if there ever is a case where we don't have the requested method we're calling, the invoke should throw a `TargetException`, which we could *potentially* do something with, but probably not.
 
 #### ALC Unloading
-During the `AssemblyLoadContext.Unloading` event, the `ClientObject` can remove any reference it has to the `ServerObject`, allowing for the server to unload with the ALC. Since there are no other connections into the ALC other then the connection between client and server, the target ALC should be able to unload everything in itself correctly. Afterwards, the `ProxyObject` could remove its reference to the `ClientObject`, opening it up to be collected by the GC. 
 
-There's no need for the server to dereference the target object, since they are both within the target ALC, and can be removed during the unload process.
+##### Out-of-process
+When a process gets destroyed, unloaded, or removed in some way, the fored unload needs to be dealt with on the `ClientObject` side.
+
+The IPC formed between the `ClientObject` and `ServerObject` should be able to recognize when the server's process is killed, by either having the `ServerObject` send a signal to `ClientObject` that it's being destroyed, or by having `ClientObject` recognize when the IPC channel has been destroyed. When this happens, we can throw errors whenever the program attempts to use the `ProxyObject`, stating that the proxy is no longer valid.
+
+##### In-process
+When we unload an ALC that has a proxy connection, there is no immediate destruction of the context, unlike the out-of-process scenario. Instead, the GC will collect the unloaded `AssemblyLoadContext` normally, once it has been dereferenced by all other objects. In this design, the API will effectively have "weak" references to the object, that hold the reference until the ALC calls `Unload()`, where the proxy will no longer be valid.
+
+When `AssemblyLoadContext.Unload()` is called from the user ALC, the `AssemblyLoadContext.Unloading` event is fired, which we can hook to get `ClientObject` to remove the reference to `ServerObject`, effectively severing the reference between the two. While the `ProxyObject` is still allowed to be called in code at this point, it should throw an exception that the proxy no longer has a connection to the ALC object being used, which allows for the ALC to be removed by the GC in its unloading scenario.  Since there are no other connections into the ALC made by the API other then the connection between client and server, the target ALC should be able to continue unloading in the same way as if the proxies never existed. After severing the connection between client and server, we could also get the `ProxyObject` could remove its reference to the `ClientObject`, opening it up to be collected by the GC. 
+
+
+
+There's no need for the server to dereference the target object, since they are both within the target ALC, and can be removed whenever the target ALC cleans itself up.
 
 There are a few potential places where this isolation isn't perfect, which is discussed in the next point.
 
@@ -209,11 +220,13 @@ Let's say you want to call method `M()` on your `TargetObject`, which returns an
 * Don't support non-primitive objects being passed to and from the ALCs
 This isn't recommended since it limits use of the target ALC by quite a lot, but for a quick and dirty version, it could work.
 * For each non-primitive object, generate another proxy that passes back to the user ALC instead of the reference to the normal object. When we unload, we can then remove this proxy as well, keeping the isolation barrier intact.
-This is very similar to how AppDomains handle MarshallByRef objects, and it keeps the functionality the same, but also adds a lot more overhead from creating the proxies during runtime for every non-primitive object.
+This is very similar to how AppDomains handle MarshallByRef objects, and it keeps the functionality the same, but also adds a lot more overhead from creating the proxies during runtime for every non-primitive object passed through.
 * Keep everything call-by-value, by making sure any `ServerObject` returns to the user ALC is the metadata of any object, that gets reconstructed when returning to `ClientObject`
 This option is nice since it works for both inter-process and in-process communication. However, having every object only able to return by value means that we'll be limited to making calls changing objects to a single ALC, and the multiple copies of an object may increase space and cause performance issues.
 
-For my planned implementation, I'll be trying to implement call-by-value, since it keeps the design consistent for all types (primitive and non-primitive) and for in-proc vs cross-proc. However, due to the design for extensibility, it's possible that anyone who wants to change the API can implement any of these options in their own way, by changing the interactions of `ClientObject` and `ServerObject`. If someone wants to limit interactions between plugins and the main context to primitives only, they're welcome to do so with this design.
+For my planned implementation, I'll be trying to implement call-by-value, since it keeps the design consistent for all types (primitive and non-primitive) and for in-proc vs cross-proc. This is to make sure that we don't need to worry about creating any additional proxies while passing non-primitive objects between ALCs or processes.
+
+However, due to the design for extensibility, it's possible that anyone who wants to change the API can implement any of these options in their own way, by changing the interactions of `ClientObject` and `ServerObject`. If someone wants to limit interactions between plugins and the main context to primitives only, they're welcome to do so with this design.
 
 #### Generic Types
 For generics, the API should probably be able to allow users to pass in a list of types "in order" that are being used for the particular instance of an object they are creating. 
@@ -230,9 +243,9 @@ Some hard points of performance that probably will need to be looked at:
 * Multiple uses of `Reflection.Invoke` possibly being called
 
 #### Special Language Features
-Language features such as `in`, `ref`, and `out` should be investigated further, but we probably don't want them since the design is based around keeping everything call-by-value.
+Language features such as `in`, `ref`, and `out` should be investigated further, but we probably won't be able to implement them in this design since everything will be kept call-by-value, and they're also a bit out of scope for this project.
 
-Other language features should also be investigated for the future.
+That said, these and other language features should be investigated for the future to be implemented.
 
 ## Open Questions
 * The current prototype for proof-of-concept has the `ServerObject` using `Reflection.Invoke()` to call the TargetObject methods, is there a more performant solution to running the methods of TargetObject?
