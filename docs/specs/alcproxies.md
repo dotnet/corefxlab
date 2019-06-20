@@ -49,7 +49,7 @@ This allows for programs and classes to be loaded with an extra boundary of isol
 ### AssemblyLoadContext
 Currently, there is no easy way to load an object from an ALC and call methods normally on it. However, you can use reflection like so:
 ```C#
-AssemblyLoadContext alc = new AssemblyLoadContext(assemblyPath, true); //Create the ALC
+AssemblyLoadContext alc = new AssemblyLoadContext(assemblyPath, IsCollectible: true); //Create the ALC
 Assembly aa = alc.LoadFromAssemblyPath(assemblyPath); //Load the assembly into the ALC
 Type classType = aa.GetType("AssemblyName.DesiredType");
 
@@ -159,15 +159,7 @@ Making the `ClientObject` a `DispatchProxy` object would work for making calls o
 #### Binary Serialization
 Using `BinaryFormatter`, types and their information can be serialized and sent across the ALC barrier, and deserialized using a class for decoding, which can then call the specific `TargetObject` methods.
 
-Benefits to using `BinaryFormatter`:
-* It is usable with any objects, as long as they are given the [Serializable] attribute.
-* There's no need to re-implement serialization, which would probably be out of scope for this project.
-
-Concerns with using `BinaryFormatter`:
-* Security concerns, as untrusted sources can use serialization to gain unwanted access to a program (there are a few examples of this [here](https://media.blackhat.com/bh-us-12/Briefings/Forshaw/BH_US_12_Forshaw_Are_You_My_Type_WP.pdf )).
-* It requires any objects that are being piped through the API to have the [Serializable] attribute, which needs to be manually done.
-* It's uncertain how we would use this for inter-process communication.
-* Potential casting issues which could prevent non-primitives from being passed through correctly.
+While Binary Serialization in concept is a good idea, there are too many issues that make this an ineffective solution. `BinaryFormatter` is a depricated API, many types aren't serializable, limiting the use of types we could proxy. 
 
 #### XML/JSON Serialization using `DataContractSerializer`
 Instead of moving a specific type through a `BinaryFormatter`, using `DataContractSerializer` would allow us to move any public or private pieces of an object, and then recreate it on the other side.
@@ -177,7 +169,7 @@ Benefits of `DataContractSerializer`:
 * Adding attributes is similar to `BinaryFormatter`, so any type should be able to make it across the barrier.
 
 Concerns with `DataContractSerializer`:
-* Many similar concerns to `BinaryFormatter`, such as potential security issues and the manual use of [DataContractAttribute] and [DataMemberAttribute] needing to be used.
+* Many similar concerns to `BinaryFormatter`, such as potential security issues and the manual use of [DataContractAttribute] and [DataMemberAttribute] needing to be used. There may also be limits to what types can be serialized using `DataContractSerializer`.
 
 #### gRPC
 Using the [gRPC](https://grpc.io/ ) framework, we'll have a much easier time simulating inter-process communication, as it's a major part of the framework.
@@ -188,11 +180,10 @@ Benefits of gRPC:
 
 Concerns with gRPC:
 * Encoding objects in a way that we can manually decode and pass them into the `TargetObject` needs to be investigated further, to make sure it works.
-* At the very least, there will probably be more overhead with how gRPC does in-process communication calls. At worst, it won't work since most of it is designed for use with ASP.NET instead of just .NET Core.
-* Limited to using http/2 for transport.
+* Limited to using http/2 for transport, which doesn't work for in-process communication (at least for current .NET implementations)
 
 
-The current plan is to build with either a second `DispatchProxy` for in-proc ALCs and gRPC for cross-proc connections, or use gRPC for both in- and out-of-proc work. This is since serialization has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, there are probably more efficient ways of communicating between ALCs.
+The current plan is to build with either a second `DispatchProxy` for in-proc ALCs and gRPC for cross-proc connections. This is since serialization has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, we need to find an alternative to communicate between ALCs.
 
 ### Extensibility
 One nice thing about the design is its ability to have its components "slotted" in and out. The main part of the project that has multiple options/paths that could be taken are all in the implementation of `ServerObject` and `ClientObject`. As long as the client can receive an instruction with info from the `ProxyObject`, and the server can invoke the `TargetObject`, the middle communication between the two can be implemented in multiple ways. If implemented right, this allows for the project to be open for anyone to add their own implementation of the communication between ALCs to suit their needs, possibly using some of the alternative ideas listed in this document.
