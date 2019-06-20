@@ -66,7 +66,12 @@ There are a few ways to use the instance from the ALC:
 * Use `DispatchProxy` to create a proxy within the user ALC, pointing to an object in the target ALC. This also requires a shared assembly.
 * Use Type Equivalence using COM and `TypeIdentifier`, which could help translate between the two "different" types in the ALCs. This does prevent the API from working cross-platform though.
 
-Anything requiring a shared assembly is inadequate for what we're trying to do, as one of the main benefits of AppDomains having totally separate types was with version compatibility. In .NET Framework, different versions of assemblies could be loaded into separate AppDomains, and communication could occur between objects as if they were one shared type. For example, if a user has a program that uses dependency A, and wants to load a plugin that has classes that inherit from older versions of dependency A, AppDomains would still be able to send and receive information between the plugin and the main program. If we enforce shared assemblies with this API, we lose the ability to allow for things like this.
+
+Anything requiring a shared assembly could work for what we're trying to do, but comes with limitations. In .NET Framework, different versions of assemblies could be loaded into separate AppDomains, and communication could occur between objects as if they were one shared type. For example, if a user has a program that uses dependency A, and wants to load a plugin that has classes that inherit from older versions of dependency A, AppDomains would still be able to send and receive information between the plugin and the main program. 
+
+With the creation of default interface methods, it's possible that everything will work if we have shared types between ALCs. Since we can implement similar versioning from shared interfaces, we have the power to share types across the ALC boundary, meaning if we can share assemblies, we should. This doesn't work well for cross-process communication (due to sharing dependencies not really working in that scenario), but in-process it can be a good solution.
+
+The one thing that total use of shared assemblies may have problems with is making sure that objects can be unloaded during the `AssemblyLoadContext.Unload` event, which would need a little more extra work to ensure that everything worked out.
 
 ## Proposed Solution
 
