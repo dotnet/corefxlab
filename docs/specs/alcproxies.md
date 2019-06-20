@@ -1,14 +1,12 @@
 # Proxy Creation for AssemblyLoadContext to Replace AppDomain
 ## Problem
-LoadContexts currently work as containers for assemblies, to work as a semi-replacement for AppDomain. However, the current implementation of AssemblyLoadContext creates a Type-isolation boundary between an Application and context, compared to the Object-isolation boundary that AppDomain created. This creates complications for developers intending on using AssemblyLoadContext in similar ways to AppDomain.
-
-In the past, a common use of AppDomain was to load an assembly into a separate execution environment, where developers were able to load objects and use them as if they were in the original domain. 
-
+`AssemblyLoadContext`s currently work as an `Assembly` resolution context to work as a semi-replacement for `AppDomain`. They allow multiple versions of an `Assembly` to coexist in the same process. However, the implementation of `AssemblyLoadContext` creates only a `Type` boundary between an Application and context, compared to the `Object` boundary that `AppDomain` created. This can create complications for developers intending on using `AssemblyLoadContext` in similar ways to `AppDomain`.
+In the past, a common use of AppDomain was to create objects in another `AppDomain` and use them as if they were a type in the original domain. 
 
 ## Comparison
 
 ### AppDomain
-For AppDomains, developers could load objects and execute methods like so (Shortened version from [here](https://docs.microsoft.com/en-us/dotnet/api/system.appdomain?view=netframework-4.8 )):
+For AppDomains, developers could load objects and execute methods like so (Shortened version from [here](https://docs.microsoft.com/dotnet/api/system.appdomain?view=netframework-4.8 )):
 
 
 ```C#
@@ -63,7 +61,7 @@ obj.GetType().GetMethod("SomeMethod").Invoke(obj, null);
 The problem here is that due to Type Isolation of ALCs, you cannot directly cast the instantiated object to its original type or an inherited type, as the CLR believes them to be different types from what's loaded from the ALC. 
 
 There are two ways to use the instance from the ALC:
-* Use reflection to invoke calls of the objects type, gotten directly using object.GetType()
+* Use reflection to invoke calls of the object's type, gotten directly using object.GetType()
 * Use a shared assembly between the user and target assembly that holds a class/interface that the type you want inherits from, and using said shared type instead of the type you want directly (See [this example](https://github.com/dotnet/samples/tree/master/core/extensions/AppWithPlugin ) to see it working).
 * Use `DispatchProxy` to create a proxy within the user ALC, pointing to an object in the target ALC. This also requires a shared assembly.
 
@@ -79,11 +77,11 @@ This proposal is for an API that can effectively recreate the object creation ca
 * To allow for plugin compatibility to work even with minor versioning changes being made to the application.
 * Attempt to design around allowing inter-process communication between the user's process and the process where the object instance will be made.
 
-One thing that's especially interesting is use of this design to not only allow for communication between ALCs, but expanding the design to work for inter-process communication, which is why the 5th bullet point is there.
+One thing that's especially interesting is use of this design to not only allow for communication between ALCs, but expanding the design to work for inter-process communication.
 
 ### Design
 ```C#
-interface SampleInterface {
+interface ISampleInterface {
 	public void SampleMethod();
 	...
 }
@@ -99,7 +97,7 @@ class SampleType : SampleInterface {
 
 
 public static void Main(){
-	AssemblyLoadContext alc = new AssemblyLoadContext(assemblyPath, true);
+	AssemblyLoadContext alc = new AssemblyLoadContext(assemblyPath, isCollectible: true);
 	ProxyBuilder p = new ProxyBuilder(typeof(SampleInterface), alc, assemblyPath);
 	SampleInterface testObject = (SampleInterface)p.CreateObject("SampleType");
 	testObject.SampleMethod();
@@ -171,7 +169,7 @@ Concerns with using `BinaryFormatter`:
 * It's uncertain how we would use this for inter-process communication.
 * Potential casting issues which could prevent non-primitives from being passed through correctly.
 
-#### XML Serialization using `DataContractSerializer`
+#### XML/JSON Serialization using `DataContractSerializer`
 Instead of moving a specific type through a `BinaryFormatter`, using `DataContractSerializer` would allow us to move any public or private pieces of an object, and then recreate it on the other side.
 
 Benefits of `DataContractSerializer`:
@@ -194,7 +192,7 @@ Concerns with gRPC:
 * Limited to using http/2 for transport.
 
 
-The current plan is to build with either a second `DispatchProxy` for in-proc ALCs and gRPC for cross-proc connections, or use gRPC for both in- and out-of-proc work. This is since serialization has a lot of potential issues that may affect the API later down the road. gRPC will probably
+The current plan is to build with either a second `DispatchProxy` for in-proc ALCs and gRPC for cross-proc connections, or use gRPC for both in- and out-of-proc work. This is since serialization has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, there are probably more efficient ways of communicating between ALCs.
 
 ### Extensibility
 One nice thing about the design is its ability to have its components "slotted" in and out. The main part of the project that has multiple options/paths that could be taken are all in the implementation of `ServerObject` and `ClientObject`. As long as the client can receive an instruction with info from the `ProxyObject`, and the server can invoke the `TargetObject`, the middle communication between the two can be implemented in multiple ways. If implemented right, this allows for the project to be open for anyone to add their own implementation of the communication between ALCs to suit their needs, possibly using some of the alternative ideas listed in this document.

@@ -7,13 +7,13 @@ namespace ALCProxy
 {
     interface IServerObject
     {
-        //public void ReceiveMethod(MethodInfo method, object[] args);
-        public void ReturnResult(Type t, object instance);
+        //void ReceiveMethod(MethodInfo method, object[] args);
+        void ReturnResult(Type t, object instance);
     }
 
     interface IClientObject
     {
-        public object SendMethod(MethodInfo method, object[] args);      
+        object SendMethod(MethodInfo method, object[] args);      
     }
 
     public class ClientObject : IClientObject

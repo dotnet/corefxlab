@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Loader;
-using HelloWorld;
 
 namespace ALCProxy
 {
