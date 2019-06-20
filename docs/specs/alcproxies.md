@@ -60,10 +60,11 @@ obj.GetType().GetMethod("SomeMethod").Invoke(obj, null);
 ```
 The problem here is that due to Type Isolation of ALCs, you cannot directly cast the instantiated object to its original type or an inherited type, as the CLR believes them to be different types from what's loaded from the ALC. 
 
-There are two ways to use the instance from the ALC:
+There are a few ways to use the instance from the ALC:
 * Use reflection to invoke calls of the object's type, gotten directly using object.GetType()
 * Use a shared assembly between the user and target assembly that holds a class/interface that the type you want inherits from, and using said shared type instead of the type you want directly (See [this example](https://github.com/dotnet/samples/tree/master/core/extensions/AppWithPlugin ) to see it working).
 * Use `DispatchProxy` to create a proxy within the user ALC, pointing to an object in the target ALC. This also requires a shared assembly.
+* Use Type Equivalence using COM and `TypeIdentifier`, which could help translate between the two "different" types in the ALCs. This does prevent the API from working cross-platform though.
 
 Anything requiring a shared assembly is inadequate for what we're trying to do, as one of the main benefits of AppDomains having totally separate types was with version compatibility. In .NET Framework, different versions of assemblies could be loaded into separate AppDomains, and communication could occur between objects as if they were one shared type. For example, if a user has a program that uses dependency A, and wants to load a plugin that has classes that inherit from older versions of dependency A, AppDomains would still be able to send and receive information between the plugin and the main program. If we enforce shared assemblies with this API, we lose the ability to allow for things like this.
 
@@ -252,8 +253,10 @@ When a proxy is created using the API, a new instance of the object type request
 
 When an ALC is unloaded, technically the `ProxyObject` will still exist in the user ALC, but any attempt to use methods in the proxy should throw an error to the user, as there is nothing to actually call the methods on.
 
-## Verification
+## Validation
 This project is a bit harder to test past integration tests, as the most important thing to test is to ensure that the communication between `ClientObject` and `ServerObject` is correct, which can't be unit tested easily. Integration tests should attempt to run methods from proxied targets both in and out of process, passing in a mix of primitive and non-primitive objects as arguments and return types. Separate from that, we should be able to Moq "serialization and deserialization" (the decoding steps from the client and server, not neccesarily with normal serializers) by taking sample messages sent through other tests, making changes, and ensuring that messages are still decoded and encoded correctly.
+
+Performance considerations are also fairly important, and need to be tested as well, possibly with [Perfview](https://github.com/microsoft/perfview ) or [Visual Studio](https://docs.microsoft.com/visualstudio/profiling/beginners-guide-to-performance-profiling?view=vs-2019 )
 
 ## Open Questions
 * The current prototype for proof-of-concept has the `ServerObject` using `Reflection.Invoke()` to call the TargetObject methods, is there a more performant solution to running the methods of TargetObject?
