@@ -73,7 +73,7 @@ Anything requiring a shared assembly is inadequate for what we're trying to do, 
 This proposal is for an API that can effectively recreate the object creation capabilities in AppDomain. The goals of this design are:
 * To allow for people are able to create isolated objects without the direct use of reflection. 
 * To preserve AppDomains ease of use when creating isolated objects.
-* To continue support for ALC unloads by destroying instantiated object when their ALC is unloaded, as well as other ALC features.
+* To continue support for ALC unloads by removing references to the proxied objects when an `Unload` is called, allowing for the GC to clean up the ALC correctly.
 * To allow for plugin compatibility to work even with minor versioning changes being made to the application.
 * Attempt to design around allowing inter-process communication between the user's process and the process where the object instance will be made.
 
