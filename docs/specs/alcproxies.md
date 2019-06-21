@@ -66,7 +66,6 @@ There are a few ways to use the instance from the ALC:
 * Use `DispatchProxy` to create a proxy within the user ALC, pointing to an object in the target ALC. This also requires a shared assembly.
 * Use Type Equivalence using COM and `TypeIdentifier`, which could help translate between the two "different" types in the ALCs. This does prevent the API from working cross-platform though.
 
-
 Anything requiring a shared assembly could work for what we're trying to do, but comes with limitations. In .NET Framework, different versions of assemblies could be loaded into separate AppDomains, and communication could occur between objects as if they were one shared type. For example, if a user has a program that uses dependency A, and wants to load a plugin that has classes that inherit from older versions of dependency A, AppDomains would still be able to send and receive information between the plugin and the main program. 
 
 With the creation of default interface methods, it's possible that everything will work if we have shared types between ALCs. Since we can implement similar versioning from shared interfaces, we have the power to share types across the ALC boundary, meaning if we can share assemblies, we should. This doesn't work well for cross-process communication (due to sharing dependencies not really working in that scenario), but in-process it can be a good solution.
@@ -136,7 +135,7 @@ This design is dependent on the ability for the `ProxyBuilder` to create dynamic
 
 ![](../img/ALCProxyAlternate.svg)
 
-One thing that's nice about `DispatchProxy` is that it allows for us to load a target Type directly from the target ALC to the user ALC, allowing us to remove the `ServerObject`, and instead just call the object's methods directly. This only works for in-process communications, though, and by removing `ServerObject`, we may lose the ability to allow for consistent unloadability (due to how the `TargetObject` may return objects), so this approach needs to be investigated further.
+One thing that's nice about `DispatchProxy` is that it allows for us to load a target Type directly from the target ALC to the user ALC, allowing us to remove the `ServerObject`, and instead just call the object's methods directly. This only works for in-process communications, though, and by removing `ServerObject`, we may lose the ability to allow for and `AssemblyLoadContext.Unload()` method to de-attach the proxy and all objects associated with it (due to how the `TargetObject` may return objects). This would lead to a 
 
 
 ### The Type-Isolation barrier, and Client/Server send options
@@ -203,7 +202,7 @@ There are a few guidelines we're depending on to make sure versioning works for 
 
 There may be cases where the main program attempts to make a method call to an older plugin, where the method doesn't exist. When the API makes a call to `TargetObject` through `ServerObject`, it will be using `Reflection.Invoke`, meaning if there ever is a case where we don't have the requested method we're calling, the invoke should throw a `TargetException`, which we could *potentially* do something with, but probably not.
 
-#### ALC Unloading
+#### ALC Unloading and Proxy Behavior
 
 ##### Out-of-process
 When a process gets destroyed, unloaded, or removed in some way, the fored unload needs to be dealt with on the `ClientObject` side.
@@ -211,13 +210,19 @@ When a process gets destroyed, unloaded, or removed in some way, the fored unloa
 The IPC formed between the `ClientObject` and `ServerObject` should be able to recognize when the server's process is killed, by either having the `ServerObject` send a signal to `ClientObject` that it's being destroyed, or by having `ClientObject` recognize when the IPC channel has been destroyed. When this happens, we can throw errors whenever the program attempts to use the `ProxyObject`, stating that the proxy is no longer valid.
 
 ##### In-process
-When we unload an ALC that has a proxy connection, there is no immediate destruction of the context, unlike the out-of-process scenario. Instead, the GC will collect the unloaded `AssemblyLoadContext` normally, once it has been dereferenced by all other objects. In this design, the API will effectively have "weak" references to the object, that hold the reference until the ALC calls `Unload()`, where the proxy will no longer be valid.
+When we unload an ALC that has a proxy connection, there is no immediate destruction of the context, unlike the out-of-process scenario. Instead, the GC will collect the unloaded `AssemblyLoadContext` normally, once it has been dereferenced by all other objects. The main question for this API is how do we want to support a scenario when `AssemblyLoadContext.Unload()` is called. Do want to lock the ALC out from unloading as long as a proxy exists to the ALC, or break that connection and give the ALC the ability to be collected (assuming there aren't any other references)?
 
-When `AssemblyLoadContext.Unload()` is called from the user ALC, the `AssemblyLoadContext.Unloading` event is fired, which we can hook to get `ClientObject` to remove the reference to `ServerObject`, effectively severing the reference between the two. While the `ProxyObject` is still allowed to be called in code at this point, it should throw an exception that the proxy no longer has a connection to the ALC object being used, which allows for the ALC to be removed by the GC in its unloading scenario.  Since there are no other connections into the ALC made by the API other then the connection between client and server, the target ALC should be able to continue unloading in the same way as if the proxies never existed. After severing the connection between client and server, we could also get the `ProxyObject` could remove its reference to the `ClientObject`, opening it up to be collected by the GC. 
+There are a few options we could take to answer this question:
+
+* Give the link between the proxy and the object a weak reference, so that when the ALC attempts to unload, it won't have to wait on the proxy to be dereferenced for the ALC to unload. This could also be done by severing the link between the proxy and the ALC during the `AssemblyLoadContext.Unloading` event. If we built connections to ALCs using only proxies, users could build systems that allow for more consistent unloading from an ALC.
+* Give a strong reference between the proxy and target. When `AssemblyLoadContext.Unload()` is called, so that the connection isn't severed in the unloading process. This works similarly to current objects that reference other objects within an ALC.
 
 
+There's some value in creating weak references using proxies, as the more consistent unload may be useful for users (it's still dependent on the GC collecting the ALC after `Unload()` is called, but we know with this situation that the ALC won't be held by the proxies). That said, both have their advantages, and we could also implement an option when creating an object for Strong vs Weak references, defaulting to one specifically.
 
-There's no need for the server to dereference the target object, since they are both within the target ALC, and can be removed whenever the target ALC cleans itself up.
+In terms of implementation, strong references aren't too difficult to create, as they are just references from the proxy structure between the client and server that don't have any special cases for it to be broken. For the weak type, we need to either use direct weak references (such as with [ConditionalWeakTable](https://docs.microsoft.com/dotnet/api/system.runtime.compilerservices.conditionalweaktable-2?view=netcore-3.0 )) or a destroyable strong reference. If we use a severed strong reference, we can keep the `Unload()` behavior of the proxy consistent, as while the `ProxyObject` is still allowed to be called in code post-ALC unload, it should always throw an exception that the proxy no longer has a connection to the ALC object being used post-call. After severing the connection between client and server, we could also get the `ProxyObject` could remove its reference to the `ClientObject`, opening it up to be collected by the GC.
+
+In either scenario, there's no need for the `ServerObject` to dereference the target object, since they are both within the target ALC, and can be removed whenever the target ALC cleans itself up.
 
 There are a few potential places where this isolation isn't perfect, which is discussed in the next point.
 
@@ -268,6 +273,7 @@ Performance considerations are also fairly important, and need to be tested as w
 * How should the API deal with generic types when creating our different proxy classes?
 * Is there anything special that we need to do to deal with other language features, such as lambdas?
 * Do we have a way to deal with the user ALC being destroyed before the target ALC? How do we react to that problem?
+* Do we want to use strong or weak references for the proxies? Do we want to give options so users can use both?
 
 ## Extra Goals
 * Can we get out-of-process proxies to specify an ALC to be added to in the receiving process?
