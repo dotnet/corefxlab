@@ -1,9 +1,37 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Loader;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace ALCProxy
 {
+
+    public interface ITest
+    {
+        public void DoThing();
+    }
+
+    public class Test : ITest
+    {
+        public static void Main()
+        {
+            AssemblyLoadContext alc = new AssemblyLoadContext("", isCollectible: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+            t.DoThing();
+
+            ITest t2 = new Test();
+            t2.DoThing();
+        }
+
+        public void DoThing()
+        {
+            Console.WriteLine("Hello from somewhere in the middle of nowhere!");
+            var a = Assembly.GetExecutingAssembly();
+            Console.WriteLine(AssemblyLoadContext.GetLoadContext(a).Name);
+        }
+    }
+
+
     public static class ProxyBuilder<T> //T is the interface type we want the object to extend
     {
         public static T CreateInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName)
@@ -44,7 +72,10 @@ namespace ALCProxy
         }
         private void SetParameters(AssemblyLoadContext alc, string typeName, string a)
         {
-            _client = (IClientObject)Activator.CreateInstance(typeof(ClientObject)); //Creates the client that sends stuff
+            // _client = (IClientObject)Activator.CreateInstance(typeof(ClientObject)); //Creates the client that sends stuff
+
+            _client = (IClientObject)typeof(ClientObject).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
+            ;
             _client.SetUpServer(alc, typeName, a);
         }
         protected override object Invoke(MethodInfo targetMethod, object[] args)
