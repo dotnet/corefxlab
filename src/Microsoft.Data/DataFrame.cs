@@ -151,12 +151,13 @@ namespace Microsoft.Data
         private void SetSuffixForDuplicatedColumnNames(DataFrame dataFrame, BaseColumn column, string leftSuffix, string rightSuffix)
         {
             int index = dataFrame._table.GetColumnIndex(column.Name);
-            if (index != -1)
+            while (index != -1)
             {
                 // Pre-existing column. Change name
                 BaseColumn existingColumn = dataFrame.Column(index);
                 dataFrame._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
                 column.Name += rightSuffix;
+                index = dataFrame._table.GetColumnIndex(column.Name);
             }
         }
 

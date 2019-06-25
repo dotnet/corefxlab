@@ -66,7 +66,6 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary.Add(newName, currentIndex);
         }
 
-
         public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
             where T : unmanaged
         {

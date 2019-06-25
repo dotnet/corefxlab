@@ -321,7 +321,7 @@ namespace Microsoft.Data
                 DataFrameBuffer<byte> newBuffer = new DataFrameBuffer<byte>();
                 ret.Add(newBuffer);
                 Span<byte> span = buffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(span[i]);
                 }
