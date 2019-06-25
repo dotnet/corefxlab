@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
-using System.Transactions;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace ALCProxy
 {
-    public interface IServerObject
-    {
-        object CallObject(MethodInfo method, object[] args);
-    }
 
+    public interface IServerObject {
+       // object CallObject(MethodInfo method, object[] args);
+    }
     public interface IClientObject
     {
         object SendMethod(MethodInfo method, object[] args);
@@ -36,9 +27,7 @@ namespace ALCProxy
 
         public static void Main()
         {
-            
         }
-
         private Type FindType(string typeName, Assembly a)
         {
             //find the type we're looking for
@@ -68,19 +57,12 @@ namespace ALCProxy
 
             //find the type we're looking for
             Type objType = FindType(typeName, a);
-            // object instance = Activator.CreateInstance(t);
-
             //Load this assembly in so we can get the server into the ALC
-
-            Assembly aaa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(DispatchProxy)).CodeBase.Substring(8));
-            //aaa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(System.Activator)).CodeBase.Substring(8));
-
 
             Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientObject)).CodeBase.Substring(8));
             Type serverType = FindType("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
-
 
             object s = Activator.CreateInstance(constructedType);
 
@@ -89,32 +71,17 @@ namespace ALCProxy
                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, new Type[] { typeof(Type) }, null);
             m = m.MakeGenericMethod(constructedType);
             _server = m.Invoke(s, new object[] { objType });
-
-
         }
-
         public object SendMethod(MethodInfo method, object[] args)
         {
-
-            //MethodInfo m = _server.GetType().GetMethod("CallObject");
-            //return m.Invoke(_server, new object[] { method, args });
             return method.Invoke(_server, args);
-            //MethodInfo m = _server.GetType().GetMethod(((MethodInfo)args[0]).Name);
-            //return m.Invoke(_server, (object[])args[1]);
-
         }
-
         //This should always be a "SendMethod" option, with 2 args, the methodinfo of what needs to be sent and the args for said method
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
             return SendMethod(targetMethod, args);
         }
     }
-    /// <summary>
-    /// Currently using a DispatchProxy directly here leads to an error when calling the "Create" method: System.NotSupportedException: 'A non-collectible assembly may not reference a collectible assembly.'
-    /// So for now I'm doing some custom IL generation until I can figure out how to get around that problem, which seems to be sorting things out since it's all dynamic and manually set to be collectible.
-    /// </summary>
-    /// <typeparam name="I"></typeparam>
 
     public class ServerDispatch<I> : ALCProxy.Communication.DispatchProxy, IServerObject
     {
@@ -125,7 +92,6 @@ namespace ALCProxy
             ((ServerDispatch<I>)proxy).SetParameters(type, new Type[] { }, new object[] { });
             return (I)proxy;
         }
-
         private void SetParameters(Type instanceType, Type[] argTypes, object[] constructorArgs)
         {
             instance = instanceType.GetConstructor(argTypes).Invoke(constructorArgs);
@@ -133,14 +99,21 @@ namespace ALCProxy
 
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
-            MethodInfo m = instance.GetType().GetMethod(targetMethod.Name);
+            //Type[] argTypes = args.Select(obj => ConvertType(obj.GetType())).ToArray();
+            Type[] argTypes = args.Select(obj => obj.GetType()).ToArray();
+            MethodInfo[] mm = instance.GetType().GetMethods();
+            MethodInfo m = instance.GetType().GetMethod(targetMethod.Name, argTypes);
             return m.Invoke(instance, args);
         }
 
-        public object CallObject(MethodInfo method, object[] args)
+        public Type ConvertType(Type toConvert)
         {
-            throw new NotImplementedException();
+            string assemblyPath = Assembly.GetAssembly(toConvert).CodeBase.Substring(8);
+            if (toConvert.IsPrimitive || assemblyPath.Contains("System.Private.CoreLib")) //Can't load/dont want to load extra types from System.Private.CoreLib
+                return toConvert;
+
+             return Assembly.LoadFrom(Assembly.GetAssembly(toConvert).CodeBase.Substring(8)).GetType(toConvert.FullName);
+
         }
     }
-
 }
