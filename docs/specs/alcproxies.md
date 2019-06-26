@@ -168,7 +168,7 @@ Instead of moving a specific type through a `BinaryFormatter`, using `DataContra
 Benefits of `DataContractSerializer`:
 * It may be easier compared to `BinaryFormatter` to cast this effectively across the type-isolation barrier.
 * There's no need to add attributes if you want the default behavior for `DataContractSerializer` (Serializes all public members).
-* There are none of the security issues compared to `BinaryFormatter`.
+* There are none of the security issues known to exist in `BinaryFormatter`.
 
 #### gRPC
 Using the [gRPC](https://grpc.io/ ) framework, we'll have a much easier time simulating inter-process communication, as it's a major part of the framework.
