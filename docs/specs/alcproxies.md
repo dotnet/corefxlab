@@ -181,7 +181,6 @@ Concerns with gRPC:
 * Encoding objects in a way that we can manually decode and pass them into the `TargetObject` needs to be investigated further, to make sure it works.
 * Limited to using http/2 for transport, which doesn't work for in-process communication (at least for current .NET implementations)
 
-
 The current plan is to build with a second `DispatchProxy` for in-proc ALCs, using the `DataContractSerializer` to deal with type issues between the ALCs, and gRPC for cross-proc connections. This is since other serialization methods (like binary serialization) has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, we need to find an alternative to communicate between ALCs.
 
 ### Extensibility
