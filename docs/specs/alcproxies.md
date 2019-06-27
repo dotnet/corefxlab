@@ -153,13 +153,9 @@ The type-isolation barrier becomes a larger issue for parameters and return type
 The first two have their own issues, as we would either need to figure out how to build those proxies on the fly from the IL-Generated `ProxyObject`/`ServerObject`, or lose out on the benefit of versioning compatibility. The third option is what `ServerObject` and `ClientObject` intend on setting a framework for; allowing for a (possibly interchangeable) connection framework to be used to send messages to and from the ALCs (or processes).
 
 There are a few ways we could implement the client/server encoding and messaging. The few that I've been looking at are:
-* Add a second `DispatchProxy` that can call across the barrier and keep our abstraction layer.
 * Using `BinaryFormatter` to serialize data across the boundary
 * Similar serialization with `DataContractSerializer`
 * Using gRPC to send objects across
-
-#### Second `DispatchProxy`
-Making the `ClientObject` a `DispatchProxy` object would work for making calls over ALCs, though not for out-of-process calls. It's not the perfect solution, as it would require two `Reflection.Invoke` calls (one from client to server, and one from server to target), but it would allow us to enforce our isolation policy from the custom `ServerObject` being able to mess with our return calls to make sure we were enforcing our constraints (see "ALC Unloading" below).
 
 #### Binary Serialization
 Using `BinaryFormatter`, types and their information can be serialized and sent across the ALC barrier, and deserialized using a class for decoding, which can then call the specific `TargetObject` methods.
@@ -171,10 +167,8 @@ Instead of moving a specific type through a `BinaryFormatter`, using `DataContra
 
 Benefits of `DataContractSerializer`:
 * It may be easier compared to `BinaryFormatter` to cast this effectively across the type-isolation barrier.
-* Adding attributes is similar to `BinaryFormatter`, so any type should be able to make it across the barrier.
-
-Concerns with `DataContractSerializer`:
-* Many similar concerns to `BinaryFormatter`, such as potential security issues and the manual use of [DataContractAttribute] and [DataMemberAttribute] needing to be used. There may also be limits to what types can be serialized using `DataContractSerializer`.
+* There's no need to add attributes if you want the default behavior for `DataContractSerializer` (Serializes all public members).
+* There are none of the security issues known to exist in `BinaryFormatter`.
 
 #### gRPC
 Using the [gRPC](https://grpc.io/ ) framework, we'll have a much easier time simulating inter-process communication, as it's a major part of the framework.
@@ -187,8 +181,7 @@ Concerns with gRPC:
 * Encoding objects in a way that we can manually decode and pass them into the `TargetObject` needs to be investigated further, to make sure it works.
 * Limited to using http/2 for transport, which doesn't work for in-process communication (at least for current .NET implementations)
 
-
-The current plan is to build with either a second `DispatchProxy` for in-proc ALCs and gRPC for cross-proc connections. This is since serialization has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, we need to find an alternative to communicate between ALCs.
+The current plan is to build with a second `DispatchProxy` for in-proc ALCs, using the `DataContractSerializer` to deal with type issues between the ALCs, and gRPC for cross-proc connections. This is since other serialization methods (like binary serialization) has a lot of potential issues that may affect the API later down the road. gRPC will probably work fine for inter-process communication, but for in-proc, we need to find an alternative to communicate between ALCs.
 
 ### Extensibility
 One nice thing about the design is its ability to have its components "slotted" in and out. The main part of the project that has multiple options/paths that could be taken are all in the implementation of `ServerObject` and `ClientObject`. As long as the client can receive an instruction with info from the `ProxyObject`, and the server can invoke the `TargetObject`, the middle communication between the two can be implemented in multiple ways. If implemented right, this allows for the project to be open for anyone to add their own implementation of the communication between ALCs to suit their needs, possibly using some of the alternative ideas listed in this document.
