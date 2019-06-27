@@ -5,6 +5,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 
 namespace ALCProxy.Communication
@@ -13,10 +14,15 @@ namespace ALCProxy.Communication
     {
         //Can't make this an IServerObject directly due to the type-isolation barrier
         private object _server;
+        //private ConditionalWeakTable<ClientObject<InterfaceType>, ServerDispatch<InterfaceType>> _serverTable;
         private Type _intType;
         public ClientObject(Type interfaceType)
         {
             _intType = interfaceType;
+        }
+        public ClientObject()
+        {
+
         }
         private Type FindType(string typeName, Assembly a)
         {
@@ -39,6 +45,7 @@ namespace ALCProxy.Communication
         }
         public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath)
         {
+            
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're looking for
             Type objType = FindType(typeName, a);
@@ -47,6 +54,7 @@ namespace ALCProxy.Communication
             Type serverType = FindType("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
+
             object s = Activator.CreateInstance(constructedType);
             //Get the "Create<ObjectInterface>" method to generate the serverside proxy within the target ALC
             MethodInfo m = constructedType.GetMethod(
@@ -54,7 +62,21 @@ namespace ALCProxy.Communication
                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, new Type[] { typeof(Type) }, null);
             m = m.MakeGenericMethod(constructedType);
             _server = m.Invoke(s, new object[] { objType });
+
+            //Attach to the unloading event
+            alc.Unloading += this.Unload;
+            //alc.Unloading += new Action<AssemblyLoadContext>(this.Unload);
+
         }
+        //public delegate void Unload();
+        void Unload(object sender)
+        {
+            _server = null;
+            //GC.Collect();
+            //return null;
+            //throw new NotImplementedException();
+        }
+
         public object SendMethod(MethodInfo method, object[] args)
         {
             return method.Invoke(_server, args);

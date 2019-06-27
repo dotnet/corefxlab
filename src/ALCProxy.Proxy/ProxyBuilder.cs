@@ -21,6 +21,12 @@ namespace ALCProxy.Proxy
     public class ALCDispatch<I> : System.Reflection.DispatchProxy //T is the TargetObject type, I is the specific client you want to use.
     {
         private IClientObject _client; //ClientObject
+
+        public void Unload()
+        {
+
+        }
+        
         internal static I Create(AssemblyLoadContext alc, string typeName, string a)
         {
             object proxy = Create<I, ALCDispatch<I>>();
@@ -30,6 +36,7 @@ namespace ALCProxy.Proxy
         private void SetParameters(AssemblyLoadContext alc, string typeName, string a)
         {
             _client = (IClientObject)typeof(ClientObject).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
+            //_client = (IClientObject)Activator.CreateInstance(typeof(ClientObject<I>));
             _client.SetUpServer(alc, typeName, a);
         }
         protected override object Invoke(MethodInfo targetMethod, object[] args)

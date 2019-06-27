@@ -43,5 +43,18 @@ namespace ALCProxy.Tests
             Assert.Equal("TestContext", t.DoThing());
             Assert.Equal(17, t.DoThing2(10, new List<string> { "Letters", "test", "hello world!"}));
         }
+
+        [Fact]
+        public void TestUnload()
+        {
+            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+            Assert.Equal("TestContext", t.DoThing());
+
+            alc.Unload();
+            GC.Collect();
+            Assert.ThrowsAny<Exception>(t.DoThing);
+        }
     }
 }
