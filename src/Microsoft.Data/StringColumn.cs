@@ -139,7 +139,7 @@ namespace Microsoft.Data
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
-            return CloneAndAppendNulls((BaseColumn)columnSortIndices, !ascending);
+            return Clone(columnSortIndices, !ascending, NullCount);
         }
 
         internal override BaseColumn GetAscendingSortIndices()
@@ -201,27 +201,26 @@ namespace Microsoft.Data
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAtBuffer, getBufferLengthAtIndex);
         }
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
+            StringColumn clone;
             if (!(mapIndices is null))
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
-            return Clone();
-        }
-
-        public override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
-        {
-            StringColumn ret = Clone(mapIndices, invertMapIndices) as StringColumn;
-            for (long i = 0; i < NullCount; i++)
+            else
             {
-                ret.Append(null);
+                clone = Clone();
             }
-            return ret;
+            for (long i = 0; i < numberOfNullsToAppend; i++)
+            {
+                clone.Append(null);
+            }
+            return clone;
         }
 
         private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
