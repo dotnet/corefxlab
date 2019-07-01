@@ -3,10 +3,12 @@
 // See the LICENSE file in the project root for more information. 
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using System.Runtime.Serialization;
 
 namespace ALCProxy.Communication
 {
@@ -20,17 +22,13 @@ namespace ALCProxy.Communication
         {
             _intType = interfaceType;
         }
-        public ClientObject()
-        {
-
-        }
         private Type FindType(string typeName, Assembly a)
         {
             //find the type we're looking for
             Type t = null;
             foreach (Type ty in a.GetTypes())
             {
-                if (ty.Name.Equals(typeName))
+                if (ty.Name.Equals(typeName)) // will happen for non-generic types, generics we need to find the additional "`1" afterwards
                 {
                     t = ty;
                     break;
@@ -43,9 +41,8 @@ namespace ALCProxy.Communication
             }
             return t;
         }
-        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath)
+        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, bool isGeneric)
         {
-            
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're looking for
             Type objType = FindType(typeName, a);
@@ -54,59 +51,72 @@ namespace ALCProxy.Communication
             Type serverType = FindType("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
-
-            object s = Activator.CreateInstance(constructedType);
-            //Get the "Create<ObjectInterface>" method to generate the serverside proxy within the target ALC
-            MethodInfo m = constructedType.GetMethod(
-                "Create",
-                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, new Type[] { typeof(Type) }, null);
-            m = m.MakeGenericMethod(constructedType);
-            _server = m.Invoke(s, new object[] { objType });
-
+            //Give the client its reference to the server
+            _server = constructedType.GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { objType });
             //Attach to the unloading event
-            alc.Unloading += this.Unload;
-            //alc.Unloading += new Action<AssemblyLoadContext>(this.Unload);
-
+            alc.Unloading += Unload;
         }
-        //public delegate void Unload();
-        void Unload(object sender)
+        private void Unload(object sender)
         {
             _server = null;
-            //GC.Collect();
-            //return null;
-            //throw new NotImplementedException();
+            //GC.Collect(); //Probably don't want to force anything here but it could be an option.
         }
 
+        /// <summary>
+        /// Converts each argument into a stream using DataContractSerializer so it can be sent over in a call-by-value fashion
+        /// </summary>
+        /// <param name="method">the methodInfo of the target method</param>
+        /// <param name="args">the current objects assigned as arguments to send</param>
+        /// <returns></returns>
         public object SendMethod(MethodInfo method, object[] args)
         {
-            return method.Invoke(_server, args);
+            //List<(MemoryStream, DataContractSerializer, Type)> streams = new List<(MemoryStream, DataContractSerializer, Type)>();
+            List<MemoryStream> streams = new List<MemoryStream>();
+            List<DataContractSerializer> serializers = new List<DataContractSerializer>();
+            List<Type> types = new List<Type>();
+            Type[] argTypes = args.Select(obj => obj.GetType()).ToArray();
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                object arg = args[i];
+                MemoryStream stream = new MemoryStream();
+                Type t = arg.GetType();
+                //Serialize the Record object to a memory stream using DataContractSerializer.  
+                DataContractSerializer serializer = new DataContractSerializer(arg.GetType());
+                serializer.WriteObject(stream, arg);
+                //streams.Add( (stream, serializer, argTypes[i]) );
+                streams.Add(stream);
+                serializers.Add(serializer);
+                types.Add(t);
+            }
+            MethodInfo callMethod = _server.GetType().GetMethod("CallObject");
+            callMethod.GetParameters();
+            return callMethod.Invoke(_server, new object[] { method, streams, serializers, types });
+            //return method.Invoke(_server, streams.ToArray());
         }
         //This should always be a "SendMethod" option, with 2 args, the methodinfo of what needs to be sent and the args for said method
-        protected override object Invoke(MethodInfo targetMethod, object[] args)
+        protected override object Invoke(MethodInfo method, object[] args)
         {
-            return SendMethod(targetMethod, args);
+            //Currently we just send the args over but its probably better to serialize everything and then send it.
+            return method.Invoke(_server, args);
+            //return SendMethod(method, args);
         }
     }
-    public class ServerDispatch<ObjectInterface> : ALCProxy.Communication.DispatchProxy, IServerObject
+    public class ServerDispatch<ObjectInterface> : IServerObject
     {
         public object instance;
-        internal static ObjectInterface Create<Dispatch>(Type type)
+
+        public ServerDispatch(Type type)
         {
-            object proxy = Create<ObjectInterface, ServerDispatch<ObjectInterface>>();
-            ((ServerDispatch<ObjectInterface>)proxy).SetParameters(type, new Type[] { }, new object[] { });
-            return (ObjectInterface)proxy;
+            SetParameters(type, new Type[] { }, new object[] { });
         }
-        private void SetParameters(Type instanceType, Type[] argTypes, object[] constructorArgs)
+        internal static IServerObject Create<Dispatch>(Type type)
         {
-            instance = instanceType.GetConstructor(argTypes).Invoke(constructorArgs);
+            return new ServerDispatch<Dispatch>(type);
         }
-        protected override object Invoke(MethodInfo targetMethod, object[] args)
+        private void SetParameters(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
-            //Type[] argTypes = args.Select(obj => ConvertType(obj.GetType())).ToArray();
-            Type[] argTypes = args.Select(obj => obj.GetType()).ToArray();
-            MethodInfo[] mm = instance.GetType().GetMethods();
-            MethodInfo m = instance.GetType().GetMethod(targetMethod.Name, argTypes);
-            return m.Invoke(instance, args);
+            instance = instanceType.GetConstructor(constructorTypes).Invoke(constructorArgs);
         }
 
         //TODO Get type conversion working
@@ -118,7 +128,33 @@ namespace ALCProxy.Communication
                 return toConvert;
             }
              return Assembly.LoadFrom(Assembly.GetAssembly(toConvert).CodeBase.Substring(8)).GetType(toConvert.FullName);
+        }
 
+        public object CallObject(MethodInfo targetMethod, List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
+        {
+            //Turn the memstreams into their respective objects
+            object[] args = DecryptStreams(streams, serializers, argTypes);
+
+            MethodInfo m = instance.GetType().GetMethod(targetMethod.Name, argTypes.ToArray());
+            return m.Invoke(instance, args);
+        }
+
+        private object[] DecryptStreams(List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
+        {
+            var convertedObjects = new List<object>();
+
+            for (int i = 0; i <streams.Count; i++)
+            {
+                MemoryStream s = streams[i];
+                DataContractSerializer serializer = serializers[i];
+                Type t = argTypes[i];
+                s.Position = 0;
+
+                //Deserialize the Record object back into a new record object.  
+                object obj = serializer.ReadObject(s);
+                convertedObjects.Add(obj);
+            }
+            return convertedObjects.ToArray();
         }
     }
 }
