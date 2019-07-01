@@ -699,11 +699,11 @@ namespace Microsoft.Data.Tests
             VerifyJoin(join, left, right, JoinAlgorithm.Right);
 
             // Outer join
-            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Outer);
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(join.RowCount, left.RowCount);
             Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
             Assert.Null(join["Int_right"][6]);
-            VerifyJoin(join, left, right, JoinAlgorithm.Outer);
+            VerifyJoin(join, left, right, JoinAlgorithm.FullOuter);
 
             // Inner join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);
@@ -731,11 +731,11 @@ namespace Microsoft.Data.Tests
             VerifyJoin(join, left, right, JoinAlgorithm.Right);
 
             // Outer join
-            join = left.Join(right, joinAlgorithm: JoinAlgorithm.Outer);
+            join = left.Join(right, joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(join.RowCount, right.RowCount);
             Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
             Assert.Null(join["Int_left"][12]);
-            VerifyJoin(join, left, right, JoinAlgorithm.Outer);
+            VerifyJoin(join, left, right, JoinAlgorithm.FullOuter);
 
             // Inner join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);

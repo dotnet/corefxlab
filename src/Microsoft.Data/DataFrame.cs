@@ -13,7 +13,7 @@ namespace Microsoft.Data
     {
         Left,
         Right,
-        Outer,
+        FullOuter,
         Inner
     }
 
@@ -220,7 +220,7 @@ namespace Microsoft.Data
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
             }
-            else if (joinAlgorithm == JoinAlgorithm.Outer)
+            else if (joinAlgorithm == JoinAlgorithm.FullOuter)
             {
                 long newRowCount = Math.Max(RowCount, other.RowCount);
                 long numberOfNulls = newRowCount - RowCount;
