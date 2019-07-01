@@ -319,14 +319,7 @@ namespace Microsoft.Data
             {
                 // Create empty columns
                 BaseColumn column = other.Column(i).Clone(emptyMap);
-                int index = ret._table.GetColumnIndex(column.Name);
-                if (index != -1)
-                {
-                    // Pre-existing column. Change name
-                    BaseColumn existingColumn = ret.Column(index);
-                    ret._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
-                    column.Name += rightSuffix;
-                }
+                SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
                 ret.InsertColumn(ret.ColumnCount, column);
             }
 
@@ -361,7 +354,7 @@ namespace Microsoft.Data
                         {
                             if (thisColumn[i] == null)
                             {
-                                // Has to match only with nulls in otherColumn
+                                // Match only with nulls in otherColumn
                                 if (otherColumn[row] == null)
                                 {
                                     AppendForMerge(ret, rowNumber++, this, other, i, row);
@@ -369,7 +362,7 @@ namespace Microsoft.Data
                             }
                             else
                             {
-                                // Cannot match to nulls in otherColumn
+                                // Cannot match nulls in otherColumn
                                 if (otherColumn[row] != null)
                                 {
                                     AppendForMerge(ret, rowNumber++, this, other, i, row);
@@ -481,7 +474,7 @@ namespace Microsoft.Data
                 }
                 ret._table.RowCount = rowNumber;
             }
-            else if (joinAlgorithm == JoinAlgorithm.Outer)
+            else if (joinAlgorithm == JoinAlgorithm.FullOuter)
             {
                 BaseColumn otherColumn = other[rightJoinColumn];
                 MultiValueDictionary<TKey, long> multimap = otherColumn.HashColumnValues<TKey>();

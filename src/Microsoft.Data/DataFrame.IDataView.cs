@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -261,7 +260,7 @@ namespace Microsoft.Data
                     PrimitiveGetter._columnIndex = column.Index;
                     ret = PrimitiveGetter<TValue>.Instance.GetValueGetter();
                 }
-                catch (Exception)
+                catch (NotSupportedException)
                 {
                     // Not a primitive column
                     ret = valueGetterImplementation;

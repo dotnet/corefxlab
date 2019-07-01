@@ -60,6 +60,10 @@ namespace Microsoft.Data
             get => GetValue(startIndex, length);
         }
 
+        /// <summary>
+        /// Called internally from Merge
+        /// </summary>
+        /// <param name="length"></param>
         public virtual void Resize(long length) => throw new NotImplementedException();
 
         /// <summary>

@@ -767,7 +767,7 @@ namespace Microsoft.Data.Tests
             Assert.Null(merge["Int_right"][2]);
 
             // Outer merge
-            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Outer);
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(merge.RowCount, left.RowCount);
             Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
             Assert.Null(merge["Int_right"][6]);
@@ -795,7 +795,7 @@ namespace Microsoft.Data.Tests
             Assert.Null(merge["Int_left"][12]);
 
             // Outer merge
-            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.Outer);
+            merge = left.Merge<int>(right, "Int", "Int",joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(16, merge.RowCount);
             Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
             Assert.Null(merge["Int_left"][12]);
