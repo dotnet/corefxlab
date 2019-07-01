@@ -3,10 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Collections.Extensions;
+using Microsoft.ML.Transforms;
 
 namespace Microsoft.Data
 {
@@ -553,6 +555,77 @@ namespace Microsoft.Data
             return ret;
         }
 
+        public GroupBy GroupBy(string columnName)
+        {
+            int columnIndex = _table.GetColumnIndex(columnName);
+            if (columnIndex == -1)
+                throw new ArgumentException($"{columnName} does not exist");
+
+            BaseColumn column = _table.Column(columnIndex);
+
+            switch (column)
+            {
+                case PrimitiveColumn<bool> boolColumn:
+                    MultiValueDictionary<bool, long> boolDictionary = boolColumn.HashColumnValues<bool>();
+                    return new GroupBy<bool>(this, columnIndex, boolDictionary);
+                case PrimitiveColumn<byte> byteColumn:
+                    MultiValueDictionary<byte, long> byteDictionary = byteColumn.HashColumnValues<byte>();
+                    return new GroupBy<byte>(this, columnIndex, byteDictionary);
+                case PrimitiveColumn<char> charColumn:
+                    MultiValueDictionary<char, long> charDictionary = charColumn.HashColumnValues<char>();
+                    return new GroupBy<char>(this, columnIndex, charDictionary);
+                case PrimitiveColumn<decimal> decimalColumn:
+                    MultiValueDictionary<decimal, long> decimalDictionary = decimalColumn.HashColumnValues<decimal>();
+                    return new GroupBy<decimal>(this, columnIndex, decimalDictionary);
+                case PrimitiveColumn<double> doubleColumn:
+                    MultiValueDictionary<double, long> doubleDictionary = doubleColumn.HashColumnValues<double>();
+                    return new GroupBy<double>(this, columnIndex, doubleDictionary);
+                case PrimitiveColumn<float> floatColumn:
+                    MultiValueDictionary<float, long> floatDictionary = floatColumn.HashColumnValues<float>();
+                    return new GroupBy<float>(this, columnIndex, floatDictionary);
+                case PrimitiveColumn<int> intColumn:
+                    MultiValueDictionary<int, long> intDictionary = intColumn.HashColumnValues<int>();
+                    return new GroupBy<int>(this, columnIndex, intDictionary);
+                case PrimitiveColumn<long> longColumn:
+                    MultiValueDictionary<long, long> longDictionary = longColumn.HashColumnValues<long>();
+                    return new GroupBy<long>(this, columnIndex, longDictionary);
+                case PrimitiveColumn<sbyte> sbyteColumn:
+                    MultiValueDictionary<sbyte, long> sbyteDictionary = sbyteColumn.HashColumnValues<sbyte>();
+                    return new GroupBy<sbyte>(this, columnIndex, sbyteDictionary);
+                case PrimitiveColumn<short> shortColumn:
+                    MultiValueDictionary<short, long> shortDictionary = shortColumn.HashColumnValues<short>();
+                    return new GroupBy<short>(this, columnIndex, shortDictionary);
+                case PrimitiveColumn<uint> uintColumn:
+                    MultiValueDictionary<uint, long> uintDictionary = uintColumn.HashColumnValues<uint>();
+                    return new GroupBy<uint>(this, columnIndex, uintDictionary);
+                case PrimitiveColumn<ulong> ulongColumn:
+                    MultiValueDictionary<ulong, long> ulongDictionary = ulongColumn.HashColumnValues<ulong>();
+                    return new GroupBy<ulong>(this, columnIndex, ulongDictionary);
+                case PrimitiveColumn<ushort> ushortColumn:
+                    MultiValueDictionary<ushort, long> ushortDictionary = ushortColumn.HashColumnValues<ushort>();
+                    return new GroupBy<ushort>(this, columnIndex, ushortDictionary);
+                case StringColumn stringColumn:
+                    MultiValueDictionary<string, long> stringDictionary = stringColumn.HashColumnValues<string>();
+                    return new GroupBy<string>(this, columnIndex, stringDictionary);
+                default:
+                    MultiValueDictionary<object, long> dictionary = column.HashColumnValues<object>();
+                    return new GroupBy<object>(this, columnIndex, dictionary);
+            }
+        }
+
+        // In a GroupBy call, columns get resized. We need to set the RowCount to reflect the true Length of the DataFrame. Internal only. Should not be exposed
+        internal void SetTableRowCount(long rowCount)
+        {
+            // Even if current RowCount == rowCount, do the validation
+            int numberOfColumns = ColumnCount;
+            for (int i = 0; i < numberOfColumns; i++)
+            {
+                if (Column(i).Length != rowCount)
+                    throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
+            }
+            _table.RowCount = rowCount;
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -564,7 +637,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 // Left align by 10
-                sb.Append(string.Format($"0,{-longestColumnName}", Column(i).Name));
+                sb.Append(string.Format(Column(i).Name.PadRight(longestColumnName)));
             }
             sb.AppendLine();
             long numberOfRows = Math.Min(RowCount, 25);
@@ -573,7 +646,7 @@ namespace Microsoft.Data
                 IList<object> row = this[i];
                 foreach (object obj in row)
                 {
-                    sb.Append(string.Format($"0,{-longestColumnName}", obj.ToString()));
+                    sb.Append(obj.ToString().PadRight(longestColumnName));
                 }
                 sb.AppendLine();
             }

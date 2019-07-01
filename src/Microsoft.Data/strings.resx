@@ -126,6 +126,9 @@
   <data name="EmptyFile" xml:space="preserve">
     <value>Empty file</value>
   </data>
+  <data name="ExpectedBoolColumn" xml:space="preserve">
+    <value>Bool operations expect bool columns</value>
+  </data>
   <data name="LessColumnsThatExpected" xml:space="preserve">
     <value>Line {0} has less columns than expected.</value>
   </data>
@@ -135,7 +138,13 @@
   <data name="MismatchedColumnLengths" xml:space="preserve">
     <value>Column lengths are mismatched</value>
   </data>
+  <data name="MismatchedRowCount" xml:space="preserve">
+    <value>rowCount differs from Column length for Column </value>
+  </data>
   <data name="MismatchedValueType" xml:space="preserve">
     <value>Expected value to be of type</value>
+  </data>
+  <data name="OpNotSupported" xml:space="preserve">
+    <value>Operation not supported</value>
   </data>
 </root>

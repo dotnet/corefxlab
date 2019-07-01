@@ -14,6 +14,7 @@
 // Generated from PrimitiveColumnComputations.tt. Do not modify directly
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
@@ -21,10 +22,14 @@ namespace Microsoft.Data
         where T : struct
     {
 <# foreach (MethodConfiguration compMethod in computationMethodConfiguration) { #>
-<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
+<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
+        void <#=compMethod.MethodName#>(PrimitiveColumnContainer<T> column, IEnumerable<long> rows);
+<# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
         void <#=compMethod.MethodName#>(PrimitiveColumnContainer<T> column);
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         void <#=compMethod.MethodName#>(PrimitiveColumnContainer<T> column, out T ret);
+<# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
+        void <#=compMethod.MethodName#>(PrimitiveColumnContainer<T> column, IEnumerable<long> rows, out T ret);
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true) { #>
         void <#=compMethod.MethodName#>(PrimitiveColumnContainer<T> column, out T ret);
 <# } else { #>
@@ -58,10 +63,14 @@ namespace Microsoft.Data
     internal class <#=type.ClassPrefix#>Computation : IPrimitiveColumnComputation<<#=type.TypeName#>>
     {
 <# foreach (MethodConfiguration method in computationMethodConfiguration) { #>
-<# if (method.MethodType == MethodType.ElementwiseComputation && method.HasReturnValue == false) {#>
+<# if (method.MethodType == MethodType.ElementwiseComputation && method.HasReturnValue == false && method.SupportsRowSubsets == true) {#>
+        public void <#=method.MethodName#>(PrimitiveColumnContainer<<#=type.TypeName#>> column, IEnumerable<long> rows)
+<# } else if (method.MethodType == MethodType.ElementwiseComputation && method.HasReturnValue == false) {#>
         public void <#=method.MethodName#>(PrimitiveColumnContainer<<#=type.TypeName#>> column)
 <# } else if (method.MethodType == MethodType.ElementwiseComputation && method.HasReturnValue == true) {#>
         public void <#=method.MethodName#>(PrimitiveColumnContainer<<#=type.TypeName#>> column, out <#=type.TypeName#> ret)
+<# } else if (method.MethodType == MethodType.Reduction && method.IsNumeric == true && method.SupportsRowSubsets == true) { #>
+        public void <#=method.MethodName#>(PrimitiveColumnContainer<<#=type.TypeName#>> column, IEnumerable<long> rows, out <#=type.TypeName#> ret)
 <# } else if (method.MethodType == MethodType.Reduction && method.IsNumeric == true) { #>
         public void <#=method.MethodName#>(PrimitiveColumnContainer<<#=type.TypeName#>> column, out <#=type.TypeName#> ret)
 <# } else { #>
@@ -71,18 +80,62 @@ namespace Microsoft.Data
 <# if ((method.IsNumeric && !type.SupportsNumeric) || (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
 <# } else { #>
-<# if (method.MethodName == "CumulativeMax" || method.MethodName == "CumulativeMin" || method.MethodName == "CumulativeProduct" || method.MethodName == "CumulativeSum" || method.MethodName == "Max" || method.MethodName == "Min" || method.MethodName == "Product" || method.MethodName == "Sum") { #>
+<# if ((method.MethodName == "Max" || method.MethodName == "Min" || method.MethodName == "Product" || method.MethodName == "Sum") && method.SupportsRowSubsets == true) { #>
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+<# if (method.MethodName == "Max") { #>
+                ret = (<#=type.TypeName#>)(Math.Max(column[row] ?? default, ret));
+<# } #>
+<# if (method.MethodName == "Min") { #>
+                ret = (<#=type.TypeName#>)(Math.Min(column[row] ?? default, ret));
+<# } #>
+<# if (method.MethodName == "Product") { #>
+                ret = (<#=type.TypeName#>)((column[row] ?? default) * ret);
+<# } #>
+<# if (method.MethodName == "Sum") { #>
+                ret = (<#=type.TypeName#>)((column[row] ?? default) + ret);
+<# } #>
+            }
+<# } else if ((method.MethodName == "CumulativeMax" || method.MethodName == "CumulativeMin" || method.MethodName == "CumulativeProduct" || method.MethodName == "CumulativeSum") && method.SupportsRowSubsets == true) { #>
+            var ret = default(<#=type.TypeName#>);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+<# if (method.MethodName == "CumulativeMax") { #>
+                ret = (<#=type.TypeName#>)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+<# } else if (method.MethodName == "CumulativeMin") { #>
+                ret = (<#=type.TypeName#>)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
+<# } else if (method.MethodName == "CumulativeProduct") { #>
+                ret = (<#=type.TypeName#>)((column[row] ?? default) * ret);
+                column[row] = ret;
+<# } else if (method.MethodName =="CumulativeSum") { #>
+                ret = (<#=type.TypeName#>)((column[row] ?? default) + ret);
+                column[row] = ret;
+<# } #>
+            }
+<# } else if (method.MethodName == "CumulativeMax" || method.MethodName == "CumulativeMin" || method.MethodName == "CumulativeProduct" || method.MethodName == "CumulativeSum" || method.MethodName == "Max" || method.MethodName == "Min" || method.MethodName == "Product" || method.MethodName == "Sum") { #>
 <# if (method.MethodName == "CumulativeMax" || method.MethodName == "CumulativeMin") { #>
             var ret = column.Buffers[0].Span[0];
-<# } else if (method.MethodName == "Max" || method.MethodName == "Min") { #>
+<# } else if ((method.MethodName == "Max" || method.MethodName == "Min") && method.SupportsRowSubsets == false) { #>
             ret = column.Buffers[0].Span[0];
 <# } else if (method.MethodName == "CumulativeProduct") { #>
             var ret = (<#=type.TypeName#>)1;
-<# } else if (method.MethodName =="Product") { #>
+<# } else if (method.MethodName =="Product" && method.SupportsRowSubsets == false) { #>
             ret = (<#=type.TypeName#>)1;
 <# } else if (method.MethodName =="CumulativeSum") { #>
             var ret = (<#=type.TypeName#>)0;
-<# } else { #>
+<# } else if (method.SupportsRowSubsets == false) { #>
             ret = (<#=type.TypeName#>)0;
 <# } #>
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)

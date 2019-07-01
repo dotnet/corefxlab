@@ -88,6 +88,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bool operations expect bool columns.
+        /// </summary>
+        public static string ExpectedBoolColumn {
+            get {
+                return ResourceManager.GetString("ExpectedBoolColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Line {0} has less columns than expected..
         /// </summary>
         public static string LessColumnsThatExpected {
@@ -115,11 +124,29 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to rowCount differs from Column length for Column .
+        /// </summary>
+        public static string MismatchedRowCount {
+            get {
+                return ResourceManager.GetString("MismatchedRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected value to be of type.
         /// </summary>
         public static string MismatchedValueType {
             get {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation not supported.
+        /// </summary>
+        public static string OpNotSupported {
+            get {
+                return ResourceManager.GetString("OpNotSupported", resourceCulture);
             }
         }
     }

@@ -7,6 +7,7 @@
 // Generated from PrimitiveColumnComputations.tt. Do not modify directly
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
@@ -17,13 +18,21 @@ namespace Microsoft.Data
         void All(PrimitiveColumnContainer<T> column, out bool ret);
         void Any(PrimitiveColumnContainer<T> column, out bool ret);
         void CumulativeMax(PrimitiveColumnContainer<T> column);
+        void CumulativeMax(PrimitiveColumnContainer<T> column, IEnumerable<long> rows);
         void CumulativeMin(PrimitiveColumnContainer<T> column);
+        void CumulativeMin(PrimitiveColumnContainer<T> column, IEnumerable<long> rows);
         void CumulativeProduct(PrimitiveColumnContainer<T> column);
+        void CumulativeProduct(PrimitiveColumnContainer<T> column, IEnumerable<long> rows);
         void CumulativeSum(PrimitiveColumnContainer<T> column);
+        void CumulativeSum(PrimitiveColumnContainer<T> column, IEnumerable<long> rows);
         void Max(PrimitiveColumnContainer<T> column, out T ret);
+        void Max(PrimitiveColumnContainer<T> column, IEnumerable<long> rows, out T ret);
         void Min(PrimitiveColumnContainer<T> column, out T ret);
+        void Min(PrimitiveColumnContainer<T> column, IEnumerable<long> rows, out T ret);
         void Product(PrimitiveColumnContainer<T> column, out T ret);
+        void Product(PrimitiveColumnContainer<T> column, IEnumerable<long> rows, out T ret);
         void Sum(PrimitiveColumnContainer<T> column, out T ret);
+        void Sum(PrimitiveColumnContainer<T> column, IEnumerable<long> rows, out T ret);
         void Round(PrimitiveColumnContainer<T> column);
     }
 
@@ -140,7 +149,17 @@ namespace Microsoft.Data
             throw new NotSupportedException();
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows)
+        {
+            throw new NotSupportedException();
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<bool> column)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows)
         {
             throw new NotSupportedException();
         }
@@ -150,7 +169,17 @@ namespace Microsoft.Data
             throw new NotSupportedException();
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows)
+        {
+            throw new NotSupportedException();
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<bool> column)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows)
         {
             throw new NotSupportedException();
         }
@@ -160,7 +189,17 @@ namespace Microsoft.Data
             throw new NotSupportedException();
         }
 
+        public void Max(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows, out bool ret)
+        {
+            throw new NotSupportedException();
+        }
+
         public void Min(PrimitiveColumnContainer<bool> column, out bool ret)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Min(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows, out bool ret)
         {
             throw new NotSupportedException();
         }
@@ -170,7 +209,17 @@ namespace Microsoft.Data
             throw new NotSupportedException();
         }
 
+        public void Product(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows, out bool ret)
+        {
+            throw new NotSupportedException();
+        }
+
         public void Sum(PrimitiveColumnContainer<bool> column, out bool ret)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Sum(PrimitiveColumnContainer<bool> column, IEnumerable<long> rows, out bool ret)
         {
             throw new NotSupportedException();
         }
@@ -219,6 +268,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
+        {
+            var ret = default(byte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<byte> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -230,6 +296,23 @@ namespace Microsoft.Data
                     ret = (byte)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
+        {
+            var ret = default(byte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -247,6 +330,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
+        {
+            var ret = default(byte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<byte> column)
         {
             var ret = (byte)0;
@@ -258,6 +358,23 @@ namespace Microsoft.Data
                     ret = (byte)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
+        {
+            var ret = default(byte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -274,6 +391,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<byte> column, out byte ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -284,6 +412,17 @@ namespace Microsoft.Data
                 {
                     ret = (byte)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -300,6 +439,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<byte> column, out byte ret)
         {
             ret = (byte)0;
@@ -310,6 +460,17 @@ namespace Microsoft.Data
                 {
                     ret = (byte)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (byte)((column[row] ?? default) + ret);
             }
         }
 
@@ -364,6 +525,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
+        {
+            var ret = default(char);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<char> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -375,6 +553,23 @@ namespace Microsoft.Data
                     ret = (char)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
+        {
+            var ret = default(char);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -392,6 +587,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
+        {
+            var ret = default(char);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<char> column)
         {
             var ret = (char)0;
@@ -403,6 +615,23 @@ namespace Microsoft.Data
                     ret = (char)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
+        {
+            var ret = default(char);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -419,6 +648,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<char> column, out char ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -429,6 +669,17 @@ namespace Microsoft.Data
                 {
                     ret = (char)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -445,6 +696,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<char> column, out char ret)
         {
             ret = (char)0;
@@ -455,6 +717,17 @@ namespace Microsoft.Data
                 {
                     ret = (char)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (char)((column[row] ?? default) + ret);
             }
         }
 
@@ -509,6 +782,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
+        {
+            var ret = default(decimal);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<decimal> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -520,6 +810,23 @@ namespace Microsoft.Data
                     ret = (decimal)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
+        {
+            var ret = default(decimal);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -537,6 +844,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
+        {
+            var ret = default(decimal);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<decimal> column)
         {
             var ret = (decimal)0;
@@ -548,6 +872,23 @@ namespace Microsoft.Data
                     ret = (decimal)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
+        {
+            var ret = default(decimal);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -564,6 +905,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<decimal> column, out decimal ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -574,6 +926,17 @@ namespace Microsoft.Data
                 {
                     ret = (decimal)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -590,6 +953,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<decimal> column, out decimal ret)
         {
             ret = (decimal)0;
@@ -600,6 +974,17 @@ namespace Microsoft.Data
                 {
                     ret = (decimal)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (decimal)((column[row] ?? default) + ret);
             }
         }
 
@@ -654,6 +1039,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
+        {
+            var ret = default(double);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<double> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -665,6 +1067,23 @@ namespace Microsoft.Data
                     ret = (double)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
+        {
+            var ret = default(double);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -682,6 +1101,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
+        {
+            var ret = default(double);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<double> column)
         {
             var ret = (double)0;
@@ -693,6 +1129,23 @@ namespace Microsoft.Data
                     ret = (double)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
+        {
+            var ret = default(double);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -709,6 +1162,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<double> column, out double ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -719,6 +1183,17 @@ namespace Microsoft.Data
                 {
                     ret = (double)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -735,6 +1210,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<double> column, out double ret)
         {
             ret = (double)0;
@@ -745,6 +1231,17 @@ namespace Microsoft.Data
                 {
                     ret = (double)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (double)((column[row] ?? default) + ret);
             }
         }
 
@@ -799,6 +1296,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
+        {
+            var ret = default(float);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<float> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -810,6 +1324,23 @@ namespace Microsoft.Data
                     ret = (float)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
+        {
+            var ret = default(float);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -827,6 +1358,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
+        {
+            var ret = default(float);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<float> column)
         {
             var ret = (float)0;
@@ -838,6 +1386,23 @@ namespace Microsoft.Data
                     ret = (float)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
+        {
+            var ret = default(float);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -854,6 +1419,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<float> column, out float ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -864,6 +1440,17 @@ namespace Microsoft.Data
                 {
                     ret = (float)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -880,6 +1467,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<float> column, out float ret)
         {
             ret = (float)0;
@@ -890,6 +1488,17 @@ namespace Microsoft.Data
                 {
                     ret = (float)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (float)((column[row] ?? default) + ret);
             }
         }
 
@@ -944,6 +1553,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
+        {
+            var ret = default(int);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<int> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -955,6 +1581,23 @@ namespace Microsoft.Data
                     ret = (int)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
+        {
+            var ret = default(int);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -972,6 +1615,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
+        {
+            var ret = default(int);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<int> column)
         {
             var ret = (int)0;
@@ -983,6 +1643,23 @@ namespace Microsoft.Data
                     ret = (int)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
+        {
+            var ret = default(int);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -999,6 +1676,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<int> column, out int ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1009,6 +1697,17 @@ namespace Microsoft.Data
                 {
                     ret = (int)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1025,6 +1724,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<int> column, out int ret)
         {
             ret = (int)0;
@@ -1035,6 +1745,17 @@ namespace Microsoft.Data
                 {
                     ret = (int)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (int)((column[row] ?? default) + ret);
             }
         }
 
@@ -1089,6 +1810,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
+        {
+            var ret = default(long);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<long> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1100,6 +1838,23 @@ namespace Microsoft.Data
                     ret = (long)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
+        {
+            var ret = default(long);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1117,6 +1872,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
+        {
+            var ret = default(long);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<long> column)
         {
             var ret = (long)0;
@@ -1128,6 +1900,23 @@ namespace Microsoft.Data
                     ret = (long)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
+        {
+            var ret = default(long);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1144,6 +1933,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<long> column, out long ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1154,6 +1954,17 @@ namespace Microsoft.Data
                 {
                     ret = (long)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1170,6 +1981,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<long> column, out long ret)
         {
             ret = (long)0;
@@ -1180,6 +2002,17 @@ namespace Microsoft.Data
                 {
                     ret = (long)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (long)((column[row] ?? default) + ret);
             }
         }
 
@@ -1234,6 +2067,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
+        {
+            var ret = default(sbyte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<sbyte> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1245,6 +2095,23 @@ namespace Microsoft.Data
                     ret = (sbyte)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
+        {
+            var ret = default(sbyte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1262,6 +2129,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
+        {
+            var ret = default(sbyte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<sbyte> column)
         {
             var ret = (sbyte)0;
@@ -1273,6 +2157,23 @@ namespace Microsoft.Data
                     ret = (sbyte)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
+        {
+            var ret = default(sbyte);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1289,6 +2190,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<sbyte> column, out sbyte ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1299,6 +2211,17 @@ namespace Microsoft.Data
                 {
                     ret = (sbyte)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1315,6 +2238,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<sbyte> column, out sbyte ret)
         {
             ret = (sbyte)0;
@@ -1325,6 +2259,17 @@ namespace Microsoft.Data
                 {
                     ret = (sbyte)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (sbyte)((column[row] ?? default) + ret);
             }
         }
 
@@ -1379,6 +2324,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
+        {
+            var ret = default(short);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<short> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1390,6 +2352,23 @@ namespace Microsoft.Data
                     ret = (short)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
+        {
+            var ret = default(short);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1407,6 +2386,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
+        {
+            var ret = default(short);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<short> column)
         {
             var ret = (short)0;
@@ -1418,6 +2414,23 @@ namespace Microsoft.Data
                     ret = (short)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
+        {
+            var ret = default(short);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1434,6 +2447,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<short> column, out short ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1444,6 +2468,17 @@ namespace Microsoft.Data
                 {
                     ret = (short)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1460,6 +2495,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<short> column, out short ret)
         {
             ret = (short)0;
@@ -1470,6 +2516,17 @@ namespace Microsoft.Data
                 {
                     ret = (short)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (short)((column[row] ?? default) + ret);
             }
         }
 
@@ -1524,6 +2581,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
+        {
+            var ret = default(uint);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<uint> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1535,6 +2609,23 @@ namespace Microsoft.Data
                     ret = (uint)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
+        {
+            var ret = default(uint);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1552,6 +2643,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
+        {
+            var ret = default(uint);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<uint> column)
         {
             var ret = (uint)0;
@@ -1563,6 +2671,23 @@ namespace Microsoft.Data
                     ret = (uint)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
+        {
+            var ret = default(uint);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1579,6 +2704,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<uint> column, out uint ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1589,6 +2725,17 @@ namespace Microsoft.Data
                 {
                     ret = (uint)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1605,6 +2752,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<uint> column, out uint ret)
         {
             ret = (uint)0;
@@ -1615,6 +2773,17 @@ namespace Microsoft.Data
                 {
                     ret = (uint)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (uint)((column[row] ?? default) + ret);
             }
         }
 
@@ -1669,6 +2838,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
+        {
+            var ret = default(ulong);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<ulong> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1680,6 +2866,23 @@ namespace Microsoft.Data
                     ret = (ulong)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
+        {
+            var ret = default(ulong);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1697,6 +2900,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
+        {
+            var ret = default(ulong);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<ulong> column)
         {
             var ret = (ulong)0;
@@ -1708,6 +2928,23 @@ namespace Microsoft.Data
                     ret = (ulong)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
+        {
+            var ret = default(ulong);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1724,6 +2961,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<ulong> column, out ulong ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1734,6 +2982,17 @@ namespace Microsoft.Data
                 {
                     ret = (ulong)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1750,6 +3009,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<ulong> column, out ulong ret)
         {
             ret = (ulong)0;
@@ -1760,6 +3030,17 @@ namespace Microsoft.Data
                 {
                     ret = (ulong)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ulong)((column[row] ?? default) + ret);
             }
         }
 
@@ -1814,6 +3095,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeMax(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
+        {
+            var ret = default(ushort);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)Math.Max(column[row] ?? default, ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeMin(PrimitiveColumnContainer<ushort> column)
         {
             var ret = column.Buffers[0].Span[0];
@@ -1825,6 +3123,23 @@ namespace Microsoft.Data
                     ret = (ushort)(Math.Min(buffer.Span[i], ret));
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeMin(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
+        {
+            var ret = default(ushort);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)Math.Min(column[row] ?? default, ret);
+                column[row] = ret;
             }
         }
 
@@ -1842,6 +3157,23 @@ namespace Microsoft.Data
             }
         }
 
+        public void CumulativeProduct(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
+        {
+            var ret = default(ushort);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)((column[row] ?? default) * ret);
+                column[row] = ret;
+            }
+        }
+
         public void CumulativeSum(PrimitiveColumnContainer<ushort> column)
         {
             var ret = (ushort)0;
@@ -1853,6 +3185,23 @@ namespace Microsoft.Data
                     ret = (ushort)(buffer.Span[i] + ret);
                     buffer.Span[i] = ret;
                 }
+            }
+        }
+
+        public void CumulativeSum(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
+        {
+            var ret = default(ushort);
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                ret = column[enumerator.Current] ?? default;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)((column[row] ?? default) + ret);
+                column[row] = ret;
             }
         }
 
@@ -1869,6 +3218,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Max(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)(Math.Max(column[row] ?? default, ret));
+            }
+        }
+
         public void Min(PrimitiveColumnContainer<ushort> column, out ushort ret)
         {
             ret = column.Buffers[0].Span[0];
@@ -1879,6 +3239,17 @@ namespace Microsoft.Data
                 {
                     ret = (ushort)(Math.Min(buffer.Span[i], ret));
                 }
+            }
+        }
+
+        public void Min(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)(Math.Min(column[row] ?? default, ret));
             }
         }
 
@@ -1895,6 +3266,17 @@ namespace Microsoft.Data
             }
         }
 
+        public void Product(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)((column[row] ?? default) * ret);
+            }
+        }
+
         public void Sum(PrimitiveColumnContainer<ushort> column, out ushort ret)
         {
             ret = (ushort)0;
@@ -1905,6 +3287,17 @@ namespace Microsoft.Data
                 {
                     ret = (ushort)(buffer.Span[i] + ret);
                 }
+            }
+        }
+
+        public void Sum(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
+        {
+            ret = default;
+            IEnumerator<long> enumerator = rows.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                long row = enumerator.Current;
+                ret = (ushort)((column[row] ?? default) + ret);
             }
         }
 
