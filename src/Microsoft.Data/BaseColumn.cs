@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -66,6 +67,7 @@ namespace Microsoft.Data
         /// <param name="invertMapIndices"></param>
         /// <returns></returns>
         public virtual BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
+        public virtual BaseColumn Clone(IEnumerable<long> mapIndices, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
 
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
 

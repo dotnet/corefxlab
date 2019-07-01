@@ -23,20 +23,29 @@ namespace Microsoft.Data
     {
         #region Computations
 <# foreach (MethodConfiguration compMethod in computationMethodConfiguration) { #>
-<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
+<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
+        public override void <#=compMethod.MethodName#>(IEnumerable<long> rows)
+<# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
         public override void <#=compMethod.MethodName#>()
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         public override object <#=compMethod.MethodName#>()
+<# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
+        public override object <#=compMethod.MethodName#>(IEnumerable<long> rows)
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true) { #>
         public override object <#=compMethod.MethodName#>()
 <# } else { #>
         public override bool <#=compMethod.MethodName#>()
 <# } #>
         {
-<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
+<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
+            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, rows);
+<# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer);
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, out T ret);
+            return ret;
+<# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
+            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, rows, out T ret);
             return ret;
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true) { #>
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, out T ret);

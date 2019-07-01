@@ -118,6 +118,14 @@ namespace Microsoft.Data
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
+        public override BaseColumn Clone(IEnumerable<long> mapIndices, long numberOfNullsToAppend = 0)
+        {
+            PrimitiveColumn<T> clone = Clone(mapIndices);
+            Debug.Assert(!ReferenceEquals(clone, null));
+            clone.AppendMany(null, numberOfNullsToAppend);
+            return clone;
+        }
+
         public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             PrimitiveColumn<T> clone;
@@ -176,6 +184,25 @@ namespace Microsoft.Data
                 ret._columnContainer._modifyNullCountWhileIndexing = true;
                 return ret;
             }
+        }
+
+        public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
+        {
+            IEnumerator<long> rows = mapIndices.GetEnumerator();
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            ret._columnContainer._modifyNullCountWhileIndexing = false;
+            long numberOfRows = 0;
+            while (rows.MoveNext() && numberOfRows < Length)
+            {
+                numberOfRows++;
+                long curRow = rows.Current;
+                T? value = _columnContainer[curRow];
+                ret[curRow] = value;
+                if (!value.HasValue)
+                    ret._columnContainer.NullCount++;
+            }
+            ret._columnContainer._modifyNullCountWhileIndexing = true;
+            return ret;
         }
 
         internal PrimitiveColumn<bool> CloneAsBoolColumn()

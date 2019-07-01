@@ -33,7 +33,17 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        public virtual void CumulativeMax(IEnumerable<long> rows)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void CumulativeMin()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void CumulativeMin(IEnumerable<long> rows)
         {
             throw new NotImplementedException();
         }
@@ -43,7 +53,17 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        public virtual void CumulativeProduct(IEnumerable<long> rows)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void CumulativeSum()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void CumulativeSum(IEnumerable<long> rows)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +73,17 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        public virtual object Max(IEnumerable<long> rows)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual object Min()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual object Min(IEnumerable<long> rows)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +93,17 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        public virtual object Product(IEnumerable<long> rows)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual object Sum()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual object Sum(IEnumerable<long> rows)
         {
             throw new NotImplementedException();
         }

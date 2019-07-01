@@ -15,6 +15,7 @@ namespace Microsoft.Data
     public partial class PrimitiveColumn<T> : BaseColumn
         where T : unmanaged
     {
+        #region Computations
         public override void Abs()
         {
             PrimitiveColumnComputation<T>.Instance.Abs(_columnContainer);
@@ -33,21 +34,42 @@ namespace Microsoft.Data
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeMax(_columnContainer);
         }
+        public override void CumulativeMax(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.CumulativeMax(_columnContainer, rows);
+        }
         public override void CumulativeMin()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeMin(_columnContainer);
+        }
+        public override void CumulativeMin(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.CumulativeMin(_columnContainer, rows);
         }
         public override void CumulativeProduct()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeProduct(_columnContainer);
         }
+        public override void CumulativeProduct(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.CumulativeProduct(_columnContainer, rows);
+        }
         public override void CumulativeSum()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeSum(_columnContainer);
         }
+        public override void CumulativeSum(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.CumulativeSum(_columnContainer, rows);
+        }
         public override object Max()
         {
             PrimitiveColumnComputation<T>.Instance.Max(_columnContainer, out T ret);
+            return ret;
+        }
+        public override object Max(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.Max(_columnContainer, rows, out T ret);
             return ret;
         }
         public override object Min()
@@ -55,9 +77,19 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Min(_columnContainer, out T ret);
             return ret;
         }
+        public override object Min(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.Min(_columnContainer, rows, out T ret);
+            return ret;
+        }
         public override object Product()
         {
             PrimitiveColumnComputation<T>.Instance.Product(_columnContainer, out T ret);
+            return ret;
+        }
+        public override object Product(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.Product(_columnContainer, rows, out T ret);
             return ret;
         }
         public override object Sum()
@@ -65,9 +97,15 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, out T ret);
             return ret;
         }
+        public override object Sum(IEnumerable<long> rows)
+        {
+            PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, rows, out T ret);
+            return ret;
+        }
         public override void Round()
         {
             PrimitiveColumnComputation<T>.Instance.Round(_columnContainer);
         }
+        #endregion
     }
 }

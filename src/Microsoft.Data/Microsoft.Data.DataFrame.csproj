@@ -99,6 +99,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>BaseColumn.Computations.tt</DependentUpon>
     </Compile>
+    <Compile Update="ColumnArithmeticTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColumnArithmeticTemplate.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="DataFrame.BinaryOperations.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
