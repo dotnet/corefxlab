@@ -64,6 +64,7 @@ namespace ALCProxy.Tests
         public void TestUnload()
         {
             System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            //TODO change to CWT?
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test", isGeneric: false); //The one referenced through the comm object, to test that the reference is removed
 

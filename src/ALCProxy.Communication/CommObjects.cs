@@ -14,6 +14,12 @@ namespace ALCProxy.Communication
 {
     public class ClientObject : ALCProxy.Communication.DispatchProxy, IClientObject
     {
+        public static void PrintALC()
+        {
+            var a = Assembly.GetExecutingAssembly();
+            Console.WriteLine(AssemblyLoadContext.GetLoadContext(a).Name);
+
+        }
         //Can't make this an IServerObject directly due to the type-isolation barrier
         private object _server;
         //private ConditionalWeakTable<ClientObject<InterfaceType>, ServerDispatch<InterfaceType>> _serverTable;
@@ -97,9 +103,7 @@ namespace ALCProxy.Communication
         //This should always be a "SendMethod" option, with 2 args, the methodinfo of what needs to be sent and the args for said method
         protected override object Invoke(MethodInfo method, object[] args)
         {
-            //Currently we just send the args over but its probably better to serialize everything and then send it.
             return method.Invoke(_server, args);
-            //return SendMethod(method, args);
         }
     }
     public class ServerDispatch<ObjectInterface> : IServerObject
@@ -127,16 +131,46 @@ namespace ALCProxy.Communication
             {
                 return toConvert;
             }
-             return Assembly.LoadFrom(Assembly.GetAssembly(toConvert).CodeBase.Substring(8)).GetType(toConvert.FullName);
+            return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).LoadFromAssemblyPath(assemblyPath).GetType(toConvert.FullName);
         }
 
         public object CallObject(MethodInfo targetMethod, List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
         {
+            ClientObject.PrintALC();
             //Turn the memstreams into their respective objects
+            argTypes = argTypes.Select(x => ConvertType(x)).ToList();
+            //TODO user made classes still don't work, need to figure out why
             object[] args = DecryptStreams(streams, serializers, argTypes);
 
-            MethodInfo m = instance.GetType().GetMethod(targetMethod.Name, argTypes.ToArray());
+            MethodInfo[] methods = instance.GetType().GetMethods();
+            MethodInfo m = FindMethod(methods, targetMethod.Name, argTypes.ToArray());
             return m.Invoke(instance, args);
+        }
+
+        private MethodInfo FindMethod(MethodInfo[] methods, string methodName, Type[] parameterTypes)
+        {
+            foreach(MethodInfo m in methods)
+            {
+                if (!m.Name.Equals(methodName) || parameterTypes.Length != m.GetParameters().Length)//|| m.GetParameters().Select(x => x.ParameterType) != parameterTypes)
+                {
+                    continue;
+                }
+                // List<Type> methodParams = new List<Type>();
+                bool methodParamsAlligned = true;
+                for(int i = 0; i < parameterTypes.Length; i++)
+                {
+                    //TODO find a better way to match method types then comparing their full names
+                    if (!(m.GetParameters()[i].ParameterType.FullName.Equals(parameterTypes[i].FullName)))
+                    {
+                        methodParamsAlligned = false;
+                        break;
+                    }
+                }
+                if (!methodParamsAlligned)
+                    continue;
+                return m;
+            }
+            throw new Exception("Method Not found");
         }
 
         private object[] DecryptStreams(List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
@@ -146,12 +180,14 @@ namespace ALCProxy.Communication
             for (int i = 0; i <streams.Count; i++)
             {
                 MemoryStream s = streams[i];
-                DataContractSerializer serializer = serializers[i];
+                //TODO remove datacontractserializer from the transfer, we don't need it since we make new ones on the deserialization side
+                //DataContractSerializer serializer = serializers[i];
                 Type t = argTypes[i];
                 s.Position = 0;
 
                 //Deserialize the Record object back into a new record object.  
-                object obj = serializer.ReadObject(s);
+                DataContractSerializer newSerializer = new DataContractSerializer(t);
+                object obj = newSerializer.ReadObject(s);
                 convertedObjects.Add(obj);
             }
             return convertedObjects.ToArray();
