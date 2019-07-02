@@ -14,15 +14,8 @@ namespace ALCProxy.Communication
 {
     public class ClientObject : ALCProxy.Communication.DispatchProxy, IClientObject
     {
-        public static void PrintALC()
-        {
-            var a = Assembly.GetExecutingAssembly();
-            Console.WriteLine(AssemblyLoadContext.GetLoadContext(a).Name);
-
-        }
-        //Can't make this an IServerObject directly due to the type-isolation barrier
+        //Can't make this an IServerObject directly due to the type-loading barrier
         private object _server;
-        //private ConditionalWeakTable<ClientObject<InterfaceType>, ServerDispatch<InterfaceType>> _serverTable;
         private Type _intType;
         public ClientObject(Type interfaceType)
         {
@@ -64,8 +57,7 @@ namespace ALCProxy.Communication
         }
         private void Unload(object sender)
         {
-            _server = null;
-            //GC.Collect(); //Probably don't want to force anything here but it could be an option.
+            _server = null; //Just removes the reference to the proxy, doesn't do anything else
         }
 
         /// <summary>
@@ -76,9 +68,11 @@ namespace ALCProxy.Communication
         /// <returns></returns>
         public object SendMethod(MethodInfo method, object[] args)
         {
-            //List<(MemoryStream, DataContractSerializer, Type)> streams = new List<(MemoryStream, DataContractSerializer, Type)>();
+            if(_server == null) //We've called the ALC unload, so the proxy has been cut off
+            {
+                throw new InvalidOperationException("Error in ALCProxy: Proxy has been unloaded, or communication server was never set up correctly");
+            }
             List<MemoryStream> streams = new List<MemoryStream>();
-            List<DataContractSerializer> serializers = new List<DataContractSerializer>();
             List<Type> types = new List<Type>();
             Type[] argTypes = args.Select(obj => obj.GetType()).ToArray();
 
@@ -92,18 +86,17 @@ namespace ALCProxy.Communication
                 serializer.WriteObject(stream, arg);
                 //streams.Add( (stream, serializer, argTypes[i]) );
                 streams.Add(stream);
-                serializers.Add(serializer);
+                //serializers.Add(serializer);
                 types.Add(t);
             }
             MethodInfo callMethod = _server.GetType().GetMethod("CallObject");
             callMethod.GetParameters();
-            return callMethod.Invoke(_server, new object[] { method, streams, serializers, types });
-            //return method.Invoke(_server, streams.ToArray());
+            return callMethod.Invoke(_server, new object[] { method, streams, /*serializers,*/ types });
         }
         //This should always be a "SendMethod" option, with 2 args, the methodinfo of what needs to be sent and the args for said method
         protected override object Invoke(MethodInfo method, object[] args)
         {
-            return method.Invoke(_server, args);
+            return SendMethod(method, args);
         }
     }
     public class ServerDispatch<ObjectInterface> : IServerObject
@@ -123,7 +116,6 @@ namespace ALCProxy.Communication
             instance = instanceType.GetConstructor(constructorTypes).Invoke(constructorArgs);
         }
 
-        //TODO Get type conversion working
         public Type ConvertType(Type toConvert)
         {
             string assemblyPath = Assembly.GetAssembly(toConvert).CodeBase.Substring(8);
@@ -134,13 +126,11 @@ namespace ALCProxy.Communication
             return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).LoadFromAssemblyPath(assemblyPath).GetType(toConvert.FullName);
         }
 
-        public object CallObject(MethodInfo targetMethod, List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
+        public object CallObject(MethodInfo targetMethod, List<MemoryStream> streams, List<Type> argTypes)
         {
-            ClientObject.PrintALC();
             //Turn the memstreams into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
-            //TODO user made classes still don't work, need to figure out why
-            object[] args = DecryptStreams(streams, serializers, argTypes);
+            object[] args = DecryptStreams(streams, argTypes);
 
             MethodInfo[] methods = instance.GetType().GetMethods();
             MethodInfo m = FindMethod(methods, targetMethod.Name, argTypes.ToArray());
@@ -155,7 +145,6 @@ namespace ALCProxy.Communication
                 {
                     continue;
                 }
-                // List<Type> methodParams = new List<Type>();
                 bool methodParamsAlligned = true;
                 for(int i = 0; i < parameterTypes.Length; i++)
                 {
@@ -170,18 +159,16 @@ namespace ALCProxy.Communication
                     continue;
                 return m;
             }
-            throw new Exception("Method Not found");
+            throw new Exception("Error in ALCProxy: Method Not found");
         }
 
-        private object[] DecryptStreams(List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> argTypes)
+        private object[] DecryptStreams(List<MemoryStream> streams, List<Type> argTypes)
         {
             var convertedObjects = new List<object>();
 
             for (int i = 0; i <streams.Count; i++)
             {
                 MemoryStream s = streams[i];
-                //TODO remove datacontractserializer from the transfer, we don't need it since we make new ones on the deserialization side
-                //DataContractSerializer serializer = serializers[i];
                 Type t = argTypes[i];
                 s.Position = 0;
 

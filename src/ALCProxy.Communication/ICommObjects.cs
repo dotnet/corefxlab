@@ -7,13 +7,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Runtime.Serialization;
 
 namespace ALCProxy.Communication
 {
     public interface IServerObject
     {
-        object CallObject(MethodInfo method, List<MemoryStream> streams, List<DataContractSerializer> serializers, List<Type> types);
+        object CallObject(MethodInfo method, List<MemoryStream> streams, List<Type> types);
     }
     public interface IClientObject
     {
