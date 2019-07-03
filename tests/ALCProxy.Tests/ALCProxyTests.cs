@@ -5,8 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using ALCProxy.Proxy;
 using Xunit;
@@ -16,14 +14,38 @@ namespace ALCProxy.Tests
     public interface ITest
     {
         public string DoThing();
-
         public int DoThing2(int a, List<string> list);
+        public int DoThing3(int a, Test2 t);
     }
-    public class Test2 { }
-    public class GenericClass<T> : ITest
+
+    public interface IGeneric<T>
     {
-        string instance = "Hello!";
-        T instance2;
+        public string DoThing();
+        public int DoThing2(int a, List<string> list);
+        public int DoThing3(int a, Test2 t);
+        public string DoThing4(T t);
+    }
+    public class Test2
+    {
+        public int test = 3;
+
+        public void DoThingy()
+        {
+            test++;
+        }
+    }
+    public class GenericClass<T> : IGeneric<T>
+    {
+        string instance = "testString";
+        private T instance2;
+
+        public GenericClass()
+        {
+        }
+        public GenericClass(T t)
+        {
+            instance2 = t;
+        }
 
         public string DoThing()
         {
@@ -32,6 +54,16 @@ namespace ALCProxy.Tests
         public int DoThing2(int a, List<string> list)
         {
             return instance.Length;
+        }
+
+        public int DoThing3(int a, Test2 t)
+        {
+            t.DoThingy();
+            return 6;
+        }
+        public string DoThing4(T tester)
+        {
+            return tester.ToString();
         }
     }
     public class Test : ITest
@@ -47,15 +79,20 @@ namespace ALCProxy.Tests
 
             return a + list[0].Length;
         }
+        public int DoThing3(int a, Test2 t)
+        {
+            t.DoThingy();
+            return 5;
+        }
     }
     public class ALCProxyTests
     {
         [Fact]
         public void TestBasicContextLoading()
         {
-            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            SetDirectory();
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test", isGeneric: false);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
             Assert.Equal("TestContext", t.DoThing());
             Assert.Equal(17, t.DoThing2(10, new List<string> { "Letters", "test", "hello world!"}));
         }
@@ -63,12 +100,12 @@ namespace ALCProxy.Tests
         [Fact]
         public void TestUnload()
         {
-            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            SetDirectory();
             //TODO change to CWT?
-            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test", isGeneric: false); //The one referenced through the comm object, to test that the reference is removed
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext2", isCollectible: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
 
-            Assert.Equal("TestContext", t.DoThing());
+            Assert.Equal("TestContext2", t.DoThing());
 
             alc.Unload();
             GC.Collect();
@@ -82,15 +119,31 @@ namespace ALCProxy.Tests
 
 
         [Fact]
-        public void TestGenerics()
+        public void TestSimpleGenerics()
+        {
+            SetDirectory();
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext3", isCollectible: true);
+            IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
+
+            Assert.Equal("testString", t.DoThing());
+            Assert.Equal("Hello!", t.DoThing4("Hello!"));
+
+        }
+
+        [Fact]
+        public void TestUserGenerics()
+        {
+            SetDirectory();
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext3", isCollectible: true);
+            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
+
+            Assert.Equal(new Test2().ToString(), t.DoThing4(new Test2()));
+
+        }
+
+        private void SetDirectory()
         {
             System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
-            AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", isGeneric: true); //The one referenced through the comm object, to test that the reference is removed
-
-
-            Assert.Equal("Hello!", t.DoThing());
-
         }
     }
 }

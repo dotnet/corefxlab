@@ -17,6 +17,6 @@ namespace ALCProxy.Communication
     public interface IClientObject
     {
         object SendMethod(MethodInfo method, object[] args);
-        void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, bool isGeneric);
+        void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes);
     }
 }

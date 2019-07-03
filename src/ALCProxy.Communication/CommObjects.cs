@@ -27,7 +27,7 @@ namespace ALCProxy.Communication
             Type t = null;
             foreach (Type ty in a.GetTypes())
             {
-                if (ty.Name.Equals(typeName)) // will happen for non-generic types, generics we need to find the additional "`1" afterwards
+                if (ty.Name.Equals(typeName) || (ty.Name.StartsWith(typeName) && ty.Name.Contains("`"))) // will happen for non-generic types, generics we need to find the additional "`1" afterwards
                 {
                     t = ty;
                     break;
@@ -36,22 +36,26 @@ namespace ALCProxy.Communication
             if (t == null)
             {
                 //no type asked for in the assembly
-                throw new Exception();
+                throw new Exception("Proxy creation exception: No valid type while searching for the given type");
             }
             return t;
         }
-        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, bool isGeneric)
+        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
         {
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're looking for
             Type objType = FindType(typeName, a);
+            if (genericTypes != null) //We have a generic pushed in, so we need to set that when setting up the object
+            {
+                //objType = objType.MakeGenericType(genericTypes);
+            }
             //Load this assembly in so we can get the server into the ALC
             Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientObject)).CodeBase.Substring(8));
             Type serverType = FindType("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
             //Give the client its reference to the server
-            _server = constructedType.GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { objType });
+            _server = constructedType.GetConstructor(new Type[] { typeof(Type), typeof(Type[]) }).Invoke(new object[] { objType, genericTypes });
             //Attach to the unloading event
             alc.Unloading += Unload;
         }
@@ -103,13 +107,17 @@ namespace ALCProxy.Communication
     {
         public object instance;
 
-        public ServerDispatch(Type type)
+        public ServerDispatch(Type instanceType, Type[] genericTypes)
         {
-            SetParameters(type, new Type[] { }, new object[] { });
+            if (genericTypes != null)
+            {
+                instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
+            }
+            SetParameters(instanceType, new Type[] { }, new object[] { });
         }
-        internal static IServerObject Create<Dispatch>(Type type)
+        internal static IServerObject Create<Dispatch>(Type type, Type[] genericTypes)
         {
-            return new ServerDispatch<Dispatch>(type);
+            return new ServerDispatch<Dispatch>(type, genericTypes);
         }
         private void SetParameters(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
@@ -159,7 +167,7 @@ namespace ALCProxy.Communication
                     continue;
                 return m;
             }
-            throw new Exception("Error in ALCProxy: Method Not found");
+            throw new Exception("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
         }
 
         private object[] DecryptStreams(List<MemoryStream> streams, List<Type> argTypes)

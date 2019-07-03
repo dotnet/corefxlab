@@ -117,7 +117,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.Proxy", "src\ALCPr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.Tests", "tests\ALCProxy.Tests\ALCProxy.Tests.csproj", "{D76469F4-3694-463A-8444-187080ECD752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALC.Test", "src\ALC.Test\ALC.Test.csproj", "{230B0DEF-016E-42D2-932D-A602651203CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALC.Test", "src\ALC.Test\ALC.Test.csproj", "{230B0DEF-016E-42D2-932D-A602651203CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

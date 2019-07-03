@@ -12,7 +12,7 @@ namespace ALC.Test
         {
             //System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test", isGeneric: false);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
             Console.WriteLine(t.DoThing());
             Console.WriteLine(t.DoThing2(10, new List<string> { "Letters", "test", "hello world!" }));
             Test2 t2 = new Test2();
