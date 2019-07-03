@@ -157,7 +157,6 @@ namespace ALCProxy.Tests
             IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
 
             Assert.Equal(new Test2().ToString(), t.DoThing4(new Test2()));
-
         }
 
         private void SetDirectory()

@@ -21,7 +21,7 @@ namespace ALCProxy.Communication
         {
             _intType = interfaceType;
         }
-        private Type FindType(string typeName, Assembly a)
+        private Type FindTypeInAssembly(string typeName, Assembly a)
         {
             //find the type we're looking for
             Type t = null;
@@ -40,18 +40,25 @@ namespace ALCProxy.Communication
             }
             return t;
         }
+        /// <summary>
+        /// Creates the link between the client and the server, while also passing in all the information to the server for setup
+        /// </summary>
+        /// <param name="alc">The target AssemblyLoadContext</param>
+        /// <param name="typeName">Name of the proxied type</param>
+        /// <param name="assemblyPath">path of the assembly to the type</param>
+        /// <param name="genericTypes">any generics that we need the proxy to work with</param>
         public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
         {
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're looking for
-            Type objType = FindType(typeName, a);
+            Type objType = FindTypeInAssembly(typeName, a);
             if (genericTypes != null) //We have a generic pushed in, so we need to set that when setting up the object
             {
                 //objType = objType.MakeGenericType(genericTypes);
             }
             //Load this assembly in so we can get the server into the ALC
             Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientObject)).CodeBase.Substring(8));
-            Type serverType = FindType("ServerDispatch`1", aa);
+            Type serverType = FindTypeInAssembly("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
             //Give the client its reference to the server
@@ -61,7 +68,7 @@ namespace ALCProxy.Communication
         }
         private void Unload(object sender)
         {
-            _server = null; //Just removes the reference to the proxy, doesn't do anything else
+            _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
         }
 
         /// <summary>
