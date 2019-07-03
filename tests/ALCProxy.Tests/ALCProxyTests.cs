@@ -46,7 +46,7 @@ namespace ALCProxy.Tests
     }
     public class GenericClass<T> : IGeneric<T>
     {
-        string instance = "testString";
+        private readonly string instance = "testString";
         private T instance2;
 
         public GenericClass()
@@ -130,8 +130,9 @@ namespace ALCProxy.Tests
             alc.Unload();
             alc = null;
             GC.Collect();
-            GC.Collect();
+            //Test that the proxy can no longer make calls
             Assert.ThrowsAny<Exception>(t.PrintContext);
+            //Test that the ALC is truly gone
             Assert.True(cwt.TryGetValue("Test", out alc));
             Assert.ThrowsAny<Exception>(() => alc.Unload()); //TODO get debugger fixed so I can look at what's going on here more closely
         }
@@ -146,7 +147,6 @@ namespace ALCProxy.Tests
 
             Assert.Equal("testString", t.PrintContext());
             Assert.Equal("Hello!", t.DoThing4("Hello!"));
-
         }
 
         [Fact]

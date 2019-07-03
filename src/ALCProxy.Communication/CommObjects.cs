@@ -52,10 +52,6 @@ namespace ALCProxy.Communication
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're looking for
             Type objType = FindTypeInAssembly(typeName, a);
-            if (genericTypes != null) //We have a generic pushed in, so we need to set that when setting up the object
-            {
-                //objType = objType.MakeGenericType(genericTypes);
-            }
             //Load this assembly in so we can get the server into the ALC
             Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientObject)).CodeBase.Substring(8));
             Type serverType = FindTypeInAssembly("ServerDispatch`1", aa);
