@@ -77,6 +77,13 @@ namespace Microsoft.Data
             }
         }
 
+        internal PrimitiveColumnContainer(Memory<byte> memory, Memory<byte> nullBitMap, int length)
+        {
+            Buffers.Add(new DataFrameBuffer<T>(memory, length));
+            NullBitMapBuffers.Add(new DataFrameBuffer<byte>(nullBitMap, length));
+            Length += length;
+        }
+
         public PrimitiveColumnContainer(long length = 0)
         {
             while (length > 0)

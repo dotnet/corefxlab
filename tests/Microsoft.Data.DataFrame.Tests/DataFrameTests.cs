@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Apache.Arrow;
+using Apache.Arrow.Types;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -743,6 +745,88 @@ namespace Microsoft.Data.Tests
             Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
             Assert.Equal(join["Int_right"][2], right["Int"][2]);
             VerifyJoin(join, left, right, JoinAlgorithm.Inner);
+        }
+
+        [Fact]
+        public void TestArrowIntegration()
+        {
+            Field fInt = new Field.Builder().Name("Int").DataType(Int32Type.Default).Build();
+            Field fFloat = new Field.Builder().Name("Float").DataType(FloatType.Default).Build();
+            Schema schema = new Schema.Builder().Field(fInt).Field(fFloat).Build();
+
+            var intArrayBuilder = new Int32Array.Builder().Append(5).Append(10).Append(5).Append(10);
+            Int32Array intArray = intArrayBuilder.Build();
+            var floatArrayBuilder = new FloatArray.Builder().Append(5.0f).Append(10.0f).Append(5.0f).Append(10.0f);
+            FloatArray floatArray = floatArrayBuilder.Build();
+            List<IArrowArray> arrowArrays = new List<IArrowArray>() { intArray, floatArray };
+            RecordBatch recordBatch = new RecordBatch(schema, arrowArrays, 4);
+
+            DataFrame df = new DataFrame(recordBatch);
+            DataFrame df2 = new DataFrame(recordBatch);
+
+            IEnumerable<RecordBatch> recordBatches = df2.AsArrowRecordBatch();
+
+            foreach (RecordBatch batch in recordBatches)
+            {
+                Assert.Equal(batch.ColumnCount, recordBatch.ColumnCount);
+                foreach (IArrowArray array in batch.Arrays)
+                {
+                    switch (array.Data.DataType)
+                    {
+                        case Int32Type intType:
+                            Int32Array intArray_verify = (array as Int32Array);
+                            Assert.Equal(intArray.Length, intArray_verify.Length);
+                            for (int i = 0; i < intArray.Length; i++)
+                            {
+                                Assert.Equal(intArray.GetValue(i), intArray_verify.GetValue(i));
+                            }
+                            break;
+                        case FloatType floatType:
+                            FloatArray floatArray_verify = array as FloatArray;
+                            Assert.Equal(floatArray.Length, floatArray_verify.Length);
+                            for (int i = 0; i < floatArray.Length; i++)
+                            {
+                                Assert.Equal(floatArray.GetValue(i), floatArray_verify.GetValue(i));
+                            }
+                            break;
+                        default:
+                            Assert.True(false, "Encountered an unexpected datatype in a record batch");
+                            break;
+                    }
+                }
+            }
+
+            df["Int"] *= 2;
+            recordBatches = df.AsArrowRecordBatch();
+            foreach (RecordBatch batch in recordBatches)
+            {
+                Assert.Equal(batch.ColumnCount, recordBatch.ColumnCount);
+                foreach (IArrowArray array in batch.Arrays)
+                {
+                    switch (array.Data.DataType)
+                    {
+                        case Int32Type intType:
+                            Int32Array intArray_verify = (array as Int32Array);
+                            Assert.Equal(intArray.Length, intArray_verify.Length);
+                            for (int i = 0; i < intArray.Length; i++)
+                            {
+                                Assert.Equal(intArray.GetValue(i) * 2, intArray_verify.GetValue(i));
+                            }
+                            break;
+                        case FloatType floatType:
+                            FloatArray floatArray_verify = array as FloatArray;
+                            Assert.Equal(floatArray.Length, floatArray_verify.Length);
+                            for (int i = 0; i < floatArray.Length; i++)
+                            {
+                                Assert.Equal(floatArray.GetValue(i), floatArray_verify.GetValue(i));
+                            }
+                            break;
+                        default:
+                            Assert.True(false, "Encountered an unexpected datatype in a record batch");
+                            break;
+                    }
+                }
+            }
         }
     }
 }

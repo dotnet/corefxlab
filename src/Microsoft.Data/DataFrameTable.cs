@@ -111,7 +111,8 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            if (_columnNameToIndexDictionary.ContainsKey(column.Name))
+            bool containsKey = _columnNameToIndexDictionary.TryGetValue(column.Name, out int existingColumnIndex);
+            if (containsKey && existingColumnIndex != columnIndex)
             {
                 throw new ArgumentException($"Table already contains a column called {column.Name}");
             }

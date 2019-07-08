@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Apache.Arrow;
+using Microsoft.Collections.Extensions;
 
 namespace Microsoft.Data
 {
@@ -16,6 +18,47 @@ namespace Microsoft.Data
         where T : unmanaged
     {
         private PrimitiveColumnContainer<T> _columnContainer;
+
+        internal int NumberOfBuffers => _columnContainer.Buffers.Count;
+        internal Memory<byte> Buffer(int i) => _columnContainer.Buffers[i].Memory;
+        internal Memory<byte> NullBuffer(int i) => _columnContainer.NullBitMapBuffers[i].Memory;
+
+        internal Apache.Arrow.Array AsArrowArray(int i)
+        {
+            Debug.Assert(i < _columnContainer.Buffers.Count);
+            DataFrameBuffer<T> values = _columnContainer.Buffers[i];
+            DataFrameBuffer<byte> nulls = _columnContainer.NullBitMapBuffers[i];
+            ArrowBuffer valueBuffer = new ArrowBuffer(values.Memory);
+            // The following line is wrong, but C# Arrow does not have good null support yet
+            ArrowBuffer nullBuffer = nulls.Length == 0 ? ArrowBuffer.Empty : new ArrowBuffer(nulls.Memory);
+            switch (this)
+            {
+                case PrimitiveColumn<bool> boolColumn:
+                    return new BooleanArray(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<double> doubleColumn:
+                    return new DoubleArray(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<float> floatColumn:
+                    return new FloatArray(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<int> intColumn:
+                    return new Int32Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<long> longColumn:
+                    return new Int64Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<short> shortColumn:
+                    return new Int16Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<uint> uintColumn:
+                    return new UInt32Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<ulong> ulongColumn:
+                    return new UInt64Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<ushort> ushortColumn:
+                    return new UInt16Array(valueBuffer, nullBuffer, values.Length, -1, 0);
+                case PrimitiveColumn<byte> byteColumn:
+                case PrimitiveColumn<char> charColumn:
+                case PrimitiveColumn<decimal> decimalColumn:
+                case PrimitiveColumn<sbyte> sbyteColumn:
+                default:
+                    throw new NotImplementedException(nameof(byteColumn.DataType));
+            }
+        }
 
         internal PrimitiveColumn(string name, PrimitiveColumnContainer<T> column) : base(name, column.Length, typeof(T))
         {
@@ -31,6 +74,11 @@ namespace Microsoft.Data
         public PrimitiveColumn(string name, long length = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(length);
+        }
+
+        public PrimitiveColumn(string name, Memory<byte> memory, Memory<byte> nullBitMap, int length = 0) : base(name, length, typeof(T))
+        {
+            _columnContainer = new PrimitiveColumnContainer<T>(memory, nullBitMap, length);
         }
 
         public new IList<T?> this[long startIndex, int length]

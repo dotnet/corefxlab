@@ -44,6 +44,14 @@ namespace Microsoft.Data
             Memory = new byte[numberOfValues * _size];
         }
 
+        public DataFrameBuffer(Memory<byte> memory, int length)
+        {
+            _size = Unsafe.SizeOf<T>();
+            //Debug.Assert(length * _size == memory.Length); // Wont work for the nullBitMapBuffer
+            Memory = memory;
+            Length = length;
+        }
+
         public void Append(T value)
         {
             if (Length == MaxCapacity)
