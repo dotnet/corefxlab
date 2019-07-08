@@ -17,7 +17,6 @@ namespace ALCProxy.Proxy
             T obj = ALCDispatch<T>.Create(alc, assemblyPath, typeName);
             return obj;
         }
-
         public static T CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, Type[] genericTypes)
         {
             T obj = ALCDispatch<T>.CreateGeneric(alc, assemblyPath, typeName, genericTypes);
@@ -27,28 +26,24 @@ namespace ALCProxy.Proxy
     public class ALCDispatch<I> : System.Reflection.DispatchProxy //T is the TargetObject type, I is the specific client you want to use.
     {
         private IClientObject _client; //ClientObject
-
         internal static I Create(AssemblyLoadContext alc, string assemblyPath, string typeName)
         {
             object proxy = Create<I, ALCDispatch<I>>();
             ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, null);
             return (I)proxy;
         }
-        
         internal static I CreateGeneric(AssemblyLoadContext alc, string assemblyPath, string typeName, Type[] genericTypes) //TODO: build in generics to get working
         {
             object proxy = Create<I, ALCDispatch<I>>();
             ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, genericTypes);
             return (I)proxy;
         }
-
         private void SetParameters(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
         {
-            _client = (IClientObject)typeof(ClientObject).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
+            _client = (IClientObject)typeof(ClientDispatch).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
             //_client = (IClientObject)Activator.CreateInstance(typeof(ClientObject<I>));
             _client.SetUpServer(alc, typeName, assemblyPath, genericTypes);
         }
-
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
             return _client.SendMethod(targetMethod, args); //Whenever we call the method, instead we send the request to the client to make it to target

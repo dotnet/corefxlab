@@ -28,10 +28,10 @@ namespace ALCProxy.Tests
         public string DoThing4(T t);
         public string GenericMethodTest<I>();
     }
+
     public class Test2
     {
         public int test;
-
         public Test2()
         {
             test = 5;
@@ -40,17 +40,16 @@ namespace ALCProxy.Tests
         {
             test = start;
         }
-
         public void DoThingy()
         {
             test++;
         }
     }
+
     public class GenericClass<T> : IGeneric<T>
     {
         private readonly string instance = "testString";
         private T instance2;
-
         public GenericClass()
         {
         }
@@ -58,7 +57,6 @@ namespace ALCProxy.Tests
         {
             instance2 = t;
         }
-
         public string PrintContext()
         {
             return instance.ToString();
@@ -71,7 +69,6 @@ namespace ALCProxy.Tests
         {
             return instance.Length;
         }
-
         public int DoThing3(int a, Test2 t)
         {
             t.DoThingy();
@@ -82,6 +79,7 @@ namespace ALCProxy.Tests
             return tester.ToString();
         }
     }
+
     public class Test : ITest
     {
         public string PrintContext()
@@ -137,7 +135,6 @@ namespace ALCProxy.Tests
         //        }
         //        // ...per-iteration cleanup
         //    }
-
         //}
         [Fact]
         public void TestUnload() //TODO fix unloading so we can continue working on this test
@@ -158,7 +155,6 @@ namespace ALCProxy.Tests
             Assert.True(cwt.TryGetValue("Test", out alc));
             Assert.ThrowsAny<Exception>(() => alc.Unload()); //TODO get debugger fixed so I can look at what's going on here more closely
         }
-
         //[Benchmark]
         [Fact]
         public void TestSimpleGenerics()

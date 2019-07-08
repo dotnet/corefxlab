@@ -12,12 +12,12 @@ using System.Runtime.Serialization;
 
 namespace ALCProxy.Communication
 {
-    public class ClientObject : ALCProxy.Communication.DispatchProxy, IClientObject
+    public class ClientDispatch : ALCProxy.Communication.DispatchProxy, IClientObject
     {
         //Can't make this an IServerObject directly due to the type-loading barrier
         private object _server;
         private Type _intType;
-        public ClientObject(Type interfaceType)
+        public ClientDispatch(Type interfaceType)
         {
             _intType = interfaceType;
         }
@@ -53,7 +53,7 @@ namespace ALCProxy.Communication
             //find the type we're looking for
             Type objType = FindTypeInAssembly(typeName, a);
             //Load this assembly in so we can get the server into the ALC
-            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientObject)).CodeBase.Substring(8));
+            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientDispatch)).CodeBase.Substring(8));
             Type serverType = FindTypeInAssembly("ServerDispatch`1", aa);
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
@@ -67,7 +67,6 @@ namespace ALCProxy.Communication
         {
             _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
         }
-
         /// <summary>
         /// Converts each argument into a stream using DataContractSerializer so it can be sent over in a call-by-value fashion
         /// </summary>
@@ -107,10 +106,10 @@ namespace ALCProxy.Communication
             return SendMethod(method, args);
         }
     }
+
     public class ServerDispatch<ObjectInterface> : IServerObject
     {
         public object instance;
-
         public ServerDispatch(Type instanceType, Type[] genericTypes)
         {
             if (genericTypes != null)
@@ -127,7 +126,6 @@ namespace ALCProxy.Communication
         {
             instance = instanceType.GetConstructor(constructorTypes).Invoke(constructorArgs);
         }
-
         public Type ConvertType(Type toConvert)
         {
             string assemblyPath = Assembly.GetAssembly(toConvert).CodeBase.Substring(8);
@@ -137,7 +135,6 @@ namespace ALCProxy.Communication
             }
             return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).LoadFromAssemblyPath(assemblyPath).GetType(toConvert.FullName);
         }
-
         public object CallObject(MethodInfo targetMethod, List<MemoryStream> streams, List<Type> argTypes)
         {
             //Turn the memstreams into their respective objects
@@ -153,7 +150,6 @@ namespace ALCProxy.Communication
             }
             return m.Invoke(instance, args);
         }
-
         private MethodInfo FindMethod(MethodInfo[] methods, string methodName, Type[] parameterTypes)
         {
             foreach(MethodInfo m in methods)
@@ -178,7 +174,12 @@ namespace ALCProxy.Communication
             }
             throw new Exception("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
         }
-
+        /// <summary>
+        /// Takes the memory streams passed into the server and turns them into the specific objects we want, in the desired types we want
+        /// </summary>
+        /// <param name="streams"></param>
+        /// <param name="argTypes"></param>
+        /// <returns></returns>
         private object[] DecryptStreams(List<MemoryStream> streams, List<Type> argTypes)
         {
             var convertedObjects = new List<object>();
