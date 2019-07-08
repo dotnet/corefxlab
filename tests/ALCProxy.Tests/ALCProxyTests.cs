@@ -26,6 +26,7 @@ namespace ALCProxy.Tests
         public int DoThing2(int a, List<string> list);
         public int DoThing3(int a, Test2 t);
         public string DoThing4(T t);
+        public string GenericMethodTest<I>();
     }
     public class Test2
     {
@@ -61,6 +62,10 @@ namespace ALCProxy.Tests
         public string PrintContext()
         {
             return instance.ToString();
+        }
+        public string GenericMethodTest<I>()
+        {
+            return typeof(I).ToString();
         }
         public int DoThing2(int a, List<string> list)
         {
@@ -102,7 +107,6 @@ namespace ALCProxy.Tests
         [Fact]
         public void TestBasicContextLoading()
         {
-            SetDirectory();
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
 
@@ -136,9 +140,8 @@ namespace ALCProxy.Tests
 
         //}
         [Fact]
-        public void TestUnload()
+        public void TestUnload() //TODO fix unloading so we can continue working on this test
         {
-            SetDirectory();
             //TODO change to CWT?
             var cwt = new ConditionalWeakTable<string, AssemblyLoadContext>();
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext2", isCollectible: true);
@@ -160,7 +163,6 @@ namespace ALCProxy.Tests
         [Fact]
         public void TestSimpleGenerics()
         {
-            SetDirectory();
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext3", isCollectible: true);
             IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
 
@@ -171,16 +173,19 @@ namespace ALCProxy.Tests
         [Fact]
         public void TestUserGenerics()
         {
-            SetDirectory();
             AssemblyLoadContext alc = new AssemblyLoadContext("TestContext3", isCollectible: true);
             IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
 
             Assert.Equal(new Test2().ToString(), t.DoThing4(new Test2()));
         }
-
-        private void SetDirectory()
+        [Fact]
+        public void TestGenericMethods()
         {
-            //System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            AssemblyLoadContext alc = new AssemblyLoadContext("GenericMethodContext", isCollectible: true);
+            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
+            //Test generic methods
+            Assert.Equal(new Test2().ToString(), t.GenericMethodTest<Test2>());
         }
+
     }
 }

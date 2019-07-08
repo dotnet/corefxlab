@@ -146,6 +146,11 @@ namespace ALCProxy.Communication
 
             MethodInfo[] methods = instance.GetType().GetMethods();
             MethodInfo m = FindMethod(methods, targetMethod.Name, argTypes.ToArray());
+            if (m.ContainsGenericParameters)
+            {
+                //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
+                m = m.MakeGenericMethod(targetMethod.GetGenericArguments().Select(x => ConvertType(x)).ToArray());
+            }
             return m.Invoke(instance, args);
         }
 
