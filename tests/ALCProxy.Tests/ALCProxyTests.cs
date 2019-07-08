@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using ALCProxy.Proxy;
+using Microsoft.Xunit.Performance;
 using Xunit;
 
 namespace ALCProxy.Tests
@@ -97,6 +98,7 @@ namespace ALCProxy.Tests
     }
     public class ALCProxyTests
     {
+        //[Benchmark]
         [Fact]
         public void TestBasicContextLoading()
         {
@@ -115,7 +117,24 @@ namespace ALCProxy.Tests
             Assert.Equal(3, t2.test);
 
         }
+        //[Benchmark]
+        //public void BenchmarkBasicProxy()
+        //{
+        //    SetDirectory();
+        //    AssemblyLoadContext alc = new AssemblyLoadContext("TestContext", isCollectible: true);
+        //    ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        // Any per-iteration setup can go here.
+        //        using (iteration.StartMeasurement())
+        //        {
+        //            // Code to be measured goes here.
+        //            Assert.Equal("TestContext", t.PrintContext());
+        //        }
+        //        // ...per-iteration cleanup
+        //    }
 
+        //}
         [Fact]
         public void TestUnload()
         {
@@ -137,7 +156,7 @@ namespace ALCProxy.Tests
             Assert.ThrowsAny<Exception>(() => alc.Unload()); //TODO get debugger fixed so I can look at what's going on here more closely
         }
 
-
+        //[Benchmark]
         [Fact]
         public void TestSimpleGenerics()
         {
@@ -148,7 +167,7 @@ namespace ALCProxy.Tests
             Assert.Equal("testString", t.PrintContext());
             Assert.Equal("Hello!", t.DoThing4("Hello!"));
         }
-
+        //[Benchmark]
         [Fact]
         public void TestUserGenerics()
         {
@@ -161,7 +180,7 @@ namespace ALCProxy.Tests
 
         private void SetDirectory()
         {
-            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            //System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
         }
     }
 }

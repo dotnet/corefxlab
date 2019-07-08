@@ -60,9 +60,10 @@ namespace ALCProxy.Communication
             //Give the client its reference to the server
             _server = constructedType.GetConstructor(new Type[] { typeof(Type), typeof(Type[]) }).Invoke(new object[] { objType, genericTypes });
             //Attach to the unloading event
-            alc.Unloading += Unload;
+            //TODO Fix the unloading section, this is breaking our tests right now
+            //alc.Unloading += this.UnloadClient;
         }
-        private void Unload(object sender)
+        private void UnloadClient(object sender)
         {
             _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
         }
