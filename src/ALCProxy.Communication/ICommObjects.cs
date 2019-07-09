@@ -28,7 +28,7 @@ namespace ALCProxy.Communication
         /// </summary>
         /// <param name="method">The method information of what needs to be called</param>
         /// <param name="args"></param>
-        /// <returns></returns>
+        /// <returns>Whatever the target Method returns. We need to make sure that whatever gets returned is not of a type that is in our target ALC</returns>
         object SendMethod(MethodInfo method, object[] args);
         /// <summary>
         /// Creates the link between the client and the server, while also passing in all the information to the server for setup

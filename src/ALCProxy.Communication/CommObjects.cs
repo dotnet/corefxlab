@@ -61,7 +61,7 @@ namespace ALCProxy.Communication
             _server = constructedType.GetConstructor(new Type[] { typeof(Type), typeof(Type[]) }).Invoke(new object[] { objType, genericTypes });
             //Attach to the unloading event
             //TODO Fix the unloading section, this is breaking our tests right now
-            //alc.Unloading += this.UnloadClient;
+            alc.Unloading += this.UnloadClient;
         }
         private void UnloadClient(object sender)
         {
@@ -98,7 +98,18 @@ namespace ALCProxy.Communication
             }
             MethodInfo callMethod = _server.GetType().GetMethod("CallObject");
             callMethod.GetParameters();
-            return callMethod.Invoke(_server, new object[] { method, streams, /*serializers,*/ types });
+            MemoryStream encryptedReturn = (MemoryStream) /*always returns a MemoryStream*/callMethod.Invoke(_server, new object[] { method, streams, /*serializers,*/ types });
+            return DecryptReturnType(encryptedReturn, method.ReturnType);
+        }
+        private object DecryptReturnType(MemoryStream stream, Type returnType)
+        {
+            stream.Position = 0;
+
+            //Deserialize the Record object back into a new record object.  
+            DataContractSerializer newSerializer = new DataContractSerializer(returnType);
+            object obj = newSerializer.ReadObject(stream);
+            return obj;
+
         }
         //This should always be a "SendMethod" option, with 2 args, the methodinfo of what needs to be sent and the args for said method
         protected override object Invoke(MethodInfo method, object[] args)
@@ -148,7 +159,7 @@ namespace ALCProxy.Communication
                 //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
                 m = m.MakeGenericMethod(targetMethod.GetGenericArguments().Select(x => ConvertType(x)).ToArray());
             }
-            return m.Invoke(instance, args);
+            return EncryptReturnObject(m.Invoke(instance, args), m.ReturnType);
         }
         private MethodInfo FindMethod(MethodInfo[] methods, string methodName, Type[] parameterTypes)
         {
@@ -196,6 +207,13 @@ namespace ALCProxy.Communication
                 convertedObjects.Add(obj);
             }
             return convertedObjects.ToArray();
+        }
+        private object EncryptReturnObject(object returnedObject, Type returnType)
+        {
+            MemoryStream stream = new MemoryStream();
+            DataContractSerializer s = new DataContractSerializer(returnType);
+            s.WriteObject(stream, returnedObject);
+            return stream;
         }
     }
 }
