@@ -813,9 +813,9 @@ namespace Microsoft.Data.Tests
             Assert.Equal(0, min["Int"][1]); // Because of the null value
 
             DataFrame product = df.GroupBy("Bool").Product();
-            Assert.Equal(2, min.RowCount);
-            Assert.Equal(0, min["Int"][0]);
-            Assert.Equal(0, min["Int"][1]); // Because of the null value
+            Assert.Equal(2, product.RowCount);
+            Assert.Equal(0, product["Int"][0]);
+            Assert.Equal(0, product["Int"][1]); // Because of the null value
 
             DataFrame sum = df.GroupBy("Bool").Sum();
             Assert.Equal(2, sum.RowCount);
