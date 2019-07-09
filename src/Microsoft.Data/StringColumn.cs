@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Collections.Extensions;
 
 namespace Microsoft.Data
 {
@@ -257,20 +257,28 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override MultiValueDictionary<TKey, long> HashColumnValues<TKey>()
+        public override Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>()
         {
             if (typeof(TKey) == typeof(string))
             {
-                MultiValueDictionary<string, long> multimap = new MultiValueDictionary<string, long>(EqualityComparer<string>.Default);
+                Dictionary<string, ICollection<long>> multimap = new Dictionary<string, ICollection<long>>(EqualityComparer<string>.Default);
                 for (long i = 0; i < Length; i++)
                 {
-                    multimap.Add(this[i] ?? default, i);
+                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
+                    if (containsKey)
+                    {
+                        values.Add(i);
+                    }
+                    else
+                    {
+                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                    }
                 }
-                return multimap as MultiValueDictionary<TKey, long>;
+                return multimap as Dictionary<TKey, ICollection<long>>;
             }
             else
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException(nameof(TKey));
             }
         }
     }

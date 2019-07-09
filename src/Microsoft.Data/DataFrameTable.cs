@@ -18,7 +18,7 @@ namespace Microsoft.Data
 
         private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        public long RowCount { get; private set; }
+        public long RowCount { get; internal set; }
 
         public int ColumnCount { get; private set; }
 

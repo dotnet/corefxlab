@@ -3,12 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Collections.Extensions;
-using Microsoft.ML.Transforms;
 
 namespace Microsoft.Data
 {
@@ -263,298 +261,6 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private void AppendForMerge(DataFrame dataFrame, long dataFrameRow, DataFrame left, DataFrame right, long leftRow, long rightRow)
-        {
-            for (int i = 0; i < left.ColumnCount; i++)
-            {
-                BaseColumn leftColumn = left.Column(i);
-                BaseColumn column = dataFrame.Column(i);
-                if (leftRow == -1)
-                {
-                    column[dataFrameRow] = null;
-                }
-                else
-                {
-                    column[dataFrameRow] = leftColumn[leftRow];
-                }
-            }
-            for (int i = 0; i < right.ColumnCount; i++)
-            {
-                BaseColumn rightColumn = right.Column(i);
-                BaseColumn column = dataFrame.Column(i + left.ColumnCount);
-                if (rightRow == -1)
-                {
-                    column[dataFrameRow] = null;
-                }
-                else
-                {
-                    column[dataFrameRow] = rightColumn[rightRow];
-                }
-            }
-        }
-
-        // TODO: Merge API with an "On" parameter that merges on a column common to 2 dataframes
-
-        /// <summary>
-        /// Merge DataFrames with a database style join
-        /// </summary>
-        /// <param name="other"></param>
-        /// <param name="leftJoinColumn"></param>
-        /// <param name="rightJoinColumn"></param>
-        /// <param name="leftSuffix"></param>
-        /// <param name="rightSuffix"></param>
-        /// <param name="joinAlgorithm"></param>
-        /// <returns></returns>
-        public DataFrame Merge<TKey>(DataFrame other, string leftJoinColumn, string rightJoinColumn, string leftSuffix = "_left", string rightSuffix = "_right", JoinAlgorithm joinAlgorithm = JoinAlgorithm.Left)
-        {
-            // A simple hash join
-            DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> emptyMap = new PrimitiveColumn<long>("Empty");
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                // Create empty columns
-                BaseColumn column = Column(i).Clone(emptyMap);
-                ret.InsertColumn(ret.ColumnCount, column);
-            }
-
-            for (int i = 0; i < other.ColumnCount; i++)
-            {
-                // Create empty columns
-                BaseColumn column = other.Column(i).Clone(emptyMap);
-                SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                ret.InsertColumn(ret.ColumnCount, column);
-            }
-
-            // The final table size is not known until runtime
-            long rowNumber = 0;
-            if (joinAlgorithm == JoinAlgorithm.Left)
-            {
-                // First hash other dataframe on the rightJoinColumn
-                BaseColumn otherColumn = other[rightJoinColumn];
-                MultiValueDictionary<TKey, long> multimap = otherColumn.HashColumnValues<TKey>();
-
-                // Go over the records in this dataframe and match with the hashtable
-                BaseColumn thisColumn = this[leftJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(thisColumn.Length);
-                }
-
-                for (long i = 0; i < thisColumn.Length; i++)
-                {
-                    if (rowNumber >= thisColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(thisColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out IReadOnlyCollection<long> rowNumbers))
-                    {
-                        foreach (long row in rowNumbers)
-                        {
-                            if (thisColumn[i] == null)
-                            {
-                                // Match only with nulls in otherColumn
-                                if (otherColumn[row] == null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                }
-                            }
-                            else
-                            {
-                                // Cannot match nulls in otherColumn
-                                if (otherColumn[row] != null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        AppendForMerge(ret, rowNumber++, this, other, i, -1);
-                    }
-                }
-                ret._table.RowCount = rowNumber;
-            }
-            else if (joinAlgorithm == JoinAlgorithm.Right)
-            {
-                BaseColumn thisColumn = this[leftJoinColumn];
-                MultiValueDictionary<TKey, long> multimap = thisColumn.HashColumnValues<TKey>();
-
-                BaseColumn otherColumn = other[rightJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(otherColumn.Length);
-                }
-
-                for (long i = 0; i < otherColumn.Length; i++)
-                {
-                    if (rowNumber >= otherColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(otherColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out IReadOnlyCollection<long> rowNumbers))
-                    {
-                        foreach (long row in rowNumbers)
-                        {
-                            if (otherColumn[i] == null)
-                            {
-                                if (thisColumn[row] == null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, row, i);
-                                }
-                            }
-                            else
-                            {
-                                if (thisColumn[row] != null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, row, i);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        AppendForMerge(ret, rowNumber++, this, other, -1, i);
-                    }
-                }
-                ret._table.RowCount = rowNumber;
-            }
-            else if (joinAlgorithm == JoinAlgorithm.Inner)
-            {
-                // Hash the column with the smaller RowCount
-                long leftRowCount = RowCount;
-                long rightRowCount = other.RowCount;
-                DataFrame longerDataFrame = leftRowCount < rightRowCount ? other : this;
-                DataFrame shorterDataFrame = ReferenceEquals(longerDataFrame, this) ? other : this;
-                BaseColumn hashColumn = (leftRowCount < rightRowCount) ? this[leftJoinColumn] : other[rightJoinColumn];
-                BaseColumn otherColumn = ReferenceEquals(hashColumn, this[leftJoinColumn]) ? other[rightJoinColumn] : this[leftJoinColumn];
-                MultiValueDictionary<TKey, long> multimap = hashColumn.HashColumnValues<TKey>();
-
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(1);
-                }
-
-                for (long i = 0; i < otherColumn.Length; i++)
-                {
-                    if (rowNumber >= ret.Column(0).Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(otherColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out IReadOnlyCollection<long> rowNumbers))
-                    {
-                        foreach (long row in rowNumbers)
-                        {
-                            if (otherColumn[i] == null)
-                            {
-                                if (hashColumn[row] == null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, shorterDataFrame, longerDataFrame, row, i);
-                                }
-                            }
-                            else
-                            {
-                                if (hashColumn[row] != null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, shorterDataFrame, longerDataFrame, row, i);
-                                }
-                            }
-                        }
-                    }
-                }
-                ret._table.RowCount = rowNumber;
-            }
-            else if (joinAlgorithm == JoinAlgorithm.FullOuter)
-            {
-                BaseColumn otherColumn = other[rightJoinColumn];
-                MultiValueDictionary<TKey, long> multimap = otherColumn.HashColumnValues<TKey>();
-                MultiValueDictionary<TKey, long> intersection = new MultiValueDictionary<TKey, long>(EqualityComparer<TKey>.Default);
-
-                // Go over the records in this dataframe and match with the hashtable
-                BaseColumn thisColumn = this[rightJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(thisColumn.Length + 1);
-                }
-
-                for (long i = 0; i < thisColumn.Length; i++)
-                {
-                    if (rowNumber >= thisColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(thisColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out IReadOnlyCollection<long> rowNumbers))
-                    {
-                        foreach (long row in rowNumbers)
-                        {
-                            if (thisColumn[i] == null)
-                            {
-                                // Has to match only with nulls in otherColumn
-                                if (otherColumn[row] == null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                    intersection.Add(value, rowNumber);
-                                }
-                            }
-                            else
-                            {
-                                // Cannot match to nulls in otherColumn
-                                if (otherColumn[row] != null)
-                                {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                    intersection.Add(value, rowNumber);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        AppendForMerge(ret, rowNumber++, this, other, i, -1);
-                    }
-                }
-                for (long i = 0; i < otherColumn.Length; i++)
-                {
-                    if (rowNumber >= ret.Column(0).Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(otherColumn[i] ?? default(TKey));
-                    if (!intersection.ContainsKey(value))
-                    {
-                        if (rowNumber >= otherColumn.Length)
-                        {
-                            for (int c = 0; c < ret.ColumnCount; c++)
-                            {
-                                ret.Column(c).Resize(rowNumber + 1);
-                            }
-                        }
-                        AppendForMerge(ret, rowNumber++, this, other, -1, i);
-                    }
-                }
-                ret._table.RowCount = rowNumber;
-            }
-            return ret;
-        }
-
         public GroupBy GroupBy(string columnName)
         {
             int columnIndex = _table.GetColumnIndex(columnName);
@@ -566,49 +272,49 @@ namespace Microsoft.Data
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    MultiValueDictionary<bool, long> boolDictionary = boolColumn.HashColumnValues<bool>();
+                    Dictionary<bool, ICollection<long>> boolDictionary = boolColumn.HashColumnValues<bool>();
                     return new GroupBy<bool>(this, columnIndex, boolDictionary);
                 case PrimitiveColumn<byte> byteColumn:
-                    MultiValueDictionary<byte, long> byteDictionary = byteColumn.HashColumnValues<byte>();
+                    Dictionary<byte, ICollection<long>> byteDictionary = byteColumn.HashColumnValues<byte>();
                     return new GroupBy<byte>(this, columnIndex, byteDictionary);
                 case PrimitiveColumn<char> charColumn:
-                    MultiValueDictionary<char, long> charDictionary = charColumn.HashColumnValues<char>();
+                    Dictionary<char, ICollection<long>> charDictionary = charColumn.HashColumnValues<char>();
                     return new GroupBy<char>(this, columnIndex, charDictionary);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    MultiValueDictionary<decimal, long> decimalDictionary = decimalColumn.HashColumnValues<decimal>();
+                    Dictionary<decimal, ICollection<long>> decimalDictionary = decimalColumn.HashColumnValues<decimal>();
                     return new GroupBy<decimal>(this, columnIndex, decimalDictionary);
                 case PrimitiveColumn<double> doubleColumn:
-                    MultiValueDictionary<double, long> doubleDictionary = doubleColumn.HashColumnValues<double>();
+                    Dictionary<double, ICollection<long>> doubleDictionary = doubleColumn.HashColumnValues<double>();
                     return new GroupBy<double>(this, columnIndex, doubleDictionary);
                 case PrimitiveColumn<float> floatColumn:
-                    MultiValueDictionary<float, long> floatDictionary = floatColumn.HashColumnValues<float>();
+                    Dictionary<float, ICollection<long>> floatDictionary = floatColumn.HashColumnValues<float>();
                     return new GroupBy<float>(this, columnIndex, floatDictionary);
                 case PrimitiveColumn<int> intColumn:
-                    MultiValueDictionary<int, long> intDictionary = intColumn.HashColumnValues<int>();
+                    Dictionary<int, ICollection<long>> intDictionary = intColumn.HashColumnValues<int>();
                     return new GroupBy<int>(this, columnIndex, intDictionary);
                 case PrimitiveColumn<long> longColumn:
-                    MultiValueDictionary<long, long> longDictionary = longColumn.HashColumnValues<long>();
+                    Dictionary<long, ICollection<long>> longDictionary = longColumn.HashColumnValues<long>();
                     return new GroupBy<long>(this, columnIndex, longDictionary);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    MultiValueDictionary<sbyte, long> sbyteDictionary = sbyteColumn.HashColumnValues<sbyte>();
+                    Dictionary<sbyte, ICollection<long>> sbyteDictionary = sbyteColumn.HashColumnValues<sbyte>();
                     return new GroupBy<sbyte>(this, columnIndex, sbyteDictionary);
                 case PrimitiveColumn<short> shortColumn:
-                    MultiValueDictionary<short, long> shortDictionary = shortColumn.HashColumnValues<short>();
+                    Dictionary<short, ICollection<long>> shortDictionary = shortColumn.HashColumnValues<short>();
                     return new GroupBy<short>(this, columnIndex, shortDictionary);
                 case PrimitiveColumn<uint> uintColumn:
-                    MultiValueDictionary<uint, long> uintDictionary = uintColumn.HashColumnValues<uint>();
+                    Dictionary<uint, ICollection<long>> uintDictionary = uintColumn.HashColumnValues<uint>();
                     return new GroupBy<uint>(this, columnIndex, uintDictionary);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    MultiValueDictionary<ulong, long> ulongDictionary = ulongColumn.HashColumnValues<ulong>();
+                    Dictionary<ulong, ICollection<long>> ulongDictionary = ulongColumn.HashColumnValues<ulong>();
                     return new GroupBy<ulong>(this, columnIndex, ulongDictionary);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    MultiValueDictionary<ushort, long> ushortDictionary = ushortColumn.HashColumnValues<ushort>();
+                    Dictionary<ushort, ICollection<long>> ushortDictionary = ushortColumn.HashColumnValues<ushort>();
                     return new GroupBy<ushort>(this, columnIndex, ushortDictionary);
                 case StringColumn stringColumn:
-                    MultiValueDictionary<string, long> stringDictionary = stringColumn.HashColumnValues<string>();
+                    Dictionary<string, ICollection<long>> stringDictionary = stringColumn.HashColumnValues<string>();
                     return new GroupBy<string>(this, columnIndex, stringDictionary);
                 default:
-                    MultiValueDictionary<object, long> dictionary = column.HashColumnValues<object>();
+                    Dictionary<object, ICollection<long>> dictionary = column.HashColumnValues<object>();
                     return new GroupBy<object>(this, columnIndex, dictionary);
             }
         }

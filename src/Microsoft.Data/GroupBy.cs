@@ -3,13 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-//using System.Linq;
-using Microsoft.Collections.Extensions;
 
 namespace Microsoft.Data
 {
@@ -64,11 +58,11 @@ namespace Microsoft.Data
     public class GroupBy<TKey> : GroupBy
     {
         private int _groupByColumnIndex;
-        private MultiValueDictionary<TKey, long> _keyValuePairs;
+        private Dictionary<TKey, ICollection<long>> _keyValuePairs;
         private DataFrame _dataFrame;
         private PrimitiveColumn<long> _mapIndices;
 
-        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, MultiValueDictionary<TKey, long> keyValuePairs)
+        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, Dictionary<TKey, ICollection<long>> keyValuePairs)
         {
             _groupByColumnIndex = groupByColumnIndex;
             _keyValuePairs = keyValuePairs;
@@ -86,10 +80,10 @@ namespace Microsoft.Data
         {
             long rowNumber = 0;
             bool firstGroup = true;
-            foreach (KeyValuePair<TKey, IReadOnlyCollection<long>> pairs in _keyValuePairs)
+            foreach (KeyValuePair<TKey, ICollection<long>> pairs in _keyValuePairs)
             {
                 groupByColumnDelegate(rowNumber, pairs.Key);
-                IReadOnlyCollection<long> rows = pairs.Value;
+                ICollection<long> rows = pairs.Value;
                 // Assuming that the dataframe has not been modified after the groupby call
                 int numberOfColumns = _dataFrame.ColumnCount;
                 for (int i = 0; i < numberOfColumns; i++)
@@ -263,7 +257,7 @@ namespace Microsoft.Data
                 BaseColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 bool firstRow = true;
-                IReadOnlyCollection<long> values = _keyValuePairs[key];
+                ICollection<long> values = _keyValuePairs[key];
                 int numberOfValues = values.Count;
                 IEnumerator<long> rows = rowEnumerable.GetEnumerator();
                 while (rows.MoveNext())

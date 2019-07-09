@@ -15,7 +15,6 @@ namespace Microsoft.Data
     public partial class PrimitiveColumn<T> : BaseColumn
         where T : unmanaged
     {
-        #region Computations
         public override void Abs()
         {
             PrimitiveColumnComputation<T>.Instance.Abs(_columnContainer);
@@ -106,6 +105,5 @@ namespace Microsoft.Data
         {
             PrimitiveColumnComputation<T>.Instance.Round(_columnContainer);
         }
-        #endregion
     }
 }

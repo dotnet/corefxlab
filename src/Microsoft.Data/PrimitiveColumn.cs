@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -88,6 +89,12 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
                 }
             }
+        }
+
+        public override void Resize(long length)
+        {
+            _columnContainer.Resize(length);
+            Length = _columnContainer.Length;
         }
 
         public void Append(T? value)
@@ -221,6 +228,31 @@ namespace Microsoft.Data
         {
             PrimitiveColumnContainer<decimal> newColumnContainer = _columnContainer.CloneAsDecimalContainer();
             return new PrimitiveColumn<decimal>(Name, newColumnContainer);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>()
+        {
+            if (typeof(TKey) == typeof(T))
+            {
+                Dictionary<T, ICollection<long>> multimap = new Dictionary<T, ICollection<long>>(EqualityComparer<T>.Default);
+                for (long i = 0; i < Length; i++)
+                {
+                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
+                    if (containsKey)
+                    {
+                        values.Add(i);
+                    }
+                    else
+                    {
+                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                    }
+                }
+                return multimap as Dictionary<TKey, ICollection<long>>;
+            }
+            else
+            {
+                throw new NotImplementedException(nameof(TKey));
+            }
         }
 
         public void ApplyElementwise(Func<T, T> func)
