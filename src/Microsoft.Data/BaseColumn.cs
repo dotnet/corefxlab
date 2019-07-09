@@ -60,7 +60,7 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Called internally from Merge
+        /// Called internally from Merge and GroupBy
         /// </summary>
         /// <param name="length"></param>
         public virtual void Resize(long length) => throw new NotImplementedException();
