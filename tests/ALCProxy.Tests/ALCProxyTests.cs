@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Security.Cryptography;
+using System.Threading;
 using ALCProxy.Proxy;
 using Microsoft.Xunit.Performance;
 using Xunit;
@@ -19,6 +20,7 @@ namespace ALCProxy.Tests
         public string PrintContext();
         public int DoThing2(int a, List<string> list);
         public int DoThing3(int a, Test2 t);
+        public Test2 ReturnUserType();
     }
 
     public interface IGeneric<T>
@@ -46,7 +48,6 @@ namespace ALCProxy.Tests
             test++;
         }
     }
-
     public class GenericClass<T> : IGeneric<T>
     {
         private readonly string _instance = "testString";
@@ -100,6 +101,11 @@ namespace ALCProxy.Tests
             t.DoThingy();
             return 5;
         }
+
+        public Test2 ReturnUserType()
+        {
+            return new Test2();
+        }
     }
     public class ALCProxyTests
     {
@@ -119,6 +125,8 @@ namespace ALCProxy.Tests
             Assert.Equal(3, t2.test);
             Assert.Equal(5, t.DoThing3(5, t2));
             Assert.Equal(3, t2.test);
+
+            alc.Unload();
 
         }
         //[Benchmark]
@@ -156,9 +164,8 @@ namespace ALCProxy.Tests
             Assert.ThrowsAny<Exception>(t.PrintContext);
             t = null;
             GC.Collect();
-            GC.Collect();
-            GC.Collect();
             Assembly[] a2 = AppDomain.CurrentDomain.GetAssemblies();
+            //AssemblyLoader.
             //Check that a1 and a2 have different assemblies, to see if the ones used for the proxy been unloaded from the AppDomain
             Assert.NotEqual(a1, a2);
             //Test that the ALC is truly gone
@@ -175,6 +182,8 @@ namespace ALCProxy.Tests
 
             Assert.Equal("TestSimpleGenerics", t.PrintContext());
             Assert.Equal("Hello!", t.DoThing4("Hello!"));
+
+            alc.Unload();
         }
         //[Benchmark]
         [Fact]
@@ -183,6 +192,8 @@ namespace ALCProxy.Tests
             AssemblyLoadContext alc = new AssemblyLoadContext("TestUserGenerics", isCollectible: true);
             IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
             Assert.Equal(new Test2().ToString(), t.DoThing4(new Test2()));
+
+            alc.Unload();
         }
         [Fact]
         public void TestGenericMethods()
@@ -191,6 +202,18 @@ namespace ALCProxy.Tests
             IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
             //Test generic methods
             Assert.Equal(new Test2().ToString(), t.GenericMethodTest<Test2>());
+
+            alc.Unload();
+        }
+        [Fact]
+        public void TestUserReturnTypes()
+        {
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestBasicContextLoading", isCollectible: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+            Assert.Equal(new Test2().ToString(), t.ReturnUserType().ToString());
+
+            alc.Unload();
         }
     }
+
 }
