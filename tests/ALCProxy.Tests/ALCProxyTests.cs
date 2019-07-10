@@ -21,6 +21,7 @@ namespace ALCProxy.Tests
         public int DoThing2(int a, List<string> list);
         public int DoThing3(int a, Test2 t);
         public Test2 ReturnUserType();
+        public int SimpleMethod();
     }
 
     public interface IGeneric<T>
@@ -105,6 +106,10 @@ namespace ALCProxy.Tests
         public Test2 ReturnUserType()
         {
             return new Test2();
+        }
+        public int SimpleMethod()
+        {
+            return 3;
         }
     }
     public class ALCProxyTests

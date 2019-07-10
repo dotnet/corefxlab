@@ -64,7 +64,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         {
             for (int i = 0; i < _removeOrder.Length; i++)
                 _dictSlim.Remove(_removeOrder[i]);
-            Assert.Equal(0, _dictSlim.Count);
+            Assert.Empty(_dictSlim);
         }
 
         [Benchmark(Baseline = true)]
@@ -72,7 +72,7 @@ namespace Microsoft.Collections.Extensions.Benchmarks
         {
             for (int i = 0; i < _removeOrder.Length; i++)
                 _dict.Remove(_removeOrder[i]);
-            Assert.Equal(0, _dict.Count);
+            Assert.Empty(_dict);
         }
     }
 }
