@@ -259,7 +259,8 @@ namespace Microsoft.Data
         {
             foreach (DataFrameBuffer<T> buffer in _columnContainer.Buffers)
             {
-                Span<T> span = buffer.Span;
+                MutableDataFrameBuffer<T> mutableBuffer = MutableDataFrameBuffer<T>.GetMutableBuffer(buffer);
+                Span<T> span = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     span[i] = func(span[i]);

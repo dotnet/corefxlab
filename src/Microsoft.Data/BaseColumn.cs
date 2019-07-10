@@ -135,7 +135,7 @@ namespace Microsoft.Data
         }
 
         internal static void IntrospectiveSort<T>(
-            Span<T> span,
+            ReadOnlySpan<T> span,
             int length,
             Span<int> sortIndices,
             IComparer<T> comparer)
@@ -145,7 +145,7 @@ namespace Microsoft.Data
         }
 
         internal static void IntroSortRecursive<T>(
-            Span<T> span,
+            ReadOnlySpan<T> span,
             int lo, int hi, int depthLimit,
             Span<int> sortIndices,
             IComparer<T> comparer)
@@ -193,7 +193,7 @@ namespace Microsoft.Data
         }
 
         private static int PickPivotAndPartition<TKey, TComparer>(
-            Span<TKey> span, int lo, int hi,
+            ReadOnlySpan<TKey> span, int lo, int hi,
             Span<int> sortIndices,
             TComparer comparer)
             where TComparer : IComparer<TKey>
@@ -251,7 +251,7 @@ namespace Microsoft.Data
         }
 
         private static void HeapSort<TKey, TComparer>(
-            Span<TKey> span, int lo, int hi,
+            ReadOnlySpan<TKey> span, int lo, int hi,
             Span<int> sortIndices,
             TComparer comparer)
             where TComparer : IComparer<TKey>
@@ -273,7 +273,7 @@ namespace Microsoft.Data
         }
 
         private static void DownHeap<TKey, TComparer>(
-            Span<TKey> span, int i, int n, int lo,
+            ReadOnlySpan<TKey> span, int i, int n, int lo,
             Span<int> sortIndices,
             TComparer comparer)
             where TComparer : IComparer<TKey>
@@ -306,7 +306,7 @@ namespace Microsoft.Data
         }
 
         private static void InsertionSort<TKey, TComparer>(
-            Span<TKey> span, int lo, int hi,
+            ReadOnlySpan<TKey> span, int lo, int hi,
             Span<int> sortIndices,
             TComparer comparer)
             where TComparer : IComparer<TKey>
@@ -334,7 +334,7 @@ namespace Microsoft.Data
         }
 
         private static void Sort3<TKey, TComparer>(
-            Span<TKey> span, int i, int j, int k,
+            ReadOnlySpan<TKey> span, int i, int j, int k,
             Span<int> sortIndices,
             TComparer comparer)
             where TComparer : IComparer<TKey>
@@ -345,7 +345,7 @@ namespace Microsoft.Data
         }
 
         private static void Sort2<TKey>(
-            Span<TKey> span, int i, int j,
+            ReadOnlySpan<TKey> span, int i, int j,
             Span<int> sortIndices,
             IComparer<TKey> comparer)
         {

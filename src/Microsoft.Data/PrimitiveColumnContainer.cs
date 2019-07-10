@@ -29,24 +29,24 @@ namespace Microsoft.Data
         {
             values = values ?? throw new ArgumentNullException(nameof(values));
             long length = values.LongLength;
-            DataFrameBuffer<T> curBuffer;
+            MutableDataFrameBuffer<T> curBuffer;
             if (Buffers.Count == 0)
             {
-                curBuffer = new DataFrameBuffer<T>();
+                curBuffer = new MutableDataFrameBuffer<T>();
                 Buffers.Add(curBuffer);
-                NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
             }
             else
             {
-                curBuffer = Buffers[Buffers.Count - 1];
+                curBuffer = (MutableDataFrameBuffer<T>)Buffers[Buffers.Count - 1];
             }
             for (long i = 0; i < length; i++)
             {
                 if (curBuffer.Length == curBuffer.MaxCapacity)
                 {
-                    curBuffer = new DataFrameBuffer<T>();
+                    curBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(curBuffer);
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 curBuffer.Append(values[i]);
                 SetValidityBit(Length, true);
@@ -59,17 +59,17 @@ namespace Microsoft.Data
             values = values ?? throw new ArgumentNullException(nameof(values));
             if (Buffers.Count == 0)
             {
-                Buffers.Add(new DataFrameBuffer<T>());
-                NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                Buffers.Add(new MutableDataFrameBuffer<T>());
+                NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
             }
-            DataFrameBuffer<T> curBuffer = Buffers[Buffers.Count - 1];
+            MutableDataFrameBuffer<T> curBuffer = (MutableDataFrameBuffer<T>)Buffers[Buffers.Count - 1];
             foreach (T value in values)
             {
                 if (curBuffer.Length == curBuffer.MaxCapacity)
                 {
-                    curBuffer = new DataFrameBuffer<T>();
+                    curBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(curBuffer);
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 curBuffer.Append(value);
                 SetValidityBit(Length, true);
@@ -83,19 +83,19 @@ namespace Microsoft.Data
             {
                 if (Buffers.Count == 0)
                 {
-                    Buffers.Add(new DataFrameBuffer<T>());
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    Buffers.Add(new MutableDataFrameBuffer<T>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
-                DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
+                MutableDataFrameBuffer<T> lastBuffer = (MutableDataFrameBuffer<T>)Buffers[Buffers.Count - 1];
                 if (lastBuffer.Length == lastBuffer.MaxCapacity)
                 {
-                    lastBuffer = new DataFrameBuffer<T>();
+                    lastBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(lastBuffer);
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 int allocatable = (int)Math.Min(length, lastBuffer.MaxCapacity);
                 lastBuffer.EnsureCapacity(allocatable);
-                DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
+                MutableDataFrameBuffer<byte> lastNullBitMapBuffer = (MutableDataFrameBuffer<byte>)(NullBitMapBuffers[NullBitMapBuffers.Count - 1]);
                 lastNullBitMapBuffer.EnsureCapacity((int)Math.Ceiling(allocatable / 8.0));
                 lastBuffer.Length = allocatable;
                 lastNullBitMapBuffer.Length = allocatable;
@@ -115,17 +115,23 @@ namespace Microsoft.Data
         {
             if (Buffers.Count == 0)
             {
-                Buffers.Add(new DataFrameBuffer<T>());
-                NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                Buffers.Add(new MutableDataFrameBuffer<T>());
+                NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
             }
             DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
             if (lastBuffer.Length == lastBuffer.MaxCapacity)
             {
-                lastBuffer = new DataFrameBuffer<T>();
+                lastBuffer = new MutableDataFrameBuffer<T>();
                 Buffers.Add(lastBuffer);
-                NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
             }
-            lastBuffer.Append(value ?? default);
+            MutableDataFrameBuffer<T> mutableLastBuffer = lastBuffer as MutableDataFrameBuffer<T>;
+            if (ReferenceEquals(mutableLastBuffer, null))
+            {
+                mutableLastBuffer = new MutableDataFrameBuffer<T>(lastBuffer.Memory);
+                mutableLastBuffer.Length = lastBuffer.Length;
+            }
+            mutableLastBuffer.Append(value ?? default);
             SetValidityBit(Length, value.HasValue ? true : false);
             Length++;
         }
@@ -141,32 +147,44 @@ namespace Microsoft.Data
             {
                 if (Buffers.Count == 0)
                 {
-                    Buffers.Add(new DataFrameBuffer<T>());
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    Buffers.Add(new MutableDataFrameBuffer<T>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
                 if (lastBuffer.Length == lastBuffer.MaxCapacity)
                 {
-                    lastBuffer = new DataFrameBuffer<T>();
+                    lastBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(lastBuffer);
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
+                }
+                MutableDataFrameBuffer<T> mutableLastBuffer = lastBuffer as MutableDataFrameBuffer<T>;
+                if (ReferenceEquals(mutableLastBuffer, null))
+                {
+                    mutableLastBuffer = new MutableDataFrameBuffer<T>(lastBuffer.Memory);
+                    mutableLastBuffer.Length = lastBuffer.Length;
                 }
                 int allocatable = (int)Math.Min(count, lastBuffer.MaxCapacity);
-                lastBuffer.EnsureCapacity(allocatable);
-                lastBuffer.Span.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
-                lastBuffer.Length += allocatable;
+                mutableLastBuffer.EnsureCapacity(allocatable);
+                mutableLastBuffer.Span.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
+                mutableLastBuffer.Length += allocatable;
                 Length += allocatable;
 
                 DataFrameBuffer<byte> lastNullBitMapBuffer = NullBitMapBuffers[NullBitMapBuffers.Count - 1];
+                MutableDataFrameBuffer<byte> mutableLastNullBitMapBuffer = lastNullBitMapBuffer as MutableDataFrameBuffer<byte>;
+                if (ReferenceEquals(mutableLastNullBitMapBuffer, null))
+                {
+                    mutableLastNullBitMapBuffer = new MutableDataFrameBuffer<byte>(lastBuffer.Memory);
+                    mutableLastNullBitMapBuffer.Length = lastBuffer.Length;
+                }
                 int nullBitMapAllocatable = (int)(((uint)allocatable + 7) / 8);
-                lastNullBitMapBuffer.EnsureCapacity(nullBitMapAllocatable);
+                mutableLastNullBitMapBuffer.EnsureCapacity(nullBitMapAllocatable);
                 _modifyNullCountWhileIndexing = false;
                 for (long i = Length - count; i < Length; i++)
                 {
                     SetValidityBit(i, value.HasValue ? true : false);
                 }
                 _modifyNullCountWhileIndexing = true;
-                lastNullBitMapBuffer.Length += nullBitMapAllocatable;
+                mutableLastNullBitMapBuffer.Length += nullBitMapAllocatable;
                 count -= allocatable;
             }
         }
@@ -188,7 +206,7 @@ namespace Microsoft.Data
             // First find the right bitMapBuffer
             int bitMapIndex = (int)(index / Buffers[0].MaxCapacity);
             Debug.Assert(NullBitMapBuffers.Count > bitMapIndex);
-            DataFrameBuffer<byte> bitMapBuffer = NullBitMapBuffers[bitMapIndex];
+            MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)NullBitMapBuffers[bitMapIndex];
 
             // Set the bit
             index -= bitMapIndex * Buffers[0].MaxCapacity;
@@ -283,6 +301,14 @@ namespace Microsoft.Data
             set
             {
                 int arrayIndex = GetArrayContainingRowIndex(ref rowIndex);
+                DataFrameBuffer<T> buffer = Buffers[arrayIndex];
+                MutableDataFrameBuffer<T> mutableBuffer = buffer as MutableDataFrameBuffer<T>;
+                if (ReferenceEquals(mutableBuffer, null))
+                {
+                    mutableBuffer = new MutableDataFrameBuffer<T>(buffer.Memory);
+                    mutableBuffer.Length = buffer.Length;
+                    Buffers[arrayIndex] = mutableBuffer;
+                }
                 if (value.HasValue)
                 {
                     Buffers[arrayIndex][(int)rowIndex] = value.Value;
@@ -325,9 +351,9 @@ namespace Microsoft.Data
             List<DataFrameBuffer<byte>> ret = new List<DataFrameBuffer<byte>>();
             foreach (DataFrameBuffer<byte> buffer in NullBitMapBuffers)
             {
-                DataFrameBuffer<byte> newBuffer = new DataFrameBuffer<byte>();
+                MutableDataFrameBuffer<byte> newBuffer = new MutableDataFrameBuffer<byte>();
                 ret.Add(newBuffer);
-                Span<byte> span = buffer.Span;
+                ReadOnlySpan<byte> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(span[i]);
@@ -341,9 +367,9 @@ namespace Microsoft.Data
             var ret = new PrimitiveColumnContainer<T>();
             foreach (DataFrameBuffer<T> buffer in Buffers)
             {
-                DataFrameBuffer<T> newBuffer = new DataFrameBuffer<T>();
+                MutableDataFrameBuffer<T> newBuffer = new MutableDataFrameBuffer<T>();
                 ret.Buffers.Add(newBuffer);
-                Span<T> span = buffer.Span;
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 ret.Length += buffer.Length;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -360,7 +386,7 @@ namespace Microsoft.Data
             var ret = new PrimitiveColumnContainer<bool>();
             foreach (DataFrameBuffer<T> buffer in Buffers)
             {
-                DataFrameBuffer<bool> newBuffer = new DataFrameBuffer<bool>();
+                MutableDataFrameBuffer<bool> newBuffer = new MutableDataFrameBuffer<bool>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
                 newBuffer.Span.Fill(false);
@@ -378,10 +404,10 @@ namespace Microsoft.Data
             foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 ret.Length += buffer.Length;
-                DataFrameBuffer<double> newBuffer = new DataFrameBuffer<double>();
+                MutableDataFrameBuffer<double> newBuffer = new MutableDataFrameBuffer<double>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
-                Span<T> span = buffer.Span;
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     newBuffer.Append(DoubleConverter<T>.Instance.GetDouble(span[i]));
@@ -398,10 +424,10 @@ namespace Microsoft.Data
             foreach (DataFrameBuffer<T> buffer in Buffers)
             {
                 ret.Length += buffer.Length;
-                DataFrameBuffer<decimal> newBuffer = new DataFrameBuffer<decimal>();
+                MutableDataFrameBuffer<decimal> newBuffer = new MutableDataFrameBuffer<decimal>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
-                Span<T> span = buffer.Span;
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     newBuffer.Append(DecimalConverter<T>.Instance.GetDecimal(span[i]));

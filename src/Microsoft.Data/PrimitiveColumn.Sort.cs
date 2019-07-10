@@ -33,7 +33,7 @@ namespace Microsoft.Data
                 var sortIndices = new int[buffer.Length];
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;
-                IntrospectiveSort(buffer.Span, buffer.Length, sortIndices, comparer);
+                IntrospectiveSort(buffer.ReadOnlySpan, buffer.Length, sortIndices, comparer);
                 bufferSortIndices.Add(sortIndices);
             }
             // Simple merge sort to build the full column's sort indices
