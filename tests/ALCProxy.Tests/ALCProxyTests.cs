@@ -114,7 +114,6 @@ namespace ALCProxy.Tests
     }
     public class ALCProxyTests
     {
-        //[Benchmark]
         [Fact]
         public void TestBasicContextLoading()
         {
@@ -132,15 +131,10 @@ namespace ALCProxy.Tests
             Assert.Equal(3, t2.test);
 
             alc.Unload();
-
         }
         [Fact]
-        //[MethodImpl(MethodImplOptions.NoInlining)]
-        public void TestUnload() //TODO fix unloading so we can continue working on this test
+        public void TestUnload() 
         {
-            //TODO change to CWT?
-            //var cwt = new ConditionalWeakTable<string, AssemblyLoadContext>();
-            //cwt.Add("Test", alc);
             WeakReference wrAlc2;
             System.Diagnostics.Debugger.Break();
             ITest t = GetALC(out wrAlc2);
@@ -154,15 +148,11 @@ namespace ALCProxy.Tests
             }
             System.Diagnostics.Debugger.Break();
             Assert.False(wrAlc2.IsAlive);
-
-
-            //Assert.ThrowsAny<Exception>(() => alc.Unload()); //TODO this breaks all the tests
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
         ITest GetALC(out WeakReference alcWeakRef)
         {
             //This seems to be neccesary to keep the ALC creation and unloading within a separate method to allow for it to be collected correctly, this needs to be investigated as to why
-
             var alc = new AssemblyLoadContext("TestUnload2", isCollectible: true);
             alcWeakRef = new WeakReference(alc, trackResurrection: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
@@ -170,11 +160,8 @@ namespace ALCProxy.Tests
 
             //The unload only seems to work here, not anywhere outside the method which is strange
             alc.Unload();
-            //Assert.ThrowsAny<Exception>(alc.Unload); //For some reason this breaks all of our tests when we try to run with it. that said, we don't really need to test this
-
             return t;
         }
-        //[Benchmark]
         [Fact]
         public void TestSimpleGenerics()
         {
@@ -187,7 +174,6 @@ namespace ALCProxy.Tests
 
             alc.Unload();
         }
-        //[Benchmark]
         [Fact]
         public void TestUserGenerics()
         {
