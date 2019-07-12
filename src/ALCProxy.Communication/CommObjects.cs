@@ -60,8 +60,10 @@ namespace ALCProxy.Communication
             //Give the client its reference to the server
             _server = constructedType.GetConstructor(new Type[] { typeof(Type), typeof(Type[]) }).Invoke(new object[] { objType, genericTypes });
             //Attach to the unloading event
-            //TODO Fix the unloading section, this is breaking our tests right now
-            alc.Unloading += this.UnloadClient;
+            //TODO debug unloading correctly
+            //Delegate handler = Delegate.CreateDelegate(typeof(EventHandler), this, this.GetType().GetMethod("UnloadClient", Type.EmptyTypes));
+            //alc.Unloading += handler;
+            alc.Unloading += UnloadClient;
         }
         private void UnloadClient(object sender)
         {

@@ -134,49 +134,45 @@ namespace ALCProxy.Tests
             alc.Unload();
 
         }
-        //[Benchmark]
-        //public void BenchmarkBasicProxy()
-        //{
-        //    AssemblyLoadContext alc = new AssemblyLoadContext("BenchmarkBasicProxy", isCollectible: true);
-        //    ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
-        //    foreach (var iteration in Benchmark.Iterations)
-        //    {
-        //        // Any per-iteration setup can go here.
-        //        using (iteration.StartMeasurement())
-        //        {
-        //            // Code to be measured goes here.
-        //            Assert.Equal("BenchmarkBasicProxy", t.PrintContext());
-        //        }
-        //        // ...per-iteration cleanup
-        //    }
-        //}
         [Fact]
+        //[MethodImpl(MethodImplOptions.NoInlining)]
         public void TestUnload() //TODO fix unloading so we can continue working on this test
         {
             //TODO change to CWT?
             //var cwt = new ConditionalWeakTable<string, AssemblyLoadContext>();
-            AssemblyLoadContext alc = new AssemblyLoadContext("TestUnload", isCollectible: true);
             //cwt.Add("Test", alc);
-            var wrAlc = new WeakReference(alc, false);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
-            Assert.Equal("TestUnload", t.PrintContext());
-            Assembly[] a1 = AppDomain.CurrentDomain.GetAssemblies();
-            alc.Unload();
-            alc = null;
-            //t = null;
-            GC.Collect();
-            //Test that the proxy can no longer make calls
+            WeakReference wrAlc2;
+            System.Diagnostics.Debugger.Break();
+            ITest t = GetALC(out wrAlc2);
             Assert.ThrowsAny<Exception>(t.PrintContext);
-            t = null;
-            GC.Collect();
-            Assembly[] a2 = AppDomain.CurrentDomain.GetAssemblies();
-            //AssemblyLoader.
-            //Check that a1 and a2 have different assemblies, to see if the ones used for the proxy been unloaded from the AppDomain
-            Assert.NotEqual(a1, a2);
-            //Test that the ALC is truly gone
-            //Assert.True(cwt.TryGetValue("Test", out alc));
+            System.Diagnostics.Debugger.Break();
+            for (int i = 0; wrAlc2.IsAlive && (i < 10); i++)
+            {
+                //Console.WriteLine(GC.GetTotalMemory(true));
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            System.Diagnostics.Debugger.Break();
+            Assert.False(wrAlc2.IsAlive);
+
 
             //Assert.ThrowsAny<Exception>(() => alc.Unload()); //TODO this breaks all the tests
+        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        ITest GetALC(out WeakReference alcWeakRef)
+        {
+            //This seems to be neccesary to keep the ALC creation and unloading within a separate method to allow for it to be collected correctly, this needs to be investigated as to why
+
+            var alc = new AssemblyLoadContext("TestUnload2", isCollectible: true);
+            alcWeakRef = new WeakReference(alc, trackResurrection: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
+            Assert.Equal("TestUnload2", t.PrintContext());
+
+            //The unload only seems to work here, not anywhere outside the method which is strange
+            alc.Unload();
+            //Assert.ThrowsAny<Exception>(alc.Unload); //For some reason this breaks all of our tests when we try to run with it. that said, we don't really need to test this
+
+            return t;
         }
         //[Benchmark]
         [Fact]
@@ -184,9 +180,10 @@ namespace ALCProxy.Tests
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("TestSimpleGenerics", isCollectible: true);
             IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
-
+            
             Assert.Equal("TestSimpleGenerics", t.PrintContext());
             Assert.Equal("Hello!", t.DoThing4("Hello!"));
+
 
             alc.Unload();
         }
