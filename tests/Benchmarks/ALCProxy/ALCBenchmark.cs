@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
 using ALCProxy.Proxy;
-using ALCProxy.Tests;
 using BenchmarkDotNet.Attributes;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Benchmarks.ALCProxy
 {
@@ -115,19 +112,17 @@ namespace Benchmarks.ALCProxy
         private ITest controlObject = new Test();
         private IGeneric<Test2> genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) });
         private IGeneric<Test2> genericControl = new GenericClass<Test2>();
+        private Test2 userInput;
 
         [GlobalSetup]
         public void Setup()
         {
-            //alc = new AssemblyLoadContext("BenchmarkContext", isCollectible: true);
-            //Test2 a = new Test2();
-            //testAssembly = alc.LoadFromAssemblyPath(typeof(Test2).Assembly.CodeBase.Substring(8));
-            //testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+            userInput = new Test2();
         }
         [Benchmark]
         public object CreateProxyObject()
         {
-           // alc = new AssemblyLoadContext("BenchmarkContext", isCollectible: true);
+            // alc = new AssemblyLoadContext("BenchmarkContext", isCollectible: true);
 
             return ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, assemblyString, "Test");
         }
@@ -175,6 +170,16 @@ namespace Benchmarks.ALCProxy
         public object UserTypeParametersControl()
         {
             return controlObject.DoThing3(3, new Test2());
+        }
+        [Benchmark]
+        public object UserTypeParameters2()
+        {
+            return testObject.DoThing3(3, userInput);
+        }
+        [Benchmark]
+        public object UserTypeParametersControl2()
+        {
+            return controlObject.DoThing3(3, userInput);
         }
     }
 }
