@@ -41,7 +41,6 @@ namespace ALCProxy.Proxy
         private void SetParameters(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
         {
             _client = (IClientObject)typeof(ClientDispatch).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
-            //_client = (IClientObject)Activator.CreateInstance(typeof(ClientObject<I>));
             _client.SetUpServer(alc, typeName, assemblyPath, genericTypes);
         }
         protected override object Invoke(MethodInfo targetMethod, object[] args)

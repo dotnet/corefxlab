@@ -7,10 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
-using System.Security.Cryptography;
-using System.Threading;
 using ALCProxy.Proxy;
-using Microsoft.Xunit.Performance;
 using Xunit;
 
 namespace ALCProxy.Tests
@@ -133,34 +130,31 @@ namespace ALCProxy.Tests
             alc.Unload();
         }
         [Fact]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        //TODO This test seems to only work in release mode, figuring out why would be useful
         public void TestUnload() 
         {
-            WeakReference wrAlc2;
-            System.Diagnostics.Debugger.Break();
-            ITest t = GetALC(out wrAlc2);
-            Assert.ThrowsAny<Exception>(t.PrintContext);
-            System.Diagnostics.Debugger.Break();
+            WeakReference wrAlc2 = GetWeakRefALC();
             for (int i = 0; wrAlc2.IsAlive && (i < 10); i++)
             {
-                //Console.WriteLine(GC.GetTotalMemory(true));
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
-            System.Diagnostics.Debugger.Break();
             Assert.False(wrAlc2.IsAlive);
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
-        ITest GetALC(out WeakReference alcWeakRef)
+        WeakReference GetWeakRefALC()
         {
             //This seems to be neccesary to keep the ALC creation and unloading within a separate method to allow for it to be collected correctly, this needs to be investigated as to why
             var alc = new AssemblyLoadContext("TestUnload2", isCollectible: true);
-            alcWeakRef = new WeakReference(alc, trackResurrection: true);
+            WeakReference alcWeakRef = new WeakReference(alc, trackResurrection: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
             Assert.Equal("TestUnload2", t.PrintContext());
 
             //The unload only seems to work here, not anywhere outside the method which is strange
             alc.Unload();
-            return t;
+            Assert.ThrowsAny<Exception>(t.PrintContext);
+            return alcWeakRef;
         }
         [Fact]
         public void TestSimpleGenerics()
