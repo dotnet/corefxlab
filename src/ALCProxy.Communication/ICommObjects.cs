@@ -14,7 +14,7 @@ namespace ALCProxy.Communication
     /// This currently is designed to only work in-process
     /// TODO: set up to allow for construction of out-of-proc proxies
     /// </summary>
-    public abstract class ALCClient : IClientObject
+    public abstract class ALCClient : IProxyClient
     {
         //Can't make this an IServerObject directly due to the type-loading barrier
         protected object _server;
@@ -52,7 +52,7 @@ namespace ALCProxy.Communication
         /// <param name="typeName">Name of the proxied type</param>
         /// <param name="assemblyPath">path of the assembly to the type</param>
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
-        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
+        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes)
         {
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're going to proxy inside the loaded assembly
@@ -63,7 +63,10 @@ namespace ALCProxy.Communication
             //Set up all the generics to allow for the serverDispatch to be created correctly
             Type constructedType = serverType.MakeGenericType(_intType);
             //Give the client its reference to the server
-            _server = constructedType.GetConstructor(new Type[] { typeof(Type), typeof(Type[]) }).Invoke(new object[] { objType, genericTypes });
+            SerializeParameters(constructorParams, out IList<object> serializedConstArgs, out IList<Type> argTypes);
+            _server = constructedType.GetConstructor(
+                new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) })
+                .Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
             _callMethod = _server.GetType().GetMethod("CallObject");
             //Attach to the unloading event
             alc.Unloading += UnloadClient;
@@ -105,23 +108,35 @@ namespace ALCProxy.Communication
         protected abstract object SerializeParameter(object param, Type paramType);
         protected abstract object DecryptReturnType(object returnedObject, Type returnType);
     }
-    public abstract class ALCServer<ObjectInterface> : IServerObject
+    public abstract class ALCServer<ObjectInterface> : IProxyServer
     {
         public object instance;
         public AssemblyLoadContext currentLoadContext;
-        public ALCServer(Type instanceType, Type[] genericTypes)
+        public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
             currentLoadContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
             if (genericTypes != null)
             {
                 instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
             }
-            SetParameters(instanceType, new Type[] { }, new object[] { });
+            var constructorParams = DecryptParameters(serializedConstParams, constArgTypes);
+            SetInstance(instanceType, constArgTypes.ToArray(), constructorParams);
         }
-        protected void SetParameters(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
+        /// <summary>
+        /// Create the instance of the object we want to proxy
+        /// </summary>
+        /// <param name="instanceType">the type of the object we want</param>
+        /// <param name="constructorTypes">The list of types that the constructor of the object takes in as an argument</param>
+        /// <param name="constructorArgs">The physical objects that are the parameters to the constructor</param>
+        protected void SetInstance(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
-            instance = instanceType.GetConstructor(constructorTypes).Invoke(constructorArgs);
+            ConstructorInfo ci = instanceType.GetConstructor(constructorTypes);//GrabConstructor(constructorTypes, instanceType);//instanceType.GetConstructor(constructorTypes);
+            instance = ci.Invoke(constructorArgs);
         }
+        /// <summary>
+        /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
+        /// TODO: Figure out if we actually need to load here, or we can search the ALC for our loaded dependency which may already be loaded.
+        /// </summary>
         protected Type ConvertType(Type toConvert)
         {
             string assemblyPath = Assembly.GetAssembly(toConvert).CodeBase.Substring(8);
@@ -129,16 +144,16 @@ namespace ALCProxy.Communication
             {
                 return toConvert;
             }
+            //TODO can we look for the existence of the loaded assembly here, instead of just doing the load?
             return currentLoadContext.LoadFromAssemblyPath(assemblyPath).GetType(toConvert.FullName);
         }
-        public object CallObject(MethodInfo targetMethod, List<object> streams, List<Type> argTypes)
+        public object CallObject(MethodInfo targetMethod, IList<object> streams, IList<Type> argTypes)
         {
             //Turn the memstreams into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
             object[] args = DecryptParameters(streams, argTypes);
-
             MethodInfo[] methods = instance.GetType().GetMethods();
-            MethodInfo m = FindMethod(methods, targetMethod.Name, argTypes.ToArray());
+            MethodInfo m = FindMethod(methods, targetMethod, argTypes.ToArray());
             if (m.ContainsGenericParameters)
             {
                 //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
@@ -146,8 +161,13 @@ namespace ALCProxy.Communication
             }
             return EncryptReturnObject(m.Invoke(instance, args), m.ReturnType);
         }
-        protected MethodInfo FindMethod(MethodInfo[] methods, string methodName, Type[] parameterTypes/*These have already been converted so no issues with compatibility*/)
+        /// <summary>
+        /// Searches for methods within the type to find the one that matches our passed in type. Since the types are technically different,
+        /// using a .Equals() on the methods doesn't have the comparison work correctly, so the first if statement does that manually for us.
+        /// </summary>
+        protected MethodInfo FindMethod(MethodInfo[] methods, MethodInfo targetMethod, Type[] parameterTypes/*These have already been converted so no issues with compatibility*/)
         {
+            string methodName = targetMethod.Name;
             foreach (MethodInfo m in methods)
             {
                 if (!m.Name.Equals(methodName) || parameterTypes.Length != m.GetParameters().Length)
@@ -175,7 +195,7 @@ namespace ALCProxy.Communication
         /// <param name="streams"></param>
         /// <param name="argTypes"></param>
         /// <returns></returns>
-        protected object[] DecryptParameters(List<object> streams, List<Type> argTypes)
+        protected object[] DecryptParameters(IList<object> streams, IList<Type> argTypes)
         {
             var convertedObjects = new List<object>();
             for (int i = 0; i < streams.Count; i++)
@@ -197,7 +217,11 @@ namespace ALCProxy.Communication
         /// <returns></returns>
         protected abstract object EncryptReturnObject(object returnedObject, Type returnType);
     }
-    public interface IServerObject
+
+    /// <summary>
+    /// The client interface we can wrap both in-proc and out-of-proc proxies around, will add more methods here as they are found needed by both versions
+    /// </summary>
+    public interface IProxyServer
     {
         /// <summary>
         /// Sends a message to the server to proc the method call, and return the result
@@ -206,9 +230,12 @@ namespace ALCProxy.Communication
         /// <param name="streams">The parameters for the given method, converted into MemoryStreams by the client that now need to be decoded</param>
         /// <param name="types">The types of each stream, so the server knows how to decode the streams</param>
         /// <returns></returns>
-        object CallObject(MethodInfo method, List<object> streams, List<Type> types);
+        object CallObject(MethodInfo method, IList<object> streams, IList<Type> types);
     }
-    public interface IClientObject
+    /// <summary>
+    /// The server interface we can wrap both in-proc and out-of-proc proxies around, will add more methods here as they are found needed by both versions
+    /// </summary>
+    public interface IProxyClient
     {
         /// <summary>
         /// Sends a message to the server to proc the method call, and return the result
@@ -224,7 +251,7 @@ namespace ALCProxy.Communication
         /// <param name="typeName">Name of the proxied type</param>
         /// <param name="assemblyPath">path of the assembly to the type</param>
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
-        void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes);
+        void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes);
 
     }
 }

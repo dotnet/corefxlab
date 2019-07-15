@@ -32,18 +32,18 @@ namespace ALCProxy.Tests
 
     public class Test2
     {
-        public int test;
+        public int testValue;
         public Test2()
         {
-            test = 5;
+            testValue = 5;
         }
         public Test2(int start)
         {
-            test = start;
+            testValue = start;
         }
         public void DoThingy()
         {
-            test++;
+            testValue++;
         }
     }
     public class GenericClass<T> : IGeneric<T>
@@ -109,6 +109,49 @@ namespace ALCProxy.Tests
             return 3;
         }
     }
+
+    public class TestObjectParamConst : ITest
+    {
+        int aa;
+        string bb;
+        Test2 tt;
+        public TestObjectParamConst(int a, string b)
+        {
+            this.aa = a;
+            this.bb = b;
+            tt = new Test2();
+        }
+        public TestObjectParamConst(int a, string b, Test2 t)
+        {
+            this.aa = a;
+            this.bb = b;
+            tt = t;
+        }
+        public int DoThing2(int a, List<string> list)
+        {
+            return aa;
+        }
+
+        public int DoThing3(int a, Test2 t)
+        {
+            return aa + a;
+        }
+
+        public string PrintContext()
+        {
+            return bb;
+        }
+
+        public Test2 ReturnUserType()
+        {
+            return tt;
+        }
+
+        public int SimpleMethod()
+        {
+            return tt.testValue;
+        }
+    }
     public class ALCProxyTests
     {
         [Fact]
@@ -123,15 +166,14 @@ namespace ALCProxy.Tests
 
             //Tests for call-by-value functionality, to make sure there aren't any problems with editing objects in the other ALC
             Test2 t2 = new Test2(3);
-            Assert.Equal(3, t2.test);
+            Assert.Equal(3, t2.testValue);
             Assert.Equal(5, t.DoThing3(5, t2));
-            Assert.Equal(3, t2.test);
+            Assert.Equal(3, t2.testValue);
 
             alc.Unload();
         }
         [Fact]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        //TODO This test seems to only work in release mode, figuring out why would be useful
         public void TestUnload() 
         {
             WeakReference wrAlc2 = GetWeakRefALC();
@@ -195,6 +237,31 @@ namespace ALCProxy.Tests
             Assert.Equal(new Test2().ToString(), t.ReturnUserType().ToString());
 
             alc.Unload();
+        }
+        [Fact]
+        public void TestConstructorParams()
+        {
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestConstructorParams", isCollectible: true);
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "TestObjectParamConst", new object[] { 55, "testString" });
+            Assert.Equal(55, t.DoThing2(3, new List<string>()));
+            Assert.Equal(58, t.DoThing3(3, new Test2()));
+            Assert.Equal("testString", t.PrintContext());
+            Assert.Equal(5, t.SimpleMethod());
+        }
+        [Fact]
+        //TODO currently this breaks due to some type cast errors ("Test2 isn't the same type as Test2"). This may be due to how we load the assemblies
+        //into the ALC, but we need to investigate this further to figure out what's going wrong.
+        public void TestConstructorUserParams()
+        {
+            AssemblyLoadContext alc = new AssemblyLoadContext("TestConstructorUserParams", isCollectible: true);
+            //Test when putting user objects into the constructor
+            Test2 test = new Test2(100);
+            ITest t2 = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "TestObjectParamConst", new object[] { 60, "testString", test });
+            Assert.Equal(60, t2.DoThing2(3, new List<string>()));
+            Assert.Equal(63, t2.DoThing3(3, new Test2()));
+            Assert.Equal("testString", t2.PrintContext());
+            Assert.NotEqual(test, t2.ReturnUserType());
+            Assert.Equal(test.testValue, t2.SimpleMethod());
         }
     }
 

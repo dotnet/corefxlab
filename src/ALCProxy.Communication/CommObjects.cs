@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information. 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -31,7 +33,8 @@ namespace ALCProxy.Communication
     }
     public class ServerDispatch<InterfaceType> : ALCServer<InterfaceType>
     {
-        public ServerDispatch(Type instanceType, Type[] genericTypes) : base(instanceType, genericTypes) { }
+        public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
+            : base(instanceType, genericTypes, constructorParams, constTypes) { }
 
         protected override object DecryptParameter(object serializedParam, Type t)
         {

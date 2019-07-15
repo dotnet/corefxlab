@@ -14,34 +14,44 @@ namespace ALCProxy.Proxy
         public static T CreateInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName)
         {
             //Create the object in the ALC
-            T obj = ALCDispatch<T>.Create(alc, assemblyPath, typeName);
+            return CreateInstanceAndUnwrap(alc, assemblyPath, typeName, new object[] { });
+        }
+        public static T CreateInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams)
+        {
+            //Create the object in the ALC
+            T obj = ALCDispatch<T>.Create(alc, assemblyPath, typeName, constructorParams);
+            return obj;
+        }
+        public static T CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams, Type[] genericTypes)
+        {
+            T obj = ALCDispatch<T>.CreateGeneric(alc, assemblyPath, typeName, constructorParams, genericTypes);
             return obj;
         }
         public static T CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, Type[] genericTypes)
         {
-            T obj = ALCDispatch<T>.CreateGeneric(alc, assemblyPath, typeName, genericTypes);
-            return obj;
+            return CreateGenericInstanceAndUnwrap(alc, assemblyPath, typeName, new object[] { }, genericTypes);
         }
+
     }
     public class ALCDispatch<I> : System.Reflection.DispatchProxy //T is the TargetObject type, I is the specific client you want to use.
     {
-        private IClientObject _client; //ClientObject
-        internal static I Create(AssemblyLoadContext alc, string assemblyPath, string typeName)
+        private IProxyClient _client; //ClientObject
+        internal static I Create(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams)
         {
             object proxy = Create<I, ALCDispatch<I>>();
-            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, null);
+            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams, null);
             return (I)proxy;
         }
-        internal static I CreateGeneric(AssemblyLoadContext alc, string assemblyPath, string typeName, Type[] genericTypes) //TODO: build in generics to get working
+        internal static I CreateGeneric(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams, Type[] genericTypes)
         {
             object proxy = Create<I, ALCDispatch<I>>();
-            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, genericTypes);
+            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams,  genericTypes);
             return (I)proxy;
         }
-        private void SetParameters(AssemblyLoadContext alc, string typeName, string assemblyPath, Type[] genericTypes)
+        private void SetParameters(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes)
         {
-            _client = (IClientObject)typeof(ClientDispatch).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
-            _client.SetUpServer(alc, typeName, assemblyPath, genericTypes);
+            _client = (IProxyClient)typeof(ClientDispatch).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
+            _client.SetUpServer(alc, typeName, assemblyPath,constructorParams,  genericTypes);
         }
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
