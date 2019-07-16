@@ -22,7 +22,7 @@ namespace ALCProxy.Communication
             return stream;
 
         }
-        protected override object DecryptReturnType(object s, Type returnType)
+        protected override object DeserializeReturnType(object s, Type returnType)
         {
             MemoryStream stream = (MemoryStream)s;
             stream.Position = 0;
@@ -31,12 +31,12 @@ namespace ALCProxy.Communication
             return newSerializer.ReadObject(stream);
         }
     }
-    public class ServerDispatch<InterfaceType> : ALCServer<InterfaceType>
+    public class ServerDispatch<I> : ALCServer<I>
     {
         public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
             : base(instanceType, genericTypes, constructorParams, constTypes) { }
 
-        protected override object DecryptParameter(object serializedParam, Type t)
+        protected override object DeserializeParameter(object serializedParam, Type t)
         {
             MemoryStream s = (MemoryStream)serializedParam;
             s.Position = 0;
@@ -53,7 +53,7 @@ namespace ALCProxy.Communication
         /// <param name="returnedObject"></param>
         /// <param name="returnType"></param>
         /// <returns></returns>
-        protected override object EncryptReturnObject(object returnedObject, Type returnType)
+        protected override object SerializeReturnObject(object returnedObject, Type returnType)
         {
             MemoryStream stream = new MemoryStream();
             DataContractSerializer s = new DataContractSerializer(returnType);

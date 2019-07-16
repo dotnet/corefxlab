@@ -14,19 +14,19 @@ namespace ALCProxy.Tests
 {
     public interface ITest
     {
-        public string PrintContext();
-        public int DoThing2(int a, List<string> list);
-        public int DoThing3(int a, Test2 t);
+        public string GetContextName();
+        public int ReturnIntWhilePassingInList(int a, List<string> list);
+        public int ReturnIntWhilePassingInUserType(int a, Test2 t);
         public Test2 ReturnUserType();
-        public int SimpleMethod();
+        public int SimpleMethodReturnsInt();
     }
 
     public interface IGeneric<T>
     {
-        public string PrintContext();
-        public int DoThing2(int a, List<string> list);
-        public int DoThing3(int a, Test2 t);
-        public string DoThing4(T t);
+        public string GetContextName();
+        public int PassInList(int a, List<string> list);
+        public int PassInUserType(int a, Test2 t);
+        public string PassInGenericType(T t);
         public string GenericMethodTest<I>();
     }
 
@@ -57,7 +57,7 @@ namespace ALCProxy.Tests
         {
             _instance2 = t;
         }
-        public string PrintContext()
+        public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
             return AssemblyLoadContext.GetLoadContext(a).Name;
@@ -66,16 +66,16 @@ namespace ALCProxy.Tests
         {
             return typeof(I).ToString();
         }
-        public int DoThing2(int a, List<string> list)
+        public int PassInList(int a, List<string> list)
         {
             return _instance.Length;
         }
-        public int DoThing3(int a, Test2 t)
+        public int PassInUserType(int a, Test2 t)
         {
             t.DoThingy();
             return 6;
         }
-        public string DoThing4(T tester)
+        public string PassInGenericType(T tester)
         {
             return tester.ToString();
         }
@@ -83,18 +83,18 @@ namespace ALCProxy.Tests
 
     public class Test : ITest
     {
-        public string PrintContext()
+        public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
             return AssemblyLoadContext.GetLoadContext(a).Name;
         }
-        public int DoThing2(int a, List<string> list)
+        public int ReturnIntWhilePassingInList(int a, List<string> list)
         {
             Console.WriteLine(a);
 
             return a + list[0].Length;
         }
-        public int DoThing3(int a, Test2 t)
+        public int ReturnIntWhilePassingInUserType(int a, Test2 t)
         {
             t.DoThingy();
             return 5;
@@ -104,7 +104,7 @@ namespace ALCProxy.Tests
         {
             return new Test2();
         }
-        public int SimpleMethod()
+        public int SimpleMethodReturnsInt()
         {
             return 3;
         }
@@ -127,17 +127,17 @@ namespace ALCProxy.Tests
             this.bb = b;
             tt = t;
         }
-        public int DoThing2(int a, List<string> list)
+        public int ReturnIntWhilePassingInList(int a, List<string> list)
         {
             return aa;
         }
 
-        public int DoThing3(int a, Test2 t)
+        public int ReturnIntWhilePassingInUserType(int a, Test2 t)
         {
             return aa + a;
         }
 
-        public string PrintContext()
+        public string GetContextName()
         {
             return bb;
         }
@@ -147,7 +147,7 @@ namespace ALCProxy.Tests
             return tt;
         }
 
-        public int SimpleMethod()
+        public int SimpleMethodReturnsInt()
         {
             return tt.testValue;
         }
@@ -161,13 +161,13 @@ namespace ALCProxy.Tests
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
 
             //Test basic functionality
-            Assert.Equal("TestBasicContextLoading", t.PrintContext());
-            Assert.Equal(17, t.DoThing2(10, new List<string> { "Letters", "test", "hello world!"}));
+            Assert.Equal("TestBasicContextLoading", t.GetContextName());
+            Assert.Equal(17, t.ReturnIntWhilePassingInList(10, new List<string> { "Letters", "test", "hello world!"}));
 
             //Tests for call-by-value functionality, to make sure there aren't any problems with editing objects in the other ALC
             Test2 t2 = new Test2(3);
             Assert.Equal(3, t2.testValue);
-            Assert.Equal(5, t.DoThing3(5, t2));
+            Assert.Equal(5, t.ReturnIntWhilePassingInUserType(5, t2));
             Assert.Equal(3, t2.testValue);
 
             alc.Unload();
@@ -191,11 +191,11 @@ namespace ALCProxy.Tests
             var alc = new AssemblyLoadContext("TestUnload2", isCollectible: true);
             WeakReference alcWeakRef = new WeakReference(alc, trackResurrection: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test"); //The one referenced through the comm object, to test that the reference is removed
-            Assert.Equal("TestUnload2", t.PrintContext());
+            Assert.Equal("TestUnload2", t.GetContextName());
 
             //The unload only seems to work here, not anywhere outside the method which is strange
             alc.Unload();
-            Assert.ThrowsAny<Exception>(t.PrintContext);
+            Assert.ThrowsAny<Exception>(t.GetContextName);
             return alcWeakRef;
         }
         [Fact]
@@ -204,8 +204,8 @@ namespace ALCProxy.Tests
             AssemblyLoadContext alc = new AssemblyLoadContext("TestSimpleGenerics", isCollectible: true);
             IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
             
-            Assert.Equal("TestSimpleGenerics", t.PrintContext());
-            Assert.Equal("Hello!", t.DoThing4("Hello!"));
+            Assert.Equal("TestSimpleGenerics", t.GetContextName());
+            Assert.Equal("Hello!", t.PassInGenericType("Hello!"));
 
 
             alc.Unload();
@@ -215,7 +215,7 @@ namespace ALCProxy.Tests
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("TestUserGenerics", isCollectible: true);
             IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
-            Assert.Equal(new Test2().ToString(), t.DoThing4(new Test2()));
+            Assert.Equal(new Test2().ToString(), t.PassInGenericType(new Test2()));
 
             alc.Unload();
         }
@@ -243,10 +243,10 @@ namespace ALCProxy.Tests
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("TestConstructorParams", isCollectible: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "TestObjectParamConst", new object[] { 55, "testString" });
-            Assert.Equal(55, t.DoThing2(3, new List<string>()));
-            Assert.Equal(58, t.DoThing3(3, new Test2()));
-            Assert.Equal("testString", t.PrintContext());
-            Assert.Equal(5, t.SimpleMethod());
+            Assert.Equal(55, t.ReturnIntWhilePassingInList(3, new List<string>()));
+            Assert.Equal(58, t.ReturnIntWhilePassingInUserType(3, new Test2()));
+            Assert.Equal("testString", t.GetContextName());
+            Assert.Equal(5, t.SimpleMethodReturnsInt());
         }
         [Fact]
         //TODO currently this breaks due to some type cast errors ("Test2 isn't the same type as Test2"). This may be due to how we load the assemblies
@@ -257,11 +257,11 @@ namespace ALCProxy.Tests
             //Test when putting user objects into the constructor
             Test2 test = new Test2(100);
             ITest t2 = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "TestObjectParamConst", new object[] { 60, "testString", test });
-            Assert.Equal(60, t2.DoThing2(3, new List<string>()));
-            Assert.Equal(63, t2.DoThing3(3, new Test2()));
-            Assert.Equal("testString", t2.PrintContext());
+            Assert.Equal(60, t2.ReturnIntWhilePassingInList(3, new List<string>()));
+            Assert.Equal(63, t2.ReturnIntWhilePassingInUserType(3, new Test2()));
+            Assert.Equal("testString", t2.GetContextName());
             Assert.NotEqual(test, t2.ReturnUserType());
-            Assert.Equal(test.testValue, t2.SimpleMethod());
+            Assert.Equal(test.testValue, t2.SimpleMethodReturnsInt());
         }
     }
 

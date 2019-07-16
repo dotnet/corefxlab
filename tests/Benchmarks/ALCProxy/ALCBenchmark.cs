@@ -9,36 +9,36 @@ namespace Benchmarks.ALCProxy
 {
     public interface ITest
     {
-        string PrintContext();
-        int DoThing2(int a, List<string> list);
-        int DoThing3(int a, Test2 t);
+        string GetContextName();
+        int MethodWithGenericTypeParameter(int a, List<string> list);
+        int MethodWithUserTypeParameter(int a, Test2 t);
         Test2 ReturnUserType();
         int SimpleMethod();
     }
 
     public interface IGeneric<T>
     {
-        string PrintContext();
-        int DoThing2(int a, List<string> list);
-        int DoThing3(int a, Test2 t);
-        string DoThing4(T t);
+        string GetContextName();
+        int MethodWithGenericTypeParameter(int a, List<string> list);
+        int MethodWithUserTypeParameter(int a, Test2 t);
+        string MethodWithDirectGenericParameters(T t);
         string GenericMethodTest<I>();
     }
 
     public class Test2
     {
-        public int test;
+        public int mutableMember;
         public Test2()
         {
-            test = 5;
+            mutableMember = 5;
         }
         public Test2(int start)
         {
-            test = start;
+            mutableMember = start;
         }
-        public void DoThingy()
+        public void IncrementMutable()
         {
-            test++;
+            mutableMember++;
         }
     }
     public class GenericClass<T> : IGeneric<T>
@@ -52,7 +52,7 @@ namespace Benchmarks.ALCProxy
         {
             _instance2 = t;
         }
-        public string PrintContext()
+        public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
             return AssemblyLoadContext.GetLoadContext(a).Name;
@@ -61,16 +61,16 @@ namespace Benchmarks.ALCProxy
         {
             return typeof(I).ToString();
         }
-        public int DoThing2(int a, List<string> list)
+        public int MethodWithGenericTypeParameter(int a, List<string> list)
         {
             return _instance.Length;
         }
-        public int DoThing3(int a, Test2 t)
+        public int MethodWithUserTypeParameter(int a, Test2 t)
         {
-            t.DoThingy();
+            t.IncrementMutable();
             return 6;
         }
-        public string DoThing4(T tester)
+        public string MethodWithDirectGenericParameters(T tester)
         {
             return tester.ToString();
         }
@@ -78,20 +78,20 @@ namespace Benchmarks.ALCProxy
 
     public class Test : ITest
     {
-        public string PrintContext()
+        public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
             return AssemblyLoadContext.GetLoadContext(a).Name;
         }
-        public int DoThing2(int a, List<string> list)
+        public int MethodWithGenericTypeParameter(int a, List<string> list)
         {
             Console.WriteLine(a);
 
             return a + list[0].Length;
         }
-        public int DoThing3(int a, Test2 t)
+        public int MethodWithUserTypeParameter(int a, Test2 t)
         {
-            t.DoThingy();
+            t.IncrementMutable();
             return 5;
         }
 
@@ -154,32 +154,32 @@ namespace Benchmarks.ALCProxy
         [Benchmark]
         public object CallSimpleMethodGeneric()
         {
-            return genericObject.PrintContext();
+            return genericObject.GetContextName();
         }
         [Benchmark]
         public object CallSimpleMethodGenericControl()
         {
-            return genericControl.PrintContext();
+            return genericControl.GetContextName();
         }
         [Benchmark]
         public object UserTypeParameters()
         {
-            return testObject.DoThing3(3, new Test2());
+            return testObject.MethodWithUserTypeParameter(3, new Test2());
         }
         [Benchmark]
         public object UserTypeParametersControl()
         {
-            return controlObject.DoThing3(3, new Test2());
+            return controlObject.MethodWithUserTypeParameter(3, new Test2());
         }
         [Benchmark]
         public object UserTypeParameters2()
         {
-            return testObject.DoThing3(3, userInput);
+            return testObject.MethodWithUserTypeParameter(3, userInput);
         }
         [Benchmark]
         public object UserTypeParametersControl2()
         {
-            return controlObject.DoThing3(3, userInput);
+            return controlObject.MethodWithUserTypeParameter(3, userInput);
         }
     }
 }

@@ -89,7 +89,7 @@ namespace ALCProxy.Communication
             }
             SerializeParameters(args, out IList<object> streams, out IList<Type> argTypes);
             object encryptedReturn = _callMethod.Invoke(_server, new object[] { method, streams, argTypes });
-            return DecryptReturnType(encryptedReturn, method.ReturnType);
+            return DeserializeReturnType(encryptedReturn, method.ReturnType);
         }
         protected void SerializeParameters(object[] arguments, out IList<object> serializedArgs, out IList<Type> argTypes)
         {
@@ -106,9 +106,9 @@ namespace ALCProxy.Communication
             }
         }
         protected abstract object SerializeParameter(object param, Type paramType);
-        protected abstract object DecryptReturnType(object returnedObject, Type returnType);
+        protected abstract object DeserializeReturnType(object returnedObject, Type returnType);
     }
-    public abstract class ALCServer<ObjectInterface> : IProxyServer
+    public abstract class ALCServer<I> : IProxyServer
     {
         public object instance;
         public AssemblyLoadContext currentLoadContext;
@@ -119,7 +119,7 @@ namespace ALCProxy.Communication
             {
                 instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
             }
-            var constructorParams = DecryptParameters(serializedConstParams, constArgTypes);
+            var constructorParams = DeserializeParameters(serializedConstParams, constArgTypes);
             SetInstance(instanceType, constArgTypes.ToArray(), constructorParams);
         }
         /// <summary>
@@ -130,7 +130,7 @@ namespace ALCProxy.Communication
         /// <param name="constructorArgs">The physical objects that are the parameters to the constructor</param>
         protected void SetInstance(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
-            ConstructorInfo ci = instanceType.GetConstructor(constructorTypes);//GrabConstructor(constructorTypes, instanceType);//instanceType.GetConstructor(constructorTypes);
+            var ci = instanceType.GetConstructor(constructorTypes);//GrabConstructor(constructorTypes, instanceType);//instanceType.GetConstructor(constructorTypes);
             instance = ci.Invoke(constructorArgs);
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace ALCProxy.Communication
         {
             //Turn the memstreams into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
-            object[] args = DecryptParameters(streams, argTypes);
+            object[] args = DeserializeParameters(streams, argTypes);
             MethodInfo[] methods = instance.GetType().GetMethods();
             MethodInfo m = FindMethod(methods, targetMethod, argTypes.ToArray());
             if (m.ContainsGenericParameters)
@@ -159,7 +159,7 @@ namespace ALCProxy.Communication
                 //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
                 m = m.MakeGenericMethod(targetMethod.GetGenericArguments().Select(x => ConvertType(x)).ToArray());
             }
-            return EncryptReturnObject(m.Invoke(instance, args), m.ReturnType);
+            return SerializeReturnObject(m.Invoke(instance, args), m.ReturnType);
         }
         /// <summary>
         /// Searches for methods within the type to find the one that matches our passed in type. Since the types are technically different,
@@ -190,24 +190,24 @@ namespace ALCProxy.Communication
             throw new Exception("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
         }
         /// <summary>
-        /// Takes the memory streams passed into the server and turns them into the specific objects we want, in the desired types we want
+        /// Takes the serialized objects passed into the server and turns them into the specific objects we want, in the desired types we want
         /// </summary>
         /// <param name="streams"></param>
         /// <param name="argTypes"></param>
         /// <returns></returns>
-        protected object[] DecryptParameters(IList<object> streams, IList<Type> argTypes)
+        protected object[] DeserializeParameters(IList<object> streams, IList<Type> argTypes)
         {
             var convertedObjects = new List<object>();
             for (int i = 0; i < streams.Count; i++)
             {
                 object s = streams[i];
                 Type t = argTypes[i];
-                object obj = DecryptParameter(s, t);
+                object obj = DeserializeParameter(s, t);
                 convertedObjects.Add(obj);
             }
             return convertedObjects.ToArray();
         }
-        protected abstract object DecryptParameter(object serializedParam, Type paramType);
+        protected abstract object DeserializeParameter(object serializedParam, Type paramType);
         /// <summary>
         /// Once we've completed our method call to the real object, we need to convert the return type back into our type from the original ALC 
         /// the proxy is in, so we turn our returned object back into a stream that the client can decode
@@ -215,7 +215,7 @@ namespace ALCProxy.Communication
         /// <param name="returnedObject"></param>
         /// <param name="returnType"></param>
         /// <returns></returns>
-        protected abstract object EncryptReturnObject(object returnedObject, Type returnType);
+        protected abstract object SerializeReturnObject(object returnedObject, Type returnType);
     }
 
     /// <summary>
@@ -227,7 +227,7 @@ namespace ALCProxy.Communication
         /// Sends a message to the server to proc the method call, and return the result
         /// </summary>
         /// <param name="method">the method that needs to be called</param>
-        /// <param name="streams">The parameters for the given method, converted into MemoryStreams by the client that now need to be decoded</param>
+        /// <param name="streams">The parameters for the given method, converted into a serialized object by the client that now need to be deserialized</param>
         /// <param name="types">The types of each stream, so the server knows how to decode the streams</param>
         /// <returns></returns>
         object CallObject(MethodInfo method, IList<object> streams, IList<Type> types);
