@@ -53,7 +53,7 @@ namespace Microsoft.Data
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] == column[i].ToString();
+                ret[i] = (string)this[i] == column[i]?.ToString();
             }
             return ret;
         }

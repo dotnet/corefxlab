@@ -118,24 +118,24 @@ namespace Microsoft.Data
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
+            PrimitiveColumn<T> clone;
             if (!(mapIndices is null))
             {
                 if (mapIndices.DataType != typeof(long))
                     throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                return Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
             }
-            return Clone();
-        }
-
-        public override BaseColumn CloneAndAppendNulls(BaseColumn mapIndices = null, bool invertMapIndices = false)
-        {
-            PrimitiveColumn<T> ret = Clone(mapIndices, invertMapIndices) as PrimitiveColumn<T>;
-            ret.AppendMany(null, NullCount);
-            return ret;
+            else
+            {
+                clone = Clone();
+            }
+            Debug.Assert(!ReferenceEquals(clone, null));
+            clone.AppendMany(null, numberOfNullsToAppend);
+            return clone;
         }
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
@@ -148,9 +148,8 @@ namespace Microsoft.Data
             else
             {
                 if (mapIndices.Length > Length)
-                {
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                }
+
                 PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
                 ret._columnContainer._modifyNullCountWhileIndexing = false;
                 if (invertMapIndices == false)
