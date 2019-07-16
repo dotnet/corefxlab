@@ -877,5 +877,51 @@ namespace Microsoft.Data.Tests
             }
         }
 
+        [Fact]
+        public void TestGoupByDifferentColumnTypes()
+        {
+            void GroupCountAndAssert(DataFrame df)
+            {
+                DataFrame grouped = df.GroupBy("Column1").Count();
+                Assert.Equal(2, grouped.RowCount);
+            }
+
+            DataFrame df = MakeDataFrame<byte, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<char, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<decimal, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<double, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<float, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<int , bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<long, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<sbyte, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<short, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<uint, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<ulong, bool>(10, false);
+            GroupCountAndAssert(df);
+
+            df = MakeDataFrame<ushort, bool>(10, false);
+            GroupCountAndAssert(df);
+
+        }
     }
 }
