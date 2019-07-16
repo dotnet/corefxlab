@@ -125,14 +125,6 @@ namespace Microsoft.Data
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
-        public override BaseColumn Clone(IEnumerable<long> mapIndices, long numberOfNullsToAppend = 0)
-        {
-            PrimitiveColumn<T> clone = Clone(mapIndices);
-            Debug.Assert(!ReferenceEquals(clone, null));
-            clone.AppendMany(null, numberOfNullsToAppend);
-            return clone;
-        }
-
         public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             PrimitiveColumn<T> clone;

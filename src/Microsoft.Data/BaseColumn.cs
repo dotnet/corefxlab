@@ -60,7 +60,7 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Called internally from Merge and GroupBy
+        /// Called internally from Merge and GroupBy. Resizes the column to the specified length to allow setting values by indexing
         /// </summary>
         /// <param name="length"></param>
         public virtual void Resize(long length) => throw new NotImplementedException();
@@ -72,7 +72,6 @@ namespace Microsoft.Data
         /// <param name="invertMapIndices"></param>
         /// <returns></returns>
         public virtual BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
-        public virtual BaseColumn Clone(IEnumerable<long> mapIndices, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
 
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
 

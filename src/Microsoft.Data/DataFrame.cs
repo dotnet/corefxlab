@@ -83,7 +83,7 @@ namespace Microsoft.Data
             {
                 int columnIndex = _table.GetColumnIndex(columnName);
                 if (columnIndex == -1)
-                    throw new ArgumentException($"{columnName} does not exist");
+                    throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
                 return _table.Column(columnIndex);
             }
             set
@@ -265,7 +265,7 @@ namespace Microsoft.Data
         {
             int columnIndex = _table.GetColumnIndex(columnName);
             if (columnIndex == -1)
-                throw new ArgumentException($"{columnName} does not exist");
+                throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
             BaseColumn column = _table.Column(columnIndex);
 
@@ -323,8 +323,7 @@ namespace Microsoft.Data
         internal void SetTableRowCount(long rowCount)
         {
             // Even if current RowCount == rowCount, do the validation
-            int numberOfColumns = ColumnCount;
-            for (int i = 0; i < numberOfColumns; i++)
+            for (int i = 0; i < ColumnCount; i++)
             {
                 if (Column(i).Length != rowCount)
                     throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
@@ -352,7 +351,7 @@ namespace Microsoft.Data
                 IList<object> row = this[i];
                 foreach (object obj in row)
                 {
-                    sb.Append(obj.ToString().PadRight(longestColumnName));
+                    sb.Append((obj ?? "null").ToString().PadRight(longestColumnName));
                 }
                 sb.AppendLine();
             }

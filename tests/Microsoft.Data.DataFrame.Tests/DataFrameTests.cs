@@ -23,85 +23,73 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
-        public static DataFrame MakeDataFrameForGroupBy(int length) => MakeDataFrameWithAllColumnTypes(length, true);
-
-        public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool forGroupByTests = false)
+        public static DataFrame MakeDataFrameWithAllColumnTypes(int length)
         {
-            DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, forGroupByTests);
+            DataFrame df = MakeDataFrameWithNumericAndStringColumns(length);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
             boolColumn[length / 2] = null;
             return df;
         }
 
-        public static DataFrame MakeDataFrameWithNumericAndBoolColumns(int length, bool forGroupByTests = false)
+        public static DataFrame MakeDataFrameWithNumericAndBoolColumns(int length)
         {
-            DataFrame df = MakeDataFrameWithNumericColumns(length, forGroupByTests);
+            DataFrame df = MakeDataFrameWithNumericColumns(length);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
             boolColumn[length / 2] = null;
             return df;
         }
 
-        public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length, bool forGroupByTests = false)
+        public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length)
         {
-            DataFrame df = MakeDataFrameWithNumericColumns(length, forGroupByTests);
-            BaseColumn stringColumn;
-            if (forGroupByTests)
-            {
-                stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? x.ToString() + "0" : x.ToString() + "1"));
-            }
-            else
-            {
-                stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
-            }
+            DataFrame df = MakeDataFrameWithNumericColumns(length);
+            BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             df.InsertColumn(df.ColumnCount, stringColumn);
             stringColumn[length / 2] = null;
             return df;
         }
 
-        public static DataFrame MakeDataFrameWithNumericColumns(int length, bool forGroupByTests = false)
+        public static DataFrame MakeDataFrameWithNumericColumns(int length)
         {
-            DataFrame dataFrame;
-            if (forGroupByTests)
-            {
-                BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (byte)0 : (byte)1));
-                BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (char)0 : (char)1));
-                BaseColumn decimalColumn = new PrimitiveColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (decimal)0 : (decimal)1));
-                BaseColumn doubleColumn = new PrimitiveColumn<double>("Double", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (double)0 : (double)1));
-                BaseColumn floatColumn = new PrimitiveColumn<float>("Float", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (float)0 : (float)1));
-                BaseColumn intColumn = new PrimitiveColumn<int>("Int", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? 0 : 1));
-                BaseColumn longColumn = new PrimitiveColumn<long>("Long", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (long)0 : (long)1));
-                BaseColumn sbyteColumn = new PrimitiveColumn<sbyte>("Sbyte", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (sbyte)0 : (sbyte)1));
-                BaseColumn shortColumn = new PrimitiveColumn<short>("Short", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (short)0 : (short)1));
-                BaseColumn uintColumn = new PrimitiveColumn<uint>("Uint", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (uint)0 : (uint)1));
-                BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (ulong)0 : (ulong)1));
-                BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? (ushort)0 : (ushort)1));
+            BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
+            BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
+            BaseColumn decimalColumn = new PrimitiveColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
+            BaseColumn doubleColumn = new PrimitiveColumn<double>("Double", Enumerable.Range(0, length).Select(x => (double)x));
+            BaseColumn floatColumn = new PrimitiveColumn<float>("Float", Enumerable.Range(0, length).Select(x => (float)x));
+            BaseColumn intColumn = new PrimitiveColumn<int>("Int", Enumerable.Range(0, length).Select(x => x));
+            BaseColumn longColumn = new PrimitiveColumn<long>("Long", Enumerable.Range(0, length).Select(x => (long)x));
+            BaseColumn sbyteColumn = new PrimitiveColumn<sbyte>("Sbyte", Enumerable.Range(0, length).Select(x => (sbyte)x));
+            BaseColumn shortColumn = new PrimitiveColumn<short>("Short", Enumerable.Range(0, length).Select(x => (short)x));
+            BaseColumn uintColumn = new PrimitiveColumn<uint>("Uint", Enumerable.Range(0, length).Select(x => (uint)x));
+            BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
+            BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
 
-                dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
-            }
-            else
-            {
-                BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
-                BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
-                BaseColumn decimalColumn = new PrimitiveColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
-                BaseColumn doubleColumn = new PrimitiveColumn<double>("Double", Enumerable.Range(0, length).Select(x => (double)x));
-                BaseColumn floatColumn = new PrimitiveColumn<float>("Float", Enumerable.Range(0, length).Select(x => (float)x));
-                BaseColumn intColumn = new PrimitiveColumn<int>("Int", Enumerable.Range(0, length).Select(x => x));
-                BaseColumn longColumn = new PrimitiveColumn<long>("Long", Enumerable.Range(0, length).Select(x => (long)x));
-                BaseColumn sbyteColumn = new PrimitiveColumn<sbyte>("Sbyte", Enumerable.Range(0, length).Select(x => (sbyte)x));
-                BaseColumn shortColumn = new PrimitiveColumn<short>("Short", Enumerable.Range(0, length).Select(x => (short)x));
-                BaseColumn uintColumn = new PrimitiveColumn<uint>("Uint", Enumerable.Range(0, length).Select(x => (uint)x));
-                BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
-                BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
-
-                dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
-            }
+            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
             for (int i = 0; i < dataFrame.ColumnCount; i++)
             {
                 dataFrame.Column(i)[length / 2] = null;
             }
+            return dataFrame;
+        }
+
+        public static DataFrame MakeDataFrame<T1, T2>(int length, bool withNulls = true)
+            where T1 : unmanaged
+            where T2 : unmanaged
+        {
+            BaseColumn baseColumn1 = new PrimitiveColumn<T1>("Column1", Enumerable.Range(0, length).Select(x => (T1)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T1))));
+            BaseColumn baseColumn2 = new PrimitiveColumn<T2>("Column2", Enumerable.Range(0, length).Select(x => (T2)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T2))));
+            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { baseColumn1, baseColumn2 });
+
+            if (withNulls)
+            {
+                for (int i = 0; i < dataFrame.ColumnCount; i++)
+                {
+                    dataFrame.Column(i)[length / 2] = null;
+                }
+            }
+
             return dataFrame;
         }
 
@@ -792,35 +780,101 @@ namespace Microsoft.Data.Tests
             DataFrame count = df.GroupBy("Bool").Count();
             Assert.Equal(2, count.RowCount);
             Assert.Equal((long)5, count["Int"][0]);
+            Assert.Equal((long)4, count["Decimal"][1]);
+            for (int r = 0; r < count.RowCount; r++)
+            {
+                for (int c = 1; c < count.ColumnCount; c++)
+                {
+                    Assert.Equal((long)(r == 0 ? 5 : 4), count.Column(c)[r]);
+                }
+            }
 
             DataFrame first = df.GroupBy("Bool").First();
             Assert.Equal(2, first.RowCount);
+            for (int r = 0; r < 2; r++)
+            {
+                for (int c = 0; c < count.ColumnCount; c++)
+                {
+                    BaseColumn originalColumn = df.Column(c);
+                    BaseColumn firstColumn = first[originalColumn.Name];
+                    Assert.Equal(originalColumn[r], firstColumn[r]);
+                }
+            }
 
             DataFrame head = df.GroupBy("Bool").Head(3);
+            List<int> verify = new List<int>() { 0, 3, 1, 4, 2, 5 };
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < count.ColumnCount; c++)
+                {
+                    BaseColumn originalColumn = df.Column(c);
+                    BaseColumn headColumn = head[originalColumn.Name];
+                    Assert.Equal(originalColumn[r].ToString(), headColumn[verify[r]].ToString());
+                }
+            }
+            for (int c = 0; c < count.ColumnCount; c++)
+            {
+                BaseColumn originalColumn = df.Column(c);
+                if (originalColumn.Name == "Bool")
+                    continue;
+                BaseColumn headColumn = head[originalColumn.Name];
+                Assert.Equal(originalColumn[5], headColumn[verify[5]]);
+            }
             Assert.Equal(6, head.RowCount);
 
             DataFrame tail = df.GroupBy("Bool").Tail(3);
             Assert.Equal(6, tail.RowCount);
+            List<int> originalColumnVerify = new List<int>() { 6, 8, 7, 9 };
+            List<int> tailColumnVerity = new List<int>() { 1, 2, 4, 5 };
+            for (int r = 0; r < 4; r++)
+            {
+                for (int c = 0; c < count.ColumnCount; c++)
+                {
+                    BaseColumn originalColumn = df.Column(c);
+                    BaseColumn tailColumn = tail[originalColumn.Name];
+                    Assert.Equal(originalColumn[originalColumnVerify[r]].ToString(), tailColumn[tailColumnVerity[r]].ToString());
+                }
+            }
 
             DataFrame max = df.GroupBy("Bool").Max();
             Assert.Equal(2, max.RowCount);
-            Assert.Equal(8, max["Int"][0]);
-            Assert.Equal(9, max["Int"][1]);
+            for (int r = 0; r < 2; r++)
+            {
+                for (int c = 0; c < count.ColumnCount; c++)
+                {
+                    BaseColumn originalColumn = df.Column(c);
+                    if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
+                        continue;
+                    BaseColumn maxColumn = max[originalColumn.Name];
+                    Assert.Equal(((long)(r == 0 ? 8 : 9)).ToString(), maxColumn[r].ToString());
+                }
+            }
 
             DataFrame min = df.GroupBy("Bool").Min();
             Assert.Equal(2, min.RowCount);
-            Assert.Equal(0, min["Int"][0]);
-            Assert.Equal(0, min["Int"][1]); // Because of the null value
 
             DataFrame product = df.GroupBy("Bool").Product();
             Assert.Equal(2, product.RowCount);
-            Assert.Equal(0, product["Int"][0]);
-            Assert.Equal(0, product["Int"][1]); // Because of the null value
 
             DataFrame sum = df.GroupBy("Bool").Sum();
             Assert.Equal(2, sum.RowCount);
-            Assert.Equal(20, sum["Int"][0]);
-            Assert.Equal(20, sum["Int"][1]); // Because of the null value
+            for (int r = 0; r < 2; r++)
+            {
+                for (int c = 0; c < count.ColumnCount; c++)
+                {
+                    BaseColumn originalColumn = df.Column(c);
+                    if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
+                        continue;
+                    BaseColumn minColumn = min[originalColumn.Name];
+                    Assert.Equal("0", minColumn[r].ToString());
+
+                    BaseColumn productColumn = product[originalColumn.Name];
+                    Assert.Equal("0", productColumn[r].ToString());
+
+                    BaseColumn sumColumn = sum[originalColumn.Name];
+                    Assert.Equal("20", sumColumn[r].ToString());
+                }
+            }
         }
 
     }

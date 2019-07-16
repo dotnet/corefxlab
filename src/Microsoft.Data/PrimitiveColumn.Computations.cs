@@ -33,42 +33,42 @@ namespace Microsoft.Data
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeMax(_columnContainer);
         }
-        public override void CumulativeMax(IEnumerable<long> rows)
+        public override void CumulativeMax(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.CumulativeMax(_columnContainer, rows);
+            PrimitiveColumnComputation<T>.Instance.CumulativeMax(_columnContainer, rowIndices);
         }
         public override void CumulativeMin()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeMin(_columnContainer);
         }
-        public override void CumulativeMin(IEnumerable<long> rows)
+        public override void CumulativeMin(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.CumulativeMin(_columnContainer, rows);
+            PrimitiveColumnComputation<T>.Instance.CumulativeMin(_columnContainer, rowIndices);
         }
         public override void CumulativeProduct()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeProduct(_columnContainer);
         }
-        public override void CumulativeProduct(IEnumerable<long> rows)
+        public override void CumulativeProduct(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.CumulativeProduct(_columnContainer, rows);
+            PrimitiveColumnComputation<T>.Instance.CumulativeProduct(_columnContainer, rowIndices);
         }
         public override void CumulativeSum()
         {
             PrimitiveColumnComputation<T>.Instance.CumulativeSum(_columnContainer);
         }
-        public override void CumulativeSum(IEnumerable<long> rows)
+        public override void CumulativeSum(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.CumulativeSum(_columnContainer, rows);
+            PrimitiveColumnComputation<T>.Instance.CumulativeSum(_columnContainer, rowIndices);
         }
         public override object Max()
         {
             PrimitiveColumnComputation<T>.Instance.Max(_columnContainer, out T ret);
             return ret;
         }
-        public override object Max(IEnumerable<long> rows)
+        public override object Max(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.Max(_columnContainer, rows, out T ret);
+            PrimitiveColumnComputation<T>.Instance.Max(_columnContainer, rowIndices, out T ret);
             return ret;
         }
         public override object Min()
@@ -76,9 +76,9 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Min(_columnContainer, out T ret);
             return ret;
         }
-        public override object Min(IEnumerable<long> rows)
+        public override object Min(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.Min(_columnContainer, rows, out T ret);
+            PrimitiveColumnComputation<T>.Instance.Min(_columnContainer, rowIndices, out T ret);
             return ret;
         }
         public override object Product()
@@ -86,9 +86,9 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Product(_columnContainer, out T ret);
             return ret;
         }
-        public override object Product(IEnumerable<long> rows)
+        public override object Product(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.Product(_columnContainer, rows, out T ret);
+            PrimitiveColumnComputation<T>.Instance.Product(_columnContainer, rowIndices, out T ret);
             return ret;
         }
         public override object Sum()
@@ -96,9 +96,9 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, out T ret);
             return ret;
         }
-        public override object Sum(IEnumerable<long> rows)
+        public override object Sum(IEnumerable<long> rowIndices)
         {
-            PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, rows, out T ret);
+            PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, rowIndices, out T ret);
             return ret;
         }
         public override void Round()

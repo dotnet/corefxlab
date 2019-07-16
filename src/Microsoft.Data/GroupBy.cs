@@ -4,23 +4,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A GroupBy class that is typically the product of a DataFrame.GroupBy call
-    /// It holds information to perform typical aggregation ops on it
+    /// A GroupBy class that is typically the result of a DataFrame.GroupBy call.
+    /// It holds information to perform typical aggregation ops on it.
     /// </summary>
     public abstract class GroupBy
     {
         /// <summary>
-        /// Returns true if all values in the group are true
-        /// </summary>
-        /// <returns></returns>
-        public abstract DataFrame All();
-
-        /// <summary>
-        /// Compute the number of values in each group 
+        /// Compute the number of non-null values in each group 
         /// </summary>
         /// <returns></returns>
         public abstract DataFrame Count();
@@ -58,29 +53,25 @@ namespace Microsoft.Data
     public class GroupBy<TKey> : GroupBy
     {
         private int _groupByColumnIndex;
-        private Dictionary<TKey, ICollection<long>> _keyValuePairs;
+        private Dictionary<TKey, ICollection<long>> _keyToRowIndicesMap;
         private DataFrame _dataFrame;
-        private PrimitiveColumn<long> _mapIndices;
 
-        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, Dictionary<TKey, ICollection<long>> keyValuePairs)
+        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, Dictionary<TKey, ICollection<long>> keyToRowIndices)
         {
+            if (dataFrame.ColumnCount < groupByColumnIndex || groupByColumnIndex < 0)
+                throw new ArgumentException(nameof(groupByColumnIndex));
             _groupByColumnIndex = groupByColumnIndex;
-            _keyValuePairs = keyValuePairs;
-            _dataFrame = dataFrame;
+            _keyToRowIndicesMap = keyToRowIndices ?? throw new ArgumentException(nameof(keyToRowIndices));
+            _dataFrame = dataFrame ?? throw new ArgumentException(nameof(dataFrame));
         }
 
-        public override DataFrame All()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal delegate void ColumnDelegate(int columnIndex, long rowIndex, IEnumerable<long> rows, TKey key, bool firstGroup);
-        internal delegate void GroupByColumnDelegate(long rowNumber, TKey key);
-        internal void EnumerateColumnsWithRows(GroupByColumnDelegate groupByColumnDelegate, ColumnDelegate columnDelegate)
+        private delegate void ColumnDelegate(int columnIndex, long rowIndex, IEnumerable<long> rows, TKey key, bool firstGroup);
+        private delegate void GroupByColumnDelegate(long rowNumber, TKey key);
+        private void EnumerateColumnsWithRows(GroupByColumnDelegate groupByColumnDelegate, ColumnDelegate columnDelegate)
         {
             long rowNumber = 0;
             bool firstGroup = true;
-            foreach (KeyValuePair<TKey, ICollection<long>> pairs in _keyValuePairs)
+            foreach (KeyValuePair<TKey, ICollection<long>> pairs in _keyToRowIndicesMap)
             {
                 groupByColumnDelegate(rowNumber, pairs.Key);
                 ICollection<long> rows = pairs.Value;
@@ -141,7 +132,6 @@ namespace Microsoft.Data
 
             return ret;
         }
-
 
         public override DataFrame First()
         {
@@ -257,7 +247,7 @@ namespace Microsoft.Data
                 BaseColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 bool firstRow = true;
-                ICollection<long> values = _keyValuePairs[key];
+                ICollection<long> values = _keyToRowIndicesMap[key];
                 int numberOfValues = values.Count;
                 IEnumerator<long> rows = rowEnumerable.GetEnumerator();
                 while (rows.MoveNext())
@@ -295,7 +285,6 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private delegate object columnFunc(IEnumerable<long> rows);
         private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty)
         {
             if (columnIndex == _groupByColumnIndex)
