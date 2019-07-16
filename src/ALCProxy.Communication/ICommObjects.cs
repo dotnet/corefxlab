@@ -177,7 +177,7 @@ namespace ALCProxy.Communication
                 bool methodParamsAlligned = true;
                 for (int i = 0; i < parameterTypes.Length; i++)
                 {
-                    if (!(m.GetParameters()[i].ParameterType.Equals(parameterTypes[i])))
+                    if(!RecursivelyCheckForTypes(parameterTypes[i], m.GetParameters()[i].ParameterType))
                     {
                         methodParamsAlligned = false;
                         break;
@@ -187,7 +187,27 @@ namespace ALCProxy.Communication
                     continue;
                 return m;
             }
-            throw new Exception("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
+            throw new MissingMethodException("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
+        }
+        /// <summary>
+        /// If a parameter of a function isn't the direct type that we've passed in, this function should find that the type we've passed is correct.
+        /// </summary>
+        private bool RecursivelyCheckForTypes(Type sentParameterType, Type toCompare)
+        {
+            Type t = sentParameterType;
+            Type[] interfaces = t.GetInterfaces();
+            if (sentParameterType.Equals(toCompare))
+            {
+                return true;
+            }
+            else if(t.BaseType == null && interfaces.Length == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return RecursivelyCheckForTypes(t.BaseType, toCompare) || interfaces.Any(x => RecursivelyCheckForTypes(x, toCompare));
+            }
         }
         /// <summary>
         /// Takes the serialized objects passed into the server and turns them into the specific objects we want, in the desired types we want

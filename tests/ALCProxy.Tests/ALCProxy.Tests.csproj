@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ALCProxy.Proxy\ALCProxy.Proxy.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestInterfaceUpdated\ALCProxy.TestInterfaceUpdated.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
   </ItemGroup>
 
 </Project>

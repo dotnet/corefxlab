@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  
+
   <PropertyGroup>
     <Description>Non-allocating collections</Description>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageTags>collections, non-allocating, corefxlab</PackageTags>
   </PropertyGroup>
 
 
