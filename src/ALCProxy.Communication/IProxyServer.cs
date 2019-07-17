@@ -36,6 +36,7 @@ namespace ALCProxy.Communication
             {
                 instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
             }
+            constArgTypes = constArgTypes.Select(x => ConvertType(x)).ToList();
             var constructorParams = DeserializeParameters(serializedConstParams, constArgTypes);
             SetInstance(instanceType, constArgTypes.ToArray(), constructorParams);
         }
@@ -47,7 +48,7 @@ namespace ALCProxy.Communication
         /// <param name="constructorArgs">The physical objects that are the parameters to the constructor</param>
         protected void SetInstance(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
-            var ci = instanceType.GetConstructor(constructorTypes);//GrabConstructor(constructorTypes, instanceType);//instanceType.GetConstructor(constructorTypes);
+            var ci = instanceType.GetConstructor(constructorTypes);
             instance = ci.Invoke(constructorArgs);
         }
         /// <summary>
