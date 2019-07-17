@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace ALCProxy.Communication
 {
@@ -11,9 +13,9 @@ namespace ALCProxy.Communication
         public ClientDispatch(Type intType) : base(intType, "ServerDispatch`1") { }
         protected override object SerializeParameter(object param, Type paramType)
         {
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
             //Serialize the Record object to a memory stream using DataContractSerializer.  
-            DataContractSerializer serializer = new DataContractSerializer(paramType);
+            var serializer = new DataContractSerializer(paramType);
             serializer.WriteObject(stream, param);
             return stream;
 
@@ -24,10 +26,10 @@ namespace ALCProxy.Communication
             {
                 throw new Exception("The Server passed the wrong type to the client when returning an object"); 
             }
-            MemoryStream stream = (MemoryStream)s;
+            var stream = (MemoryStream)s;
             stream.Position = 0;
             //Deserialize the Record object back into a new record object.  
-            DataContractSerializer newSerializer = new DataContractSerializer(returnType);
+            var newSerializer = new DataContractSerializer(returnType);
             return newSerializer.ReadObject(stream);
         }
     }

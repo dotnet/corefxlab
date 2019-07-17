@@ -20,10 +20,10 @@ namespace ALCProxy.Communication
             {
                 throw new Exception("The Server passed the wrong type to the client when returning an object");
             }
-            MemoryStream s = (MemoryStream)serializedParam;
+            var s = (MemoryStream)serializedParam;
             s.Position = 0;
             //Deserialize the Record object back into a new record object.  
-            DataContractSerializer newSerializer = new DataContractSerializer(t);
+            var newSerializer = new DataContractSerializer(t);
             object obj = newSerializer.ReadObject(s);
             return obj;
         }
@@ -37,8 +37,8 @@ namespace ALCProxy.Communication
         /// <returns></returns>
         protected override object SerializeReturnObject(object returnedObject, Type returnType)
         {
-            MemoryStream stream = new MemoryStream();
-            DataContractSerializer s = new DataContractSerializer(returnType);
+            var stream = new MemoryStream();
+            var s = new DataContractSerializer(returnType);
             s.WriteObject(stream, returnedObject);
             return stream;
         }
