@@ -58,6 +58,7 @@
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
     <ProjectReference Include="..\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj" />
     <ProjectReference Include="..\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj" />
     <ProjectReference Include="..\System.Buffers.ReaderWriter.Tests\System.Buffers.ReaderWriter.Tests.csproj" />

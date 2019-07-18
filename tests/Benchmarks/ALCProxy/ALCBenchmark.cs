@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Loader;
 using ALCProxy.Proxy;
+using ALCProxy.TestInterface;
 using BenchmarkDotNet.Attributes;
 
 namespace Benchmarks.ALCProxy
@@ -117,18 +118,26 @@ namespace Benchmarks.ALCProxy
         private IGeneric<Test2> genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) });
         private IGeneric<Test2> genericControl = new GenericClass<Test2>();
         private Test2 userInput;
+        private string path;
 
         [GlobalSetup]
         public void Setup()
         {
             userInput = new Test2();
+            string pathOfCurrentString = "ALCProxy.Tests";
+            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            path = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\Debug\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+
         }
         [Benchmark]
         public object CreateProxyObject()
         {
-            // alc = new AssemblyLoadContext("BenchmarkContext", isCollectible: true);
-
             return ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, assemblyString, "Test");
+        }
+        [Benchmark]
+        public object CreateExternalAssemblyProxyObject()
+        {
+            return ProxyBuilder<IExternalClass>.CreateInstanceAndUnwrap(alc, path, "ExternalClass", new object[] { });
         }
         [Benchmark]
         public object CreateControlObject()

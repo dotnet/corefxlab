@@ -277,12 +277,16 @@ namespace ALCProxy.Tests
             ALCProxy.TestInterface.IExternalClass a = ProxyBuilder<ALCProxy.TestInterface.IExternalClass>.CreateInstanceAndUnwrap(alc, newPath, "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithSharedInterface", a.GetCurrentContext());
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict.Add("test1", "test1");
-            dict.Add("Hello", "world!");
-            var list = new List<string>();
-            list.Add("Hello world!");
-            list.Add("Hello world!");
+            Dictionary<string, string> dict = new Dictionary<string, string>
+            {
+                { "test1", "test1" },
+                { "Hello", "world!" }
+            };
+            var list = new List<string>
+            {
+                "Hello world!",
+                "Hello world!"
+            };
             Assert.Equal(list, a.PassGenericObjects(dict));
         }
         /// <summary>
@@ -298,12 +302,16 @@ namespace ALCProxy.Tests
             ALCProxy.TestInterfaceUpdated.IExternalClass a = ProxyBuilder<ALCProxy.TestInterfaceUpdated.IExternalClass>.CreateInstanceAndUnwrap(alc, newPath, "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithoutSharedInterface", a.GetCurrentContext());
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict.Add("test1", "test1");
-            dict.Add("Hello", "world!");
-            var list = new List<string>();
-            list.Add("Hello world!");
-            list.Add("Hello world!");
+            Dictionary<string, string> dict = new Dictionary<string, string>
+            {
+                { "test1", "test1" },
+                { "Hello", "world!" }
+            };
+            var list = new List<string>
+            {
+                "Hello world!",
+                "Hello world!"
+            };
             Assert.Equal(list, a.PassGenericObjects(dict));
             Assert.Throws<TargetInvocationException>(a.AdditionalUpdateMethod); // TODO: xUnit doesn't do the TargetInvocationException(TargetInvocationException(MissingMethodException)) too well
                                                                                 // try to fix this to give more detail
