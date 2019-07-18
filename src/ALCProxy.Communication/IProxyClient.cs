@@ -29,15 +29,16 @@ namespace ALCProxy.Communication
         private Type FindTypeInAssembly(string typeName, Assembly a)
         {
             //find the type we're looking for
-            foreach (Type ty in a.GetTypes())
+            Type t = a.GetType(typeName);
+            if (t == null)
             {
-                if (ty.Name.Equals(typeName) || (ty.Name.StartsWith(typeName) && ty.Name.Contains("`"))) // will happen for non-generic types, generics we need to find the additional "`1" afterwards
+                t = a.GetType(a.GetName().Name + "." + typeName);
+                if (t == null)
                 {
-                    return ty;
+                    throw new TypeLoadException("Proxy creation exception: No valid type while searching for the given type");
                 }
             }
-            //no type asked for in the assembly
-            throw new Exception("Proxy creation exception: No valid type while searching for the given type");
+            return t;
         }
         /// <summary>
         /// Creates the link between the client and the server, while also passing in all the information to the server for setup

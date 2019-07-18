@@ -160,7 +160,7 @@ namespace ALCProxy.Tests
         public void SimpleObjectsProxiedCorrectly()
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("SimpleObjectsProxiedCorrectly", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Test");
+            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "ALCProxy.Tests.Test");
 
             //Test basic functionality
             Assert.Equal("SimpleObjectsProxiedCorrectly", t.GetContextName());
@@ -204,7 +204,7 @@ namespace ALCProxy.Tests
         public void NonUserGenericTypesExecuteCorrectly()
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("NonUserGenericTypesExecuteCorrectly", isCollectible: true);
-            IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
+            IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass`1", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
             
             Assert.Equal("NonUserGenericTypesExecuteCorrectly", t.GetContextName());
             Assert.Equal("Hello!", t.PassInGenericType("Hello!"));
@@ -216,7 +216,7 @@ namespace ALCProxy.Tests
         public void UserGenericTypesCorrectlyCreated()
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("UserGenericTypesCorrectlyCreated", isCollectible: true);
-            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
+            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass`1", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
             Assert.Equal(new Test2().ToString(), t.PassInGenericType(new Test2()));
 
             alc.Unload();
@@ -225,7 +225,7 @@ namespace ALCProxy.Tests
         public void UserGenericTypeMethodsExecuteCorrectly()
         {
             AssemblyLoadContext alc = new AssemblyLoadContext("GenericMethodsExecuteCorrectly", isCollectible: true);
-            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
+            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "GenericClass`1", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
             //Test generic methods
             Assert.Equal(new Test2().ToString(), t.GenericMethodTest<Test2>());
 
