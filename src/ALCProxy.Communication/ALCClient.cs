@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,6 +7,7 @@ using System.Runtime.Loader;
 
 namespace ALCProxy.Communication
 {
+    internal delegate object ServerCall(MethodInfo info, IList<object> args, IList<Type> types);
     /// <summary>
     /// This currently is designed to only work in-process
     /// TODO: set up to allow for construction of out-of-proc proxies
@@ -16,7 +18,7 @@ namespace ALCProxy.Communication
         protected object _server;
         protected string _serverTypeName;
         protected Type _intType;
-        protected MethodInfo _callMethod;
+        protected Delegate _serverDelegate;
         public ALCClient(Type interfaceType, string serverName)
         {
             _intType = interfaceType;
@@ -57,13 +59,14 @@ namespace ALCProxy.Communication
             _server = constructedType.GetConstructor(
                 new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) })
                 .Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
-            _callMethod = _server.GetType().GetMethod("CallObject");
+            _serverDelegate = Delegate.CreateDelegate(typeof(ServerCall), _server, constructedType.GetMethod("CallObject"));
             //Attach to the unloading event
             alc.Unloading += UnloadClient;
         }
         private void UnloadClient(object sender)
         {
             _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
+            _serverDelegate = null; //TODO: to Delegates to a specific object hold a strong or weak reference to said object?
         }
         /// <summary>
         /// Converts each argument into a serialized version of the object so it can be sent over in a call-by-value fashion
@@ -73,12 +76,12 @@ namespace ALCProxy.Communication
         /// <returns></returns>
         public object SendMethod(MethodInfo method, object[] args)
         {
-            if (_server == null) //We've called the ALC unload, so the proxy has been cut off
+            if (_serverDelegate == null) //We've called the ALC unload, so the proxy has been cut off
             {
                 throw new InvalidOperationException("Error in ALCClient: Proxy has been unloaded, or communication server was never set up correctly");
             }
             SerializeParameters(args, out IList<object> streams, out IList<Type> argTypes);
-            object encryptedReturn = _callMethod.Invoke(_server, new object[] { method, streams, argTypes });
+            object encryptedReturn = _serverDelegate.DynamicInvoke(new object[] { method, streams, argTypes });
             return DeserializeReturnType(encryptedReturn, method.ReturnType);
         }
         protected void SerializeParameters(object[] arguments, out IList<object> serializedArgs, out IList<Type> argTypes)
