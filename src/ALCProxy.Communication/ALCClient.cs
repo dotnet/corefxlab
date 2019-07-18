@@ -30,10 +30,10 @@ namespace ALCProxy.Communication
             Type t = a.GetType(typeName);
             if (t == null)
             {
-                t = a.GetType(a.GetName().Name + "." + typeName);
+                t = a.GetType(a.GetName() + "." + typeName);
                 if (t == null)
                 {
-                    throw new TypeLoadException("Proxy creation exception: No valid type while searching for the given type");
+                    throw new TypeLoadException("Proxy creation exception: No valid type while searching for the given type: " + typeName + " || " + a.GetName().Name + "." + typeName);
                 }
             }
             return t;
