@@ -52,7 +52,7 @@ namespace ALCProxy.Communication
             //find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ClientDispatch)).CodeBase.Substring(8));
+            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8));
             //Get the server type, then make it generic with the interface we're using
             Type constructedType = FindTypeInAssembly(_serverTypeName, aa).MakeGenericType(_intType);
             //Give the client its reference to the server
