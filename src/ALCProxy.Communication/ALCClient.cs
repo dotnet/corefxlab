@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -18,11 +19,16 @@ namespace ALCProxy.Communication
         protected object _server;
         protected string _serverTypeName;
         protected Type _intType;
-        protected Delegate _serverDelegate;
+        internal ServerCall _serverDelegate;
+
+        public StackTrace _stackTrace;
         public ALCClient(Type interfaceType, string serverName)
         {
             _intType = interfaceType;
             _serverTypeName = serverName;
+#if DEBUG
+            _stackTrace = new StackTrace(true); //holds information for debugging purposes
+#endif
         }
         private Type FindTypeInAssembly(string typeName, Assembly a)
         {
@@ -30,7 +36,7 @@ namespace ALCProxy.Communication
             Type t = a.GetType(typeName);
             if (t == null)
             {
-                t = a.GetType(a.GetName() + "." + typeName);
+                t = a.GetType(a.GetName().Name + "." + typeName);
                 if (t == null)
                 {
                     throw new TypeLoadException("Proxy creation exception: No valid type while searching for the given type: " + typeName + " || " + a.GetName().Name + "." + typeName);
@@ -59,7 +65,7 @@ namespace ALCProxy.Communication
             _server = constructedType.GetConstructor(
                 new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) })
                 .Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
-            _serverDelegate = Delegate.CreateDelegate(typeof(ServerCall), _server, constructedType.GetMethod("CallObject"));
+            _serverDelegate = (ServerCall)Delegate.CreateDelegate(typeof(ServerCall), _server, constructedType.GetMethod("CallObject"));
             //Attach to the unloading event
             alc.Unloading += UnloadClient;
         }
@@ -81,7 +87,7 @@ namespace ALCProxy.Communication
                 throw new InvalidOperationException("Error in ALCClient: Proxy has been unloaded, or communication server was never set up correctly");
             }
             SerializeParameters(args, out IList<object> streams, out IList<Type> argTypes);
-            object encryptedReturn = _serverDelegate.DynamicInvoke(new object[] { method, streams, argTypes });
+            object encryptedReturn = _serverDelegate( method, streams, argTypes );
             return DeserializeReturnType(encryptedReturn, method.ReturnType);
         }
         protected void SerializeParameters(object[] arguments, out IList<object> serializedArgs, out IList<Type> argTypes)

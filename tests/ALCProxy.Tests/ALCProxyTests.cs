@@ -172,7 +172,6 @@ namespace ALCProxy.Tests
             Assert.Equal(5, t.ReturnIntWhilePassingInUserType(5, t2));
             Assert.Equal(3, t2.testValue);
 
-            alc.Unload();
         }
         [Fact]
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -313,8 +312,7 @@ namespace ALCProxy.Tests
                 "Hello world!"
             };
             Assert.Equal(list, a.PassGenericObjects(dict));
-            Assert.Throws<TargetInvocationException>(a.AdditionalUpdateMethod); // TODO: xUnit doesn't do the TargetInvocationException(TargetInvocationException(MissingMethodException)) too well
-                                                                                // try to fix this to give more detail
+            Assert.Throws<MissingMethodException>(a.AdditionalUpdateMethod);
         }
     }
 
