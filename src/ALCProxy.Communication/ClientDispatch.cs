@@ -10,7 +10,7 @@ namespace ALCProxy.Communication
 {
     public class ClientDispatch : ALCClient
     {
-        public ClientDispatch(Type intType) : base(intType, "ALCProxy.Communication.ServerDispatch`1") { }
+        public ClientDispatch(Type intType) : base(intType, "ALCProxy.Communication.ServerDispatch") { }
         protected override object SerializeParameter(object param, Type paramType)
         {
             var stream = new MemoryStream();

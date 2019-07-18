@@ -124,9 +124,7 @@ namespace Benchmarks.ALCProxy
         public void Setup()
         {
             userInput = new Test2();
-            string pathOfCurrentString = "ALCProxy.Tests";
-            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            path = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\Debug\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            path = "C:\\\\t-gopho.REDMOND\\source\\repos\\project\\corefxlab\\src\\ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll");
 
         }
         [Benchmark]

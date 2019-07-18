@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 
 namespace ALCProxy.Communication
 {
-    public class ServerDispatch<I> : ALCServer<I>
+    public class ServerDispatch : ALCServer
     {
         public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
             : base(instanceType, genericTypes, constructorParams, constTypes) { }
@@ -27,7 +27,6 @@ namespace ALCProxy.Communication
             object obj = newSerializer.ReadObject(s);
             return obj;
         }
-
         /// <summary>
         /// Once we've completed our method call to the real object, we need to convert the return type back into our type from the original ALC 
         /// the proxy is in, so we turn our returned object back into a stream that the client can decode
@@ -43,5 +42,4 @@ namespace ALCProxy.Communication
             return stream;
         }
     }
-
 }
