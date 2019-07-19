@@ -70,8 +70,6 @@ Anything requiring a shared assembly could work for what we're trying to do, but
 
 With the creation of default interface methods, it's possible that everything will work if we have shared types between ALCs. Since we can implement similar versioning from shared interfaces, we have the power to share types across the ALC boundary, meaning if we can share assemblies, we should. This doesn't work well for cross-process communication (due to sharing dependencies not really working in that scenario), but in-process it can be a good solution.
 
-The one thing that total use of shared assemblies may have problems with is making sure that objects can be unloaded during the `AssemblyLoadContext.Unload` event, which would need a little more extra work to ensure that everything worked out.
-
 ## Proposed Solution
 
 ### Goals
@@ -255,6 +253,11 @@ That said, these and other language features should be investigated for the futu
 When a proxy is created using the API, a new instance of the object type requested is created alongside the proxy, and linked to it. The current design for the API is that already created objects cannot be linked to a new proxy, there must be a new object created if it is going to be used across the type barrier. 
 
 When an ALC is unloaded, technically the `ProxyObject` will still exist in the user ALC, but any attempt to use methods in the proxy should throw an error to the user, as there is nothing to actually call the methods on.
+
+#### Excess types and their loading policies: Do we want shared assemblies?
+A big question that comes up is how do we want to handle any of the extra types that get loaded with the proxied object? If we keep full isolation between the user's starting ALC and the target ALC to load the proxy, then for user-defined types we'd have to load the assembly a second time, which is a very costly process.
+
+The biggest case is the loading of the `Client` and `Server` themselves, since this always happens when a proxy is generated. We could enforce that the plugin assembly has a reference to its host program. This would allow for the proxy API to be used as a shared assembly, which would prevent the costly second load. Do we want to enforce that reference requirement?
 
 ## Validation
 This project is a bit harder to test past integration tests, as the most important thing to test is to ensure that the communication between `ClientObject` and `ServerObject` is correct, which can't be unit tested easily. Integration tests should attempt to run methods from proxied targets both in and out of process, passing in a mix of primitive and non-primitive objects as arguments and return types. Separate from that, we should be able to Moq "serialization and deserialization" (the decoding steps from the client and server, not neccesarily with normal serializers) by taking sample messages sent through other tests, making changes, and ensuring that messages are still decoded and encoded correctly.
