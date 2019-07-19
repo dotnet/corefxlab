@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace ALCProxy.Communication
         protected Type _intType;
         internal ServerCall _serverDelegate;
 
-        public StackTrace _stackTrace;
+        private StackTrace _stackTrace;
         public ALCClient(Type interfaceType, string serverName)
         {
             _intType = interfaceType;

@@ -3,13 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using ALCProxy.Proxy;
-using ALCProxy.TestInterface;
 using Xunit;
 
 namespace ALCProxy.Tests
@@ -269,7 +267,7 @@ namespace ALCProxy.Tests
         [Fact]
         public void CanLoadOustideAssemblyWithSharedInterface()
         {
-            AssemblyLoadContext alc = new AssemblyLoadContext("CanLoadOustideAssemblyWithSharedInterface", isCollectible: true);
+            var alc = new AssemblyLoadContext("CanLoadOustideAssemblyWithSharedInterface", isCollectible: true);
             string pathOfCurrentString = "ALCProxy.Tests";
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
             string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\Debug\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
