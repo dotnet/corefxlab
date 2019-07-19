@@ -53,6 +53,13 @@ namespace ALCProxy.Communication
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
         public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes)
         {
+            if (alc == null || (typeName ?? assemblyPath) == null)
+                throw new ArgumentNullException();
+            if (genericTypes == null)
+                genericTypes = new Type[] { };
+            if (constructorParams == null)
+                constructorParams = new object[] { };
+
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);

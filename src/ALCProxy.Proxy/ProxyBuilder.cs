@@ -38,12 +38,24 @@ namespace ALCProxy.Proxy
         private IProxyClient _client; //ClientObject
         internal static I Create(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams)
         {
+            if (alc == null || assemblyPath == null || typeName == null)
+                throw new ArgumentNullException("Error with inputted parameter");
+            if (constructorParams == null)
+                constructorParams = new object[] { };
+
             object proxy = Create<I, ALCDispatch<I>>();
             ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams, null);
             return (I)proxy;
         }
         internal static I CreateGeneric(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams, Type[] genericTypes)
         {
+            if (alc == null || assemblyPath == null || typeName == null || genericTypes == null)
+                throw new ArgumentNullException("Error with inputted parameter");
+            if (constructorParams == null)
+                constructorParams = new object[] { };
+            if (Convert.ToInt32(typeName.Split("`")[1]) != genericTypes.Length)
+                throw new ArgumentException("Wrong number of generic types for the given typeName");
+
             object proxy = Create<I, ALCDispatch<I>>();
             ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams,  genericTypes);
             return (I)proxy;

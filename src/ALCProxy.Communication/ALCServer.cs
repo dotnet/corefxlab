@@ -14,7 +14,7 @@ namespace ALCProxy.Communication
         public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
             currentLoadContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
-            if (genericTypes != null)
+            if (genericTypes != null && genericTypes.Length > 0)
             {
                 instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
             }
@@ -47,6 +47,9 @@ namespace ALCProxy.Communication
         }
         public object CallObject(MethodInfo targetMethod, IList<object> streams, IList<Type> argTypes)
         {
+            if (targetMethod == null || streams.Count != argTypes.Count)
+                throw new ArgumentNullException();
+
             //Turn the memstreams into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
             object[] args = DeserializeParameters(streams, argTypes);
