@@ -124,11 +124,11 @@ namespace Benchmarks.ALCProxy
         public void Setup()
         {
             userInput = new Test2();
-            testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, "C:\\Users\\t-gopho.REDMOND\\source\\repos\\project\\corefxlab\\tests\\Benchmarks\\bin\\Release\\netcoreapp3.0\\Benchmarks.dll", "Benchmarks.ALCProxy.Test");
+            testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(Test)).Location, "Benchmarks.ALCProxy.Test");
             genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(GenericClass<>)).Location, "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
 
         //path = Assembly.GetExecutingAssembly().Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
-        path = "C:\\Users\\t-gopho.REDMOND\\source\\repos\\project\\corefxlab\\src\\ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\TestAssembly.dll";
+        path = Assembly.GetAssembly(typeof(Test)).Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
 
         }
         [Benchmark]
