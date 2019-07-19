@@ -111,7 +111,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the maximum of the values at rowIndices
         /// </summary>
-        public virtual object Max(IEnumerable<long> rows)
+        public virtual object Max(IEnumerable<long> rowIndices)
         {
             throw new NotImplementedException();
         }
@@ -127,7 +127,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the minimum of the values at the rowIndices
         /// </summary>
-        public virtual object Min(IEnumerable<long> rows)
+        public virtual object Min(IEnumerable<long> rowIndices)
         {
             throw new NotImplementedException();
         }
@@ -143,7 +143,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the product of the values at the rowIndices
         /// </summary>
-        public virtual object Product(IEnumerable<long> rows)
+        public virtual object Product(IEnumerable<long> rowIndices)
         {
             throw new NotImplementedException();
         }
@@ -159,7 +159,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the sum of the values at the rowIndices
         /// </summary>
-        public virtual object Sum(IEnumerable<long> rows)
+        public virtual object Sum(IEnumerable<long> rowIndices)
         {
             throw new NotImplementedException();
         }

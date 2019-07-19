@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Data
 {
@@ -29,7 +28,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the first numberOfRows rows of each group
         /// </summary>
-        /// <param name="numberOfRowsInEachGroup"></param>
+        /// <param name="numberOfRows"></param>
         /// <returns></returns>
         public abstract DataFrame Head(int numberOfRows);
 
@@ -104,14 +103,11 @@ namespace Microsoft.Data
                     return;
                 BaseColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
-                IEnumerator<long> rows = rowEnumerable.GetEnumerator();
-                while (rows.MoveNext())
+                foreach (long row in rowEnumerable)
                 {
-                    long row = rows.Current;
                     if (column[row] != null)
                         count++;
                 }
-                rows.Reset();
                 BaseColumn retColumn;
                 if (firstGroup)
                 {
@@ -152,24 +148,25 @@ namespace Microsoft.Data
                     return;
                 BaseColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
-                IEnumerator<long> rows = rowEnumerable.GetEnumerator();
-                while (rows.MoveNext() && count < 1)
+                foreach (long row in rowEnumerable)
                 {
-                    count++;
-                    long row = rows.Current;
-                    BaseColumn retColumn;
-                    if (firstGroup)
+                    if (count < 1)
                     {
-                        retColumn = column.Clone(empty);
-                        ret.InsertColumn(ret.ColumnCount, retColumn);
+                        count++;
+                        BaseColumn retColumn;
+                        if (firstGroup)
+                        {
+                            retColumn = column.Clone(empty);
+                            ret.InsertColumn(ret.ColumnCount, retColumn);
+                        }
+                        else
+                        {
+                            // Assuming non duplicate column names
+                            retColumn = ret[column.Name];
+                        }
+                        retColumn.Resize(rowIndex + 1);
+                        retColumn[rowIndex] = column[row];
                     }
-                    else
-                    {
-                        // Assuming non duplicate column names
-                        retColumn = ret[column.Name];
-                    }
-                    retColumn.Resize(rowIndex + 1);
-                    retColumn[rowIndex] = column[row];
                 }
             });
 
@@ -196,31 +193,32 @@ namespace Microsoft.Data
                 BaseColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 bool firstRow = true;
-                IEnumerator<long> rows = rowEnumerable.GetEnumerator();
-                while (rows.MoveNext() && count < numberOfRows)
+                foreach (long row in rowEnumerable)
                 {
-                    long row = rows.Current;
-                    BaseColumn retColumn;
-                    if (firstGroup && firstRow)
+                    if (count < numberOfRows)
                     {
-                        firstRow = false;
-                        retColumn = column.Clone(empty);
-                        ret.InsertColumn(ret.ColumnCount, retColumn);
+                        BaseColumn retColumn;
+                        if (firstGroup && firstRow)
+                        {
+                            firstRow = false;
+                            retColumn = column.Clone(empty);
+                            ret.InsertColumn(ret.ColumnCount, retColumn);
+                        }
+                        else
+                        {
+                            // Assuming non duplicate column names
+                            retColumn = ret[column.Name];
+                        }
+                        long retColumnLength = retColumn.Length;
+                        retColumn.Resize(retColumnLength + 1);
+                        retColumn[retColumnLength] = column[row];
+                        if (firstColumn.Length <= retColumnLength)
+                        {
+                            firstColumn.Resize(retColumnLength + 1);
+                        }
+                        firstColumn[retColumnLength] = key;
+                        count++;
                     }
-                    else
-                    {
-                        // Assuming non duplicate column names
-                        retColumn = ret[column.Name];
-                    }
-                    long retColumnLength = retColumn.Length;
-                    retColumn.Resize(retColumnLength + 1);
-                    retColumn[retColumnLength] = column[row];
-                    if (firstColumn.Length <= retColumnLength)
-                    {
-                        firstColumn.Resize(retColumnLength + 1);
-                    }
-                    firstColumn[retColumnLength] = key;
-                    count++;
                 }
             });
 
@@ -249,12 +247,10 @@ namespace Microsoft.Data
                 bool firstRow = true;
                 ICollection<long> values = _keyToRowIndicesMap[key];
                 int numberOfValues = values.Count;
-                IEnumerator<long> rows = rowEnumerable.GetEnumerator();
-                while (rows.MoveNext())
+                foreach (long row in rowEnumerable)
                 {
                     if (count >= numberOfValues - numberOfRows)
                     {
-                        long row = rows.Current;
                         BaseColumn retColumn;
                         if (firstGroup && firstRow)
                         {

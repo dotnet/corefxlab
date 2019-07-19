@@ -32,6 +32,10 @@ namespace Microsoft.Data
         public DataFrame(IList<BaseColumn> columns)
         {
             _table = new DataFrameTable(columns);
+            foreach (BaseColumn column in columns)
+            {
+                column.DataFrame = this; 
+            }
         }
 
         public long RowCount => _table.RowCount;
@@ -53,7 +57,7 @@ namespace Microsoft.Data
 
         public BaseColumn Column(int index) => _table.Column(index);
 
-        public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column);
+        public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column, this);
 
         public void SetColumn(int columnIndex, BaseColumn column) => _table.SetColumn(columnIndex, column);
 
@@ -93,7 +97,7 @@ namespace Microsoft.Data
                 newColumn.Name = columnName;
                 if (columnIndex == -1)
                 {
-                    _table.InsertColumn(ColumnCount, newColumn);
+                    _table.InsertColumn(ColumnCount, newColumn, this);
                 }
                 else
                 {
@@ -268,55 +272,7 @@ namespace Microsoft.Data
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
             BaseColumn column = _table.Column(columnIndex);
-
-            switch (column)
-            {
-                case PrimitiveColumn<bool> boolColumn:
-                    Dictionary<bool, ICollection<long>> boolDictionary = boolColumn.HashColumnValues<bool>();
-                    return new GroupBy<bool>(this, columnIndex, boolDictionary);
-                case PrimitiveColumn<byte> byteColumn:
-                    Dictionary<byte, ICollection<long>> byteDictionary = byteColumn.HashColumnValues<byte>();
-                    return new GroupBy<byte>(this, columnIndex, byteDictionary);
-                case PrimitiveColumn<char> charColumn:
-                    Dictionary<char, ICollection<long>> charDictionary = charColumn.HashColumnValues<char>();
-                    return new GroupBy<char>(this, columnIndex, charDictionary);
-                case PrimitiveColumn<decimal> decimalColumn:
-                    Dictionary<decimal, ICollection<long>> decimalDictionary = decimalColumn.HashColumnValues<decimal>();
-                    return new GroupBy<decimal>(this, columnIndex, decimalDictionary);
-                case PrimitiveColumn<double> doubleColumn:
-                    Dictionary<double, ICollection<long>> doubleDictionary = doubleColumn.HashColumnValues<double>();
-                    return new GroupBy<double>(this, columnIndex, doubleDictionary);
-                case PrimitiveColumn<float> floatColumn:
-                    Dictionary<float, ICollection<long>> floatDictionary = floatColumn.HashColumnValues<float>();
-                    return new GroupBy<float>(this, columnIndex, floatDictionary);
-                case PrimitiveColumn<int> intColumn:
-                    Dictionary<int, ICollection<long>> intDictionary = intColumn.HashColumnValues<int>();
-                    return new GroupBy<int>(this, columnIndex, intDictionary);
-                case PrimitiveColumn<long> longColumn:
-                    Dictionary<long, ICollection<long>> longDictionary = longColumn.HashColumnValues<long>();
-                    return new GroupBy<long>(this, columnIndex, longDictionary);
-                case PrimitiveColumn<sbyte> sbyteColumn:
-                    Dictionary<sbyte, ICollection<long>> sbyteDictionary = sbyteColumn.HashColumnValues<sbyte>();
-                    return new GroupBy<sbyte>(this, columnIndex, sbyteDictionary);
-                case PrimitiveColumn<short> shortColumn:
-                    Dictionary<short, ICollection<long>> shortDictionary = shortColumn.HashColumnValues<short>();
-                    return new GroupBy<short>(this, columnIndex, shortDictionary);
-                case PrimitiveColumn<uint> uintColumn:
-                    Dictionary<uint, ICollection<long>> uintDictionary = uintColumn.HashColumnValues<uint>();
-                    return new GroupBy<uint>(this, columnIndex, uintDictionary);
-                case PrimitiveColumn<ulong> ulongColumn:
-                    Dictionary<ulong, ICollection<long>> ulongDictionary = ulongColumn.HashColumnValues<ulong>();
-                    return new GroupBy<ulong>(this, columnIndex, ulongDictionary);
-                case PrimitiveColumn<ushort> ushortColumn:
-                    Dictionary<ushort, ICollection<long>> ushortDictionary = ushortColumn.HashColumnValues<ushort>();
-                    return new GroupBy<ushort>(this, columnIndex, ushortDictionary);
-                case StringColumn stringColumn:
-                    Dictionary<string, ICollection<long>> stringDictionary = stringColumn.HashColumnValues<string>();
-                    return new GroupBy<string>(this, columnIndex, stringDictionary);
-                default:
-                    Dictionary<object, ICollection<long>> dictionary = column.HashColumnValues<object>();
-                    return new GroupBy<object>(this, columnIndex, dictionary);
-            }
+            return column.GroupBy(columnIndex);
         }
 
         // In a GroupBy call, columns get resized. We need to set the RowCount to reflect the true Length of the DataFrame. Internal only. Should not be exposed

@@ -222,7 +222,13 @@ namespace Microsoft.Data
             return new PrimitiveColumn<decimal>(Name, newColumnContainer);
         }
 
-        public override Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>()
+        public override GroupBy GroupBy(int columnIndex)
+        {
+            Dictionary<T, ICollection<long>> dictionary = GroupColumnValues<T>();
+            return new GroupBy<T>(DataFrame, columnIndex, dictionary);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
         {
             if (typeof(TKey) == typeof(T))
             {

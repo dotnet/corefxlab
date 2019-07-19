@@ -257,7 +257,13 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>()
+        public override GroupBy GroupBy(int columnIndex)
+        {
+            Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();
+            return new GroupBy<string>(DataFrame, columnIndex, dictionary);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
         {
             if (typeof(TKey) == typeof(string))
             {

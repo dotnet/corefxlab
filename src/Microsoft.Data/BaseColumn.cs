@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,6 +19,16 @@ namespace Microsoft.Data
             Length = length;
             Name = name;
             DataType = type;
+        }
+
+        private DataFrame _dataFrame;
+        internal DataFrame DataFrame
+        {
+            get => _dataFrame;
+            set
+            {
+                _dataFrame = value;
+            }
         }
 
         private long _length;
@@ -75,7 +84,9 @@ namespace Microsoft.Data
 
         public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
 
-        public virtual Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>() => throw new NotImplementedException();
+        public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
+
+        public virtual GroupBy GroupBy(int columnIndex) => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
