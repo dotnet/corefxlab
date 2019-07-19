@@ -233,7 +233,7 @@ For my planned implementation, I'll be trying to implement call-by-value, since 
 However, due to the design for extensibility, it's possible that anyone who wants to change the API can implement any of these options in their own way, by changing the interactions of `ClientObject` and `ServerObject`. If someone wants to limit interactions between plugins and the main context to primitives only, they're welcome to do so with this design.
 
 #### Generic Types
-For generics, the API should probably be able to allow users to pass in a list of types "in order" that are being used for the particular instance of an object they are creating. 
+For generics, the API should probably allows users to pass in a list of types "in order" that are being used for the particular instance of an object they are creating. 
 
 `DispatchProxy` should be OK to use generic types, but it may be an issue funneling these types through whatever server structure is created. 
 
@@ -266,7 +266,13 @@ Performance considerations are also fairly important, and need to be tested as w
 * How should the API deal with generic types when creating our different proxy classes?
 * Is there anything special that we need to do to deal with other language features, such as lambdas?
 * Do we have a way to deal with the user ALC being destroyed before the target ALC? How do we react to that problem?
-* Do we want to use strong or weak references for the proxies? Do we want to give options so users can use both?
+* What happens when we try to send large objects through a proxy as parameters/return types?
 
 ## Extra Goals
 * Can we get out-of-process proxies to specify an ALC to be added to in the receiving process?
+
+
+## Discovered Limitations
+* As stated before, call-by-value is the only way to do anything with our current implementation, which causes problems if we want proxies to change values of passed-in objects.
+* Currently, explicitly implemented methods of an interface (eg. having a class `Foo : Bar` that has method implementation `void Bar.SampleMethod()`) cannot currently be picked up by the proxy. This is due to the fact that the server would store our `Foo` class as an `object` type, instead of a `Bar` type. We could solve this by correctly passing the converted interface type to the Server as a generic, but converting the interface type from the user ALC to the proxy ALC is currently facing difficulties.
+* A good chunk of our performance hits come from multiple uses of `MethodInfo.Invoke`. We could improve performance by swapping most of our method calls to invoking through a `Delegate`, but for our types where we only get our type information during runtime, it may be difficult/impossible to make delegates for every method of a proxied object when we call for the `ProxyBuilder` to create them.
