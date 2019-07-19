@@ -127,7 +127,6 @@ namespace Benchmarks.ALCProxy
             testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(Test)).Location, "Benchmarks.ALCProxy.Test");
             genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(GenericClass<>)).Location, "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
 
-        //path = Assembly.GetExecutingAssembly().Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
         path = Assembly.GetAssembly(typeof(Test)).Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
 
         }
@@ -139,7 +138,7 @@ namespace Benchmarks.ALCProxy
         [Benchmark]
         public object CreateExternalAssemblyProxyObject()
         {
-            return ProxyBuilder<IExternalClass>.CreateInstanceAndUnwrap(alc, path, "Benchmarks.ALCProxy.ExternalClass", new object[] { });
+            return ProxyBuilder<IExternalClass>.CreateInstanceAndUnwrap(alc, path, "ExternalClass", new object[] { });
         }
         [Benchmark]
         public object CreateControlObject()
