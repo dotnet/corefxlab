@@ -117,8 +117,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.Proxy", "src\ALCPr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.Tests", "tests\ALCProxy.Tests\ALCProxy.Tests.csproj", "{D76469F4-3694-463A-8444-187080ECD752}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.CaseFolding", "src\System.Text.CaseFolding\System.Text.CaseFolding.csproj", "{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.TestAssembly", "tests\ALCProxy.TestAssembly\ALCProxy.TestAssembly.csproj", "{8F6F600E-5EFB-44B3-80DE-808974A2998A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.TestInterfaceUpdated", "tests\ALCProxy.TestInterfaceUpdated\ALCProxy.TestInterfaceUpdated.csproj", "{14FDEB76-14AE-4332-819C-1E8054855469}"
@@ -747,18 +745,6 @@ Global
 		{D76469F4-3694-463A-8444-187080ECD752}.Release|x64.Build.0 = Release|Any CPU
 		{D76469F4-3694-463A-8444-187080ECD752}.Release|x86.ActiveCfg = Release|Any CPU
 		{D76469F4-3694-463A-8444-187080ECD752}.Release|x86.Build.0 = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|x64.Build.0 = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Debug|x86.Build.0 = Debug|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|x64.ActiveCfg = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|x64.Build.0 = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|x86.ActiveCfg = Release|Any CPU
-		{5AD1F0B7-6279-45CE-BE5A-D35CCD198BAC}.Release|x86.Build.0 = Release|Any CPU
 		{8F6F600E-5EFB-44B3-80DE-808974A2998A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F6F600E-5EFB-44B3-80DE-808974A2998A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6F600E-5EFB-44B3-80DE-808974A2998A}.Debug|x64.ActiveCfg = Debug|Any CPU
