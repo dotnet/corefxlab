@@ -16,6 +16,10 @@ namespace ALCProxy.Communication
         public AssemblyLoadContext currentLoadContext;
         public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
+            if (instanceType == null)
+                throw new ArgumentNullException();
+            if (serializedConstParams.Count != constArgTypes.Count)
+                throw new ArgumentException("Different number of passed streams to argument types");
             currentLoadContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
             if (genericTypes != null && genericTypes.Length > 0)
             {
@@ -117,6 +121,8 @@ namespace ALCProxy.Communication
         /// <returns></returns>
         protected object[] DeserializeParameters(IList<object> streams, IList<Type> argTypes)
         {
+            if (streams.Count != argTypes.Count)
+                throw new ArgumentException("Different number of passed streams to argument types");
             var convertedObjects = new List<object>();
             for (int i = 0; i < streams.Count; i++)
             {
