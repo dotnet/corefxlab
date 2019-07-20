@@ -41,12 +41,8 @@ namespace ALCProxy.Communication
         /// </summary>
         protected Type ConvertType(Type toConvert)
         {
-            string assemblyPath = Assembly.GetAssembly(toConvert).CodeBase.Substring(8);
-            if (toConvert.IsPrimitive || assemblyPath.Contains("System.Private.CoreLib")) //Can't load/dont want to load extra types from System.Private.CoreLib
-            {
-                return toConvert;
-            }
-            return currentLoadContext.LoadFromAssemblyPath(assemblyPath).GetType(toConvert.FullName);
+            AssemblyName assemblyName = Assembly.GetAssembly(toConvert).GetName();
+            return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
         }
         public object CallObject(MethodInfo targetMethod, IList<object> streams, IList<Type> argTypes)
         {
