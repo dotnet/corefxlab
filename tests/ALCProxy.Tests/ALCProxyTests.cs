@@ -88,7 +88,7 @@ namespace ALCProxy.Tests
             var a = Assembly.GetExecutingAssembly();
             return AssemblyLoadContext.GetLoadContext(a).Name;
         }
-        public int ReturnIntWhilePassingInList(int a, List<string> list)
+        int ITest.ReturnIntWhilePassingInList(int a, List<string> list)
         {
             Console.WriteLine(a);
 
@@ -100,7 +100,7 @@ namespace ALCProxy.Tests
             return 5;
         }
 
-        public Test2 ReturnUserType()
+        Test2 ITest.ReturnUserType()
         {
             return new Test2();
         }

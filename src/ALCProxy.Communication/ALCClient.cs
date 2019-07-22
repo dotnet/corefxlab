@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Reflection.Emit;
 
 namespace ALCProxy.Communication
 {
@@ -69,18 +70,58 @@ namespace ALCProxy.Communication
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
             //find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);
+            //Get the interface of the object so we can set it as the server's generic type
+            Type interfaceType = FindInterfaceType(_intType.Name, objType);
+            if (interfaceType.IsGenericType)
+            {
+                interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
+            }
+            Assembly interfaceAssembly = alc.LoadFromAssemblyPath(Assembly.GetAssembly(interfaceType).Location);
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch)).CodeBase.Substring(8));
+            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8));
             //Get the server type, then make it generic with the interface we're using
-            Type constructedType = FindTypeInAssembly(_serverTypeName, aa);//.MakeGenericType(_intType);
+            Type serverType = FindTypeInAssembly(_serverTypeName, aa).MakeGenericType(interfaceType);
             //Give the client its reference to the server
             SerializeParameters(constructorParams, out IList<object> serializedConstArgs, out IList<Type> argTypes);
-            _server = constructedType.GetConstructor(
-                new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) })
-                .Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
-            _serverDelegate = (ServerCall)Delegate.CreateDelegate(typeof(ServerCall), _server, constructedType.GetMethod("CallObject"));
+            ConstructorInfo ci = serverType.GetConstructor(
+                new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) });
+            _server = ci.Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
+            _serverDelegate = (ServerCall)Delegate.CreateDelegate(typeof(ServerCall), _server, serverType.GetMethod("CallObject"));
             //Attach to the unloading event
             alc.Unloading += UnloadClient;
+        }
+        /// <summary>
+        /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
+        /// </summary>
+        private Type ConvertType(Type toConvert, AssemblyLoadContext currentLoadContext)
+        {
+            AssemblyName assemblyName = Assembly.GetAssembly(toConvert).GetName();
+            return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
+        }
+        private Type FindInterfaceType(string interfaceName, Type objType)
+        {
+            Type[] interfaces;
+            if (objType.IsGenericType)
+                interfaces = objType.GetGenericTypeDefinition().GetInterfaces();
+            else
+                interfaces = objType.GetInterfaces();
+
+            //Type[] interfaces = objType.GetInterfaces();
+            foreach(Type t in interfaces)
+            {
+                if (t.Name.Equals(interfaceName))
+                    return GetModType(t.Name, t.Module);
+            }
+            throw new Exception("Interface not found, error");
+        }
+        private Type GetModType(string name, Module m)
+        {
+            foreach (Type t in m.GetTypes())
+            {
+                if (t.Name.Equals(name))
+                    return t;
+            }
+            throw new Exception("Type not found in module");
         }
         private void UnloadClient(object sender)
         {
@@ -101,6 +142,7 @@ namespace ALCProxy.Communication
                 throw new InvalidOperationException("Error in ALCClient: Proxy has been unloaded, or communication server was never set up correctly");
             if (args == null)
                 args = new object[] { };
+
             SerializeParameters(args, out IList<object> streams, out IList<Type> argTypes);
             object encryptedReturn = _serverDelegate( method, streams, argTypes );
             return DeserializeReturnType(encryptedReturn, method.ReturnType);

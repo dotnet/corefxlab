@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 
 namespace ALCProxy.Communication
 {
-    public class ServerDispatch : ALCServer
+    public class ServerDispatch<I> : ALCServer<I>
     {
         public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
             : base(instanceType, genericTypes, constructorParams, constTypes) { }

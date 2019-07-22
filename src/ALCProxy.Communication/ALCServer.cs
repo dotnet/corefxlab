@@ -10,9 +10,10 @@ using System.Runtime.Loader;
 
 namespace ALCProxy.Communication
 {
-    public abstract class ALCServer : IProxyServer
+    public abstract class ALCServer<I> : IProxyServer
     {
-        public object instance;
+        public I instance;
+        public Type instanceIntType;
         public AssemblyLoadContext currentLoadContext;
         public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
@@ -21,6 +22,7 @@ namespace ALCProxy.Communication
             if (serializedConstParams.Count != constArgTypes.Count)
                 throw new ArgumentException("Different number of passed streams to argument types");
             currentLoadContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
+            instanceIntType = typeof(I);
             if (genericTypes != null && genericTypes.Length > 0)
             {
                 instanceType = instanceType.MakeGenericType(genericTypes.Select(x => ConvertType(x)).ToArray());
@@ -38,7 +40,7 @@ namespace ALCProxy.Communication
         protected void SetInstance(Type instanceType, Type[] constructorTypes, object[] constructorArgs)
         {
             var ci = instanceType.GetConstructor(constructorTypes);
-            instance = ci.Invoke(constructorArgs);
+            instance = (I)ci.Invoke(constructorArgs);
         }
         /// <summary>
         /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
@@ -56,7 +58,7 @@ namespace ALCProxy.Communication
             //Turn the serialized objects into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
             object[] args = DeserializeParameters(serializedObjects, argTypes);
-            MethodInfo[] methods = instance.GetType().GetMethods();
+            MethodInfo[] methods = instanceIntType.GetRuntimeMethods().ToArray();
             MethodInfo m = FindMethod(methods, targetMethod, argTypes.ToArray());
             if (m.ContainsGenericParameters)
             {
