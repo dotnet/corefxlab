@@ -313,5 +313,4 @@ namespace ALCProxy.Tests
             Assert.Throws<MissingMethodException>(a.AdditionalUpdateMethod);
         }
     }
-
 }

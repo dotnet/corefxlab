@@ -31,7 +31,6 @@ namespace ALCProxy.Proxy
         {
             return CreateGenericInstanceAndUnwrap(alc, assemblyPath, typeName, new object[] { }, genericTypes);
         }
-
     }
     public class ALCDispatch<I> : System.Reflection.DispatchProxy //I is the specific client you want to use.
     {

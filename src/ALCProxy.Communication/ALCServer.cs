@@ -48,14 +48,14 @@ namespace ALCProxy.Communication
             AssemblyName assemblyName = Assembly.GetAssembly(toConvert).GetName();
             return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
         }
-        public object CallObject(MethodInfo targetMethod, IList<object> streams, IList<Type> argTypes)
+        public object CallObject(MethodInfo targetMethod, IList<object> serializedObjects, IList<Type> argTypes)
         {
-            if (targetMethod == null || streams.Count != argTypes.Count)
+            if (targetMethod == null || serializedObjects.Count != argTypes.Count)
                 throw new ArgumentNullException();
 
-            //Turn the memstreams into their respective objects
+            //Turn the serialized objects into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
-            object[] args = DeserializeParameters(streams, argTypes);
+            object[] args = DeserializeParameters(serializedObjects, argTypes);
             MethodInfo[] methods = instance.GetType().GetMethods();
             MethodInfo m = FindMethod(methods, targetMethod, argTypes.ToArray());
             if (m.ContainsGenericParameters)
@@ -144,4 +144,3 @@ namespace ALCProxy.Communication
         protected abstract object SerializeReturnObject(object returnedObject, Type returnType);
     }
 }
-
