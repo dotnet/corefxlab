@@ -21,16 +21,6 @@ namespace Microsoft.Data
             DataType = type;
         }
 
-        private DataFrame _dataFrame;
-        internal DataFrame DataFrame
-        {
-            get => _dataFrame;
-            set
-            {
-                _dataFrame = value;
-            }
-        }
-
         private long _length;
         public long Length
         {
@@ -86,7 +76,7 @@ namespace Microsoft.Data
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
 
-        public virtual GroupBy GroupBy(int columnIndex) => throw new NotImplementedException();
+        public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

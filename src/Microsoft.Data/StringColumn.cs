@@ -257,10 +257,10 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override GroupBy GroupBy(int columnIndex)
+        public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();
-            return new GroupBy<string>(DataFrame, columnIndex, dictionary);
+            return new GroupBy<string>(parent, columnIndex, dictionary);
         }
 
         public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()

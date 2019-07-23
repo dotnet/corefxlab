@@ -32,10 +32,6 @@ namespace Microsoft.Data
         public DataFrame(IList<BaseColumn> columns)
         {
             _table = new DataFrameTable(columns);
-            foreach (BaseColumn column in columns)
-            {
-                column.DataFrame = this; 
-            }
         }
 
         public long RowCount => _table.RowCount;
@@ -272,7 +268,7 @@ namespace Microsoft.Data
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
             BaseColumn column = _table.Column(columnIndex);
-            return column.GroupBy(columnIndex);
+            return column.GroupBy(columnIndex, this);
         }
 
         // In a GroupBy call, columns get resized. We need to set the RowCount to reflect the true Length of the DataFrame. Internal only. Should not be exposed

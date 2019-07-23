@@ -222,10 +222,10 @@ namespace Microsoft.Data
             return new PrimitiveColumn<decimal>(Name, newColumnContainer);
         }
 
-        public override GroupBy GroupBy(int columnIndex)
+        public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<T, ICollection<long>> dictionary = GroupColumnValues<T>();
-            return new GroupBy<T>(DataFrame, columnIndex, dictionary);
+            return new GroupBy<T>(parent, columnIndex, dictionary);
         }
 
         public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()

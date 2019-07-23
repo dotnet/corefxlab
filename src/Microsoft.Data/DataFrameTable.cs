@@ -98,8 +98,6 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary[column.Name] = columnIndex;
             _columns.Insert(columnIndex, column);
             ColumnCount++;
-
-            column.DataFrame = parent;
         }
 
         public void SetColumn(int columnIndex, BaseColumn column)
