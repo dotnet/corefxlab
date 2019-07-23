@@ -18,7 +18,7 @@ namespace Microsoft.Data
 
         private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        public long RowCount { get; private set; }
+        public long RowCount { get; internal set; }
 
         public int ColumnCount { get; private set; }
 
@@ -66,7 +66,7 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary.Add(newName, currentIndex);
         }
 
-        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
+        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName, DataFrame parent)
             where T : unmanaged
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
@@ -75,10 +75,10 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
             BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
-            InsertColumn(columnIndex, newColumn);
+            InsertColumn(columnIndex, newColumn, parent);
         }
 
-        public void InsertColumn(int columnIndex, BaseColumn column)
+        public void InsertColumn(int columnIndex, BaseColumn column, DataFrame parent)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)

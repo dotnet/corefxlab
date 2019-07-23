@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -52,7 +53,7 @@ namespace Microsoft.Data
 
         public BaseColumn Column(int index) => _table.Column(index);
 
-        public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column);
+        public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column, this);
 
         public void SetColumn(int columnIndex, BaseColumn column) => _table.SetColumn(columnIndex, column);
 
@@ -82,7 +83,7 @@ namespace Microsoft.Data
             {
                 int columnIndex = _table.GetColumnIndex(columnName);
                 if (columnIndex == -1)
-                    throw new ArgumentException($"{columnName} does not exist");
+                    throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
                 return _table.Column(columnIndex);
             }
             set
@@ -92,7 +93,7 @@ namespace Microsoft.Data
                 newColumn.Name = columnName;
                 if (columnIndex == -1)
                 {
-                    _table.InsertColumn(ColumnCount, newColumn);
+                    _table.InsertColumn(ColumnCount, newColumn, this);
                 }
                 else
                 {
@@ -260,6 +261,28 @@ namespace Microsoft.Data
             return ret;
         }
 
+        public GroupBy GroupBy(string columnName)
+        {
+            int columnIndex = _table.GetColumnIndex(columnName);
+            if (columnIndex == -1)
+                throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
+
+            BaseColumn column = _table.Column(columnIndex);
+            return column.GroupBy(columnIndex, this);
+        }
+
+        // In a GroupBy call, columns get resized. We need to set the RowCount to reflect the true Length of the DataFrame. Internal only. Should not be exposed
+        internal void SetTableRowCount(long rowCount)
+        {
+            // Even if current RowCount == rowCount, do the validation
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                if (Column(i).Length != rowCount)
+                    throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
+            }
+            _table.RowCount = rowCount;
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -271,7 +294,7 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 // Left align by 10
-                sb.Append(string.Format($"0,{-longestColumnName}", Column(i).Name));
+                sb.Append(string.Format(Column(i).Name.PadRight(longestColumnName)));
             }
             sb.AppendLine();
             long numberOfRows = Math.Min(RowCount, 25);
@@ -280,7 +303,7 @@ namespace Microsoft.Data
                 IList<object> row = this[i];
                 foreach (object obj in row)
                 {
-                    sb.Append(string.Format($"0,{-longestColumnName}", obj.ToString()));
+                    sb.Append((obj ?? "null").ToString().PadRight(longestColumnName));
                 }
                 sb.AppendLine();
             }

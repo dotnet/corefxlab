@@ -18,12 +18,18 @@ namespace Microsoft.Data
 {
     public abstract partial class BaseColumn
     {
-        #region Computations
 <# foreach (MethodConfiguration compMethod in computationMethodConfiguration) { #>
-<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
+        /// <summary>
+        /// <#=compMethod.MethodComments#>
+        /// </summary>
+<# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
+        public virtual void <#=compMethod.MethodName#>(IEnumerable<long> rowIndices)
+<# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
         public virtual void <#=compMethod.MethodName#>()
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         public virtual object <#=compMethod.MethodName#>()
+<# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
+        public virtual object <#=compMethod.MethodName#>(IEnumerable<long> rowIndices)
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true) { #>
         public virtual object <#=compMethod.MethodName#>()
 <# } else { #>
@@ -34,6 +40,5 @@ namespace Microsoft.Data
         }
 
 <# } #>
-        #endregion
     }
 }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -88,6 +89,12 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
                 }
             }
+        }
+
+        public override void Resize(long length)
+        {
+            _columnContainer.Resize(length);
+            Length = _columnContainer.Length;
         }
 
         public void Append(T? value)
@@ -178,6 +185,25 @@ namespace Microsoft.Data
             }
         }
 
+        public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
+        {
+            IEnumerator<long> rows = mapIndices.GetEnumerator();
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            ret._columnContainer._modifyNullCountWhileIndexing = false;
+            long numberOfRows = 0;
+            while (rows.MoveNext() && numberOfRows < Length)
+            {
+                numberOfRows++;
+                long curRow = rows.Current;
+                T? value = _columnContainer[curRow];
+                ret[curRow] = value;
+                if (!value.HasValue)
+                    ret._columnContainer.NullCount++;
+            }
+            ret._columnContainer._modifyNullCountWhileIndexing = true;
+            return ret;
+        }
+
         internal PrimitiveColumn<bool> CloneAsBoolColumn()
         {
             PrimitiveColumnContainer<bool> newColumnContainer = _columnContainer.CloneAsBoolContainer();
@@ -194,6 +220,37 @@ namespace Microsoft.Data
         {
             PrimitiveColumnContainer<decimal> newColumnContainer = _columnContainer.CloneAsDecimalContainer();
             return new PrimitiveColumn<decimal>(Name, newColumnContainer);
+        }
+
+        public override GroupBy GroupBy(int columnIndex, DataFrame parent)
+        {
+            Dictionary<T, ICollection<long>> dictionary = GroupColumnValues<T>();
+            return new GroupBy<T>(parent, columnIndex, dictionary);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
+        {
+            if (typeof(TKey) == typeof(T))
+            {
+                Dictionary<T, ICollection<long>> multimap = new Dictionary<T, ICollection<long>>(EqualityComparer<T>.Default);
+                for (long i = 0; i < Length; i++)
+                {
+                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
+                    if (containsKey)
+                    {
+                        values.Add(i);
+                    }
+                    else
+                    {
+                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                    }
+                }
+                return multimap as Dictionary<TKey, ICollection<long>>;
+            }
+            else
+            {
+                throw new NotImplementedException(nameof(TKey));
+            }
         }
 
         public void ApplyElementwise(Func<T, T> func)

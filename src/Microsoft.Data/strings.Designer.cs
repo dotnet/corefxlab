@@ -61,11 +61,29 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot resize down.
+        /// </summary>
+        public static string CannotResizeDown {
+            get {
+                return ResourceManager.GetString("CannotResizeDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index cannot be greater than the Column&apos;s Length.
         /// </summary>
         public static string ColumnIndexOutOfRange {
             get {
                 return ResourceManager.GetString("ColumnIndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Column does not exist.
+        /// </summary>
+        public static string InvalidColumnName {
+            get {
+                return ResourceManager.GetString("InvalidColumnName", resourceCulture);
             }
         }
         
@@ -84,6 +102,15 @@ namespace Microsoft.Data {
         public static string MismatchedColumnLengths {
             get {
                 return ResourceManager.GetString("MismatchedColumnLengths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rowCount differs from Column length for Column .
+        /// </summary>
+        public static string MismatchedRowCount {
+            get {
+                return ResourceManager.GetString("MismatchedRowCount", resourceCulture);
             }
         }
         

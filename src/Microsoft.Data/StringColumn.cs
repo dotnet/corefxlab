@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Microsoft.Data
@@ -254,6 +255,37 @@ namespace Microsoft.Data
                 }
             }
             return ret;
+        }
+
+        public override GroupBy GroupBy(int columnIndex, DataFrame parent)
+        {
+            Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();
+            return new GroupBy<string>(parent, columnIndex, dictionary);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
+        {
+            if (typeof(TKey) == typeof(string))
+            {
+                Dictionary<string, ICollection<long>> multimap = new Dictionary<string, ICollection<long>>(EqualityComparer<string>.Default);
+                for (long i = 0; i < Length; i++)
+                {
+                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
+                    if (containsKey)
+                    {
+                        values.Add(i);
+                    }
+                    else
+                    {
+                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                    }
+                }
+                return multimap as Dictionary<TKey, ICollection<long>>;
+            }
+            else
+            {
+                throw new NotImplementedException(nameof(TKey));
+            }
         }
     }
 }
