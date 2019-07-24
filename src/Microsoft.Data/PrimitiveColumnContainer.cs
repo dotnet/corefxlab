@@ -42,7 +42,7 @@ namespace Microsoft.Data
             }
             for (long i = 0; i < length; i++)
             {
-                if (curBuffer.Length == curBuffer.MaxCapacity)
+                if (curBuffer.Length == DataFrameBuffer<T>.MaxCapacity)
                 {
                     curBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(curBuffer);
@@ -65,7 +65,7 @@ namespace Microsoft.Data
             MutableDataFrameBuffer<T> curBuffer = (MutableDataFrameBuffer<T>)Buffers[Buffers.Count - 1];
             foreach (T value in values)
             {
-                if (curBuffer.Length == curBuffer.MaxCapacity)
+                if (curBuffer.Length == DataFrameBuffer<T>.MaxCapacity)
                 {
                     curBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(curBuffer);
@@ -95,13 +95,13 @@ namespace Microsoft.Data
                     NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 MutableDataFrameBuffer<T> lastBuffer = (MutableDataFrameBuffer<T>)Buffers[Buffers.Count - 1];
-                if (lastBuffer.Length == lastBuffer.MaxCapacity)
+                if (lastBuffer.Length == DataFrameBuffer<T>.MaxCapacity)
                 {
                     lastBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(lastBuffer);
                     NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
-                int allocatable = (int)Math.Min(length, lastBuffer.MaxCapacity);
+                int allocatable = (int)Math.Min(length, DataFrameBuffer<T>.MaxCapacity);
                 lastBuffer.EnsureCapacity(allocatable);
                 MutableDataFrameBuffer<byte> lastNullBitMapBuffer = (MutableDataFrameBuffer<byte>)(NullBitMapBuffers[NullBitMapBuffers.Count - 1]);
                 lastNullBitMapBuffer.EnsureCapacity((int)Math.Ceiling(allocatable / 8.0));
@@ -127,7 +127,7 @@ namespace Microsoft.Data
                 NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
             }
             DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
-            if (lastBuffer.Length == lastBuffer.MaxCapacity)
+            if (lastBuffer.Length == DataFrameBuffer<T>.MaxCapacity)
             {
                 lastBuffer = new MutableDataFrameBuffer<T>();
                 Buffers.Add(lastBuffer);
@@ -154,14 +154,14 @@ namespace Microsoft.Data
                     NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 DataFrameBuffer<T> lastBuffer = Buffers[Buffers.Count - 1];
-                if (lastBuffer.Length == lastBuffer.MaxCapacity)
+                if (lastBuffer.Length == DataFrameBuffer<T>.MaxCapacity)
                 {
                     lastBuffer = new MutableDataFrameBuffer<T>();
                     Buffers.Add(lastBuffer);
                     NullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
                 }
                 MutableDataFrameBuffer<T> mutableLastBuffer = MutableDataFrameBuffer<T>.GetMutableBuffer(lastBuffer);
-                int allocatable = (int)Math.Min(count, lastBuffer.MaxCapacity);
+                int allocatable = (int)Math.Min(count, DataFrameBuffer<T>.MaxCapacity);
                 mutableLastBuffer.EnsureCapacity(allocatable);
                 mutableLastBuffer.Span.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
                 mutableLastBuffer.Length += allocatable;
@@ -196,12 +196,12 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             // First find the right bitMapBuffer
-            int bitMapIndex = (int)(index / Buffers[0].MaxCapacity);
+            int bitMapIndex = (int)(index / DataFrameBuffer<T>.MaxCapacity);
             Debug.Assert(NullBitMapBuffers.Count > bitMapIndex);
             MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)NullBitMapBuffers[bitMapIndex];
 
             // Set the bit
-            index -= bitMapIndex * Buffers[0].MaxCapacity;
+            index -= bitMapIndex * DataFrameBuffer<T>.MaxCapacity;
             int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length >= bitMapBufferIndex);
             if (bitMapBuffer.Length == bitMapBufferIndex)
@@ -241,12 +241,12 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             // First find the right bitMapBuffer
-            int bitMapIndex = (int)(index / Buffers[0].MaxCapacity);
+            int bitMapIndex = (int)(index / DataFrameBuffer<T>.MaxCapacity);
             Debug.Assert(NullBitMapBuffers.Count > bitMapIndex);
             DataFrameBuffer<byte> bitMapBuffer = NullBitMapBuffers[bitMapIndex];
 
             // Get the bit
-            index -= bitMapIndex * Buffers[0].MaxCapacity;
+            index -= bitMapIndex * DataFrameBuffer<T>.MaxCapacity;
             int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
@@ -262,7 +262,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentOutOfRangeException(Strings.ColumnIndexOutOfRange, nameof(rowIndex));
             }
-            return (int)(rowIndex / Buffers[0].MaxCapacity);
+            return (int)(rowIndex / DataFrameBuffer<T>.MaxCapacity);
         }
 
         internal int MaxRecordBatchLength(long startIndex)
@@ -270,7 +270,7 @@ namespace Microsoft.Data
             if (Length == 0)
                 return 0;
             int arrayIndex = GetArrayContainingRowIndex(startIndex);
-            startIndex = startIndex - arrayIndex * DataFrameBuffer<T>.MaxBufferCapacity;
+            startIndex = startIndex - arrayIndex * DataFrameBuffer<T>.MaxCapacity;
             return Buffers[arrayIndex].Length - (int)startIndex;
         }
 
@@ -309,13 +309,13 @@ namespace Microsoft.Data
                     return null;
                 }
                 int arrayIndex = GetArrayContainingRowIndex(rowIndex);
-                rowIndex = rowIndex - arrayIndex * DataFrameBuffer<T>.MaxBufferCapacity;
+                rowIndex = rowIndex - arrayIndex * DataFrameBuffer<T>.MaxCapacity;
                 return Buffers[arrayIndex][(int)rowIndex];
             }
             set
             {
                 int arrayIndex = GetArrayContainingRowIndex(rowIndex);
-                rowIndex = rowIndex - arrayIndex * DataFrameBuffer<T>.MaxBufferCapacity;
+                rowIndex = rowIndex - arrayIndex * DataFrameBuffer<T>.MaxCapacity;
                 DataFrameBuffer<T> buffer = Buffers[arrayIndex];
                 MutableDataFrameBuffer<T> mutableBuffer = MutableDataFrameBuffer<T>.GetMutableBuffer(buffer);
                 Buffers[arrayIndex] = mutableBuffer;

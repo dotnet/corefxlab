@@ -27,15 +27,8 @@ namespace Microsoft.Data
 
         protected int Capacity => ReadOnlyMemory.Length / Size;
 
-        public static int MaxBufferCapacity
-        {
-            get
-            {
-                return Int32.MaxValue / Size;
-            }
-        }
 
-        public int MaxCapacity => Int32.MaxValue / Size;
+        public static int MaxCapacity => Int32.MaxValue / Size;
 
         public ReadOnlySpan<T> ReadOnlySpan
         {
@@ -47,7 +40,6 @@ namespace Microsoft.Data
 
         public DataFrameBuffer(int numberOfValues = 8)
         {
-            Size = Unsafe.SizeOf<T>();
             if ((long)numberOfValues * Size > MaxCapacity)
             {
                 throw new ArgumentException($"{numberOfValues} exceeds buffer capacity", nameof(numberOfValues));
@@ -57,7 +49,6 @@ namespace Microsoft.Data
 
         public DataFrameBuffer(ReadOnlyMemory<byte> buffer, int length)
         {
-            Size = Unsafe.SizeOf<T>();
             _readOnlyMemory = buffer;
             Length = length;
         }

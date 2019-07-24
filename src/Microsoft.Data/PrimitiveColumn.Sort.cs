@@ -39,7 +39,7 @@ namespace Microsoft.Data
                 List<int> nonNullSortIndices = new List<int>();
                 for (int i = 0; i < sortIndices.Length; i++)
                 {
-                    if (IsValid(sortIndices[i] + b * _columnContainer.Buffers[0].MaxCapacity))
+                    if (IsValid(sortIndices[i] + b * DataFrameBuffer<T>.MaxCapacity))
                         nonNullSortIndices.Add(sortIndices[i]);
                 }
                 bufferSortIndices.Add(nonNullSortIndices);
@@ -48,7 +48,7 @@ namespace Microsoft.Data
             ValueTuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
             {
                 T value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
-                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * _columnContainer.Buffers[0].MaxCapacity;
+                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * DataFrameBuffer<T>.MaxCapacity;
                 return (value, startIndex);
             }
             SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<ValueTuple<int, int>>>(comparer);

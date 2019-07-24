@@ -141,7 +141,7 @@ namespace Microsoft.Data
             {
                 byte[] bytes = _encoding.GetBytes(value);
                 MutableDataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as MutableDataFrameBuffer<byte>;
-                if (mutableDataBuffer.Length == mutableDataBuffer.MaxCapacity)
+                if (mutableDataBuffer.Length == DataFrameBuffer<byte>.MaxCapacity)
                 {
                     mutableDataBuffer = new MutableDataFrameBuffer<byte>();
                     _dataBuffers.Add(mutableDataBuffer);

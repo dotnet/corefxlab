@@ -98,7 +98,7 @@ namespace Microsoft.Data
             ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_columnContainer.GetNullBuffer(startIndex));
             int nullCount = GetNullCount(startIndex, numberOfRows);
             int arrayIndex = numberOfRows == 0 ? 0 :_columnContainer.GetArrayContainingRowIndex(startIndex);
-            int offset = (int)(startIndex - arrayIndex * DataFrameBuffer<T>.MaxBufferCapacity);
+            int offset = (int)(startIndex - arrayIndex * DataFrameBuffer<T>.MaxCapacity);
             switch (this)
             {
                 case PrimitiveColumn<bool> boolColumn:
