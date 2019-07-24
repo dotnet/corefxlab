@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A column to hold strings
+    /// A mutable column to hold strings. Is NOT Arrow compatible
     /// </summary>
     public partial class StringColumn : BaseColumn
     {

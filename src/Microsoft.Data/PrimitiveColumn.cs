@@ -3,9 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Apache.Arrow;
+using Apache.Arrow.Types;
 
 namespace Microsoft.Data
 {
@@ -32,6 +33,99 @@ namespace Microsoft.Data
         public PrimitiveColumn(string name, long length = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(length);
+        }
+
+        public PrimitiveColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, length, typeof(T))
+        {
+            _columnContainer = new PrimitiveColumnContainer<T>(buffer, nullBitMap, length, nullCount);
+        }
+
+        private IArrowType GetArrowType()
+        {
+            switch (typeof(T))
+            {
+                case Type boolType when boolType == typeof(bool):
+                    return BooleanType.Default;
+                case Type doubleType when doubleType == typeof(double):
+                    return DoubleType.Default;
+                case Type floatType when floatType == typeof(float):
+                    return FloatType.Default;
+                case Type intType when intType == typeof(int):
+                    return Int32Type.Default;
+                case Type longType when longType == typeof(long):
+                    return Int64Type.Default;
+                case Type shortType when shortType == typeof(short):
+                    return Int16Type.Default;
+                case Type uintType when uintType == typeof(uint):
+                    return UInt32Type.Default;
+                case Type ulongType when ulongType == typeof(ulong):
+                    return UInt64Type.Default;
+                case Type ushortType when ushortType == typeof(ushort):
+                    return UInt16Type.Default;
+                case Type decimalType when decimalType == typeof(decimal):
+                case Type byteType when byteType == typeof(byte):
+                case Type charType when charType == typeof(char):
+                case Type sbyteType when sbyteType == typeof(sbyte):
+                default:
+                    throw new NotImplementedException(nameof(T));
+            }
+        }
+
+        public override Field Field
+        {
+            get
+            {
+                return new Field(Name, GetArrowType(), NullCount != 0);
+            }
+        }
+
+        public override int MaxRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
+
+        private int GetNullCount(long startIndex, int numberOfRows)
+        {
+            int nullCount = 0;
+            for (long i = startIndex; i < numberOfRows; i++)
+            {
+                if (!IsValid(i))
+                    nullCount++;
+            }
+            return nullCount;
+        }
+
+        public override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
+        {
+            ArrowBuffer valueBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_columnContainer.GetValueBuffer(startIndex));
+            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_columnContainer.GetNullBuffer(startIndex));
+            int nullCount = GetNullCount(startIndex, numberOfRows);
+            int arrayIndex = numberOfRows == 0 ? 0 :_columnContainer.GetArrayContainingRowIndex(startIndex);
+            int offset = (int)(startIndex - arrayIndex * DataFrameBuffer<T>.MaxBufferCapacity);
+            switch (this)
+            {
+                case PrimitiveColumn<bool> boolColumn:
+                    return new BooleanArray(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<double> doubleColumn:
+                    return new DoubleArray(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<float> floatColumn:
+                    return new FloatArray(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<int> intColumn:
+                    return new Int32Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<long> longColumn:
+                    return new Int64Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<short> shortColumn:
+                    return new Int16Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<uint> uintColumn:
+                    return new UInt32Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<ulong> ulongColumn:
+                    return new UInt64Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<ushort> ushortColumn:
+                    return new UInt16Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+                case PrimitiveColumn<byte> byteColumn:
+                case PrimitiveColumn<char> charColumn:
+                case PrimitiveColumn<decimal> decimalColumn:
+                case PrimitiveColumn<sbyte> sbyteColumn:
+                default:
+                    throw new NotImplementedException(nameof(byteColumn.DataType));
+            }
         }
 
         public new IList<T?> this[long startIndex, int length]
@@ -257,7 +351,8 @@ namespace Microsoft.Data
         {
             foreach (DataFrameBuffer<T> buffer in _columnContainer.Buffers)
             {
-                Span<T> span = buffer.Span;
+                MutableDataFrameBuffer<T> mutableBuffer = MutableDataFrameBuffer<T>.GetMutableBuffer(buffer);
+                Span<T> span = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     span[i] = func(span[i]);

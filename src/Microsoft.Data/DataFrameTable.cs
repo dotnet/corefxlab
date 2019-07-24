@@ -66,7 +66,7 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary.Add(newName, currentIndex);
         }
 
-        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName, DataFrame parent)
+        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
             where T : unmanaged
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
@@ -75,10 +75,10 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
             BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
-            InsertColumn(columnIndex, newColumn, parent);
+            InsertColumn(columnIndex, newColumn);
         }
 
-        public void InsertColumn(int columnIndex, BaseColumn column, DataFrame parent)
+        public void InsertColumn(int columnIndex, BaseColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)

@@ -595,25 +595,29 @@ namespace Microsoft.Data.Tests
             Assert.Null(sortedStrColumn[9]);
         }
 
-        [Fact]
-        public void TestPrimitiveColumnSort()
+        [Theory]
+        [InlineData(5)]
+        [InlineData(12)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        public void TestPrimitiveColumnSort(int numberOfNulls)
         {
             // Primitive Column Sort
             PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int", 0);
             Assert.Equal(0, intColumn.NullCount);
-            intColumn.AppendMany(null, 5);
-            Assert.Equal(5, intColumn.NullCount);
+            intColumn.AppendMany(null, numberOfNulls);
+            Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Should handle all nulls
             PrimitiveColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
-            Assert.Equal(5, sortedIntColumn.NullCount);
+            Assert.Equal(numberOfNulls, sortedIntColumn.NullCount);
             Assert.Null(sortedIntColumn[0]);
 
             for (int i = 0; i < 5; i++)
             {
                 intColumn.Append(i);
             }
-            Assert.Equal(5, intColumn.NullCount);
+            Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Ascending sort
             sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
@@ -624,7 +628,6 @@ namespace Microsoft.Data.Tests
             sortedIntColumn = intColumn.Sort(false) as PrimitiveColumn<int>;
             Assert.Equal(4, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
-
         }
 
         private void VerifyJoin(DataFrame join, DataFrame left, DataFrame right, JoinAlgorithm joinAlgorithm)

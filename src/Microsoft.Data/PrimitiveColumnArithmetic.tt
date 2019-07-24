@@ -58,16 +58,18 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < <#= method.Op1Name #>.Buffers.Count; bb++)
             {
                 var buffer = <#= method.Op1Name #>.Buffers[bb];
+                var mutableBuffer = MutableDataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
+                <#= method.Op1Name #>.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
-                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
+                    mutableBuffer.Span[i] = (<#=type.TypeName#>)(mutableBuffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else if (method.MethodType == MethodType.Binary) { #>
-                    buffer.Span[i] = (<#=type.TypeName#>)(buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
+                    mutableBuffer.Span[i] = (<#=type.TypeName#>)(mutableBuffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].ReadOnlySpan[i]);
 <# } else if (method.MethodType == MethodType.Comparison) { #>
-                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].Span[i]);
+                    ret[i] = (buffer.ReadOnlySpan[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].ReadOnlySpan[i]);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
-                    ret[i] = (buffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
+                    ret[i] = (buffer.ReadOnlySpan[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else {#>
                     throw new NotImplementedException();
 <# } #>

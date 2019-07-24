@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -101,6 +103,39 @@ namespace Microsoft.Data.Tests
             intColumn[7] = null;
             Assert.Equal(5, intColumn.NullCount);
             Assert.False(intColumn.IsValid(7));
+        }
+
+        [Fact]
+        public void TestBasicArrowStringColumn()
+        {
+            Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
+            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 6);
+            Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
+            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 1);
+            Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
+            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 3);
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 2);
+            Assert.Equal(2, stringColumn.Length);
+            Assert.Equal("foo", stringColumn[0]);
+            Assert.Equal("bar", stringColumn[1]);
+        }
+
+        [Fact]
+        public void TestArrowStringColumnWithNulls()
+        {
+            string data = "joemark";
+            byte[] bytes = Encoding.UTF8.GetBytes(data);
+            Memory<byte> dataMemory = new Memory<byte>(bytes);
+            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 7);
+            Memory<byte> nullMemory = new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 4);
+            Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0 };
+            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 5);
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 4);
+            Assert.Equal(4, stringColumn.Length);
+            Assert.Equal("joe", stringColumn[0]);
+            Assert.Equal("mark", stringColumn[2]);
+            Assert.Equal("", stringColumn[3]);
         }
     }
 }
