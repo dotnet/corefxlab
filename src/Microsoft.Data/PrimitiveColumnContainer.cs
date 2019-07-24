@@ -3,9 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.Text;
 
 namespace Microsoft.Data
 {
@@ -13,7 +14,7 @@ namespace Microsoft.Data
     /// PrimitiveDataFrameColumnContainer is just a store for the column data. APIs that want to change the data must be defined in PrimitiveDataFrameColumn
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal partial class PrimitiveColumnContainer<T>
+    internal partial class PrimitiveColumnContainer<T> : IEnumerable<T?>
         where T : struct
     {
         public IList<ReadOnlyDataFrameBuffer<T>> Buffers = new List<ReadOnlyDataFrameBuffer<T>>();
@@ -331,6 +332,16 @@ namespace Microsoft.Data
                 }
             }
         }
+
+        public IEnumerator<T?> GetEnumerator()
+        {
+            for (long i = 0; i < Length; i++)
+            {
+                yield return this[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString()
         {

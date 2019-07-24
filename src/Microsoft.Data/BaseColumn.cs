@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Microsoft.Data
     /// <summary>
     /// The base column type. All APIs should be defined here first
     /// </summary>
-    public abstract partial class BaseColumn
+    public abstract partial class BaseColumn : IEnumerable
     {
         public BaseColumn(string name, long length, Type type)
         {
@@ -59,6 +60,10 @@ namespace Microsoft.Data
         {
             get => GetValue(startIndex, length);
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorCore();
+
+        protected abstract IEnumerator GetEnumeratorCore();
 
         /// <summary>
         /// Called internally from Merge and GroupBy. Resizes the column to the specified length to allow setting values by indexing
