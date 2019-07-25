@@ -224,11 +224,14 @@ namespace Microsoft.Data
             PrimitiveColumn<T> clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long))
-                    throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
+                    throw new ArgumentException(String.Format("{0} {1} {2} {3}", Strings.MismatchedValueType, "${typeof(long)}", Strings.Or, "${typeof(bool)}", nameof(mapIndices)));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                if (mapIndices.DataType == typeof(long))
+                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else
+                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
             }
             else
             {
@@ -237,6 +240,20 @@ namespace Microsoft.Data
             Debug.Assert(!ReferenceEquals(clone, null));
             clone.AppendMany(null, numberOfNullsToAppend);
             return clone;
+        }
+
+        private PrimitiveColumn<T> Clone(PrimitiveColumn<bool> boolColumn)
+        {
+            if (boolColumn.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            for (long i = 0; i < boolColumn.Length; i++)
+            {
+                bool? value = boolColumn[i];
+                if (value.HasValue && value.Value == true)
+                    ret.Append(this[i]);
+            }
+            return ret;
         }
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)

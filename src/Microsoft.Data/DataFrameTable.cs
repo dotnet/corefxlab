@@ -59,7 +59,7 @@ namespace Microsoft.Data
         {
             string currentName = column.Name;
             int currentIndex = _columnNameToIndexDictionary[currentName];
-            column.Name = newName;
+            column.SetName(newName);
             _columnNameToIndexDictionary.Remove(currentName);
             _columnNameToIndexDictionary.Add(newName, currentIndex);
         }

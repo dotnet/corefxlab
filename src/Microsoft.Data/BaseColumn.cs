@@ -20,7 +20,7 @@ namespace Microsoft.Data
         public BaseColumn(string name, long length, Type type)
         {
             Length = length;
-            Name = name;
+            _name = name;
             DataType = type;
         }
 
@@ -41,7 +41,17 @@ namespace Microsoft.Data
             get;
         }
 
-        public string Name { get; set; }
+        private string _name;
+        public string Name => _name;
+
+        public void SetName(string newName, DataFrame dataFrame = null)
+        {
+            if (!ReferenceEquals(dataFrame, null))
+            {
+                dataFrame.SetColumnName(this, newName);
+            }
+            _name = newName;
+        }
 
         public Type DataType { get; }
 

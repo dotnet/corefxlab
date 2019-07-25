@@ -94,13 +94,18 @@ namespace Microsoft.Data.Tests
                 stringColumn[length / 2] = null;
             }
 
+            BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
+            df.InsertColumn(df.ColumnCount, charColumn);
+            if (withNulls)
+            {
+                charColumn[length / 2] = null;
+            }
             return df;
         }
 
         public static DataFrame MakeDataFrameWithNumericColumns(int length, bool withNulls = true)
         {
             BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
-            BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
             BaseColumn decimalColumn = new PrimitiveColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
             BaseColumn doubleColumn = new PrimitiveColumn<double>("Double", Enumerable.Range(0, length).Select(x => (double)x));
             BaseColumn floatColumn = new PrimitiveColumn<float>("Float", Enumerable.Range(0, length).Select(x => (float)x));
@@ -112,7 +117,7 @@ namespace Microsoft.Data.Tests
             BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
             BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
 
-            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
+            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
             if (withNulls)
             {
@@ -772,6 +777,47 @@ namespace Microsoft.Data.Tests
             }
         }
 
+        private void VerifyMerge(DataFrame merge, DataFrame left, DataFrame right, JoinAlgorithm joinAlgorithm)
+        {
+            if (joinAlgorithm == JoinAlgorithm.Left || joinAlgorithm == JoinAlgorithm.Inner)
+            {
+                HashSet<int> intersection = new HashSet<int>();
+                for (int i = 0; i < merge["Int_left"].Length; i++)
+                {
+                    if (merge["Int_left"][i] == null)
+                        continue;
+                    intersection.Add((int)merge["Int_left"][i]);
+                }
+                for (int i = 0; i < left["Int"].Length; i++)
+                {
+                    if (left["Int"][i] != null && intersection.Contains((int)left["Int"][i]))
+                        intersection.Remove((int)left["Int"][i]);
+                }
+                Assert.Empty(intersection);
+            }
+            else if (joinAlgorithm == JoinAlgorithm.Right)
+            {
+                HashSet<int> intersection = new HashSet<int>();
+                for (int i = 0; i < merge["Int_right"].Length; i++)
+                {
+                    if (merge["Int_right"][i] == null)
+                        continue;
+                    intersection.Add((int)merge["Int_right"][i]);
+                }
+                for (int i = 0; i < right["Int"].Length; i++)
+                {
+                    if (right["Int"][i] != null && intersection.Contains((int)right["Int"][i]))
+                        intersection.Remove((int)right["Int"][i]);
+                }
+                Assert.Empty(intersection);
+            }
+            else if (joinAlgorithm == JoinAlgorithm.FullOuter)
+            {
+                VerifyMerge(merge, left, right, JoinAlgorithm.Left);
+                VerifyMerge(merge, left, right, JoinAlgorithm.Right);
+            }
+        }
+
         [Fact]
         public void TestJoin()
         {
@@ -1068,6 +1114,172 @@ namespace Microsoft.Data.Tests
                 }
             }
             Assert.Equal("01234<null>6789", actualStrings.ToString());
+        }
+
+        [Fact]
+        public void TestColumnClip()
+        {
+            DataFrame df = MakeDataFrameWithNumericColumns(10);
+            BaseColumn clipped = df["Int"].Clip(3, 7);
+            Assert.Equal(3, clipped[0]);
+            Assert.Equal(3, clipped[1]);
+            Assert.Equal(3, clipped[2]);
+            Assert.Equal(7, clipped[8]);
+            Assert.Equal(7, clipped[9]);
+        }
+
+        [Fact]
+        public void TestDataFrameClip()
+        {
+            DataFrame df = MakeDataFrameWithNumericColumns(10);
+            DataFrame clipped = df.Clip(3, 7);
+            Assert.Equal(df.ColumnCount, clipped.ColumnCount);
+            for (int c = 0; c < df.ColumnCount; c++)
+            {
+                BaseColumn column = clipped.Column(c);
+                for (int i = 0; i < 3; i++)
+                {
+                    Assert.Equal("3", column[i].ToString());
+                }
+                for (int i = 8; i < 10; i++)
+                {
+                    Assert.Equal("7", column[i].ToString());
+                }
+            }
+        }
+
+        [Fact]
+        public void TestDataFrameFilter()
+        {
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
+            DataFrame filtered = df[df["Bool"] == true];
+            List<int> verify = new List<int> { 0, 2, 4, 6, 8 };
+            Assert.Equal(5, filtered.RowCount);
+            for (int i = 0; i < filtered.ColumnCount; i++)
+            {
+                BaseColumn column = filtered.Column(i);
+                if (column.Name == "Char" || column.Name == "Bool" || column.Name == "String")
+                    continue;
+                for (int j = 0; j < column.Length; j++)
+                {
+                    Assert.Equal(verify[j].ToString(), column[j].ToString());
+                }
+            }
+        }
+
+        [Fact]
+        public void TestPrefixAndSuffix()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            IList<string> columnNames = df.Columns;
+            df.AddPrefix("Prefix_");
+            IList<string> prefixNames = df.Columns;
+            for (int i = 0; i < prefixNames.Count; i++)
+            {
+                Assert.Equal("Prefix_" + columnNames[i], prefixNames[i]);
+            }
+            df.AddSuffix("_Suffix");
+            IList<string> suffixNames = df.Columns;
+            for (int i = 0; i < suffixNames.Count; i++)
+            {
+                Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
+            }
+        }
+
+        [Fact]
+        public void TestSample()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            DataFrame sampled = df.Sample(3);
+            Assert.Equal(3, sampled.RowCount);
+            Assert.Equal(df.ColumnCount, sampled.ColumnCount);
+        }
+
+        [Fact]
+        public void TestMerge()
+        {
+            DataFrame left = MakeDataFrameWithAllMutableColumnTypes(10);
+            DataFrame right = MakeDataFrameWithAllMutableColumnTypes(5);
+
+            // Tests with right.RowCount < left.RowCount 
+            // Left merge 
+            DataFrame merge = left.Merge<int>(right, "Int", "Int");
+            Assert.Equal(10, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_right"][6]);
+            Assert.Null(merge["Int_left"][5]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Left);
+
+            // Right merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(5, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][3], right["Int"][3]);
+            Assert.Null(merge["Int_right"][2]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Right);
+
+            // Outer merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
+            Assert.Equal(merge.RowCount, left.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_right"][6]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
+
+            // Inner merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(merge.RowCount, right.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][3]);
+            Assert.Null(merge["Int_right"][4]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
+
+            // Tests with right.RowCount > left.RowCount 
+            // Left merge 
+            right = MakeDataFrameWithAllMutableColumnTypes(15);
+            merge = left.Merge<int>(right, "Int", "Int");
+            Assert.Equal(merge.RowCount, left.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][6], right["Int"][6]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Left);
+
+            // Right merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
+            Assert.Equal(merge.RowCount, right.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][2]);
+            Assert.Null(merge["Int_left"][12]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Right);
+
+            // Outer merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
+            Assert.Equal(16, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Null(merge["Int_left"][12]);
+            Assert.Null(merge["Int_left"][5]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
+
+            // Inner merge 
+            merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
+            Assert.Equal(9, merge.RowCount);
+            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge["Int_right"][2], right["Int"][2]);
+            VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
+        }
+
+        [Fact]
+        public void TestDescription()
+        {
+            DataFrame left = MakeDataFrameWithAllMutableColumnTypes(10);
+            DataFrame description = left.Description();
+            for (int i = 1; i < description.ColumnCount; i++)
+            {
+                BaseColumn column = description.Column(i);
+                Assert.Equal(4, column.Length);
+                Assert.Equal((float)10, column[0]);
+                Assert.Equal((float)9, column[1]);
+                Assert.Equal((float)0, column[2]);
+                Assert.Equal((float)4, column[3]);
+            }
         }
     }
 }
