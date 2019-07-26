@@ -63,6 +63,21 @@ namespace Microsoft.Data.Tests
             Assert.Equal(1, strCol.NullCount);
             strCol[0] = null;
             Assert.Equal(1, strCol.NullCount);
+
+            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int");
+            intColumn.Append(0);
+            intColumn.Append(1);
+            intColumn.Append(null);
+            intColumn.Append(2);
+            intColumn.Append(null);
+            intColumn.Append(3);
+            Assert.Equal(0, intColumn[0]);
+            Assert.Equal(1, intColumn[1]);
+            Assert.Equal(null, intColumn[2]);
+            Assert.Equal(2, intColumn[3]);
+            Assert.Equal(null, intColumn[4]);
+            Assert.Equal(3, intColumn[5]);
+
         }
 
         [Fact]
@@ -115,7 +130,7 @@ namespace Microsoft.Data.Tests
             DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 1);
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
             DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 3);
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 2);
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 2, 0);
             Assert.Equal(2, stringColumn.Length);
             Assert.Equal("foo", stringColumn[0]);
             Assert.Equal("bar", stringColumn[1]);
@@ -128,11 +143,11 @@ namespace Microsoft.Data.Tests
             byte[] bytes = Encoding.UTF8.GetBytes(data);
             Memory<byte> dataMemory = new Memory<byte>(bytes);
             DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 7);
-            Memory<byte> nullMemory = new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+            Memory<byte> nullMemory = new byte[] {13};
             DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 4);
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0 };
             DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 5);
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 4);
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 4, 1);
             Assert.Equal(4, stringColumn.Length);
             Assert.Equal("joe", stringColumn[0]);
             Assert.Null(stringColumn[1]);
@@ -144,6 +159,29 @@ namespace Microsoft.Data.Tests
             Assert.Null(ret[1]);
             Assert.Equal("mark", ret[2]);
             Assert.Equal("", ret[3]);
+        }
+
+        [Fact]
+        public void TestArrowStringColumnWithOneNullValue()
+        {
+            byte[] bytes = new byte[0];
+            Memory<byte> dataMemory = new Memory<byte>(bytes);
+            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 0);
+            Memory<byte> nullMemory = new byte[] {0};
+            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 1);
+            Memory<byte> offsetMemory = new byte[] {0, 0};
+            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 2);
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 1, 1);
+            Assert.False(stringColumn.IsValid(0));
+            string foo = (string)(stringColumn[0] ?? "0");
+            BaseColumn col = stringColumn;
+            foo = (string)col[0];
+            foo = (string)(col[0] ?? "0");
+
+            DataFrame df = new DataFrame();
+            df.InsertColumn(0, col);
+            foo = (string)(df["String"][0] ?? "0");
+            int bh = -1;
         }
     }
 }

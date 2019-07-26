@@ -156,6 +156,21 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void InsertAndRemoveColumnTests()
+        {
+            DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10);
+            BaseColumn intColumn = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
+            BaseColumn charColumn = dataFrame["Char"];
+            int insertedIndex = dataFrame.ColumnCount;
+            dataFrame.InsertColumn(dataFrame.ColumnCount, intColumn);
+            dataFrame.RemoveColumn(0);
+            BaseColumn intColumn_1 = dataFrame["IntColumn"];
+            BaseColumn charColumn_1 = dataFrame["Char"];
+            Assert.True(ReferenceEquals(intColumn, intColumn_1));
+            Assert.True(ReferenceEquals(charColumn, charColumn_1));
+        }
+
+        [Fact]
         public void TestBinaryOperations()
         {
             DataFrame df = MakeDataFrameWithTwoColumns(12);

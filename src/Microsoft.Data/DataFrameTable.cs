@@ -96,6 +96,10 @@ namespace Microsoft.Data
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
             _columnNameToIndexDictionary[column.Name] = columnIndex;
+            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            {
+                _columnNameToIndexDictionary[_columnNames[i]]++;
+            }
             _columns.Insert(columnIndex, column);
             ColumnCount++;
         }
@@ -124,6 +128,10 @@ namespace Microsoft.Data
         public void RemoveColumn(int columnIndex)
         {
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
+            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            {
+                _columnNameToIndexDictionary[_columnNames[i]]--;
+            }
             _columnNames.RemoveAt(columnIndex);
             _columns.RemoveAt(columnIndex);
             ColumnCount--;

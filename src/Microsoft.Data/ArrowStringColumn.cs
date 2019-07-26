@@ -28,7 +28,7 @@ namespace Microsoft.Data
             _nullBitMapBuffers = new List<DataFrameBuffer<byte>>();
         }
 
-        public ArrowStringColumn(string name, DataFrameBuffer<byte> dataBuffer, DataFrameBuffer<int> offsetBuffer, DataFrameBuffer<byte> nullBitMapBuffer, int length) : base(name, length, typeof(string))
+        public ArrowStringColumn(string name, DataFrameBuffer<byte> dataBuffer, DataFrameBuffer<int> offsetBuffer, DataFrameBuffer<byte> nullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
         {
             if (dataBuffer == null)
                 throw new ArgumentNullException(nameof(dataBuffer));
@@ -46,6 +46,8 @@ namespace Microsoft.Data
             _dataBuffers.Add(dataBuffer);
             _offsetsBuffers.Add(offsetBuffer);
             _nullBitMapBuffers.Add(nullBitMapBuffer);
+
+            _nullCount = nullCount;
         }
 
         private long _nullCount;
@@ -62,8 +64,8 @@ namespace Microsoft.Data
             // First find the right bitMapBuffer
             int bitMapIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
             Debug.Assert(_nullBitMapBuffers.Count > bitMapIndex);
-            MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)_nullBitMapBuffers[bitMapIndex];
-            int bitMapBufferIndex = (int)((uint)indexInBuffer / 8);
+            DataFrameBuffer<byte> bitMapBuffer = _nullBitMapBuffers[bitMapIndex];
+            int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
             return ((curBitMap >> (indexInBuffer & 7)) & 1) != 0;
@@ -184,6 +186,10 @@ namespace Microsoft.Data
 
         protected override object GetValue(long rowIndex)
         {
+            if (!IsValid(rowIndex))
+            {
+                return null;
+            }
             var bytes = GetBytes(rowIndex);
             unsafe
             {
@@ -209,7 +215,10 @@ namespace Microsoft.Data
 
         public new string this[long rowIndex]
         {
-            get => (string)GetValue(rowIndex);
+            get
+            {
+                return (string)GetValue(rowIndex);
+            }
             set => throw new NotSupportedException(Strings.ImmutableStringColumn);
         }
 
@@ -316,7 +325,13 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public Dictionary<TKey, ICollection<long>> HashColumnValues<TKey>()
+        public override GroupBy GroupBy(int columnIndex, DataFrame parent)
+        {
+            Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();
+            return new GroupBy<string>(parent, columnIndex, dictionary);
+        }
+
+        public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
         {
             if (typeof(TKey) == typeof(string))
             {

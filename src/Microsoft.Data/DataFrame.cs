@@ -88,7 +88,7 @@ namespace Microsoft.Data
                         DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetsMemory, stringArray.Length + 1);
                         ReadOnlyMemory<byte> nullMemory = stringArray.NullBitmapBuffer.Memory;
                         DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, stringArray.NullCount);
-                        dataFrameColumn = new ArrowStringColumn(field.Name, dataBuffer, offsetBuffer, nullBuffer, stringArray.Length);
+                        dataFrameColumn = new ArrowStringColumn(field.Name, dataBuffer, offsetBuffer, nullBuffer, stringArray.Length, stringArray.NullCount);
                         break;
                     case ArrowTypeId.UInt8:
                     case ArrowTypeId.UInt16:
