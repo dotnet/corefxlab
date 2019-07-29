@@ -76,11 +76,13 @@ namespace ALCProxy.Communication
             {
                 interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
             }
-            Assembly interfaceAssembly = alc.LoadFromAssemblyPath(Assembly.GetAssembly(interfaceType).Location);
+            Assembly interfaceAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(interfaceType).GetName());
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly aa = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8));
+            Assembly serverAssembly = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8));
+            //TODO: figure out bugs to swap the "loadfromassemblypath" to "loadfromassemblyname"
+            //Assembly serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(typeof(ServerDispatch<>)).GetName()) ;//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
             //Get the server type, then make it generic with the interface we're using
-            Type serverType = FindTypeInAssembly(_serverTypeName, aa).MakeGenericType(interfaceType);
+            Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
             //Give the client its reference to the server
             SerializeParameters(constructorParams, out IList<object> serializedConstArgs, out IList<Type> argTypes);
             ConstructorInfo ci = serverType.GetConstructor(
@@ -161,7 +163,13 @@ namespace ALCProxy.Communication
                 argTypes.Add(t);
             }
         }
+        /// <summary>
+        /// Serializes an object that's being used as a parameter for a method call. Will be sent to the ALCServer to be deserialized and used in the method call.
+        /// </summary>
         protected abstract object SerializeParameter(object param, Type paramType);
+        /// <summary>
+        /// Deserializes the object that is returned from the ALCServer once a method call is finished.
+        /// </summary>
         protected abstract object DeserializeReturnType(object returnedObject, Type returnType);
     }
 }

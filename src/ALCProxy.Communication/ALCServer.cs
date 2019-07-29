@@ -21,6 +21,7 @@ namespace ALCProxy.Communication
                 throw new ArgumentNullException();
             if (serializedConstParams.Count != constArgTypes.Count)
                 throw new ArgumentException("Different number of passed streams to argument types");
+
             currentLoadContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
             instanceIntType = typeof(I);
             if (genericTypes != null && genericTypes.Length > 0)
@@ -63,7 +64,6 @@ namespace ALCProxy.Communication
             if (m.ContainsGenericParameters)
             {
                 //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
-                //m = m.MakeGenericMethod(targetMethod.GetGenericArguments().Select(x => ConvertType(x)).ToArray());
                 m = m.MakeGenericMethod(targetMethod.GetGenericArguments());
             }
             return SerializeReturnObject(m.Invoke(instance, args), m.ReturnType);
@@ -135,14 +135,14 @@ namespace ALCProxy.Communication
             }
             return convertedObjects.ToArray();
         }
+        /// <summary>
+        /// Deserializes an object into the required type for the ALC. Used when methods with arguments are sent over from the client to the server.
+        /// </summary>
         protected abstract object DeserializeParameter(object serializedParam, Type paramType);
         /// <summary>
         /// Once we've completed our method call to the real object, we need to convert the return type back into our type from the original ALC 
         /// the proxy is in, so we turn our returned object back into a stream that the client can decode
         /// </summary>
-        /// <param name="returnedObject"></param>
-        /// <param name="returnType"></param>
-        /// <returns></returns>
         protected abstract object SerializeReturnObject(object returnedObject, Type returnType);
     }
 }

@@ -13,7 +13,9 @@ namespace ALCProxy.Communication
     {
         public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
             : base(instanceType, genericTypes, constructorParams, constTypes) { }
-
+        /// <summary>
+        /// Deserializes an memstream sent from the ClientDispatch object. Used when methods with arguments are sent over from the client to the server.
+        /// </summary>
         protected override object DeserializeParameter(object serializedParam, Type t)
         {
             if (!serializedParam.GetType().Equals(typeof(MemoryStream)))
@@ -31,9 +33,6 @@ namespace ALCProxy.Communication
         /// Once we've completed our method call to the real object, we need to convert the return type back into our type from the original ALC 
         /// the proxy is in, so we turn our returned object back into a stream that the client can decode
         /// </summary>
-        /// <param name="returnedObject"></param>
-        /// <param name="returnType"></param>
-        /// <returns></returns>
         protected override object SerializeReturnObject(object returnedObject, Type returnType)
         {
             var stream = new MemoryStream();

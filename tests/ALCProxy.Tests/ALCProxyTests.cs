@@ -154,6 +154,18 @@ namespace ALCProxy.Tests
     }
     public class ALCProxyTests
     {
+        private string dbgString;
+        public ALCProxyTests () {
+            dbgString = "Release";
+#if DEBUG
+            dbgString = "Debug";
+#endif
+            SetDirectory();
+        }
+        private void SetDirectory()
+        {
+            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+        }
         [Fact]
         public void SimpleObjectsProxiedCorrectly()
         {
@@ -270,7 +282,7 @@ namespace ALCProxy.Tests
             var alc = new AssemblyLoadContext("CanLoadOustideAssemblyWithSharedInterface", isCollectible: true);
             string pathOfCurrentString = "ALCProxy.Tests";
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\Debug\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\" + dbgString + "\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
             ALCProxy.TestInterface.IExternalClass a = ProxyBuilder<ALCProxy.TestInterface.IExternalClass>.CreateInstanceAndUnwrap(alc, newPath, "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithSharedInterface", a.GetCurrentContext());
@@ -295,7 +307,7 @@ namespace ALCProxy.Tests
             AssemblyLoadContext alc = new AssemblyLoadContext("CanLoadOustideAssemblyWithoutSharedInterface", isCollectible: true);
             string pathOfCurrentString = "ALCProxy.Tests";
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\Debug\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\"+ dbgString + "\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
             ALCProxy.TestInterfaceUpdated.IExternalClass a = ProxyBuilder<ALCProxy.TestInterfaceUpdated.IExternalClass>.CreateInstanceAndUnwrap(alc, newPath, "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithoutSharedInterface", a.GetCurrentContext());

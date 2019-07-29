@@ -18,7 +18,6 @@ namespace ALCProxy.Communication
             var serializer = new DataContractSerializer(paramType);
             serializer.WriteObject(stream, param);
             return stream;
-
         }
         protected override object DeserializeReturnType(object s, Type returnType)
         {
