@@ -92,7 +92,7 @@ namespace Microsoft.Data
                         PrimitiveArray<ushort> arrowUshortArray = (PrimitiveArray<ushort>)arrowArray;
                         ReadOnlyMemory<byte> ushortValueBuffer = arrowUshortArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> ushortNullBitMapBuffer = arrowUshortArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<uint>(field.Name, ushortValueBuffer, ushortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveColumn<ushort>(field.Name, ushortValueBuffer, ushortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt32:
                         PrimitiveArray<uint> arrowUintArray = (PrimitiveArray<uint>)arrowArray;
