@@ -79,25 +79,7 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty file.
-        /// </summary>
-        public static string EmptyFile {
-            get {
-                return ResourceManager.GetString("EmptyFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bool operations expect bool columns.
-        /// </summary>
-        public static string ExpectedBoolColumn {
-            get {
-                return ResourceManager.GetString("ExpectedBoolColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ArrowStringColumn is immutable.
+        ///   Looks up a localized string similar to Column is immutable.
         /// </summary>
         public static string ImmutableStringColumn {
             get {
@@ -111,15 +93,6 @@ namespace Microsoft.Data {
         public static string InvalidColumnName {
             get {
                 return ResourceManager.GetString("InvalidColumnName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line {0} has less columns than expected..
-        /// </summary>
-        public static string LessColumnsThatExpected {
-            get {
-                return ResourceManager.GetString("LessColumnsThatExpected", resourceCulture);
             }
         }
         
@@ -156,15 +129,6 @@ namespace Microsoft.Data {
         public static string MismatchedValueType {
             get {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Operation not supported.
-        /// </summary>
-        public static string OpNotSupported {
-            get {
-                return ResourceManager.GetString("OpNotSupported", resourceCulture);
             }
         }
     }

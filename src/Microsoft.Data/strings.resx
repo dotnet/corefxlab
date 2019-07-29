@@ -123,6 +123,9 @@
   <data name="ColumnIndexOutOfRange" xml:space="preserve">
     <value>Index cannot be greater than the Column's Length</value>
   </data>
+  <data name="ImmutableStringColumn" xml:space="preserve">
+    <value>Column is immutable</value>
+  </data>
   <data name="InvalidColumnName" xml:space="preserve">
     <value>Column does not exist</value>
   </data>

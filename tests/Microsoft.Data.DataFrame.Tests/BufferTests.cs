@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -134,8 +135,15 @@ namespace Microsoft.Data.Tests
             ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 4);
             Assert.Equal(4, stringColumn.Length);
             Assert.Equal("joe", stringColumn[0]);
+            Assert.Null(stringColumn[1]);
             Assert.Equal("mark", stringColumn[2]);
             Assert.Equal("", stringColumn[3]);
+
+            List<string> ret = stringColumn[0, 4];
+            Assert.Equal("joe", ret[0]);
+            Assert.Null(ret[1]);
+            Assert.Equal("mark", ret[2]);
+            Assert.Equal("", ret[3]);
         }
     }
 }

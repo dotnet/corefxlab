@@ -21,11 +21,6 @@ namespace Microsoft.Data
         private IList<DataFrameBuffer<int>> _offsetsBuffers;
         private IList<DataFrameBuffer<byte>> _nullBitMapBuffers;
 
-        private readonly Encoding _encoding = Encoding.UTF8;
-
-        // Need a way to differentiate between columns initialized with default values and those with null values in SetValidityBit
-        internal bool _modifyNullCountWhileIndexing = true;
-
         public ArrowStringColumn(string name) : base(name, 0, typeof(string))
         {
             _dataBuffers = new List<DataFrameBuffer<byte>>();
@@ -65,13 +60,13 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             // First find the right bitMapBuffer
-            int bitMapIndex = GetBufferIndexContainingRowIndex(ref index);
+            int bitMapIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
             Debug.Assert(_nullBitMapBuffers.Count > bitMapIndex);
             MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)_nullBitMapBuffers[bitMapIndex];
-            int bitMapBufferIndex = (int)((uint)index / 8);
+            int bitMapBufferIndex = (int)((uint)indexInBuffer / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
-            return ((curBitMap >> ((int)index & 7)) & 1) != 0;
+            return ((curBitMap >> (indexInBuffer & 7)) & 1) != 0;
         }
 
         private void SetValidityBit(long index, bool value)
@@ -81,12 +76,12 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             // First find the right bitMapBuffer
-            int bitMapIndex = GetBufferIndexContainingRowIndex(ref index);
+            int bitMapIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
             Debug.Assert(_nullBitMapBuffers.Count > bitMapIndex);
             MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)_nullBitMapBuffers[bitMapIndex];
 
             // Set the bit
-            int bitMapBufferIndex = (int)((uint)index / 8);
+            int bitMapBufferIndex = (int)((uint)indexInBuffer / 8);
             Debug.Assert(bitMapBuffer.Length >= bitMapBufferIndex);
             if (bitMapBuffer.Length == bitMapBufferIndex)
                 bitMapBuffer.Append(0);
@@ -94,8 +89,8 @@ namespace Microsoft.Data
             byte newBitMap;
             if (value)
             {
-                newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index & 7))); //bit hack for index % 8
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 0 && index < Length && NullCount > 0)
+                newBitMap = (byte)(curBitMap | (byte)(1 << (indexInBuffer & 7))); //bit hack for index % 8
+                if ((curBitMap >> (indexInBuffer & 7) & 1) == 0 && indexInBuffer < Length && NullCount > 0)
                 {
                     // Old value was null.
                     _nullCount--;
@@ -103,17 +98,17 @@ namespace Microsoft.Data
             }
             else
             {
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 1 && index < Length)
+                if ((curBitMap >> (indexInBuffer & 7) & 1) == 1 && indexInBuffer < Length)
                 {
                     // old value was NOT null and new value is null
                     _nullCount++;
                 }
-                else if (_modifyNullCountWhileIndexing && index == Length)
+                else if (indexInBuffer == Length)
                 {
                     // New entry from an append
                     _nullCount++;
                 }
-                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index & 7)));
+                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)indexInBuffer & 7)));
             }
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
@@ -139,7 +134,7 @@ namespace Microsoft.Data
             }
             else
             {
-                byte[] bytes = _encoding.GetBytes(value);
+                byte[] bytes = Encoding.UTF8.GetBytes(value);
                 MutableDataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as MutableDataFrameBuffer<byte>;
                 if (mutableDataBuffer.Length == DataFrameBuffer<byte>.MaxCapacity)
                 {
@@ -158,7 +153,7 @@ namespace Microsoft.Data
             SetValidityBit(Length - 1, value == null ? true : false);
         }
 
-        private int GetBufferIndexContainingRowIndex(ref long rowIndex)
+        private int GetBufferIndexContainingRowIndex(long rowIndex, out int indexInBuffer)
         {
             if (rowIndex >= Length)
             {
@@ -173,14 +168,16 @@ namespace Microsoft.Data
                 rowIndex -= _offsetsBuffers[curArrayIndex].Length - 1;
                 curArrayIndex++;
             }
+            indexInBuffer = (int)rowIndex;
             return curArrayIndex;
         }
 
         private ReadOnlySpan<byte> GetBytes(long index)
         {
-            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(ref index);
-            int currentOffset = _offsetsBuffers[offsetsBufferIndex].ReadOnlySpan[(int)index];
-            int nextOffset = _offsetsBuffers[offsetsBufferIndex].ReadOnlySpan[(int)index + 1];
+            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
+            ReadOnlySpan<int> offsetBufferSpan = _offsetsBuffers[offsetsBufferIndex].ReadOnlySpan;
+            int currentOffset = offsetBufferSpan[indexInBuffer];
+            int nextOffset = offsetBufferSpan[indexInBuffer + 1];
             int numberOfBytes = nextOffset - currentOffset;
             return _dataBuffers[offsetsBufferIndex].ReadOnlySpan.Slice(currentOffset, numberOfBytes);
         }
@@ -191,7 +188,7 @@ namespace Microsoft.Data
             unsafe
             {
                 fixed (byte* data = &MemoryMarshal.GetReference(bytes))
-                    return _encoding.GetString(data, bytes.Length);
+                    return Encoding.UTF8.GetString(data, bytes.Length);
             }
         }
 
@@ -200,7 +197,7 @@ namespace Microsoft.Data
             var ret = new List<string>();
             while (ret.Count < length)
             {
-                ret.Add((string)GetValue((int)startIndex));
+                ret.Add((string)GetValue(startIndex++));
             }
             return ret;
         }
@@ -235,9 +232,9 @@ namespace Microsoft.Data
         {
             if (Length == 0)
                 return 0;
-            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
-            Debug.Assert(startIndex <= Int32.MaxValue);
-            return _offsetsBuffers[offsetsBufferIndex].Length - (int)startIndex;
+            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
+            Debug.Assert(indexInBuffer <= Int32.MaxValue);
+            return _offsetsBuffers[offsetsBufferIndex].Length - indexInBuffer;
         }
 
         private int GetNullCount(long startIndex, int numberOfRows)
@@ -254,12 +251,12 @@ namespace Microsoft.Data
 
         public override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {
-            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
+            int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
             ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyMemory);
             ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyMemory);
             ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyMemory);
-            int nullCount = GetNullCount(startIndex, numberOfRows);
-            return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, (int)startIndex);
+            int nullCount = GetNullCount(indexInBuffer, numberOfRows);
+            return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
 
         public override BaseColumn Sort(bool ascending = true) => throw new NotSupportedException();
