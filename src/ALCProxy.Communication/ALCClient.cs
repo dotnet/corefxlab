@@ -53,6 +53,10 @@ namespace ALCProxy.Communication
             }
             return t;
         }
+        private void SetDirectory()
+        {
+            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+        }
         /// <summary>
         /// Creates the link between the client and the server, while also passing in all the information to the server for setup
         /// </summary>
@@ -68,8 +72,10 @@ namespace ALCProxy.Communication
                 genericTypes = new Type[] { };
             if (constructorParams == null)
                 constructorParams = new object[] { };
-
+            //This is an attempt to deal with "absolute path required" errors that cross-plat tests are giving us.
+            SetDirectory();
             Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
+            
             //find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);
             //Get the interface of the object so we can set it as the server's generic type

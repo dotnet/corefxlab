@@ -241,8 +241,20 @@ For constraints on certain generics, the compiler should pick up any issues with
 No matter the performance of this API, by design it won't have the broader performance issues that AppDomains had in .Net Framework, since they work very similarly to normal classes. However, there may be some overhead and performance issues on any objects being contacted by the proxies, which should be investigated if they come up.
 
 Some hard points of performance that probably will need to be looked at:
+* Methods of serialization (specifically the prototype's use of `DataContractSerializer`)
 * Client/server calls on in-process ALCs
 * Multiple uses of `Reflection.Invoke` possibly being called
+
+These are the pain points after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application:
+
+##### Object creation
+* Serialization of the constructor arguments for the server creation took 62.50% of CPU samples (There were no constructor args passed to the server, but the server itself needs serialized objects to pass to its own constructor).
+* The creation of the server itself took 45% of CPU samples.
+
+##### Calling methods on the proxied object
+* Serialization of parameters took around 65% of CPU samples, for a method with a string parameter.
+* The method call itself takes about 7% of CPU samples.
+* Searching for the method in the assembly takes around 2-3% of CPU samples.
 
 #### Special Language Features
 Language features such as `in`, `ref`, and `out` should be investigated further, but we probably won't be able to implement them in this design since everything will be kept call-by-value, and they're also a bit out of scope for this project.
