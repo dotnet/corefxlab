@@ -72,6 +72,12 @@ namespace Microsoft.Data
                         ReadOnlyMemory<byte> floatNullBitMapBuffer = arrowFloatArray.NullBitmapBuffer.Memory;
                         dataFrameColumn = new PrimitiveColumn<float>(field.Name, floatValueBuffer, floatNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
+                    case ArrowTypeId.Int16:
+                        PrimitiveArray<short> arrowshortArray = (PrimitiveArray<short>)arrowArray;
+                        ReadOnlyMemory<byte> shortValueBuffer = arrowshortArray.ValueBuffer.Memory;
+                        ReadOnlyMemory<byte> shortNullBitMapBuffer = arrowshortArray.NullBitmapBuffer.Memory;
+                        dataFrameColumn = new PrimitiveColumn<short>(field.Name, shortValueBuffer, shortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        break;
                     case ArrowTypeId.Int32:
                         PrimitiveArray<int> arrowIntArray = (PrimitiveArray<int>)arrowArray;
                         ReadOnlyMemory<byte> intValueBuffer = arrowIntArray.ValueBuffer.Memory;
@@ -86,14 +92,13 @@ namespace Microsoft.Data
                         break;
                     case ArrowTypeId.String:
                         StringArray stringArray = (StringArray)arrowArray;
-                        //ReadOnlyMemory<byte> dataMemory = stringArray.ValueBuffer.Memory;
-                        //ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(dataMemory, dataMemory.Length);
-                        //ReadOnlyMemory<byte> offsetsMemory = stringArray.ValueOffsetsBuffer.Memory;
-                        //ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(offsetsMemory, stringArray.Length + 1);
-                        //ReadOnlyMemory<byte> nullMemory = stringArray.NullBitmapBuffer.Memory;
-                        //ReadOnlyDataFrameBuffer<byte> nullBuffer = new ReadOnlyDataFrameBuffer<byte>(nullMemory, stringArray.NullCount);
                         dataFrameColumn = new ArrowStringColumn(field.Name, stringArray.ValueBuffer, stringArray.ValueOffsetsBuffer, stringArray.NullBitmapBuffer, stringArray.Length, stringArray.NullCount);
-                        //dataFrameColumn = new ArrowStringColumn(field.Name, dataBuffer, offsetBuffer, nullBuffer, stringArray.Length, stringArray.NullCount);
+                        break;
+                    case ArrowTypeId.UInt16:
+                        PrimitiveArray<ushort> arrowUshortArray = (PrimitiveArray<ushort>)arrowArray;
+                        ReadOnlyMemory<byte> ushortValueBuffer = arrowUshortArray.ValueBuffer.Memory;
+                        ReadOnlyMemory<byte> ushortNullBitMapBuffer = arrowUshortArray.NullBitmapBuffer.Memory;
+                        dataFrameColumn = new PrimitiveColumn<uint>(field.Name, ushortValueBuffer, ushortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt32:
                         PrimitiveArray<uint> arrowUintArray = (PrimitiveArray<uint>)arrowArray;
@@ -108,9 +113,7 @@ namespace Microsoft.Data
                         dataFrameColumn = new PrimitiveColumn<ulong>(field.Name, ulongValueBuffer, ulongNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt8:
-                    case ArrowTypeId.UInt16:
                     case ArrowTypeId.Int8:
-                    case ArrowTypeId.Int16:
                     case ArrowTypeId.Binary:
                     case ArrowTypeId.Date32:
                     case ArrowTypeId.Date64:
