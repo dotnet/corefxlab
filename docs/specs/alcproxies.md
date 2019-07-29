@@ -248,8 +248,8 @@ Some hard points of performance that probably will need to be looked at:
 These are the pain points after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application:
 
 ##### Object creation
-* Serialization of the constructor arguments for the server creation took 62.50% of CPU samples (There were no constructor args passed to the server, but the server itself needs serialized objects to pass to its own constructor).
-* The creation of the server itself took 45% of CPU samples.
+* The creation of the server itself took 75-85% of CPU samples.
+* Creating the DispatchProxy on top of the server took the remaining CPU samples.
 
 ##### Calling methods on the proxied object
 * Serialization of parameters took around 65% of CPU samples, for a method with a string parameter.
