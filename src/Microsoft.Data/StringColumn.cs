@@ -9,8 +9,9 @@ using System.Collections.Generic;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A mutable column to hold strings. Is NOT Arrow compatible
+    /// A mutable column to hold strings
     /// </summary>
+    /// <remarks> Is NOT Arrow compatible </remarks>
     public partial class StringColumn : BaseColumn
     {
         private List<List<string>> _stringBuffers = new List<List<string>>(); // To store more than intMax number of strings

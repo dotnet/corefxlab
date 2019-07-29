@@ -17,18 +17,18 @@ namespace Microsoft.Data
     /// </summary>
     public partial class ArrowStringColumn : BaseColumn
     {
-        private IList<DataFrameBuffer<byte>> _dataBuffers;
-        private IList<DataFrameBuffer<int>> _offsetsBuffers;
-        private IList<DataFrameBuffer<byte>> _nullBitMapBuffers;
+        private IList<ReadOnlyDataFrameBuffer<byte>> _dataBuffers;
+        private IList<ReadOnlyDataFrameBuffer<int>> _offsetsBuffers;
+        private IList<ReadOnlyDataFrameBuffer<byte>> _nullBitMapBuffers;
 
         public ArrowStringColumn(string name) : base(name, 0, typeof(string))
         {
-            _dataBuffers = new List<DataFrameBuffer<byte>>();
-            _offsetsBuffers = new List<DataFrameBuffer<int>>();
-            _nullBitMapBuffers = new List<DataFrameBuffer<byte>>();
+            _dataBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
+            _offsetsBuffers = new List<ReadOnlyDataFrameBuffer<int>>();
+            _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
         }
 
-        public ArrowStringColumn(string name, DataFrameBuffer<byte> dataBuffer, DataFrameBuffer<int> offsetBuffer, DataFrameBuffer<byte> nullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
+        public ArrowStringColumn(string name, ReadOnlyDataFrameBuffer<byte> dataBuffer, ReadOnlyDataFrameBuffer<int> offsetBuffer, ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
         {
             if (dataBuffer == null)
                 throw new ArgumentNullException(nameof(dataBuffer));
@@ -39,9 +39,26 @@ namespace Microsoft.Data
             if (length + 1 != offsetBuffer.Length)
                 throw new ArgumentException(nameof(offsetBuffer));
 
-            _dataBuffers = new List<DataFrameBuffer<byte>>();
-            _offsetsBuffers = new List<DataFrameBuffer<int>>();
-            _nullBitMapBuffers = new List<DataFrameBuffer<byte>>();
+            _dataBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
+            _offsetsBuffers = new List<ReadOnlyDataFrameBuffer<int>>();
+            _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
+
+            _dataBuffers.Add(dataBuffer);
+            _offsetsBuffers.Add(offsetBuffer);
+            _nullBitMapBuffers.Add(nullBitMapBuffer);
+
+            _nullCount = nullCount;
+        }
+
+        public ArrowStringColumn(string name, ArrowBuffer arrowDataBuffer, ArrowBuffer arrowOffsetBuffer, ArrowBuffer arrowNullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
+        {
+            ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(arrowDataBuffer.Memory, arrowDataBuffer.Length);
+            ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(arrowOffsetBuffer.Memory, length + 1);
+            ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer = new ReadOnlyDataFrameBuffer<byte>(arrowNullBitMapBuffer.Memory, arrowNullBitMapBuffer.Length);
+
+            _dataBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
+            _offsetsBuffers = new List<ReadOnlyDataFrameBuffer<int>>();
+            _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
 
             _dataBuffers.Add(dataBuffer);
             _offsetsBuffers.Add(offsetBuffer);
@@ -64,7 +81,7 @@ namespace Microsoft.Data
             // First find the right bitMapBuffer
             int bitMapIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
             Debug.Assert(_nullBitMapBuffers.Count > bitMapIndex);
-            DataFrameBuffer<byte> bitMapBuffer = _nullBitMapBuffers[bitMapIndex];
+            ReadOnlyDataFrameBuffer<byte> bitMapBuffer = _nullBitMapBuffers[bitMapIndex];
             int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
@@ -80,7 +97,7 @@ namespace Microsoft.Data
             // First find the right bitMapBuffer
             int bitMapIndex = GetBufferIndexContainingRowIndex(index, out int indexInBuffer);
             Debug.Assert(_nullBitMapBuffers.Count > bitMapIndex);
-            MutableDataFrameBuffer<byte> bitMapBuffer = (MutableDataFrameBuffer<byte>)_nullBitMapBuffers[bitMapIndex];
+            DataFrameBuffer<byte> bitMapBuffer = (DataFrameBuffer<byte>)_nullBitMapBuffers[bitMapIndex];
 
             // Set the bit
             int bitMapBufferIndex = (int)((uint)indexInBuffer / 8);
@@ -120,11 +137,11 @@ namespace Microsoft.Data
         {
             if (_dataBuffers.Count == 0)
             {
-                _dataBuffers.Add(new MutableDataFrameBuffer<byte>());
-                _nullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
-                _offsetsBuffers.Add(new MutableDataFrameBuffer<int>());
+                _dataBuffers.Add(new DataFrameBuffer<byte>());
+                _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                _offsetsBuffers.Add(new DataFrameBuffer<int>());
             }
-            MutableDataFrameBuffer<int> mutableOffsetsBuffer = _offsetsBuffers[_offsetsBuffers.Count - 1] as MutableDataFrameBuffer<int>;
+            DataFrameBuffer<int> mutableOffsetsBuffer = _offsetsBuffers[_offsetsBuffers.Count - 1] as DataFrameBuffer<int>;
             if (mutableOffsetsBuffer.Length == 0)
             {
                 mutableOffsetsBuffer.Append(0);
@@ -137,13 +154,13 @@ namespace Microsoft.Data
             else
             {
                 byte[] bytes = Encoding.UTF8.GetBytes(value);
-                MutableDataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as MutableDataFrameBuffer<byte>;
-                if (mutableDataBuffer.Length == DataFrameBuffer<byte>.MaxCapacity)
+                DataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as DataFrameBuffer<byte>;
+                if (mutableDataBuffer.Length == ReadOnlyDataFrameBuffer<byte>.MaxCapacity)
                 {
-                    mutableDataBuffer = new MutableDataFrameBuffer<byte>();
+                    mutableDataBuffer = new DataFrameBuffer<byte>();
                     _dataBuffers.Add(mutableDataBuffer);
-                    _nullBitMapBuffers.Add(new MutableDataFrameBuffer<byte>());
-                    var offsetBuffer = new MutableDataFrameBuffer<int>();
+                    _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
+                    var offsetBuffer = new DataFrameBuffer<int>();
                     _offsetsBuffers.Add(offsetBuffer);
                     offsetBuffer.Append(0);
                 }
@@ -184,7 +201,9 @@ namespace Microsoft.Data
             return _dataBuffers[offsetsBufferIndex].ReadOnlySpan.Slice(currentOffset, numberOfBytes);
         }
 
-        protected override object GetValue(long rowIndex)
+        protected override object GetValue(long rowIndex) => GetValueImplementation(rowIndex);
+
+        private string GetValueImplementation(long rowIndex)
         {
             if (!IsValid(rowIndex))
             {
@@ -203,22 +222,16 @@ namespace Microsoft.Data
             var ret = new List<string>();
             while (ret.Count < length)
             {
-                ret.Add((string)GetValue(startIndex++));
+                ret.Add(GetValueImplementation(startIndex++));
             }
             return ret;
         }
 
-        protected override void SetValue(long rowIndex, object value)
-        {
-            throw new NotSupportedException(Strings.ImmutableStringColumn);
-        }
+        protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableStringColumn);
 
         public new string this[long rowIndex]
         {
-            get
-            {
-                return (string)GetValue(rowIndex);
-            }
+            get => GetValueImplementation(rowIndex);
             set => throw new NotSupportedException(Strings.ImmutableStringColumn);
         }
 
@@ -229,7 +242,7 @@ namespace Microsoft.Data
                 var ret = new List<string>();
                 while (ret.Count < length)
                 {
-                    ret.Add((string)GetValue(startIndex++));
+                    ret.Add(GetValueImplementation(startIndex++));
                 }
                 return ret;
             }
@@ -261,6 +274,10 @@ namespace Microsoft.Data
         public override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {
             int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
+            if (numberOfRows != 0 && numberOfRows > _offsetsBuffers[offsetsBufferIndex].Length - 1 - indexInBuffer)
+            {
+                throw new ArgumentException(Strings.SpansMultipleBuffers, nameof(numberOfRows));
+            }
             ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyMemory);
             ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyMemory);
             ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyMemory);
@@ -283,7 +300,7 @@ namespace Microsoft.Data
             }
             else
             {
-                clone = Clone();
+                clone = Clone(null, false);
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
@@ -292,7 +309,7 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices, bool invertMapIndex)
         {
             ArrowStringColumn ret = new ArrowStringColumn(Name);
             if (mapIndices is null)
@@ -310,7 +327,7 @@ namespace Microsoft.Data
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[(long)mapIndices[i]]);
+                        ret.Append(this[mapIndices[i].Value]);
                     }
                 }
                 else
@@ -318,7 +335,7 @@ namespace Microsoft.Data
                     long mapIndicesLengthIndex = mapIndices.Length - 1;
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[(long)mapIndices[mapIndicesLengthIndex - i]]);
+                        ret.Append(this[mapIndices[mapIndicesLengthIndex - i].Value]);
                     }
                 }
             }
@@ -338,14 +355,15 @@ namespace Microsoft.Data
                 Dictionary<string, ICollection<long>> multimap = new Dictionary<string, ICollection<long>>(EqualityComparer<string>.Default);
                 for (long i = 0; i < Length; i++)
                 {
-                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
+                    string str = this[i] ?? "__null__";
+                    bool containsKey = multimap.TryGetValue(str, out ICollection<long> values);
                     if (containsKey)
                     {
                         values.Add(i);
                     }
                     else
                     {
-                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                        multimap.Add(str, new List<long>() { i });
                     }
                 }
                 return multimap as Dictionary<TKey, ICollection<long>>;

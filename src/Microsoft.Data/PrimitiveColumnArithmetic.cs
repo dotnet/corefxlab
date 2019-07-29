@@ -159,7 +159,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -172,7 +172,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -185,7 +185,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -198,7 +198,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -211,7 +211,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -224,7 +224,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -245,7 +245,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -258,7 +258,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -271,7 +271,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -284,7 +284,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -332,7 +332,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -345,7 +345,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -358,7 +358,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -371,7 +371,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -384,7 +384,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -397,7 +397,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -410,7 +410,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -423,7 +423,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -436,7 +436,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -449,7 +449,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -462,7 +462,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -475,7 +475,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -488,7 +488,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -501,7 +501,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -514,7 +514,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -527,7 +527,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -540,7 +540,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -553,7 +553,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -566,7 +566,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -579,7 +579,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -592,7 +592,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -605,7 +605,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -618,7 +618,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -631,7 +631,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -644,7 +644,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -657,7 +657,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -670,7 +670,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -683,7 +683,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -696,7 +696,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -709,7 +709,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -725,7 +725,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -738,7 +738,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -751,7 +751,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -764,7 +764,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -777,7 +777,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -790,7 +790,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -803,7 +803,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -816,7 +816,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -829,7 +829,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -842,7 +842,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -855,7 +855,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -868,7 +868,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -881,7 +881,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -894,7 +894,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -907,7 +907,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -920,7 +920,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -933,7 +933,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -946,7 +946,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -959,7 +959,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -972,7 +972,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -985,7 +985,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -998,7 +998,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1011,7 +1011,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1024,7 +1024,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1037,7 +1037,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1050,7 +1050,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1063,7 +1063,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1076,7 +1076,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1089,7 +1089,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1102,7 +1102,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1118,7 +1118,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1131,7 +1131,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1144,7 +1144,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1157,7 +1157,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1170,7 +1170,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1183,7 +1183,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1196,7 +1196,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1209,7 +1209,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1222,7 +1222,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1235,7 +1235,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1280,7 +1280,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1293,7 +1293,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1306,7 +1306,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1319,7 +1319,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1332,7 +1332,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1345,7 +1345,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1358,7 +1358,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1371,7 +1371,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1384,7 +1384,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1397,7 +1397,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1410,7 +1410,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1423,7 +1423,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1439,7 +1439,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1452,7 +1452,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1465,7 +1465,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1478,7 +1478,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1491,7 +1491,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1504,7 +1504,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1517,7 +1517,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1530,7 +1530,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1543,7 +1543,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1556,7 +1556,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1601,7 +1601,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1614,7 +1614,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1627,7 +1627,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1640,7 +1640,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1653,7 +1653,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1666,7 +1666,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1679,7 +1679,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1692,7 +1692,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1705,7 +1705,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1718,7 +1718,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1731,7 +1731,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1744,7 +1744,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1760,7 +1760,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1773,7 +1773,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1786,7 +1786,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1799,7 +1799,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1812,7 +1812,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1825,7 +1825,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1838,7 +1838,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1851,7 +1851,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1864,7 +1864,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1877,7 +1877,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1922,7 +1922,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1935,7 +1935,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1948,7 +1948,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1961,7 +1961,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1974,7 +1974,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -1987,7 +1987,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2000,7 +2000,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2013,7 +2013,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2026,7 +2026,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2039,7 +2039,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2052,7 +2052,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2065,7 +2065,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2081,7 +2081,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2094,7 +2094,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2107,7 +2107,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2120,7 +2120,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2133,7 +2133,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2146,7 +2146,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2159,7 +2159,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2172,7 +2172,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2185,7 +2185,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2198,7 +2198,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2211,7 +2211,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2224,7 +2224,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2237,7 +2237,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2250,7 +2250,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2263,7 +2263,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2276,7 +2276,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2289,7 +2289,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2302,7 +2302,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2315,7 +2315,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2328,7 +2328,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2341,7 +2341,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2354,7 +2354,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2367,7 +2367,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2380,7 +2380,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2393,7 +2393,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2406,7 +2406,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2419,7 +2419,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2432,7 +2432,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2445,7 +2445,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2458,7 +2458,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2474,7 +2474,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2487,7 +2487,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2500,7 +2500,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2513,7 +2513,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2526,7 +2526,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2539,7 +2539,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2552,7 +2552,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2565,7 +2565,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2578,7 +2578,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2591,7 +2591,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2604,7 +2604,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2617,7 +2617,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2630,7 +2630,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2643,7 +2643,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2656,7 +2656,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2669,7 +2669,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2682,7 +2682,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2695,7 +2695,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2708,7 +2708,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2721,7 +2721,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2734,7 +2734,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2747,7 +2747,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2760,7 +2760,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2773,7 +2773,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2786,7 +2786,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2799,7 +2799,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2812,7 +2812,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2825,7 +2825,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2838,7 +2838,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2851,7 +2851,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2867,7 +2867,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2880,7 +2880,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2893,7 +2893,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2906,7 +2906,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2919,7 +2919,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2932,7 +2932,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2945,7 +2945,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2958,7 +2958,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2971,7 +2971,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2984,7 +2984,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2997,7 +2997,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3010,7 +3010,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3023,7 +3023,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3036,7 +3036,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3049,7 +3049,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3062,7 +3062,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3075,7 +3075,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3088,7 +3088,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3101,7 +3101,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3114,7 +3114,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3127,7 +3127,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3140,7 +3140,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3153,7 +3153,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3166,7 +3166,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3179,7 +3179,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3192,7 +3192,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3205,7 +3205,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3218,7 +3218,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3231,7 +3231,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3244,7 +3244,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3260,7 +3260,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3273,7 +3273,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3286,7 +3286,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3299,7 +3299,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3312,7 +3312,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3325,7 +3325,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3338,7 +3338,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3351,7 +3351,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3364,7 +3364,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3377,7 +3377,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3390,7 +3390,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3403,7 +3403,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3416,7 +3416,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3429,7 +3429,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3442,7 +3442,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3455,7 +3455,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3468,7 +3468,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3481,7 +3481,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3494,7 +3494,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3507,7 +3507,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3520,7 +3520,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3533,7 +3533,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3546,7 +3546,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3559,7 +3559,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3572,7 +3572,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3585,7 +3585,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3598,7 +3598,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3611,7 +3611,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3624,7 +3624,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3637,7 +3637,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3653,7 +3653,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3666,7 +3666,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3679,7 +3679,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3692,7 +3692,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3705,7 +3705,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3718,7 +3718,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3731,7 +3731,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3744,7 +3744,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3757,7 +3757,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3770,7 +3770,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3783,7 +3783,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3796,7 +3796,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3809,7 +3809,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3822,7 +3822,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3835,7 +3835,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3848,7 +3848,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3861,7 +3861,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3874,7 +3874,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3887,7 +3887,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3900,7 +3900,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3913,7 +3913,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3926,7 +3926,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3939,7 +3939,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3952,7 +3952,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3965,7 +3965,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3978,7 +3978,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -3991,7 +3991,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4004,7 +4004,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4017,7 +4017,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4030,7 +4030,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4046,7 +4046,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4059,7 +4059,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4072,7 +4072,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4085,7 +4085,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4098,7 +4098,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4111,7 +4111,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4124,7 +4124,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4137,7 +4137,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4150,7 +4150,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4163,7 +4163,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4176,7 +4176,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4189,7 +4189,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4202,7 +4202,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4215,7 +4215,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4228,7 +4228,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4241,7 +4241,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4254,7 +4254,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4267,7 +4267,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4280,7 +4280,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4293,7 +4293,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4306,7 +4306,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4319,7 +4319,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4332,7 +4332,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4345,7 +4345,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4358,7 +4358,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4371,7 +4371,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4384,7 +4384,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4397,7 +4397,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4410,7 +4410,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4423,7 +4423,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4439,7 +4439,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4452,7 +4452,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4465,7 +4465,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4478,7 +4478,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4491,7 +4491,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4504,7 +4504,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4517,7 +4517,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4530,7 +4530,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4543,7 +4543,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4556,7 +4556,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4569,7 +4569,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4582,7 +4582,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4595,7 +4595,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4608,7 +4608,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4621,7 +4621,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4634,7 +4634,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4647,7 +4647,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4660,7 +4660,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4673,7 +4673,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4686,7 +4686,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4699,7 +4699,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4712,7 +4712,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4725,7 +4725,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4738,7 +4738,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4751,7 +4751,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4764,7 +4764,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4777,7 +4777,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4790,7 +4790,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4803,7 +4803,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < left.Buffers.Count; bb++)
             {
                 var buffer = left.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 left.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -4816,7 +4816,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < column.Buffers.Count; bb++)
             {
                 var buffer = column.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 column.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {

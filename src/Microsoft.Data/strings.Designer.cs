@@ -131,5 +131,14 @@ namespace Microsoft.Data {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot span multiple buffers.
+        /// </summary>
+        public static string SpansMultipleBuffers {
+            get {
+                return ResourceManager.GetString("SpansMultipleBuffers", resourceCulture);
+            }
+        }
     }
 }

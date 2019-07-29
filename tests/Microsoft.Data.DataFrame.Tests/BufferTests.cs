@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Apache.Arrow;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -124,13 +125,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestBasicArrowStringColumn()
         {
-            Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
-            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 6);
-            Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
-            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 1);
-            Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
-            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 3);
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 2, 0);
+            StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", strArray.ValueBuffer, strArray.ValueOffsetsBuffer, strArray.NullBitmapBuffer, strArray.Length, strArray.NullCount);
             Assert.Equal(2, stringColumn.Length);
             Assert.Equal("foo", stringColumn[0]);
             Assert.Equal("bar", stringColumn[1]);
@@ -142,12 +138,16 @@ namespace Microsoft.Data.Tests
             string data = "joemark";
             byte[] bytes = Encoding.UTF8.GetBytes(data);
             Memory<byte> dataMemory = new Memory<byte>(bytes);
-            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 7);
-            Memory<byte> nullMemory = new byte[] {13};
-            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 4);
+            ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(dataMemory, 7);
+            Memory<byte> nullMemory = new byte[] { 13 };
+            ReadOnlyDataFrameBuffer<byte> nullBuffer = new ReadOnlyDataFrameBuffer<byte>(nullMemory, 4);
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0 };
-            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 5);
+            ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(offsetMemory, 5);
             ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 4, 1);
+
+            //StringArray strArray = new StringArray.Builder().Append("joe").Append("null").Append("mark").Append("").Build();
+            //ArrowStringColumn stringColumn = new ArrowStringColumn("String", strArray.ValueBuffer, strArray.ValueOffsetsBuffer, strArray.NullBitmapBuffer, strArray.Length, strArray.NullCount);
+
             Assert.Equal(4, stringColumn.Length);
             Assert.Equal("joe", stringColumn[0]);
             Assert.Null(stringColumn[1]);
@@ -161,27 +161,5 @@ namespace Microsoft.Data.Tests
             Assert.Equal("", ret[3]);
         }
 
-        [Fact]
-        public void TestArrowStringColumnWithOneNullValue()
-        {
-            byte[] bytes = new byte[0];
-            Memory<byte> dataMemory = new Memory<byte>(bytes);
-            DataFrameBuffer<byte> dataBuffer = new DataFrameBuffer<byte>(dataMemory, 0);
-            Memory<byte> nullMemory = new byte[] {0};
-            DataFrameBuffer<byte> nullBuffer = new DataFrameBuffer<byte>(nullMemory, 1);
-            Memory<byte> offsetMemory = new byte[] {0, 0};
-            DataFrameBuffer<int> offsetBuffer = new DataFrameBuffer<int>(offsetMemory, 2);
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataBuffer, offsetBuffer, nullBuffer, 1, 1);
-            Assert.False(stringColumn.IsValid(0));
-            string foo = (string)(stringColumn[0] ?? "0");
-            BaseColumn col = stringColumn;
-            foo = (string)col[0];
-            foo = (string)(col[0] ?? "0");
-
-            DataFrame df = new DataFrame();
-            df.InsertColumn(0, col);
-            foo = (string)(df["String"][0] ?? "0");
-            int bh = -1;
-        }
     }
 }

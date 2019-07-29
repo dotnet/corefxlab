@@ -58,7 +58,7 @@ namespace Microsoft.Data
             for (int bb = 0 ; bb < <#= method.Op1Name #>.Buffers.Count; bb++)
             {
                 var buffer = <#= method.Op1Name #>.Buffers[bb];
-                var mutableBuffer = MutableDataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
+                var mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
                 <#= method.Op1Name #>.Buffers[bb] = mutableBuffer;
                 for (int i = 0; i < buffer.Length; i++)
                 {

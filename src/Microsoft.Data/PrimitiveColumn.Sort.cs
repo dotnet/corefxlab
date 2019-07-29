@@ -30,7 +30,7 @@ namespace Microsoft.Data
             // Sort each buffer first
             for (int b = 0; b < _columnContainer.Buffers.Count; b++)
             {
-                DataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
+                ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
                 int[] sortIndices = new int[buffer.Length];
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;
@@ -39,7 +39,7 @@ namespace Microsoft.Data
                 List<int> nonNullSortIndices = new List<int>();
                 for (int i = 0; i < sortIndices.Length; i++)
                 {
-                    if (IsValid(sortIndices[i] + b * DataFrameBuffer<T>.MaxCapacity))
+                    if (IsValid(sortIndices[i] + b * ReadOnlyDataFrameBuffer<T>.MaxCapacity))
                         nonNullSortIndices.Add(sortIndices[i]);
                 }
                 bufferSortIndices.Add(nonNullSortIndices);
@@ -48,14 +48,14 @@ namespace Microsoft.Data
             ValueTuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
             {
                 T value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
-                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * DataFrameBuffer<T>.MaxCapacity;
+                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * ReadOnlyDataFrameBuffer<T>.MaxCapacity;
                 return (value, startIndex);
             }
             SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<ValueTuple<int, int>>>(comparer);
-            IList<DataFrameBuffer<T>> buffers = _columnContainer.Buffers;
+            IList<ReadOnlyDataFrameBuffer<T>> buffers = _columnContainer.Buffers;
             for (int i = 0; i < buffers.Count; i++)
             {
-                DataFrameBuffer<T> buffer = buffers[i];
+                ReadOnlyDataFrameBuffer<T> buffer = buffers[i];
                 if (bufferSortIndices[i].Count == 0)
                 {
                     // All nulls

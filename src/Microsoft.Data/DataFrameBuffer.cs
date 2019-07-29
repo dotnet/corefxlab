@@ -3,92 +3,89 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A basic immutable store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
+    /// A basic mutable store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class DataFrameBuffer<T>
+    internal class DataFrameBuffer<T> : ReadOnlyDataFrameBuffer<T>
         where T : struct
     {
-        // TODO: Change this to Memory<T>
+        private Memory<byte> _memory;
 
-        private ReadOnlyMemory<byte> _readOnlyMemory;
+        public override ReadOnlyMemory<byte> ReadOnlyMemory => _memory;
 
-        public virtual ReadOnlyMemory<byte> ReadOnlyMemory => _readOnlyMemory;
+        public Memory<byte> Memory
+        {
+            get => _memory;
+        }
 
-        protected static int Size = Unsafe.SizeOf<T>();
-
-        protected int Capacity => ReadOnlyMemory.Length / Size;
-
-
-        public static int MaxCapacity => Int32.MaxValue / Size;
-
-        public ReadOnlySpan<T> ReadOnlySpan
+        public Span<T> Span
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => MemoryMarshal.Cast<byte, T>(ReadOnlyMemory.Span);
+            get => MemoryMarshal.Cast<byte, T>(Memory.Span);
         }
 
-        public int Length { get; internal set; }
+        public DataFrameBuffer(int numberOfValues = 8) : base(numberOfValues) { }
 
-        public DataFrameBuffer(int numberOfValues = 8)
+        internal DataFrameBuffer(ReadOnlyMemory<byte> buffer, int length) : base(buffer, length)
         {
-            if ((long)numberOfValues * Size > MaxCapacity)
+            _memory = new byte[buffer.Length];
+            buffer.CopyTo(_memory);
+        }
+
+        public void Append(T value)
+        {
+            if (Length == MaxCapacity)
             {
-                throw new ArgumentException($"{numberOfValues} exceeds buffer capacity", nameof(numberOfValues));
+                throw new ArgumentException("Current buffer is full", nameof(value));
             }
-            _readOnlyMemory = new byte[numberOfValues * Size];
+            EnsureCapacity(1);
+            Span[Length] = value;
+            if (Length < MaxCapacity)
+                ++Length;
         }
 
-        public DataFrameBuffer(ReadOnlyMemory<byte> buffer, int length)
+        public void EnsureCapacity(int numberOfValues)
         {
-            _readOnlyMemory = buffer;
-            Length = length;
+            long newLength = Length + (long)numberOfValues;
+            if (newLength > MaxCapacity)
+            {
+                throw new ArgumentException("Current buffer is full", nameof(numberOfValues));
+            }
+
+            if (newLength > Capacity)
+            {
+                var newCapacity = Math.Max(newLength * Size, ReadOnlyMemory.Length * 2);
+                var memory = new Memory<byte>(new byte[newCapacity]);
+                _memory.CopyTo(memory);
+                _memory = memory;
+            }
         }
 
-        internal virtual T this[int index]
+        internal override T this[int index]
         {
-            get
+            set
             {
                 if (index > Length)
                     throw new ArgumentOutOfRangeException(nameof(index));
-                return ReadOnlySpan[index];
+                Span[index] = value;
             }
-            set => throw new NotSupportedException();
         }
 
-        internal bool this[int startIndex, int length, IList<T> returnList]
+        internal static DataFrameBuffer<T> GetMutableBuffer(ReadOnlyDataFrameBuffer<T> buffer)
         {
-            get
+            DataFrameBuffer<T> mutableBuffer = buffer as DataFrameBuffer<T>;
+            if (mutableBuffer == null)
             {
-                if (startIndex > Length)
-                    throw new ArgumentOutOfRangeException(nameof(startIndex));
-                long endIndex = Math.Min(Length, startIndex + length);
-                for (int i = startIndex; i < endIndex; i++)
-                {
-                    returnList.Add(ReadOnlySpan[i]);
-                }
-                return true;
+                mutableBuffer = new DataFrameBuffer<T>(buffer.ReadOnlyMemory, buffer.Length);
+                mutableBuffer.Length = buffer.Length;
             }
+            return mutableBuffer;
         }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            ReadOnlySpan<T> span = ReadOnlySpan;
-            for (int i = 0; i < Length; i++)
-            {
-                sb.Append(span[i]).Append(" ");
-            }
-            return sb.ToString();
-        }
-
     }
 }

@@ -141,4 +141,7 @@
   <data name="MismatchedValueType" xml:space="preserve">
     <value>Expected value to be of type</value>
   </data>
+  <data name="SpansMultipleBuffers" xml:space="preserve">
+    <value>Cannot span multiple buffers</value>
+  </data>
 </root>
