@@ -248,7 +248,7 @@ namespace Microsoft.Data
             }
         }
 
-        public override Field Field => new Field(Name, StringType.Default, NullCount != 0);
+        public override Field Field() => new Field(Name, StringType.Default, NullCount != 0);
 
         public override int MaxRecordBatchLength(long startIndex)
         {

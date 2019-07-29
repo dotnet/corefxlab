@@ -80,7 +80,7 @@ namespace Microsoft.Data
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         // Arrow related APIs
-        public virtual Field Field => throw new NotImplementedException();
+        public virtual Field Field() => throw new NotImplementedException();
         /// <summary>
         /// Returns the max number of values that are contiguous in memory
         /// </summary>

@@ -54,12 +54,6 @@ namespace Microsoft.Data
                         ReadOnlyMemory<byte> nullBitMapBuffer = arrowBooleanArray.NullBitmapBuffer.Memory;
                         dataFrameColumn = new PrimitiveColumn<bool>(field.Name, valueBuffer, nullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
-                    case ArrowTypeId.Decimal:
-                        PrimitiveArray<decimal> arrowDecimalArray = (PrimitiveArray<decimal>)arrowArray;
-                        ReadOnlyMemory<byte> decimalValueBuffer = arrowDecimalArray.ValueBuffer.Memory;
-                        ReadOnlyMemory<byte> decimalNullBitMapBuffer = arrowDecimalArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<decimal>(field.Name, decimalValueBuffer, decimalNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
-                        break;
                     case ArrowTypeId.Double:
                         PrimitiveArray<double> arrowDoubleArray = (PrimitiveArray<double>)arrowArray;
                         ReadOnlyMemory<byte> doubleValueBuffer = arrowDoubleArray.ValueBuffer.Memory;
@@ -112,6 +106,7 @@ namespace Microsoft.Data
                         ReadOnlyMemory<byte> ulongNullBitMapBuffer = arrowUlongArray.NullBitmapBuffer.Memory;
                         dataFrameColumn = new PrimitiveColumn<ulong>(field.Name, ulongValueBuffer, ulongNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
+                    case ArrowTypeId.Decimal:
                     case ArrowTypeId.UInt8:
                     case ArrowTypeId.Int8:
                     case ArrowTypeId.Binary:
@@ -143,7 +138,7 @@ namespace Microsoft.Data
             for (int i = 0; i < columnCount; i++)
             {
                 BaseColumn column = Column(i);
-                Field field = column.Field;
+                Field field = column.Field();
                 schemaBuilder.Field(field);
             }
 

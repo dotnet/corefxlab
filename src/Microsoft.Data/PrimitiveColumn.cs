@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 
@@ -65,13 +66,7 @@ namespace Microsoft.Data
                 throw new NotImplementedException(nameof(T));
         }
 
-        public override Field Field
-        {
-            get
-            {
-                return new Field(Name, GetArrowType(), NullCount != 0);
-            }
-        }
+        public override Field Field() => new Field(Name, GetArrowType(), NullCount != 0);
 
         public override int MaxRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
 
