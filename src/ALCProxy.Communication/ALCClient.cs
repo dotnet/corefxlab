@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Reflection.Emit;
+using System.IO;
 
 namespace ALCProxy.Communication
 {
@@ -78,9 +79,12 @@ namespace ALCProxy.Communication
             }
             Assembly interfaceAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(interfaceType).GetName());
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly serverAssembly = alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8));
+            string path = Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8);
+            if (!Path.IsPathRooted(path))
+                path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + path;
+            Assembly serverAssembly =alc.LoadFromAssemblyPath(path);
             //TODO: figure out bugs to swap the "loadfromassemblypath" to "loadfromassemblyname"
-            //Assembly serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(typeof(ServerDispatch<>)).GetName()) ;//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
+            //serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(typeof(ServerDispatch<>)).GetName()) ;//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
             //Get the server type, then make it generic with the interface we're using
             Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
             //Give the client its reference to the server
