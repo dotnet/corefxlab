@@ -50,12 +50,16 @@ namespace Microsoft.Data
                 return DoubleType.Default;
             else if (typeof(T) == typeof(float))
                 return FloatType.Default;
+            else if (typeof(T) == typeof(sbyte))
+                return Int8Type.Default;
             else if (typeof(T) == typeof(int))
                 return Int32Type.Default;
             else if (typeof(T) == typeof(long))
                 return Int64Type.Default;
             else if (typeof(T) == typeof(short))
                 return Int16Type.Default;
+            else if (typeof(T) == typeof(byte))
+                return UInt8Type.Default;
             else if (typeof(T) == typeof(uint))
                 return UInt32Type.Default;
             else if (typeof(T) == typeof(ulong))
@@ -103,6 +107,8 @@ namespace Microsoft.Data
                 return new Int32Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
             else if (type == typeof(long))
                 return new Int64Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+            else if (type == typeof(sbyte))
+                return new Int8Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
             else if (type == typeof(short))
                 return new Int16Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
             else if (type == typeof(uint))
@@ -111,8 +117,10 @@ namespace Microsoft.Data
                 return new UInt64Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
             else if (type == typeof(ushort))
                 return new UInt16Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
+            else if (type == typeof(byte))
+                return new UInt8Array(valueBuffer, nullBuffer, numberOfRows, nullCount, offset);
             else
-                throw new NotImplementedException(nameof(T));
+                throw new NotImplementedException(type.ToString());
         }
 
         public new IList<T?> this[long startIndex, int length]
