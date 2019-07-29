@@ -25,13 +25,14 @@ namespace ALCProxy.Communication
         protected string _serverTypeName;
         protected Type _intType;
         internal ServerCall _serverDelegate;
+        protected Type _serverType;
 
         private StackTrace _stackTrace;
-        public ALCClient(Type interfaceType, string serverName)
+        public ALCClient(Type interfaceType, string serverName, Type serverType)
         {
             if (interfaceType == null || serverName == null)
                 throw new ArgumentNullException();
-
+            _serverType = serverType;
             _intType = interfaceType;
             _serverTypeName = serverName;
 #if DEBUG
@@ -77,14 +78,8 @@ namespace ALCProxy.Communication
             {
                 interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
             }
-            Assembly interfaceAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(interfaceType).GetName());
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            string path = Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8);
-            if (!Path.IsPathRooted(path))
-                path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + path;
-            Assembly serverAssembly =alc.LoadFromAssemblyPath(path);
-            //TODO: figure out bugs to swap the "loadfromassemblypath" to "loadfromassemblyname"
-            //serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(typeof(ServerDispatch<>)).GetName()) ;//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
+            Assembly serverAssembly = alc.LoadFromStream(Assembly.GetAssembly(_serverType).GetFiles()[0]);//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
             //Get the server type, then make it generic with the interface we're using
             Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
             //Give the client its reference to the server
