@@ -155,12 +155,13 @@ namespace ALCProxy.Tests
     public class ALCProxyTests
     {
         private string dbgString;
-        private string execPath;
+        private string execPath; //The currently executing assembly (holding ALCProxyTests)
 
         public ALCProxyTests () {
-            dbgString = "Release";
 #if DEBUG
             dbgString = "Debug";
+#else
+            dbgString = "Release";
 #endif
             execPath = Assembly.GetExecutingAssembly().Location;
 
