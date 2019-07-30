@@ -259,7 +259,6 @@ namespace ALCProxy.Tests
         [Fact]
         public void CreateObjectWithNonUserParamsInConstructor()
         {
-            ();
             AssemblyLoadContext alc = new AssemblyLoadContext("CreateObjectWithNonUserParamsInConstructor", isCollectible: true);
             ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, execPath, "TestObjectParamConst", new object[] { 55, "testString" });
             Assert.Equal(55, t.ReturnIntWhilePassingInList(3, new List<string>()));
