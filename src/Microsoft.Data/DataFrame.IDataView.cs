@@ -16,11 +16,11 @@ namespace Microsoft.Data
         bool IDataView.CanShuffle => false;
 
         private DataViewSchema _schema;
-        DataViewSchema IDataView.Schema
+        private DataViewSchema DataViewSchema
         {
             get
             {
-                if (_schema != null && _schema.Count == ColumnCount)
+                if (_schema != null)
                 {
                     return _schema;
                 }
@@ -36,11 +36,13 @@ namespace Microsoft.Data
             }
         }
 
+        DataViewSchema IDataView.Schema => DataViewSchema;
+
         long? IDataView.GetRowCount() => RowCount;
 
         private DataViewRowCursor GetRowCursorCore(IEnumerable<DataViewSchema.Column> columnsNeeded)
         {
-            var activeColumns = new bool[_schema.Count];
+            var activeColumns = new bool[DataViewSchema.Count];
             foreach (DataViewSchema.Column column in columnsNeeded)
             {
                 if (column.Index < activeColumns.Length)
@@ -88,7 +90,7 @@ namespace Microsoft.Data
 
             public override long Position => _position;
             public override long Batch => 0;
-            public override DataViewSchema Schema => _dataFrame._schema;
+            public override DataViewSchema Schema => _dataFrame.DataViewSchema;
 
             protected override void Dispose(bool disposing)
             {

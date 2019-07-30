@@ -43,8 +43,6 @@ namespace Microsoft.Data
             }
         }
 
-        public DataFrameTable(BaseColumn column) : this(new List<BaseColumn> { column }) { }
-
         public BaseColumn Column(int columnIndex) => _columns[columnIndex];
 
         public IList<object> GetRow(long rowIndex)
@@ -64,18 +62,7 @@ namespace Microsoft.Data
             column.Name = newName;
             _columnNameToIndexDictionary.Remove(currentName);
             _columnNameToIndexDictionary.Add(newName, currentIndex);
-        }
 
-        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName, DataFrame parent)
-            where T : unmanaged
-        {
-            column = column ?? throw new ArgumentNullException(nameof(column));
-            if ((uint)columnIndex > _columns.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(columnIndex));
-            }
-            BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
-            InsertColumn(columnIndex, newColumn, parent);
         }
 
         public void InsertColumn(int columnIndex, BaseColumn column, DataFrame parent)
@@ -146,6 +133,5 @@ namespace Microsoft.Data
             }
             return -1;
         }
-
     }
 }
