@@ -168,7 +168,7 @@ namespace ALCProxy.Tests
         }
         private string SetDirectory(string p)
         {
-            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            //System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, p);
             return path;
             //Assembly testAssembly = Assembly.LoadFile(path);
