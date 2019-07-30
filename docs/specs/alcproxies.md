@@ -245,16 +245,20 @@ Some hard points of performance that probably will need to be looked at:
 * Client/server calls on in-process ALCs
 * Multiple uses of `Reflection.Invoke` possibly being called
 
-These are the pain points after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application:
+These are some of the highlights after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application. The object doesn't take any arguments in its constructor, and the tested method doesn't load any additional assemblies into the target ALC, and does little basic operations. The method itself takes in one string parameter, performs an `ArrayList.Add(DateTime.Now)` operation with an existing array, and returns a new string. While testing the method took ~1% of CPU samples.:
 
 ##### Object creation
-* The creation of the server itself took 75-85% of CPU samples.
-* Creating the DispatchProxy on top of the server took the remaining CPU samples.
+* Around 15-20% of CPU samples are used to find the `TargetObject` type inside its assembly once its loaded into the new ALC, from the `FindTypeInAssembly` method.
+* Another ~10-15% of samples are used to Load the desired assembly itself into our targeted ALC.
+* The majority of the delays come from `Reflection.Invoke` being used on the constructor of the `ServerObject` (~40-70%).
+* Creating the DispatchProxy on top of the server took the remaining CPU samples (~5% usually).
 
 ##### Calling methods on the proxied object
-* Serialization of parameters took around 65% of CPU samples, for a method with a string parameter.
-* The method call itself takes about 7% of CPU samples.
+* ~2% of CPU samples were for calling the delegate from the `ClientObject` to call `ServerObject.CallObject`
 * Searching for the method in the assembly takes around 2-3% of CPU samples.
+* Serialization of parameters took around 65-75% of CPU samples.
+* Server-side deseralization took around 10% of samples.
+
 
 #### Special Language Features
 Language features such as `in`, `ref`, and `out` should be investigated further, but we probably won't be able to implement them in this design since everything will be kept call-by-value, and they're also a bit out of scope for this project.
@@ -282,6 +286,7 @@ Performance considerations are also fairly important, and need to be tested as w
 * Is there anything special that we need to do to deal with other language features, such as lambdas?
 * Do we have a way to deal with the user ALC being destroyed before the target ALC? How do we react to that problem?
 * What happens when we try to send large objects through a proxy as parameters/return types?
+* Are there any better ways to perform our serialization to improve performance without losing security?
 
 ## Extra Goals
 * Can we get out-of-process proxies to specify an ALC to be added to in the receiving process?
