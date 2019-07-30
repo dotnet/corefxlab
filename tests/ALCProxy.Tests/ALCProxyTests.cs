@@ -163,13 +163,13 @@ namespace ALCProxy.Tests
 #if DEBUG
             dbgString = "Debug";
 #endif
-            execPath = SetDirectory(Assembly.GetExecutingAssembly().CodeBase.Substring(8));
+            execPath = SetDirectory(Assembly.GetExecutingAssembly().Location);
 
         }
         private string SetDirectory(string p)
         {
-            //System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, p);
+            ////System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+            string path = Path.Combine("", p);
             return path;
             //Assembly testAssembly = Assembly.LoadFile(path);
         }
