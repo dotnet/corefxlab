@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.Data.Tests
 {
-    public class DataFrameTests
+    public partial class DataFrameTests
     {
         public static DataFrame MakeDataFrameWithTwoColumns(int length)
         {
@@ -23,12 +23,15 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
-        public static DataFrame MakeDataFrameWithAllColumnTypes(int length)
+        public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool withNulls = true)
         {
-            DataFrame df = MakeDataFrameWithNumericAndStringColumns(length);
+            DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, withNulls);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
-            boolColumn[length / 2] = null;
+            if (withNulls)
+            {
+                boolColumn[length / 2] = null;
+            }
             return df;
         }
 
@@ -41,16 +44,19 @@ namespace Microsoft.Data.Tests
             return df;
         }
 
-        public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length)
+        public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length, bool withNulls = true)
         {
-            DataFrame df = MakeDataFrameWithNumericColumns(length);
+            DataFrame df = MakeDataFrameWithNumericColumns(length, withNulls);
             BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             df.InsertColumn(df.ColumnCount, stringColumn);
-            stringColumn[length / 2] = null;
+            if (withNulls)
+            {
+                stringColumn[length / 2] = null;
+            }
             return df;
         }
 
-        public static DataFrame MakeDataFrameWithNumericColumns(int length)
+        public static DataFrame MakeDataFrameWithNumericColumns(int length, bool withNulls = true)
         {
             BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
             BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
@@ -67,9 +73,12 @@ namespace Microsoft.Data.Tests
 
             DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, charColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
-            for (int i = 0; i < dataFrame.ColumnCount; i++)
+            if (withNulls)
             {
-                dataFrame.Column(i)[length / 2] = null;
+                for (int i = 0; i < dataFrame.ColumnCount; i++)
+                {
+                    dataFrame.Column(i)[length / 2] = null;
+                }
             }
             return dataFrame;
         }

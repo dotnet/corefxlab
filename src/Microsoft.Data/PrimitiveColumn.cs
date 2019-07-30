@@ -6,6 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.Data
 {
@@ -264,5 +266,93 @@ namespace Microsoft.Data
                 }
             }
         }
+
+        protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
+        {
+            builder.AddColumn(Name, GetDataViewType());
+        }
+
+        private static DataViewType GetDataViewType()
+        {
+            if (typeof(T) == typeof(bool))
+            {
+                return BooleanDataViewType.Instance;
+            }
+            else if (typeof(T) == typeof(byte))
+            {
+                return NumberDataViewType.Byte;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                return NumberDataViewType.Double;
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                return NumberDataViewType.Single;
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                return NumberDataViewType.Int32;
+            }
+            else if (typeof(T) == typeof(long))
+            {
+                return NumberDataViewType.Int64;
+            }
+            else if (typeof(T) == typeof(sbyte))
+            {
+                return NumberDataViewType.SByte;
+            }
+            else if (typeof(T) == typeof(short))
+            {
+                return NumberDataViewType.Int16;
+            }
+            else if (typeof(T) == typeof(uint))
+            {
+                return NumberDataViewType.UInt32;
+            }
+            else if (typeof(T) == typeof(ulong))
+            {
+                return NumberDataViewType.UInt64;
+            }
+            else if (typeof(T) == typeof(ushort) )
+            {
+                return NumberDataViewType.UInt16;
+            }
+            // The following 2 implementations are not ideal, but IDataView doesn't support
+            // these types
+            else if (typeof(T) == typeof(char))
+            {
+                return NumberDataViewType.UInt16;
+            }
+            else if (typeof(T) == typeof(decimal))
+            {
+                return NumberDataViewType.Double;
+            }
+
+            throw new NotSupportedException();
+        }
+
+        protected internal override Delegate GetDataViewGetter(DataViewRowCursor cursor)
+        {
+            // special cases for types not supported
+            if (typeof(T) == typeof(char))
+            {
+                return CreateCharValueGetterDelegate(cursor);
+            }
+            else if (typeof(T) == typeof(decimal))
+            {
+                return CreateDecimalValueGetterDelegate(cursor);
+            }
+            return CreateValueGetterDelegate(cursor);
+        }
+
+        private ValueGetter<T> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
+            (ref T value) => value = this[cursor.Position].Value;
+
+        private ValueGetter<ushort> CreateCharValueGetterDelegate(DataViewRowCursor cursor) =>
+            (ref ushort value) => value = (ushort)Convert.ChangeType(this[cursor.Position].Value, typeof(ushort));
+
+        private ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor) =>
+            (ref double value) => value = (double)Convert.ChangeType(this[cursor.Position].Value, typeof(double));
     }
 }
