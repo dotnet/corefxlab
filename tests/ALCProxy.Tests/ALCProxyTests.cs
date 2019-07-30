@@ -92,7 +92,6 @@ namespace ALCProxy.Tests
         int ITest.ReturnIntWhilePassingInList(int a, List<string> list)
         {
             Console.WriteLine(a);
-
             return a + list[0].Length;
         }
         public int ReturnIntWhilePassingInUserType(int a, Test2 t)
@@ -163,15 +162,8 @@ namespace ALCProxy.Tests
 #if DEBUG
             dbgString = "Debug";
 #endif
-            execPath = SetDirectory(Assembly.GetExecutingAssembly().Location);
+            execPath = Assembly.GetExecutingAssembly().Location;
 
-        }
-        private string SetDirectory(string p)
-        {
-            ////System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
-            string path = Path.Combine("", p);
-            return path;
-            //Assembly testAssembly = Assembly.LoadFile(path);
         }
         [Fact]
         public void SimpleObjectsProxiedCorrectly()

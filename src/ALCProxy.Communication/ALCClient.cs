@@ -85,7 +85,7 @@ namespace ALCProxy.Communication
                 interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
             }
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly serverAssembly = alc.LoadFromStream(Assembly.GetAssembly(_serverType).GetFiles()[0]);//alc.LoadFromAssemblyPath(Assembly.GetAssembly(typeof(ServerDispatch<>)).CodeBase.Substring(8)); //
+            Assembly serverAssembly = alc.LoadFromStream(Assembly.GetAssembly(_serverType).GetFiles()[0]);
             //Get the server type, then make it generic with the interface we're using
             Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
             //Give the client its reference to the server
