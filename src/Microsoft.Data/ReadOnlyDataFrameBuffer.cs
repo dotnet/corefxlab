@@ -14,12 +14,10 @@ namespace Microsoft.Data
     /// A basic immutable store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ReadOnlyDataFrameBuffer<T>
+    internal class ReadOnlyDataFrameBuffer<T>
         where T : struct
     {
-        // TODO: Change this to Memory<T>
-
-        private ReadOnlyMemory<byte> _readOnlyMemory;
+        private readonly ReadOnlyMemory<byte> _readOnlyMemory;
 
         public virtual ReadOnlyMemory<byte> ReadOnlyMemory => _readOnlyMemory;
 
@@ -62,21 +60,6 @@ namespace Microsoft.Data
                 return ReadOnlySpan[index];
             }
             set => throw new NotSupportedException();
-        }
-
-        internal bool this[int startIndex, int length, IList<T> returnList]
-        {
-            get
-            {
-                if (startIndex > Length)
-                    throw new ArgumentOutOfRangeException(nameof(startIndex));
-                long endIndex = Math.Min(Length, startIndex + length);
-                for (int i = startIndex; i < endIndex; i++)
-                {
-                    returnList.Add(ReadOnlySpan[i]);
-                }
-                return true;
-            }
         }
 
         public override string ToString()

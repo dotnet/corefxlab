@@ -92,7 +92,10 @@ namespace Microsoft.Data
                         break;
                     case ArrowTypeId.String:
                         StringArray stringArray = (StringArray)arrowArray;
-                        dataFrameColumn = new ArrowStringColumn(field.Name, stringArray.ValueBuffer, stringArray.ValueOffsetsBuffer, stringArray.NullBitmapBuffer, stringArray.Length, stringArray.NullCount);
+                        ReadOnlyMemory<byte> dataMemory = stringArray.ValueBuffer.Memory;
+                        ReadOnlyMemory<byte> offsetsMemory = stringArray.ValueOffsetsBuffer.Memory;
+                        ReadOnlyMemory<byte> nullMemory = stringArray.NullBitmapBuffer.Memory;
+                        dataFrameColumn = new ArrowStringColumn(field.Name, dataMemory, offsetsMemory, nullMemory, stringArray.Length, stringArray.NullCount);
                         break;
                     case ArrowTypeId.UInt8:
                         PrimitiveArray<byte> arrowbyteArray = (PrimitiveArray<byte>)arrowArray;
@@ -159,8 +162,8 @@ namespace Microsoft.Data
             int numberOfRowsInThisRecordBatch = (int)Math.Min(recordBatchLength, RowCount);
             long numberOfRowsProcessed = 0;
 
-            // Sometime Spark passes in an empty DataFrame 
-            while (numberOfRowsProcessed < RowCount || RowCount == 0)
+            // Sometimes .NET for Spark passes in DataFrames with no rows. In those cases, we just return a RecordBatch with the right Schema and no rows
+            do
             {
                 for (int i = 0; i < columnCount; i++)
                 {
@@ -176,7 +179,7 @@ namespace Microsoft.Data
                 yield return new RecordBatch(schema, arrays, numberOfRowsInThisRecordBatch);
                 if (RowCount == 0)
                     break;
-            }
+            } while (numberOfRowsProcessed < RowCount);
         }
 
         public long RowCount => _table.RowCount;

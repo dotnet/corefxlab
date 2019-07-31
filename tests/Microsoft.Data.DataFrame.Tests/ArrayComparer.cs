@@ -96,7 +96,7 @@ namespace Microsoft.Data.Tests
         }
     }
 
-    internal class FieldComparer
+    internal static class FieldComparer
     {
         public static bool Equals(Field f1, Field f2)
         {
@@ -119,7 +119,7 @@ namespace Microsoft.Data.Tests
         }
     }
 
-    internal class SchemaComparer
+    internal static class SchemaComparer
     {
         public static bool Equals(Schema s1, Schema s2)
         {
@@ -148,7 +148,7 @@ namespace Microsoft.Data.Tests
         }
     }
 
-    public class RecordBatchComparer
+    public static class RecordBatchComparer
     {
         public static void CompareBatches(RecordBatch expectedBatch, RecordBatch actualBatch)
         {

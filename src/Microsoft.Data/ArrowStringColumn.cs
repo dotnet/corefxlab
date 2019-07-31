@@ -28,14 +28,12 @@ namespace Microsoft.Data
             _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
         }
 
-        public ArrowStringColumn(string name, ReadOnlyDataFrameBuffer<byte> dataBuffer, ReadOnlyDataFrameBuffer<int> offsetBuffer, ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
+        public ArrowStringColumn(string name, ReadOnlyMemory<byte> values, ReadOnlyMemory<byte> offsets, ReadOnlyMemory<byte> nullBits, int length, int nullCount) : base(name, length, typeof(string))
         {
-            if (dataBuffer == null)
-                throw new ArgumentNullException(nameof(dataBuffer));
-            if (offsetBuffer == null)
-                throw new ArgumentNullException(nameof(offsetBuffer));
-            if (nullBitMapBuffer == null)
-                throw new ArgumentNullException(nameof(nullBitMapBuffer));
+            ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(values, values.Length);
+            ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(offsets, length + 1);
+            ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer = new ReadOnlyDataFrameBuffer<byte>(nullBits, nullBits.Length);
+
             if (length + 1 != offsetBuffer.Length)
                 throw new ArgumentException(nameof(offsetBuffer));
 
@@ -48,23 +46,7 @@ namespace Microsoft.Data
             _nullBitMapBuffers.Add(nullBitMapBuffer);
 
             _nullCount = nullCount;
-        }
 
-        public ArrowStringColumn(string name, ArrowBuffer arrowDataBuffer, ArrowBuffer arrowOffsetBuffer, ArrowBuffer arrowNullBitMapBuffer, int length, int nullCount) : base(name, length, typeof(string))
-        {
-            ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(arrowDataBuffer.Memory, arrowDataBuffer.Length);
-            ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(arrowOffsetBuffer.Memory, length + 1);
-            ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer = new ReadOnlyDataFrameBuffer<byte>(arrowNullBitMapBuffer.Memory, arrowNullBitMapBuffer.Length);
-
-            _dataBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
-            _offsetsBuffers = new List<ReadOnlyDataFrameBuffer<int>>();
-            _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
-
-            _dataBuffers.Add(dataBuffer);
-            _offsetsBuffers.Add(offsetBuffer);
-            _nullBitMapBuffers.Add(nullBitMapBuffer);
-
-            _nullCount = nullCount;
         }
 
         private long _nullCount;
@@ -248,9 +230,9 @@ namespace Microsoft.Data
             }
         }
 
-        public override Field Field() => new Field(Name, StringType.Default, NullCount != 0);
+        protected internal override Field Field() => new Field(Name, StringType.Default, NullCount != 0);
 
-        public override int MaxRecordBatchLength(long startIndex)
+        protected internal override int MaxRecordBatchLength(long startIndex)
         {
             if (Length == 0)
                 return 0;
@@ -271,7 +253,7 @@ namespace Microsoft.Data
         }
 
 
-        public override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
+        protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {
             int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
             if (numberOfRows != 0 && numberOfRows > _offsetsBuffers[offsetsBufferIndex].Length - 1 - indexInBuffer)

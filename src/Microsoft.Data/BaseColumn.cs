@@ -80,12 +80,12 @@ namespace Microsoft.Data
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         // Arrow related APIs
-        public virtual Field Field() => throw new NotImplementedException();
+        protected internal virtual Field Field() => throw new NotImplementedException();
         /// <summary>
         /// Returns the max number of values that are contiguous in memory
         /// </summary>
-        public virtual int MaxRecordBatchLength(long startIndex) => 0;
-        public virtual Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
+        protected internal virtual int MaxRecordBatchLength(long startIndex) => 0;
+        protected internal virtual Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
