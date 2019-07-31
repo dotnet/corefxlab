@@ -53,28 +53,22 @@ namespace ALCProxy.Communication
             }
             return t;
         }
-        private void SetDirectory()
-        {
-            System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
-        }
         /// <summary>
         /// Creates the link between the client and the server, while also passing in all the information to the server for setup
         /// </summary>
         /// <param name="alc">The target AssemblyLoadContext</param>
         /// <param name="typeName">Name of the proxied type</param>
-        /// <param name="assemblyPath">path of the assembly to the type</param>
+        /// <param name="assemblyName">path of the assembly to the type</param>
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
-        public void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes)
+        public void SetUpServer(AssemblyLoadContext alc, string typeName, AssemblyName assemblyName, object[] constructorParams, Type[] genericTypes)
         {
-            if (alc == null || (typeName ?? assemblyPath) == null)
+            if (alc == null || typeName == null || assemblyName == null)
                 throw new ArgumentNullException();
             if (genericTypes == null)
                 genericTypes = new Type[] { };
             if (constructorParams == null)
                 constructorParams = new object[] { };
-            //This is an attempt to deal with "absolute path required" errors that cross-plat tests are giving us.
-            SetDirectory();
-            Assembly a = alc.LoadFromAssemblyPath(assemblyPath);
+            Assembly a = alc.LoadFromAssemblyName(assemblyName);
             
             //find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);

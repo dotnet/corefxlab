@@ -27,7 +27,7 @@ namespace ALCProxy.Communication
         /// <param name="typeName">Name of the proxied type</param>
         /// <param name="assemblyPath">path of the assembly to the type</param>
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
-        void SetUpServer(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes);
+        void SetUpServer(AssemblyLoadContext alc, string typeName, AssemblyName assemblyName, object[] constructorParams, Type[] genericTypes);
 
     }
 }

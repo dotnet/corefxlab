@@ -11,44 +11,44 @@ namespace ALCProxy.Proxy
 {
     public static class ProxyBuilder<I> //T is the interface type we want the object to extend
     {
-        public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName)
+        public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName)
         {
             //Create the object in the ALC
-            return CreateInstanceAndUnwrap(alc, assemblyPath, typeName, new object[] { });
+            return CreateInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { });
         }
-        public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams)
+        public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)
         {
             //Create the object in the ALC
-            I obj = ALCDispatch<I>.Create(alc, assemblyPath, typeName, constructorParams);
+            I obj = ALCDispatch<I>.Create(alc, assemblyName, typeName, constructorParams);
             return obj;
         }
-        public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams, Type[] genericTypes)
+        public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams, Type[] genericTypes)
         {
-            I obj = ALCDispatch<I>.CreateGeneric(alc, assemblyPath, typeName, constructorParams, genericTypes);
+            I obj = ALCDispatch<I>.CreateGeneric(alc, assemblyName, typeName, constructorParams, genericTypes);
             return obj;
         }
-        public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, string assemblyPath, string typeName, Type[] genericTypes)
+        public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, Type[] genericTypes)
         {
-            return CreateGenericInstanceAndUnwrap(alc, assemblyPath, typeName, new object[] { }, genericTypes);
+            return CreateGenericInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { }, genericTypes);
         }
     }
     public class ALCDispatch<I> : System.Reflection.DispatchProxy //I is the specific client you want to use.
     {
         private IProxyClient _client; //ClientObject
-        internal static I Create(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams)
+        internal static I Create(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)
         {
-            if (alc == null || assemblyPath == null || typeName == null)
+            if (alc == null || assemblyName == null || typeName == null)
                 throw new ArgumentNullException("Error with inputted parameter");
             if (constructorParams == null)
                 constructorParams = new object[] { };
 
             object proxy = Create<I, ALCDispatch<I>>();
-            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams, null);
+            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyName, constructorParams, null);
             return (I)proxy;
         }
-        internal static I CreateGeneric(AssemblyLoadContext alc, string assemblyPath, string typeName, object[] constructorParams, Type[] genericTypes)
+        internal static I CreateGeneric(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams, Type[] genericTypes)
         {
-            if (alc == null || assemblyPath == null || typeName == null || genericTypes == null)
+            if (alc == null || assemblyName == null || typeName == null || genericTypes == null)
                 throw new ArgumentNullException("Error with inputted parameter");
             if (constructorParams == null)
                 constructorParams = new object[] { };
@@ -56,13 +56,13 @@ namespace ALCProxy.Proxy
                 throw new ArgumentException("Wrong number of generic types for the given typeName");
 
             object proxy = Create<I, ALCDispatch<I>>();
-            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyPath, constructorParams,  genericTypes);
+            ((ALCDispatch<I>)proxy).SetParameters(alc, typeName, assemblyName, constructorParams,  genericTypes);
             return (I)proxy;
         }
-        private void SetParameters(AssemblyLoadContext alc, string typeName, string assemblyPath, object[] constructorParams, Type[] genericTypes)
+        private void SetParameters(AssemblyLoadContext alc, string typeName, AssemblyName assemblyName, object[] constructorParams, Type[] genericTypes)
         {
             _client = (IProxyClient)typeof(ClientDispatch).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
-            _client.SetUpServer(alc, typeName, assemblyPath,constructorParams,  genericTypes);
+            _client.SetUpServer(alc, typeName, assemblyName,constructorParams,  genericTypes);
         }
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
