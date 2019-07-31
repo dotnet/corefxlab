@@ -111,34 +111,35 @@ namespace Benchmarks.ALCProxy
     }
     public class ALCBenchmark
     {
-        private static AssemblyLoadContext alc = new AssemblyLoadContext("BenchmarkContext", isCollectible: true);
-        private string assemblyString = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().CodeBase.Substring(8)).CodeBase.Substring(8);
+        private static TestAssemblyLoadContext alc = new TestAssemblyLoadContext("BenchmarkContext", isCollectible: true);
+        private static TestAssemblyLoadContext alc2;
+        private AssemblyName assemblyName = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().Location).GetName();
         private ITest testObject;//  = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().Location, "Test");
         private ITest controlObject = new Test();
         private IGeneric<Test2> genericObject;// = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().Location, "GenericClass`1", new Type[] { typeof(Test2) });
         private IGeneric<Test2> genericControl = new GenericClass<Test2>();
         private Test2 userInput;
-        private string path;// = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().CodeBase.Substring(8)).CodeBase.Substring(8).Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+        private AssemblyName name;// = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().CodeBase.Substring(8)).CodeBase.Substring(8).Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
 
         [GlobalSetup]
         public void Setup()
         {
             userInput = new Test2();
-            testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(Test)).Location, "Benchmarks.ALCProxy.Test");
-            genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(GenericClass<>)).Location, "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
-
-        path = Assembly.GetAssembly(typeof(Test)).Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
-
+            testObject = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(Test)).GetName(), "Benchmarks.ALCProxy.Test");
+            genericObject = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetAssembly(typeof(GenericClass<>)).GetName(), "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
+            string path = Assembly.GetAssembly(typeof(Test)).Location.Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            name = AssemblyName.GetAssemblyName(path);
+            alc2 = new TestAssemblyLoadContext("BenchmarkExternalContext", path, isCollectible: true);
         }
         [Benchmark]
         public object CreateProxyObject()
         {
-            return ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, assemblyString, "Benchmarks.ALCProxy.Test");
+            return ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, assemblyName, "Benchmarks.ALCProxy.Test");
         }
         [Benchmark]
         public object CreateExternalAssemblyProxyObject()
         {
-            return ProxyBuilder<IExternalClass>.CreateInstanceAndUnwrap(alc, path, "ExternalClass", new object[] { });
+            return ProxyBuilder<IExternalClass>.CreateInstanceAndUnwrap(alc2, name, "ExternalClass", new object[] { });
         }
         [Benchmark]
         public object CreateControlObject()
@@ -158,7 +159,7 @@ namespace Benchmarks.ALCProxy
         [Benchmark]
         public object CreateGenericProxy()
         {
-            return ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().CodeBase.Substring(8), "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
+            return ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(), "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
         }
         [Benchmark]
         public object CreateGenericControl()
@@ -194,6 +195,30 @@ namespace Benchmarks.ALCProxy
         public object UserTypeParametersControl2()
         {
             return controlObject.MethodWithUserTypeParameter(3, userInput);
+        }
+    }
+    class TestAssemblyLoadContext : AssemblyLoadContext
+    {
+        private AssemblyDependencyResolver _resolver;
+
+        public TestAssemblyLoadContext(string name, bool isCollectible) : base(name, isCollectible)
+        {
+            _resolver = new AssemblyDependencyResolver(Assembly.GetExecutingAssembly().Location);
+        }
+        public TestAssemblyLoadContext(string name, string mainExecPath, bool isCollectible) : base(name, isCollectible)
+        {
+            _resolver = new AssemblyDependencyResolver(mainExecPath);
+        }
+
+        protected override Assembly Load(AssemblyName name)
+        {
+            string assemblyPath = _resolver.ResolveAssemblyToPath(name);
+            if (assemblyPath != null)
+            {
+                return LoadFromAssemblyPath(assemblyPath);
+            }
+
+            return null;
         }
     }
 }

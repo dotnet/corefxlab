@@ -330,7 +330,7 @@ namespace ALCProxy.Tests
     {
         private AssemblyDependencyResolver _resolver;
 
-        public TestAssemblyLoadContext(string name, bool isCollectible) : base(name, isCollectible: true)
+        public TestAssemblyLoadContext(string name, bool isCollectible) : base(name, isCollectible)
         {
             _resolver = new AssemblyDependencyResolver(Assembly.GetExecutingAssembly().Location);
         }
