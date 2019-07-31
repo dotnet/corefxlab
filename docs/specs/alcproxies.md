@@ -160,6 +160,8 @@ Using `BinaryFormatter`, types and their information can be serialized and sent 
 
 While Binary Serialization in concept is a good idea, there are too many issues that make this an ineffective solution. `BinaryFormatter` is a depricated API, many types aren't serializable, limiting the use of types we could proxy. 
 
+As a side note: The current prototype that this design document is attached to won't allow for binary serialization to work easily, since the serialization process of `BinaryFormatter` doesn't seem to treat the deserialized objects as ALC types once passed to the ALC, leaving a similar type casting error we're trying to avoid with other serializers.
+
 #### XML/JSON Serialization using `DataContractSerializer`
 Instead of moving a specific type through a `BinaryFormatter`, using `DataContractSerializer` would allow us to move any public or private pieces of an object, and then recreate it on the other side.
 
