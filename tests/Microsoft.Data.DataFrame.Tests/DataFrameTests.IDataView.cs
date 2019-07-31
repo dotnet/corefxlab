@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Xunit;
@@ -76,6 +77,33 @@ namespace Microsoft.Data.Tests
             Assert.Equal("Bool", preview.ColumnView[13].Column.Name);
             Assert.Equal(true, preview.ColumnView[13].Values[0]);
             Assert.Equal(false, preview.ColumnView[13].Values[1]);
+        }
+
+        [Fact]
+        public void TestIDataViewSchemaInvalidate()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+
+            IDataView dataView = df;
+
+            DataViewSchema schema = dataView.Schema;
+            Assert.Equal(14, schema.Count);
+
+            df.RemoveColumn("Bool");
+            schema = dataView.Schema;
+            Assert.Equal(13, schema.Count);
+
+            BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, (int)df.RowCount).Select(x => x % 2 == 1));
+            df.InsertColumn(0, boolColumn);
+            schema = dataView.Schema;
+            Assert.Equal(14, schema.Count);
+            Assert.Equal("Bool", schema[0].Name);
+
+            BaseColumn boolClone = boolColumn.Clone();
+            boolClone.Name = "BoolClone";
+            df.SetColumn(1, boolClone);
+            schema = dataView.Schema;
+            Assert.Equal("BoolClone", schema[1].Name);
         }
     }
 }
