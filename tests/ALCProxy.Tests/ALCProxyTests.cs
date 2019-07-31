@@ -281,7 +281,14 @@ namespace ALCProxy.Tests
         {
             string pathOfCurrentString = "ALCProxy.Tests";
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\" + dbgString + "\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            string newPath = Path.Combine(
+                new string[] { 
+                    assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)), 
+                    "ALCProxy.TestAssembly",
+                    "bin", 
+                    dbgString, 
+                    "netcoreapp3.0",
+                    "ALCProxy.TestAssembly.dll" });
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CanLoadOustideAssemblyWithSharedInterface", newPath, isCollectible: true);
             ALCProxy.TestInterface.IExternalClass a = ProxyBuilder<ALCProxy.TestInterface.IExternalClass>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
@@ -306,7 +313,14 @@ namespace ALCProxy.Tests
         {
             string pathOfCurrentString = "ALCProxy.Tests";
             string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            string newPath = assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)) + "ALCProxy.TestAssembly\\bin\\"+ dbgString + "\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+            string newPath = Path.Combine(
+                new string[] { 
+                    assemblyLocation.Substring(0, assemblyLocation.IndexOf(pathOfCurrentString)),
+                    "ALCProxy.TestAssembly",
+                    "bin",
+                    dbgString,
+                    "netcoreapp3.0",
+                    "ALCProxy.TestAssembly.dll" });
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CanLoadOustideAssemblyWithoutSharedInterface", newPath, isCollectible: true);
             ALCProxy.TestInterfaceUpdated.IExternalClass a = ProxyBuilder<ALCProxy.TestInterfaceUpdated.IExternalClass>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
