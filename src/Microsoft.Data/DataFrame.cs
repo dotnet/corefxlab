@@ -203,7 +203,7 @@ namespace Microsoft.Data
 
         public void InsertColumn(int columnIndex, BaseColumn column)
         {
-            _table.InsertColumn(columnIndex, column, this);
+            _table.InsertColumn(columnIndex, column);
             OnColumnsChanged();
         }
 
