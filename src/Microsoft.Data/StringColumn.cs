@@ -5,6 +5,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.Data
 {
@@ -288,5 +290,18 @@ namespace Microsoft.Data
                 throw new NotImplementedException(nameof(TKey));
             }
         }
+
+        protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
+        {
+            builder.AddColumn(Name, TextDataViewType.Instance);
+        }
+
+        protected internal override Delegate GetDataViewGetter(DataViewRowCursor cursor)
+        {
+            return CreateValueGetterDelegate(cursor);
+        }
+
+        private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
+            (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
     }
 }

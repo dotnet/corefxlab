@@ -43,8 +43,6 @@ namespace Microsoft.Data
             }
         }
 
-        public DataFrameTable(BaseColumn column) : this(new List<BaseColumn> { column }) { }
-
         public BaseColumn Column(int columnIndex) => _columns[columnIndex];
 
         public IList<object> GetRow(long rowIndex)
@@ -154,6 +152,5 @@ namespace Microsoft.Data
             }
             return -1;
         }
-
     }
 }

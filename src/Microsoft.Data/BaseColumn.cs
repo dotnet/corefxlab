@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Apache.Arrow;
+using Microsoft.ML;
 
 namespace Microsoft.Data
 {
@@ -86,6 +87,23 @@ namespace Microsoft.Data
         /// </summary>
         protected internal virtual int MaxRecordBatchLength(long startIndex) => 0;
         protected internal virtual Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Creates a <see cref="ValueGetter{TValue}"/> that will return the value of the column for the row
+        /// the cursor is referencing.
+        /// </summary>
+        /// <param name="cursor">
+        /// The row cursor which has the current position.
+        /// </param>
+        protected internal virtual Delegate GetDataViewGetter(DataViewRowCursor cursor) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Adds a new <see cref="DataViewSchema.Column"/> to the specified builder for the current column.
+        /// </summary>
+        /// <param name="builder">
+        /// The builder to which to add the schema column.
+        /// </param>
+        protected internal virtual void AddDataViewColumn(DataViewSchema.Builder builder) => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

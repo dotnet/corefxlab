@@ -201,13 +201,29 @@ namespace Microsoft.Data
 
         public BaseColumn Column(int index) => _table.Column(index);
 
-        public void InsertColumn(int columnIndex, BaseColumn column) => _table.InsertColumn(columnIndex, column);
+        public void InsertColumn(int columnIndex, BaseColumn column)
+        {
+            _table.InsertColumn(columnIndex, column, this);
+            OnColumnsChanged();
+        }
 
-        public void SetColumn(int columnIndex, BaseColumn column) => _table.SetColumn(columnIndex, column);
+        public void SetColumn(int columnIndex, BaseColumn column)
+        {
+            _table.SetColumn(columnIndex, column);
+            OnColumnsChanged();
+        }
 
-        public void RemoveColumn(int columnIndex) => _table.RemoveColumn(columnIndex);
+        public void RemoveColumn(int columnIndex)
+        {
+            _table.RemoveColumn(columnIndex);
+            OnColumnsChanged();
+        }
 
-        public void RemoveColumn(string columnName) => _table.RemoveColumn(columnName);
+        public void RemoveColumn(string columnName)
+        {
+            _table.RemoveColumn(columnName);
+            OnColumnsChanged();
+        }
 
         public object this[long rowIndex, int columnIndex]
         {
@@ -271,16 +287,6 @@ namespace Microsoft.Data
         }
         // TODO: Add strongly typed versions of these APIs
         #endregion
-
-        private DataFrame Clone(BaseColumn mapIndices = null, bool invertMapIndices = false)
-        {
-            List<BaseColumn> newColumns = new List<BaseColumn>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                newColumns.Add(Column(i).Clone(mapIndices, invertMapIndices));
-            }
-            return new DataFrame(newColumns);
-        }
 
         public DataFrame Sort(string columnName, bool ascending = true)
         {
@@ -429,6 +435,14 @@ namespace Microsoft.Data
                     throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
             }
             _table.RowCount = rowCount;
+        }
+
+        /// <summary>
+        /// Invalidates any cached data after a column has changed.
+        /// </summary>
+        private void OnColumnsChanged()
+        {
+            _schema = null;
         }
 
         public override string ToString()
