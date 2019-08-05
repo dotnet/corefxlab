@@ -23,7 +23,46 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
+        public static BaseColumn CreateArrowStringColumn(int length)
+        {
+            byte[] foo = new byte[] { 102, 111, 111 }; // bytes for the string "foo"
+
+            byte[] dataMemory = new byte[length * 3];
+            byte[] nullMemory = new byte[length];
+            byte[] offsetMemory = new byte[(length + 1) * 4];
+
+            // Initialize offset with 0 as the first value
+            offsetMemory[0] = 0;
+            offsetMemory[1] = 0;
+            offsetMemory[2] = 0;
+            offsetMemory[3] = 0;
+
+            // Append "foo" length times
+            for (int i = 0; i < length; i++)
+            {
+                int dataMemoryIndex = i * 3;
+                dataMemory[dataMemoryIndex++] = 102;
+                dataMemory[dataMemoryIndex++] = 111;
+                dataMemory[dataMemoryIndex++] = 111;
+                nullMemory[i] = 0;
+                int offsetIndex = (i + 1) * 4;
+                offsetMemory[offsetIndex++] = (byte)(3 * (i + 1));
+                offsetMemory[offsetIndex++] = 0;
+                offsetMemory[offsetIndex++] = 0;
+                offsetMemory[offsetIndex++] = 0;
+            }
+            return new ArrowStringColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, 0);
+        }
+
         public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool withNulls = true)
+        {
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(length, withNulls);
+            BaseColumn arrowStringColumn = CreateArrowStringColumn(length);
+            df.InsertColumn(df.ColumnCount, arrowStringColumn);
+            return df;
+        }
+
+        public static DataFrame MakeDataFrameWithAllMutableColumnTypes(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, withNulls);
             BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
@@ -53,6 +92,7 @@ namespace Microsoft.Data.Tests
             {
                 stringColumn[length / 2] = null;
             }
+
             return df;
         }
 
@@ -167,7 +207,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void InsertAndRemoveColumnTests()
         {
-            DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10);
+            DataFrame dataFrame = MakeDataFrameWithAllMutableColumnTypes(10);
             BaseColumn intColumn = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             BaseColumn charColumn = dataFrame["Char"];
             int insertedIndex = dataFrame.ColumnCount;
@@ -450,7 +490,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestComputations()
         {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
             df["Int"][0] = -10;
             Assert.Equal(-10, df["Int"][0]);
 
@@ -554,7 +594,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestSort()
         {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(20);
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(20);
             df["Int"][0] = 100;
             df["Int"][19] = -1;
             df["Int"][5] = 2000;
@@ -734,8 +774,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestJoin()
         {
-            DataFrame left = MakeDataFrameWithAllColumnTypes(10);
-            DataFrame right = MakeDataFrameWithAllColumnTypes(5);
+            DataFrame left = MakeDataFrameWithAllMutableColumnTypes(10);
+            DataFrame right = MakeDataFrameWithAllMutableColumnTypes(5);
 
             // Tests with right.RowCount < left.RowCount
             // Left join
@@ -770,7 +810,7 @@ namespace Microsoft.Data.Tests
 
             // Tests with right.RowCount > left.RowCount
             // Left join
-            right = MakeDataFrameWithAllColumnTypes(15);
+            right = MakeDataFrameWithAllMutableColumnTypes(15);
             join = left.Join(right);
             Assert.Equal(join.RowCount, left.RowCount);
             Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
@@ -928,7 +968,7 @@ namespace Microsoft.Data.Tests
             df = MakeDataFrame<float, bool>(10, false);
             GroupCountAndAssert(df);
 
-            df = MakeDataFrame<int , bool>(10, false);
+            df = MakeDataFrame<int, bool>(10, false);
             GroupCountAndAssert(df);
 
             df = MakeDataFrame<long, bool>(10, false);

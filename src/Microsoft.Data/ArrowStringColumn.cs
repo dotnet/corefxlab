@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Apache.Arrow;
 using Apache.Arrow.Types;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Microsoft.Data
 {
@@ -356,5 +358,17 @@ namespace Microsoft.Data
             }
         }
 
+        protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
+        {
+            builder.AddColumn(Name, TextDataViewType.Instance);
+        }
+
+        protected internal override Delegate GetDataViewGetter(DataViewRowCursor cursor)
+        {
+            return CreateValueGetterDelegate(cursor);
+        }
+
+        private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
+            (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
     }
 }
