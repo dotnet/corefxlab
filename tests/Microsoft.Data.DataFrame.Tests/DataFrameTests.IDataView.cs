@@ -86,7 +86,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestIDataViewSchemaInvalidate()
         {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10, withNulls: false);
 
             IDataView dataView = df;
 
