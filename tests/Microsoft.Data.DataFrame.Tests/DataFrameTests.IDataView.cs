@@ -15,7 +15,7 @@ namespace Microsoft.Data.Tests
         public void TestIDataView()
         {
             // IDataView doesn't support null values
-            IDataView dataView= MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            IDataView dataView = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
 
             DataDebuggerPreview preview = dataView.Preview();
             Assert.Equal(10, preview.RowView.Length);

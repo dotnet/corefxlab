@@ -177,8 +177,6 @@ namespace Microsoft.Data
                 }
                 numberOfRowsProcessed += numberOfRowsInThisRecordBatch;
                 yield return new RecordBatch(schema, arrays, numberOfRowsInThisRecordBatch);
-                if (RowCount == 0)
-                    break;
             } while (numberOfRowsProcessed < RowCount);
         }
 
