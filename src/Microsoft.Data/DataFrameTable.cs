@@ -62,10 +62,21 @@ namespace Microsoft.Data
             column.Name = newName;
             _columnNameToIndexDictionary.Remove(currentName);
             _columnNameToIndexDictionary.Add(newName, currentIndex);
-
         }
 
-        public void InsertColumn(int columnIndex, BaseColumn column, DataFrame parent)
+        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
+            where T : unmanaged
+        {
+            column = column ?? throw new ArgumentNullException(nameof(column));
+            if ((uint)columnIndex > _columns.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(columnIndex));
+            }
+            BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
+            InsertColumn(columnIndex, newColumn);
+        }
+
+        public void InsertColumn(int columnIndex, BaseColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)
@@ -83,6 +94,10 @@ namespace Microsoft.Data
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
             _columnNameToIndexDictionary[column.Name] = columnIndex;
+            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            {
+                _columnNameToIndexDictionary[_columnNames[i]]++;
+            }
             _columns.Insert(columnIndex, column);
             ColumnCount++;
         }
@@ -111,6 +126,10 @@ namespace Microsoft.Data
         public void RemoveColumn(int columnIndex)
         {
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
+            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            {
+                _columnNameToIndexDictionary[_columnNames[i]]--;
+            }
             _columnNames.RemoveAt(columnIndex);
             _columns.RemoveAt(columnIndex);
             ColumnCount--;

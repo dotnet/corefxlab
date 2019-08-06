@@ -20,7 +20,7 @@ namespace Microsoft.Data.Tests
 
             DataDebuggerPreview preview = dataView.Preview();
             Assert.Equal(10, preview.RowView.Length);
-            Assert.Equal(14, preview.ColumnView.Length);
+            Assert.Equal(15, preview.ColumnView.Length);
 
             Assert.Equal("Byte", preview.ColumnView[0].Column.Name);
             Assert.Equal((byte)0, preview.ColumnView[0].Values[0]);
@@ -77,12 +77,16 @@ namespace Microsoft.Data.Tests
             Assert.Equal("Bool", preview.ColumnView[13].Column.Name);
             Assert.Equal(true, preview.ColumnView[13].Values[0]);
             Assert.Equal(false, preview.ColumnView[13].Values[1]);
+
+            Assert.Equal("ArrowString", preview.ColumnView[14].Column.Name);
+            Assert.Equal("foo".ToString(), preview.ColumnView[14].Values[0].ToString());
+            Assert.Equal("foo".ToString(), preview.ColumnView[14].Values[1].ToString());
         }
 
         [Fact]
         public void TestIDataViewSchemaInvalidate()
         {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10, withNulls: false);
 
             IDataView dataView = df;
 

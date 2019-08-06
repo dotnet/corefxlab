@@ -26,40 +26,42 @@ namespace Microsoft.Data
 
         private void GetSortIndices(IComparer<T> comparer, out PrimitiveColumn<long> columnSortIndices)
         {
-            List<int[]> bufferSortIndices = new List<int[]>(_columnContainer.Buffers.Count);
+            List<List<int>> bufferSortIndices = new List<List<int>>(_columnContainer.Buffers.Count);
             // Sort each buffer first
-            foreach (DataFrameBuffer<T> buffer in _columnContainer.Buffers)
+            for (int b = 0; b < _columnContainer.Buffers.Count; b++)
             {
-                var sortIndices = new int[buffer.Length];
+                ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
+                int[] sortIndices = new int[buffer.Length];
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;
-                IntrospectiveSort(buffer.Span, buffer.Length, sortIndices, comparer);
-                bufferSortIndices.Add(sortIndices);
+                IntrospectiveSort(buffer.ReadOnlySpan, buffer.Length, sortIndices, comparer);
+                // Bug fix: QuickSort is not stable. When PrimitiveColumn has null values and default values, they move around
+                List<int> nonNullSortIndices = new List<int>();
+                for (int i = 0; i < sortIndices.Length; i++)
+                {
+                    if (IsValid(sortIndices[i] + b * ReadOnlyDataFrameBuffer<T>.MaxCapacity))
+                        nonNullSortIndices.Add(sortIndices[i]);
+                }
+                bufferSortIndices.Add(nonNullSortIndices);
             }
             // Simple merge sort to build the full column's sort indices
             ValueTuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
             {
                 T value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
-                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * _columnContainer.Buffers[0].MaxCapacity;
-                while (!IsValid(rowIndex) && ++startIndex < bufferSortIndices[bufferIndex].Length)
-                {
-                    value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
-                    rowIndex = startIndex + bufferIndex * _columnContainer.Buffers[0].MaxCapacity;
-                }
+                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * ReadOnlyDataFrameBuffer<T>.MaxCapacity;
                 return (value, startIndex);
             }
             SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<ValueTuple<int, int>>>(comparer);
-            IList<DataFrameBuffer<T>> buffers = _columnContainer.Buffers;
+            IList<ReadOnlyDataFrameBuffer<T>> buffers = _columnContainer.Buffers;
             for (int i = 0; i < buffers.Count; i++)
             {
-                DataFrameBuffer<T> buffer = buffers[i];
-                ValueTuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
-                long columnIndex = valueAndBufferIndex.Item2 + i * bufferSortIndices[0].Length;
-                if (columnIndex == Length)
+                ReadOnlyDataFrameBuffer<T> buffer = buffers[i];
+                if (bufferSortIndices[i].Count == 0)
                 {
                     // All nulls
                     continue;
                 }
+                ValueTuple<T, int> valueAndBufferIndex = GetFirstNonNullValueAndBufferIndexStartingAtIndex(i, 0);
                 if (heapOfValueAndListOfTupleOfSortAndBufferIndex.ContainsKey(valueAndBufferIndex.Item1))
                 {
                     heapOfValueAndListOfTupleOfSortAndBufferIndex[valueAndBufferIndex.Item1].Add((valueAndBufferIndex.Item2, i));
@@ -70,9 +72,9 @@ namespace Microsoft.Data
                 }
             }
             columnSortIndices = new PrimitiveColumn<long>("SortIndices");
-            GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Length);
+            GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Count);
             GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer = new GetValueAndBufferSortIndexAtBuffer<T>((int bufferIndex, int sortIndex) => GetFirstNonNullValueAndBufferIndexStartingAtIndex(bufferIndex, sortIndex));
-            GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Length);
+            GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Count);
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAndBufferSortIndexAtBuffer, getBufferLengthAtIndex);
         }
     }

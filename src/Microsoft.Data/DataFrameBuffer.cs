@@ -3,28 +3,26 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A basic store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
+    /// A basic mutable store to hold values in a DataFrame column. Supports wrapping with an ArrowBuffer
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class DataFrameBuffer<T>
+    internal class DataFrameBuffer<T> : ReadOnlyDataFrameBuffer<T>
         where T : struct
     {
-        // TODO: Change this to Memory<T>
-        public Memory<byte> Memory { get; private set; }
+        private Memory<byte> _memory;
 
-        private readonly int _size;
+        public override ReadOnlyMemory<byte> ReadOnlyMemory => _memory;
 
-        private int Capacity => Memory.Length / _size;
-
-        public int MaxCapacity => Int32.MaxValue / _size;
+        public Memory<byte> Memory
+        {
+            get => _memory;
+        }
 
         public Span<T> Span
         {
@@ -32,16 +30,12 @@ namespace Microsoft.Data
             get => MemoryMarshal.Cast<byte, T>(Memory.Span);
         }
 
-        public int Length { get; internal set; }
+        public DataFrameBuffer(int numberOfValues = 8) : base(numberOfValues) { }
 
-        public DataFrameBuffer(int numberOfValues = 8)
+        internal DataFrameBuffer(ReadOnlyMemory<byte> buffer, int length) : base(buffer, length)
         {
-            _size = Unsafe.SizeOf<T>();
-            if ((long)numberOfValues * _size > MaxCapacity)
-            {
-                throw new ArgumentException($"{numberOfValues} exceeds buffer capacity", nameof(numberOfValues));
-            }
-            Memory = new byte[numberOfValues * _size];
+            _memory = new byte[buffer.Length];
+            buffer.CopyTo(_memory);
         }
 
         public void Append(T value)
@@ -56,7 +50,6 @@ namespace Microsoft.Data
                 ++Length;
         }
 
-        // TODO: Implement Append(Range of values)?
         public void EnsureCapacity(int numberOfValues)
         {
             long newLength = Length + (long)numberOfValues;
@@ -67,21 +60,15 @@ namespace Microsoft.Data
 
             if (newLength > Capacity)
             {
-                var newCapacity = Math.Max(newLength * _size, Memory.Length * 2);
+                var newCapacity = Math.Max(newLength * Size, ReadOnlyMemory.Length * 2);
                 var memory = new Memory<byte>(new byte[newCapacity]);
-                Memory.CopyTo(memory);
-                Memory = memory;
+                _memory.CopyTo(memory);
+                _memory = memory;
             }
         }
 
-        internal T this[int index]
+        internal override T this[int index]
         {
-            get
-            {
-                if (index > Length)
-                    throw new ArgumentOutOfRangeException(nameof(index));
-                return Span[index];
-            }
             set
             {
                 if (index > Length)
@@ -90,31 +77,15 @@ namespace Microsoft.Data
             }
         }
 
-        internal bool this[int startIndex, int length, IList<T> returnList]
+        internal static DataFrameBuffer<T> GetMutableBuffer(ReadOnlyDataFrameBuffer<T> buffer)
         {
-            get
+            DataFrameBuffer<T> mutableBuffer = buffer as DataFrameBuffer<T>;
+            if (mutableBuffer == null)
             {
-                if (startIndex > Length)
-                    throw new ArgumentOutOfRangeException(nameof(startIndex));
-                long endIndex = Math.Min(Length, startIndex + length);
-                for (int i = startIndex; i < endIndex; i++)
-                {
-                    returnList.Add(Span[i]);
-                }
-                return true;
+                mutableBuffer = new DataFrameBuffer<T>(buffer.ReadOnlyMemory, buffer.Length);
+                mutableBuffer.Length = buffer.Length;
             }
+            return mutableBuffer;
         }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            Span<T> span = Span;
-            for (int i = 0; i < Length; i++)
-            {
-                sb.Append(span[i]).Append(" ");
-            }
-            return sb.ToString();
-        }
-
     }
 }

@@ -79,6 +79,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Column is immutable.
+        /// </summary>
+        public static string ImmutableStringColumn {
+            get {
+                return ResourceManager.GetString("ImmutableStringColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column does not exist.
         /// </summary>
         public static string InvalidColumnName {
@@ -120,6 +129,15 @@ namespace Microsoft.Data {
         public static string MismatchedValueType {
             get {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot span multiple buffers.
+        /// </summary>
+        public static string SpansMultipleBuffers {
+            get {
+                return ResourceManager.GetString("SpansMultipleBuffers", resourceCulture);
             }
         }
     }

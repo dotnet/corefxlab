@@ -11,8 +11,9 @@ using Microsoft.ML.Data;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A column to hold strings
+    /// A mutable column to hold strings
     /// </summary>
+    /// <remarks> Is NOT Arrow compatible </remarks>
     public partial class StringColumn : BaseColumn
     {
         private List<List<string>> _stringBuffers = new List<List<string>>(); // To store more than intMax number of strings
