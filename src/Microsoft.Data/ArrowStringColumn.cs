@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -17,7 +18,7 @@ namespace Microsoft.Data
     /// <summary>
     /// An immutable to hold Arrow style strings
     /// </summary>
-    public partial class ArrowStringColumn : BaseColumn
+    public partial class ArrowStringColumn : BaseColumn, IEnumerable<string>
     {
         private IList<ReadOnlyDataFrameBuffer<byte>> _dataBuffers;
         private IList<ReadOnlyDataFrameBuffer<int>> _offsetsBuffers;
@@ -232,6 +233,16 @@ namespace Microsoft.Data
             }
         }
 
+        public IEnumerator<string> GetEnumerator()
+        {
+            for (long i = 0; i < Length; i++)
+            {
+                yield return this[i];
+            }
+        }
+
+        protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
+
         protected internal override Field Field() => new Field(Name, StringType.Default, NullCount != 0);
 
         protected internal override int MaxRecordBatchLength(long startIndex)
@@ -253,7 +264,6 @@ namespace Microsoft.Data
             }
             return nullCount;
         }
-
 
         protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {

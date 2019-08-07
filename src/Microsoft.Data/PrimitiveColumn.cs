@@ -3,10 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -18,7 +17,7 @@ namespace Microsoft.Data
     /// A column to hold primitive types such as int, float etc.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class PrimitiveColumn<T> : BaseColumn
+    public partial class PrimitiveColumn<T> : BaseColumn, IEnumerable<T?>
         where T : unmanaged
     {
         private PrimitiveColumnContainer<T> _columnContainer;
@@ -210,6 +209,10 @@ namespace Microsoft.Data
         }
 
         public bool IsValid(long index) => _columnContainer.IsValid(index);
+
+        public IEnumerator<T?> GetEnumerator() => _columnContainer.GetEnumerator();
+
+        protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
         public override string ToString()
         {

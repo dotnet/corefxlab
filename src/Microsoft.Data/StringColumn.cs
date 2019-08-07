@@ -14,7 +14,7 @@ namespace Microsoft.Data
     /// A mutable column to hold strings
     /// </summary>
     /// <remarks> Is NOT Arrow compatible </remarks>
-    public partial class StringColumn : BaseColumn
+    public partial class StringColumn : BaseColumn, IEnumerable<string>
     {
         private List<List<string>> _stringBuffers = new List<List<string>>(); // To store more than intMax number of strings
 
@@ -139,6 +139,19 @@ namespace Microsoft.Data
                 return ret;
             }
         }
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            foreach (List<string> buffer in _stringBuffers)
+            {
+                foreach (string value in buffer)
+                {
+                    yield return value;
+                }
+            }
+        }
+
+        protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
         public override BaseColumn Sort(bool ascending = true)
         {

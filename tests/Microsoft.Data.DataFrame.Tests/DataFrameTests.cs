@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -988,7 +989,85 @@ namespace Microsoft.Data.Tests
 
             df = MakeDataFrame<ushort, bool>(10, false);
             GroupCountAndAssert(df);
+        }
 
+        [Fact]
+        public void TestIEnumerable()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            
+            int totalValueCount = 0;
+            for (int i = 0; i < df.ColumnCount; i++)
+            {
+                BaseColumn baseColumn = df.Column(i);
+                foreach (object value in baseColumn)
+                {
+                    totalValueCount++;
+                }
+            }
+            Assert.Equal(10 * df.ColumnCount, totalValueCount);
+
+            // spot check a few column types:
+
+            StringColumn stringColumn = (StringColumn)df["String"];
+            StringBuilder actualStrings = new StringBuilder();
+            foreach (string value in stringColumn)
+            {
+                if (value == null)
+                {
+                    actualStrings.Append("<null>");
+                }
+                else
+                {
+                    actualStrings.Append(value);
+                }
+            }
+            Assert.Equal("01234<null>6789", actualStrings.ToString());
+
+            ArrowStringColumn arrowStringColumn = (ArrowStringColumn)df["ArrowString"];
+            actualStrings.Clear();
+            foreach (string value in arrowStringColumn)
+            {
+                if (value == null)
+                {
+                    actualStrings.Append("<null>");
+                }
+                else
+                {
+                    actualStrings.Append(value);
+                }
+            }
+            Assert.Equal("foofoofoofoofoofoofoofoofoofoo", actualStrings.ToString());
+
+            PrimitiveColumn<float> floatColumn = (PrimitiveColumn<float>)df["Float"];
+            actualStrings.Clear();
+            foreach (float? value in floatColumn)
+            {
+                if (value == null)
+                {
+                    actualStrings.Append("<null>");
+                }
+                else
+                {
+                    actualStrings.Append(value);
+                }
+            }
+            Assert.Equal("01234<null>6789", actualStrings.ToString());
+
+            PrimitiveColumn<int> intColumn = (PrimitiveColumn<int>)df["Int"];
+            actualStrings.Clear();
+            foreach (int? value in intColumn)
+            {
+                if (value == null)
+                {
+                    actualStrings.Append("<null>");
+                }
+                else
+                {
+                    actualStrings.Append(value);
+                }
+            }
+            Assert.Equal("01234<null>6789", actualStrings.ToString());
         }
     }
 }
