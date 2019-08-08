@@ -249,6 +249,46 @@ Some hard points of performance that probably will need to be looked at:
 
 These are some of the highlights after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application. The object doesn't take any arguments in its constructor, and the tested method doesn't load any additional assemblies into the target ALC, and does little basic operations. The method itself takes in one string parameter, performs an `ArrayList.Add(DateTime.Now)` operation with an existing array, and returns a new string. While testing the method took ~1% of CPU samples.:
 
+
+##### Performance Metrics: ALCProxy vs AppDomains
+Here are the tables of small samples being run through .NET Benchmark:
+
+###### ALCProxy on .NET Core 3.0
+|                            Method |              Mean |           Error |            StdDev |            Median |
+|---------------------------------- |------------------:|----------------:|------------------:|------------------:|
+|                 CreateProxyObject | 17,932,139.635 ns | 377,708.9706 ns |   449,635.6611 ns | 17,842,922.969 ns |
+| CreateExternalAssemblyProxyObject | 18,353,773.737 ns | 381,520.6028 ns | 1,112,913.5061 ns | 18,045,958.750 ns |
+|               CreateControlObject |          1.576 ns |       0.1245 ns |         0.2760 ns |          1.473 ns |
+|      CallSimpleMethodThroughProxy |      3,641.442 ns |     162.7061 ns |       293.3927 ns |      3,493.676 ns |
+|           CallSimpleMethodControl |          3.188 ns |       0.3236 ns |         0.3463 ns |          3.056 ns |
+|                CreateGenericProxy | 17,442,147.272 ns | 302,162.3193 ns |   252,319.2216 ns | 17,395,209.531 ns |
+|              CreateGenericControl |          3.441 ns |       0.1384 ns |         0.1294 ns |          3.368 ns |
+|           CallSimpleMethodGeneric |      5,222.213 ns |      98.1293 ns |        81.9424 ns |      5,184.011 ns |
+|    CallSimpleMethodGenericControl |        706.292 ns |       6.4399 ns |         5.0278 ns |        706.868 ns |
+|                UserTypeParameters |     19,068.864 ns |     186.4137 ns |       165.2509 ns |     19,031.007 ns |
+|         UserTypeParametersControl |          6.439 ns |       0.1279 ns |         0.1068 ns |          6.458 ns |
+|               UserTypeParameters2 |     19,105.781 ns |     451.3815 ns |       400.1379 ns |     19,053.287 ns |
+|        UserTypeParametersControl2 |          3.327 ns |       0.0668 ns |         0.0593 ns |          3.317 ns |
+
+###### AppDomain on .NET Framework
+|                         Method |           Mean |           Error |          StdDev |         Median |
+|------------------------------- |---------------:|----------------:|----------------:|---------------:|
+|              CreateProxyObject | 633,775.047 ns |  57,139.2880 ns | 165,771.4352 ns | 658,227.142 ns |
+|            CreateControlObject |      11.598 ns |       1.3510 ns |       3.8326 ns |      10.475 ns |
+|   CallSimpleMethodThroughProxy |   7,771.980 ns |     628.1640 ns |   1,802.3202 ns |   6,955.483 ns |
+|        CallSimpleMethodControl |       4.128 ns |       1.5589 ns |       4.3968 ns |       1.955 ns |
+|             CreateGenericProxy | 615,069.780 ns | 116,621.4572 ns | 338,339.9937 ns | 579,898.792 ns |
+|           CreateGenericControl |      19.068 ns |       1.2528 ns |       3.4506 ns |      18.333 ns |
+|        CallSimpleMethodGeneric |  25,551.128 ns |   1,307.3666 ns |   3,644.4156 ns |  24,720.659 ns |
+| CallSimpleMethodGenericControl |   8,118.753 ns |     676.1748 ns |   1,950.9188 ns |   7,602.008 ns |
+|             UserTypeParameters | 720,413.916 ns |  54,520.3760 ns | 158,173.4966 ns | 738,401.312 ns |
+|      UserTypeParametersControl |      28.522 ns |       0.6977 ns |       0.9551 ns |      28.450 ns |
+|            UserTypeParameters2 |  21,728.934 ns |     432.5692 ns |     967.5030 ns |  21,646.248 ns |
+|     UserTypeParametersControl2 |      16.342 ns |       1.4584 ns |       4.1135 ns |      15.511 ns |
+
+
+The ALCProxy API currently does much worse with creating new proxy objects. However, calling methods from proxy objects has similar performance times compared to `TransparentProxy` from AppDomains. 
+
 ##### Object creation
 * Around 15-20% of CPU samples are used to find the `TargetObject` type inside its assembly once its loaded into the new ALC, from the `FindTypeInAssembly` method.
 * Another ~10-15% of samples are used to Load the desired assembly itself into our targeted ALC.
@@ -297,3 +337,4 @@ Performance considerations are also fairly important, and need to be tested as w
 ## Discovered Limitations
 * As stated before, call-by-value is the only way to do anything with our current implementation, which causes problems if we want proxies to change values of passed-in objects.
 * A good chunk of our performance hits come from multiple uses of `MethodInfo.Invoke`. We could improve performance by swapping most of our method calls to invoking through a `Delegate`, but for our types where we only get our type information during runtime, it may be difficult/impossible to make delegates for every method of a proxied object when we call for the `ProxyBuilder` to create them.
+* For `DataContractSerialization`, larger projects need to ensure that all classes and members being used by the proxies are able to be serialized across the boundary. This requires manual placement of the `[DataContractAttribute]` and `[DataMember]` attributes across any classes needing to be proxied. For more complex classes like Tasks in MSBuild, this is close to impossible to do with our current setup.
