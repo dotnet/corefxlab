@@ -160,19 +160,16 @@ namespace Microsoft.Data
                 {
                     BaseColumn boolColumn = new PrimitiveColumn<bool>(names[i]);
                     df.InsertColumn(i, boolColumn);
-
                 }
                 else if (kind == typeof(float))
                 {
                     BaseColumn floatColumn = new PrimitiveColumn<float>(names[i]);
                     df.InsertColumn(i, floatColumn);
-
                 }
                 else if (kind == typeof(string))
                 {
                     BaseColumn stringColumn = new StringColumn(names[i], 0);
                     df.InsertColumn(i, stringColumn);
-
                 }
                 else
                     throw new NotSupportedException(nameof(kind));
