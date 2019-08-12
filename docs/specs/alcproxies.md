@@ -251,7 +251,7 @@ These are some of the highlights after running the proxy system through the visu
 
 
 ##### Performance Metrics: ALCProxy vs AppDomains
-Here are the tables of small samples being run through .NET Benchmark:
+Here are the tables of small samples being run through .NET Benchmark. The "Control" times are representing normal object calls/creation in .NET Core/Framework respectively, to get a better comparison of both proxy systems to a similar standard.
 
 ###### ALCProxy on .NET Core 3.0
 |                            Method |              Mean |           Error |            StdDev |            Median |
@@ -289,16 +289,17 @@ Here are the tables of small samples being run through .NET Benchmark:
 
 The ALCProxy API currently does much worse with creating new proxy objects. However, calling methods from proxy objects has similar performance times compared to `TransparentProxy` from AppDomains. 
 
-##### Object creation
-* Around 15-20% of CPU samples are used to find the `TargetObject` type inside its assembly once its loaded into the new ALC, from the `FindTypeInAssembly` method.
-* Another ~10-15% of samples are used to Load the desired assembly itself into our targeted ALC.
-* The majority of the delays come from `Reflection.Invoke` being used on the constructor of the `ServerObject` (~40-70%).
-* Creating the DispatchProxy on top of the server took the remaining CPU samples (~5% usually).
+##### Object creation (with updated use of AssemblyDependencyResolver in the ALC)
+* Around 10-20% of CPU samples are used to find the `TargetObject` type inside its assembly once its loaded into the new ALC, from the `FindTypeInAssembly` method.
+* Another ~40-50% of samples are used to Load the desired assembly itself + any dependencies into our targeted ALC.
+* The some delay comes from invoking the constructor of the `ServerObject`, which then creates the new proxy object (~10-20%).
+* Creating the DispatchProxy on top of the server took the remaining CPU samples (~10-15% usually).
 
 ##### Calling methods on the proxied object
 * ~2% of CPU samples were for calling the delegate from the `ClientObject` to call `ServerObject.CallObject`
 * Searching for the method in the assembly takes around 2-3% of CPU samples.
-* Serialization of parameters took around 65-75% of CPU samples.
+* Serialization of parameters took around 50-65% of CPU samples.
+* Invoking of the method itself from the `ProxyObject` took around 10-20% of CPU samples.
 * Server-side deseralization took around 10% of samples.
 
 
