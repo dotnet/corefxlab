@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using ALCProxy.Communication;
 using ALCProxy.Proxy;
 using Xunit;
 
@@ -15,10 +16,16 @@ namespace ALCProxy.Tests
 {
     public interface ITest
     {
+        int specialInt
+        {
+            get;
+
+            set;
+        }
         public string GetContextName();
         public int ReturnIntWhilePassingInList(int a, List<string> list);
-        public int ReturnIntWhilePassingInUserType(int a, Test2 t);
-        public Test2 ReturnUserType();
+        public int ReturnIntWhilePassingInUserType(int a, TestParameter t);
+        public TestParameter ReturnUserType();
         public int SimpleMethodReturnsInt();
     }
 
@@ -26,19 +33,19 @@ namespace ALCProxy.Tests
     {
         public string GetContextName();
         public int PassInList(int a, List<string> list);
-        public int PassInUserType(int a, Test2 t);
+        public int PassInUserType(int a, TestParameter t);
         public string PassInGenericType(T t);
         public string GenericMethodTest<I>();
     }
-
-    public class Test2
+    [Serializable]
+    public class TestParameter
     {
         public int testValue;
-        public Test2()
+        public TestParameter()
         {
             testValue = 5;
         }
-        public Test2(int start)
+        public TestParameter(int start)
         {
             testValue = start;
         }
@@ -47,6 +54,7 @@ namespace ALCProxy.Tests
             testValue++;
         }
     }
+    [Serializable]
     public class GenericClass<T> : IGeneric<T>
     {
         private readonly string _instance = "testString";
@@ -71,7 +79,7 @@ namespace ALCProxy.Tests
         {
             return _instance.Length;
         }
-        public int PassInUserType(int a, Test2 t)
+        public int PassInUserType(int a, TestParameter t)
         {
             t.DoThingy();
             return 6;
@@ -81,9 +89,17 @@ namespace ALCProxy.Tests
             return tester.ToString();
         }
     }
-
+    [Serializable]
     public class Test : ITest
     {
+        public Test()
+        {
+            specialInt = 5;
+        }
+
+        public int specialInt { get; set; }
+
+
         public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
@@ -94,34 +110,37 @@ namespace ALCProxy.Tests
             Console.WriteLine(a);
             return a + list[0].Length;
         }
-        public int ReturnIntWhilePassingInUserType(int a, Test2 t)
+        public int ReturnIntWhilePassingInUserType(int a, TestParameter t)
         {
             t.DoThingy();
             return 5;
         }
 
-        Test2 ITest.ReturnUserType()
+        TestParameter ITest.ReturnUserType()
         {
-            return new Test2();
+            return new TestParameter();
         }
         public int SimpleMethodReturnsInt()
         {
             return 3;
         }
     }
-
+    [Serializable]
     public class TestObjectParamConst : ITest
     {
         int aa;
         string bb;
-        Test2 tt;
+        TestParameter tt;
+
+        public int specialInt { get => aa; set => throw new NotImplementedException(); }
+
         public TestObjectParamConst(int a, string b)
         {
             this.aa = a;
             this.bb = b;
-            tt = new Test2();
+            tt = new TestParameter();
         }
-        public TestObjectParamConst(int a, string b, Test2 t)
+        public TestObjectParamConst(int a, string b, TestParameter t)
         {
             this.aa = a;
             this.bb = b;
@@ -132,7 +151,7 @@ namespace ALCProxy.Tests
             return aa;
         }
 
-        public int ReturnIntWhilePassingInUserType(int a, Test2 t)
+        public int ReturnIntWhilePassingInUserType(int a, TestParameter t)
         {
             return aa + a;
         }
@@ -142,7 +161,7 @@ namespace ALCProxy.Tests
             return bb;
         }
 
-        public Test2 ReturnUserType()
+        public TestParameter ReturnUserType()
         {
             return tt;
         }
@@ -170,19 +189,31 @@ namespace ALCProxy.Tests
         public void SimpleObjectsProxiedCorrectly()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("SimpleObjectsProxiedCorrectly", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "ALCProxy.Tests.Test");
+            ITest t = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "ALCProxy.Tests.Test");
 
             //Test basic functionality
             Assert.Equal("SimpleObjectsProxiedCorrectly", t.GetContextName());
             Assert.Equal(17, t.ReturnIntWhilePassingInList(10, new List<string> { "Letters", "test", "hello world!"}));
 
             //Tests for call-by-value functionality, to make sure there aren't any problems with editing objects in the other ALC
-            Test2 t2 = new Test2(3);
+            TestParameter t2 = new TestParameter(3);
             Assert.Equal(3, t2.testValue);
             Assert.Equal(5, t.ReturnIntWhilePassingInUserType(5, t2));
             Assert.Equal(3, t2.testValue);
 
         }
+        [Fact]
+        public void SimpleObjectWithPropertiesProxied()
+        {
+            TestAssemblyLoadContext alc = new TestAssemblyLoadContext("SimpleObjectsProxiedCorrectly", isCollectible: true);
+            ITest t = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "ALCProxy.Tests.Test");
+
+            //Test basic functionality of properties
+            Assert.Equal("SimpleObjectsProxiedCorrectly", t.GetContextName());
+            Assert.Equal(5, t.specialInt);
+
+        }
+
         [Fact]
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void UnloadabilityWorksCorrectly() 
@@ -201,7 +232,7 @@ namespace ALCProxy.Tests
             //This seems to be neccesary to keep the ALC creation and unloading within a separate method to allow for it to be collected correctly, this needs to be investigated as to why
             var alc = new TestAssemblyLoadContext("UnloadabilityWorksCorrectly", isCollectible: true);
             WeakReference alcWeakRef = new WeakReference(alc, trackResurrection: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "Test"); //The one referenced through the comm object, to test that the reference is removed
+            ITest t = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "Test"); //The one referenced through the comm object, to test that the reference is removed
             Assert.Equal("UnloadabilityWorksCorrectly", t.GetContextName());
 
             //The unload only seems to work here, not anywhere outside the method which is strange
@@ -213,7 +244,7 @@ namespace ALCProxy.Tests
         public void NonUserGenericTypesExecuteCorrectly()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("NonUserGenericTypesExecuteCorrectly", isCollectible: true);
-            IGeneric<string> t = ProxyBuilder<IGeneric<string>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
+            IGeneric<string> t = ProxyBuilder<IGeneric<string>, ClientDispatch>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(string) }); //The one referenced through the comm object, to test that the reference is removed
             
             Assert.Equal("NonUserGenericTypesExecuteCorrectly", t.GetContextName());
             Assert.Equal("Hello!", t.PassInGenericType("Hello!"));
@@ -225,8 +256,8 @@ namespace ALCProxy.Tests
         public void UserGenericTypesCorrectlyCreated()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("UserGenericTypesCorrectlyCreated", isCollectible: true);
-            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
-            Assert.Equal(new Test2().ToString(), t.PassInGenericType(new Test2()));
+            IGeneric<TestParameter> t = ProxyBuilder<IGeneric<TestParameter>, ClientDispatch>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(TestParameter) }); //The one referenced through the comm object, to test that the reference is removed
+            Assert.Equal(new TestParameter().ToString(), t.PassInGenericType(new TestParameter()));
 
             alc.Unload();
         }
@@ -234,9 +265,9 @@ namespace ALCProxy.Tests
         public void UserGenericTypeMethodsExecuteCorrectly()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("GenericMethodsExecuteCorrectly", isCollectible: true);
-            IGeneric<Test2> t = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(Test2) }); //The one referenced through the comm object, to test that the reference is removed
+            IGeneric<TestParameter> t = ProxyBuilder<IGeneric<TestParameter>, ClientDispatch>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "GenericClass`1", new Type[] { typeof(TestParameter) }); //The one referenced through the comm object, to test that the reference is removed
             //Test generic methods
-            Assert.Equal(new Test2().ToString(), t.GenericMethodTest<Test2>());
+            Assert.Equal(new TestParameter().ToString(), t.GenericMethodTest<TestParameter>());
 
             alc.Unload();
         }
@@ -244,8 +275,8 @@ namespace ALCProxy.Tests
         public void ReturnTypesCorrectlyGiveBackUserDefinedTypes()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("ReturnTypesCorrectlyGiveBackUserDefinedTypes", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "Test");
-            Assert.Equal(new Test2().ToString(), t.ReturnUserType().ToString());
+            ITest t = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "Test");
+            Assert.Equal(new TestParameter().ToString(), t.ReturnUserType().ToString());
 
             alc.Unload();
         }
@@ -253,9 +284,9 @@ namespace ALCProxy.Tests
         public void CreateObjectWithNonUserParamsInConstructor()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CreateObjectWithNonUserParamsInConstructor", isCollectible: true);
-            ITest t = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "TestObjectParamConst", new object[] { 55, "testString" });
+            ITest t = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "TestObjectParamConst", new object[] { 55, "testString" });
             Assert.Equal(55, t.ReturnIntWhilePassingInList(3, new List<string>()));
-            Assert.Equal(58, t.ReturnIntWhilePassingInUserType(3, new Test2()));
+            Assert.Equal(58, t.ReturnIntWhilePassingInUserType(3, new TestParameter()));
             Assert.Equal("testString", t.GetContextName());
             Assert.Equal(5, t.SimpleMethodReturnsInt());
         }
@@ -266,10 +297,10 @@ namespace ALCProxy.Tests
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CreateObjectWithUserParamsInConstructor", isCollectible: true);
             //Test when putting user objects into the constructor
-            Test2 test = new Test2(100);
-            ITest t2 = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "TestObjectParamConst", new object[] { 60, "testString", test });
+            TestParameter test = new TestParameter(100);
+            ITest t2 = ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(true), "TestObjectParamConst", new object[] { 60, "testString", test });
             Assert.Equal(60, t2.ReturnIntWhilePassingInList(3, new List<string>()));
-            Assert.Equal(63, t2.ReturnIntWhilePassingInUserType(3, new Test2()));
+            Assert.Equal(63, t2.ReturnIntWhilePassingInUserType(3, new TestParameter()));
             Assert.Equal("testString", t2.GetContextName());
             Assert.NotEqual(test, t2.ReturnUserType());
             Assert.Equal(test.testValue, t2.SimpleMethodReturnsInt());
@@ -290,7 +321,7 @@ namespace ALCProxy.Tests
                     "netcoreapp3.0",
                     "ALCProxy.TestAssembly.dll" });
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CanLoadOustideAssemblyWithSharedInterface", newPath, isCollectible: true);
-            ALCProxy.TestInterface.IExternalClass a = ProxyBuilder<ALCProxy.TestInterface.IExternalClass>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
+            ALCProxy.TestInterface.IExternalClass a = ProxyBuilder<ALCProxy.TestInterface.IExternalClass, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithSharedInterface", a.GetCurrentContext());
             Dictionary<string, string> dict = new Dictionary<string, string>
@@ -322,7 +353,7 @@ namespace ALCProxy.Tests
                     "netcoreapp3.0",
                     "ALCProxy.TestAssembly.dll" });
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CanLoadOustideAssemblyWithoutSharedInterface", newPath, isCollectible: true);
-            ALCProxy.TestInterfaceUpdated.IExternalClass a = ProxyBuilder<ALCProxy.TestInterfaceUpdated.IExternalClass>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
+            ALCProxy.TestInterfaceUpdated.IExternalClass a = ProxyBuilder<ALCProxy.TestInterfaceUpdated.IExternalClass, ClientDispatch>.CreateInstanceAndUnwrap(alc, Assembly.LoadFile(newPath).GetName(true), "ExternalClass", new object[] { });
             Assert.Equal(5, a.GetUserParameter(5));
             Assert.Equal("CanLoadOustideAssemblyWithoutSharedInterface", a.GetCurrentContext());
             Dictionary<string, string> dict = new Dictionary<string, string>

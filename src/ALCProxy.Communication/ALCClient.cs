@@ -16,8 +16,8 @@ namespace ALCProxy.Communication
     internal delegate object ServerCall(MethodInfo info, IList<object> args, IList<Type> types);
     /// <summary>
     /// This currently is designed to only work in-process
-    /// TODO: set up to allow for construction of out-of-proc proxies
     /// </summary>
+    //TODO: set up to allow for construction of out-of-proc proxies
     public abstract class ALCClient : IProxyClient
     {
         //Can't make this an IServerObject directly due to the type-loading barrier
@@ -26,8 +26,15 @@ namespace ALCProxy.Communication
         protected Type _intType;
         internal ServerCall _serverDelegate;
         protected Type _serverType;
-
+#if DEBUG
         private StackTrace _stackTrace;
+#endif
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <param name="serverName"></param>
+        /// <param name="serverType"></param>
         public ALCClient(Type interfaceType, string serverName, Type serverType)
         {
             if (interfaceType == null || serverName == null)
@@ -39,6 +46,7 @@ namespace ALCProxy.Communication
             _stackTrace = new StackTrace(true); //holds information for debugging purposes
 #endif
         }
+
         private Type FindTypeInAssembly(string typeName, Assembly a)
         {
             //find the type we're looking for
@@ -53,6 +61,7 @@ namespace ALCProxy.Communication
             }
             return t;
         }
+
         /// <summary>
         /// Creates the link between the client and the server, while also passing in all the information to the server for setup
         /// </summary>
@@ -79,7 +88,7 @@ namespace ALCProxy.Communication
                 interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
             }
             //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
-            Assembly serverAssembly = alc.LoadFromStream(Assembly.GetAssembly(_serverType).GetFiles()[0]);
+            Assembly serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(_serverType).GetName());
             //Get the server type, then make it generic with the interface we're using
             Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
             //Give the client its reference to the server
@@ -91,6 +100,7 @@ namespace ALCProxy.Communication
             //Attach to the unloading event
             alc.Unloading += UnloadClient;
         }
+
         /// <summary>
         /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
         /// </summary>
@@ -99,6 +109,7 @@ namespace ALCProxy.Communication
             AssemblyName assemblyName = Assembly.GetAssembly(toConvert).GetName();
             return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
         }
+
         private Type FindInterfaceType(string interfaceName, Type objType)
         {
             Type[] interfaces;
@@ -115,6 +126,7 @@ namespace ALCProxy.Communication
             }
             throw new Exception("Interface not found, error");
         }
+
         private Type GetModType(string name, Module m)
         {
             foreach (Type t in m.GetTypes())
@@ -124,11 +136,13 @@ namespace ALCProxy.Communication
             }
             throw new Exception("Type not found in module");
         }
+
         private void UnloadClient(object sender)
         {
             _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
             _serverDelegate = null; //TODO: to Delegates to a specific object hold a strong or weak reference to said object?
         }
+
         /// <summary>
         /// Converts each argument into a serialized version of the object so it can be sent over in a call-by-value fashion
         /// </summary>
@@ -148,6 +162,7 @@ namespace ALCProxy.Communication
             object encryptedReturn = _serverDelegate( method, streams, argTypes );
             return DeserializeReturnType(encryptedReturn, method.ReturnType);
         }
+
         protected void SerializeParameters(object[] arguments, out IList<object> serializedArgs, out IList<Type> argTypes)
         {
             argTypes = new List<Type>();
@@ -162,10 +177,12 @@ namespace ALCProxy.Communication
                 argTypes.Add(t);
             }
         }
+
         /// <summary>
         /// Serializes an object that's being used as a parameter for a method call. Will be sent to the ALCServer to be deserialized and used in the method call.
         /// </summary>
         protected abstract object SerializeParameter(object param, Type paramType);
+
         /// <summary>
         /// Deserializes the object that is returned from the ALCServer once a method call is finished.
         /// </summary>

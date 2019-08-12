@@ -15,6 +15,10 @@ namespace ALCProxy.Communication
         public I instance;
         public Type instanceIntType;
         public AssemblyLoadContext currentLoadContext;
+
+        /// <summary>
+        /// ALCServer, contacted by the client to take methods and serialized parameters and run them on a created proxy object.
+        /// </summary>
         public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
             if (instanceType == null)
@@ -32,6 +36,7 @@ namespace ALCProxy.Communication
             var constructorParams = DeserializeParameters(serializedConstParams, constArgTypes);
             SetInstance(instanceType, constArgTypes.ToArray(), constructorParams);
         }
+
         /// <summary>
         /// Create the instance of the object we want to proxy
         /// </summary>
@@ -43,14 +48,30 @@ namespace ALCProxy.Communication
             var ci = instanceType.GetConstructor(constructorTypes);
             instance = (I)ci.Invoke(constructorArgs);
         }
+
         /// <summary>
         /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
         /// </summary>
         protected Type ConvertType(Type toConvert)
         {
+            if (toConvert == null)
+                throw new ArgumentNullException();
             AssemblyName assemblyName = Assembly.GetAssembly(toConvert).GetName();
-            return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
+            if (assemblyName.Name.Equals("System.Private.CoreLib"))
+                return toConvert;
+            Assembly foundAssembly = currentLoadContext.Assemblies.ToList().Find(x => x.FullName.Equals(assemblyName));
+            if(foundAssembly == null)
+                return currentLoadContext.LoadFromAssemblyName(assemblyName).GetType(toConvert.FullName);
+            return foundAssembly.GetType(toConvert.FullName);
         }
+        
+        /// <summary>
+        /// Calls a method of the stored proxy object
+        /// </summary>
+        /// <param name="targetMethod">The method from the Proxy to be called</param>
+        /// <param name="serializedObjects">Parameter arguments for the target method, serialized in some way</param>
+        /// <param name="argTypes">In the same order as the serialized objects, the respective type for each serialized object</param>
+        /// <returns>A serialized version of the returned object from the method</returns>
         public object CallObject(MethodInfo targetMethod, IList<object> serializedObjects, IList<Type> argTypes)
         {
             if (targetMethod == null || serializedObjects.Count != argTypes.Count)
@@ -68,6 +89,7 @@ namespace ALCProxy.Communication
             }
             return SerializeReturnObject(m.Invoke(instance, args), m.ReturnType);
         }
+
         /// <summary>
         /// Searches for methods within the type to find the one that matches our passed in type. Since the types are technically different,
         /// using a .Equals() on the methods doesn't have the comparison work correctly, so the first if statement does that manually for us.
@@ -91,30 +113,42 @@ namespace ALCProxy.Communication
                     }
                 }
                 if (!methodParamsAlligned)
+                {
                     continue;
+                }
                 return m;
             }
             throw new MissingMethodException("Error in ALCProxy: Method Not found for " + instance.ToString() + ": " + methodName);
         }
+
         /// <summary>
         /// If a parameter of a function isn't the direct type that we've passed in, this function should find that the type we've passed is correct.
         /// </summary>
         private bool RecursivelyCheckForTypes(Type sentParameterType, Type toCompare)
         {
-            Type[] interfaces = sentParameterType.GetInterfaces();
-            if (sentParameterType.Equals(toCompare))
-            {
-                return true;
-            }
-            else if (sentParameterType.BaseType == null && interfaces.Length == 0)
-            {
+            if ((sentParameterType ?? toCompare) == null)
                 return false;
-            }
+
+            Type[] interfaces = sentParameterType.GetInterfaces();
+
+            if (interfaces == null)
+                return false;
+
+            if (sentParameterType.Equals(toCompare))
+                return true;
+            else if (sentParameterType.BaseType == null && interfaces.Length == 0)
+                return false;
             else
             {
-                return RecursivelyCheckForTypes(sentParameterType.BaseType, toCompare) || interfaces.Any(x => RecursivelyCheckForTypes(x, toCompare));
+                bool baseType = false;
+                if (sentParameterType.BaseType != null)
+                {
+                    baseType = RecursivelyCheckForTypes(sentParameterType.BaseType, toCompare);
+                }
+                return baseType || interfaces.Any(x => RecursivelyCheckForTypes(ConvertType(x), toCompare));
             }
         }
+
         /// <summary>
         /// Takes the serialized objects passed into the server and turns them into the specific objects we want, in the desired types we want
         /// </summary>
@@ -135,10 +169,12 @@ namespace ALCProxy.Communication
             }
             return convertedObjects.ToArray();
         }
+        
         /// <summary>
         /// Deserializes an object into the required type for the ALC. Used when methods with arguments are sent over from the client to the server.
         /// </summary>
         protected abstract object DeserializeParameter(object serializedParam, Type paramType);
+
         /// <summary>
         /// Once we've completed our method call to the real object, we need to convert the return type back into our type from the original ALC 
         /// the proxy is in, so we turn our returned object back into a stream that the client can decode
