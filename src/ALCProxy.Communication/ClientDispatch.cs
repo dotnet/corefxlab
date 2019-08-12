@@ -11,6 +11,7 @@ namespace ALCProxy.Communication
     public class ClientDispatch : ALCClient
     {
         public ClientDispatch(Type intType) : base(intType, "ALCProxy.Communication.ServerDispatch`1", typeof(ServerDispatch<>)) { }
+
         protected override object SerializeParameter(object param, Type paramType)
         {
             var stream = new MemoryStream();
@@ -19,6 +20,7 @@ namespace ALCProxy.Communication
             serializer.WriteObject(stream, param);
             return stream;
         }
+
         protected override object DeserializeReturnType(object s, Type returnType)
         {
             if (!s.GetType().Equals(typeof(MemoryStream)))

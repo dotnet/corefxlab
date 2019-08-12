@@ -9,7 +9,7 @@ using ALCProxy.Communication;
 
 namespace ALCProxy.Proxy
 {
-    public static class ProxyBuilder<I, T> //T is the specific serializer we want to use
+    public static class ProxyBuilder<I, T> where T : IProxyClient//T is the specific serializer we want to use
     {
         public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName)
         {
@@ -32,7 +32,7 @@ namespace ALCProxy.Proxy
             return CreateGenericInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { }, genericTypes);
         }
     }
-    public class ALCDispatch<I, T> : System.Reflection.DispatchProxy //I is the specific client you want to use.
+    public class ALCDispatch<I, T> : DispatchProxy where T : IProxyClient //I is the specific client you want to use.
     {
         private IProxyClient _client; //ClientObject
         internal static I Create(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)

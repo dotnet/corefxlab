@@ -30,11 +30,8 @@ namespace ALCProxy.Communication
         private StackTrace _stackTrace;
 #endif
         /// <summary>
-        /// 
+        /// ALCClient gets the information that is needed to set up the ALCServer in the target ALC
         /// </summary>
-        /// <param name="interfaceType"></param>
-        /// <param name="serverName"></param>
-        /// <param name="serverType"></param>
         public ALCClient(Type interfaceType, string serverName, Type serverType)
         {
             if (interfaceType == null || serverName == null)
