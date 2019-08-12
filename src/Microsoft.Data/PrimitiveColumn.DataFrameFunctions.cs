@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Microsoft.Data
@@ -64,6 +65,20 @@ namespace Microsoft.Data
                 }
             }
             return ret;
+        }
+
+        public override BaseColumn FillNulls(object value)
+        {
+            T TValue = (T)Convert.ChangeType(value, typeof(T));
+            PrimitiveColumn<T> column = Clone();
+            column.ApplyElementwise((T? columnValue, long index) =>
+            {
+                if (columnValue.HasValue == false)
+                    return TValue;
+                else
+                    return columnValue.Value;
+            });
+            return column;
         }
     }
 }

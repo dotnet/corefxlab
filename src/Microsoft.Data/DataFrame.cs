@@ -3,14 +3,23 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 
 namespace Microsoft.Data
 {
+
+    public enum DropNullOptions
+    {
+        Any,
+        All
+    }
+
     /// <summary>
     /// A DataFrame to support indexing, binary operations, sorting, selection and other APIs. This will eventually also expose an IDataView for ML.NET
     /// </summary>
@@ -430,6 +439,65 @@ namespace Microsoft.Data
                     throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
             }
             _table.RowCount = rowCount;
+        }
+
+        /// <summary>
+        /// Returns a DataFrame with no missing values
+        /// </summary>
+        /// <param name="options"></param>
+        public DataFrame DropNulls(DropNullOptions options = DropNullOptions.Any)
+        {
+            DataFrame ret = new DataFrame();
+            PrimitiveColumn<bool> filter = new PrimitiveColumn<bool>("Filter");
+            if (options == DropNullOptions.Any)
+            {
+                filter.AppendMany(true, RowCount);
+
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn column = Column(i);
+                    filter.ApplyElementwise((bool? value, long index) =>
+                    {
+                        return value.Value && (column[index] == null ? false : true);
+                    });
+                }
+            }
+            else
+            {
+                filter.AppendMany(false, RowCount);
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    BaseColumn column = Column(i);
+                    filter.ApplyElementwise((bool? value, long index) =>
+                    {
+                        return value.Value || (column[index] == null ? false : true);
+                    });
+                }
+            }
+            return this[filter];
+        }
+
+        public DataFrame FillNulls(object value)
+        {
+            DataFrame ret = new DataFrame();
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                ret.InsertColumn(i, Column(i).FillNulls(value));
+            }
+            return ret;
+        }
+
+        public DataFrame FillNulls(IList<object> values)
+        {
+            if (values.Count != ColumnCount)
+                throw new ArgumentException(nameof(values));
+            DataFrame ret = new DataFrame();
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                ret.InsertColumn(i, Column(i).FillNulls(values[i]));
+            }
+            return ret;
+
         }
 
         /// <summary>

@@ -1281,5 +1281,25 @@ namespace Microsoft.Data.Tests
                 Assert.Equal((float)4, column[3]);
             }
         }
+
+        [Fact]
+        public void TestDropNulls()
+        {
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(20);
+            DataFrame anyNulls = df.DropNulls();
+            Assert.Equal(19, anyNulls.RowCount);
+
+            DataFrame allNulls = df.DropNulls(DropNullOptions.All);
+            Assert.Equal(19, allNulls.RowCount);
+        }
+
+        [Fact]
+        public void TestFillNulls()
+        {
+            DataFrame df = MakeDataFrameWithTwoColumns(20);
+            Assert.Null(df[10, 0]);
+            DataFrame fillNulls = df.FillNulls(1000);
+            Assert.Equal(1000, (int)fillNulls[10, 1]);
+        }
     }
 }

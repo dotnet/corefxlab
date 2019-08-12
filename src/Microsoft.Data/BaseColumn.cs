@@ -95,6 +95,13 @@ namespace Microsoft.Data
 
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
+        /// <summary>
+        /// Returns a new column with nulls replaced by value
+        /// </summary>
+        /// <remarks>Tries to convert value to the column's DataType</remarks>
+        /// <param name="value"></param>
+        public virtual BaseColumn FillNulls(object value) => throw new NotImplementedException();
+
         // Arrow related APIs
         protected internal virtual Field Field() => throw new NotImplementedException();
         /// <summary>

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -364,17 +365,12 @@ namespace Microsoft.Data
             }
         }
 
-        public void ApplyElementwise(Func<T, T> func)
+        public void ApplyElementwise(Func<T?, long, T?> func)
         {
-            foreach (ReadOnlyDataFrameBuffer<T> buffer in _columnContainer.Buffers)
+            Parallel.For(0, Length, index =>
             {
-                DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer);
-                Span<T> span = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
-                {
-                    span[i] = func(span[i]);
-                }
-            }
+                this[index] = func(this[index], index);
+            });
         }
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
