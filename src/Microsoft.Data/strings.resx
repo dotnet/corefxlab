@@ -145,7 +145,10 @@
     <value>rowCount differs from Column length for Column </value>
   </data>
   <data name="MismatchedValueType" xml:space="preserve">
-    <value>Expected value to be of type</value>
+    <value>Expected value to be of type </value>
+  </data>
+  <data name="MultipleMismatchedValueType" xml:space="preserve">
+    <value>Expected value to be of type {0} or {1}</value>
   </data>
   <data name="Or" xml:space="preserve">
     <value>or</value>

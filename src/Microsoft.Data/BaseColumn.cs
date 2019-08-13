@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Apache.Arrow;
 using Microsoft.ML;
 
@@ -46,7 +47,7 @@ namespace Microsoft.Data
 
         public void SetName(string newName, DataFrame dataFrame = null)
         {
-            if (!ReferenceEquals(dataFrame, null))
+            if (!(dataFrame is null))
             {
                 dataFrame.SetColumnName(this, newName);
             }
@@ -119,6 +120,25 @@ namespace Microsoft.Data
         /// The builder to which to add the schema column.
         /// </param>
         protected internal virtual void AddDataViewColumn(DataViewSchema.Builder builder) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Clips values beyond the specified thresholds
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
+        /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        public virtual BaseColumn Clip<U>(U lower, U upper) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Determines if the column is of a numeric type
+        /// </summary>
+        /// <remarks>Used by the Description method to filter out descriptons from non-numeric columns</remarks>
+        public virtual bool IsNumericColumn() => false;
+
+        /// <summary>
+        /// Returns a DataFrame with statistics that describe the column
+        /// </summary>
+        public virtual DataFrame Description() => throw new NotImplementedException();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

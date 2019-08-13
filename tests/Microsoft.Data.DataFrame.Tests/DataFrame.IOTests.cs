@@ -25,7 +25,7 @@ CMT,1,1,181,0.6,CSH,4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(data));
             }
-            DataFrame df = Utilities.ReadStream(() => new StreamReader(GetStream(data)));
+            DataFrame df = DataFrame.ReadStream(() => new StreamReader(GetStream(data)));
             Assert.Equal(4, df.RowCount);
             Assert.Equal(7, df.ColumnCount);
             Assert.Equal("CMT", df["vendor_id"][3]);

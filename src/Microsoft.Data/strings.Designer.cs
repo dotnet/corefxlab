@@ -142,11 +142,20 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected value to be of type.
+        ///   Looks up a localized string similar to Expected value to be of type .
         /// </summary>
         public static string MismatchedValueType {
             get {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected value to be of type {0} or {1}.
+        /// </summary>
+        public static string MultipleMismatchedValueType {
+            get {
+                return ResourceManager.GetString("MultipleMismatchedValueType", resourceCulture);
             }
         }
         
