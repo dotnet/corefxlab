@@ -220,19 +220,51 @@ namespace Microsoft.Data
                 BaseColumn column = columns[i];
                 column.Resize(rowIndex + 1);
                 string val = values[i];
-                bool boolParse = bool.TryParse(val, out bool boolResult);
-                if (boolParse)
+                Type dType = column.DataType;
+                if (dType == typeof(bool))
                 {
-                    column[rowIndex] = boolResult;
-                    continue;
+                    bool boolParse = bool.TryParse(val, out bool boolResult);
+                    if (boolParse)
+                    {
+                        column[rowIndex] = boolResult;
+                        continue;
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(val))
+                        {
+                            column[rowIndex] = null;
+                            continue;
+                        }
+                        throw new ArgumentException(Strings.MismatchedValueType + typeof(bool), nameof(val));
+                    }
                 }
-                bool floatParse = float.TryParse(val, out float floatResult);
-                if (floatParse)
+                else if (dType == typeof(float))
                 {
-                    column[rowIndex] = floatResult;
-                    continue;
+                    bool floatParse = float.TryParse(val, out float floatResult);
+                    if (floatParse)
+                    {
+                        column[rowIndex] = floatResult;
+                        continue;
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(val))
+                        {
+                            column[rowIndex] = null;
+                            continue;
+                        }
+                        throw new ArgumentException(Strings.MismatchedValueType + typeof(float), nameof(val));
+                    }
                 }
-                column[rowIndex] = values[i];
+                else if (dType == typeof(string))
+                {
+                    column[rowIndex] = values[i];
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
     }
