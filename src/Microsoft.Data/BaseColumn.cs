@@ -93,6 +93,11 @@ namespace Microsoft.Data
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
 
+        /// <summary>
+        /// Returns a DataFrame containing counts of unique values
+        /// </summary>
+        public virtual DataFrame ValueCounts() => throw new NotImplementedException();
+
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         /// <summary>
@@ -126,6 +131,38 @@ namespace Microsoft.Data
         /// The builder to which to add the schema column.
         /// </param>
         protected internal virtual void AddDataViewColumn(DataViewSchema.Builder builder) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Clips values beyond the specified thresholds
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
+        /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        public virtual BaseColumn Clip<U>(U lower, U upper) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Determines if the column is of a numeric type
+        /// </summary>
+        /// <remarks>Used by the Description method to filter out descriptons from non-numeric columns</remarks>
+        public virtual bool IsNumericColumn() => false;
+
+        /// <summary>
+        /// Returns a DataFrame with statistics that describe the column
+        /// </summary>
+        public virtual DataFrame Description() => throw new NotImplementedException();
+
+        //protected DataFrame ValueCountsImplementation<T>()
+        //{
+        //    Dictionary<T, ICollection<long>> groupedValues = GroupColumnValues<T>();
+        //    BaseColumn keys = new PrimitiveColumn<T>("Values");
+        //    PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+        //    foreach (KeyValuePair<T, ICollection<long>> keyValuePair in groupedValues)
+        //    {
+        //        keys.Append(keyValuePair.Key);
+        //        counts.Append(keyValuePair.Value.Count);
+        //    }
+        //    return new DataFrame(new List<BaseColumn> { keys, counts });
+        //}
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

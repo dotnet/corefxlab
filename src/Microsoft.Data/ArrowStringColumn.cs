@@ -354,6 +354,12 @@ namespace Microsoft.Data
             return ret;
         }
 
+        public override DataFrame ValueCounts()
+        {
+            Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
+            return StringColumn.ValueCountsImplementation(groupedValues);
+        }
+
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();

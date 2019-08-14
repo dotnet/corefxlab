@@ -49,15 +49,15 @@ namespace Microsoft.Data
         private long _nullCount;
         public override long NullCount => _nullCount;
 
-        public override void Resize(long length) 
-        { 
-            if (length < Length) 
-                throw new ArgumentException(Strings.CannotResizeDown, nameof(length)); 
+        public override void Resize(long length)
+        {
+            if (length < Length)
+                throw new ArgumentException(Strings.CannotResizeDown, nameof(length));
 
-            for (long i = Length; i < length; i++) 
-            { 
-                Append(null); 
-            } 
+            for (long i = Length; i < length; i++)
+            {
+                Append(null);
+            }
         }
 
         public void Append(string value)
@@ -300,6 +300,24 @@ namespace Microsoft.Data
                 }
             }
             return ret;
+        }
+
+        internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)
+        {
+            StringColumn keys = new StringColumn("Values", 0);
+            PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+            foreach (KeyValuePair<string, ICollection<long>> keyValuePair in groupedValues)
+            {
+                keys.Append(keyValuePair.Key);
+                counts.Append(keyValuePair.Value.Count);
+            }
+            return new DataFrame(new List<BaseColumn> { keys, counts });
+        }
+
+        public override DataFrame ValueCounts()
+        {
+            Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
+            return ValueCountsImplementation(groupedValues);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)

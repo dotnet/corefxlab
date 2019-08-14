@@ -215,6 +215,27 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
+        public override bool IsNumericColumn()
+        {
+            bool ret = true;
+            if (typeof(T) == typeof(char) || typeof(T) == typeof(bool))
+                ret = false;
+            return ret;
+        }
+
+        public override DataFrame ValueCounts()
+        {
+            Dictionary<T, ICollection<long>> groupedValues = GroupColumnValues<T>();
+            PrimitiveColumn<T> keys = new PrimitiveColumn<T>("Values");
+            PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+            foreach (KeyValuePair<T, ICollection<long>> keyValuePair in groupedValues)
+            {
+                keys.Append(keyValuePair.Key);
+                counts.Append(keyValuePair.Value.Count);
+            }
+            return new DataFrame(new List<BaseColumn> { keys, counts });
+        }
+
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";

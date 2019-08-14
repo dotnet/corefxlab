@@ -1301,5 +1301,15 @@ namespace Microsoft.Data.Tests
             DataFrame fillNulls = df.FillNulls(1000);
             Assert.Equal(1000, (int)fillNulls[10, 1]);
         }
+
+        [Fact]
+        public void TestValueCounts()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            DataFrame valueCounts = df["Bool"].ValueCounts();
+            Assert.Equal(2, valueCounts.RowCount);
+            Assert.Equal((long)5, valueCounts["Counts"][0]);
+            Assert.Equal((long)5, valueCounts["Counts"][1]);
+        }
     }
 }
