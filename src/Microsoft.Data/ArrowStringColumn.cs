@@ -117,6 +117,7 @@ namespace Microsoft.Data
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
 
+        // This is an immutable column, however this method exists to support Clone(). Keep this method private
         private void Append(ReadOnlySpan<byte> value)
         {
             if (_dataBuffers.Count == 0)
@@ -155,9 +156,6 @@ namespace Microsoft.Data
             SetValidityBit(Length - 1, value == null ? true : false);
 
         }
-
-        // This is an immutable column, however this method exists to support Clone(). Keep this method private
-        private void Append(string value) => Append(value == null ? null : Encoding.UTF8.GetBytes(value));
 
         private int GetBufferIndexContainingRowIndex(long rowIndex, out int indexInBuffer)
         {
@@ -304,7 +302,7 @@ namespace Microsoft.Data
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
-                clone.Append((string)null);
+                clone.Append(null);
             }
             return clone;
         }

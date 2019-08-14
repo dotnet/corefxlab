@@ -305,7 +305,7 @@ namespace Microsoft.Data
             if (ColumnCount == 0)
                 return ret;
             int i = 0;
-            while (!Column(i).IsNumericColumn())
+            while (!Column(i).HasDescription())
             {
                 i++;
             }
@@ -314,7 +314,7 @@ namespace Microsoft.Data
             for (; i < ColumnCount; i++)
             {
                 BaseColumn column = Column(i);
-                if (!column.IsNumericColumn())
+                if (!column.HasDescription())
                 {
                     continue;
                 }

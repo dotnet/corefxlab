@@ -222,6 +222,8 @@ namespace Microsoft.Data
             return ret;
         }
 
+        public override bool HasDescription() => IsNumericColumn();
+
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";
