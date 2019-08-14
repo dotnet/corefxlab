@@ -317,7 +317,7 @@ namespace Microsoft.Data
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
-                if (!ReferenceEquals(retColumn, null))
+                if (!(retColumn is null))
                 {
                     retColumn[rowIndex] = _dataFrame.Column(columnIndex).Max(rowEnumerable);
                 }
@@ -345,7 +345,7 @@ namespace Microsoft.Data
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
-                if (!ReferenceEquals(retColumn, null))
+                if (!(retColumn is null))
                 {
                     retColumn[rowIndex] = _dataFrame.Column(columnIndex).Min(rowEnumerable);
                 }
@@ -373,7 +373,7 @@ namespace Microsoft.Data
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
-                if (!ReferenceEquals(retColumn, null))
+                if (!(retColumn is null))
                 {
                     retColumn[rowIndex] = _dataFrame.Column(columnIndex).Product(rowEnumerable);
                 }
@@ -401,7 +401,7 @@ namespace Microsoft.Data
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
-                if (!ReferenceEquals(retColumn, null))
+                if (!(retColumn is null))
                 {
                     retColumn[rowIndex] = _dataFrame.Column(columnIndex).Sum(rowEnumerable);
                 }

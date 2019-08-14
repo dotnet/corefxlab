@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Apache.Arrow;
 using Microsoft.ML;
 
@@ -46,7 +47,7 @@ namespace Microsoft.Data
 
         public void SetName(string newName, DataFrame dataFrame = null)
         {
-            if (!ReferenceEquals(dataFrame, null))
+            if (!(dataFrame is null))
             {
                 dataFrame.SetColumnName(this, newName);
             }
@@ -150,19 +151,6 @@ namespace Microsoft.Data
         /// Returns a DataFrame with statistics that describe the column
         /// </summary>
         public virtual DataFrame Description() => throw new NotImplementedException();
-
-        //protected DataFrame ValueCountsImplementation<T>()
-        //{
-        //    Dictionary<T, ICollection<long>> groupedValues = GroupColumnValues<T>();
-        //    BaseColumn keys = new PrimitiveColumn<T>("Values");
-        //    PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
-        //    foreach (KeyValuePair<T, ICollection<long>> keyValuePair in groupedValues)
-        //    {
-        //        keys.Append(keyValuePair.Key);
-        //        counts.Append(keyValuePair.Value.Count);
-        //    }
-        //    return new DataFrame(new List<BaseColumn> { keys, counts });
-        //}
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

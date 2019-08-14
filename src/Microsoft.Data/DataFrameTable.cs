@@ -30,16 +30,10 @@ namespace Microsoft.Data
         public DataFrameTable(IList<BaseColumn> columns)
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            _columns = columns;
-            ColumnCount = columns.Count;
-            if (columns.Count > 0)
+            _columns = new List<BaseColumn>();
+            for (int i = 0; i < columns.Count; i++)
             {
-                RowCount = columns[0].Length;
-                for (var i = 0; i < columns.Count; i++)
-                {
-                    _columnNames.Add(columns[i].Name);
-                    _columnNameToIndexDictionary.Add(columns[i].Name, i);
-                }
+                InsertColumn(i, columns[i]);
             }
         }
 

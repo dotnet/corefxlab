@@ -1041,7 +1041,7 @@ namespace Microsoft.Data.Tests
         public void TestIEnumerable()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            
+
             int totalValueCount = 0;
             for (int i = 0; i < df.ColumnCount; i++)
             {
@@ -1124,6 +1124,11 @@ namespace Microsoft.Data.Tests
             Assert.Equal(3, clipped[0]);
             Assert.Equal(3, clipped[1]);
             Assert.Equal(3, clipped[2]);
+            Assert.Equal(3, clipped[3]);
+            Assert.Equal(4, clipped[4]);
+            Assert.Null(clipped[5]);
+            Assert.Equal(6, clipped[6]);
+            Assert.Equal(7, clipped[7]);
             Assert.Equal(7, clipped[8]);
             Assert.Equal(7, clipped[9]);
         }
@@ -1131,19 +1136,32 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestDataFrameClip()
         {
-            DataFrame df = MakeDataFrameWithNumericColumns(10);
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             DataFrame clipped = df.Clip(3, 7);
             Assert.Equal(df.ColumnCount, clipped.ColumnCount);
             for (int c = 0; c < df.ColumnCount; c++)
             {
                 BaseColumn column = clipped.Column(c);
-                for (int i = 0; i < 3; i++)
+                if (column.IsNumericColumn())
                 {
-                    Assert.Equal("3", column[i].ToString());
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Assert.Equal("3", column[i].ToString());
+                    }
+                    Assert.Equal(4.ToString(), column[4].ToString());
+                    Assert.Null(column[5]);
+                    Assert.Equal(6.ToString(), column[6].ToString());
+                    for (int i = 7; i < 10; i++)
+                    {
+                        Assert.Equal("7", column[i].ToString());
+                    }
                 }
-                for (int i = 8; i < 10; i++)
+                else
                 {
-                    Assert.Equal("7", column[i].ToString());
+                    for (int i = 0; i < column.Length; i++)
+                    {
+                        Assert.Equal(df.Column(c)[i], column[i]);
+                    }
                 }
             }
         }
@@ -1269,8 +1287,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestDescription()
         {
-            DataFrame left = MakeDataFrameWithAllMutableColumnTypes(10);
-            DataFrame description = left.Description();
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
+            DataFrame description = df.Description();
             for (int i = 1; i < description.ColumnCount; i++)
             {
                 BaseColumn column = description.Column(i);

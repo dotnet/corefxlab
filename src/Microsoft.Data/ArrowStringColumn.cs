@@ -117,8 +117,7 @@ namespace Microsoft.Data
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
 
-        // This is an immutable column, however this method exists to support Clone(). Keep this method private
-        private void Append(string value)
+        private void Append(ReadOnlySpan<byte> value)
         {
             if (_dataBuffers.Count == 0)
             {
@@ -126,7 +125,7 @@ namespace Microsoft.Data
                 _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
                 _offsetsBuffers.Add(new DataFrameBuffer<int>());
             }
-            DataFrameBuffer<int> mutableOffsetsBuffer = _offsetsBuffers[_offsetsBuffers.Count - 1] as DataFrameBuffer<int>;
+            DataFrameBuffer<int> mutableOffsetsBuffer = (DataFrameBuffer<int>)_offsetsBuffers[_offsetsBuffers.Count - 1];
             if (mutableOffsetsBuffer.Length == 0)
             {
                 mutableOffsetsBuffer.Append(0);
@@ -138,24 +137,27 @@ namespace Microsoft.Data
             }
             else
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(value);
-                DataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as DataFrameBuffer<byte>;
+                DataFrameBuffer<byte> mutableDataBuffer = (DataFrameBuffer<byte>)_dataBuffers[_dataBuffers.Count - 1];
                 if (mutableDataBuffer.Length == ReadOnlyDataFrameBuffer<byte>.MaxCapacity)
                 {
                     mutableDataBuffer = new DataFrameBuffer<byte>();
                     _dataBuffers.Add(mutableDataBuffer);
                     _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
-                    var offsetBuffer = new DataFrameBuffer<int>();
-                    _offsetsBuffers.Add(offsetBuffer);
-                    offsetBuffer.Append(0);
+                    mutableOffsetsBuffer = new DataFrameBuffer<int>();
+                    _offsetsBuffers.Add(mutableOffsetsBuffer);
+                    mutableOffsetsBuffer.Append(0);
                 }
-                mutableDataBuffer.EnsureCapacity(bytes.Length);
-                bytes.AsMemory().CopyTo(mutableDataBuffer.Memory.Slice(mutableDataBuffer.Length));
-                mutableDataBuffer.Length += bytes.Length;
-                mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + bytes.Length);
+                mutableDataBuffer.EnsureCapacity(value.Length);
+                value.CopyTo(mutableDataBuffer.Span.Slice(mutableDataBuffer.Length));
+                mutableDataBuffer.Length += value.Length;
+                mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + value.Length);
             }
             SetValidityBit(Length - 1, value == null ? true : false);
+
         }
+
+        // This is an immutable column, however this method exists to support Clone(). Keep this method private
+        private void Append(string value) => Append(value == null ? null : Encoding.UTF8.GetBytes(value));
 
         private int GetBufferIndexContainingRowIndex(long rowIndex, out int indexInBuffer)
         {
@@ -287,7 +289,7 @@ namespace Microsoft.Data
             if (!(mapIndices is null))
             {
                 if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format("{0} {1} {2} {3}", Strings.MismatchedValueType, "${typeof(long)}", Strings.Or, "${typeof(bool)}", nameof(mapIndices)));
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
@@ -302,7 +304,7 @@ namespace Microsoft.Data
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
-                clone.Append(null);
+                clone.Append((string)null);
             }
             return clone;
         }
@@ -315,8 +317,8 @@ namespace Microsoft.Data
             for (long i = 0; i < boolColumn.Length; i++)
             {
                 bool? value = boolColumn[i];
-                if (value.HasValue && value.Value == true)
-                    ret.Append(this[i]);
+                if (value == true)
+                    ret.Append(GetBytes(i));
             }
             return ret;
         }
@@ -328,7 +330,7 @@ namespace Microsoft.Data
             {
                 for (long i = 0; i < Length; i++)
                 {
-                    ret.Append(this[i]);
+                    ret.Append(GetBytes(i));
                 }
             }
             else
@@ -339,7 +341,7 @@ namespace Microsoft.Data
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[mapIndices[i].Value]);
+                        ret.Append(GetBytes(mapIndices[i].Value));
                     }
                 }
                 else
@@ -347,7 +349,7 @@ namespace Microsoft.Data
                     long mapIndicesLengthIndex = mapIndices.Length - 1;
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[mapIndices[mapIndicesLengthIndex - i].Value]);
+                        ret.Append(GetBytes(mapIndices[mapIndicesLengthIndex - i].Value));
                     }
                 }
             }

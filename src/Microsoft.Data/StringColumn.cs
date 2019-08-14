@@ -164,6 +164,8 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
+        public override BaseColumn Clip<U>(U lower, U upper) => throw new NotSupportedException();
+
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
@@ -235,7 +237,7 @@ namespace Microsoft.Data
             if (!(mapIndices is null))
             {
                 if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format("{0} {1} {2} {3}", Strings.MismatchedValueType, "${typeof(long)}", Strings.Or, "${typeof(bool)}", nameof(mapIndices)));
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))

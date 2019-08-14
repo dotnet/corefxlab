@@ -305,21 +305,16 @@ namespace Microsoft.Data
 
         public void SetColumnName(BaseColumn column, string newName) => _table.SetColumnName(column, newName);
 
+        /// <summary>
+        /// Generates descriptive statistics that summarize each numeric column
+        /// </summary>
         public DataFrame Description()
         {
-            bool IsNonNumericColumn(BaseColumn column)
-            {
-                if (column.DataType == typeof(string) || column.DataType == typeof(bool) || column.DataType == typeof(char))
-                {
-                    return true;
-                }
-                return false;
-            }
             DataFrame ret = new DataFrame();
             if (ColumnCount == 0)
                 return ret;
             int i = 0;
-            while (IsNonNumericColumn(Column(i)))
+            while (!Column(i).IsNumericColumn())
             {
                 i++;
             }
@@ -328,7 +323,7 @@ namespace Microsoft.Data
             for (; i < ColumnCount; i++)
             {
                 BaseColumn column = Column(i);
-                if (IsNonNumericColumn(column))
+                if (!column.IsNumericColumn())
                 {
                     continue;
                 }
@@ -372,7 +367,11 @@ namespace Microsoft.Data
             DataFrame ret = new DataFrame();
             for (int i = 0; i < ColumnCount; i++)
             {
-                ret.InsertColumn(0, Column(i).Clip(lower, upper));
+                BaseColumn column = Column(i);
+                BaseColumn insert = column;
+                if (column.IsNumericColumn())
+                    insert = column.Clip(lower, upper);
+                ret.InsertColumn(i, insert);
             }
             return ret;
         }
@@ -386,6 +385,7 @@ namespace Microsoft.Data
             {
                 BaseColumn column = Column(i);
                 _table.SetColumnName(column, prefix + column.Name);
+                OnColumnsChanged();
             }
             return this;
         }
@@ -399,6 +399,7 @@ namespace Microsoft.Data
             {
                 BaseColumn column = Column(i);
                 _table.SetColumnName(column, column.Name + suffix);
+                OnColumnsChanged();
             }
             return this;
         }
@@ -411,9 +412,10 @@ namespace Microsoft.Data
         {
             Random rand = new Random();
             PrimitiveColumn<long> indices = new PrimitiveColumn<long>("Indices", numberOfRows);
+            int randMaxValue = (int)Math.Min(Int32.MaxValue, RowCount);
             for (long i = 0; i < numberOfRows; i++)
             {
-                indices[i] = rand.Next((int)Math.Min(Int32.MaxValue, RowCount));
+                indices[i] = rand.Next(randMaxValue);
             }
 
             return Clone(indices);
@@ -430,7 +432,7 @@ namespace Microsoft.Data
         }
 
         // In GroupBy and ReadCsv calls, columns get resized. We need to set the RowCount to reflect the true Length of the DataFrame. This does internal validation
-        public void SetTableRowCount(long rowCount)
+        internal void SetTableRowCount(long rowCount)
         {
             // Even if current RowCount == rowCount, do the validation
             for (int i = 0; i < ColumnCount; i++)
