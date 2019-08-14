@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Resources.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Resources.Extensions.DeserializingResourceReader">
+      <summary>Provides APIs similar to <see cref="T:System.Resources.ResourceReader" /> that can read and deserialize resource data written by either <see cref="T:System.Resources.ResourceWriter" /> or <see cref="T:System.Resources.Extensions.PreserializedResourceWriter" />.</summary>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> class that reads the specified resources stream.</summary>
+      <param name="stream">The input stream.</param>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> class that reads the specified named resource file.</summary>
+      <param name="fileName">The path and name of the resource file to be read.</param>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.Close">
+      <summary>Releases all operating system resources associated with this <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> object.</summary>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.Dispose">
+      <summary>Releases the resources used by the <see cref="T:System.Resources.Extensions.DeserializingResourceReader" />.</summary>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.GetEnumerator">
+      <summary>Returns an enumerator for this <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> object.</summary>
+      <returns>An enumerator for this <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> object.</returns>
+    </member>
+    <member name="M:System.Resources.Extensions.DeserializingResourceReader.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for this <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> object.</summary>
+      <returns>An enumerator for this <see cref="T:System.Resources.Extensions.DeserializingResourceReader" /> object.</returns>
+    </member>
+    <member name="T:System.Resources.Extensions.PreserializedResourceWriter">
+      <summary>Provides APIs similar to <see cref="T:System.Resources.ResourceWriter" /> that can write pre-serialized resource data.</summary>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.Extensions.PreserializedResourceWriter" /> class that writes the resources to the provided stream.</summary>
+      <param name="stream">The output stream.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="stream" /> is not writable.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="stream" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.Extensions.PreserializedResourceWriter" /> class that writes the resources to the specified file.</summary>
+      <param name="fileName">The output file name.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="fileName" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddActivatorResource(System.String,System.IO.Stream,System.String,System.Boolean)">
+      <summary>Adds a resource of the specified type represented by a <see cref="T:System.IO.Stream" /> value that is passed to the type's constructor when reading the resource.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The value of the resource in <see cref="T:System.IO.Stream" /> form understood by the type's constructor.</param>
+      <param name="typeName">The assembly qualified type name of the resource.</param>
+      <param name="closeAfterWrite">An optional value that indicates whether, after resources have been written, the stream should be closed (<see langword="true" />) or left open (<see langword="false" />, the default value).</param>
+      <exception cref="T:System.ArgumentNullException">, , or  is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The object's type is <see cref="T:System.IO.Stream" />, but it is unseekable.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddBinaryFormattedResource(System.String,System.Byte[],System.String)">
+      <summary>Adds a resource of the specified type, represented by a byte array, that will be  passed to <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" /> when reading the resource.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">A byte array containing the value of the resource in <see cref="System.Byte[]" /> form understood by <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />.</param>
+      <param name="typeName">The optional assembly qualified type name of the resource. The default value is <see langword="null" />.</param>
+      <exception cref="T:System.ArgumentNullException">or  is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddResource(System.String,System.Byte[])">
+      <summary>Adds a byte array as a named resource to the list of resources to be written to a file.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The byte array to add as a resource.</param>
+      <exception cref="T:System.ArgumentNullException">The name is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddResource(System.String,System.IO.Stream,System.Boolean)">
+      <summary>Adds a <see cref="T:System.IO.Stream" /> as a named resource to the list of resources to be written to a file.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The stream to add as a resource.</param>
+      <param name="closeAfterWrite">An optional value that indicates whether, after resources have been written, the stream should be closed (<see langword="true" />) or left open (<see langword="false" />, the default value).</param>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddResource(System.String,System.Object)">
+      <summary>Adds an object as a named resource to the list of resources to be written to a file.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The object to add as a resource.</param>
+      <exception cref="T:System.ArgumentNullException">The name is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The stream is unseekable.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddResource(System.String,System.String)">
+      <summary>Adds a string as a named resource to the list of resources to be written to a file.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The string to add as a resource.</param>
+      <exception cref="T:System.ArgumentNullException">The name is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddResource(System.String,System.String,System.String)">
+      <summary>Adds a resource of the specified type represented by a string value.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">The value of the resource in string form understood by the type's <see cref="T:System.ComponentModel.TypeConverter" />.</param>
+      <param name="typeName">The assembly qualified type name of the resource.</param>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddTypeConverterResource(System.String,System.Byte[],System.String)">
+      <summary>Adds a resource of the specified type represented by a byte array that is passed to the type's <see cref="T:System.ComponentModel.TypeConverter" /> when reading the resource.</summary>
+      <param name="name">The resource name.</param>
+      <param name="value">A byte array containing the resource in a form understood by the type's <see cref="T:System.ComponentModel.TypeConverter" />.</param>
+      <param name="typeName">The assembly qualified type name of the resource.</param>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.Close">
+      <summary>Calls <see cref="M:System.Resources.Extensions.PreserializedResourceWriter.Dispose" /> to dispose the resource writer.</summary>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.Dispose">
+      <summary>Calls <see cref="M:System.Resources.Extensions.PreserializedResourceWriter.Generate" /> to write out all resources to the output stream in the system default format.</summary>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.Extensions.PreserializedResourceWriter.Generate">
+      <summary>Writes all resources to the output stream.</summary>
+      <exception cref="T:System.InvalidOperationException">The resource list is <see langword="null" />.</exception>
+    </member>
+  </members>
+</doc>

@@ -1,10 +1,101 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Net.WebSockets.Client</name>
   </assembly>
   <members>
+    <member name="T:System.Net.WebSockets.ClientWebSocket">
+      <summary>Provides a client for connecting to WebSocket services.</summary>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.#ctor">
+      <summary>Creates an instance of the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> class.</summary>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.Abort">
+      <summary>Aborts the connection and cancels any pending IO operations.</summary>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
+      <summary>Close the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance as an asynchronous operation.</summary>
+      <param name="closeStatus">The WebSocket close status.</param>
+      <param name="statusDescription">A description of the close status.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.CloseOutputAsync(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
+      <summary>Close the output for the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance as an asynchronous operation.</summary>
+      <param name="closeStatus">The WebSocket close status.</param>
+      <param name="statusDescription">A description of the close status.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocket.CloseStatus">
+      <summary>Gets the reason why the close handshake was initiated on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</summary>
+      <returns>The reason why the close handshake was initiated.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocket.CloseStatusDescription">
+      <summary>Gets a description of the reason why the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance was closed.</summary>
+      <returns>The description of the reason why the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance was closed.</returns>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.ConnectAsync(System.Uri,System.Threading.CancellationToken)">
+      <summary>Connect to a WebSocket server as an asynchronous operation.</summary>
+      <param name="uri">The URI of the WebSocket server to connect to.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that the  operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.Dispose">
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</summary>
+    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocket.Options">
+      <summary>Gets the WebSocket options for the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</summary>
+      <returns>The WebSocket options for the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</returns>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.ReceiveAsync(System.ArraySegment{System.Byte},System.Threading.CancellationToken)">
+      <summary>Receives data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> as an asynchronous operation.</summary>
+      <param name="buffer">The buffer to receive the response.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> is not connected.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> has been closed.</exception>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.ReceiveAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+      <summary>Receives data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> to a byte memory range as an asynchronous operation.</summary>
+      <param name="buffer">The region of memory to receive the response.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> is not connected.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> has been closed.</exception>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.SendAsync(System.ArraySegment{System.Byte},System.Net.WebSockets.WebSocketMessageType,System.Boolean,System.Threading.CancellationToken)">
+      <summary>Sends data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> as an asynchronous operation.</summary>
+      <param name="buffer">The buffer containing the message to be sent.</param>
+      <param name="messageType">One of the enumeration values that specifies whether the buffer is clear text or in a binary format.</param>
+      <param name="endOfMessage">
+        <see langword="true" /> to indicate this is the final asynchronous send; otherwise, <see langword="false" />.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> is not connected.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> has been closed.</exception>
+    </member>
+    <member name="M:System.Net.WebSockets.ClientWebSocket.SendAsync(System.ReadOnlyMemory{System.Byte},System.Net.WebSockets.WebSocketMessageType,System.Boolean,System.Threading.CancellationToken)">
+      <summary>Sends data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> from a read-only byte memory range as an asynchronous operation.</summary>
+      <param name="buffer">The region of memory containing the message to be sent.</param>
+      <param name="messageType">One of the enumeration values that specifies whether the buffer is clear text or in a binary format.</param>
+      <param name="endOfMessage">
+        <see langword="true" /> to indicate this is the final asynchronous send; otherwise, <see langword="false" />.</param>
+      <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> is not connected.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> has been closed.</exception>
+    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocket.State">
+      <summary>Gets the WebSocket state of the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</summary>
+      <returns>The WebSocket state of the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocket.SubProtocol">
+      <summary>Gets the supported WebSocket sub-protocol for the <see cref="T:System.Net.WebSockets.ClientWebSocket" /> instance.</summary>
+      <returns>The supported WebSocket sub-protocol.</returns>
+    </member>
     <member name="T:System.Net.WebSockets.ClientWebSocketOptions">
-      <summary>Options to use with a  <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> object.</summary>
+      <summary>Options to use with a  <see cref="T:System.Net.WebSockets.ClientWebSocket" /> object.</summary>
     </member>
     <member name="M:System.Net.WebSockets.ClientWebSocketOptions.AddSubProtocol(System.String)">
       <summary>Adds a sub-protocol to be negotiated during the WebSocket connection handshake.</summary>
@@ -12,32 +103,25 @@
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.ClientCertificates">
       <summary>Gets or sets a collection of client side certificates.</summary>
-      <returns>Returns <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection"></see>.  
- A collection of client side certificates.</returns>
+      <returns>A collection of client side certificates.</returns>
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.Cookies">
       <summary>Gets or sets the cookies associated with the request.</summary>
-      <returns>Returns <see cref="T:System.Net.CookieContainer"></see>.  
- The cookies associated with the request.</returns>
+      <returns>The cookies associated with the request.</returns>
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.Credentials">
       <summary>Gets or sets the credential information for the client.</summary>
-      <returns>Returns <see cref="T:System.Net.ICredentials"></see>.  
- The credential information for the client.</returns>
+      <returns>The credential information for the client.</returns>
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.KeepAliveInterval">
-      <summary>Gets or sets the WebSocket protocol keep-alive interval in milliseconds.</summary>
-      <returns>Returns <see cref="T:System.TimeSpan"></see>.  
- The WebSocket protocol keep-alive interval in milliseconds.</returns>
+      <summary>Gets or sets the WebSocket protocol keep-alive interval.</summary>
+      <returns>The WebSocket protocol keep-alive interval.</returns>
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.Proxy">
       <summary>Gets or sets the proxy for WebSocket requests.</summary>
-      <returns>Returns <see cref="T:System.Net.IWebProxy"></see>.  
- The proxy for WebSocket requests.</returns>
+      <returns>The proxy for WebSocket requests.</returns>
     </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocketOptions.RemoteCertificateValidationCallback">
-      <returns></returns>
-    </member>
+    <member name="P:System.Net.WebSockets.ClientWebSocketOptions.RemoteCertificateValidationCallback" />
     <member name="M:System.Net.WebSockets.ClientWebSocketOptions.SetBuffer(System.Int32,System.Int32)">
       <summary>Sets the client buffer parameters.</summary>
       <param name="receiveBufferSize">The size, in bytes, of the client receive buffer.</param>
@@ -55,84 +139,9 @@
       <param name="headerValue">The value of the HTTP header.</param>
     </member>
     <member name="P:System.Net.WebSockets.ClientWebSocketOptions.UseDefaultCredentials">
-      <summary>Gets or sets a <see cref="T:System.Boolean"></see> value that indicates if default credentials should be used during WebSocket handshake.</summary>
-      <returns>Returns <see cref="T:System.Boolean"></see>.  
- <see langword="true"></see> if default credentials should be used during WebSocket handshake; otherwise <see langword="false"></see>. The default is <see langword="true"></see>.</returns>
-    </member>
-    <member name="T:System.Net.WebSockets.ClientWebSocket">
-      <summary>Provides a client for connecting to WebSocket services.</summary>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.#ctor">
-      <summary>Creates an instance of the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> class.</summary>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.Abort">
-      <summary>Aborts the connection and cancels any pending IO operations.</summary>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
-      <summary>Close the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance as an asynchronous operation.</summary>
-      <param name="closeStatus">The WebSocket close status.</param>
-      <param name="statusDescription">A description of the close status.</param>
-      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
-      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
- The task object representing the asynchronous operation.</returns>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.CloseOutputAsync(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
-      <summary>Close the output for the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance as an asynchronous operation.</summary>
-      <param name="closeStatus">The WebSocket close status.</param>
-      <param name="statusDescription">A description of the close status.</param>
-      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
-      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
- The task object representing the asynchronous operation.</returns>
-    </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocket.CloseStatus">
-      <summary>Gets the reason why the close handshake was initiated on <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</summary>
-      <returns>Returns <see cref="T:System.Net.WebSockets.WebSocketCloseStatus"></see>.  
- The reason why the close handshake was initiated.</returns>
-    </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocket.CloseStatusDescription">
-      <summary>Gets a description of the reason why the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance was closed.</summary>
-      <returns>Returns <see cref="T:System.String"></see>.  
- The description of the reason why the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance was closed.</returns>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.ConnectAsync(System.Uri,System.Threading.CancellationToken)">
-      <summary>Connect to a WebSocket server as an asynchronous operation.</summary>
-      <param name="uri">The URI of the WebSocket server to connect to.</param>
-      <param name="cancellationToken">A cancellation token used to propagate notification that the  operation should be canceled.</param>
-      <returns>Returns <see cref="T:System.Threading.Tasks.Task"></see>.  
- The task object representing the asynchronous operation.</returns>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.Dispose">
-      <summary>Releases the unmanaged resources used by the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</summary>
-    </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocket.Options">
-      <summary>Gets the WebSocket options for the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</summary>
-      <returns>Returns <see cref="T:System.Net.WebSockets.ClientWebSocketOptions"></see>.  
- The WebSocket options for the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</returns>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.ReceiveAsync(System.ArraySegment{System.Byte},System.Threading.CancellationToken)">
-      <summary>Receive data on <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> as an asynchronous operation.</summary>
-      <param name="buffer">The buffer to receive the response.</param>
-      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
-      <returns>Returns <see cref="T:System.Threading.Tasks.Task`1"></see>.  
- The task object representing the asynchronous operation.</returns>
-    </member>
-    <member name="M:System.Net.WebSockets.ClientWebSocket.SendAsync(System.ArraySegment{System.Byte},System.Net.WebSockets.WebSocketMessageType,System.Boolean,System.Threading.CancellationToken)">
-      <summary>Send data on <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> as an asynchronous operation.</summary>
-      <param name="buffer">The buffer containing the message to be sent.</param>
-      <param name="messageType">Specifies whether the buffer is clear text or in a binary format.</param>
-      <param name="endOfMessage">Specifies whether this is the final asynchronous send. Set to <see langword="true"></see> if this is the final send; <see langword="false"></see> otherwise.</param>
-      <param name="cancellationToken">A cancellation token used to propagate notification that this  operation should be canceled.</param>
-      <returns>The task object representing the asynchronous operation.</returns>
-    </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocket.State">
-      <summary>Get the WebSocket state of the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</summary>
-      <returns>Returns <see cref="T:System.Net.WebSockets.WebSocketState"></see>.  
- The WebSocket state of the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</returns>
-    </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocket.SubProtocol">
-      <summary>Gets the supported WebSocket sub-protocol for the <see cref="T:System.Net.WebSockets.ClientWebSocket"></see> instance.</summary>
-      <returns>Returns <see cref="T:System.String"></see>.  
- The supported WebSocket sub-protocol.</returns>
+      <summary>Gets or sets a <see cref="T:System.Boolean" /> value that indicates if default credentials should be used during WebSocket handshake.</summary>
+      <returns>
+        <see langword="true" /> if default credentials should be used during WebSocket handshake; otherwise, <see langword="false" />. The default is <see langword="true" />.</returns>
     </member>
   </members>
 </doc>

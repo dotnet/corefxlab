@@ -1,0 +1,735 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Windows.Forms.Design.Editors</name>
+  </assembly>
+  <members>
+    <member name="T:System.ComponentModel.Design.ArrayEditor">
+      <summary>Provides a user interface for editing arrays at design time.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ArrayEditor.#ctor(System.Type)">
+      <summary>Initializes a new instance of <see cref="T:System.ComponentModel.Design.ArrayEditor" /> using the specified data type for the array.</summary>
+      <param name="type">The data type of the items in the array.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ArrayEditor.CreateCollectionItemType">
+      <summary>Gets the data type that this collection is designed to contain.</summary>
+      <returns>A <see cref="T:System.Type" /> that indicates the data type that the collection is designed to contain.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ArrayEditor.GetItems(System.Object)">
+      <summary>Gets the items in the array.</summary>
+      <param name="editValue">The array from which to retrieve the items.</param>
+      <returns>An array consisting of the items within the specified array. If the object specified in the <paramref name="editValue" /> parameter is not an array, a new empty object is returned.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ArrayEditor.SetItems(System.Object,System.Object[])">
+      <summary>Sets the items in the array.</summary>
+      <param name="editValue">The array to set the items to.</param>
+      <param name="value">The array of objects to set as the items of the array.</param>
+      <returns>An instance of the new array. If the object specified by the <paramref name="editValue" /> parameter is not an array, the object specified by the <paramref name="editValue" /> parameter is returned.</returns>
+    </member>
+    <member name="T:System.ComponentModel.Design.CollectionEditor">
+      <summary>Provides a user interface that can edit most types of collections at design time.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.#ctor(System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.CollectionEditor" /> class using the specified collection type.</summary>
+      <param name="type">The type of the collection for this editor to edit.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CancelChanges">
+      <summary>Cancels changes to the collection.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CanRemoveInstance(System.Object)">
+      <summary>Indicates whether original members of the collection can be removed.</summary>
+      <param name="value">The value to remove.</param>
+      <returns>
+        <see langword="true" /> if it is permissible to remove this value from the collection; otherwise, <see langword="false" />. The default implementation always returns <see langword="true" />.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CanSelectMultipleInstances">
+      <summary>Indicates whether multiple collection items can be selected at once.</summary>
+      <returns>
+        <see langword="true" /> if it multiple collection members can be selected at the same time; otherwise, <see langword="false" />. By default, this returns <see langword="true" />.</returns>
+    </member>
+    <member name="T:System.ComponentModel.Design.CollectionEditor.CollectionForm">
+      <summary>Provides a modal dialog box for editing the contents of a collection using a <see cref="T:System.Drawing.Design.UITypeEditor" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.#ctor(System.ComponentModel.Design.CollectionEditor)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.CollectionEditor.CollectionForm" /> class.</summary>
+      <param name="editor">The <see cref="T:System.ComponentModel.Design.CollectionEditor" /> to use for editing the collection.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.CanRemoveInstance(System.Object)">
+      <summary>Indicates whether you can remove the original members of the collection.</summary>
+      <param name="value">The value to remove.</param>
+      <returns>
+        <see langword="true" /> if it is permissible to remove this value from the collection; otherwise, <see langword="false" />. By default, this method returns the value from <see cref="M:System.ComponentModel.Design.CollectionEditor.CanRemoveInstance(System.Object)" /> of the <see cref="T:System.ComponentModel.Design.CollectionEditor" /> for this form.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.CanSelectMultipleInstances">
+      <summary>Indicates whether multiple collection items can be selected at once.</summary>
+      <returns>
+        <see langword="true" /> if it multiple collection members can be selected at the same time; otherwise, <see langword="false" />. By default, this method returns the value from <see cref="M:System.ComponentModel.Design.CollectionEditor.CanSelectMultipleInstances" /> of the <see cref="T:System.ComponentModel.Design.CollectionEditor" /> for this form.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.CollectionItemType">
+      <summary>Gets the data type of each item in the collection.</summary>
+      <returns>The data type of the collection items.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.CollectionType">
+      <summary>Gets the data type of the collection object.</summary>
+      <returns>The data type of the collection object.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.Context">
+      <summary>Gets a type descriptor that indicates the current context.</summary>
+      <returns>An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that indicates the context currently in use, or <see langword="null" /> if no context is available.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.CreateInstance(System.Type)">
+      <summary>Creates a new instance of the specified collection item type.</summary>
+      <param name="itemType">The type of item to create.</param>
+      <returns>A new instance of the specified object, or <see langword="null" /> if the user chose to cancel the creation of this instance.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.DestroyInstance(System.Object)">
+      <summary>Destroys the specified instance of the object.</summary>
+      <param name="instance">The object to destroy.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.DisplayError(System.Exception)">
+      <summary>Displays the specified exception to the user.</summary>
+      <param name="e">The exception to display.</param>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.EditValue">
+      <summary>Gets or sets the collection object to edit.</summary>
+      <returns>The collection object to edit.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.GetService(System.Type)">
+      <summary>Gets the requested service, if it is available.</summary>
+      <param name="serviceType">The type of service to retrieve.</param>
+      <returns>An instance of the service, or <see langword="null" /> if the service cannot be found.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.Items">
+      <summary>Gets or sets the array of items for this form to display.</summary>
+      <returns>An array of objects for the form to display.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionForm.NewItemTypes">
+      <summary>Gets the available item types that can be created for this collection.</summary>
+      <returns>The types of items that can be created.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.OnEditValueChanged">
+      <summary>Provides an opportunity to perform processing when a collection value has changed.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CollectionForm.ShowEditorDialog(System.Windows.Forms.Design.IWindowsFormsEditorService)">
+      <summary>Shows the dialog box for the collection editor using the specified <see cref="T:System.Windows.Forms.Design.IWindowsFormsEditorService" /> object.</summary>
+      <param name="edSvc">An <see cref="T:System.Windows.Forms.Design.IWindowsFormsEditorService" /> that can be used to show the dialog box.</param>
+      <returns>A <see cref="T:System.Windows.Forms.DialogResult" /> that indicates the result code returned from the dialog box.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionItemType">
+      <summary>Gets the data type of each item in the collection.</summary>
+      <returns>The data type of the collection items.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.CollectionType">
+      <summary>Gets the data type of the collection object.</summary>
+      <returns>The data type of the collection object.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.Context">
+      <summary>Gets a type descriptor that indicates the current context.</summary>
+      <returns>An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that indicates the context currently in use, or <see langword="null" /> if no context is available.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CreateCollectionForm">
+      <summary>Creates a new form to display and edit the current collection.</summary>
+      <returns>A <see cref="T:System.ComponentModel.Design.CollectionEditor.CollectionForm" /> to provide as the user interface for editing the collection.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CreateCollectionItemType">
+      <summary>Gets the data type that this collection contains.</summary>
+      <returns>The data type of the items in the collection, or an <see cref="T:System.Object" /> if no <see langword="Item" /> property can be located on the collection.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CreateInstance(System.Type)">
+      <summary>Creates a new instance of the specified collection item type.</summary>
+      <param name="itemType">The type of item to create.</param>
+      <returns>A new instance of the specified object.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.CreateNewItemTypes">
+      <summary>Gets the data types that this collection editor can contain.</summary>
+      <returns>An array of data types that this collection can contain.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.DestroyInstance(System.Object)">
+      <summary>Destroys the specified instance of the object.</summary>
+      <param name="instance">The object to destroy.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the value of the specified object using the specified service provider and context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">A service provider object through which editing services can be obtained.</param>
+      <param name="value">The object to edit the value of.</param>
+      <returns>The new value of the object. If the value of the object has not changed, this should return the same object it was passed.</returns>
+      <exception cref="T:System.ComponentModel.Design.CheckoutException">An attempt to check out a file that is checked into a source code management program did not succeed.</exception>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.GetDisplayText(System.Object)">
+      <summary>Retrieves the display text for the given list item.</summary>
+      <param name="value">The list item for which to retrieve display text.</param>
+      <returns>The display text for <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the edit style used by the <see cref="M:System.ComponentModel.Design.CollectionEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> enumeration value indicating the provided editing style. If the method is not supported in the specified context, this method will return the <see cref="F:System.Drawing.Design.UITypeEditorEditStyle.None" /> identifier.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.GetItems(System.Object)">
+      <summary>Gets an array of objects containing the specified collection.</summary>
+      <param name="editValue">The collection to edit.</param>
+      <returns>An array containing the collection objects, or an empty object array if the specified collection does not inherit from <see cref="T:System.Collections.ICollection" />.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.GetObjectsFromInstance(System.Object)">
+      <summary>Returns a list containing the given object</summary>
+      <param name="instance">An <see cref="T:System.Collections.ArrayList" /> returned as an object.</param>
+      <returns>An <see cref="T:System.Collections.ArrayList" /> which contains the individual objects to be created.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.GetService(System.Type)">
+      <summary>Gets the requested service, if it is available.</summary>
+      <param name="serviceType">The type of service to retrieve.</param>
+      <returns>An instance of the service, or <see langword="null" /> if the service cannot be found.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.HelpTopic">
+      <summary>Gets the Help keyword to display the Help topic or topic list for when the editor's dialog box Help button or the F1 key is pressed.</summary>
+      <returns>The Help keyword to display the Help topic or topic list for when Help is requested from the editor.</returns>
+    </member>
+    <member name="P:System.ComponentModel.Design.CollectionEditor.NewItemTypes">
+      <summary>Gets the available types of items that can be created for this collection.</summary>
+      <returns>The types of items that can be created.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.SetItems(System.Object,System.Object[])">
+      <summary>Sets the specified array as the items of the collection.</summary>
+      <param name="editValue">The collection to edit.</param>
+      <param name="value">An array of objects to set as the collection items.</param>
+      <returns>The newly created collection object or, otherwise, the collection indicated by the <paramref name="editValue" /> parameter.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.CollectionEditor.ShowHelp">
+      <summary>Displays the default Help topic for the collection editor.</summary>
+    </member>
+    <member name="T:System.ComponentModel.Design.MultilineStringEditor">
+      <summary>Displays a dialog for editing multi-line strings in design mode.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.MultilineStringEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.MultilineStringEditor" /> class.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.MultilineStringEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the specified object value using the edit style provided by <see cref="M:System.Drawing.Design.ImageEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">A service provider object through which editing services can be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object has not changed, this method should return the same object passed to it.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.MultilineStringEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editing style of the <see cref="M:System.Drawing.Design.ImageEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> enumeration value indicating the supported editing style.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.MultilineStringEditor.GetPaintValueSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets a value indicating whether this editor supports painting a representation of an object's value.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>
+        <see langword="false" />, indicating that this <see cref="T:System.Drawing.Design.UITypeEditor" /> does not display a visual representation in the Properties Window.</returns>
+    </member>
+    <member name="T:System.ComponentModel.Design.ObjectSelectorEditor">
+      <summary>Implements the basic functionality that can be used to design value editors. These editors can, in turn, provide a user interface for representing and editing the values of objects of the supported data types.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" /> class.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.#ctor(System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" /> class.</summary>
+      <param name="subObjectSelector">The specified sub-object selector value.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.ApplyTreeViewThemeStyles(System.Windows.Forms.TreeView)">
+      <param name="treeView" />
+    </member>
+    <member name="F:System.ComponentModel.Design.ObjectSelectorEditor.currValue">
+      <summary>Represents the current value of <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the value of the specified object using the editor style indicated by <see cref="Overload:System.ComponentModel.Design.ObjectSelectorEditor.GetEditStyle" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> that this editor can use to obtain services.</param>
+      <param name="value">The object to edit.</param>
+      <returns>The new value of the object. If the value of the object has not changed, the method should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.EqualsToValue(System.Object)">
+      <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+      <param name="value">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
+      <returns>
+        <see langword="true" /> if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.FillTreeWithData(System.ComponentModel.Design.ObjectSelectorEditor.Selector,System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider)">
+      <summary>Fills a hierarchical collection of labeled items, with each item represented by a <see cref="T:System.Windows.Forms.TreeNode" />.</summary>
+      <param name="selector">A hierarchical collection of labeled items.</param>
+      <param name="context">The context information for a component.</param>
+      <param name="provider">The <see cref="M:System.IServiceProvider.GetService(System.Type)" /> method of this interface that obtains the object that provides the service.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editor style used by the <see cref="Overload:System.ComponentModel.Design.ObjectSelectorEditor.EditValue" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> value that indicates the style of editor used by <see cref="Overload:System.ComponentModel.Design.ObjectSelectorEditor.EditValue" />.</returns>
+    </member>
+    <member name="F:System.ComponentModel.Design.ObjectSelectorEditor.prevValue">
+      <summary>Represents the previous value of <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" />.</summary>
+    </member>
+    <member name="T:System.ComponentModel.Design.ObjectSelectorEditor.Selector">
+      <summary>Displays a hierarchical collection of labeled items, each represented by a <see cref="T:System.Windows.Forms.TreeNode" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.#ctor(System.ComponentModel.Design.ObjectSelectorEditor)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor.Selector" /> class.</summary>
+      <param name="editor">The <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" />.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.AddNode(System.String,System.Object,System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode)">
+      <summary>Adds a new tree node to the collection.</summary>
+      <param name="label">The label for the node.</param>
+      <param name="value">The <see cref="T:System.Object" /> that represents the value for the node.</param>
+      <param name="parent">The parent of the node.</param>
+      <returns>A <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode" /> added to the collection.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.Clear">
+      <summary>Removes all tree nodes from the collection.</summary>
+    </member>
+    <member name="F:System.ComponentModel.Design.ObjectSelectorEditor.Selector.clickSeen">
+      <summary>This field is for internal use only.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.OnAfterSelect(System.Object,System.Windows.Forms.TreeViewEventArgs)">
+      <summary>Occurs after the tree node is selected.</summary>
+      <param name="sender">The source of an event.</param>
+      <param name="e">A <see cref="T:System.Windows.Forms.TreeViewEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.OnKeyDown(System.Windows.Forms.KeyEventArgs)">
+      <summary>Occurs when a key is pressed while the control has focus.</summary>
+      <param name="e">Provides data for the <see cref="E:System.Windows.Forms.Control.KeyDown" /> event.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.OnKeyPress(System.Windows.Forms.KeyPressEventArgs)">
+      <summary>Occurs when a key is pressed while the control has focus.</summary>
+      <param name="e">Provides data for the <see cref="E:System.Windows.Forms.Control.KeyPress" /> event.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.OnNodeMouseClick(System.Windows.Forms.TreeNodeMouseClickEventArgs)">
+      <summary>Occurs when the mouse pointer is over the control and a mouse button is clicked.</summary>
+      <param name="e">Provides data for the <see cref="E:System.Windows.Forms.Control.MouseUp" />, <see cref="E:System.Windows.Forms.Control.MouseDown" />, and <see cref="E:System.Windows.Forms.Control.MouseMove" /> events.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.SetSelection(System.Object,System.Windows.Forms.TreeNodeCollection)">
+      <summary>Sets the collection nodes to a specific value.</summary>
+      <param name="value">The value to be set.</param>
+      <param name="nodes">The nodes collection.</param>
+      <returns>
+        <see langword="true" /> if the collection nodes were set; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.Start(System.Windows.Forms.Design.IWindowsFormsEditorService,System.Object)">
+      <summary>Initializes the editor service.</summary>
+      <param name="edSvc">The editor service.</param>
+      <param name="value">The value to be set.</param>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.Stop">
+      <summary>Removes the editor service.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.Selector.WndProc(System.Windows.Forms.Message@)">
+      <summary>Processes Windows messages.</summary>
+      <param name="m">The Windows <see cref="T:System.Windows.Forms.Message" /> to process.</param>
+    </member>
+    <member name="T:System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode">
+      <summary>Represents a node of a <see cref="T:System.Windows.Forms.TreeView" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode.#ctor(System.String,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode" /> class.</summary>
+      <param name="label">The label for the node.</param>
+      <param name="value">The <see cref="T:System.Object" /> that represents the value for the node.</param>
+    </member>
+    <member name="F:System.ComponentModel.Design.ObjectSelectorEditor.SelectorNode.value">
+      <summary>Represents the value for the node.</summary>
+    </member>
+    <member name="M:System.ComponentModel.Design.ObjectSelectorEditor.SetValue(System.Object)">
+      <summary>Sets the current <see cref="T:System.ComponentModel.Design.ObjectSelectorEditor" /> to the specified value.</summary>
+      <param name="value">The specified value.</param>
+    </member>
+    <member name="F:System.ComponentModel.Design.ObjectSelectorEditor.SubObjectSelector">
+      <summary>Controls whether or not the nodes within the hierarchical collection of labeled items are accessible.</summary>
+    </member>
+    <member name="T:System.Drawing.Design.BitmapEditor">
+      <summary>Provides a user interface for selecting bitmap files in a property browser.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.BitmapEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.BitmapEditor" /> class.</summary>
+    </member>
+    <member name="F:System.Drawing.Design.BitmapEditor.BitmapExtensions">
+      <summary>Provides the list of default file extensions used to filter the file list.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.BitmapEditor.GetExtensions">
+      <summary>Gets the extensions for the file list filter that the bitmap editor will initially use to filter the file list.</summary>
+      <returns>The default set of file extensions used to filter the file list.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.BitmapEditor.GetFileDialogDescription">
+      <summary>Gets the description for the default file list filter provided by this editor.</summary>
+      <returns>The description for the default type of files to filter the file list for.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.BitmapEditor.LoadFromStream(System.IO.Stream)">
+      <summary>Loads an image from the specified stream.</summary>
+      <param name="stream">The stream from which to load the image.</param>
+      <returns>The <see cref="T:System.Drawing.Image" /> loaded from the stream.</returns>
+    </member>
+    <member name="T:System.Drawing.Design.ColorEditor">
+      <summary>Provides a <see cref="T:System.Drawing.Design.UITypeEditor" /> for visually picking a color.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.ColorEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.ColorEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.ColorEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the given object value using the editor style provided by the <see cref="M:System.Drawing.Design.ColorEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> through which editing services may be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object has not changed, this should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ColorEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editing style of the Edit method. If the method is not supported, this will return <see cref="F:System.Drawing.Design.UITypeEditorEditStyle.None" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>An enum value indicating the provided editing style.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ColorEditor.GetPaintValueSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets a value indicating if this editor supports the painting of a representation of an object's value.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>
+        <see langword="true" /> if <see cref="Overload:System.Drawing.Design.ColorEditor.PaintValue" /> is implemented; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ColorEditor.PaintValue(System.Drawing.Design.PaintValueEventArgs)">
+      <summary>Paints a representative value of the given object to the provided canvas.</summary>
+      <param name="e">What to paint and where to paint it.</param>
+    </member>
+    <member name="T:System.Drawing.Design.CursorEditor">
+      <summary>Provides a <see cref="T:System.Drawing.Design.UITypeEditor" /> that can perform default file searching for cursor (.cur) files.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.CursorEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.CursorEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.CursorEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the given object value using the editor style provided by the <see cref="Overload:System.Drawing.Design.CursorEditor.GetEditStyle" /> method.</summary>
+      <param name="context">A type descriptor context that can be used to provide additional context information.</param>
+      <param name="provider">A service provider object through which editing services may be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object has not changed, this should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.CursorEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Retrieves the editing style of the <see cref="Overload:System.Drawing.Design.CursorEditor.EditValue" /> method.</summary>
+      <param name="context">A type descriptor context that can be used to provide additional context information.</param>
+      <returns>An enum value indicating the provided editing style. If the method is not supported, this will return <see cref="F:System.Drawing.Design.UITypeEditorEditStyle.None" />.</returns>
+    </member>
+    <member name="P:System.Drawing.Design.CursorEditor.IsDropDownResizable">
+      <summary>Gets a value indicating whether drop-down editors should be resizable by the user.</summary>
+      <returns>
+        <see langword="true" /> if drop-down editors are resizable; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="T:System.Drawing.Design.FontEditor">
+      <summary>Provides a user interface to select and configure a <see cref="T:System.Drawing.Font" /> object.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.FontEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.FontEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.FontEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the value of the specified object using the editor style indicated by <see cref="M:System.Drawing.Design.FontEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> that this editor can use to obtain services.</param>
+      <param name="value">The object to edit.</param>
+      <returns>The new value of the object. If the value of the object has not changed, this should return the same object that was passed to it.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.FontEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editor style used by the <see cref="M:System.Drawing.Design.FontEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> value that indicates the style of editor used by <see cref="M:System.Drawing.Design.FontEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" />.</returns>
+    </member>
+    <member name="T:System.Drawing.Design.FontNameEditor">
+      <summary>Provides a <see cref="T:System.Drawing.Design.UITypeEditor" /> that paints a glyph for the font name.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.FontNameEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.FontNameEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.FontNameEditor.GetPaintValueSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Determines if this editor supports the painting of a representation of an object's value.</summary>
+      <param name="context">A type descriptor context that can be used to provide additional context information.</param>
+      <returns>
+        <see langword="true" /> if <see cref="Overload:System.Drawing.Design.FontNameEditor.PaintValue" /> is implemented; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.FontNameEditor.PaintValue(System.Drawing.Design.PaintValueEventArgs)">
+      <summary>Paints a representative value of the given object to the provided canvas. Painting should be done within the boundaries of the provided rectangle.</summary>
+      <param name="e">What to paint and where to paint it.</param>
+    </member>
+    <member name="T:System.Drawing.Design.ImageEditor">
+      <summary>Provides a user interface for selecting an image for a property in a property grid.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.ImageEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.CreateExtensionsString(System.String[],System.String)">
+      <summary>Creates a string of file name extensions using the specified array of file extensions and the specified separator.</summary>
+      <param name="extensions">The extensions to filter for.</param>
+      <param name="sep">The separator to use.</param>
+      <returns>A string containing the specified file name extensions, each separated by the specified separator.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.CreateFilterEntry(System.Drawing.Design.ImageEditor)">
+      <summary>Creates a filter entry for a file dialog box's file list.</summary>
+      <param name="e">An <see cref="T:System.Drawing.Design.ImageEditor" /> to get the filter entry from.</param>
+      <returns>The new filter entry string.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the specified object value using the edit style provided by the <see cref="M:System.Drawing.Design.ImageEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> through which editing services can be obtained.</param>
+      <param name="value">An <see cref="T:System.Object" /> being edited.</param>
+      <returns>An <see cref="T:System.Object" /> representing the new value. If the value of the object has not changed, <see cref="M:System.Drawing.Design.ImageEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> returns the object that was passed to it.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editing style of the <see cref="M:System.Drawing.Design.ImageEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>One of the <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> values indicating the supported editing style.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.GetExtensions">
+      <summary>Gets the extensions for the file-list filter that this editor initially uses to filter the file list.</summary>
+      <returns>A set of file extensions used to filter the file list.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.GetFileDialogDescription">
+      <summary>Gets the description for the default file-list filter provided by this editor.</summary>
+      <returns>The description for the default file-list filter.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.GetImageExtenders">
+      <summary>Gets an array of supported image types.</summary>
+      <returns>An array of <see cref="T:System.Type" /> representing supported image types.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.GetPaintValueSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets a value indicating whether this editor supports painting a representation of an object's value.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>
+        <see langword="true" /> if <see cref="M:System.Drawing.Design.ImageEditor.PaintValue(System.Drawing.Design.PaintValueEventArgs)" /> is implemented; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.LoadFromStream(System.IO.Stream)">
+      <summary>Loads an image from the specified stream.</summary>
+      <param name="stream">A <see cref="T:System.IO.Stream" /> that contains the image to load.</param>
+      <returns>The <see cref="T:System.Drawing.Image" /> that has been loaded.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.ImageEditor.PaintValue(System.Drawing.Design.PaintValueEventArgs)">
+      <summary>Paints a value indicated by the specified <see cref="T:System.Drawing.Design.PaintValueEventArgs" />.</summary>
+      <param name="e">A <see cref="T:System.Drawing.Design.PaintValueEventArgs" /> indicating what to paint and where to paint it.</param>
+    </member>
+    <member name="T:System.Drawing.Design.MetafileEditor">
+      <summary>Provides a <see cref="T:System.Drawing.Design.UITypeEditor" /> that can perform default file searching for metafile (.emf) files.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.MetafileEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Design.MetafileEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Design.MetafileEditor.GetExtensions">
+      <summary>Gets the extensions for the file-list filter that this editor initially uses to filter the file list.</summary>
+      <returns>A set of file extensions used to filter the file list.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.MetafileEditor.GetFileDialogDescription">
+      <summary>Gets the description for the default file-list filter provided by this editor.</summary>
+      <returns>The description for the default file-list filter.</returns>
+    </member>
+    <member name="M:System.Drawing.Design.MetafileEditor.LoadFromStream(System.IO.Stream)">
+      <summary>Loads an image from the specified stream.</summary>
+      <param name="stream">A <see cref="T:System.IO.Stream" /> that contains the image to load.</param>
+      <returns>The <see cref="T:System.Drawing.Image" /> that has been loaded.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.AnchorEditor">
+      <summary>Provides a user interface for configuring an <see cref="P:System.Windows.Forms.Control.Anchor" /> property.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.AnchorEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.AnchorEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.AnchorEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the value of the specified object using the specified service provider and context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> through which editing services may be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object hasn't changed, this should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.AnchorEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editor style used by the <see cref="M:System.Windows.Forms.Design.AnchorEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>One of the <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> values indicating the provided editing style. If the method is not supported, this method will return <see cref="F:System.Drawing.Design.UITypeEditorEditStyle.None" />.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.BorderSidesEditor">
+      <summary>Provides an editor for setting the <see cref="P:System.Windows.Forms.ToolStripStatusLabel.BorderSides" /> property.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.BorderSidesEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.BorderSidesEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.BorderSidesEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the given object value using the editor style provided by <see cref="M:System.Windows.Forms.Design.BorderSidesEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> providing information about the control or component.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> providing custom support to other objects.</param>
+      <param name="value">The object value to edit.</param>
+      <returns>The edited object.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.BorderSidesEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Retrieves the editing style of the <see langword="EditValue" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> providing information about the control or component.</param>
+      <returns>One of the <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> values. If the method is not supported, this method returns <see cref="F:System.Drawing.Design.UITypeEditorEditStyle.None" />.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.DockEditor">
+      <summary>Provides a user interface for specifying a <see cref="P:System.Windows.Forms.Control.Dock" /> property.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.DockEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.DockEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.DockEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the specified object value using the editor style provided by GetEditorStyle. A service provider is provided so that any required editing services can be obtained.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">A service provider object through which editing services may be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object hasn't changed, this should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.DockEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Retrieves the editing style of the EditValue method. If the method is not supported, this will return None.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>An enum value indicating the provided editing style.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.FileNameEditor">
+      <summary>Provides a user interface for selecting a file name.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FileNameEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.FileNameEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FileNameEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the specified object using the editor style provided by the <see cref="M:System.Windows.Forms.Design.FileNameEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">A service provider object through which editing services may be obtained.</param>
+      <param name="value">An instance of the value being edited.</param>
+      <returns>The new value of the object. If the value of the object hasn't changed, this should return the same object it was passed.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FileNameEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editing style used by the <see cref="M:System.Windows.Forms.Design.FileNameEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>One of the <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> values indicating the provided editing style.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FileNameEditor.InitializeDialog(System.Windows.Forms.OpenFileDialog)">
+      <summary>Initializes the open file dialog when it is created.</summary>
+      <param name="openFileDialog">The <see cref="T:System.Windows.Forms.OpenFileDialog" /> to use to select a file name.</param>
+    </member>
+    <member name="T:System.Windows.Forms.Design.FolderNameEditor">
+      <summary>Provides a user interface for choosing a folder from the file system.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.FolderNameEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the specified object using the editor style provided by <see cref="M:System.Windows.Forms.Design.FolderNameEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">A service object provider.</param>
+      <param name="value">The value to set.</param>
+      <returns>The new value of the object, or the old value if the object couldn't be updated.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser">
+      <summary>Represents a dialog box that allows the user to choose a folder. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser" /> class.</summary>
+    </member>
+    <member name="P:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.Description">
+      <summary>Gets or sets a description to show above the folders.</summary>
+      <returns>The description to show above the folders.</returns>
+    </member>
+    <member name="P:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.DirectoryPath">
+      <summary>Gets the directory path to the object the user picked.</summary>
+      <returns>The directory path to the object the user picked.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.ShowDialog">
+      <summary>Shows the folder browser dialog.</summary>
+      <returns>The <see cref="T:System.Windows.Forms.DialogResult" /> from the form.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.ShowDialog(System.Windows.Forms.IWin32Window)">
+      <summary>Shows the folder browser dialog with the specified owner.</summary>
+      <param name="owner">Top-level window that will own the modal dialog (e.g.: System.Windows.Forms.Form).</param>
+      <returns>The <see cref="T:System.Windows.Forms.DialogResult" /> from the form.</returns>
+    </member>
+    <member name="P:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.StartLocation">
+      <summary>Gets or sets the start location of the root node.</summary>
+      <returns>A <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder" /> that indicates the location for the folder browser to initially browse to.</returns>
+    </member>
+    <member name="P:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.Style">
+      <summary>The styles the folder browser will use when browsing folders. This should be a combination of flags from the <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles" /> enumeration.</summary>
+      <returns>A <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles" /> enumeration member that indicates behavior for the <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser" /> to use.</returns>
+    </member>
+    <member name="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder">
+      <summary>Defines identifiers used to indicate the root folder for a folder browser to initially browse to.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.Desktop">
+      <summary>The user's desktop.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.Favorites">
+      <summary>The user's favorites list.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.MyComputer">
+      <summary>The contents of the My Computer icon.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.MyDocuments">
+      <summary>The user's My Documents folder.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.MyPictures">
+      <summary>User's location to store pictures.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.NetAndDialUpConnections">
+      <summary>Network and dial-up connections.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.NetworkNeighborhood">
+      <summary>The network neighborhood.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.Printers">
+      <summary>A folder containing installed printers.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.Recent">
+      <summary>A folder containing shortcuts to recently opened files.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.SendTo">
+      <summary>A folder containing shortcuts to applications to send documents to.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.StartMenu">
+      <summary>The user's start menu.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder.Templates">
+      <summary>The user's file templates.</summary>
+    </member>
+    <member name="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles">
+      <summary>Defines identifiers used to specify behavior of a <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser" />.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.BrowseForComputer">
+      <summary>The folder browser can only return computers. If the user selects anything other than a computer, the OK button is grayed.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.BrowseForEverything">
+      <summary>The folder browser can return any object that it can return.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.BrowseForPrinter">
+      <summary>The folder browser can only return printers. If the user selects anything other than a printer, the OK button is grayed.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.RestrictToDomain">
+      <summary>The folder browser will not include network folders below the domain level in the dialog box's tree view control, or allow navigation to network locations outside of the domain.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.RestrictToFilesystem">
+      <summary>The folder browser will only return local file system directories. If the user selects folders that are not part of the local file system, the OK button is grayed.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.RestrictToSubfolders">
+      <summary>The folder browser will only return objects of the local file system that are within the root folder or a subfolder of the root folder. If the user selects a subfolder of the root folder that is not part of the local file system, the OK button is grayed.</summary>
+    </member>
+    <member name="F:System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles.ShowTextBox">
+      <summary>The folder browser includes a <see cref="T:System.Windows.Forms.TextBox" /> control in the browse dialog box that allows the user to type the name of an item.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editing style used by the <see cref="M:System.Windows.Forms.Design.FolderNameEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> enumeration value indicating the provided editing style.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.FolderNameEditor.InitializeDialog(System.Windows.Forms.Design.FolderNameEditor.FolderBrowser)">
+      <summary>Initializes the folder browser dialog.</summary>
+      <param name="folderBrowser">A <see cref="T:System.Windows.Forms.Design.FolderNameEditor.FolderBrowser" /> to choose a folder.</param>
+    </member>
+    <member name="T:System.Windows.Forms.Design.ShortcutKeysEditor">
+      <summary>Provides an editor for picking shortcut keys.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.ShortcutKeysEditor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Forms.Design.ShortcutKeysEditor" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Forms.Design.ShortcutKeysEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+      <summary>Edits the given object value using the editor style provided by the <see cref="M:System.Windows.Forms.Design.ShortcutKeysEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <param name="provider">An <see cref="T:System.IServiceProvider" /> that this editor can use to obtain services.</param>
+      <param name="value">The <see cref="T:System.Object" /> to edit.</param>
+      <returns>The new value of the <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="M:System.Windows.Forms.Design.ShortcutKeysEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets the editor style used by the <see cref="Overload:System.Windows.Forms.Design.ShortcutKeysEditor.EditValue" /> method.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to gain additional context information.</param>
+      <returns>A <see cref="T:System.Drawing.Design.UITypeEditorEditStyle" /> value that indicates the style of editor used by the <see cref="Overload:System.Windows.Forms.Design.ShortcutKeysEditor.EditValue" /> method.</returns>
+    </member>
+  </members>
+</doc>

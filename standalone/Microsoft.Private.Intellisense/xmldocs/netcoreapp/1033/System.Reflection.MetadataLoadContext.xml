@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Reflection.MetadataLoadContext</name>
+  </assembly>
+  <members>
+    <member name="T:System.Reflection.MetadataAssemblyResolver">
+      <summary>Provides the base class for binding algorithms used by <see cref="T:System.Reflection.MetadataLoadContext" />.</summary>
+    </member>
+    <member name="M:System.Reflection.MetadataAssemblyResolver.#ctor">
+      <summary>Initializes an instance of <see cref="T:System.Reflection.MetadataAssemblyResolver" />.</summary>
+    </member>
+    <member name="M:System.Reflection.MetadataAssemblyResolver.Resolve(System.Reflection.MetadataLoadContext,System.Reflection.AssemblyName)">
+      <summary>Returns an assembly from a given assembly name.</summary>
+      <param name="context">The metadata load context object that represents the closed universe of <see cref="T:System.Type" /> objects loaded for inspection-only purposes.</param>
+      <param name="assemblyName">The name of the assembly.</param>
+      <returns>The assembly for the provided <paramref name="assemblyName" />.</returns>
+    </member>
+    <member name="T:System.Reflection.MetadataLoadContext">
+      <summary>Represents a closed universe of Type objects loaded for inspection-only purposes. Each MetadataLoadContext can have its own binding rules and is isolated from all other MetadataLoadContexts.</summary>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.#ctor(System.Reflection.MetadataAssemblyResolver,System.String)">
+      <summary>Creates a new <see cref="T:System.Reflection.MetadataLoadContext" /> object.</summary>
+      <param name="resolver">A <see cref="T:System.Reflection.MetadataAssemblyResolver" /> instance.</param>
+      <param name="coreAssemblyName">The name of the assembly that contains the core types such as <see cref="T:System.Object" />. Typically, this would be "mscorlib".</param>
+    </member>
+    <member name="P:System.Reflection.MetadataLoadContext.CoreAssembly">
+      <summary>Gets or sets the assembly that denotes the "system assembly" that houses the well-known types such as <see cref="T:System.Int32" />.</summary>
+      <returns>An <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.Dispose">
+      <summary>Releases any native resources (such as file locks on assembly files).</summary>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.GetAssemblies">
+      <summary>Return an atomic snapshot of the assemblies that have been loaded into the <see cref="T:System.Reflection.MetadataLoadContext" />.</summary>
+      <returns>An enumerable collection of  objects.</returns>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.LoadFromAssemblyName(System.Reflection.AssemblyName)">
+      <summary>Resolves the supplied assembly name to an assembly. If an assembly was previously bound to this name, that assembly is returned. Otherwise, the <see cref="T:System.Reflection.MetadataLoadContext" /> calls the specified <see cref="T:System.Reflection.MetadataAssemblyResolver" />.</summary>
+      <param name="assemblyName">An <see cref="T:System.Reflection.AssemblyName" /> instance.</param>
+      <returns>An <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+      <exception cref="T:System.IO.FileNotFoundException">The resolver returns <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.LoadFromAssemblyName(System.String)">
+      <summary>Resolves the supplied assembly name to an assembly. If an assembly was previously bound to this name, that assembly is returned. Otherwise, the <see cref="T:System.Reflection.MetadataLoadContext" /> calls the specified <see cref="T:System.Reflection.MetadataAssemblyResolver" />.</summary>
+      <param name="assemblyName">A <see cref="T:System.String" /> representing the assembly name.</param>
+      <returns>An <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+      <exception cref="T:System.IO.FileNotFoundException">The resolver returns <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.LoadFromAssemblyPath(System.String)">
+      <summary>Loads an assembly from a specific path on the disk and binds its assembly name to it in the <see cref="T:System.Reflection.MetadataLoadContext" />. If a prior assembly with the same name was already loaded into the <see cref="T:System.Reflection.MetadataLoadContext" />, the prior assembly will be returned.</summary>
+      <param name="assemblyPath">A <see cref="T:System.String" /> representing the path to the assembly.</param>
+      <returns>An <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+      <exception cref="T:System.IO.FileLoadException">The two assemblies do not have the same Mvid.</exception>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.LoadFromByteArray(System.Byte[])">
+      <summary>Loads an assembly from a byte array and binds its assembly name to it in the <see cref="T:System.Reflection.MetadataLoadContext" />. If a prior assembly with the same name was already loaded into the <see cref="T:System.Reflection.MetadataLoadContext" />, the prior assembly will be returned.</summary>
+      <param name="assembly">A <see cref="System.Byte[]" /> holding an assembly.</param>
+      <returns>An <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+      <exception cref="T:System.IO.FileLoadException">The two assemblies do not have the same Mvid.</exception>
+    </member>
+    <member name="M:System.Reflection.MetadataLoadContext.LoadFromStream(System.IO.Stream)">
+      <summary>Loads an assembly from a stream and binds its assembly name to it in the <see cref="T:System.Reflection.MetadataLoadContext" />. If a prior assembly with the same name was already loaded into the <see cref="T:System.Reflection.MetadataLoadContext" />, the prior assembly will be returned.</summary>
+      <param name="assembly">A <see cref="T:System.IO.Stream" /> holding an assembly.</param>
+      <returns>The loaded assembly.</returns>
+      <exception cref="T:System.IO.FileLoadException">The two assemblies do not have the same Mvid.</exception>
+    </member>
+    <member name="T:System.Reflection.PathAssemblyResolver">
+      <summary>Represents a metadata assembly resolver that uses paths to every assembly that may be loaded.</summary>
+    </member>
+    <member name="M:System.Reflection.PathAssemblyResolver.#ctor(System.Collections.Generic.IEnumerable{System.String})">
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.PathAssemblyResolver" /> class.</summary>
+      <param name="assemblyPaths">A collection of assembly path strings.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="assemblyPaths" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">One of the paths in <paramref name="assemblyPaths" /> is invalid.</exception>
+    </member>
+    <member name="M:System.Reflection.PathAssemblyResolver.Resolve(System.Reflection.MetadataLoadContext,System.Reflection.AssemblyName)">
+      <summary>Returns an assembly from a given assembly name.</summary>
+      <param name="context">The metadata load context object that represents the closed universe of <see cref="T:System.Type" /> objects loaded for inspection-only purposes.</param>
+      <param name="assemblyName">The name of the assembly.</param>
+      <returns>The assembly for the provided <paramref name="assemblyName" />.</returns>
+    </member>
+  </members>
+</doc>
