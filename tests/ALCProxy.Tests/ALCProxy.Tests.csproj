@@ -1,30 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <!--<GenerateProgramFile>false</GenerateProgramFile>-->
     <IsPackable>false</IsPackable>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\t-gopho.REDMOND\source\repos\project\corefxlab\tools\Key.snk</AssemblyOriginatorKeyFile>
-
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-  <Import Project="..\..\tools\common.props" />
-
   <ItemGroup>
-    <!--<PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="2.0.30" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />-->
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.performance.api" Version="1.0.0-beta-build0020" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="xunit" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+  </ItemGroup>  <ItemGroup>
     <ProjectReference Include="..\..\src\ALCProxy.Proxy\ALCProxy.Proxy.csproj" />
     <ProjectReference Include="..\ALCProxy.TestInterfaceUpdated\ALCProxy.TestInterfaceUpdated.csproj" />
     <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
   </ItemGroup>
-
 </Project>
