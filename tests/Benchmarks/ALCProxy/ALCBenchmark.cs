@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Loader;
-using ALCProxy.Communication;
 using ALCProxy.Proxy;
 using ALCProxy.TestInterface;
 using BenchmarkDotNet.Attributes;
@@ -132,66 +131,79 @@ namespace Benchmarks.ALCProxy
             name = AssemblyName.GetAssemblyName(path);
             alc2 = new TestAssemblyLoadContext("BenchmarkExternalContext", path, isCollectible: true);
         }
+
         [Benchmark]
         public object CreateProxyObject()
         {
             return ProxyBuilder<ITest, ClientDispatch>.CreateInstanceAndUnwrap(alc, assemblyName, "Benchmarks.ALCProxy.Test");
         }
+
         [Benchmark]
         public object CreateExternalAssemblyProxyObject()
         {
-            return ProxyBuilder<IExternalClass, ClientDispatch>.CreateInstanceAndUnwrap(alc2, name, "ExternalClass", new object[] { });
+            return ProxyBuilder<IExternalClass, ClientDispatch>.CreateInstanceAndUnwrap(alc2, name, "ALCProxy.TestAssembly.ExternalClass", new object[] { });
         }
+
         [Benchmark]
         public object CreateControlObject()
         {
             return new Test();
         }
+
         [Benchmark]
         public object CallSimpleMethodThroughProxy()
         {
             return testObject.SimpleMethod();
         }
+
         [Benchmark]
         public object CallSimpleMethodControl()
         {
             return controlObject.SimpleMethod();
         }
+
         [Benchmark]
         public object CreateGenericProxy()
         {
             return ProxyBuilder<IGeneric<Test2>, ClientDispatch>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().GetName(), "Benchmarks.ALCProxy.GenericClass`1", new Type[] { typeof(Test2) });
         }
+
         [Benchmark]
         public object CreateGenericControl()
         {
             return new GenericClass<Test2>();
         }
+        
         [Benchmark]
         public object CallSimpleMethodGeneric()
         {
             return genericObject.GetContextName();
         }
+        
         [Benchmark]
         public object CallSimpleMethodGenericControl()
         {
             return genericControl.GetContextName();
         }
+        
         [Benchmark]
         public object UserTypeParameters()
         {
             return testObject.MethodWithUserTypeParameter(3, new Test2());
         }
+        
         [Benchmark]
         public object UserTypeParametersControl()
         {
             return controlObject.MethodWithUserTypeParameter(3, new Test2());
         }
+        
         [Benchmark]
         public object UserTypeParameters2()
         {
             return testObject.MethodWithUserTypeParameter(3, userInput);
         }
+        
         [Benchmark]
         public object UserTypeParametersControl2()
         {

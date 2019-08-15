@@ -184,6 +184,7 @@ namespace ALCProxy.Tests
             execPath = Assembly.GetExecutingAssembly().Location;
 
         }
+
         [Fact]
         public void SimpleObjectsProxiedCorrectly()
         {
@@ -201,6 +202,7 @@ namespace ALCProxy.Tests
             Assert.Equal(3, t2.testValue);
 
         }
+
         [Fact]
         public void SimpleObjectWithPropertiesProxied()
         {
@@ -225,6 +227,7 @@ namespace ALCProxy.Tests
             }
             Assert.False(wrAlc2.IsAlive);
         }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private WeakReference GetWeakRefALC()
         {
@@ -239,6 +242,7 @@ namespace ALCProxy.Tests
             Assert.ThrowsAny<InvalidOperationException>(t.GetContextName);
             return alcWeakRef;
         }
+
         [Fact]
         public void NonUserGenericTypesExecuteCorrectly()
         {
@@ -251,6 +255,7 @@ namespace ALCProxy.Tests
 
             alc.Unload();
         }
+
         [Fact]
         public void UserGenericTypesCorrectlyCreated()
         {
@@ -260,6 +265,7 @@ namespace ALCProxy.Tests
 
             alc.Unload();
         }
+
         [Fact]
         public void UserGenericTypeMethodsExecuteCorrectly()
         {
@@ -270,6 +276,7 @@ namespace ALCProxy.Tests
 
             alc.Unload();
         }
+
         [Fact]
         public void ReturnTypesCorrectlyGiveBackUserDefinedTypes()
         {
@@ -279,6 +286,7 @@ namespace ALCProxy.Tests
 
             alc.Unload();
         }
+
         [Fact]
         public void CreateObjectWithNonUserParamsInConstructor()
         {
@@ -289,9 +297,8 @@ namespace ALCProxy.Tests
             Assert.Equal("testString", t.GetContextName());
             Assert.Equal(5, t.SimpleMethodReturnsInt());
         }
+
         [Fact]
-        //TODO currently this breaks due to some type cast errors ("Test2 isn't the same type as Test2"). This may be due to how we load the assemblies
-        //into the ALC, but we need to investigate this further to figure out what's going wrong.
         public void CreateObjectWithUserParamsInConstructor()
         {
             TestAssemblyLoadContext alc = new TestAssemblyLoadContext("CreateObjectWithUserParamsInConstructor", isCollectible: true);
@@ -304,6 +311,7 @@ namespace ALCProxy.Tests
             Assert.NotEqual(test, t2.ReturnUserType());
             Assert.Equal(test.testValue, t2.SimpleMethodReturnsInt());
         }
+
         //As a note, to test these, we need to manually build any of the external classes before running tests, 
         //or you will error out with a TypeLoadException when the creation of the proxy is attempted
         [Fact]
@@ -335,6 +343,7 @@ namespace ALCProxy.Tests
             };
             Assert.Equal(list, a.PassGenericObjects(dict));
         }
+
         /// <summary>
         /// The test assembly isn't built with the updated IExternalClass, replicating what it would look like if the interface recieved an update
         /// </summary>
@@ -378,6 +387,7 @@ namespace ALCProxy.Tests
         {
             _resolver = new AssemblyDependencyResolver(Assembly.GetExecutingAssembly().Location);
         }
+
         public TestAssemblyLoadContext(string name, string mainExecPath, bool isCollectible) : base(name, isCollectible)
         {
             _resolver = new AssemblyDependencyResolver(mainExecPath);
