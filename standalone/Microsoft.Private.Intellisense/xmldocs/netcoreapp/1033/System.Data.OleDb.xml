@@ -1,0 +1,1560 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Data.OleDb</name>
+  </assembly>
+  <members>
+    <member name="T:System.Data.OleDb.OleDbCommand">
+      <summary>Represents an SQL statement or stored procedure to execute against a data source.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommand" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommand" /> class with the text of the query.</summary>
+      <param name="cmdText">The text of the query.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.#ctor(System.String,System.Data.OleDb.OleDbConnection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommand" /> class with the text of the query and an <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
+      <param name="cmdText">The text of the query.</param>
+      <param name="connection">An <see cref="T:System.Data.OleDb.OleDbConnection" /> that represents the connection to a data source.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.#ctor(System.String,System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommand" /> class with the text of the query, an <see cref="T:System.Data.OleDb.OleDbConnection" />, and the <see cref="P:System.Data.OleDb.OleDbCommand.Transaction" />.</summary>
+      <param name="cmdText">The text of the query.</param>
+      <param name="connection">An <see cref="T:System.Data.OleDb.OleDbConnection" /> that represents the connection to a data source.</param>
+      <param name="transaction">The transaction in which the <see cref="T:System.Data.OleDb.OleDbCommand" /> executes.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.Cancel">
+      <summary>Tries to cancel the execution of an <see cref="T:System.Data.OleDb.OleDbCommand" />.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.Clone">
+      <summary>Creates a new <see cref="T:System.Data.OleDb.OleDbCommand" /> object that is a copy of the current instance.</summary>
+      <returns>A new <see cref="T:System.Data.OleDb.OleDbCommand" /> object that is a copy of this instance.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.CommandText">
+      <summary>Gets or sets the SQL statement or stored procedure to execute at the data source.</summary>
+      <returns>The SQL statement or stored procedure to execute. The default value is an empty string.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.CommandTimeout">
+      <summary>Gets or sets the wait time before terminating an attempt to execute a command and generating an error.</summary>
+      <returns>The time (in seconds) to wait for the command to execute. The default is 30 seconds.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.CommandType">
+      <summary>Gets or sets a value that indicates how the <see cref="P:System.Data.OleDb.OleDbCommand.CommandText" /> property is interpreted.</summary>
+      <returns>One of the <see cref="P:System.Data.OleDb.OleDbCommand.CommandType" /> values. The default is Text.</returns>
+      <exception cref="T:System.ArgumentException">The value was not a valid <see cref="P:System.Data.OleDb.OleDbCommand.CommandType" />.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.Connection">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbConnection" /> used by this instance of the <see cref="T:System.Data.OleDb.OleDbCommand" />.</summary>
+      <returns>The connection to a data source. The default value is <see langword="null" />.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> property was changed while a transaction was in progress.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.CreateParameter">
+      <summary>Creates a new instance of an <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.DesignTimeVisible">
+      <summary>Gets or sets a value that indicates whether the command object should be visible in a customized Windows Forms Designer control.</summary>
+      <returns>A value that indicates whether the command object should be visible in a control. The default is <see langword="true" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.ExecuteNonQuery">
+      <summary>Executes an SQL statement against the <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> and returns the number of rows affected.</summary>
+      <returns>The number of rows affected.</returns>
+      <exception cref="T:System.InvalidOperationException">The connection does not exist.  
+ -or-  
+ The connection is not open.  
+ -or-  
+ Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.ExecuteReader">
+      <summary>Sends the <see cref="P:System.Data.OleDb.OleDbCommand.CommandText" /> to the <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> and builds an <see cref="T:System.Data.OleDb.OleDbDataReader" />.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbDataReader" /> object.</returns>
+      <exception cref="T:System.InvalidOperationException">Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.ExecuteReader(System.Data.CommandBehavior)">
+      <summary>Sends the <see cref="P:System.Data.OleDb.OleDbCommand.CommandText" /> to the <see cref="P:System.Data.OleDb.OleDbCommand.Connection" />, and builds an <see cref="T:System.Data.OleDb.OleDbDataReader" /> using one of the <see cref="T:System.Data.CommandBehavior" /> values.</summary>
+      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbDataReader" /> object.</returns>
+      <exception cref="T:System.InvalidOperationException">Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.ExecuteScalar">
+      <summary>Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored.</summary>
+      <returns>The first column of the first row in the result set, or a null reference if the result set is empty.</returns>
+      <exception cref="T:System.InvalidOperationException">Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.Parameters">
+      <summary>Gets the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <returns>The parameters of the SQL statement or stored procedure. The default is an empty collection.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.Prepare">
+      <summary>Creates a prepared (or compiled) version of the command on the data source.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not set.  
+ -or-  
+ The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not open.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.ResetCommandTimeout">
+      <summary>Resets the <see cref="P:System.Data.OleDb.OleDbCommand.CommandTimeout" /> property to the default value.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.System#Data#IDbCommand#ExecuteReader">
+      <summary>For a description of this member, see <see cref="M:System.Data.IDbCommand.ExecuteReader" />.</summary>
+      <returns>An <see cref="T:System.Data.IDataReader" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.System#Data#IDbCommand#ExecuteReader(System.Data.CommandBehavior)">
+      <summary>Executes the <see cref="P:System.Data.IDbCommand.CommandText" /> against the <see cref="P:System.Data.IDbCommand.Connection" />, and builds an <see cref="T:System.Data.IDataReader" /> using one of the <see cref="T:System.Data.CommandBehavior" /> values.</summary>
+      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <returns>An <see cref="T:System.Data.IDataReader" /> built using one of the <see cref="T:System.Data.CommandBehavior" /> values.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommand.System#ICloneable#Clone">
+      <summary>For a description of this member, see <see cref="M:System.ICloneable.Clone" />.</summary>
+      <returns>A new <see cref="T:System.Object" /> that is a copy of this instance.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.Transaction">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbTransaction" /> within which the <see cref="T:System.Data.OleDb.OleDbCommand" /> executes.</summary>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbTransaction" />. The default value is <see langword="null" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommand.UpdatedRowSource">
+      <summary>Gets or sets how command results are applied to the <see cref="T:System.Data.DataRow" /> when used by the <see langword="Update" /> method of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</summary>
+      <returns>One of the <see cref="T:System.Data.UpdateRowSource" /> values.</returns>
+      <exception cref="T:System.ArgumentException">The value entered was not one of the <see cref="T:System.Data.UpdateRowSource" /> values.</exception>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbCommandBuilder">
+      <summary>Automatically generates single-table commands that are used to reconcile changes made to a <see cref="T:System.Data.DataSet" /> with the associated database. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommandBuilder" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.#ctor(System.Data.OleDb.OleDbDataAdapter)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbCommandBuilder" /> class with the associated <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> object.</summary>
+      <param name="adapter">An <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbCommandBuilder.DataAdapter">
+      <summary>Gets or sets an <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> object for which SQL statements are automatically generated.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.DeriveParameters(System.Data.OleDb.OleDbCommand)">
+      <summary>Retrieves parameter information from the stored procedure specified in the <see cref="T:System.Data.OleDb.OleDbCommand" /> and populates the <see cref="P:System.Data.OleDb.OleDbCommand.Parameters" /> collection of the specified <see cref="T:System.Data.OleDb.OleDbCommand" /> object.</summary>
+      <param name="command">The <see cref="T:System.Data.OleDb.OleDbCommand" /> referencing the stored procedure from which the parameter information is to be derived. The derived parameters are added to the <see cref="P:System.Data.OleDb.OleDbCommand.Parameters" /> collection of the <see cref="T:System.Data.OleDb.OleDbCommand" />.</param>
+      <exception cref="T:System.InvalidOperationException">The underlying OLE DB provider does not support returning stored procedure parameter information, the command text is not a valid stored procedure name, or the <see cref="P:System.Data.OleDb.OleDbCommand.CommandType" /> specified was not <see langword="StoredProcedure" />.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetDeleteCommand">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform deletions at the data source.</summary>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform deletions.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetDeleteCommand(System.Boolean)">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform deletions at the data source.</summary>
+      <param name="useColumnsForParameterNames">If <see langword="true" />, generate parameter names matching column names, if it is possible. If <see langword="false" />, generate <c>@p1</c>, <c>@p2</c>, and so on.</param>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform deletions.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetInsertCommand">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform insertions at the data source.</summary>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform insertions.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetInsertCommand(System.Boolean)">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform insertions at the data source.</summary>
+      <param name="useColumnsForParameterNames">If <see langword="true" />, generate parameter names matching column names, if it is possible. If <see langword="false" />, generate <c>@p1</c>, <c>@p2</c>, and so on.</param>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform insertions.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetUpdateCommand">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform updates at the data source.</summary>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform updates.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.GetUpdateCommand(System.Boolean)">
+      <summary>Gets the automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform updates at the data source, optionally using columns for parameter names.</summary>
+      <param name="useColumnsForParameterNames">If <see langword="true" />, generate parameter names matching column names, if it is possible. If <see langword="false" />, generate <c>@p1</c>, <c>@p2</c>, and so on.</param>
+      <returns>The automatically generated <see cref="T:System.Data.OleDb.OleDbCommand" /> object required to perform updates.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.QuoteIdentifier(System.String)">
+      <summary>Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier. This includes correctly escaping any embedded quotes in the identifier.</summary>
+      <param name="unquotedIdentifier">The original unquoted identifier.</param>
+      <returns>The quoted version of the identifier. Embedded quotes within the identifier are correctly escaped.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.QuoteIdentifier(System.String,System.Data.OleDb.OleDbConnection)">
+      <summary>Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier. This includes correctly escaping any embedded quotes in the identifier.</summary>
+      <param name="unquotedIdentifier">The unquoted identifier to be returned in quoted format.</param>
+      <param name="connection">When a connection is passed, causes the managed wrapper to get the quote character from the OLE DB provider. When no connection is passed, the string is quoted using values from <see cref="P:System.Data.Common.DbCommandBuilder.QuotePrefix" /> and <see cref="P:System.Data.Common.DbCommandBuilder.QuoteSuffix" />.</param>
+      <returns>The quoted version of the identifier. Embedded quotes within the identifier are correctly escaped.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.UnquoteIdentifier(System.String)">
+      <summary>Given a quoted identifier, returns the correct unquoted form of that identifier. This includes correctly un-escaping any embedded quotes in the identifier.</summary>
+      <param name="quotedIdentifier">The identifier that will have its embedded quotes removed.</param>
+      <returns>The unquoted identifier, with embedded quotes correctly un-escaped.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbCommandBuilder.UnquoteIdentifier(System.String,System.Data.OleDb.OleDbConnection)">
+      <summary>Given a quoted identifier, returns the correct unquoted form of that identifier. This includes correctly un-escaping any embedded quotes in the identifier.</summary>
+      <param name="quotedIdentifier">The identifier that will have its embedded quotes removed.</param>
+      <param name="connection">The <see cref="T:System.Data.OleDb.OleDbConnection" />.</param>
+      <returns>The unquoted identifier, with embedded quotes correctly un-escaped.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbConnection">
+      <summary>Represents an open connection to a data source.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbConnection" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbConnection" /> class with the specified connection string.</summary>
+      <param name="connectionString">The connection used to open the database.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.BeginTransaction">
+      <summary>Starts a database transaction with the current <see cref="T:System.Data.IsolationLevel" /> value.</summary>
+      <returns>An object representing the new transaction.</returns>
+      <exception cref="T:System.InvalidOperationException">Parallel transactions are not supported.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.BeginTransaction(System.Data.IsolationLevel)">
+      <summary>Starts a database transaction with the specified isolation level.</summary>
+      <param name="isolationLevel">The isolation level under which the transaction should run.</param>
+      <returns>An object representing the new transaction.</returns>
+      <exception cref="T:System.InvalidOperationException">Parallel transactions are not supported.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.ChangeDatabase(System.String)">
+      <summary>Changes the current database for an open <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
+      <param name="value">The database name.</param>
+      <exception cref="T:System.ArgumentException">The database name is not valid.</exception>
+      <exception cref="T:System.InvalidOperationException">The connection is not open.</exception>
+      <exception cref="T:System.Data.OleDb.OleDbException">Cannot change the database.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.Close">
+      <summary>Closes the connection to the data source.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.ConnectionString">
+      <summary>Gets or sets the string used to open a database.</summary>
+      <returns>The OLE DB provider connection string that includes the data source name, and other parameters needed to establish the initial connection. The default value is an empty string.</returns>
+      <exception cref="T:System.ArgumentException">An invalid connection string argument has been supplied or a required connection string argument has not been supplied.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.ConnectionTimeout">
+      <summary>Gets the time to wait while trying to establish a connection before terminating the attempt and generating an error.</summary>
+      <returns>The time in seconds to wait for a connection to open. The default value is 15 seconds.</returns>
+      <exception cref="T:System.ArgumentException">The value set is less than 0.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.CreateCommand">
+      <summary>Creates and returns an <see cref="T:System.Data.OleDb.OleDbCommand" /> object associated with the <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbCommand" /> object.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.Database">
+      <summary>Gets the name of the current database or the database to be used after a connection is opened.</summary>
+      <returns>The name of the current database or the name of the database to be used after a connection is opened. The default value is an empty string.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.DataSource">
+      <summary>Gets the server name or file name of the data source.</summary>
+      <returns>The server name or file name of the data source. The default value is an empty string.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.EnlistTransaction(System.Transactions.Transaction)">
+      <summary>Enlists in the specified transaction as a distributed transaction.</summary>
+      <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction" /> in which to enlist.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.GetOleDbSchemaTable(System.Guid,System.Object[])">
+      <summary>Returns schema information from a data source as indicated by a GUID, and after it applies the specified restrictions.</summary>
+      <param name="schema">One of the <see cref="T:System.Data.OleDb.OleDbSchemaGuid" /> values that specifies the schema table to return.</param>
+      <param name="restrictions">An <see cref="T:System.Object" /> array of restriction values. These are applied in the order of the restriction columns. That is, the first restriction value applies to the first restriction column, the second restriction value applies to the second restriction column, and so on.</param>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains the requested schema information.</returns>
+      <exception cref="T:System.Data.OleDb.OleDbException">The specified set of restrictions is invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.OleDb.OleDbConnection" /> is closed.</exception>
+      <exception cref="T:System.ArgumentException">The specified schema rowset is not supported by the OLE DB provider.  
+ -or-  
+ The <paramref name="schema" /> parameter contains a value of <see cref="F:System.Data.OleDb.OleDbSchemaGuid.DbInfoLiterals" /> and the <paramref name="restrictions" /> parameter contains one or more restrictions.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.GetSchema">
+      <summary>Returns schema information for the data source of this <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains schema information.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.GetSchema(System.String)">
+      <summary>Returns schema information for the data source of this <see cref="T:System.Data.OleDb.OleDbConnection" /> using the specified string for the schema name.</summary>
+      <param name="collectionName">Specifies the name of the schema to return.</param>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains schema information.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.GetSchema(System.String,System.String[])">
+      <summary>Returns schema information for the data source of this <see cref="T:System.Data.OleDb.OleDbConnection" /> using the specified string for the schema name and the specified string array for the restriction values.</summary>
+      <param name="collectionName">Specifies the name of the schema to return.</param>
+      <param name="restrictionValues">Specifies a set of restriction values for the requested schema.</param>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains schema information.</returns>
+    </member>
+    <member name="E:System.Data.OleDb.OleDbConnection.InfoMessage">
+      <summary>Occurs when the provider sends a warning or an informational message.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.Open">
+      <summary>Opens a database connection with the property settings specified by the <see cref="P:System.Data.OleDb.OleDbConnection.ConnectionString" />.</summary>
+      <exception cref="T:System.InvalidOperationException">The connection is already open.</exception>
+      <exception cref="T:System.Data.OleDb.OleDbException">A connection-level error occurred while opening the connection.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.Provider">
+      <summary>Gets the name of the OLE DB provider specified in the "Provider= " clause of the connection string.</summary>
+      <returns>The name of the provider as specified in the "Provider= " clause of the connection string. The default value is an empty string.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.ReleaseObjectPool">
+      <summary>Indicates that the <see cref="T:System.Data.OleDb.OleDbConnection" /> object pool can be released when the last underlying connection is released.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.ResetState">
+      <summary>Updates the <see cref="P:System.Data.OleDb.OleDbConnection.State" /> property of the <see cref="T:System.Data.OleDb.OleDbConnection" /> object.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.ServerVersion">
+      <summary>Gets a string that contains the version of the server to which the client is connected.</summary>
+      <returns>The version of the connected server.</returns>
+      <exception cref="T:System.InvalidOperationException">The connection is closed.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnection.State">
+      <summary>Gets the current state of the connection.</summary>
+      <returns>A bitwise combination of the <see cref="T:System.Data.ConnectionState" /> values. The default is Closed.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnection.System#ICloneable#Clone">
+      <summary>For a description of this member, see <see cref="M:System.ICloneable.Clone" />.</summary>
+      <returns>A new <see cref="T:System.Object" /> that is a copy of this instance.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbConnectionStringBuilder">
+      <summary>Provides a simple way to create and manage the contents of connection strings used by the <see cref="T:System.Data.OleDb.OleDbConnection" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> class. The provided connection string provides the data for the instance's internal connection information.</summary>
+      <param name="connectionString">The basis for the object's internal connection information. Parsed into key/value pairs.</param>
+      <exception cref="T:System.ArgumentException">The connection string is incorrectly formatted (perhaps missing the required "=" within a key/value pair).</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.Clear">
+      <summary>Clears the contents of the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> instance.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.ContainsKey(System.String)">
+      <summary>Determines whether the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> contains a specific key.</summary>
+      <param name="keyword">The key to locate in the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" />.</param>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> contains an element that has the specified key; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keyword" /> is null (<see langword="Nothing" /> in Visual Basic).</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.DataSource">
+      <summary>Gets or sets the name of the data source to connect to.</summary>
+      <returns>The value of the <see cref="P:System.Data.OleDb.OleDbConnectionStringBuilder.DataSource" /> property, or <see langword="String.Empty" /> if none has been supplied.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.FileName">
+      <summary>Gets or sets the name of the Universal Data Link (UDL) file for connecting to the data source.</summary>
+      <returns>The value of the <see cref="P:System.Data.OleDb.OleDbConnectionStringBuilder.FileName" /> property, or <see langword="String.Empty" /> if none has been supplied.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.Item(System.String)">
+      <summary>Gets or sets the value associated with the specified key. In C#, this property is the indexer.</summary>
+      <param name="keyword">The key of the item to get or set.</param>
+      <returns>The value associated with the specified key.</returns>
+      <exception cref="T:System.ArgumentException">The connection string is incorrectly formatted (perhaps missing the required "=" within a key/value pair).</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keyword" /> is a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.Keys">
+      <summary>Gets an <see cref="T:System.Collections.ICollection" /> that contains the keys in the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" />.</summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> that contains the keys in the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.OleDbServices">
+      <summary>Gets or sets the value to be passed for the OLE DB Services key within the connection string.</summary>
+      <returns>The value corresponding to the OLE DB Services key within the connection string. By default, the value is -13.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.PersistSecurityInfo">
+      <summary>Gets or sets a Boolean value that indicates whether security-sensitive information, such as the password, is returned as part of the connection if the connection is open or has ever been in an open state.</summary>
+      <returns>The value of the <see cref="P:System.Data.OleDb.OleDbConnectionStringBuilder.PersistSecurityInfo" /> property, or <see langword="false" /> if none has been supplied.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbConnectionStringBuilder.Provider">
+      <summary>Gets or sets a string that contains the name of the data provider associated with the internal connection string.</summary>
+      <returns>The value of the <see cref="P:System.Data.OleDb.OleDbConnectionStringBuilder.Provider" /> property, or <see langword="String.Empty" /> if none has been supplied.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.Remove(System.String)">
+      <summary>Removes the entry with the specified key from the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> instance.</summary>
+      <param name="keyword">The key of the key/value pair to be removed from the connection string in this <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" />.</param>
+      <returns>
+        <see langword="true" /> if the key existed within the connection string and was removed, <see langword="false" /> if the key did not exist.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keyword" /> is null (<see langword="Nothing" /> in Visual Basic).</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbConnectionStringBuilder.TryGetValue(System.String,System.Object@)">
+      <summary>Retrieves a value corresponding to the supplied key from the <see cref="T:System.Data.OleDb.OleDbConnectionStringBuilder" /> instance.</summary>
+      <param name="keyword">The key of the item to retrieve.</param>
+      <param name="value">The value corresponding to <paramref name="keyword" />.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="keyword" /> was found within the connection string; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keyword" /> contains a null value (<see langword="Nothing" /> in Visual Basic).</exception>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbDataAdapter">
+      <summary>Represents a set of data commands and a database connection that are used to fill the <see cref="T:System.Data.DataSet" /> and update the data source.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.#ctor(System.Data.OleDb.OleDbCommand)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> class with the specified <see cref="T:System.Data.OleDb.OleDbCommand" /> as the <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" /> property.</summary>
+      <param name="selectCommand">An <see cref="T:System.Data.OleDb.OleDbCommand" /> that is a SELECT statement or stored procedure, and is set as the <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" /> property of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.#ctor(System.String,System.Data.OleDb.OleDbConnection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> class with a <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" />.</summary>
+      <param name="selectCommandText">A string that is an SQL SELECT statement or stored procedure to be used by the <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" /> property of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</param>
+      <param name="selectConnection">An <see cref="T:System.Data.OleDb.OleDbConnection" /> that represents the connection.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" /> class with a <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" />.</summary>
+      <param name="selectCommandText">A string that is an SQL SELECT statement or stored procedure to be used by the <see cref="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand" /> property of the <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</param>
+      <param name="selectConnectionString">The connection string.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.DeleteCommand">
+      <summary>Gets or sets an SQL statement or stored procedure for deleting records from the data set.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbCommand" /> used during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> to delete records in the data source that correspond to deleted rows in the <see cref="T:System.Data.DataSet" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.Fill(System.Data.DataSet,System.Object,System.String)">
+      <summary>Adds or refreshes rows in the <see cref="T:System.Data.DataSet" /> to match those in an ADO <see langword="Recordset" /> or <see langword="Record" /> object using the specified <see cref="T:System.Data.DataSet" />, ADO object, and source table name.</summary>
+      <param name="dataSet">A <see cref="T:System.Data.DataSet" /> to fill with records and, if it is required, schema.</param>
+      <param name="ADODBRecordSet">An ADO <see langword="Recordset" /> or <see langword="Record" /> object.</param>
+      <param name="srcTable">The source table used for the table mappings.</param>
+      <returns>The number of rows successfully added to or refreshed in the <see cref="T:System.Data.DataSet" />. This does not include rows affected by statements that do not return rows.</returns>
+      <exception cref="T:System.SystemException">The source table is invalid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.Fill(System.Data.DataTable,System.Object)">
+      <summary>Adds or refreshes rows in a <see cref="T:System.Data.DataTable" /> to match those in an ADO <see langword="Recordset" /> or <see langword="Record" /> object using the specified <see cref="T:System.Data.DataTable" /> and ADO objects.</summary>
+      <param name="dataTable">A <see cref="T:System.Data.DataTable" /> to fill with records and, if it is required, schema.</param>
+      <param name="ADODBRecordSet">An ADO <see langword="Recordset" /> or <see langword="Record" /> object.</param>
+      <returns>The number of rows successfully refreshed to the <see cref="T:System.Data.DataTable" />. This does not include rows affected by statements that do not return rows.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.InsertCommand">
+      <summary>Gets or sets an SQL statement or stored procedure used to insert new records into the data source.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbCommand" /> used during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> to insert records in the data source that correspond to new rows in the <see cref="T:System.Data.DataSet" />.</returns>
+    </member>
+    <member name="E:System.Data.OleDb.OleDbDataAdapter.RowUpdated">
+      <summary>Occurs during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> after a command is executed against the data source. The attempt to update is made. Therefore, the event occurs.</summary>
+    </member>
+    <member name="E:System.Data.OleDb.OleDbDataAdapter.RowUpdating">
+      <summary>Occurs during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> before a command is executed against the data source. The attempt to update is made. Therefore, the event occurs.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.SelectCommand">
+      <summary>Gets or sets an SQL statement or stored procedure used to select records in the data source.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbCommand" /> that is used during <see cref="M:System.Data.Common.DbDataAdapter.Fill(System.Data.DataSet)" /> to select records from data source for placement in the <see cref="T:System.Data.DataSet" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.System#Data#IDbDataAdapter#DeleteCommand">
+      <summary>For a description of this member, see <see cref="P:System.Data.IDbDataAdapter.DeleteCommand" />.</summary>
+      <returns>An <see cref="T:System.Data.IDbCommand" /> used during an update to delete records in the data source for deleted rows in the data set.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.System#Data#IDbDataAdapter#InsertCommand">
+      <summary>For a description of this member, see <see cref="P:System.Data.IDbDataAdapter.InsertCommand" />.</summary>
+      <returns>An <see cref="T:System.Data.IDbCommand" /> that is used during an update to insert records from a data source for placement in the data set.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.System#Data#IDbDataAdapter#SelectCommand">
+      <summary>For a description of this member, see <see cref="P:System.Data.IDbDataAdapter.SelectCommand" />.</summary>
+      <returns>An <see cref="T:System.Data.IDbCommand" /> that is used during an update to select records from a data source for placement in the data set.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.System#Data#IDbDataAdapter#UpdateCommand">
+      <summary>For a description of this member, see <see cref="P:System.Data.IDbDataAdapter.UpdateCommand" />.</summary>
+      <returns>An <see cref="T:System.Data.IDbCommand" /> used during an update to update records in the data source for modified rows in the data set.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataAdapter.System#ICloneable#Clone">
+      <summary>For a description of this member, see <see cref="M:System.ICloneable.Clone" />.</summary>
+      <returns>A new <see cref="T:System.Object" /> that is a copy of this instance.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataAdapter.UpdateCommand">
+      <summary>Gets or sets an SQL statement or stored procedure used to update records in the data source.</summary>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbCommand" /> used during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> to update records in the data source that correspond to modified rows in the <see cref="T:System.Data.DataSet" />.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbDataReader">
+      <summary>Provides a way of reading a forward-only stream of data rows from a data source. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.Close">
+      <summary>Closes the <see cref="T:System.Data.OleDb.OleDbDataReader" /> object.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.Depth">
+      <summary>Gets a value that indicates the depth of nesting for the current row.</summary>
+      <returns>The depth of nesting for the current row.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.FieldCount">
+      <summary>Gets the number of columns in the current row.</summary>
+      <returns>When not positioned in a valid recordset, 0; otherwise the number of columns in the current record. The default is -1.</returns>
+      <exception cref="T:System.NotSupportedException">There is no current connection to a data source.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetBoolean(System.Int32)">
+      <summary>Gets the value of the specified column as a Boolean.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetByte(System.Int32)">
+      <summary>Gets the value of the specified column as a byte.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column as a byte.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetBytes(System.Int32,System.Int64,System.Byte[],System.Int32,System.Int32)">
+      <summary>Reads a stream of bytes from the specified column offset into the buffer as an array starting at the given buffer offset.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <param name="dataIndex">The index within the field from which to start the read operation.</param>
+      <param name="buffer">The buffer into which to read the stream of bytes.</param>
+      <param name="bufferIndex">The index within the <paramref name="buffer" /> where the write operation is to start.</param>
+      <param name="length">The maximum length to copy into the buffer.</param>
+      <returns>The actual number of bytes read.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetChar(System.Int32)">
+      <summary>Gets the value of the specified column as a character.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetChars(System.Int32,System.Int64,System.Char[],System.Int32,System.Int32)">
+      <summary>Reads a stream of characters from the specified column offset into the buffer as an array starting at the given buffer offset.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <param name="dataIndex">The index within the row from which to start the read operation.</param>
+      <param name="buffer">The buffer into which to copy data.</param>
+      <param name="bufferIndex">The index within the <paramref name="buffer" /> where the write operation is to start.</param>
+      <param name="length">The number of characters to read.</param>
+      <returns>The actual number of characters read.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetData(System.Int32)">
+      <summary>Returns an <see cref="T:System.Data.OleDb.OleDbDataReader" /> object for the requested column ordinal.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbDataReader" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetDataTypeName(System.Int32)">
+      <summary>Gets the name of the source data type.</summary>
+      <param name="index">The zero-based column ordinal.</param>
+      <returns>The name of the back-end data type. For more information, see SQL Server data types or Access data types.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetDateTime(System.Int32)">
+      <summary>Gets the value of the specified column as a <see cref="T:System.DateTime" /> object.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetDecimal(System.Int32)">
+      <summary>Gets the value of the specified column as a <see cref="T:System.Decimal" /> object.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetDouble(System.Int32)">
+      <summary>Gets the value of the specified column as a double-precision floating-point number.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetEnumerator">
+      <summary>Returns an <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetFieldType(System.Int32)">
+      <summary>Gets the <see cref="T:System.Type" /> that is the data type of the object.</summary>
+      <param name="index">The zero-based column ordinal.</param>
+      <returns>The <see cref="T:System.Type" /> that is the data type of the object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetFloat(System.Int32)">
+      <summary>Gets the value of the specified column as a single-precision floating-point number.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetGuid(System.Int32)">
+      <summary>Gets the value of the specified column as a globally unique identifier (GUID).</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetInt16(System.Int32)">
+      <summary>Gets the value of the specified column as a 16-bit signed integer.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetInt32(System.Int32)">
+      <summary>Gets the value of the specified column as a 32-bit signed integer.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetInt64(System.Int32)">
+      <summary>Gets the value of the specified column as a 64-bit signed integer.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetName(System.Int32)">
+      <summary>Gets the name of the specified column.</summary>
+      <param name="index">The zero-based column ordinal.</param>
+      <returns>The name of the specified column.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetOrdinal(System.String)">
+      <summary>Gets the column ordinal, given the name of the column.</summary>
+      <param name="name">The name of the column.</param>
+      <returns>The zero-based column ordinal.</returns>
+      <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetSchemaTable">
+      <summary>Returns a <see cref="T:System.Data.DataTable" /> that describes the column metadata of the <see cref="T:System.Data.OleDb.OleDbDataReader" />.</summary>
+      <returns>A <see cref="T:System.Data.DataTable" /> that describes the column metadata.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.OleDb.OleDbDataReader" /> is closed.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetString(System.Int32)">
+      <summary>Gets the value of the specified column as a string.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetTimeSpan(System.Int32)">
+      <summary>Gets the value of the specified column as a <see cref="T:System.TimeSpan" /> object.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value of the specified column.</returns>
+      <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetValue(System.Int32)">
+      <summary>Gets the value of the column at the specified ordinal in its native format.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>The value to return.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.GetValues(System.Object[])">
+      <summary>Populates an array of objects with the column values of the current row.</summary>
+      <param name="values">An array of <see cref="T:System.Object" /> into which to copy the attribute columns.</param>
+      <returns>The number of instances of <see cref="T:System.Object" /> in the array.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.HasRows">
+      <summary>Gets a value that indicates whether the <see cref="T:System.Data.OleDb.OleDbDataReader" /> contains one or more rows.</summary>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbDataReader" /> contains one or more rows; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.IsClosed">
+      <summary>Indicates whether the data reader is closed.</summary>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbDataReader" /> is closed; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.IsDBNull(System.Int32)">
+      <summary>Gets a value that indicates whether the column contains nonexistent or missing values.</summary>
+      <param name="ordinal">The zero-based column ordinal.</param>
+      <returns>
+        <see langword="true" /> if the specified column value is equivalent to <see cref="T:System.DBNull" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.Item(System.Int32)">
+      <summary>Gets the value of the specified column in its native format given the column ordinal.</summary>
+      <param name="index">The column ordinal.</param>
+      <returns>The value of the specified column in its native format.</returns>
+      <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount" />.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.Item(System.String)">
+      <summary>Gets the value of the specified column in its native format given the column name.</summary>
+      <param name="name">The column name.</param>
+      <returns>The value of the specified column in its native format.</returns>
+      <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.NextResult">
+      <summary>Advances the data reader to the next result, when reading the results of batch SQL statements.</summary>
+      <returns>
+        <see langword="true" /> if there are more result sets; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbDataReader.Read">
+      <summary>Advances the <see cref="T:System.Data.OleDb.OleDbDataReader" /> to the next record.</summary>
+      <returns>
+        <see langword="true" /> if there are more rows; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.RecordsAffected">
+      <summary>Gets the number of rows changed, inserted, or deleted by execution of the SQL statement.</summary>
+      <returns>The number of rows changed, inserted, or deleted; 0 if no rows were affected or the statement failed; and -1 for SELECT statements.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbDataReader.VisibleFieldCount">
+      <summary>Gets the number of fields in the <see cref="T:System.Data.OleDb.OleDbDataReader" /> that are not hidden.</summary>
+      <returns>The number of fields that are not hidden.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbEnumerator">
+      <summary>Provides a mechanism for enumerating all available OLE DB providers within the local network.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbEnumerator.#ctor">
+      <summary>Creates an instance of the <see cref="T:System.Data.OleDb.OleDbEnumerator" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbEnumerator.GetElements">
+      <summary>Retrieves a <see cref="T:System.Data.DataTable" /> that contains information about all visible OLE DB providers.</summary>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains information about the visible OLE DB providers.</returns>
+      <exception cref="T:System.InvalidCastException">The provider does not support ISourcesRowset.</exception>
+      <exception cref="T:System.Data.OleDb.OleDbException">Exception has occurred in the underlying provider.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbEnumerator.GetEnumerator(System.Type)">
+      <summary>Uses a specific OLE DB enumerator to return an <see cref="T:System.Data.OleDb.OleDbDataReader" /> that contains information about the currently installed OLE DB providers, without requiring an instance of the <see cref="T:System.Data.OleDb.OleDbEnumerator" /> class.</summary>
+      <param name="type">A <see cref="T:System.Type" />.</param>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbDataReader" /> that contains information about the requested OLE DB providers, using the specified OLE DB enumerator.</returns>
+      <exception cref="T:System.InvalidCastException">The provider does not support ISourcesRowset.</exception>
+      <exception cref="T:System.Data.OleDb.OleDbException">An exception has occurred in the underlying provider.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbEnumerator.GetRootEnumerator">
+      <summary>Returns an <see cref="T:System.Data.OleDb.OleDbDataReader" /> that contains information about the currently installed OLE DB providers, without requiring an instance of the <see cref="T:System.Data.OleDb.OleDbEnumerator" /> class.</summary>
+      <returns>A <see cref="T:System.Data.OleDb.OleDbDataReader" /> that contains information about the visible OLE DB providers.</returns>
+      <exception cref="T:System.InvalidCastException">The provider does not support ISourcesRowset.</exception>
+      <exception cref="T:System.Data.OleDb.OleDbException">Exception has occurred in the underlying provider.</exception>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbError">
+      <summary>Collects information relevant to a warning or error returned by the data source.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbError.Message">
+      <summary>Gets a short description of the error.</summary>
+      <returns>A short description of the error.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbError.NativeError">
+      <summary>Gets the database-specific error information.</summary>
+      <returns>The database-specific error information.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbError.Source">
+      <summary>Gets the name of the provider that generated the error.</summary>
+      <returns>The name of the provider that generated the error.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbError.SQLState">
+      <summary>Gets the five-character error code following the ANSI SQL standard for the database.</summary>
+      <returns>The five-character error code, which identifies the source of the error, if the error can be issued from more than one place.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbError.ToString">
+      <summary>Gets the complete text of the error message.</summary>
+      <returns>The complete text of the error.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbErrorCollection">
+      <summary>Collects all errors generated by the .NET Framework Data Provider for OLE DB. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbErrorCollection.CopyTo(System.Array,System.Int32)">
+      <summary>Copies the elements of the <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> into an <see cref="T:System.Array" />, starting at the specified index within the <see cref="T:System.Array" />.</summary>
+      <param name="array">The <see cref="T:System.Array" /> into which to copy the elements.</param>
+      <param name="index">The starting index of the <paramref name="array" />.</param>
+      <exception cref="T:System.ArgumentException">The sum of <paramref name="index" /> and the number of elements in the <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> is greater than the length of the <see cref="T:System.Array" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="array" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="index" /> is not valid for <paramref name="array" />.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbErrorCollection.CopyTo(System.Data.OleDb.OleDbError[],System.Int32)">
+      <summary>Copies all the elements of the current <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> to the specified <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> starting at the specified destination index.</summary>
+      <param name="array">The <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> that is the destination of the elements copied from the current <see cref="T:System.Data.OleDb.OleDbErrorCollection" />.</param>
+      <param name="index">A 32-bit integer that represents the index in the <see cref="T:System.Data.OleDb.OleDbErrorCollection" /> at which copying starts.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbErrorCollection.Count">
+      <summary>Gets the number of errors in the collection.</summary>
+      <returns>The total number of errors in the collection.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbErrorCollection.GetEnumerator">
+      <summary>Exposes the <see cref="M:System.Collections.IEnumerable.GetEnumerator" /> method, which supports a simple iteration over a collection by a .NET Framework data provider.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the collection.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbErrorCollection.Item(System.Int32)">
+      <summary>Gets the error at the specified index.</summary>
+      <param name="index">The zero-based index of the error to retrieve.</param>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbError" /> that contains the error at the specified index.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbErrorCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>For a description of this member, see <see cref="P:System.Collections.ICollection.IsSynchronized" />.</summary>
+      <returns>
+        <see langword="true" /> if access to the collection is synchronized (thread safe); otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbErrorCollection.System#Collections#ICollection#SyncRoot">
+      <summary>For a description of this member, see <see cref="P:System.Collections.ICollection.SyncRoot" />.</summary>
+      <returns>A <see cref="T:System.Object" /> that can be used to synchronize access to the collection.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbException">
+      <summary>The exception that is thrown when the underlying provider returns a warning or error for an OLE DB data source. This class cannot be inherited.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbException.ErrorCode">
+      <summary>Gets the HRESULT of the error.</summary>
+      <returns>The HRESULT of the error.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbException.Errors">
+      <summary>Gets a collection of one or more <see cref="T:System.Data.OleDb.OleDbError" /> objects that give detailed information about exceptions generated by the .NET Framework Data Provider for OLE DB.</summary>
+      <returns>The collected instances of the <see cref="T:System.Data.OleDb.OleDbError" /> class.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>This member overrides <see cref="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />.</summary>
+      <param name="si">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+      <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="si" /> parameter is a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbFactory">
+      <summary>Represents a set of methods for creating instances of the OLEDB provider's implementation of the data source classes.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateCommand">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbCommand" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbCommand" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateCommandBuilder">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbCommandBuilder" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbCommandBuilder" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateConnection">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbConnection" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbConnection" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateConnectionStringBuilder">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbConnectionStringBuilder" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateDataAdapter">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbDataAdapter" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbDataAdapter" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbFactory.CreateParameter">
+      <summary>Returns a strongly-typed <see cref="T:System.Data.Common.DbParameter" /> instance.</summary>
+      <returns>A new strongly-typed instance of <see cref="T:System.Data.Common.DbParameter" />.</returns>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbFactory.Instance">
+      <summary>Gets an instance of the <see cref="T:System.Data.OleDb.OleDbFactory" />. This can be used to retrieve strongly-typed data objects.</summary>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbInfoMessageEventArgs">
+      <summary>Provides data for the <see cref="E:System.Data.OleDb.OleDbConnection.InfoMessage" /> event. This class cannot be inherited.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbInfoMessageEventArgs.ErrorCode">
+      <summary>Gets the HRESULT following the ANSI SQL standard for the database.</summary>
+      <returns>The HRESULT, which identifies the source of the error, if the error can be issued from more than one place.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbInfoMessageEventArgs.Errors">
+      <summary>Gets the collection of warnings sent from the data source.</summary>
+      <returns>The collection of warnings sent from the data source.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbInfoMessageEventArgs.Message">
+      <summary>Gets the full text of the error sent from the data source.</summary>
+      <returns>The full text of the error.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbInfoMessageEventArgs.Source">
+      <summary>Gets the name of the object that generated the error.</summary>
+      <returns>The name of the object that generated the error.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbInfoMessageEventArgs.ToString">
+      <summary>Retrieves a string representation of the <see cref="E:System.Data.OleDb.OleDbConnection.InfoMessage" /> event.</summary>
+      <returns>A string representing the <see cref="E:System.Data.OleDb.OleDbConnection.InfoMessage" /> event.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbInfoMessageEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Data.OleDb.OleDbConnection.InfoMessage" /> event of an <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">An <see cref="T:System.Data.OleDb.OleDbInfoMessageEventArgs" /> object that contains the event data.</param>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbLiteral">
+      <summary>Returns information about literals used in text commands, data values, and database objects.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Binary_Literal">
+      <summary>A binary literal in a text command. Maps to DBLITERAL_BINARY_LITERAL.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Catalog_Name">
+      <summary>A catalog name in a text command. Maps to DBLITERAL_CATALOG_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Catalog_Separator">
+      <summary>The character that separates the catalog name from the rest of the identifier in a text command. Maps to DBLITERAL_CATALOG_SEPARATOR.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Char_Literal">
+      <summary>A character literal in a text command. Maps to DBLITERAL_CHAR_LITERAL.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Column_Alias">
+      <summary>A column alias in a text command. Maps to DBLITERAL_COLUMN_ALIAS.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Column_Name">
+      <summary>A column name used in a text command or in a data-definition interface. Maps to DBLITERAL_COLUMN_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Correlation_Name">
+      <summary>A correlation name (table alias) in a text command. Maps to DBLITERAL_CORRELATION_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Cube_Name">
+      <summary>The name of a cube in a schema (or the catalog if the provider does not support schemas).</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Cursor_Name">
+      <summary>A cursor name in a text command. Maps to DBLITERAL_CURSOR_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Dimension_Name">
+      <summary>The name of the dimension. If a dimension is part of more than one cube, there is one row for each cube/dimension combination.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Percent_Prefix">
+      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_PERCENT literal. For example, if a percent sign (%) is used to match zero or more characters and this is a backslash (\), the characters "abc\%%" match all character values that start with "abc%". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_PERCENT_PREFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Percent_Suffix">
+      <summary>The escape character, if any, used to suffix the character returned for the DBLITERAL_LIKE_PERCENT literal. For example, if a percent sign (%) is used to match zero or more characters and percent signs are escaped by enclosing in open and close square brackets, DBLITERAL_ESCAPE_PERCENT_PREFIX is "[", DBLITERAL_ESCAPE_PERCENT_SUFFIX is "]", and the characters "abc[%]%" match all character values that start with "abc%". Providers that do not use a suffix character to escape the DBLITERAL_ESCAPE_PERCENT character do not return this literal value and can set the lt member of the DBLITERAL structure to DBLITERAL_INVALID if requested. Maps to DBLITERAL_ESCAPE_PERCENT_SUFFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Underscore_Prefix">
+      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ " match all character values that are five characters long and start with "abc\". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_PREFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Underscore_Suffix">
+      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ " match all character values that are five characters long and start with "abc\". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_SUFFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Hierarchy_Name">
+      <summary>The name of the hierarchy. If the dimension does not contain a hierarchy or has only one hierarchy, the current column contains a null value.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Index_Name">
+      <summary>An index name used in a text command or in a data-definition interface. Maps to DBLITERAL_INDEX_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Invalid">
+      <summary>An invalid value. Maps to DBLITERAL_INVALID.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Level_Name">
+      <summary>Name of the cube to which the current level belongs.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Like_Percent">
+      <summary>The character used in a LIKE clause to match zero or more characters. For example, if this is a percent sign (%), the characters "abc%" match all character values that start with "abc". Maps to DBLITERAL_LIKE_PERCENT.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Like_Underscore">
+      <summary>The character used in a LIKE clause to match exactly one character. For example, if this is an underscore (), the characters "abc\" match all character values that are four characters long and start with "abc". Maps to DBLITERAL_LIKE_UNDERSCORE.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Member_Name">
+      <summary>The name of the member.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Procedure_Name">
+      <summary>A procedure name in a text command. Maps to DBLITERAL_PROCEDURE_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Property_Name">
+      <summary>The name of the property.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Quote_Prefix">
+      <summary>The character used in a text command as the opening quote for quoting identifiers that contain special characters. Maps to DBLITERAL_QUOTE_PREFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Quote_Suffix">
+      <summary>The character used in a text command as the closing quote for quoting identifiers that contain special characters. 1.x providers that use the same character as the prefix and suffix may not return this literal value and can set the member of the DBLITERAL structure to DBLITERAL_INVALID if requested. Maps to DBLITERAL_QUOTE_SUFFIX.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Schema_Name">
+      <summary>A schema name in a text command. Maps to DBLITERAL_SCHEMA_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Schema_Separator">
+      <summary>The character that separates the schema name from the rest of the identifier in a text command. Maps to DBLITERAL_SCHEMA_SEPARATOR.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Table_Name">
+      <summary>A table name used in a text command or in a data-definition interface. Maps to DBLITERAL_TABLE_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.Text_Command">
+      <summary>A text command, such as an SQL statement. Maps to DBLITERAL_TEXT_COMMAND.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.User_Name">
+      <summary>A user name in a text command. Maps to DBLITERAL_USER_NAME.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbLiteral.View_Name">
+      <summary>A view name in a text command. Maps to DBLITERAL_VIEW_NAME.</summary>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbMetaDataCollectionNames">
+      <summary>Provides a list of constants for use with the GetSchema method to retrieve metadata collections.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Catalogs">
+      <summary>A constant for use with the GetSchema method that represents the Catalogs collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Collations">
+      <summary>A constant for use with the GetSchema method that represents the Collations collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Columns">
+      <summary>A constant for use with the GetSchema method that represents the Columns collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Indexes">
+      <summary>A constant for use with the GetSchema method that represents the Indexes collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.ProcedureColumns">
+      <summary>A constant for use with the GetSchema method that represents the ProcedureColumns collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.ProcedureParameters">
+      <summary>A constant for use with the GetSchema method that represents the ProcedureParameters collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Procedures">
+      <summary>A constant for use with the GetSchema method that represents the Procedures collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Tables">
+      <summary>A constant for use with the GetSchema method that represents the Tables collection.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataCollectionNames.Views">
+      <summary>A constant for use with the GetSchema method that represents the Views collection.</summary>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbMetaDataColumnNames">
+      <summary>Provides static values that are used for the column names in the <see cref="T:System.Data.OleDb.OleDbMetaDataCollectionNames" /> objects contained in the <see cref="T:System.Data.DataTable" />. The <see cref="T:System.Data.DataTable" /> is created by the GetSchema method.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataColumnNames.BooleanFalseLiteral">
+      <summary>Used by the GetSchema method to create the BooleanFalseLiteral column.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataColumnNames.BooleanTrueLiteral">
+      <summary>Used by the GetSchema method to create the BooleanTrueLiteral column.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataColumnNames.DateTimeDigits">
+      <summary>Used by the GetSchema method to create the DateTimeDigits column.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbMetaDataColumnNames.NativeDataType">
+      <summary>Used by the GetSchema method to create the NativeDataType column.</summary>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbParameter">
+      <summary>Represents a parameter to an <see cref="T:System.Data.OleDb.OleDbCommand" /> and optionally its mapping to a <see cref="T:System.Data.DataSet" /> column. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Data.OleDb.OleDbType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name and data type.</summary>
+      <param name="name">The name of the parameter to map.</param>
+      <param name="dataType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <exception cref="T:System.ArgumentException">The value supplied in the <paramref name="dataType" /> parameter is an invalid back-end data type.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Data.OleDb.OleDbType,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name, data type, and length.</summary>
+      <param name="name">The name of the parameter to map.</param>
+      <param name="dataType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the parameter.</param>
+      <exception cref="T:System.ArgumentException">The value supplied in the <paramref name="dataType" /> parameter is an invalid back-end data type.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Data.OleDb.OleDbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name, data type, length, source column name, parameter direction, numeric precision, and other properties.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="dbType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the parameter.</param>
+      <param name="direction">One of the <see cref="T:System.Data.ParameterDirection" /> values.</param>
+      <param name="isNullable">
+        <see langword="true" /> if the value of the field can be null; otherwise <see langword="false" />.</param>
+      <param name="precision">The total number of digits to the left and right of the decimal point to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved.</param>
+      <param name="scale">The total number of decimal places to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved.</param>
+      <param name="srcColumn">The name of the source column.</param>
+      <param name="srcVersion">One of the <see cref="T:System.Data.DataRowVersion" /> values.</param>
+      <param name="value">An <see cref="T:System.Object" /> that is the value of the <see cref="T:System.Data.OleDb.OleDbParameter" />.</param>
+      <exception cref="T:System.ArgumentException">The value supplied in the <paramref name="dataType" /> parameter is an invalid back-end data type.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Data.OleDb.OleDbType,System.Int32,System.Data.ParameterDirection,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Boolean,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name, data type, length, source column name, parameter direction, numeric precision, and other properties.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="dbType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the parameter.</param>
+      <param name="direction">One of the <see cref="T:System.Data.ParameterDirection" /> values.</param>
+      <param name="precision">The total number of digits to the left and right of the decimal point to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved.</param>
+      <param name="scale">The total number of decimal places to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved.</param>
+      <param name="sourceColumn">The name of the source column.</param>
+      <param name="sourceVersion">One of the <see cref="T:System.Data.DataRowVersion" /> values.</param>
+      <param name="sourceColumnNullMapping">
+        <see langword="true" /> if the source column is nullable; <see langword="false" /> if it is not.</param>
+      <param name="value">An <see cref="T:System.Object" /> that is the value of the <see cref="T:System.Data.OleDb.OleDbParameter" />.</param>
+      <exception cref="T:System.ArgumentException">The value supplied in the <paramref name="dataType" /> parameter is an invalid back-end data type.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Data.OleDb.OleDbType,System.Int32,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name, data type, length, and source column name.</summary>
+      <param name="name">The name of the parameter to map.</param>
+      <param name="dataType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the parameter.</param>
+      <param name="srcColumn">The name of the source column.</param>
+      <exception cref="T:System.ArgumentException">The value supplied in the <paramref name="dataType" /> parameter is an invalid back-end data type.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.#ctor(System.String,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbParameter" /> class that uses the parameter name and the value of the new <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
+      <param name="name">The name of the parameter to map.</param>
+      <param name="value">The value of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.DbType">
+      <summary>Gets or sets the <see cref="T:System.Data.DbType" /> of the parameter.</summary>
+      <returns>One of the <see cref="T:System.Data.DbType" /> values. The default is <see cref="F:System.Data.DbType.String" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The property was not set to a valid <see cref="T:System.Data.DbType" />.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.Direction">
+      <summary>Gets or sets a value that indicates whether the parameter is input-only, output-only, bidirectional, or a stored procedure return-value parameter.</summary>
+      <returns>One of the <see cref="T:System.Data.ParameterDirection" /> values. The default is <see langword="Input" />.</returns>
+      <exception cref="T:System.ArgumentException">The property was not set to one of the valid <see cref="T:System.Data.ParameterDirection" /> values.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.IsNullable">
+      <summary>Gets or sets a value that indicates whether the parameter accepts null values.</summary>
+      <returns>
+        <see langword="true" /> if null values are accepted; otherwise <see langword="false" />. The default is <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.OleDbType">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbType" /> of the parameter.</summary>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbType" /> of the parameter. The default is <see cref="F:System.Data.OleDb.OleDbType.VarWChar" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.ParameterName">
+      <summary>Gets or sets the name of the <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
+      <returns>The name of the <see cref="T:System.Data.OleDb.OleDbParameter" />. The default is an empty string ("").</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.Precision">
+      <summary>Gets or sets the maximum number of digits used to represent the <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> property.</summary>
+      <returns>The maximum number of digits used to represent the <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> property. The default value is 0, which indicates that the data provider sets the precision for <see cref="P:System.Data.OleDb.OleDbParameter.Value" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.ResetDbType">
+      <summary>Resets the type associated with this <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.ResetOleDbType">
+      <summary>Resets the type associated with this <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.Scale">
+      <summary>Gets or sets the number of decimal places to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved.</summary>
+      <returns>The number of decimal places to which <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> is resolved. The default is 0.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.Size">
+      <summary>Gets or sets the maximum size, in bytes, of the data within the column.</summary>
+      <returns>The maximum size, in bytes, of the data within the column. The default value is inferred from the parameter value.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.SourceColumn">
+      <summary>Gets or sets the name of the source column mapped to the <see cref="T:System.Data.DataSet" /> and used for loading or returning the <see cref="P:System.Data.OleDb.OleDbParameter.Value" />.</summary>
+      <returns>The name of the source column mapped to the <see cref="T:System.Data.DataSet" />. The default is an empty string.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.SourceColumnNullMapping">
+      <summary>Sets or gets a value which indicates whether the source column is nullable. This allows <see cref="T:System.Data.Common.DbCommandBuilder" /> to correctly generate Update statements for nullable columns.</summary>
+      <returns>
+        <see langword="true" /> if the source column is nullable; <see langword="false" /> if it is not.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.SourceVersion">
+      <summary>Gets or sets the <see cref="T:System.Data.DataRowVersion" /> to use when you load <see cref="P:System.Data.OleDb.OleDbParameter.Value" />.</summary>
+      <returns>One of the <see cref="T:System.Data.DataRowVersion" /> values. The default is <see langword="Current" />.</returns>
+      <exception cref="T:System.ArgumentException">The property was not set to one of the <see cref="T:System.Data.DataRowVersion" /> values.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.System#ICloneable#Clone">
+      <summary>For a description of this member, see <see cref="M:System.ICloneable.Clone" />.</summary>
+      <returns>A new <see cref="T:System.Object" /> that is a copy of this instance.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameter.ToString">
+      <summary>Gets a string that contains the <see cref="P:System.Data.OleDb.OleDbParameter.ParameterName" />.</summary>
+      <returns>A string that contains the <see cref="P:System.Data.OleDb.OleDbParameter.ParameterName" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameter.Value">
+      <summary>Gets or sets the value of the parameter.</summary>
+      <returns>An <see cref="T:System.Object" /> that is the value of the parameter. The default value is null.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbParameterCollection">
+      <summary>Represents a collection of parameters relevant to an <see cref="T:System.Data.OleDb.OleDbCommand" /> as well as their respective mappings to columns in a <see cref="T:System.Data.DataSet" />.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.Data.OleDb.OleDbParameter)">
+      <summary>Adds the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">The <see cref="T:System.Data.OleDb.OleDbParameter" /> to add to the collection.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="T:System.Data.OleDb.OleDbParameter" /> specified in the <paramref name="value" /> parameter is already added to this or another <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="value" /> parameter is null.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.Object)">
+      <summary>Adds the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> object to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">A <see cref="T:System.Object" />.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object in the collection.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.String,System.Data.OleDb.OleDbType)">
+      <summary>Adds an <see cref="T:System.Data.OleDb.OleDbParameter" /> to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />, given the parameter name and data type.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="oleDbType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.String,System.Data.OleDb.OleDbType,System.Int32)">
+      <summary>Adds an <see cref="T:System.Data.OleDb.OleDbParameter" /> to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> given the parameter name, data type, and column length.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="oleDbType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the column.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.String,System.Data.OleDb.OleDbType,System.Int32,System.String)">
+      <summary>Adds an <see cref="T:System.Data.OleDb.OleDbParameter" /> to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> given the parameter name, data type, column length, and source column name.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="oleDbType">One of the <see cref="T:System.Data.OleDb.OleDbType" /> values.</param>
+      <param name="size">The length of the column.</param>
+      <param name="sourceColumn">The name of the source column.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Add(System.String,System.Object)">
+      <summary>Adds an <see cref="T:System.Data.OleDb.OleDbParameter" /> to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> given the parameter name and value.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="value">The <see cref="P:System.Data.OleDb.OleDbParameter.Value" /> of the <see cref="T:System.Data.OleDb.OleDbParameter" /> to add to the collection.</param>
+      <returns>The index of the new <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+      <exception cref="T:System.InvalidCastException">The <paramref name="value" /> parameter is not an <see cref="T:System.Data.OleDb.OleDbParameter" />.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.AddRange(System.Array)">
+      <summary>Adds an array of values to the end of the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="values">The <see cref="T:System.Array" /> values to add.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.AddRange(System.Data.OleDb.OleDbParameter[])">
+      <summary>Adds an array of <see cref="T:System.Data.OleDb.OleDbParameter" /> values to the end of the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="values">The <see cref="T:System.Data.OleDb.OleDbParameter" /> values to add.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.AddWithValue(System.String,System.Object)">
+      <summary>Adds a value to the end of the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="parameterName">The name of the parameter.</param>
+      <param name="value">The value to be added.</param>
+      <returns>An <see cref="T:System.Data.OleDb.OleDbParameter" /> object.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Clear">
+      <summary>Removes all <see cref="T:System.Data.OleDb.OleDbParameter" /> objects from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Contains(System.Data.OleDb.OleDbParameter)">
+      <summary>Determines whether the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> is in this <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">The <see cref="T:System.Data.OleDb.OleDbParameter" /> value.</param>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameter" /> is in the collection; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Contains(System.Object)">
+      <summary>Determines whether the specified <see cref="T:System.Object" /> is in this <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">The <see cref="T:System.Object" /> value.</param>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> contains <paramref name="value" />; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Contains(System.String)">
+      <summary>Determines whether the specified <see cref="T:System.String" /> is in this <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">The <see cref="T:System.String" /> value.</param>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> contains the value; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.CopyTo(System.Array,System.Int32)">
+      <summary>Copies all the elements of the current <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> to the specified one-dimensional <see cref="T:System.Array" /> starting at the specified destination <see cref="T:System.Array" /> index.</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from the current <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</param>
+      <param name="index">A 32-bit integer that represents the index in the <see cref="T:System.Array" /> at which copying starts.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.CopyTo(System.Data.OleDb.OleDbParameter[],System.Int32)">
+      <summary>Copies all the elements of the current <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> to the specified <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> starting at the specified destination index.</summary>
+      <param name="array">The <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> that is the destination of the elements copied from the current <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</param>
+      <param name="index">A 32-bit integer that represents the index in the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> at which copying starts.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.Count">
+      <summary>Returns an integer that contains the number of elements in the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />. Read-only.</summary>
+      <returns>The number of elements in the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> as an integer.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.GetEnumerator">
+      <summary>Returns an enumerator that iterates through the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> for the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.IndexOf(System.Data.OleDb.OleDbParameter)">
+      <summary>Gets the location of the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> within the collection.</summary>
+      <param name="value">The <see cref="T:System.Data.OleDb.OleDbParameter" /> object in the collection to find.</param>
+      <returns>The zero-based location of the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> that is a <see cref="T:System.Data.OleDb.OleDbParameter" /> within the collection.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.IndexOf(System.Object)">
+      <summary>The location of the specified <see cref="T:System.Object" /> within the collection.</summary>
+      <param name="value">The <see cref="T:System.Object" /> to find.</param>
+      <returns>The zero-based location of the specified <see cref="T:System.Object" /> that is a <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> within the collection.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.IndexOf(System.String)">
+      <summary>Gets the location of the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> with the specified name.</summary>
+      <param name="parameterName">The case-sensitive name of the <see cref="T:System.Data.OleDb.OleDbParameter" /> to find.</param>
+      <returns>The zero-based location of the specified <see cref="T:System.Data.OleDb.OleDbParameter" /> with the specified case-sensitive name.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Insert(System.Int32,System.Data.OleDb.OleDbParameter)">
+      <summary>Inserts a <see cref="T:System.Data.OleDb.OleDbParameter" /> object into the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> at the specified index.</summary>
+      <param name="index">The zero-based index at which value should be inserted.</param>
+      <param name="value">An <see cref="T:System.Data.OleDb.OleDbParameter" /> object to be inserted in the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Insert(System.Int32,System.Object)">
+      <summary>Inserts a <see cref="T:System.Object" /> into the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> at the specified index.</summary>
+      <param name="index">The zero-based index at which value should be inserted.</param>
+      <param name="value">A <see cref="T:System.Object" /> to be inserted in the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.IsFixedSize">
+      <summary>Gets a value that indicates whether the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> has a fixed size. Read-only.</summary>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> has a fixed size; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.IsReadOnly">
+      <summary>Gets a value that indicates whether the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> is read-only.</summary>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> is read only; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.IsSynchronized">
+      <summary>Gets a value that indicates whether the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> is synchronized. Read-only.</summary>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> is synchronized; otherwise <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.Item(System.Int32)">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbParameter" /> at the specified index.</summary>
+      <param name="index">The zero-based index of the parameter to retrieve.</param>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbParameter" /> at the specified index.</returns>
+      <exception cref="T:System.IndexOutOfRangeException">The index specified does not exist.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.Item(System.String)">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbParameter" /> with the specified name.</summary>
+      <param name="parameterName">The name of the parameter to retrieve.</param>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbParameter" /> with the specified name.</returns>
+      <exception cref="T:System.IndexOutOfRangeException">The name specified does not exist.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Remove(System.Data.OleDb.OleDbParameter)">
+      <summary>Removes the <see cref="T:System.Data.OleDb.OleDbParameter" /> from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">An <see cref="T:System.Data.OleDb.OleDbParameter" /> object to remove from the collection.</param>
+      <exception cref="T:System.InvalidCastException">The parameter is not a <see cref="T:System.Data.OleDb.OleDbParameter" />.</exception>
+      <exception cref="T:System.SystemException">The parameter does not exist in the collection.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.Remove(System.Object)">
+      <summary>Removes the <see cref="T:System.Object" /> object from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</summary>
+      <param name="value">An <see cref="T:System.Object" /> to be removed from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.RemoveAt(System.Int32)">
+      <summary>Removes the <see cref="T:System.Data.OleDb.OleDbParameter" /> from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> at the specified index.</summary>
+      <param name="index">The zero-based index of the <see cref="T:System.Data.OleDb.OleDbParameter" /> object to remove.</param>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbParameterCollection.RemoveAt(System.String)">
+      <summary>Removes the <see cref="T:System.Data.OleDb.OleDbParameter" /> from the <see cref="T:System.Data.OleDb.OleDbParameterCollection" /> at the specified parameter name.</summary>
+      <param name="parameterName">The name of the <see cref="T:System.Data.OleDb.OleDbParameter" /> object to remove.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbParameterCollection.SyncRoot">
+      <summary>Gets an object that can be used to synchronize access to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />. Read-only.</summary>
+      <returns>An object that can be used to synchronize access to the <see cref="T:System.Data.OleDb.OleDbParameterCollection" />.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbRowUpdatedEventArgs">
+      <summary>Provides data for the <see cref="E:System.Data.OleDb.OleDbDataAdapter.RowUpdated" /> event.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbRowUpdatedEventArgs.#ctor(System.Data.DataRow,System.Data.IDbCommand,System.Data.StatementType,System.Data.Common.DataTableMapping)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbRowUpdatedEventArgs" /> class.</summary>
+      <param name="dataRow">The <see cref="T:System.Data.DataRow" /> sent through an <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</param>
+      <param name="command">The <see cref="T:System.Data.IDbCommand" /> executed when <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> is called.</param>
+      <param name="statementType">One of the <see cref="T:System.Data.StatementType" /> values that specifies the type of query executed.</param>
+      <param name="tableMapping">The <see cref="T:System.Data.Common.DataTableMapping" /> sent through an <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbRowUpdatedEventArgs.Command">
+      <summary>Gets the <see cref="T:System.Data.OleDb.OleDbCommand" /> executed when <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> is called.</summary>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbCommand" /> executed when <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" /> is called.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbRowUpdatedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Data.OleDb.OleDbDataAdapter.RowUpdated" /> event of an <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">The <see cref="T:System.Data.OleDb.OleDbRowUpdatedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbRowUpdatingEventArgs">
+      <summary>Provides data for the <see cref="E:System.Data.OleDb.OleDbDataAdapter.RowUpdating" /> event.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbRowUpdatingEventArgs.#ctor(System.Data.DataRow,System.Data.IDbCommand,System.Data.StatementType,System.Data.Common.DataTableMapping)">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbRowUpdatingEventArgs" /> class.</summary>
+      <param name="dataRow">The <see cref="T:System.Data.DataRow" /> to <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</param>
+      <param name="command">The <see cref="T:System.Data.IDbCommand" /> to execute during <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</param>
+      <param name="statementType">One of the <see cref="T:System.Data.StatementType" /> values that specifies the type of query executed.</param>
+      <param name="tableMapping">The <see cref="T:System.Data.Common.DataTableMapping" /> sent through an <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</param>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbRowUpdatingEventArgs.Command">
+      <summary>Gets or sets the <see cref="T:System.Data.OleDb.OleDbCommand" /> to execute when performing the <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</summary>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbCommand" /> to execute when performing the <see cref="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)" />.</returns>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbRowUpdatingEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:System.Data.OleDb.OleDbDataAdapter.RowUpdating" /> event of an <see cref="T:System.Data.OleDb.OleDbDataAdapter" />.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">The <see cref="T:System.Data.OleDb.OleDbRowUpdatingEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbSchemaGuid">
+      <summary>Returns the type of schema table specified by the <see cref="M:System.Data.OleDb.OleDbConnection.GetOleDbSchemaTable(System.Guid,System.Object[])" /> method.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbSchemaGuid.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Data.OleDb.OleDbSchemaGuid" /> class.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Assertions">
+      <summary>Returns the assertions defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Catalogs">
+      <summary>Returns the physical attributes associated with catalogs accessible from the data source. Returns the assertions defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Character_Sets">
+      <summary>Returns the character sets defined in the catalog that is accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Check_Constraints">
+      <summary>Returns the check constraints defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Check_Constraints_By_Table">
+      <summary>Returns the check constraints defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Collations">
+      <summary>Returns the character collations defined in the catalog that is accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Column_Domain_Usage">
+      <summary>Returns the columns defined in the catalog that are dependent on a domain defined in the catalog and owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Column_Privileges">
+      <summary>Returns the privileges on columns of tables defined in the catalog that are available to or granted by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Columns">
+      <summary>Returns the columns of tables (including views) defined in the catalog that is accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Constraint_Column_Usage">
+      <summary>Returns the columns used by referential constraints, unique constraints, check constraints, and assertions, defined in the catalog and owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Constraint_Table_Usage">
+      <summary>Returns the tables that are used by referential constraints, unique constraints, check constraints, and assertions defined in the catalog and owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.DbInfoKeywords">
+      <summary>Returns a list of provider-specific keywords.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.DbInfoLiterals">
+      <summary>Returns a list of provider-specific literals used in text commands.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Foreign_Keys">
+      <summary>Returns the foreign key columns defined in the catalog by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Indexes">
+      <summary>Returns the indexes defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Key_Column_Usage">
+      <summary>Returns the columns defined in the catalog that is constrained as keys by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Primary_Keys">
+      <summary>Returns the primary key columns defined in the catalog by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Procedure_Columns">
+      <summary>Returns information about the columns of rowsets returned by procedures.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Procedure_Parameters">
+      <summary>Returns information about the parameters and return codes of procedures.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Procedures">
+      <summary>Returns the procedures defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Provider_Types">
+      <summary>Returns the base data types supported by the .NET Framework Data Provider for OLE DB.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Referential_Constraints">
+      <summary>Returns the referential constraints defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.SchemaGuids">
+      <summary>Returns a list of schema rowsets, identified by their GUIDs, and a pointer to the descriptions of the restriction columns.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Schemata">
+      <summary>Returns the schema objects that are owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Sql_Languages">
+      <summary>Returns the conformance levels, options, and dialects supported by the SQL-implementation processing data defined in the catalog.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Statistics">
+      <summary>Returns the statistics defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Table_Constraints">
+      <summary>Returns the table constraints defined in the catalog that is owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Table_Privileges">
+      <summary>Returns the privileges on tables defined in the catalog that are available to, or granted by, a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Table_Statistics">
+      <summary>Describes the available set of statistics on tables in the provider.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Tables">
+      <summary>Returns the tables (including views) defined in the catalog that are accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Tables_Info">
+      <summary>Returns the tables (including views) that are accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Translations">
+      <summary>Returns the character translations defined in the catalog that is accessible to a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Trustee">
+      <summary>Identifies the trustees defined in the data source.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Usage_Privileges">
+      <summary>Returns the USAGE privileges on objects defined in the catalog that are available to or granted by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.View_Column_Usage">
+      <summary>Returns the columns on which viewed tables depend, as defined in the catalog and owned by a given user.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.View_Table_Usage">
+      <summary>Returns the tables on which viewed tables, defined in the catalog and owned by a given user, are dependent.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbSchemaGuid.Views">
+      <summary>Returns the views defined in the catalog that is accessible to a given user.</summary>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbTransaction">
+      <summary>Represents an SQL transaction to be made at a data source. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbTransaction.Begin">
+      <summary>Initiates a nested database transaction.</summary>
+      <returns>A nested database transaction.</returns>
+      <exception cref="T:System.InvalidOperationException">Nested transactions are not supported.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbTransaction.Begin(System.Data.IsolationLevel)">
+      <summary>Initiates a nested database transaction and specifies the isolation level to use for the new transaction.</summary>
+      <param name="isolevel">The isolation level to use for the transaction.</param>
+      <returns>A nested database transaction.</returns>
+      <exception cref="T:System.InvalidOperationException">Nested transactions are not supported.</exception>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbTransaction.Commit">
+      <summary>Commits the database transaction.</summary>
+      <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
+ -or-  
+ The connection is broken.</exception>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbTransaction.Connection">
+      <summary>Gets the <see cref="T:System.Data.OleDb.OleDbConnection" /> object associated with the transaction, or <see langword="null" /> if the transaction is no longer valid.</summary>
+      <returns>The <see cref="T:System.Data.OleDb.OleDbConnection" /> object associated with the transaction.</returns>
+    </member>
+    <member name="P:System.Data.OleDb.OleDbTransaction.IsolationLevel">
+      <summary>Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.</summary>
+      <returns>The <see cref="T:System.Data.IsolationLevel" /> for this transaction. The default is <see langword="ReadCommitted" />.</returns>
+    </member>
+    <member name="M:System.Data.OleDb.OleDbTransaction.Rollback">
+      <summary>Rolls back a transaction from a pending state.</summary>
+      <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
+ -or-  
+ The connection is broken.</exception>
+    </member>
+    <member name="T:System.Data.OleDb.OleDbType">
+      <summary>Specifies the data type of a field, a property, for use in an <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.BigInt">
+      <summary>A 64-bit signed integer (DBTYPE_I8). This maps to <see cref="T:System.Int64" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Binary">
+      <summary>A stream of binary data (DBTYPE_BYTES). This maps to an <see cref="T:System.Array" /> of type <see cref="T:System.Byte" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Boolean">
+      <summary>A Boolean value (DBTYPE_BOOL). This maps to <see cref="T:System.Boolean" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.BSTR">
+      <summary>A null-terminated character string of Unicode characters (DBTYPE_BSTR). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Char">
+      <summary>A character string (DBTYPE_STR). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Currency">
+      <summary>A currency value ranging from -2 63 (or -922,337,203,685,477.5808) to 2 63 -1 (or +922,337,203,685,477.5807) with an accuracy to a ten-thousandth of a currency unit (DBTYPE_CY). This maps to <see cref="T:System.Decimal" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Date">
+      <summary>Date data, stored as a double (DBTYPE_DATE). The whole portion is the number of days since December 30, 1899, and the fractional portion is a fraction of a day. This maps to <see cref="T:System.DateTime" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.DBDate">
+      <summary>Date data in the format yyyymmdd (DBTYPE_DBDATE). This maps to <see cref="T:System.DateTime" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.DBTime">
+      <summary>Time data in the format hhmmss (DBTYPE_DBTIME). This maps to <see cref="T:System.TimeSpan" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.DBTimeStamp">
+      <summary>Data and time data in the format yyyymmddhhmmss (DBTYPE_DBTIMESTAMP). This maps to <see cref="T:System.DateTime" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Decimal">
+      <summary>A fixed precision and scale numeric value between -10 38 -1 and 10 38 -1 (DBTYPE_DECIMAL). This maps to <see cref="T:System.Decimal" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Double">
+      <summary>A floating-point number within the range of -1.79E +308 through 1.79E +308 (DBTYPE_R8). This maps to <see cref="T:System.Double" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Empty">
+      <summary>No value (DBTYPE_EMPTY).</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Error">
+      <summary>A 32-bit error code (DBTYPE_ERROR). This maps to <see cref="T:System.Exception" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Filetime">
+      <summary>A 64-bit unsigned integer representing the number of 100-nanosecond intervals since January 1, 1601 (DBTYPE_FILETIME). This maps to <see cref="T:System.DateTime" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Guid">
+      <summary>A globally unique identifier (or GUID) (DBTYPE_GUID). This maps to <see cref="T:System.Guid" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.IDispatch">
+      <summary>A pointer to an <see langword="IDispatch" /> interface (DBTYPE_IDISPATCH). This maps to <see cref="T:System.Object" />.
+This data type is not currently supported by ADO.NET. Its usage may cause unpredictable results.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Integer">
+      <summary>A 32-bit signed integer (DBTYPE_I4). This maps to <see cref="T:System.Int32" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.IUnknown">
+      <summary>A pointer to an <see langword="IUnknown" /> interface (DBTYPE_UNKNOWN). This maps to <see cref="T:System.Object" />.This data type is not currently supported by ADO.NET. Its usage may cause unpredictable results.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.LongVarBinary">
+      <summary>A long binary value (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to an <see cref="T:System.Array" /> of type <see cref="T:System.Byte" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.LongVarChar">
+      <summary>A long string value (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.LongVarWChar">
+      <summary>A long null-terminated Unicode string value (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Numeric">
+      <summary>An exact numeric value with a fixed precision and scale (DBTYPE_NUMERIC). This maps to <see cref="T:System.Decimal" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.PropVariant">
+      <summary>An automation PROPVARIANT (DBTYPE_PROP_VARIANT). This maps to <see cref="T:System.Object" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Single">
+      <summary>A floating-point number within the range of -3.40E +38 through 3.40E +38 (DBTYPE_R4). This maps to <see cref="T:System.Single" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.SmallInt">
+      <summary>A 16-bit signed integer (DBTYPE_I2). This maps to <see cref="T:System.Int16" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.TinyInt">
+      <summary>A 8-bit signed integer (DBTYPE_I1). This maps to <see cref="T:System.SByte" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.UnsignedBigInt">
+      <summary>A 64-bit unsigned integer (DBTYPE_UI8). This maps to <see cref="T:System.UInt64" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.UnsignedInt">
+      <summary>A 32-bit unsigned integer (DBTYPE_UI4). This maps to <see cref="T:System.UInt32" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.UnsignedSmallInt">
+      <summary>A 16-bit unsigned integer (DBTYPE_UI2). This maps to <see cref="T:System.UInt16" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.UnsignedTinyInt">
+      <summary>A 8-bit unsigned integer (DBTYPE_UI1). This maps to <see cref="T:System.Byte" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.VarBinary">
+      <summary>A variable-length stream of binary data (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to an <see cref="T:System.Array" /> of type <see cref="T:System.Byte" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.VarChar">
+      <summary>A variable-length stream of non-Unicode characters (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.Variant">
+      <summary>A special data type that can contain numeric, string, binary, or date data, and also the special values Empty and Null (DBTYPE_VARIANT). This type is assumed if no other is specified. This maps to <see cref="T:System.Object" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.VarNumeric">
+      <summary>A variable-length numeric value (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to <see cref="T:System.Decimal" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.VarWChar">
+      <summary>A variable-length, null-terminated stream of Unicode characters (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+    <member name="F:System.Data.OleDb.OleDbType.WChar">
+      <summary>A null-terminated stream of Unicode characters (DBTYPE_WSTR). This maps to <see cref="T:System.String" />.</summary>
+    </member>
+  </members>
+</doc>

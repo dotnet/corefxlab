@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Text.Encodings.Web</name>
   </assembly>
@@ -7,92 +8,105 @@
       <summary>Represents an HTML character encoding.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.HtmlEncoder.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> class.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.HtmlEncoder.Create(System.Text.Encodings.Web.TextEncoderSettings)">
       <summary>Creates a new instance of the HtmlEncoder class with the specified settings.</summary>
-      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.HtmlEncoder"></see> instance encodes, primarily which characters to encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.HtmlEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="settings">settings</paramref> is null.</exception>
+      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> instance encodes, primarily which characters to encode.</param>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="settings" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.HtmlEncoder.Create(System.Text.Unicode.UnicodeRange[])">
       <summary>Creates a new instance of the HtmlEncoder class that specifies characters the encoder is allowed to not encode.</summary>
       <param name="allowedRanges">The set of characters that the encoder is allowed to not encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.HtmlEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="allowedRanges">allowedRanges</paramref> is null.</exception>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="allowedRanges" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Text.Encodings.Web.HtmlEncoder.Default">
-      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder"></see> class.</summary>
-      <returns>A built-in instance of the <see cref="System.Text.Encodings.Web.HtmlEncoder"></see> class.</returns>
+      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> class.</summary>
+      <returns>A built-in instance of the <see cref="T:System.Text.Encodings.Web.HtmlEncoder" /> class.</returns>
     </member>
     <member name="T:System.Text.Encodings.Web.JavaScriptEncoder">
       <summary>Represents a JavaScript character encoding.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.JavaScriptEncoder.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Encodings.Web.TextEncoderSettings)">
       <summary>Creates a new instance of JavaScriptEncoder class with the specified settings.</summary>
-      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder"></see> instance encodes, primarily which characters to encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.JavaScriptEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="settings">settings</paramref> is null.</exception>
+      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> instance encodes, primarily which characters to encode.</param>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="settings" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRange[])">
       <summary>Creates a new instance of the JavaScriptEncoder class that specifies characters the encoder is allowed to not encode.</summary>
       <param name="allowedRanges">The set of characters that the encoder is allowed to not encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.JavaScriptEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="allowedRanges">allowedRanges</paramref> is null.</exception>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="allowedRanges" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Text.Encodings.Web.JavaScriptEncoder.Default">
-      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder"></see> class.</summary>
-      <returns>A built-in instance of the <see cref="System.Text.Encodings.Web.JavaScriptEncoder"></see> class.</returns>
+      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</summary>
+      <returns>A built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</returns>
     </member>
     <member name="T:System.Text.Encodings.Web.TextEncoder">
       <summary>The base class of web encoders.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.TextEncoder"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.TextEncoder" /> class.</summary>
+    </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.Char[],System.Int32,System.Int32)">
+      <summary>Encodes characters from an array and writes them to a <see cref="T:System.IO.TextWriter" /> object.</summary>
+      <param name="output">The stream to which to write the encoded text.</param>
+      <param name="value">The array of characters to encode.</param>
+      <param name="startIndex">The array index of the first character to encode.</param>
+      <param name="characterCount">The number of characters in the array to encode.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="M:System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)" /> method failed. The encoder does not implement <see cref="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter" /> correctly.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> is out of range.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="characterCount" /> is out of range.</exception>
+    </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.String)">
+      <summary>Encodes the specified string to a <see cref="T:System.IO.TextWriter" /> object.</summary>
+      <param name="output">The stream to which to write the encoded text.</param>
+      <param name="value">The string to encode.</param>
+    </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.String,System.Int32,System.Int32)">
+      <summary>Encodes a substring and writes it to a <see cref="T:System.IO.TextWriter" /> object.</summary>
+      <param name="output">The stream to which to write the encoded text.</param>
+      <param name="value">The string whose substring is to be encoded.</param>
+      <param name="startIndex">The index where the substring starts.</param>
+      <param name="characterCount">The number of characters in the substring.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="output" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="M:System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)" /> method failed. The encoder does not implement <see cref="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter" /> correctly.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="startIndex" /> is out of range.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="characterCount" /> is out of range.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.String)">
       <summary>Encodes the supplied string and returns the encoded text as a new string.</summary>
       <param name="value">The string to encode.</param>
       <returns>The encoded string.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is null.</exception>
-      <exception cref="T:System.ArgumentException">The <see cref="System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)"></see> method failed. The encoder does not implement <see cref="System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter"></see> correctly.</exception>
-    </member>
-    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.String)">
-      <summary>Encodes the specified string to a <see cref="T:System.IO.TextWriter"></see> object.</summary>
-      <param name="output">The stream to which to write the encoded text.</param>
-      <param name="value">The string to encode.</param>
-    </member>
-    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.Char[],System.Int32,System.Int32)">
-      <summary>Encodes characters from an array and writes them to a <see cref="T:System.IO.TextWriter"></see> object.</summary>
-      <param name="output">The stream to which to write the encoded text.</param>
-      <param name="value">The array of characters to encode.</param>
-      <param name="startIndex">The array index of the first character to encode.</param>
-      <param name="characterCount">The number of characters in the array to encode.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="output">output</paramref> is null.</exception>
-      <exception cref="T:System.ArgumentException">The <see cref="System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)"></see> method failed. The encoder does not implement <see cref="System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter"></see> correctly.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is null.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex">startIndex</paramref> is out of range.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="characterCount">characterCount</paramref> is out of range.</exception>
-    </member>
-    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.IO.TextWriter,System.String,System.Int32,System.Int32)">
-      <summary>Encodes a substring and writes it to a <see cref="T:System.IO.TextWriter"></see> object.</summary>
-      <param name="output">The stream to which to write the encoded text.</param>
-      <param name="value">The string whose substring is to be encoded.</param>
-      <param name="startIndex">The index where the substring starts.</param>
-      <param name="characterCount">The number of characters in the substring.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="output">output</paramref> is null.</exception>
-      <exception cref="T:System.ArgumentException">The <see cref="System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)"></see> method failed. The encoder does not implement <see cref="System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter"></see> correctly.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is null.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex">startIndex</paramref> is out of range.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="characterCount">characterCount</paramref> is out of range.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="M:System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)" /> method failed. The encoder does not implement <see cref="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter" /> correctly.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncode(System.Char*,System.Int32)">
       <summary>Finds the index of the first character to encode.</summary>
       <param name="text">The text buffer to search.</param>
-      <param name="textLength">The number of characters in <paramref name="text">text</paramref>.</param>
+      <param name="textLength">The number of characters in <paramref name="text" />.</param>
       <returns>The index of the first character to encode.</returns>
     </member>
     <member name="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter">
@@ -103,14 +117,16 @@
       <summary>Encodes a Unicode scalar value and writes it to a buffer.</summary>
       <param name="unicodeScalar">A Unicode scalar value.</param>
       <param name="buffer">A pointer to the buffer to which to write the encoded text.</param>
-      <param name="bufferLength">The length of the destination <paramref name="buffer">buffer</paramref> in characters.</param>
-      <param name="numberOfCharactersWritten">When the method returns, indicates the number of characters written to the <paramref name="buffer">buffer</paramref>.</param>
-      <returns>false if <paramref name="bufferLength">bufferLength</paramref> is too small to fit the encoded text; otherwise, returns true.</returns>
+      <param name="bufferLength">The length of the destination <paramref name="buffer" /> in characters.</param>
+      <param name="numberOfCharactersWritten">When the method returns, indicates the number of characters written to the <paramref name="buffer" />.</param>
+      <returns>
+        <see langword="false" /> if <paramref name="bufferLength" /> is too small to fit the encoded text; otherwise, returns <see langword="true" />.</returns>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.WillEncode(System.Int32)">
       <summary>Determines if a given Unicode scalar value will be encoded.</summary>
       <param name="unicodeScalar">A Unicode scalar value.</param>
-      <returns>true if the <paramref name="unicodeScalar">unicodeScalar</paramref> value will be encoded by this encoder; otherwise, returns false.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="unicodeScalar" /> value will be encoded by this encoder; otherwise, returns <see langword="false" />.</returns>
     </member>
     <member name="T:System.Text.Encodings.Web.TextEncoderSettings">
       <summary>Represents a filter that allows only certain Unicode code points.</summary>
@@ -119,59 +135,67 @@
       <summary>Instantiates an empty filter (allows no code points through by default).</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.#ctor(System.Text.Encodings.Web.TextEncoderSettings)">
-      <summary>Instantiates a filter by cloning the allowed list of another <see cref="T:System.Text.Encodings.Web.TextEncoderSettings"></see> object.</summary>
-      <param name="other">The other <see cref="T:System.Text.Encodings.Web.TextEncoderSettings"></see> object to be cloned.</param>
+      <summary>Instantiates a filter by cloning the allowed list of another <see cref="T:System.Text.Encodings.Web.TextEncoderSettings" /> object.</summary>
+      <param name="other">The other <see cref="T:System.Text.Encodings.Web.TextEncoderSettings" /> object to be cloned.</param>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.#ctor(System.Text.Unicode.UnicodeRange[])">
-      <summary>Instantiates a filter where only the character ranges specified by <paramref name="allowedRanges">allowedRanges</paramref> are allowed by the filter.</summary>
+      <summary>Instantiates a filter where only the character ranges specified by <paramref name="allowedRanges" /> are allowed by the filter.</summary>
       <param name="allowedRanges">The allowed character ranges.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="allowedRanges">allowedRanges</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="allowedRanges" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.AllowCharacter(System.Char)">
-      <summary>Allows the character specified by <paramref name="character">character</paramref> through the filter.</summary>
+      <summary>Allows the character specified by <paramref name="character" /> through the filter.</summary>
       <param name="character">The allowed character.</param>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.AllowCharacters(System.Char[])">
-      <summary>Allows all characters specified by <paramref name="characters">characters</paramref> through the filter.</summary>
+      <summary>Allows all characters specified by <paramref name="characters" /> through the filter.</summary>
       <param name="characters">The allowed characters.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="characters">characters</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="characters" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.AllowCodePoints(System.Collections.Generic.IEnumerable{System.Int32})">
-      <summary>Allows all code points specified by <paramref name="codePoints">codePoints</paramref>.</summary>
+      <summary>Allows all code points specified by <paramref name="codePoints" />.</summary>
       <param name="codePoints">The allowed code points.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="codePoints">codePoints</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="codePoints" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.AllowRange(System.Text.Unicode.UnicodeRange)">
-      <summary>Allows all characters specified by <paramref name="range">range</paramref> through the filter.</summary>
+      <summary>Allows all characters specified by <paramref name="range" /> through the filter.</summary>
       <param name="range">The range of characters to be allowed.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="range">range</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="range" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.AllowRanges(System.Text.Unicode.UnicodeRange[])">
-      <summary>Allows all characters specified by <paramref name="ranges">ranges</paramref> through the filter.</summary>
+      <summary>Allows all characters specified by <paramref name="ranges" /> through the filter.</summary>
       <param name="ranges">The ranges of characters to be allowed.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="ranges">ranges</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ranges" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.Clear">
       <summary>Resets this object by disallowing all characters.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.ForbidCharacter(System.Char)">
-      <summary>Disallows the character <paramref name="character">character</paramref> through the filter.</summary>
+      <summary>Disallows the character <paramref name="character" /> through the filter.</summary>
       <param name="character">The disallowed character.</param>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.ForbidCharacters(System.Char[])">
-      <summary>Disallows all characters specified by <paramref name="characters">characters</paramref> through the filter.</summary>
+      <summary>Disallows all characters specified by <paramref name="characters" /> through the filter.</summary>
       <param name="characters">The disallowed characters.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="characters">characters</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="characters" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.ForbidRange(System.Text.Unicode.UnicodeRange)">
-      <summary>Disallows all characters specified by <paramref name="range">range</paramref> through the filter.</summary>
+      <summary>Disallows all characters specified by <paramref name="range" /> through the filter.</summary>
       <param name="range">The range of characters to be disallowed.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="range">range</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="range" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.ForbidRanges(System.Text.Unicode.UnicodeRange[])">
-      <summary>Disallows all characters specified by <paramref name="ranges">ranges</paramref> through the filter.</summary>
+      <summary>Disallows all characters specified by <paramref name="ranges" /> through the filter.</summary>
       <param name="ranges">The ranges of characters to be disallowed.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="ranges">ranges</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="ranges" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoderSettings.GetAllowedCodePoints">
       <summary>Gets an enumerator of all allowed code points.</summary>
@@ -181,54 +205,58 @@
       <summary>Represents a URL character encoding.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.UrlEncoder.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> class.</summary>
     </member>
     <member name="M:System.Text.Encodings.Web.UrlEncoder.Create(System.Text.Encodings.Web.TextEncoderSettings)">
       <summary>Creates a new instance of UrlEncoder class with the specified settings.</summary>
-      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.UrlEncoder"></see> instance encodes, primarily which characters to encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.UrlEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="settings">settings</paramref> is null.</exception>
+      <param name="settings">Settings that control how the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> instance encodes, primarily which characters to encode.</param>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="settings" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.UrlEncoder.Create(System.Text.Unicode.UnicodeRange[])">
       <summary>Creates a new instance of the UrlEncoder class that specifies characters the encoder is allowed to not encode.</summary>
       <param name="allowedRanges">The set of characters that the encoder is allowed to not encode.</param>
-      <returns>A new instance of the <see cref="System.Text.Encodings.Web.UrlEncoder"></see> class.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="allowedRanges">allowedRanges</paramref> is null.</exception>
+      <returns>A new instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> class.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="allowedRanges" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Text.Encodings.Web.UrlEncoder.Default">
-      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder"></see> class.</summary>
-      <returns>A built-in instance of the <see cref="System.Text.Encodings.Web.UrlEncoder"></see> class.</returns>
+      <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> class.</summary>
+      <returns>A built-in instance of the <see cref="T:System.Text.Encodings.Web.UrlEncoder" /> class.</returns>
     </member>
     <member name="T:System.Text.Unicode.UnicodeRange">
       <summary>Represents a contiguous range of Unicode code points.</summary>
     </member>
     <member name="M:System.Text.Unicode.UnicodeRange.#ctor(System.Int32,System.Int32)">
-      <summary>Creates a new <see cref="T:System.Text.Unicode.UnicodeRange"></see> that includes a specified number of characters starting at a specified Unicode code point.</summary>
+      <summary>Creates a new <see cref="T:System.Text.Unicode.UnicodeRange" /> that includes a specified number of characters starting at a specified Unicode code point.</summary>
       <param name="firstCodePoint">The first code point in the range.</param>
       <param name="length">The number of code points in the range.</param>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="firstCodePoint">firstCodePoint</paramref> is less than zero or greater than 0xFFFF. 
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="firstCodePoint" /> is less than zero or greater than 0xFFFF. 
 -or-           
-<paramref name="length">length</paramref> is less than zero.
+<paramref name="length" /> is less than zero.
 -or-
-<paramref name="firstCodePoint">firstCodePoint</paramref> plus <paramref name="length">length</paramref> is greater than 0xFFFF.</exception>
+<paramref name="firstCodePoint" /> plus <paramref name="length" /> is greater than 0xFFFF.</exception>
     </member>
     <member name="M:System.Text.Unicode.UnicodeRange.Create(System.Char,System.Char)">
-      <summary>Creates a new <see cref="T:System.Text.Unicode.UnicodeRange"></see> instance from a span of characters.</summary>
+      <summary>Creates a new <see cref="T:System.Text.Unicode.UnicodeRange" /> instance from a span of characters.</summary>
       <param name="firstCharacter">The first character in the range.</param>
       <param name="lastCharacter">The last character in the range.</param>
-      <returns>A range that includes all characters between <paramref name="firstCharacter">firstCharacter</paramref> and <paramref name="lastCharacter">lastCharacter</paramref>.</returns>
-      <exception cref="System.ArgumentOutOfRangeException"><paramref name="lastCharacter">lastCharacter</paramref> precedes <paramref name="firstCharacter">firstCharacter</paramref>.</exception>
+      <returns>A range that includes all characters between <paramref name="firstCharacter" /> and <paramref name="lastCharacter" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="lastCharacter" /> precedes <paramref name="firstCharacter" />.</exception>
     </member>
     <member name="P:System.Text.Unicode.UnicodeRange.FirstCodePoint">
-      <summary>Gets the first code point in the range represented by this <see cref="T:System.Text.Unicode.UnicodeRange"></see> instance.</summary>
+      <summary>Gets the first code point in the range represented by this <see cref="T:System.Text.Unicode.UnicodeRange" /> instance.</summary>
       <returns>The first code point in the range.</returns>
     </member>
     <member name="P:System.Text.Unicode.UnicodeRange.Length">
-      <summary>Gets the number of code points in the range represented by this <see cref="T:System.Text.Unicode.UnicodeRange"></see> instance.</summary>
+      <summary>Gets the number of code points in the range represented by this <see cref="T:System.Text.Unicode.UnicodeRange" /> instance.</summary>
       <returns>The number of code points in the range.</returns>
     </member>
     <member name="T:System.Text.Unicode.UnicodeRanges">
-      <summary>Provides static properties that return predefined <see cref="T:System.Text.Unicode.UnicodeRange"></see> instances that correspond to blocks from the Unicode specification.</summary>
+      <summary>Provides static properties that return predefined <see cref="T:System.Text.Unicode.UnicodeRange" /> instances that correspond to blocks from the Unicode specification.</summary>
     </member>
     <member name="P:System.Text.Unicode.UnicodeRanges.All">
       <summary>Gets a range that consists of the entire Basic Multilingual Plane (BMP), from U+0000 to U+FFFF).</summary>
@@ -406,6 +434,9 @@
       <summary>Gets the Cyrillic Extended-B Unicode block (U+A640-U+A69F).</summary>
       <returns>The Cyrillic Extended-B Unicode block (U+A640-U+A69F).</returns>
     </member>
+    <member name="P:System.Text.Unicode.UnicodeRanges.CyrillicExtendedC">
+      <summary>A <see cref="T:System.Text.Unicode.UnicodeRange" /> corresponding to the 'Cyrillic Extended-C' Unicode block (U+1C80..U+1C8F).</summary>
+    </member>
     <member name="P:System.Text.Unicode.UnicodeRanges.CyrillicSupplement">
       <summary>Gets the Cyrillic Supplement Unicode block (U+0500-U+052F).</summary>
       <returns>The Cyrillic Supplement Unicode block (U+0500-U+052F).</returns>
@@ -457,6 +488,9 @@
     <member name="P:System.Text.Unicode.UnicodeRanges.Georgian">
       <summary>Gets the Georgian Unicode block (U+10A0-U+10FF).</summary>
       <returns>The Georgian Unicode block (U+10A0-U+10FF).</returns>
+    </member>
+    <member name="P:System.Text.Unicode.UnicodeRanges.GeorgianExtended">
+      <summary>A <see cref="T:System.Text.Unicode.UnicodeRange" /> corresponding to the 'Georgian Extended' Unicode block (U+1C90..U+1CBF).</summary>
     </member>
     <member name="P:System.Text.Unicode.UnicodeRanges.GeorgianSupplement">
       <summary>Gets the Georgian Supplement Unicode block (U+2D00-U+2D2F).</summary>
@@ -781,6 +815,9 @@
     <member name="P:System.Text.Unicode.UnicodeRanges.Syriac">
       <summary>Gets the Syriac Unicode block (U+0700-U+074F).</summary>
       <returns>The Syriac Unicode block (U+0700-U+074F).</returns>
+    </member>
+    <member name="P:System.Text.Unicode.UnicodeRanges.SyriacSupplement">
+      <summary>A <see cref="T:System.Text.Unicode.UnicodeRange" /> corresponding to the 'Syriac Supplement' Unicode block (U+0860..U+086F).</summary>
     </member>
     <member name="P:System.Text.Unicode.UnicodeRanges.Tagalog">
       <summary>Gets the Tagalog Unicode block (U+1700-U+171F).</summary>

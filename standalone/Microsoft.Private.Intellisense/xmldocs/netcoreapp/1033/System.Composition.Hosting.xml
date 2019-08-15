@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Composition.Hosting</name>
   </assembly>
@@ -22,8 +23,10 @@
     <member name="M:System.Composition.Hosting.CompositionHost.TryGetExport(System.Composition.Hosting.Core.CompositionContract,System.Object@)">
       <summary>Retrieves the specified export from the composition context.</summary>
       <param name="contract">The export to retrieve.</param>
-      <param name="export">When this method returns, contains an instance of the export if available; otherwise, null.</param>
-      <returns>true if the export was retrieved; otherwise, false.</returns>
+      <param name="export">When this method returns, contains an instance of the export if available; otherwise, <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the export was retrieved; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.Composition.Hosting.CompositionFailedException">There are too many exports.</exception>
     </member>
     <member name="T:System.Composition.Hosting.Core.CompositeActivator">
       <summary>The delegate that allows instances of parts and exports to be accessed during composition.</summary>
@@ -32,7 +35,7 @@
       <returns>The activated part or export.</returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.CompositionDependency">
-      <summary>Represents a dependency that a part must have in order to fulfill an <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise"></see>. This class is used by the composition engine during initialization to determine whether the composition can be made, and if not, what error to provide.</summary>
+      <summary>Represents a dependency that a part must have in order to fulfill an <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise" />. This class is used by the composition engine during initialization to determine whether the composition can be made, and if not, what error to provide.</summary>
     </member>
     <member name="P:System.Composition.Hosting.Core.CompositionDependency.Contract">
       <summary>Gets the contract required by the dependency.</summary>
@@ -40,11 +43,12 @@
     </member>
     <member name="P:System.Composition.Hosting.Core.CompositionDependency.IsPrerequisite">
       <summary>Gets a value indicating whether the dependency is a prerequisite that must be satisfied before any exports can be retrieved from the dependent part.</summary>
-      <returns>true if the dependency is a prerequisite; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the dependency is a prerequisite; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.CompositionDependency.Missing(System.Composition.Hosting.Core.CompositionContract,System.Object)">
       <summary>Constructs a placeholder for a missing dependency.</summary>
-      <param name="contract">&amp;quot;&amp;gt;The contract required by the dependency.</param>
+      <param name="contract">"&gt;The contract required by the dependency.</param>
       <param name="site">A marker used to identify the individual dependency among those on the dependent part.</param>
       <returns>The dependency that acts as a placeholder.</returns>
     </member>
@@ -58,8 +62,9 @@
     <member name="M:System.Composition.Hosting.Core.CompositionDependency.Satisfied(System.Composition.Hosting.Core.CompositionContract,System.Composition.Hosting.Core.ExportDescriptorPromise,System.Boolean,System.Object)">
       <summary>Constructs a dependency on the specified target.</summary>
       <param name="contract">The contract required by the dependency.</param>
-      <param name="target">The dependency target. A <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise"></see> from another part that this part is dependent on.</param>
-      <param name="isPrerequisite">true to indicate that the dependency is a prerequisite that must be satisfied before any exports can be retrieved from the dependent part; otherwise, false.</param>
+      <param name="target">The dependency target. A <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise" /> from another part that this part is dependent on.</param>
+      <param name="isPrerequisite">
+        <see langword="true" /> to indicate that the dependency is a prerequisite that must be satisfied before any exports can be retrieved from the dependent part; otherwise, <see langword="false" />.</param>
       <param name="site">A marker used to identify the individual dependency among those on the dependent part.</param>
       <returns>The constructed dependency.</returns>
     </member>
@@ -72,8 +77,8 @@
       <returns>The export descriptor promise.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.CompositionDependency.ToString">
-      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.CompositionDependency"></see> object.</summary>
-      <returns>The string representation of <see cref="System.Composition.Hosting.Core.CompositionDependency"></see>.</returns>
+      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.CompositionDependency" /> object.</summary>
+      <returns>The string representation of <see cref="T:System.Composition.Hosting.Core.CompositionDependency" />.</returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.CompositionOperation">
       <summary>Represents a single composition operation.</summary>
@@ -81,10 +86,11 @@
     <member name="M:System.Composition.Hosting.Core.CompositionOperation.AddNonPrerequisiteAction(System.Action)">
       <summary>Specifies an action that can run after all prerequisite part dependencies have been satisfied.</summary>
       <param name="action">The action to run.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="action">action</paramref> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="action" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Composition.Hosting.Core.CompositionOperation.AddPostCompositionAction(System.Action)">
-      <summary>Specifies an action to run after all composition has completed, as indicated by the <see cref="T:System.Composition.OnImportsSatisfiedAttribute"></see>.</summary>
+      <summary>Specifies an action to run after all composition has completed, as indicated by the <see cref="T:System.Composition.OnImportsSatisfiedAttribute" />.</summary>
       <param name="action">The action to run.</param>
     </member>
     <member name="M:System.Composition.Hosting.Core.CompositionOperation.Dispose">
@@ -97,10 +103,10 @@
       <returns>The composed object graph.</returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.DependencyAccessor">
-      <summary>Allows <see cref="T:System.Composition.Hosting.Core.ExportDescriptorProvider"></see> objects to locate their dependencies.</summary>
+      <summary>Allows <see cref="T:System.Composition.Hosting.Core.ExportDescriptorProvider" /> objects to locate their dependencies.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.DependencyAccessor.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.DependencyAccessor"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.DependencyAccessor" /> class.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.DependencyAccessor.GetPromises(System.Composition.Hosting.Core.CompositionContract)">
       <summary>Retrieves all promises for the specified contract.</summary>
@@ -111,29 +117,33 @@
       <summary>Resolves dependencies on all implementations of a contract.</summary>
       <param name="site">A tag that describes the dependency site.</param>
       <param name="contract">The contract required by the site.</param>
-      <param name="isPrerequisite">true to indicate that the dependency must be satisfied before exports are made available; otherwise, false.</param>
+      <param name="isPrerequisite">
+        <see langword="true" /> to indicate that the dependency must be satisfied before exports are made available; otherwise, <see langword="false" />.</param>
       <returns>A collection of resolved dependencies.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.DependencyAccessor.ResolveRequiredDependency(System.Object,System.Composition.Hosting.Core.CompositionContract,System.Boolean)">
       <summary>Resolves a required dependency on one implementation of a contract.</summary>
       <param name="site">A tag that describes the dependency site.</param>
       <param name="contract">The contract required by the site.</param>
-      <param name="isPrerequisite">true to indicate that the dependency must be satisfied before exports are made available; otherwise, false.</param>
+      <param name="isPrerequisite">
+        <see langword="true" /> to indicate that the dependency must be satisfied before exports are made available; otherwise, <see langword="false" />.</param>
       <returns>The resolved dependency.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.DependencyAccessor.TryResolveOptionalDependency(System.Object,System.Composition.Hosting.Core.CompositionContract,System.Boolean,System.Composition.Hosting.Core.CompositionDependency@)">
       <summary>Resolves an optional dependency on one implementation of a contract.</summary>
       <param name="site">A tag that describes the dependency site.</param>
       <param name="contract">The contract required by the site.</param>
-      <param name="isPrerequisite">true to indicate that the dependency must be satisfied before exports are made available; otherwise, false.</param>
-      <param name="dependency">After this method returns, contains the resolved dependency or null.</param>
-      <returns>true if the dependency was resolved; otherwise, false.</returns>
+      <param name="isPrerequisite">
+        <see langword="true" /> to indicate that the dependency must be satisfied before exports are made available; otherwise, <see langword="false" />.</param>
+      <param name="dependency">After this method returns, contains the resolved dependency or <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the dependency was resolved; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.ExportDescriptor">
       <summary>Describes an export of a part known to the composition engine.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.ExportDescriptor.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptor"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptor" /> class.</summary>
     </member>
     <member name="P:System.Composition.Hosting.Core.ExportDescriptor.Activator">
       <summary>Gets the activator used to retrieve instances of the export.</summary>
@@ -153,10 +163,11 @@
       <summary>Represents an export descriptor that an available part can provide.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.ExportDescriptorPromise.#ctor(System.Composition.Hosting.Core.CompositionContract,System.String,System.Boolean,System.Func{System.Collections.Generic.IEnumerable{System.Composition.Hosting.Core.CompositionDependency}},System.Func{System.Collections.Generic.IEnumerable{System.Composition.Hosting.Core.CompositionDependency},System.Composition.Hosting.Core.ExportDescriptor})">
-      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise" /> class.</summary>
       <param name="contract">The promised contract.</param>
-      <param name="origin">A description of the promise&amp;#39;s origin. For example, a part type.</param>
-      <param name="isShared">true if the promise is shared, otherwise false.</param>
+      <param name="origin">A description of the promise's origin. For example, a part type.</param>
+      <param name="isShared">
+        <see langword="true" /> if the promise is shared, otherwise <see langword="false" />.</param>
       <param name="dependencies">A function that provides the dependencies required to fulfill the promise.</param>
       <param name="getDescriptor">A function that provides the promised descriptor.</param>
     </member>
@@ -174,21 +185,22 @@
     </member>
     <member name="P:System.Composition.Hosting.Core.ExportDescriptorPromise.IsShared">
       <summary>Gets a value that indicates whether the promise is shared.</summary>
-      <returns>true if the promise is shared within some context; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the promise is shared within some context; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Composition.Hosting.Core.ExportDescriptorPromise.Origin">
       <summary>Gets a description of where the promise originates (for example, a part type), used to provide readable errors.</summary>
-      <returns>A description of the promise&amp;#39;s origin.</returns>
+      <returns>A description of the promise's origin.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.ExportDescriptorPromise.ToString">
-      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise"></see> object.</summary>
-      <returns>The string representation of this <see cref="System.Composition.Hosting.Core.ExportDescriptorPromise"></see> object.</returns>
+      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise" /> object.</summary>
+      <returns>The string representation of this <see cref="T:System.Composition.Hosting.Core.ExportDescriptorPromise" /> object.</returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.ExportDescriptorProvider">
       <summary>Provides the description of an export for a part known to the composition engine.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.ExportDescriptorProvider.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptorProvider"></see> class.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Composition.Hosting.Core.ExportDescriptorProvider" /> class.</summary>
     </member>
     <member name="M:System.Composition.Hosting.Core.ExportDescriptorProvider.GetExportDescriptors(System.Composition.Hosting.Core.CompositionContract,System.Composition.Hosting.Core.DependencyAccessor)">
       <summary>Retrieves promise export descriptors for the specified export key.</summary>
@@ -198,15 +210,12 @@
     </member>
     <member name="F:System.Composition.Hosting.Core.ExportDescriptorProvider.NoDependencies">
       <summary>Indicates a lack of dependencies.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Composition.Hosting.Core.ExportDescriptorProvider.NoExportDescriptors">
       <summary>Indicates a lack of export descriptors.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Composition.Hosting.Core.ExportDescriptorProvider.NoMetadata">
       <summary>Indicates a lack of metadata.</summary>
-      <returns></returns>
     </member>
     <member name="T:System.Composition.Hosting.Core.LifetimeContext">
       <summary>Represents a node in the lifetime tree.</summary>
@@ -236,14 +245,16 @@
       <returns>The new or retrieved part.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.LifetimeContext.ToString">
-      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.LifetimeContext"></see> object.</summary>
-      <returns>The string representation of this <see cref="System.Composition.Hosting.Core.LifetimeContext"></see> object.</returns>
+      <summary>Returns the string representation of this <see cref="T:System.Composition.Hosting.Core.LifetimeContext" /> object.</summary>
+      <returns>The string representation of this <see cref="T:System.Composition.Hosting.Core.LifetimeContext" /> object.</returns>
     </member>
     <member name="M:System.Composition.Hosting.Core.LifetimeContext.TryGetExport(System.Composition.Hosting.Core.CompositionContract,System.Object@)">
       <summary>Retrieves a contract instance from the composition context.</summary>
       <param name="contract">The contract.</param>
-      <param name="export">After this method returns, contains the contract instance if available; otherwise, null.</param>
-      <returns>true if the instance was retrieved; otherwise, false.</returns>
+      <param name="export">After this method returns, contains the contract instance if available; otherwise, <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the instance was retrieved; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.Composition.Hosting.CompositionFailedException">No export was found for <paramref name="contract" />.</exception>
     </member>
   </members>
 </doc>

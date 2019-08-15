@@ -1,391 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Resources.ResourceManager</name>
   </assembly>
   <members>
-    <member name="T:System.Resources.UltimateResourceFallbackLocation">
-      <summary>Specifies whether a <see cref="T:System.Resources.ResourceManager"></see> object looks for the resources of the app&amp;#39;s default culture in the main assembly or in a satellite assembly.</summary>
-    </member>
-    <member name="F:System.Resources.UltimateResourceFallbackLocation.MainAssembly">
-      <summary>Fallback resources are located in the main assembly.</summary>
-      <returns></returns>
-    </member>
-    <member name="F:System.Resources.UltimateResourceFallbackLocation.Satellite">
-      <summary>Fallback resources are located in a satellite assembly.</summary>
-      <returns></returns>
-    </member>
-    <member name="T:System.Resources.SatelliteContractVersionAttribute">
-      <summary>Instructs a <see cref="T:System.Resources.ResourceManager"></see> object to ask for a particular version of a satellite assembly.</summary>
-    </member>
-    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.SatelliteContractVersionAttribute"></see> class.</summary>
-      <param name="version">A string that specifies the version of the satellite assemblies to load.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="version">version</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
-      <summary>Gets the version of the satellite assemblies with the required resources.</summary>
-      <returns>A string that contains the version of the satellite assemblies with the required resources.</returns>
-    </member>
-    <member name="T:System.Resources.ResourceSet">
-      <summary>Stores all the resources localized for one particular culture, ignoring all other cultures, including any fallback rules.  
- Security Note: Calling methods in this class with untrusted data is a security risk. Call the methods in the class only with trusted data. For more information, see Untrusted Data Security Risks.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceSet.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceSet"></see> class with default properties.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceSet.#ctor(System.IO.Stream)">
-      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet"></see> class using the system default <see cref="T:System.Resources.ResourceReader"></see> that reads resources from the given stream.</summary>
-      <param name="stream">The <see cref="T:System.IO.Stream"></see> of resources to be read. The stream should refer to an existing resources file.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="stream">stream</paramref> is not readable.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="stream">stream</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.#ctor(System.Resources.IResourceReader)">
-      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet"></see> class using the specified resource reader.</summary>
-      <param name="reader">The reader that will be used.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="reader">reader</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.#ctor(System.String)">
-      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet"></see> class using the system default <see cref="T:System.Resources.ResourceReader"></see> that opens and reads resources from the given file.</summary>
-      <param name="fileName">Resource file to read.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.Close">
-      <summary>Closes and releases any resources used by this <see cref="T:System.Resources.ResourceSet"></see>.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceSet.Dispose">
-      <summary>Disposes of the resources (other than memory) used by the current instance of <see cref="T:System.Resources.ResourceSet"></see>.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceSet.Dispose(System.Boolean)">
-      <summary>Releases resources (other than memory) associated with the current instance, closing internal managed objects if requested.</summary>
-      <param name="disposing">Indicates whether the objects contained in the current instance should be explicitly closed.</param>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetDefaultReader">
-      <summary>Returns the preferred resource reader class for this kind of <see cref="T:System.Resources.ResourceSet"></see>.</summary>
-      <returns>Returns the <see cref="T:System.Type"></see> for the preferred resource reader for this kind of <see cref="T:System.Resources.ResourceSet"></see>.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetDefaultWriter">
-      <summary>Returns the preferred resource writer class for this kind of <see cref="T:System.Resources.ResourceSet"></see>.</summary>
-      <returns>Returns the <see cref="T:System.Type"></see> for the preferred resource writer for this kind of <see cref="T:System.Resources.ResourceSet"></see>.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetEnumerator">
-      <summary>Returns an <see cref="T:System.Collections.IDictionaryEnumerator"></see> that can iterate through the <see cref="T:System.Resources.ResourceSet"></see>.</summary>
-      <returns>An <see cref="T:System.Collections.IDictionaryEnumerator"></see> for this <see cref="T:System.Resources.ResourceSet"></see>.</returns>
-      <exception cref="T:System.ObjectDisposedException">The resource set has been closed or disposed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetObject(System.String)">
-      <summary>Searches for a resource object with the specified name.</summary>
-      <param name="name">Case-sensitive name of the resource to search for.</param>
-      <returns>The requested resource.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetObject(System.String,System.Boolean)">
-      <summary>Searches for a resource object with the specified name in a case-insensitive manner, if requested.</summary>
-      <param name="name">Name of the resource to search for.</param>
-      <param name="ignoreCase">Indicates whether the case of the specified name should be ignored.</param>
-      <returns>The requested resource.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetString(System.String)">
-      <summary>Searches for a <see cref="T:System.String"></see> resource with the specified name.</summary>
-      <param name="name">Name of the resource to search for.</param>
-      <returns>The value of a resource, if the value is a <see cref="T:System.String"></see>.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.InvalidOperationException">The resource specified by <paramref name="name">name</paramref> is not a <see cref="System.String"></see>.</exception>
-      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.GetString(System.String,System.Boolean)">
-      <summary>Searches for a <see cref="T:System.String"></see> resource with the specified name in a case-insensitive manner, if requested.</summary>
-      <param name="name">Name of the resource to search for.</param>
-      <param name="ignoreCase">Indicates whether the case of the case of the specified name should be ignored.</param>
-      <returns>The value of a resource, if the value is a <see cref="T:System.String"></see>.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.InvalidOperationException">The resource specified by <paramref name="name">name</paramref> is not a <see cref="System.String"></see>.</exception>
-      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceSet.ReadResources">
-      <summary>Reads all the resources and stores them in a <see cref="T:System.Collections.Hashtable"></see> indicated in the <see cref="F:System.Resources.ResourceSet.Table"></see> property.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceSet.System#Collections#IEnumerable#GetEnumerator">
-      <summary>Returns an <see cref="T:System.Collections.IEnumerator"></see> object to avoid a race condition with <see langword="Dispose"></see>. This member is not intended to be used directly from your code.</summary>
-      <returns>An enumerator for the current <see cref="T:System.Resources.ResourceSet"></see> object.</returns>
-    </member>
-    <member name="T:System.Resources.ResourceReader">
-      <summary>Enumerates the resources in a binary resources (.resources) file by reading sequential resource name/value pairs.  
- Security Note: Calling methods in this class with untrusted data is a security risk. Call the methods in the class only with trusted data. For more information, see Untrusted Data Security Risks.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceReader.#ctor(System.IO.Stream)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceReader"></see> class for the specified stream.</summary>
-      <param name="stream">The input stream for reading resources.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="stream">stream</paramref> parameter is not readable.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="stream">stream</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error has occurred while accessing <paramref name="stream">stream</paramref>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceReader.#ctor(System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceReader"></see> class for the specified named resource file.</summary>
-      <param name="fileName">The path and name of the resource file to read. filename is not case-sensitive.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="fileName">fileName</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file cannot be found.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error has occurred.</exception>
-      <exception cref="T:System.BadImageFormatException">The resource file has an invalid format. For example, the length of the file may be zero.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceReader.Close">
-      <summary>Releases all operating system resources associated with this <see cref="T:System.Resources.ResourceReader"></see> object.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceReader.Dispose">
-      <summary>Releases all resources used by the current instance of the <see cref="T:System.Resources.ResourceReader"></see> class.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceReader.GetEnumerator">
-      <summary>Returns an enumerator for this <see cref="T:System.Resources.ResourceReader"></see> object.</summary>
-      <returns>An enumerator for this <see cref="T:System.Resources.ResourceReader"></see> object.</returns>
-      <exception cref="T:System.InvalidOperationException">The reader has been closed or disposed, and cannot be accessed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceReader.GetResourceData(System.String,System.String@,System.Byte[]@)">
-      <summary>Retrieves the type name and data of a named resource from an open resource file or stream.</summary>
-      <param name="resourceName">The name of a resource.</param>
-      <param name="resourceType">When this method returns, contains a string that represents the type name of the retrieved resource. This parameter is passed uninitialized.</param>
-      <param name="resourceData">When this method returns, contains a byte array that is the binary representation of the retrieved type. This parameter is passed uninitialized.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="resourceName">resourceName</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.ArgumentException"><paramref name="resourceName">resourceName</paramref> does not exist.</exception>
-      <exception cref="T:System.BadImageFormatException"><paramref name="resourceName">resourceName</paramref> has an invalid type.</exception>
-      <exception cref="T:System.FormatException">The retrieved resource data is corrupt.</exception>
-      <exception cref="T:System.InvalidOperationException">The current <see cref="System.Resources.ResourceReader"></see> object is not initialized, probably because it is closed.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceReader.System#Collections#IEnumerable#GetEnumerator">
-      <summary>Returns an enumerator for this <see cref="T:System.Resources.ResourceReader"></see> object.</summary>
-      <returns>An enumerator for this <see cref="T:System.Resources.ResourceReader"></see> object.</returns>
-      <exception cref="T:System.InvalidOperationException">The reader has already been closed and cannot be accessed.</exception>
-    </member>
-    <member name="T:System.Resources.ResourceManager">
-      <summary>Represents a resource manager that provides convenient access to culture-specific resources at run time.  
- Security Note: Calling methods in this class with untrusted data is a security risk. Call the methods in the class only with trusted data. For more information, see Untrusted Data Security Risks.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceManager.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager"></see> class with default values.</summary>
-    </member>
-    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager"></see> class that looks up resources in satellite assemblies based on information from the specified type object.</summary>
-      <param name="resourceSource">A type from which the resource manager derives all information for finding .resources files.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="resourceSource">resourceSource</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager"></see> class that looks up resources contained in files with the specified root name in the given assembly.</summary>
-      <param name="baseName">The root name of the resource file without its extension but including any fully qualified namespace name. For example, the root name for the resource file named MyApplication.MyResource.en-US.resources is MyApplication.MyResource.</param>
-      <param name="assembly">The main assembly for the resources.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName">baseName</paramref> or <paramref name="assembly">assembly</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly,System.Type)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager"></see> class that uses a specified <see cref="T:System.Resources.ResourceSet"></see> class to look up resources contained in files with the specified root name in the given assembly.</summary>
-      <param name="baseName">The root name of the resource file without its extension but including any fully qualified namespace name. For example, the root name for the resource file named MyApplication.MyResource.en-US.resources is MyApplication.MyResource.</param>
-      <param name="assembly">The main assembly for the resources.</param>
-      <param name="usingResourceSet">The type of the custom <see cref="T:System.Resources.ResourceSet"></see> to use. If <see langword="null"></see>, the default runtime <see cref="T:System.Resources.ResourceSet"></see> object is used.</param>
-      <exception cref="T:System.ArgumentException"><paramref name="usingResourceset">usingResourceset</paramref> is not a derived class of <see cref="System.Resources.ResourceSet"></see>.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName">baseName</paramref> or <paramref name="assembly">assembly</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="P:System.Resources.ResourceManager.BaseName">
-      <summary>Gets the root name of the resource files that the <see cref="T:System.Resources.ResourceManager"></see> searches for resources.</summary>
-      <returns>The root name of the resource files that the <see cref="T:System.Resources.ResourceManager"></see> searches for resources.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.CreateFileBasedResourceManager(System.String,System.String,System.Type)">
-      <summary>Returns a <see cref="T:System.Resources.ResourceManager"></see> object that searches a specific directory instead of an assembly manifest for resources.</summary>
-      <param name="baseName">The root name of the resources. For example, the root name for the resource file named &amp;quot;MyResource.en-US.resources&amp;quot; is &amp;quot;MyResource&amp;quot;.</param>
-      <param name="resourceDir">The name of the directory to search for the resources. resourceDir can be an absolute path or a relative path from the application directory.</param>
-      <param name="usingResourceSet">The type of the custom <see cref="T:System.Resources.ResourceSet"></see> to use. If <see langword="null"></see>, the default runtime <see cref="T:System.Resources.ResourceSet"></see> object is used.</param>
-      <returns>A new instance of a resource manager that searches the specified directory instead of an assembly manifest for resources.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName">baseName</paramref> or <paramref name="resourceDir">resourceDir</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="P:System.Resources.ResourceManager.FallbackLocation">
-      <summary>Gets or sets the location from which to retrieve default fallback resources.</summary>
-      <returns>One of the enumeration values that specifies where the resource manager can look for fallback resources.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetNeutralResourcesLanguage(System.Reflection.Assembly)">
-      <summary>Returns culture-specific information for the main assembly&amp;#39;s default resources by retrieving the value of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute"></see> attribute on a specified assembly.</summary>
-      <param name="a">The assembly for which to return culture-specific information.</param>
-      <returns>The culture from the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute"></see> attribute, if found; otherwise, the invariant culture.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetObject(System.String)">
-      <summary>Returns the value of the specified non-string resource.</summary>
-      <param name="name">The name of the resource to get.</param>
-      <returns>The value of the resource localized for the caller&amp;#39;s current culture settings. If an appropriate resource set exists but <paramref name="name">name</paramref> cannot be found, the method returns <see langword="null"></see>.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of localized resources has been found, and there are no default culture resources. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetObject(System.String,System.Globalization.CultureInfo)">
-      <summary>Gets the value of the specified non-string resource localized for the specified culture.</summary>
-      <param name="name">The name of the resource to get.</param>
-      <param name="culture">The culture for which the resource is localized. If the resource is not localized for this culture, the resource manager uses fallback rules to locate an appropriate resource.  
- If this value is <see langword="null"></see>, the <see cref="T:System.Globalization.CultureInfo"></see> object is obtained by using the <see cref="P:System.Globalization.CultureInfo.CurrentUICulture"></see> property.</param>
-      <returns>The value of the resource, localized for the specified culture. If an appropriate resource set exists but <paramref name="name">name</paramref> cannot be found, the method returns <see langword="null"></see>.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources have been found, and there are no default culture resources. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetResourceFileName(System.Globalization.CultureInfo)">
-      <summary>Generates the name of the resource file for the given <see cref="T:System.Globalization.CultureInfo"></see> object.</summary>
-      <param name="culture">The culture object for which a resource file name is constructed.</param>
-      <returns>The name that can be used for a resource file for the given <see cref="T:System.Globalization.CultureInfo"></see> object.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetResourceSet(System.Globalization.CultureInfo,System.Boolean,System.Boolean)">
-      <summary>Retrieves the resource set for a particular culture.</summary>
-      <param name="culture">The culture whose resources are to be retrieved.</param>
-      <param name="createIfNotExists"><see langword="true"></see> to load the resource set, if it has not been loaded yet; otherwise, <see langword="false"></see>.</param>
-      <param name="tryParents"><see langword="true"></see> to use resource fallback to load an appropriate resource if the resource set cannot be found; <see langword="false"></see> to bypass the resource fallback process.</param>
-      <returns>The resource set for the specified culture.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="culture">culture</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException"><paramref name="tryParents">tryParents</paramref> is <see langword="true"></see>, no usable set of resources has been found, and there are no default culture resources.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetSatelliteContractVersion(System.Reflection.Assembly)">
-      <summary>Returns the version specified by the <see cref="T:System.Resources.SatelliteContractVersionAttribute"></see> attribute in the given assembly.</summary>
-      <param name="a">The assembly to check for the <see cref="T:System.Resources.SatelliteContractVersionAttribute"></see> attribute.</param>
-      <returns>The satellite contract version of the given assembly, or <see langword="null"></see> if no version was found.</returns>
-      <exception cref="T:System.ArgumentException">The <see cref="System.Version"></see> found in the assembly <paramref name="a">a</paramref> is invalid.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="a">a</paramref> is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetStream(System.String)">
-      <summary>Returns an unmanaged memory stream object from the specified resource.</summary>
-      <param name="name">The name of a resource.</param>
-      <returns>An unmanaged memory stream object that represents a resource .</returns>
-      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a <see cref="System.IO.MemoryStream"></see> object.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="name">name</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources is found, and there are no default resources. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetStream(System.String,System.Globalization.CultureInfo)">
-      <summary>Returns an unmanaged memory stream object from the specified resource, using the specified culture.</summary>
-      <param name="name">The name of a resource.</param>
-      <param name="culture">An  object that specifies the culture to use for the resource lookup. If culture is <see langword="null"></see>, the culture for the current thread is used.</param>
-      <returns>An unmanaged memory stream object that represents a resource.</returns>
-      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a <see cref="System.IO.MemoryStream"></see> object.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="name">name</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources is found, and there are no default resources. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
-      <summary>Returns the value of the specified string resource.</summary>
-      <param name="name">The name of the resource to retrieve.</param>
-      <returns>The value of the resource localized for the caller&amp;#39;s current UI culture, or <see langword="null"></see> if <paramref name="name">name</paramref> cannot be found in a resource set.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a string.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources has been found, and there are no resources for the default culture. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
-      <summary>Returns the value of the string resource localized for the specified culture.</summary>
-      <param name="name">The name of the resource to retrieve.</param>
-      <param name="culture">An object that represents the culture for which the resource is localized.</param>
-      <returns>The value of the resource localized for the specified culture, or <see langword="null"></see> if <paramref name="name">name</paramref> cannot be found in a resource set.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name">name</paramref> parameter is <see langword="null"></see>.</exception>
-      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a string.</exception>
-      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources has been found, and there are no resources for a default culture. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture&amp;#39;s resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the &amp;quot;Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions&amp;quot; section in the <see cref="System.Resources.ResourceManager"></see> class topic.</exception>
-    </member>
-    <member name="F:System.Resources.ResourceManager.HeaderVersionNumber">
-      <summary>Specifies the version of resource file headers that the current implementation of <see cref="T:System.Resources.ResourceManager"></see> can interpret and produce.</summary>
-      <returns></returns>
-    </member>
-    <member name="P:System.Resources.ResourceManager.IgnoreCase">
-      <summary>Gets or sets a value that indicates whether the resource manager allows case-insensitive resource lookups in the <see cref="M:System.Resources.ResourceManager.GetString(System.String)"></see> and <see cref="M:System.Resources.ResourceManager.GetObject(System.String)"></see> methods.</summary>
-      <returns><see langword="true"></see> to ignore case during resource lookup; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.InternalGetResourceSet(System.Globalization.CultureInfo,System.Boolean,System.Boolean)">
-      <summary>Provides the implementation for finding a resource set.</summary>
-      <param name="culture">The culture object to look for.</param>
-      <param name="createIfNotExists"><see langword="true"></see> to load the resource set, if it has not been loaded yet; otherwise, <see langword="false"></see>.</param>
-      <param name="tryParents"><see langword="true"></see> to check parent <see cref="T:System.Globalization.CultureInfo"></see> objects if the resource set cannot be loaded; otherwise, <see langword="false"></see>.</param>
-      <returns>The specified resource set.</returns>
-      <exception cref="T:System.Resources.MissingManifestResourceException">The main assembly does not contain a .resources file, which is required to look up a resource.</exception>
-      <exception cref="T:System.ExecutionEngineException">There was an internal error in the runtime.</exception>
-      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The satellite assembly associated with <paramref name="culture">culture</paramref> could not be located.</exception>
-    </member>
-    <member name="F:System.Resources.ResourceManager.MagicNumber">
-      <summary>Holds the number used to identify resource files.</summary>
-      <returns></returns>
-    </member>
-    <member name="F:System.Resources.ResourceManager.MainAssembly">
-      <summary>Specifies the main assembly that contains the resources.</summary>
-      <returns></returns>
-    </member>
-    <member name="M:System.Resources.ResourceManager.ReleaseAllResources">
-      <summary>Tells the resource manager to call the <see cref="M:System.Resources.ResourceSet.Close"></see> method on all <see cref="T:System.Resources.ResourceSet"></see> objects and release all resources.</summary>
-    </member>
-    <member name="P:System.Resources.ResourceManager.ResourceSetType">
-      <summary>Gets the type of the resource set object that the resource manager uses to construct a <see cref="T:System.Resources.ResourceSet"></see> object.</summary>
-      <returns>The type of the resource set object that the resource manager uses to construct a <see cref="T:System.Resources.ResourceSet"></see> object.</returns>
-    </member>
-    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
-      <summary>Informs the resource manager of an app&amp;#39;s default culture. This class cannot be inherited.</summary>
-    </member>
-    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute"></see> class.</summary>
-      <param name="cultureName">The name of the culture that the current assembly&amp;#39;s neutral resources were written in.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="cultureName">cultureName</paramref> parameter is <see langword="null"></see>.</exception>
-    </member>
-    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String,System.Resources.UltimateResourceFallbackLocation)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute"></see> class with the specified ultimate resource fallback location.</summary>
-      <param name="cultureName">The name of the culture that the current assembly&amp;#39;s neutral resources were written in.</param>
-      <param name="location">One of the enumeration values that indicates the location from which to retrieve neutral fallback resources.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="cultureName">cultureName</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.ArgumentException"><paramref name="location">location</paramref> is not a member of <see cref="System.Resources.UltimateResourceFallbackLocation"></see>.</exception>
-    </member>
-    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
-      <summary>Gets the culture name.</summary>
-      <returns>The name of the default culture for the main assembly.</returns>
-    </member>
-    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.Location">
-      <summary>Gets the location for the <see cref="T:System.Resources.ResourceManager"></see> class to use to retrieve neutral resources by using the resource fallback process.</summary>
-      <returns>One of the enumeration values that indicates the location (main assembly or satellite) from which to retrieve neutral resources.</returns>
-    </member>
-    <member name="T:System.Resources.MissingSatelliteAssemblyException">
-      <summary>The exception that is thrown when the satellite assembly for the resources of the default culture is missing.</summary>
-    </member>
-    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException"></see> class with default properties.</summary>
-    </member>
-    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException"></see> class with the specified error message.</summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-    </member>
-    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException"></see> class from serialized data.</summary>
-      <param name="info">The object that holds the serialized object data.</param>
-      <param name="context">The contextual information about the source or destination of the exception.</param>
-    </member>
-    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String,System.Exception)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException"></see> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-      <param name="inner">The exception that is the cause of the current exception. If the inner parameter is not <see langword="null"></see>, the current exception is raised in a <see langword="catch"></see> block that handles the inner exception.</param>
-    </member>
-    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String,System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException"></see> class with a specified error message and the name of a neutral culture.</summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-      <param name="cultureName">The name of the neutral culture.</param>
-    </member>
-    <member name="P:System.Resources.MissingSatelliteAssemblyException.CultureName">
-      <summary>Gets the name of the default culture.</summary>
-      <returns>The name of the default culture.</returns>
-    </member>
-    <member name="T:System.Resources.MissingManifestResourceException">
-      <summary>The exception that is thrown if the main assembly does not contain the resources for the neutral culture, and an appropriate satellite assembly is missing.</summary>
-    </member>
-    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException"></see> class with default properties.</summary>
-    </member>
-    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException"></see> class with the specified error message.</summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-    </member>
-    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException"></see> class from serialized data.</summary>
-      <param name="info">The object that holds the serialized object data.</param>
-      <param name="context">The contextual information about the source or destination of the exception.</param>
-    </member>
-    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
-      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException"></see> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-      <param name="inner">The exception that is the cause of the current exception. If the inner parameter is not <see langword="null"></see>, the current exception is raised in a <see langword="catch"></see> block that handles the inner exception.</param>
-    </member>
     <member name="T:System.Resources.IResourceReader">
       <summary>Provides the base functionality for reading data from resource files.</summary>
     </member>
@@ -395,6 +13,396 @@
     <member name="M:System.Resources.IResourceReader.GetEnumerator">
       <summary>Returns a dictionary enumerator of the resources for this reader.</summary>
       <returns>A dictionary enumerator for the resources for this reader.</returns>
+    </member>
+    <member name="T:System.Resources.MissingManifestResourceException">
+      <summary>The exception that is thrown if the main assembly does not contain the resources for the neutral culture, and an appropriate satellite assembly is missing.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException" /> class with default properties.</summary>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException" /> class from serialized data.</summary>
+      <param name="info">The object that holds the serialized object data.</param>
+      <param name="context">The contextual information about the source or destination of the exception.</param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException" /> class with the specified error message.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+    </member>
+    <member name="M:System.Resources.MissingManifestResourceException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingManifestResourceException" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+      <param name="inner">The exception that is the cause of the current exception. If the <paramref name="inner" /> parameter is not <see langword="null" />, the current exception is raised in a <see langword="catch" /> block that handles the inner exception.</param>
+    </member>
+    <member name="T:System.Resources.MissingSatelliteAssemblyException">
+      <summary>The exception that is thrown when the satellite assembly for the resources of the default culture is missing.</summary>
+    </member>
+    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException" /> class with default properties.</summary>
+    </member>
+    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException" /> class from serialized data.</summary>
+      <param name="info">The object that holds the serialized object data.</param>
+      <param name="context">The contextual information about the source or destination of the exception.</param>
+    </member>
+    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException" /> class with the specified error message.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+    </member>
+    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+      <param name="inner">The exception that is the cause of the current exception. If the <paramref name="inner" /> parameter is not <see langword="null" />, the current exception is raised in a <see langword="catch" /> block that handles the inner exception.</param>
+    </member>
+    <member name="M:System.Resources.MissingSatelliteAssemblyException.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.MissingSatelliteAssemblyException" /> class with a specified error message and the name of a neutral culture.</summary>
+      <param name="message">The error message that explains the reason for the exception.</param>
+      <param name="cultureName">The name of the neutral culture.</param>
+    </member>
+    <member name="P:System.Resources.MissingSatelliteAssemblyException.CultureName">
+      <summary>Gets the name of the default culture.</summary>
+      <returns>The name of the default culture.</returns>
+    </member>
+    <member name="T:System.Resources.NeutralResourcesLanguageAttribute">
+      <summary>Informs the resource manager of an app's default culture. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> class.</summary>
+      <param name="cultureName">The name of the culture that the current assembly's neutral resources were written in.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="cultureName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.NeutralResourcesLanguageAttribute.#ctor(System.String,System.Resources.UltimateResourceFallbackLocation)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> class with the specified ultimate resource fallback location.</summary>
+      <param name="cultureName">The name of the culture that the current assembly's neutral resources were written in.</param>
+      <param name="location">One of the enumeration values that indicates the location from which to retrieve neutral fallback resources.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="cultureName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="location" /> is not a member of <see cref="T:System.Resources.UltimateResourceFallbackLocation" />.</exception>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.CultureName">
+      <summary>Gets the culture name.</summary>
+      <returns>The name of the default culture for the main assembly.</returns>
+    </member>
+    <member name="P:System.Resources.NeutralResourcesLanguageAttribute.Location">
+      <summary>Gets the location for the <see cref="T:System.Resources.ResourceManager" /> class to use to retrieve neutral resources by using the resource fallback process.</summary>
+      <returns>One of the enumeration values that indicates the location (main assembly or satellite) from which to retrieve neutral resources.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceManager">
+      <summary>Represents a resource manager that provides convenient access to culture-specific resources at run time.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager" /> class with default values.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager" /> class that looks up resources contained in files with the specified root name in the given assembly.</summary>
+      <param name="baseName">The root name of the resource file without its extension but including any fully qualified namespace name. For example, the root name for the resource file named MyApplication.MyResource.en-US.resources is MyApplication.MyResource.</param>
+      <param name="assembly">The main assembly for the resources.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName" /> or <paramref name="assembly" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.String,System.Reflection.Assembly,System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager" /> class that uses a specified <see cref="T:System.Resources.ResourceSet" /> class to look up resources contained in files with the specified root name in the given assembly.</summary>
+      <param name="baseName">The root name of the resource file without its extension but including any fully qualified namespace name. For example, the root name for the resource file named MyApplication.MyResource.en-US.resources is MyApplication.MyResource.</param>
+      <param name="assembly">The main assembly for the resources.</param>
+      <param name="usingResourceSet">The type of the custom <see cref="T:System.Resources.ResourceSet" /> to use. If <see langword="null" />, the default runtime <see cref="T:System.Resources.ResourceSet" /> object is used.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="usingResourceset" /> is not a derived class of <see cref="T:System.Resources.ResourceSet" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName" /> or <paramref name="assembly" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.#ctor(System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceManager" /> class that looks up resources in satellite assemblies based on information from the specified type object.</summary>
+      <param name="resourceSource">A type from which the resource manager derives all information for finding .resources files.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="resourceSource" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Resources.ResourceManager.BaseName">
+      <summary>Gets the root name of the resource files that the <see cref="T:System.Resources.ResourceManager" /> searches for resources.</summary>
+      <returns>The root name of the resource files that the <see cref="T:System.Resources.ResourceManager" /> searches for resources.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceManager.CreateFileBasedResourceManager(System.String,System.String,System.Type)">
+      <summary>Returns a <see cref="T:System.Resources.ResourceManager" /> object that searches a specific directory instead of an assembly manifest for resources.</summary>
+      <param name="baseName">The root name of the resources. For example, the root name for the resource file named "MyResource.en-US.resources" is "MyResource".</param>
+      <param name="resourceDir">The name of the directory to search for the resources. <paramref name="resourceDir" /> can be an absolute path or a relative path from the application directory.</param>
+      <param name="usingResourceSet">The type of the custom <see cref="T:System.Resources.ResourceSet" /> to use. If <see langword="null" />, the default runtime <see cref="T:System.Resources.ResourceSet" /> object is used.</param>
+      <returns>A new instance of a resource manager that searches the specified directory instead of an assembly manifest for resources.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="baseName" /> or <paramref name="resourceDir" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Resources.ResourceManager.FallbackLocation">
+      <summary>Gets or sets the location from which to retrieve default fallback resources.</summary>
+      <returns>One of the enumeration values that specifies where the resource manager can look for fallback resources.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetNeutralResourcesLanguage(System.Reflection.Assembly)">
+      <summary>Returns culture-specific information for the main assembly's default resources by retrieving the value of the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> attribute on a specified assembly.</summary>
+      <param name="a">The assembly for which to return culture-specific information.</param>
+      <returns>The culture from the <see cref="T:System.Resources.NeutralResourcesLanguageAttribute" /> attribute, if found; otherwise, the invariant culture.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetObject(System.String)">
+      <summary>Returns the value of the specified non-string resource.</summary>
+      <param name="name">The name of the resource to get.</param>
+      <returns>The value of the resource localized for the caller's current culture settings. If an appropriate resource set exists but <paramref name="name" /> cannot be found, the method returns <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of localized resources has been found, and there are no default culture resources. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetObject(System.String,System.Globalization.CultureInfo)">
+      <summary>Gets the value of the specified non-string resource localized for the specified culture.</summary>
+      <param name="name">The name of the resource to get.</param>
+      <param name="culture">The culture for which the resource is localized. If the resource is not localized for this culture, the resource manager uses fallback rules to locate an appropriate resource.  
+ If this value is <see langword="null" />, the <see cref="T:System.Globalization.CultureInfo" /> object is obtained by using the <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> property.</param>
+      <returns>The value of the resource, localized for the specified culture. If an appropriate resource set exists but <paramref name="name" /> cannot be found, the method returns <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources have been found, and there are no default culture resources. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetResourceFileName(System.Globalization.CultureInfo)">
+      <summary>Generates the name of the resource file for the given <see cref="T:System.Globalization.CultureInfo" /> object.</summary>
+      <param name="culture">The culture object for which a resource file name is constructed.</param>
+      <returns>The name that can be used for a resource file for the given <see cref="T:System.Globalization.CultureInfo" /> object.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetResourceSet(System.Globalization.CultureInfo,System.Boolean,System.Boolean)">
+      <summary>Retrieves the resource set for a particular culture.</summary>
+      <param name="culture">The culture whose resources are to be retrieved.</param>
+      <param name="createIfNotExists">
+        <see langword="true" /> to load the resource set, if it has not been loaded yet; otherwise, <see langword="false" />.</param>
+      <param name="tryParents">
+        <see langword="true" /> to use resource fallback to load an appropriate resource if the resource set cannot be found; <see langword="false" /> to bypass the resource fallback process.</param>
+      <returns>The resource set for the specified culture.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="culture" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">
+        <paramref name="tryParents" /> is <see langword="true" />, no usable set of resources has been found, and there are no default culture resources.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetSatelliteContractVersion(System.Reflection.Assembly)">
+      <summary>Returns the version specified by the <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> attribute in the given assembly.</summary>
+      <param name="a">The assembly to check for the <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> attribute.</param>
+      <returns>The satellite contract version of the given assembly, or <see langword="null" /> if no version was found.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="T:System.Version" /> found in the assembly <paramref name="a" /> is invalid.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="a" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetStream(System.String)">
+      <summary>Returns an unmanaged memory stream object from the specified resource.</summary>
+      <param name="name">The name of a resource.</param>
+      <returns>An unmanaged memory stream object that represents a resource.</returns>
+      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a <see cref="T:System.IO.MemoryStream" /> object.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources is found, and there are no default resources. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetStream(System.String,System.Globalization.CultureInfo)">
+      <summary>Returns an unmanaged memory stream object from the specified resource, using the specified culture.</summary>
+      <param name="name">The name of a resource.</param>
+      <param name="culture">An  object that specifies the culture to use for the resource lookup. If <paramref name="culture" /> is <see langword="null" />, the culture for the current thread is used.</param>
+      <returns>An unmanaged memory stream object that represents a resource.</returns>
+      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a <see cref="T:System.IO.MemoryStream" /> object.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources is found, and there are no default resources. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String)">
+      <summary>Returns the value of the specified string resource.</summary>
+      <param name="name">The name of the resource to retrieve.</param>
+      <returns>The value of the resource localized for the caller's current UI culture, or <see langword="null" /> if <paramref name="name" /> cannot be found in a resource set.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a string.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources has been found, and there are no resources for the default culture. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceManager.GetString(System.String,System.Globalization.CultureInfo)">
+      <summary>Returns the value of the string resource localized for the specified culture.</summary>
+      <param name="name">The name of the resource to retrieve.</param>
+      <param name="culture">An object that represents the culture for which the resource is localized.</param>
+      <returns>The value of the resource localized for the specified culture, or <see langword="null" /> if <paramref name="name" /> cannot be found in a resource set.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The value of the specified resource is not a string.</exception>
+      <exception cref="T:System.Resources.MissingManifestResourceException">No usable set of resources has been found, and there are no resources for a default culture. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The default culture's resources reside in a satellite assembly that could not be found. For information about how to handle this exception, see the "Handling MissingManifestResourceException and MissingSatelliteAssemblyException Exceptions" section in the <see cref="T:System.Resources.ResourceManager" /> class topic.</exception>
+    </member>
+    <member name="F:System.Resources.ResourceManager.HeaderVersionNumber">
+      <summary>Specifies the version of resource file headers that the current implementation of <see cref="T:System.Resources.ResourceManager" /> can interpret and produce.</summary>
+    </member>
+    <member name="P:System.Resources.ResourceManager.IgnoreCase">
+      <summary>Gets or sets a value that indicates whether the resource manager allows case-insensitive resource lookups in the <see cref="M:System.Resources.ResourceManager.GetString(System.String)" /> and <see cref="M:System.Resources.ResourceManager.GetObject(System.String)" /> methods.</summary>
+      <returns>
+        <see langword="true" /> to ignore case during resource lookup; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceManager.InternalGetResourceSet(System.Globalization.CultureInfo,System.Boolean,System.Boolean)">
+      <summary>Provides the implementation for finding a resource set.</summary>
+      <param name="culture">The culture object to look for.</param>
+      <param name="createIfNotExists">
+        <see langword="true" /> to load the resource set, if it has not been loaded yet; otherwise, <see langword="false" />.</param>
+      <param name="tryParents">
+        <see langword="true" /> to check parent <see cref="T:System.Globalization.CultureInfo" /> objects if the resource set cannot be loaded; otherwise, <see langword="false" />.</param>
+      <returns>The specified resource set.</returns>
+      <exception cref="T:System.Resources.MissingManifestResourceException">The main assembly does not contain a .resources file, which is required to look up a resource.</exception>
+      <exception cref="T:System.ExecutionEngineException">There was an internal error in the runtime.</exception>
+      <exception cref="T:System.Resources.MissingSatelliteAssemblyException">The satellite assembly associated with <paramref name="culture" /> could not be located.</exception>
+    </member>
+    <member name="F:System.Resources.ResourceManager.MagicNumber">
+      <summary>Holds the number used to identify resource files.</summary>
+    </member>
+    <member name="F:System.Resources.ResourceManager.MainAssembly">
+      <summary>Specifies the main assembly that contains the resources.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceManager.ReleaseAllResources">
+      <summary>Tells the resource manager to call the <see cref="M:System.Resources.ResourceSet.Close" /> method on all <see cref="T:System.Resources.ResourceSet" /> objects and release all resources.</summary>
+    </member>
+    <member name="P:System.Resources.ResourceManager.ResourceSetType">
+      <summary>Gets the type of the resource set object that the resource manager uses to construct a <see cref="T:System.Resources.ResourceSet" /> object.</summary>
+      <returns>The type of the resource set object that the resource manager uses to construct a <see cref="T:System.Resources.ResourceSet" /> object.</returns>
+    </member>
+    <member name="T:System.Resources.ResourceReader">
+      <summary>Enumerates the resources in a binary resources (.resources) file by reading sequential resource name/value pairs.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceReader.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceReader" /> class for the specified stream.</summary>
+      <param name="stream">The input stream for reading resources.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="stream" /> parameter is not readable.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="stream" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error has occurred while accessing <paramref name="stream" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceReader.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceReader" /> class for the specified named resource file.</summary>
+      <param name="fileName">The path and name of the resource file to read. <c>filename</c> is not case-sensitive.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file cannot be found.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error has occurred.</exception>
+      <exception cref="T:System.BadImageFormatException">The resource file has an invalid format. For example, the length of the file may be zero.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceReader.Close">
+      <summary>Releases all operating system resources associated with this <see cref="T:System.Resources.ResourceReader" /> object.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceReader.Dispose">
+      <summary>Releases all resources used by the current instance of the <see cref="T:System.Resources.ResourceReader" /> class.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceReader.GetEnumerator">
+      <summary>Returns an enumerator for this <see cref="T:System.Resources.ResourceReader" /> object.</summary>
+      <returns>An enumerator for this <see cref="T:System.Resources.ResourceReader" /> object.</returns>
+      <exception cref="T:System.InvalidOperationException">The reader has been closed or disposed, and cannot be accessed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceReader.GetResourceData(System.String,System.String@,System.Byte[]@)">
+      <summary>Retrieves the type name and data of a named resource from an open resource file or stream.</summary>
+      <param name="resourceName">The name of a resource.</param>
+      <param name="resourceType">When this method returns, contains a string that represents the type name of the retrieved resource. This parameter is passed uninitialized.</param>
+      <param name="resourceData">When this method returns, contains a byte array that is the binary representation of the retrieved type. This parameter is passed uninitialized.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="resourceName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="resourceName" /> does not exist.</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <paramref name="resourceName" /> has an invalid type.</exception>
+      <exception cref="T:System.FormatException">The retrieved resource data is corrupt.</exception>
+      <exception cref="T:System.InvalidOperationException">The current <see cref="T:System.Resources.ResourceReader" /> object is not initialized, probably because it is closed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceReader.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for this <see cref="T:System.Resources.ResourceReader" /> object.</summary>
+      <returns>An enumerator for this <see cref="T:System.Resources.ResourceReader" /> object.</returns>
+      <exception cref="T:System.InvalidOperationException">The reader has already been closed and cannot be accessed.</exception>
+    </member>
+    <member name="T:System.Resources.ResourceSet">
+      <summary>Stores all the resources localized for one particular culture, ignoring all other cultures, including any fallback rules.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceSet.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.ResourceSet" /> class with default properties.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceSet.#ctor(System.IO.Stream)">
+      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet" /> class using the system default <see cref="T:System.Resources.ResourceReader" /> that reads resources from the given stream.</summary>
+      <param name="stream">The <see cref="T:System.IO.Stream" /> of resources to be read. The stream should refer to an existing resources file.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="stream" /> is not readable.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="stream" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.#ctor(System.Resources.IResourceReader)">
+      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet" /> class using the specified resource reader.</summary>
+      <param name="reader">The reader that will be used.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="reader" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.#ctor(System.String)">
+      <summary>Creates a new instance of the <see cref="T:System.Resources.ResourceSet" /> class using the system default <see cref="T:System.Resources.ResourceReader" /> that opens and reads resources from the given file.</summary>
+      <param name="fileName">Resource file to read.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.Close">
+      <summary>Closes and releases any resources used by this <see cref="T:System.Resources.ResourceSet" />.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceSet.Dispose">
+      <summary>Disposes of the resources (other than memory) used by the current instance of <see cref="T:System.Resources.ResourceSet" />.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceSet.Dispose(System.Boolean)">
+      <summary>Releases resources (other than memory) associated with the current instance, closing internal managed objects if requested.</summary>
+      <param name="disposing">Indicates whether the objects contained in the current instance should be explicitly closed.</param>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetDefaultReader">
+      <summary>Returns the preferred resource reader class for this kind of <see cref="T:System.Resources.ResourceSet" />.</summary>
+      <returns>The <see cref="T:System.Type" /> for the preferred resource reader for this kind of <see cref="T:System.Resources.ResourceSet" />.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetDefaultWriter">
+      <summary>Returns the preferred resource writer class for this kind of <see cref="T:System.Resources.ResourceSet" />.</summary>
+      <returns>The <see cref="T:System.Type" /> for the preferred resource writer for this kind of <see cref="T:System.Resources.ResourceSet" />.</returns>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetEnumerator">
+      <summary>Returns an <see cref="T:System.Collections.IDictionaryEnumerator" /> that can iterate through the <see cref="T:System.Resources.ResourceSet" />.</summary>
+      <returns>An <see cref="T:System.Collections.IDictionaryEnumerator" /> for this <see cref="T:System.Resources.ResourceSet" />.</returns>
+      <exception cref="T:System.ObjectDisposedException">The resource set has been closed or disposed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetObject(System.String)">
+      <summary>Searches for a resource object with the specified name.</summary>
+      <param name="name">Case-sensitive name of the resource to search for.</param>
+      <returns>The requested resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetObject(System.String,System.Boolean)">
+      <summary>Searches for a resource object with the specified name in a case-insensitive manner, if requested.</summary>
+      <param name="name">Name of the resource to search for.</param>
+      <param name="ignoreCase">Indicates whether the case of the specified name should be ignored.</param>
+      <returns>The requested resource.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetString(System.String)">
+      <summary>Searches for a <see cref="T:System.String" /> resource with the specified name.</summary>
+      <param name="name">Name of the resource to search for.</param>
+      <returns>The value of a resource, if the value is a <see cref="T:System.String" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The resource specified by <paramref name="name" /> is not a <see cref="T:System.String" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.GetString(System.String,System.Boolean)">
+      <summary>Searches for a <see cref="T:System.String" /> resource with the specified name in a case-insensitive manner, if requested.</summary>
+      <param name="name">Name of the resource to search for.</param>
+      <param name="ignoreCase">Indicates whether the case of the case of the specified name should be ignored.</param>
+      <returns>The value of a resource, if the value is a <see cref="T:System.String" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The resource specified by <paramref name="name" /> is not a <see cref="T:System.String" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The object has been closed or disposed.</exception>
+    </member>
+    <member name="M:System.Resources.ResourceSet.ReadResources">
+      <summary>Reads all the resources and stores them in a <see cref="T:System.Collections.Hashtable" /> indicated in the <see cref="F:System.Resources.ResourceSet.Table" /> property.</summary>
+    </member>
+    <member name="M:System.Resources.ResourceSet.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an <see cref="T:System.Collections.IEnumerator" /> object to avoid a race condition with <see langword="Dispose" />. This member is not intended to be used directly from your code.</summary>
+      <returns>An enumerator for the current <see cref="T:System.Resources.ResourceSet" /> object.</returns>
+    </member>
+    <member name="T:System.Resources.SatelliteContractVersionAttribute">
+      <summary>Instructs a <see cref="T:System.Resources.ResourceManager" /> object to ask for a particular version of a satellite assembly.</summary>
+    </member>
+    <member name="M:System.Resources.SatelliteContractVersionAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Resources.SatelliteContractVersionAttribute" /> class.</summary>
+      <param name="version">A string that specifies the version of the satellite assemblies to load.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="version" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Resources.SatelliteContractVersionAttribute.Version">
+      <summary>Gets the version of the satellite assemblies with the required resources.</summary>
+      <returns>A string that contains the version of the satellite assemblies with the required resources.</returns>
+    </member>
+    <member name="T:System.Resources.UltimateResourceFallbackLocation">
+      <summary>Specifies whether a <see cref="T:System.Resources.ResourceManager" /> object looks for the resources of the app's default culture in the main assembly or in a satellite assembly.</summary>
+    </member>
+    <member name="F:System.Resources.UltimateResourceFallbackLocation.MainAssembly">
+      <summary>Fallback resources are located in the main assembly.</summary>
+    </member>
+    <member name="F:System.Resources.UltimateResourceFallbackLocation.Satellite">
+      <summary>Fallback resources are located in a satellite assembly.</summary>
     </member>
   </members>
 </doc>

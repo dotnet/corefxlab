@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Windows</name>
+  </assembly>
+  <members>
+    <member name="T:System.Windows.Resources.StreamResourceInfo">
+      <summary>Stores information for a stream resource used in Windows Presentation Foundation (WPF), such as images.</summary>
+    </member>
+    <member name="M:System.Windows.Resources.StreamResourceInfo.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Resources.StreamResourceInfo" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Resources.StreamResourceInfo.#ctor(System.IO.Stream,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Resources.StreamResourceInfo" /> class based on a provided stream.</summary>
+      <param name="stream">The reference stream.</param>
+      <param name="contentType">The Multipurpose Internet Mail Extensions (MIME) content type of the stream.</param>
+    </member>
+    <member name="P:System.Windows.Resources.StreamResourceInfo.Stream">
+      <summary>Gets or sets the actual stream of the resource.</summary>
+      <returns>The stream for the resource.</returns>
+    </member>
+  </members>
+</doc>

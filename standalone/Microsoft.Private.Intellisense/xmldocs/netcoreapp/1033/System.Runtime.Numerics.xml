@@ -1,587 +1,276 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Runtime.Numerics</name>
   </assembly>
   <members>
-    <member name="T:System.Numerics.Complex">
-      <summary>Represents a complex number.</summary>
-    </member>
-    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.Complex"></see> structure using the specified real and imaginary values.</summary>
-      <param name="real">The real part of the complex number.</param>
-      <param name="imaginary">The imaginary part of the complex number.</param>
-    </member>
-    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
-      <summary>Gets the absolute value (or magnitude) of a complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The absolute value of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
-      <summary>Returns the angle that is the arc cosine of the specified complex number.</summary>
-      <param name="value">A complex number that represents a cosine.</param>
-      <returns>The angle, measured in radians, which is the arc cosine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Adds two complex numbers and returns the result.</summary>
-      <param name="left">The first complex number to add.</param>
-      <param name="right">The second complex number to add.</param>
-      <returns>The sum of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
-      <summary>Returns the angle that is the arc sine of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The angle which is the arc sine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
-      <summary>Returns the angle that is the arc tangent of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The angle that is the arc tangent of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
-      <summary>Computes the conjugate of a complex number and returns the result.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The conjugate of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
-      <summary>Returns the cosine of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The cosine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
-      <summary>Returns the hyperbolic cosine of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The hyperbolic cosine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Divides one complex number by another and returns the result.</summary>
-      <param name="dividend">The complex number to be divided.</param>
-      <param name="divisor">The complex number to divide by.</param>
-      <returns>The quotient of the division.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
-      <summary>Returns a value that indicates whether the current instance and a specified complex number have the same value.</summary>
-      <param name="value">The complex number to compare.</param>
-      <returns><see langword="true"></see> if this complex number and <paramref name="value">value</paramref> have the same value; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Equals(System.Object)">
-      <summary>Returns a value that indicates whether the current instance and a specified object have the same value.</summary>
-      <param name="obj">The object to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="obj">obj</paramref> parameter is a <see cref="T:System.Numerics.Complex"></see> object or a type capable of implicit conversion to a <see cref="T:System.Numerics.Complex"></see> object, and its value is equal to the current <see cref="T:System.Numerics.Complex"></see> object; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
-      <summary>Returns <see langword="e"></see> raised to the power specified by a complex number.</summary>
-      <param name="value">A complex number that specifies a power.</param>
-      <returns>The number <see langword="e"></see> raised to the power <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
-      <summary>Creates a complex number from a point&amp;#39;s polar coordinates.</summary>
-      <param name="magnitude">The magnitude, which is the distance from the origin (the intersection of the x-axis and the y-axis) to the number.</param>
-      <param name="phase">The phase, which is the angle from the line to the horizontal axis, measured in radians.</param>
-      <returns>A complex number.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.GetHashCode">
-      <summary>Returns the hash code for the current <see cref="T:System.Numerics.Complex"></see> object.</summary>
-      <returns>A 32-bit signed integer hash code.</returns>
-    </member>
-    <member name="P:System.Numerics.Complex.Imaginary">
-      <summary>Gets the imaginary component of the current <see cref="T:System.Numerics.Complex"></see> object.</summary>
-      <returns>The imaginary component of a complex number.</returns>
-    </member>
-    <member name="F:System.Numerics.Complex.ImaginaryOne">
-      <summary>Returns a new <see cref="T:System.Numerics.Complex"></see> instance with a real number equal to zero and an imaginary number equal to one.</summary>
-      <returns></returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
-      <summary>Returns the natural (base <see langword="e"></see>) logarithm of a specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The natural (base <see langword="e"></see>) logarithm of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
-      <summary>Returns the logarithm of a specified complex number in a specified base.</summary>
-      <param name="value">A complex number.</param>
-      <param name="baseValue">The base of the logarithm.</param>
-      <returns>The logarithm of <paramref name="value">value</paramref> in base <paramref name="baseValue">baseValue</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
-      <summary>Returns the base-10 logarithm of a specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The base-10 logarithm of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="P:System.Numerics.Complex.Magnitude">
-      <summary>Gets the magnitude (or absolute value) of a complex number.</summary>
-      <returns>The magnitude of the current instance.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Returns the product of two complex numbers.</summary>
-      <param name="left">The first complex number to multiply.</param>
-      <param name="right">The second complex number to multiply.</param>
-      <returns>The product of the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
-      <summary>Returns the additive inverse of a specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The result of the <see cref="P:System.Numerics.Complex.Real"></see> and <see cref="P:System.Numerics.Complex.Imaginary"></see> components of the <paramref name="value">value</paramref> parameter multiplied by -1.</returns>
-    </member>
-    <member name="F:System.Numerics.Complex.One">
-      <summary>Returns a new <see cref="T:System.Numerics.Complex"></see> instance with a real number equal to one and an imaginary number equal to zero.</summary>
-      <returns></returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Adds two complex numbers.</summary>
-      <param name="left">The first value to add.</param>
-      <param name="right">The second value to add.</param>
-      <returns>The sum of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Divides a specified complex number by another specified complex number.</summary>
-      <param name="left">The value to be divided.</param>
-      <param name="right">The value to divide by.</param>
-      <returns>The result of dividing <paramref name="left">left</paramref> by <paramref name="right">right</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Returns a value that indicates whether two complex numbers are equal.</summary>
-      <param name="left">The first complex number to compare.</param>
-      <param name="right">The second complex number to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Decimal"></see> value to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>A complex number that has a real component equal to <paramref name="value">value</paramref> and an imaginary component equal to zero.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> value to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>A complex number that has a real component equal to <paramref name="value">value</paramref> and an imaginary component equal to zero.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a complex number.   
-This API is not CLS-compliant.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a complex number.   
-This API is not CLS-compliant.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a complex number.   
-This API is not CLS-compliant.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a single-precision floating-point number to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a signed byte to a complex number.   
-This API is not CLS-compliant.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of an unsigned byte to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 32-bit signed integer to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 16-bit signed integer to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a double-precision floating-point number to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 64-bit signed integer to a complex number.</summary>
-      <param name="value">The value to convert to a complex number.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter as its real part and zero as its imaginary part.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Returns a value that indicates whether two complex numbers are not equal.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Multiplies two specified complex numbers.</summary>
-      <param name="left">The first value to multiply.</param>
-      <param name="right">The second value to multiply.</param>
-      <returns>The product of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Subtracts a complex number from another complex number.</summary>
-      <param name="left">The value to subtract from (the minuend).</param>
-      <param name="right">The value to subtract (the subtrahend).</param>
-      <returns>The result of subtracting <paramref name="right">right</paramref> from <paramref name="left">left</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
-      <summary>Returns the additive inverse of a specified complex number.</summary>
-      <param name="value">The value to negate.</param>
-      <returns>The result of the <see cref="P:System.Numerics.Complex.Real"></see> and <see cref="P:System.Numerics.Complex.Imaginary"></see> components of the <paramref name="value">value</paramref> parameter multiplied by -1.</returns>
-    </member>
-    <member name="P:System.Numerics.Complex.Phase">
-      <summary>Gets the phase of a complex number.</summary>
-      <returns>The phase of a complex number, in radians.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
-      <summary>Returns a specified complex number raised to a power specified by a double-precision floating-point number.</summary>
-      <param name="value">A complex number to be raised to a power.</param>
-      <param name="power">A double-precision floating-point number that specifies a power.</param>
-      <returns>The complex number <paramref name="value">value</paramref> raised to the power <paramref name="power">power</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Returns a specified complex number raised to a power specified by a complex number.</summary>
-      <param name="value">A complex number to be raised to a power.</param>
-      <param name="power">A complex number that specifies a power.</param>
-      <returns>The complex number <paramref name="value">value</paramref> raised to the power <paramref name="power">power</paramref>.</returns>
-    </member>
-    <member name="P:System.Numerics.Complex.Real">
-      <summary>Gets the real component of the current <see cref="T:System.Numerics.Complex"></see> object.</summary>
-      <returns>The real component of a complex number.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
-      <summary>Returns the multiplicative inverse of a complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The reciprocal of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
-      <summary>Returns the sine of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The sine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
-      <summary>Returns the hyperbolic sine of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The hyperbolic sine of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
-      <summary>Returns the square root of a specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The square root of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
-      <summary>Subtracts one complex number from another and returns the result.</summary>
-      <param name="left">The value to subtract from (the minuend).</param>
-      <param name="right">The value to subtract (the subtrahend).</param>
-      <returns>The result of subtracting <paramref name="right">right</paramref> from <paramref name="left">left</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
-      <summary>Returns the tangent of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The tangent of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
-      <summary>Returns the hyperbolic tangent of the specified complex number.</summary>
-      <param name="value">A complex number.</param>
-      <returns>The hyperbolic tangent of <paramref name="value">value</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.ToString">
-      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form.</summary>
-      <returns>The string representation of the current instance in Cartesian form.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
-      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified culture-specific formatting information.</summary>
-      <param name="provider">An object that supplies culture-specific formatting information.</param>
-      <returns>The string representation of the current instance in Cartesian form, as specified by <paramref name="provider">provider</paramref>.</returns>
-    </member>
-    <member name="M:System.Numerics.Complex.ToString(System.String)">
-      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified format for its real and imaginary parts.</summary>
-      <param name="format">A standard or custom numeric format string.</param>
-      <returns>The string representation of the current instance in Cartesian form.</returns>
-      <exception cref="T:System.FormatException"><paramref name="format">format</paramref> is not a valid format string.</exception>
-    </member>
-    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
-      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified format and culture-specific format information for its real and imaginary parts.</summary>
-      <param name="format">A standard or custom numeric format string.</param>
-      <param name="provider">An object that supplies culture-specific formatting information.</param>
-      <returns>The string representation of the current instance in Cartesian form, as specified by <paramref name="format">format</paramref> and <paramref name="provider">provider</paramref>.</returns>
-      <exception cref="T:System.FormatException"><paramref name="format">format</paramref> is not a valid format string.</exception>
-    </member>
-    <member name="F:System.Numerics.Complex.Zero">
-      <summary>Returns a new <see cref="T:System.Numerics.Complex"></see> instance with a real number equal to zero and an imaginary number equal to zero.</summary>
-      <returns></returns>
-    </member>
     <member name="T:System.Numerics.BigInteger">
       <summary>Represents an arbitrarily large signed integer.</summary>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Byte[])">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using the values in a byte array.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using the values in a byte array.</summary>
       <param name="value">An array of byte values in little-endian order.</param>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Decimal)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using a <see cref="T:System.Decimal"></see> value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a <see cref="T:System.Decimal" /> value.</summary>
       <param name="value">A decimal number.</param>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Double)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using a double-precision floating-point value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a double-precision floating-point value.</summary>
       <param name="value">A double-precision floating-point value.</param>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is <see cref="System.Double.NaN"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Double.NegativeInfinity"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Double.PositiveInfinity"></see>.</exception>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />, or <see cref="F:System.Double.PositiveInfinity" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Int32)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using a 32-bit signed integer value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a 32-bit signed integer value.</summary>
       <param name="value">A 32-bit signed integer.</param>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Int64)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using a 64-bit signed integer value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a 64-bit signed integer value.</summary>
       <param name="value">A 64-bit signed integer.</param>
     </member>
+    <member name="M:System.Numerics.BigInteger.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,System.Boolean)">
+      <param name="value" />
+      <param name="isUnsigned" />
+      <param name="isBigEndian" />
+    </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using a single-precision floating-point value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a single-precision floating-point value.</summary>
       <param name="value">A single-precision floating-point value.</param>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is <see cref="System.Single.NaN"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Single.NegativeInfinity"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Single.PositiveInfinity"></see>.</exception>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />, <see cref="F:System.Single.NegativeInfinity" />, or <see cref="F:System.Single.PositiveInfinity" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.UInt32)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure using an unsigned 32-bit integer value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using an unsigned 32-bit integer value.</summary>
       <param name="value">An unsigned 32-bit integer value.</param>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.UInt64)">
-      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger"></see> structure with an unsigned 64-bit integer value.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure with an unsigned 64-bit integer value.</summary>
       <param name="value">An unsigned 64-bit integer.</param>
     </member>
-    <member name="M:System.Numerics.BigInteger.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,System.Boolean)">
-      <param name="value"></param>
-      <param name="isUnsigned"></param>
-      <param name="isBigEndian"></param>
-    </member>
     <member name="M:System.Numerics.BigInteger.Abs(System.Numerics.BigInteger)">
-      <summary>Gets the absolute value of a <see cref="T:System.Numerics.BigInteger"></see> object.</summary>
+      <summary>Gets the absolute value of a <see cref="T:System.Numerics.BigInteger" /> object.</summary>
       <param name="value">A number.</param>
-      <returns>The absolute value of <paramref name="value">value</paramref>.</returns>
+      <returns>The absolute value of <paramref name="value" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Add(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Adds two <see cref="T:System.Numerics.BigInteger"></see> values and returns the result.</summary>
+      <summary>Adds two <see cref="T:System.Numerics.BigInteger" /> values and returns the result.</summary>
       <param name="left">The first value to add.</param>
       <param name="right">The second value to add.</param>
-      <returns>The sum of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Compare(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Compares two <see cref="T:System.Numerics.BigInteger"></see> values and returns an integer that indicates whether the first value is less than, equal to, or greater than the second value.</summary>
+      <summary>Compares two <see cref="T:System.Numerics.BigInteger" /> values and returns an integer that indicates whether the first value is less than, equal to, or greater than the second value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns>A signed integer that indicates the relative values of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>, as shown in the following table.  
+      <returns>A signed integer that indicates the relative values of <paramref name="left" /> and <paramref name="right" />, as shown in the following table.  
   Value  
 
   Condition  
 
   Less than zero  
 
- <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>.  
+ <paramref name="left" /> is less than <paramref name="right" />.  
 
   Zero  
 
- <paramref name="left">left</paramref> equals <paramref name="right">right</paramref>.  
+ <paramref name="left" /> equals <paramref name="right" />.  
 
   Greater than zero  
 
- <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>.  
-
- </returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.CompareTo(System.Object)">
-      <summary>Compares this instance to a specified object and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
-      <param name="obj">The object to compare.</param>
-      <returns>A signed integer that indicates the relationship of the current instance to the <paramref name="obj">obj</paramref> parameter, as shown in the following table.  
-  Return value  
-
-  Description  
-
-  Less than zero  
-
-  The current instance is less than <paramref name="obj">obj</paramref>.  
-
-  Zero  
-
-  The current instance equals <paramref name="obj">obj</paramref>.  
-
-  Greater than zero  
-
-  The current instance is greater than <paramref name="obj">obj</paramref>, or the <paramref name="obj">obj</paramref> parameter is <see langword="null"></see>.  
-
- </returns>
-      <exception cref="T:System.ArgumentException"><paramref name="obj">obj</paramref> is not a <see cref="System.Numerics.BigInteger"></see>.</exception>
-    </member>
-    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
-      <summary>Compares this instance to an unsigned 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the unsigned 64-bit integer.</summary>
-      <param name="other">The unsigned 64-bit integer to compare.</param>
-      <returns>A signed integer that indicates the relative value of this instance and <paramref name="other">other</paramref>, as shown in the following table.  
-  Return value  
-
-  Description  
-
-  Less than zero  
-
-  The current instance is less than <paramref name="other">other</paramref>.  
-
-  Zero  
-
-  The current instance equals <paramref name="other">other</paramref>.  
-
-  Greater than zero  
-
-  The current instance is greater than <paramref name="other">other</paramref>.  
-
- </returns>
+ <paramref name="left" /> is greater than <paramref name="right" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
       <summary>Compares this instance to a signed 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the signed 64-bit integer.</summary>
       <param name="other">The signed 64-bit integer to compare.</param>
-      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other">other</paramref>, as shown in the following table.  
+      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.  
   Return value  
 
   Description  
 
   Less than zero  
 
-  The current instance is less than <paramref name="other">other</paramref>.  
+  The current instance is less than <paramref name="other" />.  
 
   Zero  
 
-  The current instance equals <paramref name="other">other</paramref>.  
+  The current instance equals <paramref name="other" />.  
 
   Greater than zero  
 
-  The current instance is greater than <paramref name="other">other</paramref>.  
-
- </returns>
+  The current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
-      <summary>Compares this instance to a second <see cref="T:System.Numerics.BigInteger"></see> and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
+      <summary>Compares this instance to a second <see cref="T:System.Numerics.BigInteger" /> and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
       <param name="other">The object to compare.</param>
-      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other">other</paramref>, as shown in the following table.  
+      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.  
   Return value  
 
   Description  
 
   Less than zero  
 
-  The current instance is less than <paramref name="other">other</paramref>.  
+  The current instance is less than <paramref name="other" />.  
 
   Zero  
 
-  The current instance equals <paramref name="other">other</paramref>.  
+  The current instance equals <paramref name="other" />.  
 
   Greater than zero  
 
-  The current instance is greater than <paramref name="other">other</paramref>.  
+  The current instance is greater than <paramref name="other" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.Object)">
+      <summary>Compares this instance to a specified object and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
+      <param name="obj">The object to compare.</param>
+      <returns>A signed integer that indicates the relationship of the current instance to the <paramref name="obj" /> parameter, as shown in the following table.  
+  Return value  
 
- </returns>
+  Description  
+
+  Less than zero  
+
+  The current instance is less than <paramref name="obj" />.  
+
+  Zero  
+
+  The current instance equals <paramref name="obj" />.  
+
+  Greater than zero  
+
+  The current instance is greater than <paramref name="obj" />, or the <paramref name="obj" /> parameter is <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
+      <summary>Compares this instance to an unsigned 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the unsigned 64-bit integer.</summary>
+      <param name="other">The unsigned 64-bit integer to compare.</param>
+      <returns>A signed integer that indicates the relative value of this instance and <paramref name="other" />, as shown in the following table.  
+  Return value  
+
+  Description  
+
+  Less than zero  
+
+  The current instance is less than <paramref name="other" />.  
+
+  Zero  
+
+  The current instance equals <paramref name="other" />.  
+
+  Greater than zero  
+
+  The current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Divides one <see cref="T:System.Numerics.BigInteger"></see> value by another and returns the result.</summary>
+      <summary>Divides one <see cref="T:System.Numerics.BigInteger" /> value by another and returns the result.</summary>
       <param name="dividend">The value to be divided.</param>
       <param name="divisor">The value to divide by.</param>
       <returns>The quotient of the division.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="divisor">divisor</paramref> is 0 (zero).</exception>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.DivRem(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger@)">
-      <summary>Divides one <see cref="T:System.Numerics.BigInteger"></see> value by another, returns the result, and returns the remainder in an output parameter.</summary>
+      <summary>Divides one <see cref="T:System.Numerics.BigInteger" /> value by another, returns the result, and returns the remainder in an output parameter.</summary>
       <param name="dividend">The value to be divided.</param>
       <param name="divisor">The value to divide by.</param>
-      <param name="remainder">When this method returns, contains a <see cref="T:System.Numerics.BigInteger"></see> value that represents the remainder from the division. This parameter is passed uninitialized.</param>
+      <param name="remainder">When this method returns, contains a <see cref="T:System.Numerics.BigInteger" /> value that represents the remainder from the division. This parameter is passed uninitialized.</param>
       <returns>The quotient of the division.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="divisor">divisor</paramref> is 0 (zero).</exception>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Equals(System.Int64)">
       <summary>Returns a value that indicates whether the current instance and a signed 64-bit integer have the same value.</summary>
       <param name="other">The signed 64-bit integer value to compare.</param>
-      <returns><see langword="true"></see> if the signed 64-bit integer and the current instance have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the signed 64-bit integer and the current instance have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Equals(System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether the current instance and a specified <see cref="T:System.Numerics.BigInteger"></see> object have the same value.</summary>
+      <summary>Returns a value that indicates whether the current instance and a specified <see cref="T:System.Numerics.BigInteger" /> object have the same value.</summary>
       <param name="other">The object to compare.</param>
-      <returns><see langword="true"></see> if this <see cref="T:System.Numerics.BigInteger"></see> object and <paramref name="other">other</paramref> have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if this <see cref="T:System.Numerics.BigInteger" /> object and <paramref name="other" /> have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Equals(System.Object)">
       <summary>Returns a value that indicates whether the current instance and a specified object have the same value.</summary>
       <param name="obj">The object to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="obj">obj</paramref> argument is a <see cref="T:System.Numerics.BigInteger"></see> object, and its value is equal to the value of the current <see cref="T:System.Numerics.BigInteger"></see> instance; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="obj" /> argument is a <see cref="T:System.Numerics.BigInteger" /> object, and its value is equal to the value of the current <see cref="T:System.Numerics.BigInteger" /> instance; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Equals(System.UInt64)">
       <summary>Returns a value that indicates whether the current instance and an unsigned 64-bit integer have the same value.</summary>
       <param name="other">The unsigned 64-bit integer to compare.</param>
-      <returns><see langword="true"></see> if the current instance and the unsigned 64-bit integer have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the current instance and the unsigned 64-bit integer have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.GetByteCount(System.Boolean)">
-      <param name="isUnsigned"></param>
-      <returns></returns>
+      <summary>Gets the number of bytes that will be output by <see cref="M:System.Numerics.BigInteger.ToByteArray(System.Boolean,System.Boolean)" /> and <see cref="M:System.Numerics.BigInteger.TryWriteBytes(System.Span{System.Byte},System.Int32@,System.Boolean,System.Boolean)" />.</summary>
+      <param name="isUnsigned">
+        <see langword="true" /> to use unsigned encoding; otherwise, <see langword="false" />.</param>
+      <returns>The number of bytes.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.GetHashCode">
-      <summary>Returns the hash code for the current <see cref="T:System.Numerics.BigInteger"></see> object.</summary>
+      <summary>Returns the hash code for the current <see cref="T:System.Numerics.BigInteger" /> object.</summary>
       <returns>A 32-bit signed integer hash code.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.GreatestCommonDivisor(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Finds the greatest common divisor of two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Finds the greatest common divisor of two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value.</param>
       <param name="right">The second value.</param>
-      <returns>The greatest common divisor of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
+      <returns>The greatest common divisor of <paramref name="left" /> and <paramref name="right" />.</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.IsEven">
-      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger"></see> object is an even number.</summary>
-      <returns><see langword="true"></see> if the value of the <see cref="T:System.Numerics.BigInteger"></see> object is an even number; otherwise, <see langword="false"></see>.</returns>
+      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger" /> object is an even number.</summary>
+      <returns>
+        <see langword="true" /> if the value of the <see cref="T:System.Numerics.BigInteger" /> object is an even number; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.IsOne">
-      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger"></see> object is <see cref="P:System.Numerics.BigInteger.One"></see>.</summary>
-      <returns><see langword="true"></see> if the value of the <see cref="T:System.Numerics.BigInteger"></see> object is <see cref="P:System.Numerics.BigInteger.One"></see>; otherwise, <see langword="false"></see>.</returns>
+      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger" /> object is <see cref="P:System.Numerics.BigInteger.One" />.</summary>
+      <returns>
+        <see langword="true" /> if the value of the <see cref="T:System.Numerics.BigInteger" /> object is <see cref="P:System.Numerics.BigInteger.One" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.IsPowerOfTwo">
-      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger"></see> object is a power of two.</summary>
-      <returns><see langword="true"></see> if the value of the <see cref="T:System.Numerics.BigInteger"></see> object is a power of two; otherwise, <see langword="false"></see>.</returns>
+      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger" /> object is a power of two.</summary>
+      <returns>
+        <see langword="true" /> if the value of the <see cref="T:System.Numerics.BigInteger" /> object is a power of two; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.IsZero">
-      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger"></see> object is <see cref="P:System.Numerics.BigInteger.Zero"></see>.</summary>
-      <returns><see langword="true"></see> if the value of the <see cref="T:System.Numerics.BigInteger"></see> object is <see cref="P:System.Numerics.BigInteger.Zero"></see>; otherwise, <see langword="false"></see>.</returns>
+      <summary>Indicates whether the value of the current <see cref="T:System.Numerics.BigInteger" /> object is <see cref="P:System.Numerics.BigInteger.Zero" />.</summary>
+      <returns>
+        <see langword="true" /> if the value of the <see cref="T:System.Numerics.BigInteger" /> object is <see cref="P:System.Numerics.BigInteger.Zero" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger)">
-      <summary>Returns the natural (base <see langword="e"></see>) logarithm of a specified number.</summary>
+      <summary>Returns the natural (base <see langword="e" />) logarithm of a specified number.</summary>
       <param name="value">The number whose logarithm is to be found.</param>
-      <returns>The natural (base <see langword="e"></see>) logarithm of <paramref name="value">value</paramref>, as shown in the table in the Remarks section.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value">value</paramref> is out of range of the <see cref="System.Double"></see> data type.</exception>
+      <returns>The natural (base <see langword="e" />) logarithm of <paramref name="value" />, as shown in the table in the Remarks section.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The natural log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Log(System.Numerics.BigInteger,System.Double)">
       <summary>Returns the logarithm of a specified number in a specified base.</summary>
       <param name="value">A number whose logarithm is to be found.</param>
       <param name="baseValue">The base of the logarithm.</param>
-      <returns>The base <paramref name="baseValue">baseValue</paramref> logarithm of <paramref name="value">value</paramref>, as shown in the table in the Remarks section.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value">value</paramref> is out of range of the <see cref="System.Double"></see> data type.</exception>
+      <returns>The base <paramref name="baseValue" /> logarithm of <paramref name="value" />, as shown in the table in the Remarks section.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Log10(System.Numerics.BigInteger)">
       <summary>Returns the base 10 logarithm of a specified number.</summary>
       <param name="value">A number whose logarithm is to be found.</param>
-      <returns>The base 10 logarithm of <paramref name="value">value</paramref>, as shown in the table in the Remarks section.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value">value</paramref> is out of range of the <see cref="System.Double"></see> data type.</exception>
+      <returns>The base 10 logarithm of <paramref name="value" />, as shown in the table in the Remarks section.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The base 10 log of <paramref name="value" /> is out of range of the <see cref="T:System.Double" /> data type.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Max(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns the larger of two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Returns the larger of two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns>The <paramref name="left">left</paramref> or <paramref name="right">right</paramref> parameter, whichever is larger.</returns>
+      <returns>The <paramref name="left" /> or <paramref name="right" /> parameter, whichever is larger.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Min(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns the smaller of two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Returns the smaller of two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns>The <paramref name="left">left</paramref> or <paramref name="right">right</paramref> parameter, whichever is smaller.</returns>
+      <returns>The <paramref name="left" /> or <paramref name="right" /> parameter, whichever is smaller.</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.MinusOne">
       <summary>Gets a value that represents the number negative one (-1).</summary>
@@ -589,511 +278,541 @@ This API is not CLS-compliant.</summary>
     </member>
     <member name="M:System.Numerics.BigInteger.ModPow(System.Numerics.BigInteger,System.Numerics.BigInteger,System.Numerics.BigInteger)">
       <summary>Performs modulus division on a number raised to the power of another number.</summary>
-      <param name="value">The number to raise to the exponent power.</param>
-      <param name="exponent">The exponent to raise value by.</param>
-      <param name="modulus">The number by which to divide value raised to the exponent power.</param>
-      <returns>The remainder after dividing <paramref name="value">value</paramref>exponent by <paramref name="modulus">modulus</paramref>.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="modulus">modulus</paramref> is zero.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="exponent">exponent</paramref> is negative.</exception>
+      <param name="value">The number to raise to the <paramref name="exponent" /> power.</param>
+      <param name="exponent">The exponent to raise <paramref name="value" /> by.</param>
+      <param name="modulus">The number by which to divide <paramref name="value" /> raised to the <paramref name="exponent" /> power.</param>
+      <returns>The remainder after dividing <paramref name="value" />exponent by <paramref name="modulus" />.</returns>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="modulus" /> is zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns the product of two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Returns the product of two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first number to multiply.</param>
       <param name="right">The second number to multiply.</param>
-      <returns>The product of the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters.</returns>
+      <returns>The product of the <paramref name="left" /> and <paramref name="right" /> parameters.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Negate(System.Numerics.BigInteger)">
-      <summary>Negates a specified <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Negates a specified <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="value">The value to negate.</param>
-      <returns>The result of the <paramref name="value">value</paramref> parameter multiplied by negative one (-1).</returns>
+      <returns>The result of the <paramref name="value" /> parameter multiplied by negative one (-1).</returns>
     </member>
     <member name="P:System.Numerics.BigInteger.One">
       <summary>Gets a value that represents the number one (1).</summary>
       <returns>An object whose value is one (1).</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Addition(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Adds the values of two specified <see cref="T:System.Numerics.BigInteger"></see> objects.</summary>
+      <summary>Adds the values of two specified <see cref="T:System.Numerics.BigInteger" /> objects.</summary>
       <param name="left">The first value to add.</param>
       <param name="right">The second value to add.</param>
-      <returns>The sum of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_BitwiseAnd(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Performs a bitwise <see langword="And"></see> operation on two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Performs a bitwise <see langword="And" /> operation on two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value.</param>
       <param name="right">The second value.</param>
-      <returns>The result of the bitwise <see langword="And"></see> operation.</returns>
+      <returns>The result of the bitwise <see langword="And" /> operation.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_BitwiseOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Performs a bitwise <see langword="Or"></see> operation on two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Performs a bitwise <see langword="Or" /> operation on two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value.</param>
       <param name="right">The second value.</param>
-      <returns>The result of the bitwise <see langword="Or"></see> operation.</returns>
+      <returns>The result of the bitwise <see langword="Or" /> operation.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Decrement(System.Numerics.BigInteger)">
-      <summary>Decrements a <see cref="T:System.Numerics.BigInteger"></see> value by 1.</summary>
+      <summary>Decrements a <see cref="T:System.Numerics.BigInteger" /> value by 1.</summary>
       <param name="value">The value to decrement.</param>
-      <returns>The value of the <paramref name="value">value</paramref> parameter decremented by 1.</returns>
+      <returns>The value of the <paramref name="value" /> parameter decremented by 1.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Division(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Divides a specified <see cref="T:System.Numerics.BigInteger"></see> value by another specified <see cref="T:System.Numerics.BigInteger"></see> value by using integer division.</summary>
+      <summary>Divides a specified <see cref="T:System.Numerics.BigInteger" /> value by another specified <see cref="T:System.Numerics.BigInteger" /> value by using integer division.</summary>
       <param name="dividend">The value to be divided.</param>
       <param name="divisor">The value to divide by.</param>
       <returns>The integral result of the division.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="divisor">divisor</paramref> is 0 (zero).</exception>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Equality(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a signed long integer value and a <see cref="T:System.Numerics.BigInteger"></see> value are equal.</summary>
+      <summary>Returns a value that indicates whether a signed long integer value and a <see cref="T:System.Numerics.BigInteger" /> value are equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value and a signed long integer value are equal.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value and a signed long integer value are equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether the values of two <see cref="T:System.Numerics.BigInteger"></see> objects are equal.</summary>
+      <summary>Returns a value that indicates whether the values of two <see cref="T:System.Numerics.BigInteger" /> objects are equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Equality(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value and an unsigned long integer value are equal.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value and an unsigned long integer value are equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Equality(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether an unsigned long integer value and a <see cref="T:System.Numerics.BigInteger"></see> value are equal.</summary>
+      <summary>Returns a value that indicates whether an unsigned long integer value and a <see cref="T:System.Numerics.BigInteger" /> value are equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if the <paramref name="left">left</paramref> and <paramref name="right">right</paramref> parameters have the same value; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_ExclusiveOr(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Performs a bitwise exclusive <see langword="Or"></see> (<see langword="XOr"></see>) operation on two <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Performs a bitwise exclusive <see langword="Or" /> (<see langword="XOr" />) operation on two <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value.</param>
       <param name="right">The second value.</param>
-      <returns>The result of the bitwise <see langword="Or"></see> operation.</returns>
+      <returns>The result of the bitwise <see langword="Or" /> operation.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Decimal)~System.Numerics.BigInteger">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Decimal"></see> object to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Decimal" /> object to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Double)~System.Numerics.BigInteger">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Double"></see> value to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is <see cref="System.Double.NaN"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Double.PositiveInfinity"></see>.
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Double.NegativeInfinity"></see>.</exception>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Double" /> value to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.PositiveInfinity" />, or <see cref="F:System.Double.NegativeInfinity" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Byte">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to an unsigned byte value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Byte"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.Byte.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.Byte.MaxValue"></see>.</exception>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned byte value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Byte" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Byte.MinValue" /> or greater than <see cref="F:System.Byte.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Decimal">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a <see cref="T:System.Decimal"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Decimal"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.Decimal.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.Decimal.MaxValue"></see>.</exception>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a <see cref="T:System.Decimal" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Decimal" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Decimal.MinValue" /> or greater than <see cref="F:System.Decimal.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Double">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a <see cref="T:System.Double"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Double"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a <see cref="T:System.Double" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Double" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int16">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a 16-bit signed integer value.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a 16-bit signed integer value.</summary>
       <param name="value">The value to convert to a 16-bit signed integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.Int16.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.Int16.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int16.MinValue" /> or is greater than <see cref="F:System.Int16.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int32">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a 32-bit signed integer value.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a 32-bit signed integer value.</summary>
       <param name="value">The value to convert to a 32-bit signed integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.Int32.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.Int32.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int32.MinValue" /> or is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Int64">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a 64-bit signed integer value.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a 64-bit signed integer value.</summary>
       <param name="value">The value to convert to a 64-bit signed integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.Int64.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.Int64.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" /> or is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a signed 8-bit value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int16"></see>.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a signed 8-bit value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int16" />.</summary>
       <param name="value">The value to convert to a signed 8-bit value.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.SByte.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.SByte.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.SByte.MinValue" /> or is greater than <see cref="F:System.SByte.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.Single">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to a single-precision floating-point value.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a single-precision floating-point value.</summary>
       <param name="value">The value to convert to a single-precision floating-point value.</param>
-      <returns>An object that contains the closest possible representation of the <paramref name="value">value</paramref> parameter.</returns>
+      <returns>An object that contains the closest possible representation of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to an unsigned 16-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int32"></see>.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 16-bit integer value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int32" />.</summary>
       <param name="value">The value to convert to an unsigned 16-bit integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.UInt16.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.UInt16.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" /> or is greater than <see cref="F:System.UInt16.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to an unsigned 32-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int64"></see>.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 32-bit integer value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int64" />.</summary>
       <param name="value">The value to convert to an unsigned 32-bit integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.UInt32.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.UInt32.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" /> or is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger"></see> object to an unsigned 64-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double"></see>.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 64-bit integer value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
       <param name="value">The value to convert to an unsigned 64-bit integer.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is less than <see cref="System.UInt64.MinValue"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is greater than <see cref="System.UInt64.MaxValue"></see>.</exception>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is less than <see cref="F:System.UInt64.MinValue" /> or is greater than <see cref="F:System.UInt64.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Single)~System.Numerics.BigInteger">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Single"></see> value to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.OverflowException">The value of <paramref name="value">value</paramref> is <see cref="System.Single.NaN"></see>.  
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Single.PositiveInfinity"></see>.
- -or-  
- The value of <paramref name="value">value</paramref> is <see cref="System.Single.NegativeInfinity"></see>.</exception>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than a 64-bit unsigned integer.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than a 64-bit unsigned integer.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Single" /> value to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="value" /> is <see cref="F:System.Single.NaN" />, <see cref="F:System.Single.PositiveInfinity" />, or <see cref="F:System.Single.NegativeInfinity" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit signed integer is greater than a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit signed integer is greater than a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> is greater than a 64-bit signed integer value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> is greater than a 64-bit signed integer value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than another <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than another <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than a 64-bit unsigned integer.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_GreaterThan(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than a 64-bit unsigned integer.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit signed integer is greater than or equal to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit signed integer is greater than or equal to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than or equal to a 64-bit signed integer value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than or equal to a 64-bit signed integer value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than or equal to another <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than or equal to another <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is greater than or equal to a 64-bit unsigned integer value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is greater than or equal to a 64-bit unsigned integer value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_GreaterThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit unsigned integer is greater than or equal to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit unsigned integer is greater than or equal to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is greater than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger"></see> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger"></see>.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger"></see> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger"></see>.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of an 8-bit signed integer to a <see cref="T:System.Numerics.BigInteger"></see> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.#ctor(System.Int32)"></see>.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger"></see> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double"></see>.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a signed 32-bit integer to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a signed 16-bit integer to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.Byte)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of an unsigned byte to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
+      <summary>Defines an implicit conversion of an unsigned byte to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int16)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of a signed 16-bit integer to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of a signed 32-bit integer to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a signed 64-bit integer to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger"></see>.</param>
-      <returns>An object that contains the value of the <paramref name="value">value</paramref> parameter.</returns>
+      <summary>Defines an implicit conversion of a signed 64-bit integer to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of an 8-bit signed integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.#ctor(System.Int32)" />.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger" />.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger" />.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
+      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
+ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
+      <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Increment(System.Numerics.BigInteger)">
-      <summary>Increments a <see cref="T:System.Numerics.BigInteger"></see> value by 1.</summary>
+      <summary>Increments a <see cref="T:System.Numerics.BigInteger" /> value by 1.</summary>
       <param name="value">The value to increment.</param>
-      <returns>The value of the <paramref name="value">value</paramref> parameter incremented by 1.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit unsigned integer and a <see cref="T:System.Numerics.BigInteger"></see> value are not equal.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether two <see cref="T:System.Numerics.BigInteger"></see> objects have different values.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value and a 64-bit unsigned integer are not equal.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
+      <returns>The value of the <paramref name="value" /> parameter incremented by 1.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Inequality(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit signed integer and a <see cref="T:System.Numerics.BigInteger"></see> value are not equal.</summary>
+      <summary>Returns a value that indicates whether a 64-bit signed integer and a <see cref="T:System.Numerics.BigInteger" /> value are not equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value and a 64-bit signed integer are not equal.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value and a 64-bit signed integer are not equal.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> and <paramref name="right">right</paramref> are not equal; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Returns a value that indicates whether two <see cref="T:System.Numerics.BigInteger" /> objects have different values.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value and a 64-bit unsigned integer are not equal.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_Inequality(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Returns a value that indicates whether a 64-bit unsigned integer and a <see cref="T:System.Numerics.BigInteger" /> value are not equal.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LeftShift(System.Numerics.BigInteger,System.Int32)">
-      <summary>Shifts a <see cref="T:System.Numerics.BigInteger"></see> value a specified number of bits to the left.</summary>
+      <summary>Shifts a <see cref="T:System.Numerics.BigInteger" /> value a specified number of bits to the left.</summary>
       <param name="value">The value whose bits are to be shifted.</param>
-      <param name="shift">The number of bits to shift value to the left.</param>
+      <param name="shift">The number of bits to shift <paramref name="value" /> to the left.</param>
       <returns>A value that has been shifted to the left by the specified number of bits.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThan(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit signed integer is less than a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit signed integer is less than a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than a 64-bit signed integer.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than a 64-bit signed integer.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than another <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than another <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThan(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than a 64-bit unsigned integer.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than a 64-bit unsigned integer.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThan(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit unsigned integer is less than a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit unsigned integer is less than a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit unsigned integer is less than or equal to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than or equal to <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than or equal to another <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than or equal to <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than or equal to a 64-bit unsigned integer.</summary>
-      <param name="left">The first value to compare.</param>
-      <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than or equal to <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Int64,System.Numerics.BigInteger)">
-      <summary>Returns a value that indicates whether a 64-bit signed integer is less than or equal to a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns a value that indicates whether a 64-bit signed integer is less than or equal to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than or equal to <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Int64)">
-      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger"></see> value is less than or equal to a 64-bit signed integer.</summary>
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than or equal to a 64-bit signed integer.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns><see langword="true"></see> if <paramref name="left">left</paramref> is less than or equal to <paramref name="right">right</paramref>; otherwise, <see langword="false"></see>.</returns>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than or equal to another <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.Numerics.BigInteger,System.UInt64)">
+      <summary>Returns a value that indicates whether a <see cref="T:System.Numerics.BigInteger" /> value is less than or equal to a 64-bit unsigned integer.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.BigInteger.op_LessThanOrEqual(System.UInt64,System.Numerics.BigInteger)">
+      <summary>Returns a value that indicates whether a 64-bit unsigned integer is less than or equal to a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Modulus(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Returns the remainder that results from division with two specified <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Returns the remainder that results from division with two specified <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="dividend">The value to be divided.</param>
       <param name="divisor">The value to divide by.</param>
       <returns>The remainder that results from the division.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="divisor">divisor</paramref> is 0 (zero).</exception>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Multiply(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Multiplies two specified <see cref="T:System.Numerics.BigInteger"></see> values.</summary>
+      <summary>Multiplies two specified <see cref="T:System.Numerics.BigInteger" /> values.</summary>
       <param name="left">The first value to multiply.</param>
       <param name="right">The second value to multiply.</param>
-      <returns>The product of <paramref name="left">left</paramref> and <paramref name="right">right</paramref>.</returns>
+      <returns>The product of <paramref name="left" /> and <paramref name="right" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_OnesComplement(System.Numerics.BigInteger)">
-      <summary>Returns the bitwise one&amp;#39;s complement of a <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Returns the bitwise one's complement of a <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="value">An integer value.</param>
-      <returns>The bitwise one&amp;#39;s complement of <paramref name="value">value</paramref>.</returns>
+      <returns>The bitwise one's complement of <paramref name="value" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_RightShift(System.Numerics.BigInteger,System.Int32)">
-      <summary>Shifts a <see cref="T:System.Numerics.BigInteger"></see> value a specified number of bits to the right.</summary>
+      <summary>Shifts a <see cref="T:System.Numerics.BigInteger" /> value a specified number of bits to the right.</summary>
       <param name="value">The value whose bits are to be shifted.</param>
-      <param name="shift">The number of bits to shift value to the right.</param>
+      <param name="shift">The number of bits to shift <paramref name="value" /> to the right.</param>
       <returns>A value that has been shifted to the right by the specified number of bits.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Subtraction(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Subtracts a <see cref="T:System.Numerics.BigInteger"></see> value from another <see cref="T:System.Numerics.BigInteger"></see> value.</summary>
+      <summary>Subtracts a <see cref="T:System.Numerics.BigInteger" /> value from another <see cref="T:System.Numerics.BigInteger" /> value.</summary>
       <param name="left">The value to subtract from (the minuend).</param>
       <param name="right">The value to subtract (the subtrahend).</param>
-      <returns>The result of subtracting <paramref name="right">right</paramref> from <paramref name="left">left</paramref>.</returns>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_UnaryNegation(System.Numerics.BigInteger)">
       <summary>Negates a specified BigInteger value.</summary>
       <param name="value">The value to negate.</param>
-      <returns>The result of the <paramref name="value">value</paramref> parameter multiplied by negative one (-1).</returns>
+      <returns>The result of the <paramref name="value" /> parameter multiplied by negative one (-1).</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_UnaryPlus(System.Numerics.BigInteger)">
-      <summary>Returns the value of the <see cref="T:System.Numerics.BigInteger"></see> operand. (The sign of the operand is unchanged.)</summary>
+      <summary>Returns the value of the <see cref="T:System.Numerics.BigInteger" /> operand. (The sign of the operand is unchanged.)</summary>
       <param name="value">An integer value.</param>
-      <returns>The value of the <paramref name="value">value</paramref> operand.</returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
-      <summary>Converts the string representation of a number to its <see cref="T:System.Numerics.BigInteger"></see> equivalent.</summary>
-      <param name="value">A string that contains the number to convert.</param>
-      <returns>A value that is equivalent to the number specified in the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.FormatException"><paramref name="value">value</paramref> is not in the correct format.</exception>
-    </member>
-    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
-      <summary>Converts the string representation of a number in a specified style to its <see cref="T:System.Numerics.BigInteger"></see> equivalent.</summary>
-      <param name="value">A string that contains a number to convert.</param>
-      <param name="style">A bitwise combination of the enumeration values that specify the permitted format of value.</param>
-      <returns>A value that is equivalent to the number specified in the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.ArgumentException"><paramref name="style">style</paramref> is not a <see cref="System.Globalization.NumberStyles"></see> value.  
- -or-  
- <paramref name="style">style</paramref> includes the <see cref="System.Globalization.NumberStyles.AllowHexSpecifier"></see> or <see cref="System.Globalization.NumberStyles.HexNumber"></see> flag along with another value.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.FormatException"><paramref name="value">value</paramref> does not comply with the input pattern specified by <see cref="System.Globalization.NumberStyles"></see>.</exception>
-    </member>
-    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
-      <summary>Converts the string representation of a number in a specified culture-specific format to its <see cref="T:System.Numerics.BigInteger"></see> equivalent.</summary>
-      <param name="value">A string that contains a number to convert.</param>
-      <param name="provider">An object that provides culture-specific formatting information about value.</param>
-      <returns>A value that is equivalent to the number specified in the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.FormatException"><paramref name="value">value</paramref> is not in the correct format.</exception>
+      <returns>The value of the <paramref name="value" /> operand.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="value"></param>
-      <param name="style"></param>
-      <param name="provider"></param>
-      <returns></returns>
+      <param name="value" />
+      <param name="style" />
+      <param name="provider" />
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String)">
+      <summary>Converts the string representation of a number to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
+      <param name="value">A string that contains the number to convert.</param>
+      <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles)">
+      <summary>Converts the string representation of a number in a specified style to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
+      <param name="value">A string that contains a number to convert.</param>
+      <param name="style">A bitwise combination of the enumeration values that specify the permitted format of <paramref name="value" />.</param>
+      <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
+-or-  
+<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <see cref="T:System.Globalization.NumberStyles" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
-      <summary>Converts the string representation of a number in a specified style and culture-specific format to its <see cref="T:System.Numerics.BigInteger"></see> equivalent.</summary>
+      <summary>Converts the string representation of a number in a specified style and culture-specific format to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
       <param name="value">A string that contains a number to convert.</param>
-      <param name="style">A bitwise combination of the enumeration values that specify the permitted format of value.</param>
-      <param name="provider">An object that provides culture-specific formatting information about value.</param>
-      <returns>A value that is equivalent to the number specified in the <paramref name="value">value</paramref> parameter.</returns>
-      <exception cref="T:System.ArgumentException"><paramref name="style">style</paramref> is not a <see cref="System.Globalization.NumberStyles"></see> value.  
- -or-  
- <paramref name="style">style</paramref> includes the <see cref="System.Globalization.NumberStyles.AllowHexSpecifier"></see> or <see cref="System.Globalization.NumberStyles.HexNumber"></see> flag along with another value.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
-      <exception cref="T:System.FormatException"><paramref name="value">value</paramref> does not comply with the input pattern specified by <paramref name="style">style</paramref>.</exception>
+      <param name="style">A bitwise combination of the enumeration values that specify the permitted format of <paramref name="value" />.</param>
+      <param name="provider">An object that provides culture-specific formatting information about <paramref name="value" />.</param>
+      <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
+-or-  
+<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.Parse(System.String,System.IFormatProvider)">
+      <summary>Converts the string representation of a number in a specified culture-specific format to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
+      <param name="value">A string that contains a number to convert.</param>
+      <param name="provider">An object that provides culture-specific formatting information about <paramref name="value" />.</param>
+      <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> is not in the correct format.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Pow(System.Numerics.BigInteger,System.Int32)">
-      <summary>Raises a <see cref="T:System.Numerics.BigInteger"></see> value to the power of a specified value.</summary>
-      <param name="value">The number to raise to the exponent power.</param>
-      <param name="exponent">The exponent to raise value by.</param>
-      <returns>The result of raising <paramref name="value">value</paramref> to the <paramref name="exponent">exponent</paramref> power.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <paramref name="exponent">exponent</paramref> parameter is negative.</exception>
+      <summary>Raises a <see cref="T:System.Numerics.BigInteger" /> value to the power of a specified value.</summary>
+      <param name="value">The number to raise to the <paramref name="exponent" /> power.</param>
+      <param name="exponent">The exponent to raise <paramref name="value" /> by.</param>
+      <returns>The result of raising <paramref name="value" /> to the <paramref name="exponent" /> power.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="exponent" /> is negative.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Remainder(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Performs integer division on two <see cref="T:System.Numerics.BigInteger"></see> values and returns the remainder.</summary>
+      <summary>Performs integer division on two <see cref="T:System.Numerics.BigInteger" /> values and returns the remainder.</summary>
       <param name="dividend">The value to be divided.</param>
       <param name="divisor">The value to divide by.</param>
-      <returns>The remainder after dividing <paramref name="dividend">dividend</paramref> by <paramref name="divisor">divisor</paramref>.</returns>
-      <exception cref="T:System.DivideByZeroException"><paramref name="divisor">divisor</paramref> is 0 (zero).</exception>
+      <returns>The remainder after dividing <paramref name="dividend" /> by <paramref name="divisor" />.</returns>
+      <exception cref="T:System.DivideByZeroException">
+        <paramref name="divisor" /> is 0 (zero).</exception>
     </member>
     <member name="P:System.Numerics.BigInteger.Sign">
-      <summary>Gets a number that indicates the sign (negative, positive, or zero) of the current <see cref="T:System.Numerics.BigInteger"></see> object.</summary>
-      <returns>A number that indicates the sign of the <see cref="T:System.Numerics.BigInteger"></see> object, as shown in the following table.  
+      <summary>Gets a number that indicates the sign (negative, positive, or zero) of the current <see cref="T:System.Numerics.BigInteger" /> object.</summary>
+      <returns>A number that indicates the sign of the <see cref="T:System.Numerics.BigInteger" /> object, as shown in the following table.  
   Number  
 
   Description  
@@ -1108,98 +827,538 @@ This API is not CLS-compliant.</summary>
 
   1  
 
-  The value of this object is positive.  
-
- </returns>
+  The value of this object is positive.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
-      <summary>Subtracts one <see cref="T:System.Numerics.BigInteger"></see> value from another and returns the result.</summary>
+      <summary>Subtracts one <see cref="T:System.Numerics.BigInteger" /> value from another and returns the result.</summary>
       <param name="left">The value to subtract from (the minuend).</param>
       <param name="right">The value to subtract (the subtrahend).</param>
-      <returns>The result of subtracting <paramref name="right">right</paramref> from <paramref name="left">left</paramref>.</returns>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.ToByteArray">
-      <summary>Converts a <see cref="T:System.Numerics.BigInteger"></see> value to a byte array.</summary>
-      <returns>The value of the current <see cref="T:System.Numerics.BigInteger"></see> object converted to an array of bytes.</returns>
+      <summary>Converts a <see cref="T:System.Numerics.BigInteger" /> value to a byte array.</summary>
+      <returns>The value of the current <see cref="T:System.Numerics.BigInteger" /> object converted to an array of bytes.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.ToByteArray(System.Boolean,System.Boolean)">
-      <param name="isUnsigned"></param>
-      <param name="isBigEndian"></param>
-      <returns></returns>
+      <summary>Returns the value of this <see cref="T:System.Numerics.BigInteger" /> as a byte array using the fewest number of bytes possible. If the value is zero, returns an array of one byte whose element is 0x00.</summary>
+      <param name="isUnsigned">
+        <see langword="true" /> to use unsigned encoding; otherwise, <see langword="false" />.</param>
+      <param name="isBigEndian">
+        <see langword="true" /> to write the bytes in a big-endian byte order; otherwise, <see langword="false" />.</param>
+      <returns>The value of the current <see cref="T:System.Numerics.BigInteger" /> object converted to an array of bytes.</returns>
+      <exception cref="T:System.OverflowException">If <paramref name="isUnsigned" /> is <see langword="true" /> and <see cref="P:System.Numerics.BigInteger.Sign" /> is negative.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.ToString">
-      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger"></see> object to its equivalent string representation.</summary>
-      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger"></see> value.</returns>
+      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger" /> object to its equivalent string representation.</summary>
+      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger" /> value.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.ToString(System.IFormatProvider)">
-      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger"></see> object to its equivalent string representation by using the specified culture-specific formatting information.</summary>
+      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger" /> object to its equivalent string representation by using the specified culture-specific formatting information.</summary>
       <param name="provider">An object that supplies culture-specific formatting information.</param>
-      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger"></see> value in the format specified by the <paramref name="provider">provider</paramref> parameter.</returns>
+      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger" /> value in the format specified by the <paramref name="provider" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.ToString(System.String)">
-      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger"></see> object to its equivalent string representation by using the specified format.</summary>
+      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger" /> object to its equivalent string representation by using the specified format.</summary>
       <param name="format">A standard or custom numeric format string.</param>
-      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger"></see> value in the format specified by the <paramref name="format">format</paramref> parameter.</returns>
-      <exception cref="T:System.FormatException"><paramref name="format">format</paramref> is not a valid format string.</exception>
+      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger" /> value in the format specified by the <paramref name="format" /> parameter.</returns>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.ToString(System.String,System.IFormatProvider)">
-      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger"></see> object to its equivalent string representation by using the specified format and culture-specific format information.</summary>
+      <summary>Converts the numeric value of the current <see cref="T:System.Numerics.BigInteger" /> object to its equivalent string representation by using the specified format and culture-specific format information.</summary>
       <param name="format">A standard or custom numeric format string.</param>
       <param name="provider">An object that supplies culture-specific formatting information.</param>
-      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger"></see> value as specified by the <paramref name="format">format</paramref> and <paramref name="provider">provider</paramref> parameters.</returns>
-      <exception cref="T:System.FormatException"><paramref name="format">format</paramref> is not a valid format string.</exception>
+      <returns>The string representation of the current <see cref="T:System.Numerics.BigInteger" /> value as specified by the <paramref name="format" /> and <paramref name="provider" /> parameters.</returns>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination"></param>
-      <param name="charsWritten"></param>
-      <param name="format"></param>
-      <param name="provider"></param>
-      <returns></returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.TryParse(System.ReadOnlySpan{System.Char},System.Numerics.BigInteger@)">
-      <param name="value"></param>
-      <param name="result"></param>
-      <returns></returns>
-    </member>
-    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
-      <summary>Tries to convert the string representation of a number to its <see cref="T:System.Numerics.BigInteger"></see> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
-      <param name="value">The string representation of a number.</param>
-      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger"></see> equivalent to the number that is contained in value, or zero (0) if the conversion fails. The conversion fails if the value parameter is <see langword="null"></see> or is not of the correct format. This parameter is passed uninitialized.</param>
-      <returns><see langword="true"></see> if <paramref name="value">value</paramref> was converted successfully; otherwise, <see langword="false"></see>.</returns>
-      <exception cref="T:System.ArgumentNullException"><paramref name="value">value</paramref> is <see langword="null"></see>.</exception>
+      <param name="destination" />
+      <param name="charsWritten" />
+      <param name="format" />
+      <param name="provider" />
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
-      <param name="value"></param>
-      <param name="style"></param>
-      <param name="provider"></param>
-      <param name="result"></param>
-      <returns></returns>
+      <param name="value" />
+      <param name="style" />
+      <param name="provider" />
+      <param name="result" />
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.ReadOnlySpan{System.Char},System.Numerics.BigInteger@)">
+      <param name="value" />
+      <param name="result" />
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
-      <summary>Tries to convert the string representation of a number in a specified style and culture-specific format to its <see cref="T:System.Numerics.BigInteger"></see> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
-      <param name="value">The string representation of a number. The string is interpreted using the style specified by style.</param>
-      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in value. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer"></see>.</param>
-      <param name="provider">An object that supplies culture-specific formatting information about value.</param>
-      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger"></see> equivalent to the number that is contained in value, or <see cref="P:System.Numerics.BigInteger.Zero"></see> if the conversion failed. The conversion fails if the value parameter is <see langword="null"></see> or is not in a format that is compliant with style. This parameter is passed uninitialized.</param>
-      <returns><see langword="true"></see> if the <paramref name="value">value</paramref> parameter was converted successfully; otherwise, <see langword="false"></see>.</returns>
-      <exception cref="T:System.ArgumentException"><paramref name="style">style</paramref> is not a <see cref="System.Globalization.NumberStyles"></see> value.  
- -or-  
- <paramref name="style">style</paramref> includes the <see cref="System.Globalization.NumberStyles.AllowHexSpecifier"></see> or <see cref="System.Globalization.NumberStyles.HexNumber"></see> flag along with another value.</exception>
+      <summary>Tries to convert the string representation of a number in a specified style and culture-specific format to its <see cref="T:System.Numerics.BigInteger" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="value">The string representation of a number. The string is interpreted using the style specified by <paramref name="style" />.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="value" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="value" />.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger" /> equivalent to the number that is contained in <paramref name="value" />, or <see cref="P:System.Numerics.BigInteger.Zero" /> if the conversion failed. The conversion fails if the <paramref name="value" /> parameter is <see langword="null" /> or is not in a format that is compliant with <paramref name="style" />. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="value" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
+-or-  
+<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+    </member>
+    <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
+      <summary>Tries to convert the string representation of a number to its <see cref="T:System.Numerics.BigInteger" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="value">The string representation of a number.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger" /> equivalent to the number that is contained in <paramref name="value" />, or zero (0) if the conversion fails. The conversion fails if the <paramref name="value" /> parameter is <see langword="null" /> or is not of the correct format. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="value" /> was converted successfully; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.TryWriteBytes(System.Span{System.Byte},System.Int32@,System.Boolean,System.Boolean)">
-      <param name="destination"></param>
-      <param name="bytesWritten"></param>
-      <param name="isUnsigned"></param>
-      <param name="isBigEndian"></param>
-      <returns></returns>
+      <summary>Copies the value of this <see cref="T:System.Numerics.BigInteger" /> as little-endian twos-complement bytes, using the fewest number of bytes possible. If the value is zero, outputs one byte whose element is 0x00.</summary>
+      <param name="destination">The destination span to which the resulting bytes should be written.</param>
+      <param name="bytesWritten">The number of bytes written to <paramref name="destination" />.</param>
+      <param name="isUnsigned">
+        <see langword="true" /> to use unsigned encoding; otherwise, <see langword="false" />.</param>
+      <param name="isBigEndian">
+        <see langword="true" /> to write the bytes in a big-endian byte order; otherwise, <see langword="false" />.</param>
+      <returns>
+        <see langword="true" /> if the bytes fit in <paramref name="destination" />; <see langword="false" /> if not all bytes could be written due to lack of space.</returns>
+      <exception cref="T:System.OverflowException">
+        <paramref name="isUnsigned" /> is <see langword="true" /> and <see cref="P:System.Numerics.BigInteger.Sign" /> is negative.</exception>
     </member>
     <member name="P:System.Numerics.BigInteger.Zero">
       <summary>Gets a value that represents the number 0 (zero).</summary>
       <returns>An integer whose value is 0 (zero).</returns>
     </member>
-    <member name="M:System.Numerics.BigInteger.System#IComparable#CompareTo(System.Object)">
-      <param name="obj"></param>
-      <returns></returns>
+    <member name="T:System.Numerics.Complex">
+      <summary>Represents a complex number.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.#ctor(System.Double,System.Double)">
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.Complex" /> structure using the specified real and imaginary values.</summary>
+      <param name="real">The real part of the complex number.</param>
+      <param name="imaginary">The imaginary part of the complex number.</param>
+    </member>
+    <member name="M:System.Numerics.Complex.Abs(System.Numerics.Complex)">
+      <summary>Gets the absolute value (or magnitude) of a complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The absolute value of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Acos(System.Numerics.Complex)">
+      <summary>Returns the angle that is the arc cosine of the specified complex number.</summary>
+      <param name="value">A complex number that represents a cosine.</param>
+      <returns>The angle, measured in radians, which is the arc cosine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Double,System.Numerics.Complex)">
+      <summary>Adds a double-precision real number to a complex number and returns the result.</summary>
+      <param name="left">The double-precision real value to add.</param>
+      <param name="right">The complex value to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Double)">
+      <summary>Adds a complex number to a double-precision real number and returns the result.</summary>
+      <param name="left">The complex value to add.</param>
+      <param name="right">The double-precision real value to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Add(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Adds two complex numbers and returns the result.</summary>
+      <param name="left">The first complex number to add.</param>
+      <param name="right">The second complex number to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Asin(System.Numerics.Complex)">
+      <summary>Returns the angle that is the arc sine of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The angle which is the arc sine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Atan(System.Numerics.Complex)">
+      <summary>Returns the angle that is the arc tangent of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The angle that is the arc tangent of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Conjugate(System.Numerics.Complex)">
+      <summary>Computes the conjugate of a complex number and returns the result.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The conjugate of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Cos(System.Numerics.Complex)">
+      <summary>Returns the cosine of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The cosine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Cosh(System.Numerics.Complex)">
+      <summary>Returns the hyperbolic cosine of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The hyperbolic cosine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Double,System.Numerics.Complex)">
+      <summary>Divides one double-precision real number by a complex number and returns the result.</summary>
+      <param name="dividend">The double-precision real number to be divided.</param>
+      <param name="divisor">The complex number to divide by.</param>
+      <returns>The quotient of the division.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Double)">
+      <summary>Divides one complex number by a double-precision real number and returns the result.</summary>
+      <param name="dividend">The complex number to be divided.</param>
+      <param name="divisor">The double-precision real number to divide by.</param>
+      <returns>The quotient of the division.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Divide(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Divides one complex number by another and returns the result.</summary>
+      <param name="dividend">The complex number to be divided.</param>
+      <param name="divisor">The complex number to divide by.</param>
+      <returns>The quotient of the division.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Numerics.Complex)">
+      <summary>Returns a value that indicates whether the current instance and a specified complex number have the same value.</summary>
+      <param name="value">The complex number to compare.</param>
+      <returns>
+        <see langword="true" /> if this complex number and <paramref name="value" /> have the same value; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Equals(System.Object)">
+      <summary>Returns a value that indicates whether the current instance and a specified object have the same value.</summary>
+      <param name="obj">The object to compare.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="obj" /> parameter is a <see cref="T:System.Numerics.Complex" /> object or a type capable of implicit conversion to a <see cref="T:System.Numerics.Complex" /> object, and its value is equal to the current <see cref="T:System.Numerics.Complex" /> object; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Exp(System.Numerics.Complex)">
+      <summary>Returns <see langword="e" /> raised to the power specified by a complex number.</summary>
+      <param name="value">A complex number that specifies a power.</param>
+      <returns>The number <see langword="e" /> raised to the power <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.FromPolarCoordinates(System.Double,System.Double)">
+      <summary>Creates a complex number from a point's polar coordinates.</summary>
+      <param name="magnitude">The magnitude, which is the distance from the origin (the intersection of the x-axis and the y-axis) to the number.</param>
+      <param name="phase">The phase, which is the angle from the line to the horizontal axis, measured in radians.</param>
+      <returns>A complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.GetHashCode">
+      <summary>Returns the hash code for the current <see cref="T:System.Numerics.Complex" /> object.</summary>
+      <returns>A 32-bit signed integer hash code.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Imaginary">
+      <summary>Gets the imaginary component of the current <see cref="T:System.Numerics.Complex" /> object.</summary>
+      <returns>The imaginary component of a complex number.</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.ImaginaryOne">
+      <summary>Returns a new <see cref="T:System.Numerics.Complex" /> instance with a real number equal to zero and an imaginary number equal to one.</summary>
+    </member>
+    <member name="F:System.Numerics.Complex.Infinity">
+      <summary>Represents infinity as a complex number.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.IsFinite(System.Numerics.Complex)">
+      <summary>Determines whether the specified complex number is finite.</summary>
+      <param name="value">A complex number.</param>
+      <returns>
+        <see langword="true" /> if both, the real and imaginary parts are finite (zero, subnormal or normal); otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.IsInfinity(System.Numerics.Complex)">
+      <summary>Returns a value indicating whether the specified complex number evaluates to infinity.</summary>
+      <param name="value">A complex number.</param>
+      <returns>
+        <see langword="true" /> if either, the real or imaginary part are <see cref="F:System.Double.PositiveInfinity" /> or <see cref="F:System.Double.NegativeInfinity" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.IsNaN(System.Numerics.Complex)">
+      <summary>Returns a value that indicates whether the specified complex instance is not a number (NaN).</summary>
+      <param name="value">A complex number.</param>
+      <returns>
+        <see langword="true" /> if the specified value is not finite nor infinite; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex)">
+      <summary>Returns the natural (base <see langword="e" />) logarithm of a specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The natural (base <see langword="e" />) logarithm of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Log(System.Numerics.Complex,System.Double)">
+      <summary>Returns the logarithm of a specified complex number in a specified base.</summary>
+      <param name="value">A complex number.</param>
+      <param name="baseValue">The base of the logarithm.</param>
+      <returns>The logarithm of <paramref name="value" /> in base <paramref name="baseValue" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Log10(System.Numerics.Complex)">
+      <summary>Returns the base-10 logarithm of a specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The base-10 logarithm of <paramref name="value" />.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Magnitude">
+      <summary>Gets the magnitude (or absolute value) of a complex number.</summary>
+      <returns>The magnitude of the current instance.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Double,System.Numerics.Complex)">
+      <summary>Returns the product of a double-precision real number and a complex number.</summary>
+      <param name="left">The double-precision real number to multiply.</param>
+      <param name="right">The complex number to multiply.</param>
+      <returns>The product of the <paramref name="left" /> and <paramref name="right" /> parameters.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Double)">
+      <summary>Returns the product of a complex number and a double-precision real number.</summary>
+      <param name="left">The complex number to multiply.</param>
+      <param name="right">The double-precision real number to multiply.</param>
+      <returns>The product of the <paramref name="left" /> and <paramref name="right" /> parameters.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Returns the product of two complex numbers.</summary>
+      <param name="left">The first complex number to multiply.</param>
+      <param name="right">The second complex number to multiply.</param>
+      <returns>The product of the <paramref name="left" /> and <paramref name="right" /> parameters.</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.NaN">
+      <summary>Represents a complex instance that is not a number (NaN).</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.Negate(System.Numerics.Complex)">
+      <summary>Returns the additive inverse of a specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The result of the <see cref="P:System.Numerics.Complex.Real" /> and <see cref="P:System.Numerics.Complex.Imaginary" /> components of the <paramref name="value" /> parameter multiplied by -1.</returns>
+    </member>
+    <member name="F:System.Numerics.Complex.One">
+      <summary>Returns a new <see cref="T:System.Numerics.Complex" /> instance with a real number equal to one and an imaginary number equal to zero.</summary>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Double,System.Numerics.Complex)">
+      <summary>Adds a double-precision real number to a complex number.</summary>
+      <param name="left">The double-precision real value to add.</param>
+      <param name="right">The complex value to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" /> as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Double)">
+      <summary>Adds a complex number to a double-precision real number.</summary>
+      <param name="left">The complex value to add.</param>
+      <param name="right">The double-precision real value to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" /> as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Addition(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Adds two complex numbers.</summary>
+      <param name="left">The first complex value to add.</param>
+      <param name="right">The second complex value to add.</param>
+      <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Double,System.Numerics.Complex)">
+      <summary>Divides a specified double-precision real number by a specified complex number.</summary>
+      <param name="left">The double-precision real value to be divided.</param>
+      <param name="right">The complex value to divide by.</param>
+      <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Double)">
+      <summary>Divides a specified complex number by a specified double-precision real number.</summary>
+      <param name="left">The complex value to be divided.</param>
+      <param name="right">The double-precision real value to divide by.</param>
+      <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Division(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Divides a specified complex number by another specified complex number.</summary>
+      <param name="left">The complex value to be divided.</param>
+      <param name="right">The complex value to divide by.</param>
+      <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Equality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Returns a value that indicates whether two complex numbers are equal.</summary>
+      <param name="left">The first complex number to compare.</param>
+      <param name="right">The second complex number to compare.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Decimal)~System.Numerics.Complex">
+      <summary>Defines an explicit conversion of a <see cref="T:System.Decimal" /> value to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>A complex number that has a real component equal to <paramref name="value" /> and an imaginary component equal to zero.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Explicit(System.Numerics.BigInteger)~System.Numerics.Complex">
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> value to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>A complex number that has a real component equal to <paramref name="value" /> and an imaginary component equal to zero.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Byte)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of an unsigned byte to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Double)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a double-precision floating-point number to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int16)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 16-bit signed integer to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int32)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 32-bit signed integer to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Int64)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 64-bit signed integer to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a signed byte to a complex number.   
+This API is not CLS-compliant.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.Single)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a single-precision floating-point number to a complex number.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a complex number.   
+This API is not CLS-compliant.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a complex number.   
+This API is not CLS-compliant.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
+      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a complex number.   
+This API is not CLS-compliant.</summary>
+      <param name="value">The value to convert to a complex number.</param>
+      <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Inequality(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Returns a value that indicates whether two complex numbers are not equal.</summary>
+      <param name="left">The first value to compare.</param>
+      <param name="right">The second value to compare.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Double,System.Numerics.Complex)">
+      <summary>Multiplies a specified double-precision real number by a specified complex number.</summary>
+      <param name="left">The double-precision real value to multiply.</param>
+      <param name="right">The complex value to multiply.</param>
+      <returns>The product of <paramref name="left" /> and <paramref name="right" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Double)">
+      <summary>Multiplies the specified complex number by a specified double-precision real number.</summary>
+      <param name="left">The complex value to multiply.</param>
+      <param name="right">The double-precision real value to multiply.</param>
+      <returns>The product of <paramref name="left" /> and <paramref name="right" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Multiply(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Multiplies two specified complex numbers.</summary>
+      <param name="left">The first complex value to multiply.</param>
+      <param name="right">The second complex value to multiply.</param>
+      <returns>The product of <paramref name="left" /> and <paramref name="right" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Double,System.Numerics.Complex)">
+      <summary>Subtracts a complex number from a double-precision real number.</summary>
+      <param name="left">The double-precision real value to subtract from (the minuend).</param>
+      <param name="right">The complex value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Double)">
+      <summary>Subtracts a double-precision real number from a complex number.</summary>
+      <param name="left">The complex value to subtract from (the minuend).</param>
+      <param name="right">The double-precision real value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_Subtraction(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Subtracts a complex number from another complex number.</summary>
+      <param name="left">The value to subtract from (the minuend).</param>
+      <param name="right">The value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.op_UnaryNegation(System.Numerics.Complex)">
+      <summary>Returns the additive inverse of a specified complex number.</summary>
+      <param name="value">The value to negate.</param>
+      <returns>The result of the <see cref="P:System.Numerics.Complex.Real" /> and <see cref="P:System.Numerics.Complex.Imaginary" /> components of the <paramref name="value" /> parameter multiplied by -1.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Phase">
+      <summary>Gets the phase of a complex number.</summary>
+      <returns>The phase of a complex number, in radians.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Double)">
+      <summary>Returns a specified complex number raised to a power specified by a double-precision floating-point number.</summary>
+      <param name="value">A complex number to be raised to a power.</param>
+      <param name="power">A double-precision floating-point number that specifies a power.</param>
+      <returns>The complex number <paramref name="value" /> raised to the power <paramref name="power" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Pow(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Returns a specified complex number raised to a power specified by a complex number.</summary>
+      <param name="value">A complex number to be raised to a power.</param>
+      <param name="power">A complex number that specifies a power.</param>
+      <returns>The complex number <paramref name="value" /> raised to the power <paramref name="power" />.</returns>
+    </member>
+    <member name="P:System.Numerics.Complex.Real">
+      <summary>Gets the real component of the current <see cref="T:System.Numerics.Complex" /> object.</summary>
+      <returns>The real component of a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Reciprocal(System.Numerics.Complex)">
+      <summary>Returns the multiplicative inverse of a complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The reciprocal of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Sin(System.Numerics.Complex)">
+      <summary>Returns the sine of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The sine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Sinh(System.Numerics.Complex)">
+      <summary>Returns the hyperbolic sine of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The hyperbolic sine of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Sqrt(System.Numerics.Complex)">
+      <summary>Returns the square root of a specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The square root of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Double,System.Numerics.Complex)">
+      <summary>Subtracts one complex number from a double-precision real number and returns the result.</summary>
+      <param name="left">The double-precision real value to subtract from (the minuend).</param>
+      <param name="right">The complex value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Double)">
+      <summary>Subtracts one double-precision real number from a complex number and returns the result.</summary>
+      <param name="left">The complex value to subtract from (the minuend).</param>
+      <param name="right">The double-precision real value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />, as a complex number.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Subtract(System.Numerics.Complex,System.Numerics.Complex)">
+      <summary>Subtracts one complex number from another and returns the result.</summary>
+      <param name="left">The value to subtract from (the minuend).</param>
+      <param name="right">The value to subtract (the subtrahend).</param>
+      <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Tan(System.Numerics.Complex)">
+      <summary>Returns the tangent of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The tangent of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.Tanh(System.Numerics.Complex)">
+      <summary>Returns the hyperbolic tangent of the specified complex number.</summary>
+      <param name="value">A complex number.</param>
+      <returns>The hyperbolic tangent of <paramref name="value" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString">
+      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form.</summary>
+      <returns>The string representation of the current instance in Cartesian form.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.IFormatProvider)">
+      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified culture-specific formatting information.</summary>
+      <param name="provider">An object that supplies culture-specific formatting information.</param>
+      <returns>The string representation of the current instance in Cartesian form, as specified by <paramref name="provider" />.</returns>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String)">
+      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified format for its real and imaginary parts.</summary>
+      <param name="format">A standard or custom numeric format string.</param>
+      <returns>The string representation of the current instance in Cartesian form.</returns>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="M:System.Numerics.Complex.ToString(System.String,System.IFormatProvider)">
+      <summary>Converts the value of the current complex number to its equivalent string representation in Cartesian form by using the specified format and culture-specific format information for its real and imaginary parts.</summary>
+      <param name="format">A standard or custom numeric format string.</param>
+      <param name="provider">An object that supplies culture-specific formatting information.</param>
+      <returns>The string representation of the current instance in Cartesian form, as specified by <paramref name="format" /> and <paramref name="provider" />.</returns>
+      <exception cref="T:System.FormatException">
+        <paramref name="format" /> is not a valid format string.</exception>
+    </member>
+    <member name="F:System.Numerics.Complex.Zero">
+      <summary>Returns a new <see cref="T:System.Numerics.Complex" /> instance with a real number equal to zero and an imaginary number equal to zero.</summary>
     </member>
   </members>
 </doc>

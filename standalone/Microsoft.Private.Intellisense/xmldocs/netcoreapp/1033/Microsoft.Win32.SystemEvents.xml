@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Win32.SystemEvents</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.PowerModeChangedEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.PowerModeChanged" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.PowerModeChangedEventArgs.#ctor(Microsoft.Win32.PowerModes)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.PowerModeChangedEventArgs" /> class using the specified power mode event type.</summary>
+      <param name="mode">One of the <see cref="T:Microsoft.Win32.PowerModes" /> values that represents the type of power mode event.</param>
+    </member>
+    <member name="P:Microsoft.Win32.PowerModeChangedEventArgs.Mode">
+      <summary>Gets an identifier that indicates the type of the power mode event that has occurred.</summary>
+      <returns>One of the <see cref="T:Microsoft.Win32.PowerModes" /> values.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.PowerModeChangedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.PowerModeChanged" /> event.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.PowerModeChangedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:Microsoft.Win32.PowerModes">
+      <summary>Defines identifiers for power mode events reported by the operating system.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.PowerModes.Resume">
+      <summary>The operating system is about to resume from a suspended state.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.PowerModes.StatusChange">
+      <summary>A power mode status notification event has been raised by the operating system. This might indicate a weak or charging battery, a transition between AC power and battery, or another change in the status of the system power supply.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.PowerModes.Suspend">
+      <summary>The operating system is about to be suspended.</summary>
+    </member>
+    <member name="T:Microsoft.Win32.SessionEndedEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.SessionEnded" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SessionEndedEventArgs.#ctor(Microsoft.Win32.SessionEndReasons)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.SessionEndedEventArgs" /> class.</summary>
+      <param name="reason">One of the <see cref="T:Microsoft.Win32.SessionEndReasons" /> values indicating how the session ended.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SessionEndedEventArgs.Reason">
+      <summary>Gets an identifier that indicates how the session ended.</summary>
+      <returns>One of the <see cref="T:Microsoft.Win32.SessionEndReasons" /> values that indicates how the session ended.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.SessionEndedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.SessionEnded" /> event.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.SessionEndedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:Microsoft.Win32.SessionEndingEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.SessionEnding" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SessionEndingEventArgs.#ctor(Microsoft.Win32.SessionEndReasons)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.SessionEndingEventArgs" /> class using the specified value indicating the type of session close event that is occurring.</summary>
+      <param name="reason">One of the <see cref="T:Microsoft.Win32.SessionEndReasons" /> that specifies how the session ends.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SessionEndingEventArgs.Cancel">
+      <summary>Gets or sets a value indicating whether to cancel the user request to end the session.</summary>
+      <returns>
+        <see langword="true" /> to cancel the user request to end the session; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:Microsoft.Win32.SessionEndingEventArgs.Reason">
+      <summary>Gets the reason the session is ending.</summary>
+      <returns>One of the <see cref="T:Microsoft.Win32.SessionEndReasons" /> values that specifies how the session is ending.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.SessionEndingEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.SessionEnding" /> event from the operating system.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.SessionEndingEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:Microsoft.Win32.SessionEndReasons">
+      <summary>Defines identifiers that represent how the current logon session is ending.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionEndReasons.Logoff">
+      <summary>The user is logging off and ending the current user session. The operating system continues to run.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionEndReasons.SystemShutdown">
+      <summary>The operating system is shutting down.</summary>
+    </member>
+    <member name="T:Microsoft.Win32.SessionSwitchEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.SessionSwitch" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SessionSwitchEventArgs.#ctor(Microsoft.Win32.SessionSwitchReason)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.SessionSwitchEventArgs" /> class using the specified session change event type identifer.</summary>
+      <param name="reason">A <see cref="T:Microsoft.Win32.SessionSwitchReason" /> that indicates the type of session change event.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SessionSwitchEventArgs.Reason">
+      <summary>Gets an identifier that indicates the type of session change event.</summary>
+      <returns>A <see cref="T:Microsoft.Win32.SessionSwitchReason" /> indicating the type of the session change event.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.SessionSwitchEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.SessionSwitch" /> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.SessionSwitchEventArgs" /> indicating the type of the session change event.</param>
+    </member>
+    <member name="T:Microsoft.Win32.SessionSwitchReason">
+      <summary>Defines identifiers used to represent the type of a session switch event.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.ConsoleConnect">
+      <summary>A session has been connected from the console.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.ConsoleDisconnect">
+      <summary>A session has been disconnected from the console.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.RemoteConnect">
+      <summary>A session has been connected from a remote connection.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.RemoteDisconnect">
+      <summary>A session has been disconnected from a remote connection.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.SessionLock">
+      <summary>A session has been locked.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.SessionLogoff">
+      <summary>A user has logged off from a session.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.SessionLogon">
+      <summary>A user has logged on to a session.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.SessionRemoteControl">
+      <summary>A session has changed its status to or from remote controlled mode.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.SessionSwitchReason.SessionUnlock">
+      <summary>A session has been unlocked.</summary>
+    </member>
+    <member name="T:Microsoft.Win32.SystemEvents">
+      <summary>Provides access to system event notifications. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SystemEvents.CreateTimer(System.Int32)">
+      <summary>Creates a new window timer associated with the system events window.</summary>
+      <param name="interval">Specifies the interval between timer notifications, in milliseconds.</param>
+      <returns>The ID of the new timer.</returns>
+      <exception cref="T:System.ArgumentException">The interval is less than or equal to zero.</exception>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed, or the attempt to create the timer did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.DisplaySettingsChanged">
+      <summary>Occurs when the user changes the display settings.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.DisplaySettingsChanging">
+      <summary>Occurs when the display settings are changing.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.EventsThreadShutdown">
+      <summary>Occurs before the thread that listens for system events is terminated.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.InstalledFontsChanged">
+      <summary>Occurs when the user adds fonts to or removes fonts from the system.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="M:Microsoft.Win32.SystemEvents.InvokeOnEventsThread(System.Delegate)">
+      <summary>Invokes the specified delegate using the thread that listens for system events.</summary>
+      <param name="method">A delegate to invoke using the thread that listens for system events.</param>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="M:Microsoft.Win32.SystemEvents.KillTimer(System.IntPtr)">
+      <summary>Terminates the timer specified by the given id.</summary>
+      <param name="timerId">The ID of the timer to terminate.</param>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed, or the attempt to terminate the timer did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.LowMemory">
+      <summary>Occurs when the system is running out of available RAM.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.PaletteChanged">
+      <summary>Occurs when the user switches to an application that uses a different palette.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.PowerModeChanged">
+      <summary>Occurs when the user suspends or resumes the system.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.SessionEnded">
+      <summary>Occurs when the user is logging off or shutting down the system.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.SessionEnding">
+      <summary>Occurs when the user is trying to log off or shut down the system.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.SessionSwitch">
+      <summary>Occurs when the currently logged-in user has changed.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.TimeChanged">
+      <summary>Occurs when the user changes the time on the system clock.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.TimerElapsed">
+      <summary>Occurs when a windows timer interval has expired.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.UserPreferenceChanged">
+      <summary>Occurs when a user preference has changed.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="E:Microsoft.Win32.SystemEvents.UserPreferenceChanging">
+      <summary>Occurs when a user preference is changing.</summary>
+      <exception cref="T:System.InvalidOperationException">System event notifications are not supported under the current context. Server processes, for example, might not support global system event notifications.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The attempt to create a system events window thread did not succeed.</exception>
+    </member>
+    <member name="T:Microsoft.Win32.TimerElapsedEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.TimerElapsed" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.TimerElapsedEventArgs.#ctor(System.IntPtr)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.TimerElapsedEventArgs" /> class.</summary>
+      <param name="timerId">The ID number for the timer.</param>
+    </member>
+    <member name="P:Microsoft.Win32.TimerElapsedEventArgs.TimerId">
+      <summary>Gets the ID number for the timer.</summary>
+      <returns>The ID number for the timer.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.TimerElapsedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.TimerElapsed" /> event.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.TimerElapsedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:Microsoft.Win32.UserPreferenceCategory">
+      <summary>Defines identifiers that represent categories of user preferences.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Accessibility">
+      <summary>Indicates user preferences associated with accessibility features of the system for users with disabilities.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Color">
+      <summary>Indicates user preferences associated with system colors. This category includes such as the default color of windows or menus.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Desktop">
+      <summary>Indicates user preferences associated with the system desktop. This category includes the background image or background image layout of the desktop.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.General">
+      <summary>Indicates user preferences that are not associated with any other category.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Icon">
+      <summary>Indicates user preferences for icon settings, including icon height and spacing.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Keyboard">
+      <summary>Indicates user preferences for keyboard settings, such as the key down repeat rate and delay.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Locale">
+      <summary>Indicates changes in user preferences for regional settings, such as the character encoding and culture strings.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Menu">
+      <summary>Indicates user preferences for menu settings, such as menu delays and text alignment.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Mouse">
+      <summary>Indicates user preferences for mouse settings, such as double-click time and mouse sensitivity.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Policy">
+      <summary>Indicates user preferences for policy settings, such as user rights and access levels.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Power">
+      <summary>Indicates the user preferences for system power settings. This category includes power feature settings, such as the idle time before the system automatically enters low power mode.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Screensaver">
+      <summary>Indicates user preferences associated with the screensaver.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.VisualStyle">
+      <summary>Indicates user preferences associated with visual styles, such as enabling or disabling visual styles and switching from one visual style to another.</summary>
+    </member>
+    <member name="F:Microsoft.Win32.UserPreferenceCategory.Window">
+      <summary>Indicates user preferences associated with the dimensions and characteristics of windows on the system.</summary>
+    </member>
+    <member name="T:Microsoft.Win32.UserPreferenceChangedEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.UserPreferenceChanged" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.UserPreferenceChangedEventArgs.#ctor(Microsoft.Win32.UserPreferenceCategory)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.UserPreferenceChangedEventArgs" /> class using the specified user preference category identifier.</summary>
+      <param name="category">One of the <see cref="T:Microsoft.Win32.UserPreferenceCategory" /> values that indicates the user preference category that has changed.</param>
+    </member>
+    <member name="P:Microsoft.Win32.UserPreferenceChangedEventArgs.Category">
+      <summary>Gets the category of user preferences that has changed.</summary>
+      <returns>One of the <see cref="T:Microsoft.Win32.UserPreferenceCategory" /> values that indicates the category of user preferences that has changed.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.UserPreferenceChangedEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.UserPreferenceChanged" /> event.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.UserPreferenceChangedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="T:Microsoft.Win32.UserPreferenceChangingEventArgs">
+      <summary>Provides data for the <see cref="E:Microsoft.Win32.SystemEvents.UserPreferenceChanging" /> event.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.UserPreferenceChangingEventArgs.#ctor(Microsoft.Win32.UserPreferenceCategory)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.Win32.UserPreferenceChangingEventArgs" /> class using the specified user preference category identifier.</summary>
+      <param name="category">One of the <see cref="T:Microsoft.Win32.UserPreferenceCategory" /> values that indicate the user preference category that is changing.</param>
+    </member>
+    <member name="P:Microsoft.Win32.UserPreferenceChangingEventArgs.Category">
+      <summary>Gets the category of user preferences that is changing.</summary>
+      <returns>One of the <see cref="T:Microsoft.Win32.UserPreferenceCategory" /> values that indicates the category of user preferences that is changing.</returns>
+    </member>
+    <member name="T:Microsoft.Win32.UserPreferenceChangingEventHandler">
+      <summary>Represents the method that will handle the <see cref="E:Microsoft.Win32.SystemEvents.UserPreferenceChanging" /> event.</summary>
+      <param name="sender">The source of the event. When this event is raised by the <see cref="T:Microsoft.Win32.SystemEvents" /> class, this object is always <see langword="null" />.</param>
+      <param name="e">A <see cref="T:Microsoft.Win32.UserPreferenceChangedEventArgs" /> that contains the event data.</param>
+    </member>
+  </members>
+</doc>

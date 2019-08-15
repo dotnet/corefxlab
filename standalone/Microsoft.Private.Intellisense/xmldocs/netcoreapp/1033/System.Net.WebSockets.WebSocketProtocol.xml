@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.WebSockets.WebSocketProtocol</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.WebSockets.WebSocketProtocol" />
+    <member name="M:System.Net.WebSockets.WebSocketProtocol.CreateFromStream(System.IO.Stream,System.Boolean,System.String,System.TimeSpan)">
+      <param name="stream" />
+      <param name="isServer" />
+      <param name="subProtocol" />
+      <param name="keepAliveInterval" />
+    </member>
+  </members>
+</doc>

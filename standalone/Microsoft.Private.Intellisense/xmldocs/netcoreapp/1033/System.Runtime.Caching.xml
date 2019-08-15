@@ -1,0 +1,766 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Runtime.Caching</name>
+  </assembly>
+  <members>
+    <member name="T:System.Runtime.Caching.CacheEntryChangeMonitor">
+      <summary>Provides a base class that represents a <see cref="T:System.Runtime.Caching.ChangeMonitor" /> type that can be implemented in order to monitor changes to cache entries.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheEntryChangeMonitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.CacheEntryChangeMonitor" /> class. This constructor is called from constructors in derived classes to initialize the base class.</summary>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryChangeMonitor.CacheKeys">
+      <summary>Gets a collection of cache keys that are monitored for changes.</summary>
+      <returns>A collection of cache keys.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryChangeMonitor.LastModified">
+      <summary>Gets a value that indicates the latest time (in UTC time) that the monitored cache entry was changed.</summary>
+      <returns>The elapsed time.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryChangeMonitor.RegionName">
+      <summary>Gets the name of a region of the cache.</summary>
+      <returns>The name of a region in the cache.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheEntryRemovedArguments">
+      <summary>Provides information about a cache entry that was removed from the cache.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheEntryRemovedArguments.#ctor(System.Runtime.Caching.ObjectCache,System.Runtime.Caching.CacheEntryRemovedReason,System.Runtime.Caching.CacheItem)">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.CacheEntryRemovedArguments" /> class.</summary>
+      <param name="source">The <see cref="T:System.Runtime.Caching.ObjectCache" /> instance from which <paramref name="cacheItem" /> was removed.</param>
+      <param name="reason">One of the enumeration values that indicate why <paramref name="cacheItem" /> was removed.</param>
+      <param name="cacheItem">An instance of the cached entry that was removed.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> is <see langword="null" />.  
+-or-  
+<paramref name="cacheItem" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryRemovedArguments.CacheItem">
+      <summary>Gets an instance of a cache entry that was removed from the cache.</summary>
+      <returns>An instance of the <see cref="T:System.Runtime.Caching.CacheItem" /> class that was removed from the cache.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryRemovedArguments.RemovedReason">
+      <summary>Gets a value that indicates why a cache entry was removed.</summary>
+      <returns>One of the enumeration values that indicates why the entry was removed.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryRemovedArguments.Source">
+      <summary>Gets a reference to the source <see cref="T:System.Runtime.Caching.ObjectCache" /> instance that originally contained the removed cache entry.</summary>
+      <returns>A reference to the cache that originally contained the removed cache entry.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheEntryRemovedCallback">
+      <summary>Defines a reference to a method that is called after a cache entry is removed from the cache.</summary>
+      <param name="arguments">The information about the cache entry that was removed from the cache.</param>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheEntryRemovedReason">
+      <summary>Specifies the reason why a cache entry was removed or an entry is about to be removed.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheEntryRemovedReason.CacheSpecificEviction">
+      <summary>A cache entry was evicted for as reason that is defined by a particular cache implementation.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheEntryRemovedReason.ChangeMonitorChanged">
+      <summary>A cache entry was removed because a related dependency (such as a file or another cache entry) triggered eviction of the cache entry.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheEntryRemovedReason.Evicted">
+      <summary>A cache entry was removed to free memory in the cache. This occurs when a cache instance approaches cache-specific memory limits, or when a process or cache instance approaches computer-wide memory limits.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheEntryRemovedReason.Expired">
+      <summary>A cache entry was removed because it expired. Expiration can be based on an absolute time or on a sliding expiration time.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheEntryRemovedReason.Removed">
+      <summary>A cache entry was removed by using the <see cref="M:System.Runtime.Caching.ObjectCache.Remove(System.String,System.String)" /> or <see cref="M:System.Runtime.Caching.ObjectCache.Set(System.String,System.Object,System.DateTimeOffset,System.String)" /> method.</summary>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheEntryUpdateArguments">
+      <summary>Provides information about a cache entry that will be removed from the cache.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheEntryUpdateArguments.#ctor(System.Runtime.Caching.ObjectCache,System.Runtime.Caching.CacheEntryRemovedReason,System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.CacheEntryUpdateArguments" /> class.</summary>
+      <param name="source">The <see cref="T:System.Runtime.Caching.ObjectCache" /> instance from which the cache entry referenced by <paramref name="key" /> will be removed.</param>
+      <param name="reason">One of the enumeration values that indicate why the cache entry will be removed.</param>
+      <param name="key">The key of the cache entry that will be removed.</param>
+      <param name="regionName">The name of the region in the cache to  remove the cache entry from. This parameter is optional. If cache regions are not defined, <paramref name="regionName" /> must be <see langword="null" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.Key">
+      <summary>Gets the unique identifier for a cache entry that is about to be removed.</summary>
+      <returns>The unique identifier for the cache entry.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.RegionName">
+      <summary>Gets the name of a region in the cache that contains a cache entry.</summary>
+      <returns>The name of a region in the cache. If regions are not used, this value is <see langword="null" />.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.RemovedReason">
+      <summary>Gets the reason that a cache entry is about to be removed from the cache.</summary>
+      <returns>One of the enumeration values that describes why a cache entry is being removed.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.Source">
+      <summary>Gets a reference to the <see cref="T:System.Runtime.Caching.ObjectCache" /> instance that contains a cache entry that is about to be removed.</summary>
+      <returns>A reference to the cache instance.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.UpdatedCacheItem">
+      <summary>Gets or sets the value of <see cref="T:System.Runtime.Caching.CacheItem" /> entry that is used to update the cache object.</summary>
+      <returns>The cache entry to update in the cache object. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheEntryUpdateArguments.UpdatedCacheItemPolicy">
+      <summary>Gets or sets the cache eviction or expiration policy of the <see cref="T:System.Runtime.Caching.CacheItem" /> entry that is updated.</summary>
+      <returns>The cache eviction or expiration policy of the cache item that was updated. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheEntryUpdateCallback">
+      <summary>Defines a reference to a method that is invoked when a cache entry is about to be removed from the cache.</summary>
+      <param name="arguments">The information about the entry that is about to be removed from the cache.</param>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheItem">
+      <summary>Represents an individual cache entry in the cache.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheItem.#ctor(System.String)">
+      <summary>Initializes a new <see cref="T:System.Runtime.Caching.CacheItem" /> instance using the specified key of a cache entry.</summary>
+      <param name="key">A unique identifier for a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheItem.#ctor(System.String,System.Object)">
+      <summary>Initializes a new <see cref="T:System.Runtime.Caching.CacheItem" /> instance using the specified key and a value of the cache entry.</summary>
+      <param name="key">A unique identifier for a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+      <param name="value">The data for a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheItem.#ctor(System.String,System.Object,System.String)">
+      <summary>Initializes a new <see cref="T:System.Runtime.Caching.CacheItem" /> instance using the specified key, value, and region of the cache entry.</summary>
+      <param name="key">A unique identifier for a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+      <param name="value">The data for a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+      <param name="regionName">The name of a region in the cache that will contain the <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</param>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItem.Key">
+      <summary>Gets or sets a unique identifier for a <see cref="T:System.Runtime.Caching.CacheItem" /> instance.</summary>
+      <returns>The identifier for a <see cref="T:System.Runtime.Caching.CacheItem" /> instance.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItem.RegionName">
+      <summary>Gets or sets the name of a region in the cache that contains a <see cref="T:System.Runtime.Caching.CacheItem" /> entry.</summary>
+      <returns>The name of a region in a cache. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItem.Value">
+      <summary>Gets or sets the data for a <see cref="T:System.Runtime.Caching.CacheItem" /> instance.</summary>
+      <returns>The data for a <see cref="T:System.Runtime.Caching.CacheItem" /> instance. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheItemPolicy">
+      <summary>Represents a set of eviction and expiration details for a specific cache entry.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.CacheItemPolicy.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> class.</summary>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.AbsoluteExpiration">
+      <summary>Gets or sets a value that indicates whether a cache entry should be evicted at a specified point in time.</summary>
+      <returns>The point in time at which a cache entry is evicted. The default value is <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" />, meaning that the entry does not expire.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.ChangeMonitors">
+      <summary>Gets a collection of <see cref="T:System.Runtime.Caching.ChangeMonitor" /> objects that are associated with a cache entry.</summary>
+      <returns>A collection of change monitors. The default is an empty collection.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.Priority">
+      <summary>Gets or sets a priority setting that is used to determine whether to evict a cache entry.</summary>
+      <returns>One of the enumeration values that indicates the priority for eviction. The default priority value is <see cref="F:System.Runtime.Caching.CacheItemPriority.Default" />, which means no priority.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.RemovedCallback">
+      <summary>Gets or sets a reference to a <see cref="T:System.Runtime.Caching.CacheEntryRemovedCallback" /> delegate that is called after an entry is removed from the cache.</summary>
+      <returns>A reference to a delegate that is called by a cache implementation.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration">
+      <summary>Gets or sets a value that indicates whether a cache entry should be evicted if it has not been accessed in a given span of time.</summary>
+      <returns>A span of time within which a cache entry must be accessed before the cache entry is evicted from the cache. The default is <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />, meaning that the item should not be expired based on a time span.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.CacheItemPolicy.UpdateCallback">
+      <summary>Gets or sets a reference to a <see cref="T:System.Runtime.Caching.CacheEntryUpdateCallback" /> delegate that is called before a cache entry is removed from the cache.</summary>
+      <returns>A reference to a delegate that is called by a cache implementation.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.CacheItemPriority">
+      <summary>Specifies a priority setting that is used to decide whether to evict a cache entry.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheItemPriority.Default">
+      <summary>Indicates that there is no priority for removing the cache entry.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.CacheItemPriority.NotRemovable">
+      <summary>Indicates that a cache entry should never be removed from the cache.</summary>
+    </member>
+    <member name="T:System.Runtime.Caching.ChangeMonitor">
+      <summary>Provides a base class for a derived custom type that monitors changes in the state of the data which a cache item depends on.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> class. This constructor is called from constructors in derived classes to initialize the base class.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.Dispose">
+      <summary>Releases all resources that are used by the current instance of the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> class.</summary>
+      <exception cref="T:System.InvalidOperationException">Initialization is not complete in the derived change-monitor class that called the base <see cref="M:System.Runtime.Caching.ChangeMonitor.Dispose" /> method.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.Dispose(System.Boolean)">
+      <summary>Releases all managed and unmanaged resources and any references to the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> instance. This overload must be implemented by derived change-monitor classes.</summary>
+      <param name="disposing">
+        <see langword="true" /> to release managed and unmanaged resources and any references to a <see cref="T:System.Runtime.Caching.ChangeMonitor" /> instance; <see langword="false" /> to release only unmanaged resources. When <see langword="false" /> is passed, the <see cref="M:System.Runtime.Caching.ChangeMonitor.Dispose(System.Boolean)" /> method is called by a <see langword="finalizer" /> thread and any external managed references are likely no longer valid because they have already been garbage collected.</param>
+    </member>
+    <member name="P:System.Runtime.Caching.ChangeMonitor.HasChanged">
+      <summary>Gets a value that indicates that the state that is monitored by the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> class has changed.</summary>
+      <returns>
+        <see langword="true" /> if the state that is monitored by the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> instance has changed; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.InitializationComplete">
+      <summary>Called from the constructor of derived classes to indicate that initialization is finished.</summary>
+    </member>
+    <member name="P:System.Runtime.Caching.ChangeMonitor.IsDisposed">
+      <summary>Gets a value that indicates that the derived instance of a <see cref="T:System.Runtime.Caching.ChangeMonitor" /> class is disposed.</summary>
+      <returns>
+        <see langword="true" /> if the instance is disposed; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.NotifyOnChanged(System.Runtime.Caching.OnChangedCallback)">
+      <summary>Called by Cache implementers to register a callback and notify an <see cref="T:System.Runtime.Caching.ObjectCache" /> instance through the <see cref="T:System.Runtime.Caching.OnChangedCallback" /> delegate when a dependency has changed.</summary>
+      <param name="onChangedCallback">A reference to a method that is invoked when a dependency has changed.</param>
+      <exception cref="T:System.InvalidOperationException">The callback method has already been invoked.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="onChangedCallback" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.ChangeMonitor.OnChanged(System.Object)">
+      <summary>Called by derived classes to raise the event when a dependency changes.</summary>
+      <param name="state">The data for the change event. This value can be <see langword="null" />.</param>
+    </member>
+    <member name="P:System.Runtime.Caching.ChangeMonitor.UniqueId">
+      <summary>Gets a value that represents the <see cref="T:System.Runtime.Caching.ChangeMonitor" /> class instance.</summary>
+      <returns>The identifier for a change-monitor instance.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.DefaultCacheCapabilities">
+      <summary>Represents a set of features that a cache implementation provides.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.AbsoluteExpirations">
+      <summary>A cache implementation supports the ability to automatically remove cache entries at a specific date and time.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.CacheEntryChangeMonitors">
+      <summary>A cache implementation supports the ability to create change monitors that monitor entries.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.CacheEntryRemovedCallback">
+      <summary>A cache implementation can raise a notification that an entry has been removed from the cache.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.CacheEntryUpdateCallback">
+      <summary>A cache implementation can raise a notification that an entry is about to be removed from the cache. This setting also indicates that a cache implementation supports the ability to automatically replace the entry that is being removed with a new cache entry.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.CacheRegions">
+      <summary>A cache implementation supports the ability to partition its storage into cache regions, and supports the ability to insert cache entries into those regions and to retrieve cache entries from those regions.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.InMemoryProvider">
+      <summary>A cache implementation runs at least partially in memory. A distributed cache would not set this flag, whereas an in-memory cache such as the <see cref="T:System.Runtime.Caching.MemoryCache" /> class would do so.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.None">
+      <summary>A cache implementation does not provide any of the features that are described in the <see cref="T:System.Runtime.Caching.DefaultCacheCapabilities" /> enumeration.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.OutOfProcessProvider">
+      <summary>A cache implementation runs out-of-process. A distributed cache would set this flag, whereas an in-memory cache such as the <see cref="T:System.Runtime.Caching.MemoryCache" /> class would not.</summary>
+    </member>
+    <member name="F:System.Runtime.Caching.DefaultCacheCapabilities.SlidingExpirations">
+      <summary>A cache implementation supports the ability to automatically remove cache entries that have not been accessed in a specified time span.</summary>
+    </member>
+    <member name="T:System.Runtime.Caching.FileChangeMonitor">
+      <summary>Represents an object that monitors changes to files.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.FileChangeMonitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.FileChangeMonitor" /> class. This constructor is called from constructors in derived classes in order to initialize the base class.</summary>
+    </member>
+    <member name="P:System.Runtime.Caching.FileChangeMonitor.FilePaths">
+      <summary>Gets a collection that contains the paths of files that are monitored for changes.</summary>
+      <returns>A collection of file paths.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.FileChangeMonitor.LastModified">
+      <summary>Gets a value that indicates the last time that a file that is being monitored was changed.</summary>
+      <returns>If multiple files are monitored, the last modified time of the most recently modified file; otherwise, the last time that the file that is being monitored was changed.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.HostFileChangeMonitor">
+      <summary>Monitors directories and file paths and notifies the cache of changes to the monitored items. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.HostFileChangeMonitor.#ctor(System.Collections.Generic.IList{System.String})">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.HostFileChangeMonitor" /> class.</summary>
+      <param name="filePaths">A list that contains one or more directory paths or file paths to monitor.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="filePaths" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="filePaths" /> contains zero items.  
+-or-  
+A path in the <paramref name="filePaths" /> list is <see langword="null" /> or an empty string.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.HostFileChangeMonitor.FilePaths">
+      <summary>Gets the collection of directories and file paths that was passed to the <see cref="M:System.Runtime.Caching.HostFileChangeMonitor.#ctor(System.Collections.Generic.IList{System.String})" /> constructor.</summary>
+      <returns>A collection of directories and file paths.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.HostFileChangeMonitor.LastModified">
+      <summary>Gets a read-only value that indicates the last write time of a monitored file or path.</summary>
+      <returns>The last write time of a monitored file or path.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.HostFileChangeMonitor.UniqueId">
+      <summary>Gets an identifier for the <see cref="T:System.Runtime.Caching.HostFileChangeMonitor" /> instance that is based on the set of monitored directories and file paths.</summary>
+      <returns>An identifier for the change monitor.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.Hosting.IApplicationIdentifier">
+      <summary>Defines an identifier for application domains that a cache implementation can use to interact with a host environment.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.Hosting.IApplicationIdentifier.GetApplicationId">
+      <summary>Gets an identifier for an application domain.</summary>
+      <returns>A unique identifier for the current application domain.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem">
+      <summary>Defines a way to expose a custom <see cref="T:System.Runtime.Caching.FileChangeMonitor" /> object to a cache implementation.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem.StartMonitoring(System.String,System.Runtime.Caching.OnChangedCallback,System.Object@,System.DateTimeOffset@,System.Int64@)">
+      <summary>Registers a file path to monitor with the host environment.</summary>
+      <param name="filePath">The fully qualified physical path of a directory or file to monitor for changes.</param>
+      <param name="onChangedCallback">A reference to a method that implements the <see cref="T:System.Runtime.Caching.OnChangedCallback" /> delegate. When the monitored file or directory changes, the host environment's implementation of the <see cref="T:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem" /> interface raises an event by calling the <see cref="T:System.Runtime.Caching.OnChangedCallback" /> class.</param>
+      <param name="state">The state that is supplied by the host environment. Cache implementations and custom change monitors should treat the state value as opaque. However, the state must be stored so that it can be sent to the host environment when the cache implementation calls the <see cref="M:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem.StopMonitoring(System.String,System.Object)" /> method.</param>
+      <param name="lastWriteTime">When this method returns, contains the last date and time that a write operation occurred on <paramref name="filePath" />. This parameter is passed uninitialized. This parameter is returned from the host environment.</param>
+      <param name="fileSize">When this method returns, contains the total size of the monitored <paramref name="filePath" />. This parameter is passed uninitialized. This parameter is returned from the host environment.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem.StopMonitoring(System.String,System.Object)">
+      <summary>Ends change monitoring.</summary>
+      <param name="filePath">The path of the file or folder to stop monitoring. This should match a file path value that was passed in an earlier call to the <see cref="M:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem.StartMonitoring(System.String,System.Runtime.Caching.OnChangedCallback,System.Object@,System.DateTimeOffset@,System.Int64@)" /> method.</param>
+      <param name="state">The state information that was originally supplied by the host environment during an earlier call to the <see cref="M:System.Runtime.Caching.Hosting.IFileChangeNotificationSystem.StartMonitoring(System.String,System.Runtime.Caching.OnChangedCallback,System.Object@,System.DateTimeOffset@,System.Int64@)" /> method.</param>
+    </member>
+    <member name="T:System.Runtime.Caching.Hosting.IMemoryCacheManager">
+      <summary>Defines an interface that a cache uses in order to communicate cache memory usage to a host environment.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.Hosting.IMemoryCacheManager.ReleaseCache(System.Runtime.Caching.MemoryCache)">
+      <summary>Removes all references to a cache in the host environment.</summary>
+      <param name="cache">A reference to the cache.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.Hosting.IMemoryCacheManager.UpdateCacheSize(System.Int64,System.Runtime.Caching.MemoryCache)">
+      <summary>Reports the size of the current cache.</summary>
+      <param name="size">The size of the memory, in bytes, that the cache consumes.</param>
+      <param name="cache">A reference to the cache.</param>
+    </member>
+    <member name="T:System.Runtime.Caching.MemoryCache">
+      <summary>Represents the type that implements an in-memory cache.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.#ctor(System.String,System.Collections.Specialized.NameValueCollection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.MemoryCache" /> class.</summary>
+      <param name="name">The name to use to look up configuration information.  
+ <c>Note</c> It is not required for configuration information to exist for every name.  
+ If a matching configuration entry exists, the configuration information is used to configure the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. If a matching configuration entry does not exist, the name can be accessed through the <see cref="P:System.Runtime.Caching.MemoryCache.Name" /> property, because the specified name is associated with the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. For information about memory cache configuration, see <see cref="T:System.Runtime.Caching.Configuration.MemoryCacheElement" />.</param>
+      <param name="config">A collection of name/value pairs of configuration information to use for configuring the cache.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="name" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">A name or value in the <paramref name="config" /> parameter could not be parsed.</exception>
+      <exception cref="T:System.Configuration.ConfigurationException">A value in the <paramref name="config" /> collection is invalid.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.#ctor(System.String,System.Collections.Specialized.NameValueCollection,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.MemoryCache" /> class.</summary>
+      <param name="name">The name to use to look up configuration information.</param>
+      <param name="config">A collection of name/value pairs of configuration information to use for configuring the cache.</param>
+      <param name="ignoreConfigSection">Indicates whether the configuration section should be ignored.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Add(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>Inserts a cache entry into the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance, and adds details about how the entry should be evicted.</summary>
+      <param name="item">The object to add.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <returns>true if insertion succeeded, or false if there is an already an entry in the cache that has the same key as item.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>Adds a cache entry into the cache using the specified <see cref="T:System.Runtime.Caching.CacheItem" /> instance and details about how to evict the entry.</summary>
+      <param name="item">The object to add.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <returns>If a cache entry with the same key exists, the existing cache entry; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Runtime.Caching.CacheItem.Value" /> property is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values for the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. The other expiration setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> field or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> field.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.String,System.Object,System.DateTimeOffset,System.String)">
+      <summary>Adds a cache entry into the cache using the specified key and a value and an absolute expiration value.</summary>
+      <param name="key">A unique identifier for the cache entry to add.</param>
+      <param name="value">The data for the cache entry.</param>
+      <param name="absoluteExpiration">The fixed date and time at which the cache entry will expire.</param>
+      <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>If a cache entry with the same key exists, the existing cache entry; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values for the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. The other expiration setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /></exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
+      <summary>Inserts a cache entry into the cache using the specified key and value and the specified details for how it is to be evicted.</summary>
+      <param name="key">A unique identifier for the cache entry to add or get.</param>
+      <param name="value">The data for the cache entry.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. By default, this parameter is <see langword="null" />, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>If a matching cache entry already exists, a cache entry; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values of <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
+ -or-  
+ Both the removal callback and the update callback have been specified for <see cref="T:System.Runtime.Caching.CacheItemPolicy" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> only supports using one type of callback per cache entry.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> has been set to a value greater than one year.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.CacheMemoryLimit">
+      <summary>Gets the amount of memory on the computer, in bytes, that can be used by the cache.</summary>
+      <returns>The amount of memory in bytes.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Contains(System.String,System.String)">
+      <summary>Determines whether a cache entry exists in the cache.</summary>
+      <param name="key">A unique identifier for the cache entry to search for.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>
+        <see langword="true" /> if the cache contains a cache entry whose key matches <paramref name="key" />; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.CreateCacheEntryChangeMonitor(System.Collections.Generic.IEnumerable{System.String},System.String)">
+      <summary>Creates a <see cref="T:System.Runtime.Caching.CacheEntryChangeMonitor" /> object that can trigger events in response to changes to specified cache entries.</summary>
+      <param name="keys">An enumeration of unique cache entry keys for the <see cref="T:System.Runtime.Caching.CacheEntryChangeMonitor" /> object.</param>
+      <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>A change monitor that monitors entries in the cache.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keys" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An item in the <paramref name="keys" /> collection is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.Default">
+      <summary>Gets a reference to the default <see cref="T:System.Runtime.Caching.MemoryCache" /> instance.</summary>
+      <returns>The default instance of the cache.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.DefaultCacheCapabilities">
+      <summary>Gets a description of the features that the cache provides.</summary>
+      <returns>A bitwise combination of flags that indicate the default capabilities of the cache implementation.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Dispose">
+      <summary>Releases all resources that are used by the current instance of the <see cref="T:System.Runtime.Caching.MemoryCache" /> class.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Get(System.String,System.String)">
+      <summary>Returns an entry from the cache.</summary>
+      <param name="key">A unique identifier for the cache entry to get.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>A reference to the cache entry that is identified by <paramref name="key" />, if the entry exists; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.GetCacheItem(System.String,System.String)">
+      <summary>Returns the specified entry from the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance.</summary>
+      <param name="key">A unique identifier for the cache entry to get.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>A reference to the cache entry identified by <paramref name="key" /> if the entry exists; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.GetCount(System.String)">
+      <summary>Returns the total number of cache entries in the cache.</summary>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>The number of entries in the cache.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.GetEnumerator">
+      <summary>Creates an enumerator that can be used to iterate through a collection of cache entries.</summary>
+      <returns>The enumerator object that provides access to the items in the cache.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.GetLastSize(System.String)">
+      <summary>Gets the size of the named region.</summary>
+      <param name="regionName">The name of the region.</param>
+      <returns>The size of the named region.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.GetValues(System.Collections.Generic.IEnumerable{System.String},System.String)">
+      <summary>Returns a set of cache entries that correspond to the specified keys.</summary>
+      <param name="keys">A set of unique identifiers for the cache entries to return.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>A set of cache entries that correspond to the specified keys.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="keys" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An individual key in the collection is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.Item(System.String)">
+      <summary>Gets or sets a value in the cache by using the default indexer property for an instance of the <see cref="T:System.Runtime.Caching.MemoryCache" /> class.</summary>
+      <param name="key">A unique identifier for the cache value to get or set.</param>
+      <returns>The value in the cache instance for the specified key, if the entry exists; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.  
+-or-  
+The inserted value is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.Name">
+      <summary>Gets the name of the cache.</summary>
+      <returns>The name of the cache.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.PhysicalMemoryLimit">
+      <summary>Gets the percentage of physical memory that the cache can use.</summary>
+      <returns>The percentage of physical memory that the cache can use.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.MemoryCache.PollingInterval">
+      <summary>Gets the maximum time after which the cache updates its memory statistics.</summary>
+      <returns>The maximum time that can occur before memory statistics are updated.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Remove(System.String,System.Runtime.Caching.CacheEntryRemovedReason,System.String)">
+      <summary>Removes a cache entry from the cache using the reason.</summary>
+      <param name="key">A unique identifier for the cache entry to remove.</param>
+      <param name="reason">The reason the item was removed.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>If the entry is found in the cache, the removed cache entry; otherwise, <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Remove(System.String,System.String)">
+      <summary>Removes a cache entry from the cache.</summary>
+      <param name="key">A unique identifier for the cache entry to remove.</param>
+      <param name="regionName">A named region in the cache to which a cache entry was added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <returns>If the entry is found in the cache, the removed cache entry; otherwise, <see langword="null" />.</returns>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Set(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>Inserts a cache entry into the cache by using a <see cref="T:System.Runtime.Caching.CacheItem" /> instance to supply the key and value for the cache entry.</summary>
+      <param name="item">An object that represents a cache entry to insert.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="item" /> is <see langword="null" />.  
+-or-  
+The <see cref="P:System.Runtime.Caching.CacheItem.Key" /> property is <see langword="null" />.  
+-or-  
+The <see cref="P:System.Runtime.Caching.CacheItem.Value" /> property is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:  
+
+If both the absolute and sliding expiration values of the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on both an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> property.  
+
+If both the removal callback and the update callback are specified for <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Set(System.String,System.Object,System.DateTimeOffset,System.String)">
+      <summary>Inserts a cache entry into the cache by using a key and a value and specifies time-based expiration details.</summary>
+      <param name="key">A unique identifier for the cache entry to insert.</param>
+      <param name="value">The data for the cache entry.</param>
+      <param name="absoluteExpiration">The fixed date and time at which the cache entry will expire.</param>
+      <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.  
+-or-  
+<paramref name="Value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:  
+
+If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This occurs because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
+
+If both the removal callback and the update callback are specified on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
+ -or-  
+
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Set(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
+      <summary>Inserts a cache entry into the cache by using a key and a value and eviction.</summary>
+      <param name="key">A unique identifier for the cache entry to insert.</param>
+      <param name="value">The data for the cache entry.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.  
+-or-  
+<paramref name="value" /> is <see langword="null" />  
+-or-  
+The callback reference that was passed to the helper method in the <see cref="P:System.Runtime.Caching.CacheItemPolicy.UpdateCallback" /> property is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry exists. This occurs if the following expiration details are set on the policy object for the cache entry:  
+
+If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This is because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
+
+If both the removal callback and the update callback are specified on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> class. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
+ -or-  
+ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.NotSupportedException">
+        <paramref name="regionName" /> is not <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Provides support for iteration over a generic collection.</summary>
+      <returns>The enumerator object that provides access to the entries in the cache.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.MemoryCache.Trim(System.Int32)">
+      <summary>Removes a specified percentage of cache entries from the cache object.</summary>
+      <param name="percent">The percentage of total cache entries to remove.</param>
+      <returns>The number of entries removed from the cache.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.ObjectCache">
+      <summary>Represents an object cache and provides the base methods and properties for accessing the object cache.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.#ctor">
+      <summary>Called from constructors in derived classes in order to initialize the <see cref="T:System.Runtime.Caching.ObjectCache" /> class.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Add(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>When overridden in a derived class, tries to insert a cache entry into the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance, and adds details about how the entry should be evicted.</summary>
+      <param name="item">The object to add.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <returns>
+        <see langword="true" /> if insertion succeeded, or <see langword="false" /> if there is an already an entry in the cache that has the same key as <paramref name="item" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Add(System.String,System.Object,System.DateTimeOffset,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache without overwriting any existing cache entry.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="absoluteExpiration">The fixed date and time at which the cache entry will expire. This parameter is required when the <see cref="Overload:System.Runtime.Caching.ObjectCache.Add" /> method is called.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. Because regions are not implemented in .NET Framework 4, the default value is <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if insertion succeeded, or <see langword="false" /> if there is an already an entry in the cache that has the same key as <paramref name="key" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Add(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache, specifying information about how the entry will be evicted.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the insertion try succeeds, or <see langword="false" /> if there is an already an entry in the cache with the same key as <paramref name="key" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.AddOrGetExisting(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>When overridden in a derived class, inserts the specified <see cref="T:System.Runtime.Caching.CacheItem" /> object into the cache, specifying information about how the entry will be evicted.</summary>
+      <param name="value">The object to insert.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <returns>If a cache entry with the same key exists, the specified cache entry; otherwise, <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.AddOrGetExisting(System.String,System.Object,System.DateTimeOffset,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache, by using a key, an object for the cache entry, an absolute expiration value, and an optional region to add the cache into.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="absoluteExpiration">The fixed date and time at which the cache entry will expire.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>If a cache entry with the same key exists, the specified cache entry's value; otherwise, <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.AddOrGetExisting(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache, specifying a key and a value for the cache entry, and information about how the entry will be evicted.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>If a cache entry with the same key exists, the specified cache entry's value; otherwise, <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Contains(System.String,System.String)">
+      <summary>When overridden in a derived class, checks whether the cache entry already exists in the cache.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="regionName">Optional. A named region in the cache where the cache can be found, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the cache contains a cache entry with the same key value as <paramref name="key" />; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.CreateCacheEntryChangeMonitor(System.Collections.Generic.IEnumerable{System.String},System.String)">
+      <summary>When overridden in a derived class, creates a <see cref="T:System.Runtime.Caching.CacheEntryChangeMonitor" /> object that can trigger events in response to changes to specified cache entries.</summary>
+      <param name="keys">The unique identifiers for cache entries to monitor.</param>
+      <param name="regionName">Optional. A named region in the cache where the cache keys in the <paramref name="keys" /> parameter exist, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>A change monitor that monitors cache entries in the cache.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.ObjectCache.DefaultCacheCapabilities">
+      <summary>When overridden in a derived class, gets a description of the features that a cache implementation provides.</summary>
+      <returns>A bitwise combination of flags that indicate the default capabilities of a cache implementation.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Get(System.String,System.String)">
+      <summary>When overridden in a derived class, gets the specified cache entry from the cache as an object.</summary>
+      <param name="key">A unique identifier for the cache entry to get.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry was added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>The cache entry that is identified by <paramref name="key" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.GetCacheItem(System.String,System.String)">
+      <summary>When overridden in a derived class, gets the specified cache entry from the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance.</summary>
+      <param name="key">A unique identifier for the cache entry to get.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache was added, if regions are implemented. Because regions are not implemented in .NET Framework 4, the default is <see langword="null" />.</param>
+      <returns>The cache entry that is identified by <paramref name="key" />.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.GetCount(System.String)">
+      <summary>When overridden in a derived class, gets the total number of cache entries in the cache.</summary>
+      <param name="regionName">Optional. A named region in the cache for which the cache entry count should be computed, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>The number of cache entries in the cache. If <paramref name="regionName" /> is not <see langword="null" />, the count indicates the number of entries that are in the specified cache region.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.GetEnumerator">
+      <summary>When overridden in a derived class, creates an enumerator that can be used to iterate through a collection of cache entries.</summary>
+      <returns>The enumerator object that provides access to the cache entries in the cache.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.GetValues(System.Collections.Generic.IEnumerable{System.String},System.String)">
+      <summary>When overridden in a derived class, gets a set of cache entries that correspond to the specified keys.</summary>
+      <param name="keys">A collection of unique identifiers for the cache entries to get.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry or entries were added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>A dictionary of key/value pairs that represent cache entries.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.GetValues(System.String,System.String[])">
+      <summary>Gets a set of cache entries that correspond to the specified keys.</summary>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry or entries were added, if regions are implemented. Because regions are not implemented in .NET Framework 4, the default is <see langword="null" />.</param>
+      <param name="keys">A collection of unique identifiers for the cache entries to get.</param>
+      <returns>A dictionary of key/value pairs that represent cache entries.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.ObjectCache.Host">
+      <summary>Gets or sets a reference to a managed hosting environment that is available to <see cref="T:System.Runtime.Caching.ObjectCache" /> implementations and that can provide host-specific services to <see cref="T:System.Runtime.Caching.ObjectCache" /> implementations.</summary>
+      <returns>A reference to a cache-aware managed hosting environment.</returns>
+      <exception cref="T:System.ArgumentNullException">The value being assigned to the property is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">An attempt was made to set the property value more than one time.</exception>
+    </member>
+    <member name="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration">
+      <summary>Gets a value that indicates that a cache entry has no absolute expiration.</summary>
+    </member>
+    <member name="P:System.Runtime.Caching.ObjectCache.Item(System.String)">
+      <summary>Gets or sets the default indexer for the <see cref="T:System.Runtime.Caching.ObjectCache" /> class.</summary>
+      <param name="key">A unique identifier for a cache entry in the cache.</param>
+      <returns>A key that serves as an indexer into the cache instance.</returns>
+    </member>
+    <member name="P:System.Runtime.Caching.ObjectCache.Name">
+      <summary>Gets the name of a specific <see cref="T:System.Runtime.Caching.ObjectCache" /> instance.</summary>
+      <returns>The name of a specific cache instance.</returns>
+    </member>
+    <member name="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration">
+      <summary>Indicates that a cache entry has no sliding expiration time.</summary>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Remove(System.String,System.String)">
+      <summary>When overridden in a derived class, removes the cache entry from the cache.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry was added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+      <returns>An object that represents the value of the removed cache entry that was specified by the key, or <see langword="null" /> if the specified entry was not found.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Set(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
+      <summary>When overridden in a derived class, inserts the cache entry into the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance, specifying information about how the entry will be evicted.</summary>
+      <param name="item">The cache item to add.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Set(System.String,System.Object,System.DateTimeOffset,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache, specifying time-based expiration details.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="absoluteExpiration">The fixed date and time at which the cache entry will expire.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.Set(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
+      <summary>When overridden in a derived class, inserts a cache entry into the cache.</summary>
+      <param name="key">A unique identifier for the cache entry.</param>
+      <param name="value">The object to insert.</param>
+      <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
+      <param name="regionName">Optional. A named region in the cache to which the cache entry can be added, if regions are implemented. The default value for the optional parameter is <see langword="null" />.</param>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String@System#Object}}#GetEnumerator">
+      <summary>Supports iteration over a strongly typed collection.</summary>
+      <returns>The enumerator object that provides access to the cache entries in the cache.</returns>
+    </member>
+    <member name="M:System.Runtime.Caching.ObjectCache.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Supports iteration over a generic collection.</summary>
+      <returns>The enumerator object that provides access to the items in the cache.</returns>
+    </member>
+    <member name="T:System.Runtime.Caching.OnChangedCallback">
+      <summary>Defines a reference to a method that handles changes to monitored items.</summary>
+      <param name="state">The state of the dependent object that was changed.</param>
+    </member>
+  </members>
+</doc>

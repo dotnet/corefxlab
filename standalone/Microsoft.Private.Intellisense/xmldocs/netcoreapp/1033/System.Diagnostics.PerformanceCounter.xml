@@ -1,30 +1,162 @@
-﻿<?xml version="1.0" encoding="utf-8"?><doc>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
   <assembly>
     <name>System.Diagnostics.PerformanceCounter</name>
   </assembly>
   <members>
+    <member name="T:System.Diagnostics.CounterCreationData">
+      <summary>Defines the counter type, name, and Help string for a custom counter.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationData.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterCreationData" /> class, to a counter of type <see langword="NumberOfItems32" />, and with empty name and help strings.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationData.#ctor(System.String,System.String,System.Diagnostics.PerformanceCounterType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterCreationData" /> class, to a counter of the specified type, using the specified counter name and Help strings.</summary>
+      <param name="counterName">The name of the counter, which must be unique within its category.</param>
+      <param name="counterHelp">The text that describes the counter's behavior.</param>
+      <param name="counterType">A <see cref="T:System.Diagnostics.PerformanceCounterType" /> that identifies the counter's behavior.</param>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">You have specified a value for <paramref name="counterType" /> that is not a member of the <see cref="T:System.Diagnostics.PerformanceCounterType" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="counterHelp" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.CounterCreationData.CounterHelp">
+      <summary>Gets or sets the custom counter's description.</summary>
+      <returns>The text that describes the counter's behavior.</returns>
+      <exception cref="T:System.ArgumentNullException">The specified value is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.CounterCreationData.CounterName">
+      <summary>Gets or sets the name of the custom counter.</summary>
+      <returns>A name for the counter, which is unique in its category.</returns>
+      <exception cref="T:System.ArgumentNullException">The specified value is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The specified value is not between 1 and 80 characters long or contains double quotes, control characters or leading or trailing spaces.</exception>
+    </member>
+    <member name="P:System.Diagnostics.CounterCreationData.CounterType">
+      <summary>Gets or sets the performance counter type of the custom counter.</summary>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterType" /> that defines the behavior of the performance counter.</returns>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">You have specified a type that is not a member of the <see cref="T:System.Diagnostics.PerformanceCounterType" /> enumeration.</exception>
+    </member>
+    <member name="T:System.Diagnostics.CounterCreationDataCollection">
+      <summary>Provides a strongly typed collection of <see cref="T:System.Diagnostics.CounterCreationData" /> objects.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> class, with no associated <see cref="T:System.Diagnostics.CounterCreationData" /> instances.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.#ctor(System.Diagnostics.CounterCreationData[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> class by using the specified array of <see cref="T:System.Diagnostics.CounterCreationData" /> instances.</summary>
+      <param name="value">An array of <see cref="T:System.Diagnostics.CounterCreationData" /> instances with which to initialize this <see cref="T:System.Diagnostics.CounterCreationDataCollection" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.#ctor(System.Diagnostics.CounterCreationDataCollection)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> class by using the specified collection of <see cref="T:System.Diagnostics.CounterCreationData" /> instances.</summary>
+      <param name="value">A <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> that holds <see cref="T:System.Diagnostics.CounterCreationData" /> instances with which to initialize this <see cref="T:System.Diagnostics.CounterCreationDataCollection" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.Add(System.Diagnostics.CounterCreationData)">
+      <summary>Adds an instance of the <see cref="T:System.Diagnostics.CounterCreationData" /> class to the collection.</summary>
+      <param name="value">A <see cref="T:System.Diagnostics.CounterCreationData" /> object to append to the existing collection.</param>
+      <returns>The index of the new <see cref="T:System.Diagnostics.CounterCreationData" /> object.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.AddRange(System.Diagnostics.CounterCreationData[])">
+      <summary>Adds the specified array of <see cref="T:System.Diagnostics.CounterCreationData" /> instances to the collection.</summary>
+      <param name="value">An array of <see cref="T:System.Diagnostics.CounterCreationData" /> instances to append to the existing collection.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.AddRange(System.Diagnostics.CounterCreationDataCollection)">
+      <summary>Adds the specified collection of <see cref="T:System.Diagnostics.CounterCreationData" /> instances to the collection.</summary>
+      <param name="value">A collection of <see cref="T:System.Diagnostics.CounterCreationData" /> instances to append to the existing collection.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.Contains(System.Diagnostics.CounterCreationData)">
+      <summary>Determines whether a <see cref="T:System.Diagnostics.CounterCreationData" /> instance exists in the collection.</summary>
+      <param name="value">The <see cref="T:System.Diagnostics.CounterCreationData" /> object to find in the collection.</param>
+      <returns>
+        <see langword="true" /> if the specified <see cref="T:System.Diagnostics.CounterCreationData" /> object exists in the collection; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.CopyTo(System.Diagnostics.CounterCreationData[],System.Int32)">
+      <summary>Copies the elements of the <see cref="T:System.Diagnostics.CounterCreationData" /> to an array, starting at the specified index of the array.</summary>
+      <param name="array">An array of <see cref="T:System.Diagnostics.CounterCreationData" /> instances to add to the collection.</param>
+      <param name="index">The location at which to add the new instances.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.</exception>
+      <exception cref="T:System.ArgumentException">The number of elements in the <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination array.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.IndexOf(System.Diagnostics.CounterCreationData)">
+      <summary>Returns the index of a <see cref="T:System.Diagnostics.CounterCreationData" /> object in the collection.</summary>
+      <param name="value">The <see cref="T:System.Diagnostics.CounterCreationData" /> object to locate in the collection.</param>
+      <returns>The zero-based index of the specified <see cref="T:System.Diagnostics.CounterCreationData" />, if it is found, in the collection; otherwise, -1.</returns>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.Insert(System.Int32,System.Diagnostics.CounterCreationData)">
+      <summary>Inserts a <see cref="T:System.Diagnostics.CounterCreationData" /> object into the collection, at the specified index.</summary>
+      <param name="index">The zero-based index of the location at which the <see cref="T:System.Diagnostics.CounterCreationData" /> is to be inserted.</param>
+      <param name="value">The <see cref="T:System.Diagnostics.CounterCreationData" /> to insert into the collection.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.  
+-or-  
+<paramref name="index" /> is greater than the number of items in the collection.</exception>
+    </member>
+    <member name="P:System.Diagnostics.CounterCreationDataCollection.Item(System.Int32)">
+      <summary>Indexes the <see cref="T:System.Diagnostics.CounterCreationData" /> collection.</summary>
+      <param name="index">An index into the <see cref="T:System.Diagnostics.CounterCreationDataCollection" />.</param>
+      <returns>The collection index, which is used to access individual elements of the collection.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than 0.  
+-or-  
+<paramref name="index" /> is equal to or greater than the number of items in the collection.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.OnValidate(System.Object)">
+      <summary>Checks the specified object to determine whether it is a valid <see cref="T:System.Diagnostics.CounterCreationData" /> type.</summary>
+      <param name="value">The object that will be validated.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.</exception>
+    </member>
+    <member name="M:System.Diagnostics.CounterCreationDataCollection.Remove(System.Diagnostics.CounterCreationData)">
+      <summary>Removes a <see cref="T:System.Diagnostics.CounterCreationData" /> object from the collection.</summary>
+      <param name="value">The <see cref="T:System.Diagnostics.CounterCreationData" /> to remove from the collection.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.  
+-or-  
+<paramref name="value" /> does not exist in the collection.</exception>
+    </member>
     <member name="T:System.Diagnostics.CounterSample">
       <summary>Defines a structure that holds the raw data for a performance counter.</summary>
     </member>
     <member name="M:System.Diagnostics.CounterSample.#ctor(System.Int64,System.Int64,System.Int64,System.Int64,System.Int64,System.Int64,System.Diagnostics.PerformanceCounterType)">
-      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterSample"></see> structure and sets the <see cref="P:System.Diagnostics.CounterSample.CounterTimeStamp"></see> property to 0 (zero).</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterSample" /> structure and sets the <see cref="P:System.Diagnostics.CounterSample.CounterTimeStamp" /> property to 0 (zero).</summary>
       <param name="rawValue">The numeric value associated with the performance counter sample.</param>
       <param name="baseValue">An optional, base raw value for the counter, to use only if the sample is based on multiple counters.</param>
       <param name="counterFrequency">The frequency with which the counter is read.</param>
       <param name="systemFrequency">The frequency with which the system reads from the counter.</param>
       <param name="timeStamp">The raw time stamp.</param>
       <param name="timeStamp100nSec">The raw, high-fidelity time stamp.</param>
-      <param name="counterType">A <see cref="T:System.Diagnostics.PerformanceCounterType"></see> object that indicates the type of the counter for which this sample is a snapshot.</param>
+      <param name="counterType">A <see cref="T:System.Diagnostics.PerformanceCounterType" /> object that indicates the type of the counter for which this sample is a snapshot.</param>
     </member>
     <member name="M:System.Diagnostics.CounterSample.#ctor(System.Int64,System.Int64,System.Int64,System.Int64,System.Int64,System.Int64,System.Diagnostics.PerformanceCounterType,System.Int64)">
-      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterSample"></see> structure and sets the <see cref="P:System.Diagnostics.CounterSample.CounterTimeStamp"></see> property to the value that is passed in.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.CounterSample" /> structure and sets the <see cref="P:System.Diagnostics.CounterSample.CounterTimeStamp" /> property to the value that is passed in.</summary>
       <param name="rawValue">The numeric value associated with the performance counter sample.</param>
       <param name="baseValue">An optional, base raw value for the counter, to use only if the sample is based on multiple counters.</param>
       <param name="counterFrequency">The frequency with which the counter is read.</param>
       <param name="systemFrequency">The frequency with which the system reads from the counter.</param>
       <param name="timeStamp">The raw time stamp.</param>
       <param name="timeStamp100nSec">The raw, high-fidelity time stamp.</param>
-      <param name="counterType">A <see cref="T:System.Diagnostics.PerformanceCounterType"></see> object that indicates the type of the counter for which this sample is a snapshot.</param>
+      <param name="counterType">A <see cref="T:System.Diagnostics.PerformanceCounterType" /> object that indicates the type of the counter for which this sample is a snapshot.</param>
       <param name="counterTimeStamp">The time at which the sample was taken.</param>
     </member>
     <member name="P:System.Diagnostics.CounterSample.BaseValue">
@@ -33,13 +165,13 @@
     </member>
     <member name="M:System.Diagnostics.CounterSample.Calculate(System.Diagnostics.CounterSample)">
       <summary>Calculates the performance data of the counter, using a single sample point. This method is generally used for uncalculated performance counter types.</summary>
-      <param name="counterSample">The <see cref="T:System.Diagnostics.CounterSample"></see> structure to use as a base point for calculating performance data.</param>
+      <param name="counterSample">The <see cref="T:System.Diagnostics.CounterSample" /> structure to use as a base point for calculating performance data.</param>
       <returns>The calculated performance value.</returns>
     </member>
     <member name="M:System.Diagnostics.CounterSample.Calculate(System.Diagnostics.CounterSample,System.Diagnostics.CounterSample)">
       <summary>Calculates the performance data of the counter, using two sample points. This method is generally used for calculated performance counter types, such as averages.</summary>
-      <param name="counterSample">The <see cref="T:System.Diagnostics.CounterSample"></see> structure to use as a base point for calculating performance data.</param>
-      <param name="nextCounterSample">The <see cref="T:System.Diagnostics.CounterSample"></see> structure to use as an ending point for calculating performance data.</param>
+      <param name="counterSample">The <see cref="T:System.Diagnostics.CounterSample" /> structure to use as a base point for calculating performance data.</param>
+      <param name="nextCounterSample">The <see cref="T:System.Diagnostics.CounterSample" /> structure to use as an ending point for calculating performance data.</param>
       <returns>The calculated performance value.</returns>
     </member>
     <member name="P:System.Diagnostics.CounterSample.CounterFrequency">
@@ -47,42 +179,45 @@
       <returns>The frequency with which the counter is read.</returns>
     </member>
     <member name="P:System.Diagnostics.CounterSample.CounterTimeStamp">
-      <summary>Gets the counter&amp;#39;s time stamp.</summary>
+      <summary>Gets the counter's time stamp.</summary>
       <returns>The time at which the sample was taken.</returns>
     </member>
     <member name="P:System.Diagnostics.CounterSample.CounterType">
       <summary>Gets the performance counter type.</summary>
-      <returns>A <see cref="System.Diagnostics.PerformanceCounterType"></see> object that indicates the type of the counter for which this sample is a snapshot.</returns>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterType" /> object that indicates the type of the counter for which this sample is a snapshot.</returns>
     </member>
     <member name="F:System.Diagnostics.CounterSample.Empty">
-      <summary>Defines an empty, uninitialized performance counter sample of type NumberOfItems32.</summary>
-      <returns></returns>
+      <summary>Defines an empty, uninitialized performance counter sample of type <see langword="NumberOfItems32" />.</summary>
     </member>
     <member name="M:System.Diagnostics.CounterSample.Equals(System.Diagnostics.CounterSample)">
-      <summary>Indicates whether the specified <see cref="T:System.Diagnostics.CounterSample"></see> structure is equal to the current <see cref="T:System.Diagnostics.CounterSample"></see> structure.</summary>
-      <param name="sample"></param>
-      <returns>true if <paramref name="other">other</paramref> is equal to the current instance; otherwise, false.</returns>
+      <summary>Indicates whether the specified <see cref="T:System.Diagnostics.CounterSample" /> structure is equal to the current <see cref="T:System.Diagnostics.CounterSample" /> structure.</summary>
+      <param name="sample">The <see cref="T:System.Diagnostics.CounterSample" /> structure to be compared with this instance.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="sample" /> is equal to the current instance; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Diagnostics.CounterSample.Equals(System.Object)">
-      <summary>Indicates whether the specified structure is a <see cref="T:System.Diagnostics.CounterSample"></see> structure and is identical to the current <see cref="T:System.Diagnostics.CounterSample"></see> structure.</summary>
-      <param name="o"></param>
-      <returns>true if <paramref name="obj">obj</paramref> is a <see cref="System.Diagnostics.CounterSample"></see> structure and is identical to the current instance; otherwise, false.</returns>
+      <summary>Indicates whether the specified structure is a <see cref="T:System.Diagnostics.CounterSample" /> structure and is identical to the current <see cref="T:System.Diagnostics.CounterSample" /> structure.</summary>
+      <param name="o">The <see cref="T:System.Diagnostics.CounterSample" /> structure to be compared with the current structure.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="o" /> is a <see cref="T:System.Diagnostics.CounterSample" /> structure and is identical to the current instance; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Diagnostics.CounterSample.GetHashCode">
       <summary>Gets a hash code for the current counter sample.</summary>
       <returns>A hash code for the current counter sample.</returns>
     </member>
     <member name="M:System.Diagnostics.CounterSample.op_Equality(System.Diagnostics.CounterSample,System.Diagnostics.CounterSample)">
-      <summary>Returns a value that indicates whether two <see cref="T:System.Diagnostics.CounterSample"></see> structures are equal.</summary>
-      <param name="a"></param>
-      <param name="b"></param>
-      <returns>true if <paramref name="a">a</paramref> and <paramref name="b">b</paramref> are equal; otherwise, false.</returns>
+      <summary>Returns a value that indicates whether two <see cref="T:System.Diagnostics.CounterSample" /> structures are equal.</summary>
+      <param name="a">A <see cref="T:System.Diagnostics.CounterSample" /> structure.</param>
+      <param name="b">Another <see cref="T:System.Diagnostics.CounterSample" /> structure to be compared to the structure specified by the <paramref name="a" /> parameter.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="a" /> and <paramref name="b" /> are equal; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Diagnostics.CounterSample.op_Inequality(System.Diagnostics.CounterSample,System.Diagnostics.CounterSample)">
-      <summary>Returns a value that indicates whether two <see cref="T:System.Diagnostics.CounterSample"></see> structures are not equal.</summary>
-      <param name="a"></param>
-      <param name="b"></param>
-      <returns>true if <paramref name="a">a</paramref> and <paramref name="b">b</paramref> are not equal; otherwise, false</returns>
+      <summary>Returns a value that indicates whether two <see cref="T:System.Diagnostics.CounterSample" /> structures are not equal.</summary>
+      <param name="a">A <see cref="T:System.Diagnostics.CounterSample" /> structure.</param>
+      <param name="b">Another <see cref="T:System.Diagnostics.CounterSample" /> structure to be compared to the structure specified by the <paramref name="a" /> parameter.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="a" /> and <paramref name="b" /> are not equal; otherwise, <see langword="false" /></returns>
     </member>
     <member name="P:System.Diagnostics.CounterSample.RawValue">
       <summary>Gets the raw value of the counter.</summary>
@@ -100,131 +235,264 @@
       <summary>Gets the raw, high-fidelity time stamp.</summary>
       <returns>The system time stamp, represented within 0.1 millisecond.</returns>
     </member>
+    <member name="T:System.Diagnostics.CounterSampleCalculator">
+      <summary>Provides a set of utility functions for interpreting performance counter data.</summary>
+    </member>
+    <member name="M:System.Diagnostics.CounterSampleCalculator.ComputeCounterValue(System.Diagnostics.CounterSample)">
+      <summary>Computes the calculated value of a single raw counter sample.</summary>
+      <param name="newSample">A <see cref="T:System.Diagnostics.CounterSample" /> that indicates the most recent sample the system has taken.</param>
+      <returns>A floating-point representation of the performance counter's calculated value.</returns>
+    </member>
+    <member name="M:System.Diagnostics.CounterSampleCalculator.ComputeCounterValue(System.Diagnostics.CounterSample,System.Diagnostics.CounterSample)">
+      <summary>Computes the calculated value of two raw counter samples.</summary>
+      <param name="oldSample">A <see cref="T:System.Diagnostics.CounterSample" /> that indicates a previous sample the system has taken.</param>
+      <param name="newSample">A <see cref="T:System.Diagnostics.CounterSample" /> that indicates the most recent sample the system has taken.</param>
+      <returns>A floating-point representation of the performance counter's calculated value.</returns>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="oldSample" /> uses a counter type that is different from <paramref name="newSample" />.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="newSample" /> counter type has a Performance Data Helper (PDH) error. For more information, see "Checking PDH Interface Return Values" in the Win32 and COM Development section of this documentation.</exception>
+    </member>
+    <member name="T:System.Diagnostics.ICollectData">
+      <summary>Prepares performance data for the performance DLL the system loads when working with performance counters.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ICollectData.CloseData">
+      <summary>Called by the performance DLL's close performance data function.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ICollectData.CollectData(System.Int32,System.IntPtr,System.IntPtr,System.Int32,System.IntPtr@)">
+      <summary>Collects the performance data for the performance DLL.</summary>
+      <param name="id">The call index.</param>
+      <param name="valueName">A pointer to a Unicode string list with the requested object identifiers.</param>
+      <param name="data">A pointer to the data buffer.</param>
+      <param name="totalBytes">A pointer to a number of bytes.</param>
+      <param name="res">When this method returns, contains a <see cref="T:System.IntPtr" /> to the first byte after the data, -1 for an error, or -2 if a larger buffer is required. This parameter is passed uninitialized.</param>
+    </member>
+    <member name="T:System.Diagnostics.InstanceData">
+      <summary>Holds instance data associated with a performance counter sample.</summary>
+    </member>
+    <member name="M:System.Diagnostics.InstanceData.#ctor(System.String,System.Diagnostics.CounterSample)">
+      <summary>Initializes a new instance of the InstanceData class, using the specified sample and performance counter instance.</summary>
+      <param name="instanceName">The name of an instance associated with the performance counter.</param>
+      <param name="sample">A <see cref="T:System.Diagnostics.CounterSample" /> taken from the instance specified by the <paramref name="instanceName" /> parameter.</param>
+    </member>
+    <member name="P:System.Diagnostics.InstanceData.InstanceName">
+      <summary>Gets the instance name associated with this instance data.</summary>
+      <returns>The name of an instance associated with the performance counter.</returns>
+    </member>
+    <member name="P:System.Diagnostics.InstanceData.RawValue">
+      <summary>Gets the raw data value associated with the performance counter sample.</summary>
+      <returns>The raw value read by the performance counter sample associated with the <see cref="P:System.Diagnostics.InstanceData.Sample" /> property.</returns>
+    </member>
+    <member name="P:System.Diagnostics.InstanceData.Sample">
+      <summary>Gets the performance counter sample that generated this data.</summary>
+      <returns>A <see cref="T:System.Diagnostics.CounterSample" /> taken from the instance specified by the <see cref="P:System.Diagnostics.InstanceData.InstanceName" /> property.</returns>
+    </member>
+    <member name="T:System.Diagnostics.InstanceDataCollection">
+      <summary>Provides a strongly typed collection of <see cref="T:System.Diagnostics.InstanceData" /> objects.</summary>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollection.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.InstanceDataCollection" /> class, using the specified performance counter (which defines a performance instance).</summary>
+      <param name="counterName">The name of the counter, which often describes the quantity that is being counted.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="counterName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollection.Contains(System.String)">
+      <summary>Determines whether a performance instance with a specified name (identified by one of the indexed <see cref="T:System.Diagnostics.InstanceData" /> objects) exists in the collection.</summary>
+      <param name="instanceName">The name of the instance to find in this collection.</param>
+      <returns>
+        <see langword="true" /> if the instance exists in the collection; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollection.CopyTo(System.Diagnostics.InstanceData[],System.Int32)">
+      <summary>Copies the items in the collection to the specified one-dimensional array at the specified index.</summary>
+      <param name="instances">The one-dimensional <see cref="T:System.Array" /> that is the destination of the values copied from the collection.</param>
+      <param name="index">The zero-based index value at which to add the new instances.</param>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollection.CounterName">
+      <summary>Gets the name of the performance counter whose instance data you want to get.</summary>
+      <returns>The performance counter name.</returns>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollection.Item(System.String)">
+      <summary>Gets the instance data associated with this counter. This is typically a set of raw counter values.</summary>
+      <param name="instanceName">The name of the performance counter category instance, or an empty string ("") if the category contains a single instance.</param>
+      <returns>An <see cref="T:System.Diagnostics.InstanceData" /> item, by which the <see cref="T:System.Diagnostics.InstanceDataCollection" /> object is indexed.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollection.Keys">
+      <summary>Gets the object and counter registry keys for the objects associated with this instance data.</summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> that represents a set of object-specific registry keys.</returns>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollection.Values">
+      <summary>Gets the raw counter values that comprise the instance data for the counter.</summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> that represents the counter's raw data values.</returns>
+    </member>
+    <member name="T:System.Diagnostics.InstanceDataCollectionCollection">
+      <summary>Provides a strongly typed collection of <see cref="T:System.Diagnostics.InstanceDataCollection" /> objects.</summary>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollectionCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.InstanceDataCollectionCollection" /> class.</summary>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollectionCollection.Contains(System.String)">
+      <summary>Determines whether an instance data collection for the specified counter (identified by one of the indexed <see cref="T:System.Diagnostics.InstanceDataCollection" /> objects) exists in the collection.</summary>
+      <param name="counterName">The name of the performance counter.</param>
+      <returns>
+        <see langword="true" /> if an instance data collection containing the specified counter exists in the collection; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="counterName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.InstanceDataCollectionCollection.CopyTo(System.Diagnostics.InstanceDataCollection[],System.Int32)">
+      <summary>Copies an array of <see cref="T:System.Diagnostics.InstanceDataCollection" /> instances to the collection, at the specified index.</summary>
+      <param name="counters">An array of <see cref="T:System.Diagnostics.InstanceDataCollection" /> instances (identified by the counters they contain) to add to the collection.</param>
+      <param name="index">The location at which to add the new instances.</param>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollectionCollection.Item(System.String)">
+      <summary>Gets the instance data for the specified counter.</summary>
+      <param name="counterName">The name of the performance counter.</param>
+      <returns>An <see cref="T:System.Diagnostics.InstanceDataCollection" /> item, by which the <see cref="T:System.Diagnostics.InstanceDataCollectionCollection" /> object is indexed.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="counterName" /> parameter is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollectionCollection.Keys">
+      <summary>Gets the object and counter registry keys for the objects associated with this instance data collection.</summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> that represents a set of object-specific registry keys.</returns>
+    </member>
+    <member name="P:System.Diagnostics.InstanceDataCollectionCollection.Values">
+      <summary>Gets the instance data values that comprise the collection of instances for the counter.</summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> that represents the counter's instances and their associated data values.</returns>
+    </member>
     <member name="T:System.Diagnostics.PerformanceCounter">
       <summary>Represents a Windows NT performance counter component.</summary>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor">
-      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class, without associating the instance with any system or custom performance counter.</summary>
+      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class, without associating the instance with any system or custom performance counter.</summary>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String)">
-      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class and associates it with the specified system or custom performance counter on the local computer. This constructor requires that the category have a single instance.</summary>
+      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter on the local computer. This constructor requires that the category have a single instance.</summary>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
-      <exception cref="T:System.InvalidOperationException"><paramref name="categoryName">categoryName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- <paramref name="counterName">counterName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- The category specified does not exist.  
- -or-  
- The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
- -or-  
- <paramref name="categoryName">categoryName</paramref> and <paramref name="counterName">counterName</paramref> have been localized into different languages.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="categoryName">categoryName</paramref> or <paramref name="counterName">counterName</paramref> is null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="categoryName" /> is an empty string ("").  
+-or-  
+<paramref name="counterName" /> is an empty string ("").  
+-or-  
+The category specified does not exist.  
+-or-  
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
+-or-  
+<paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.Boolean)">
-      <summary>Initializes a new, read-only or read/write instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class and associates it with the specified system or custom performance counter on the local computer. This constructor requires that the category contain a single instance.</summary>
+      <summary>Initializes a new, read-only or read/write instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter on the local computer. This constructor requires that the category contain a single instance.</summary>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
-      <param name="readOnly">true to access the counter in read-only mode (although the counter itself could be read/write); false to access the counter in read/write mode.</param>
-      <exception cref="T:System.InvalidOperationException">The <paramref name="categoryName">categoryName</paramref> is an empty string (&amp;quot;&amp;quot;).  
+      <param name="readOnly">
+        <see langword="true" /> to access the counter in read-only mode (although the counter itself could be read/write); <see langword="false" /> to access the counter in read/write mode.</param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="categoryName" /> is an empty string ("").  
  -or-  
- The <paramref name="counterName">counterName</paramref> is an empty string (&amp;quot;&amp;quot;).  
+ The <paramref name="counterName" /> is an empty string ("").  
  -or-  
- The category specified does not exist. (if <paramref name="readOnly">readOnly</paramref> is true).  
+ The category specified does not exist. (if <paramref name="readOnly" /> is <see langword="true" />).  
  -or-  
- The category specified is not a .NET Framework custom category (if <paramref name="readOnly">readOnly</paramref> is false).  
+ The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).  
  -or-  
  The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
  -or-  
- <paramref name="categoryName">categoryName</paramref> and <paramref name="counterName">counterName</paramref> have been localized into different languages.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="categoryName">categoryName</paramref> or <paramref name="counterName">counterName</paramref> is null.</exception>
+ <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String)">
-      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class and associates it with the specified system or custom performance counter and category instance on the local computer.</summary>
+      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter and category instance on the local computer.</summary>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
-      <param name="instanceName">The name of the performance counter category instance, or an empty string (&amp;quot;&amp;quot;), if the category contains a single instance.</param>
-      <exception cref="T:System.InvalidOperationException"><paramref name="categoryName">categoryName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- <paramref name="counterName">counterName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- The category specified is not valid.  
- -or-  
- The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
- -or-  
- <paramref name="instanceName">instanceName</paramref> is longer than 127 characters.  
- -or-  
- <paramref name="categoryName">categoryName</paramref> and <paramref name="counterName">counterName</paramref> have been localized into different languages.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="categoryName">categoryName</paramref> or <paramref name="counterName">counterName</paramref> is null.</exception>
+      <param name="instanceName">The name of the performance counter category instance, or an empty string (""), if the category contains a single instance.</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="categoryName" /> is an empty string ("").  
+-or-  
+<paramref name="counterName" /> is an empty string ("").  
+-or-  
+The category specified is not valid.  
+-or-  
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
+-or-  
+<paramref name="instanceName" /> is longer than 127 characters.  
+-or-  
+<paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String,System.Boolean)">
-      <summary>Initializes a new, read-only or read/write instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class and associates it with the specified system or custom performance counter and category instance on the local computer.</summary>
+      <summary>Initializes a new, read-only or read/write instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter and category instance on the local computer.</summary>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
-      <param name="instanceName">The name of the performance counter category instance, or an empty string (&amp;quot;&amp;quot;), if the category contains a single instance.</param>
-      <param name="readOnly">true to access a counter in read-only mode; false to access a counter in read/write mode.</param>
-      <exception cref="T:System.InvalidOperationException"><paramref name="categoryName">categoryName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- <paramref name="counterName">counterName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- The read/write permission setting requested is invalid for this counter.  
- -or-  
- The category specified does not exist (if <paramref name="readOnly">readOnly</paramref> is true).  
- -or-  
- The category specified is not a .NET Framework custom category (if <paramref name="readOnly">readOnly</paramref> is false).  
- -or-  
- The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
- -or-  
- <paramref name="instanceName">instanceName</paramref> is longer than 127 characters.  
- -or-  
- <paramref name="categoryName">categoryName</paramref> and <paramref name="counterName">counterName</paramref> have been localized into different languages.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="categoryName">categoryName</paramref> or <paramref name="counterName">counterName</paramref> is null.</exception>
+      <param name="instanceName">The name of the performance counter category instance, or an empty string (""), if the category contains a single instance.</param>
+      <param name="readOnly">
+        <see langword="true" /> to access a counter in read-only mode; <see langword="false" /> to access a counter in read/write mode.</param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="categoryName" /> is an empty string ("").  
+-or-  
+<paramref name="counterName" /> is an empty string ("").  
+-or-  
+The read/write permission setting requested is invalid for this counter.  
+-or-  
+The category specified does not exist (if <paramref name="readOnly" /> is <see langword="true" />).  
+-or-  
+The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).  
+-or-  
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
+-or-  
+<paramref name="instanceName" /> is longer than 127 characters.  
+-or-  
+<paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String,System.String)">
-      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter"></see> class and associates it with the specified system or custom performance counter and category instance, on the specified computer.</summary>
+      <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter and category instance, on the specified computer.</summary>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
-      <param name="instanceName">The name of the performance counter category instance, or an empty string (&amp;quot;&amp;quot;), if the category contains a single instance.</param>
+      <param name="instanceName">The name of the performance counter category instance, or an empty string (""), if the category contains a single instance.</param>
       <param name="machineName">The computer on which the performance counter and its associated category exist.</param>
-      <exception cref="T:System.InvalidOperationException"><paramref name="categoryName">categoryName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- <paramref name="counterName">counterName</paramref> is an empty string (&amp;quot;&amp;quot;).  
- -or-  
- The read/write permission setting requested is invalid for this counter.  
- -or-  
- The counter does not exist on the specified computer.  
- -or-  
- The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
- -or-  
- <paramref name="instanceName">instanceName</paramref> is longer than 127 characters.  
- -or-  
- <paramref name="categoryName">categoryName</paramref> and <paramref name="counterName">counterName</paramref> have been localized into different languages.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="machineName">machineName</paramref> parameter is not valid.</exception>
-      <exception cref="T:System.ArgumentNullException"><paramref name="categoryName">categoryName</paramref> or <paramref name="counterName">counterName</paramref> is null.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="categoryName" /> is an empty string ("").  
+-or-  
+<paramref name="counterName" /> is an empty string ("").  
+-or-  
+The read/write permission setting requested is invalid for this counter.  
+-or-  
+The counter does not exist on the specified computer.  
+-or-  
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
+-or-  
+<paramref name="instanceName" /> is longer than 127 characters.  
+-or-  
+<paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is not valid.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.BeginInit">
-      <summary>Begins the initialization of a <see cref="T:System.Diagnostics.PerformanceCounter"></see> instance used on a form or by another component. The initialization occurs at runtime.</summary>
+      <summary>Begins the initialization of a <see cref="T:System.Diagnostics.PerformanceCounter" /> instance used on a form or by another component. The initialization occurs at runtime.</summary>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CategoryName">
       <summary>Gets or sets the name of the performance counter category for this performance counter.</summary>
       <returns>The name of the performance counter category (performance object) with which this performance counter is associated.</returns>
-      <exception cref="T:System.ArgumentNullException">The <see cref="System.Diagnostics.PerformanceCounter.CategoryName"></see> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Diagnostics.PerformanceCounter.CategoryName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.Close">
@@ -236,24 +504,24 @@
     <member name="P:System.Diagnostics.PerformanceCounter.CounterHelp">
       <summary>Gets the description for this performance counter.</summary>
       <returns>A description of the item or quantity that this performance counter measures.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="System.Diagnostics.PerformanceCounter"></see> instance is not associated with a performance counter.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is not associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CounterName">
-      <summary>Gets or sets the name of the performance counter that is associated with this <see cref="T:System.Diagnostics.PerformanceCounter"></see> instance.</summary>
-      <returns>The name of the counter, which generally describes the quantity being counted. This name is displayed in the list of counters of the Performance Counter Manager MMC snap in&amp;#39;s Add Counters dialog box.</returns>
-      <exception cref="T:System.ArgumentNullException">The <see cref="System.Diagnostics.PerformanceCounter.CounterName"></see> is null.</exception>
+      <summary>Gets or sets the name of the performance counter that is associated with this <see cref="T:System.Diagnostics.PerformanceCounter" /> instance.</summary>
+      <returns>The name of the counter, which generally describes the quantity being counted. This name is displayed in the list of counters of the Performance Counter Manager MMC snap in's Add Counters dialog box.</returns>
+      <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Diagnostics.PerformanceCounter.CounterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CounterType">
       <summary>Gets the counter type of the associated performance counter.</summary>
-      <returns>A <see cref="System.Diagnostics.PerformanceCounterType"></see> that describes both how the counter interacts with a monitoring application and the nature of the values it contains (for example, calculated or uncalculated).</returns>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterType" /> that describes both how the counter interacts with a monitoring application and the nature of the values it contains (for example, calculated or uncalculated).</returns>
       <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -264,16 +532,15 @@
  -or-  
  The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounter.DefaultFileMappingSize">
       <summary>Specifies the size, in bytes, of the global memory shared by performance counters. The default size is 524,288 bytes.</summary>
-      <returns></returns>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.EndInit">
-      <summary>Ends the initialization of a <see cref="T:System.Diagnostics.PerformanceCounter"></see> instance that is used on a form or by another component. The initialization occurs at runtime.</summary>
+      <summary>Ends the initialization of a <see cref="T:System.Diagnostics.PerformanceCounter" /> instance that is used on a form or by another component. The initialization occurs at runtime.</summary>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.Increment">
       <summary>Increments the associated performance counter by one through an efficient atomic operation.</summary>
@@ -282,7 +549,7 @@
  -or-  
  The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
@@ -294,32 +561,33 @@
  -or-  
  The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.InstanceLifetime">
       <summary>Gets or sets the lifetime of a process.</summary>
-      <returns>One of the <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime"></see> values. The default is <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Global"></see>.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value set is not a member of the <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime"></see> enumeration.</exception>
-      <exception cref="T:System.InvalidOperationException"><see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> is set after the <see cref="System.Diagnostics.PerformanceCounter"></see> has been initialized.</exception>
+      <returns>One of the <see cref="T:System.Diagnostics.PerformanceCounterInstanceLifetime" /> values. The default is <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Global" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value set is not a member of the <see cref="T:System.Diagnostics.PerformanceCounterInstanceLifetime" /> enumeration.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> is set after the <see cref="T:System.Diagnostics.PerformanceCounter" /> has been initialized.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.InstanceName">
       <summary>Gets or sets an instance name for this performance counter.</summary>
-      <returns>The name of the performance counter category instance, or an empty string (&amp;quot;&amp;quot;), if the counter is a single-instance counter.</returns>
+      <returns>The name of the performance counter category instance, or an empty string (""), if the counter is a single-instance counter.</returns>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.MachineName">
       <summary>Gets or sets the computer name for this performance counter</summary>
       <returns>The server on which the performance counter and its associated category reside.</returns>
-      <exception cref="T:System.ArgumentException">The <see cref="System.Diagnostics.PerformanceCounter.MachineName"></see> format is invalid.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.PerformanceCounter.MachineName" /> format is invalid.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.NextSample">
       <summary>Obtains a counter sample, and returns the raw, or uncalculated, value for it.</summary>
-      <returns>A <see cref="System.Diagnostics.CounterSample"></see> that represents the next raw value that the system obtains for this counter.</returns>
+      <returns>A <see cref="T:System.Diagnostics.CounterSample" /> that represents the next raw value that the system obtains for this counter.</returns>
       <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
@@ -335,154 +603,676 @@
     <member name="P:System.Diagnostics.PerformanceCounter.RawValue">
       <summary>Gets or sets the raw, or uncalculated, value of this counter.</summary>
       <returns>The raw value of the counter.</returns>
-      <exception cref="T:System.InvalidOperationException">You are trying to set the counter&amp;#39;s raw value, but the counter is read-only.  
+      <exception cref="T:System.InvalidOperationException">You are trying to set the counter's raw value, but the counter is read-only.  
  -or-  
  The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.ReadOnly">
-      <summary>Gets or sets a value indicating whether this <see cref="T:System.Diagnostics.PerformanceCounter"></see> instance is in read-only mode.</summary>
-      <returns>true, if the <see cref="System.Diagnostics.PerformanceCounter"></see> instance is in read-only mode (even if the counter itself is a custom .NET Framework counter); false if it is in read/write mode. The default is the value set by the constructor.</returns>
+      <summary>Gets or sets a value indicating whether this <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is in read-only mode.</summary>
+      <returns>
+        <see langword="true" />, if the <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is in read-only mode (even if the counter itself is a custom .NET Framework counter); <see langword="false" /> if it is in read/write mode. The default is the value set by the constructor.</returns>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.RemoveInstance">
-      <summary>Deletes the category instance specified by the <see cref="T:System.Diagnostics.PerformanceCounter"></see> object <see cref="P:System.Diagnostics.PerformanceCounter.InstanceName"></see> property.</summary>
+      <summary>Deletes the category instance specified by the <see cref="T:System.Diagnostics.PerformanceCounter" /> object <see cref="P:System.Diagnostics.PerformanceCounter.InstanceName" /> property.</summary>
       <exception cref="T:System.InvalidOperationException">This counter is read-only, so any instance that is associated with the category cannot be removed.  
  -or-  
  The instance is not correctly associated with a performance counter.  
  -or-  
- The <see cref="System.Diagnostics.PerformanceCounter.InstanceLifetime"></see> property is set to <see cref="System.Diagnostics.PerformanceCounterInstanceLifetime.Process"></see> when using global shared memory.</exception>
+ The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceCounterCategory">
+      <summary>Represents a performance object, which defines a category of performance counters.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> class, leaves the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property empty, and sets the <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> property to the local computer.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> class, sets the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property to the specified value, and sets the <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> property to the local computer.</summary>
+      <param name="categoryName">The name of the performance counter category, or performance object, with which to associate this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> class and sets the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> and <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> properties to the specified values.</summary>
+      <param name="categoryName">The name of the performance counter category, or performance object, with which to associate this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance.</param>
+      <param name="machineName">The computer on which the performance counter category and its associated counters exist.</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").  
+ -or-  
+ The <paramref name="machineName" /> syntax is invalid.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceCounterCategory.CategoryHelp">
+      <summary>Gets the category's help text.</summary>
+      <returns>A description of the performance object that this category measures.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The category name must be set before getting the category help.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceCounterCategory.CategoryName">
+      <summary>Gets or sets the name of the performance object that defines this category.</summary>
+      <returns>The name of the performance counter category, or performance object, with which to associate this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> is an empty string ("").</exception>
+      <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceCounterCategory.CategoryType">
+      <summary>Gets the performance counter category type.</summary>
+      <returns>One of the <see cref="T:System.Diagnostics.PerformanceCounterCategoryType" /> values.</returns>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.CounterExists(System.String)">
+      <summary>Determines whether the specified counter is registered to this category, which is indicated by the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> and <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> properties.</summary>
+      <param name="counterName">The name of the performance counter to look for.</param>
+      <returns>
+        <see langword="true" /> if the counter is registered to the category that is specified by the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> and <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> properties; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="counterName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property has not been set.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.CounterExists(System.String,System.String)">
+      <summary>Determines whether the specified counter is registered to the specified category on the local computer.</summary>
+      <param name="counterName">The name of the performance counter to look for.</param>
+      <param name="categoryName">The name of the performance counter category, or performance object, with which the specified performance counter is associated.</param>
+      <returns>
+        <see langword="true" />, if the counter is registered to the specified category on the local computer; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.  
+ -or-  
+ The <paramref name="counterName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").</exception>
+      <exception cref="T:System.InvalidOperationException">The category name does not exist.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.CounterExists(System.String,System.String,System.String)">
+      <summary>Determines whether the specified counter is registered to the specified category on a remote computer.</summary>
+      <param name="counterName">The name of the performance counter to look for.</param>
+      <param name="categoryName">The name of the performance counter category, or performance object, with which the specified performance counter is associated.</param>
+      <param name="machineName">The name of the computer on which the performance counter category and its associated counters exist.</param>
+      <returns>
+        <see langword="true" />, if the counter is registered to the specified category on the specified computer; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.  
+ -or-  
+ The <paramref name="counterName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").  
+ -or-  
+ The <paramref name="machineName" /> is invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The category name does not exist.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Create(System.String,System.String,System.Diagnostics.CounterCreationDataCollection)">
+      <summary>Registers the custom performance counter category containing the specified counters on the local computer.</summary>
+      <param name="categoryName">The name of the custom performance counter category to create and register with the system.</param>
+      <param name="categoryHelp">A description of the custom category.</param>
+      <param name="counterData">A <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> that specifies the counters to create as part of the new category.</param>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new custom category, or performance object.</returns>
+      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").  
+ -or-  
+ A counter that is specified within the <paramref name="counterData" /> collection already exists.  
+ -or-  
+ The <paramref name="counterName" /> parameter has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.  
+ -or-  
+ The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" /> or <see langword="SampleCounter" /> has to be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Create(System.String,System.String,System.Diagnostics.PerformanceCounterCategoryType,System.Diagnostics.CounterCreationDataCollection)">
+      <summary>Registers the custom performance counter category containing the specified counters on the local computer.</summary>
+      <param name="categoryName">The name of the custom performance counter category to create and register with the system.</param>
+      <param name="categoryHelp">A description of the custom category.</param>
+      <param name="categoryType">One of the <see cref="T:System.Diagnostics.PerformanceCounterCategoryType" /> values.</param>
+      <param name="counterData">A <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> that specifies the counters to create as part of the new category.</param>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new custom category, or performance object.</returns>
+      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").  
+ -or-  
+ A counter that is specified within the <paramref name="counterData" /> collection already exists.  
+ -or-  
+ <paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> is <see langword="null" />.  
+-or-  
+<paramref name="counterData" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="categoryType" /> value is outside of the range of the following values: <see langword="MultiInstance" />, <see langword="SingleInstance" />, or <see langword="Unknown" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.  
+ -or-  
+ The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" />, or <see langword="SampleCounter" /> must be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Create(System.String,System.String,System.Diagnostics.PerformanceCounterCategoryType,System.String,System.String)">
+      <summary>Registers the custom performance counter category containing a single counter of type <see cref="F:System.Diagnostics.PerformanceCounterType.NumberOfItems32" /> on the local computer.</summary>
+      <param name="categoryName">The name of the custom performance counter category to create and register with the system.</param>
+      <param name="categoryHelp">A description of the custom category.</param>
+      <param name="categoryType">One of the <see cref="T:System.Diagnostics.PerformanceCounterCategoryType" /> values specifying whether the category is <see cref="F:System.Diagnostics.PerformanceCounterCategoryType.MultiInstance" />, <see cref="F:System.Diagnostics.PerformanceCounterCategoryType.SingleInstance" />, or <see cref="F:System.Diagnostics.PerformanceCounterCategoryType.Unknown" />.</param>
+      <param name="counterName">The name of a new counter to create as part of the new category.</param>
+      <param name="counterHelp">A description of the counter that is associated with the new custom category.</param>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new system category, or performance object.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").  
+-or-  
+The counter that is specified by <paramref name="counterName" /> already exists.  
+-or-  
+<paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> is <see langword="null" />.  
+-or-  
+<paramref name="counterHelp" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Create(System.String,System.String,System.String,System.String)">
+      <summary>Registers a custom performance counter category containing a single counter of type <see langword="NumberOfItems32" /> on the local computer.</summary>
+      <param name="categoryName">The name of the custom performance counter category to create and register with the system.</param>
+      <param name="categoryHelp">A description of the custom category.</param>
+      <param name="counterName">The name of a new counter, of type <see langword="NumberOfItems32" />, to create as part of the new category.</param>
+      <param name="counterHelp">A description of the counter that is associated with the new custom category.</param>
+      <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new system category, or performance object.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").  
+-or-  
+The counter that is specified by <paramref name="counterName" /> already exists.  
+-or-  
+<paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="categoryName" /> is <see langword="null" />.  
+-or-  
+<paramref name="counterHelp" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Delete(System.String)">
+      <summary>Removes the category and its associated counters from the local computer.</summary>
+      <param name="categoryName">The name of the custom performance counter category to delete.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.InvalidOperationException">The category cannot be deleted because it is not a custom category.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Exists(System.String)">
+      <summary>Determines whether the category is registered on the local computer.</summary>
+      <param name="categoryName">The name of the performance counter category to look for.</param>
+      <returns>
+        <see langword="true" /> if the category is registered; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.Exists(System.String,System.String)">
+      <summary>Determines whether the category is registered on the specified computer.</summary>
+      <param name="categoryName">The name of the performance counter category to look for.</param>
+      <param name="machineName">The name of the computer to examine for the category.</param>
+      <returns>
+        <see langword="true" /> if the category is registered; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").  
+ -or-  
+ The <paramref name="machineName" /> parameter is invalid.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.IO.IOException">The network path cannot be found.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
+ -or-  
+ Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.GetCategories">
+      <summary>Retrieves a list of the performance counter categories that are registered on the local computer.</summary>
+      <returns>An array of <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> objects indicating the categories that are registered on the local computer.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.GetCategories(System.String)">
+      <summary>Retrieves a list of the performance counter categories that are registered on the specified computer.</summary>
+      <param name="machineName">The computer to look on.</param>
+      <returns>An array of <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> objects indicating the categories that are registered on the specified computer.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is invalid.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.GetCounters">
+      <summary>Retrieves a list of the counters in a performance counter category that contains exactly one instance.</summary>
+      <returns>An array of <see cref="T:System.Diagnostics.PerformanceCounter" /> objects indicating the counters that are associated with this single-instance performance counter category.</returns>
+      <exception cref="T:System.ArgumentException">The category is not a single instance.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.InvalidOperationException">The category does not have an associated instance.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.GetCounters(System.String)">
+      <summary>Retrieves a list of the counters in a performance counter category that contains one or more instances.</summary>
+      <param name="instanceName">The performance object instance for which to retrieve the list of associated counters.</param>
+      <returns>An array of <see cref="T:System.Diagnostics.PerformanceCounter" /> objects indicating the counters that are associated with the specified object instance of this performance counter category.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property for this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance has not been set.  
+ -or-  
+ The category does not contain the instance that is specified by the <paramref name="instanceName" /> parameter.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.GetInstanceNames">
+      <summary>Retrieves the list of performance object instances that are associated with this category.</summary>
+      <returns>An array of strings representing the performance object instance names that are associated with this category or, if the category contains only one performance object instance, a single-entry array that contains an empty string ("").</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The property might not have been set.  
+ -or-  
+ The category does not have an associated instance.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.InstanceExists(System.String)">
+      <summary>Determines whether the specified performance object instance exists in the category that is identified by this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> object's <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property.</summary>
+      <param name="instanceName">The performance object instance in this performance counter category to search for.</param>
+      <returns>
+        <see langword="true" /> if the category contains the specified performance object instance; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The property might not have been set.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.InstanceExists(System.String,System.String)">
+      <summary>Determines whether a specified category on the local computer contains the specified performance object instance.</summary>
+      <param name="instanceName">The performance object instance to search for.</param>
+      <param name="categoryName">The performance counter category to search.</param>
+      <returns>
+        <see langword="true" /> if the category contains the specified performance object instance; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.  
+ -or-  
+ The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.InstanceExists(System.String,System.String,System.String)">
+      <summary>Determines whether a specified category on a specified computer contains the specified performance object instance.</summary>
+      <param name="instanceName">The performance object instance to search for.</param>
+      <param name="categoryName">The performance counter category to search.</param>
+      <param name="machineName">The name of the computer on which to look for the category instance pair.</param>
+      <returns>
+        <see langword="true" /> if the category contains the specified performance object instance; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.  
+ -or-  
+ The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").  
+ -or-  
+ The <paramref name="machineName" /> parameter is invalid.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceCounterCategory.MachineName">
+      <summary>Gets or sets the name of the computer on which this category exists.</summary>
+      <returns>The name of the computer on which the performance counter category and its associated counters exist.</returns>
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> syntax is invalid.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterCategory.ReadCategory">
+      <summary>Reads all the counter and performance object instance data that is associated with this performance counter category.</summary>
+      <returns>An <see cref="T:System.Diagnostics.InstanceDataCollectionCollection" /> that contains the counter and performance object instance data for the category.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The property might not have been set.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceCounterCategoryType">
+      <summary>Indicates whether the performance counter category can have multiple instances.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceCounterCategoryType.MultiInstance">
+      <summary>The performance counter category can have multiple instances.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceCounterCategoryType.SingleInstance">
+      <summary>The performance counter category can have only a single instance.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceCounterCategoryType.Unknown">
+      <summary>The instance functionality for the performance counter category is unknown.</summary>
     </member>
     <member name="T:System.Diagnostics.PerformanceCounterInstanceLifetime">
       <summary>Specifies the lifetime of a performance counter instance.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Global">
       <summary>Remove the performance counter instance when no counters are using the process category.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process">
       <summary>Remove the performance counter instance when the process is closed.</summary>
-      <returns></returns>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceCounterManager">
+      <summary>Prepares performance data for the performance.dll the system loads when working with performance counters.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterManager.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterManager" /> class.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterManager.System#Diagnostics#ICollectData#CloseData">
+      <summary>Called by the perf dll's close performance data</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceCounterManager.System#Diagnostics#ICollectData#CollectData(System.Int32,System.IntPtr,System.IntPtr,System.Int32,System.IntPtr@)">
+      <summary>Performance data collection routine. Called by the PerfCount perf dll.</summary>
+      <param name="callIdx">The call index.</param>
+      <param name="valueNamePtr">A pointer to a Unicode string list with the requested Object identifiers.</param>
+      <param name="dataPtr">A pointer to the data buffer.</param>
+      <param name="totalBytes">A pointer to a number of bytes.</param>
+      <param name="res">When this method returns, contains a <see cref="T:System.IntPtr" /> with a value of -1.</param>
     </member>
     <member name="T:System.Diagnostics.PerformanceCounterType">
-      <summary>Specifies the formula used to calculate the <see cref="M:System.Diagnostics.PerformanceCounter.NextValue"></see> method for a <see cref="T:System.Diagnostics.PerformanceCounter"></see> instance.</summary>
+      <summary>Specifies the formula used to calculate the <see cref="M:System.Diagnostics.PerformanceCounter.NextValue" /> method for a <see cref="T:System.Diagnostics.PerformanceCounter" /> instance.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.AverageBase">
-      <summary>A base counter that is used in the calculation of time or count averages, such as AverageTimer32 and AverageCount64. Stores the denominator for calculating a counter to present &amp;quot;time per operation&amp;quot; or &amp;quot;count per operation&amp;quot;.</summary>
-      <returns></returns>
+      <summary>A base counter that is used in the calculation of time or count averages, such as <see langword="AverageTimer32" /> and <see langword="AverageCount64" />. Stores the denominator for calculating a counter to present "time per operation" or "count per operation".</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.AverageCount64">
-      <summary>An average counter that shows how many items are processed, on average, during an operation. Counters of this type display a ratio of the items processed to the number of operations completed. The ratio is calculated by comparing the number of items processed during the last interval to the number of operations completed during the last interval.</summary>
-      <returns></returns>
+      <summary>An average counter that shows how many items are processed, on average, during an operation. Counters of this type display a ratio of the items processed to the number of operations completed. The ratio is calculated by comparing the number of items processed during the last interval to the number of operations completed during the last interval. Counters of this type include PhysicalDisk\ Avg. Disk Bytes/Transfer.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.AverageTimer32">
-      <summary>An average counter that measures the time it takes, on average, to complete a process or operation. Counters of this type display a ratio of the total elapsed time of the sample interval to the number of processes or operations completed during that time. This counter type measures time in ticks of the system clock.</summary>
-      <returns></returns>
+      <summary>An average counter that measures the time it takes, on average, to complete a process or operation. Counters of this type display a ratio of the total elapsed time of the sample interval to the number of processes or operations completed during that time. This counter type measures time in ticks of the system clock. Counters of this type include PhysicalDisk\ Avg. Disk sec/Transfer.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterDelta32">
       <summary>A difference counter that shows the change in the measured attribute between the two most recent sample intervals.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterDelta64">
-      <summary>A difference counter that shows the change in the measured attribute between the two most recent sample intervals. It is the same as the CounterDelta32 counter type except that is uses larger fields to accomodate larger values.</summary>
-      <returns></returns>
+      <summary>A difference counter that shows the change in the measured attribute between the two most recent sample intervals. It is the same as the <see langword="CounterDelta32" /> counter type except that is uses larger fields to accommodate larger values.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterMultiBase">
-      <summary>A base counter that indicates the number of items sampled. It is used as the denominator in the calculations to get an average among the items sampled when taking timings of multiple, but similar items. Used with CounterMultiTimer, CounterMultiTimerInverse, CounterMultiTimer100Ns, and CounterMultiTimer100NsInverse.</summary>
-      <returns></returns>
+      <summary>A base counter that indicates the number of items sampled. It is used as the denominator in the calculations to get an average among the items sampled when taking timings of multiple, but similar items. Used with <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, and <see langword="CounterMultiTimer100NsInverse" />.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterMultiTimer">
-      <summary>A percentage counter that displays the active time of one or more components as a percentage of the total time of the sample interval. Because the numerator records the active time of components operating simultaneously, the resulting percentage can exceed 100 percent.</summary>
-      <returns></returns>
+      <summary>A percentage counter that displays the active time of one or more components as a percentage of the total time of the sample interval. Because the numerator records the active time of components operating simultaneously, the resulting percentage can exceed 100 percent. This counter type differs from <see langword="CounterMultiTimer100Ns" /> in that it measures time in units of ticks of the system performance timer, rather than in 100 nanosecond units. This counter type is a multitimer.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterMultiTimer100Ns">
-      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. It measures time in 100 nanosecond (ns) units.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. It measures time in 100 nanosecond (ns) units. This counter type is a multitimer.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterMultiTimer100NsInverse">
-      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. Counters of this type measure time in 100 nanosecond (ns) units. They derive the active time by measuring the time that the components were not active and subtracting the result from multiplying 100 percent by the number of objects monitored.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. Counters of this type measure time in 100 nanosecond (ns) units. They derive the active time by measuring the time that the components were not active and subtracting the result from multiplying 100 percent by the number of objects monitored. This counter type is an inverse multitimer.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterMultiTimerInverse">
-      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. It derives the active time by measuring the time that the components were not active and subtracting the result from 100 percent by the number of objects monitored.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the active time of one or more components as a percentage of the total time of the sample interval. It derives the active time by measuring the time that the components were not active and subtracting the result from 100 percent by the number of objects monitored. This counter type is an inverse multitimer. It differs from CounterMultiTimer100NsInverse in that it measures time in units of ticks of the system performance timer, rather than in 100 nanosecond units.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterTimer">
       <summary>A percentage counter that shows the average time that a component is active as a percentage of the total sample time.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CounterTimerInverse">
-      <summary>A percentage counter that displays the average percentage of active time observed during sample interval. The value of these counters is calculated by monitoring the percentage of time that the service was inactive and then subtracting that value from 100 percent.</summary>
-      <returns></returns>
+      <summary>A percentage counter that displays the average percentage of active time observed during sample interval. The value of these counters is calculated by monitoring the percentage of time that the service was inactive and then subtracting that value from 100 percent. This is an inverse counter type. It is the same as CounterTimer100NsInv, except that it measures time in units of ticks of the system performance timer rather than in 100 nanosecond units.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CountPerTimeInterval32">
       <summary>An average counter designed to monitor the average length of a queue to a resource over time. It shows the difference between the queue lengths observed during the last two sample intervals divided by the duration of the interval. This type of counter is typically used to track the number of items that are queued or waiting.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.CountPerTimeInterval64">
-      <summary>An average counter that monitors the average length of a queue to a resource over time. Counters of this type display the difference between the queue lengths observed during the last two sample intervals, divided by the duration of the interval. This counter type is the same as CountPerTimeInterval32 except that it uses larger fields to accommodate larger values. This type of counter is typically used to track a high-volume or very large number of items that are queued or waiting.</summary>
-      <returns></returns>
+      <summary>An average counter that monitors the average length of a queue to a resource over time. Counters of this type display the difference between the queue lengths observed during the last two sample intervals, divided by the duration of the interval. This counter type is the same as <see langword="CountPerTimeInterval32" /> except that it uses larger fields to accommodate larger values. This type of counter is typically used to track a high-volume or very large number of items that are queued or waiting.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.ElapsedTime">
-      <summary>A difference timer that shows the total time between when the component or process started and the time when this value is calculated.</summary>
-      <returns></returns>
+      <summary>A difference timer that shows the total time between when the component or process started and the time when this value is calculated. Counters of this type include System\ System Up Time.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.NumberOfItems32">
-      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of items or operations.</summary>
-      <returns></returns>
+      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of items or operations. Counters of this type include Memory\Available Bytes.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.NumberOfItems64">
-      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of a very large number of items or operations. It is the same as NumberOfItems32 except that it uses larger fields to accommodate larger values.</summary>
-      <returns></returns>
+      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of a very large number of items or operations. It is the same as <see langword="NumberOfItems32" /> except that it uses larger fields to accommodate larger values.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.NumberOfItemsHEX32">
       <summary>An instantaneous counter that shows the most recently observed value in hexadecimal format. Used, for example, to maintain a simple count of items or operations.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.NumberOfItemsHEX64">
-      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of a very large number of items or operations. It is the same as NumberOfItemsHEX32 except that it uses larger fields to accommodate larger values.</summary>
-      <returns></returns>
+      <summary>An instantaneous counter that shows the most recently observed value. Used, for example, to maintain a simple count of a very large number of items or operations. It is the same as <see langword="NumberOfItemsHEX32" /> except that it uses larger fields to accommodate larger values.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.RateOfCountsPerSecond32">
-      <summary>A difference counter that shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock.</summary>
-      <returns></returns>
+      <summary>A difference counter that shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock. Counters of this type include System\ File Read Operations/sec.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.RateOfCountsPerSecond64">
-      <summary>A difference counter that shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock. This counter type is the same as the RateOfCountsPerSecond32 type, but it uses larger fields to accommodate larger values to track a high-volume number of items or operations per second, such as a byte-transmission rate.</summary>
-      <returns></returns>
+      <summary>A difference counter that shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock. This counter type is the same as the <see langword="RateOfCountsPerSecond32" /> type, but it uses larger fields to accommodate larger values to track a high-volume number of items or operations per second, such as a byte-transmission rate. Counters of this type include System\ File Read Bytes/sec.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.RawBase">
-      <summary>A base counter that stores the denominator of a counter that presents a general arithmetic fraction. Check that this value is greater than zero before using it as the denominator in a RawFraction value calculation.</summary>
-      <returns></returns>
+      <summary>A base counter that stores the denominator of a counter that presents a general arithmetic fraction. Check that this value is greater than zero before using it as the denominator in a <see langword="RawFraction" /> value calculation.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.RawFraction">
-      <summary>An instantaneous percentage counter that shows the ratio of a subset to its set as a percentage. For example, it compares the number of bytes in use on a disk to the total number of bytes on the disk. Counters of this type display the current percentage only, not an average over time.</summary>
-      <returns></returns>
+      <summary>An instantaneous percentage counter that shows the ratio of a subset to its set as a percentage. For example, it compares the number of bytes in use on a disk to the total number of bytes on the disk. Counters of this type display the current percentage only, not an average over time. Counters of this type include Paging File\% Usage Peak.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.SampleBase">
-      <summary>A base counter that stores the number of sampling interrupts taken and is used as a denominator in the sampling fraction. The sampling fraction is the number of samples that were 1 (or true) for a sample interrupt. Check that this value is greater than zero before using it as the denominator in a calculation of SampleFraction.</summary>
-      <returns></returns>
+      <summary>A base counter that stores the number of sampling interrupts taken and is used as a denominator in the sampling fraction. The sampling fraction is the number of samples that were 1 (or <see langword="true" />) for a sample interrupt. Check that this value is greater than zero before using it as the denominator in a calculation of <see langword="SampleFraction" />.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.SampleCounter">
       <summary>An average counter that shows the average number of operations completed in one second. When a counter of this type samples the data, each sampling interrupt returns one or zero. The counter data is the number of ones that were sampled. It measures time in units of ticks of the system performance timer.</summary>
-      <returns></returns>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.SampleFraction">
-      <summary>A percentage counter that shows the average ratio of hits to all operations during the last two sample intervals.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the average ratio of hits to all operations during the last two sample intervals. Counters of this type include Cache\Pin Read Hits %.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.Timer100Ns">
-      <summary>A percentage counter that shows the active time of a component as a percentage of the total elapsed time of the sample interval. It measures time in units of 100 nanoseconds (ns). Counters of this type are designed to measure the activity of one component at a time.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the active time of a component as a percentage of the total elapsed time of the sample interval. It measures time in units of 100 nanoseconds (ns). Counters of this type are designed to measure the activity of one component at a time. Counters of this type include Processor\ % User Time.</summary>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounterType.Timer100NsInverse">
-      <summary>A percentage counter that shows the average percentage of active time observed during the sample interval.</summary>
-      <returns></returns>
+      <summary>A percentage counter that shows the average percentage of active time observed during the sample interval. This is an inverse counter. Counters of this type include Processor\ % Processor Time.</summary>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterData">
+      <summary>Contains the raw data for a counter.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterData.Decrement">
+      <summary>Decrements the counter value by 1.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterData.Increment">
+      <summary>Increments the counter value by 1.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterData.IncrementBy(System.Int64)">
+      <summary>Increments the counter value by the specified amount.</summary>
+      <param name="value">The amount by which to increment the counter value. The increment value can be positive or negative.</param>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceData.CounterData.RawValue">
+      <summary>Sets or gets the raw counter data.</summary>
+      <returns>The raw counter data.</returns>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceData.CounterData.Value">
+      <summary>Sets or gets the counter data.</summary>
+      <returns>The counter data.</returns>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterSet">
+      <summary>Defines a set of logical counters.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.#ctor(System.Guid,System.Guid,System.Diagnostics.PerformanceData.CounterSetInstanceType)">
+      <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceData.CounterSet" /> class.</summary>
+      <param name="providerGuid">Guid that uniquely identifies the provider of the counter data. Use the Guid specified in the manifest.</param>
+      <param name="counterSetGuid">Guid that uniquely identifies the counter set for a provider. Use the Guid specified in the manifest.</param>
+      <param name="instanceType">Identifies the type of the counter set, for example, whether the counter set is a single or multiple instance counter set.</param>
+      <exception cref="T:System.InsufficientMemoryException">Not enough memory is available to complete the operation.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">Not supported prior to Windows Vista.</exception>
+      <exception cref="T:System.ArgumentException">One of the parameters is NULL or not valid.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An underlying Win32 function call failed.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.AddCounter(System.Int32,System.Diagnostics.PerformanceData.CounterType)">
+      <summary>Adds a counter to the counter set by using the specified counter identifier and type.</summary>
+      <param name="counterId">Identifies the counter. Use the same value that you used in the manifest to define the counter.</param>
+      <param name="counterType">Identifies the counter type. The counter type determines how the counter data is calculated, averaged, and displayed.</param>
+      <exception cref="T:System.ArgumentException">The counter identifier already exists in the set or is negative, or the counter type is NULL or not valid.</exception>
+      <exception cref="T:System.InvalidOperationException">You cannot add counters to the counter set after creating an instance of the counter set.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.AddCounter(System.Int32,System.Diagnostics.PerformanceData.CounterType,System.String)">
+      <summary>Adds a counter to the counter set by using the specified counter identifier and type and a display name for the counter.</summary>
+      <param name="counterId">Identifies the counter. Use the same value that you used in the manifest to define the counter.</param>
+      <param name="counterType">Identifies the counter type. The counter type determines how the counter data is calculated, averaged, and displayed.</param>
+      <param name="counterName">Name of the counter. You can use this name to index the counter in the counter set instance. (See <see cref="P:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet.Item(System.String)" />.)</param>
+      <exception cref="T:System.ArgumentException">The counter identifier already exists in the set or is negative, or the counter type is NULL or not valid.</exception>
+      <exception cref="T:System.InvalidOperationException">You cannot add counters to the counter set after creating an instance of the counter set.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.CreateCounterSetInstance(System.String)">
+      <summary>Creates an instance of the counter set.</summary>
+      <param name="instanceName">Name of the instance. The name must be unique.</param>
+      <returns>An instance of the counter set which will contain the counter data.</returns>
+      <exception cref="T:System.ArgumentException">The instance name is NULL.</exception>
+      <exception cref="T:System.InvalidOperationException">You must add counters to the counter set before creating an instance of the counter set.</exception>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.Dispose">
+      <summary>Releases all unmanaged resources used by this object.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.Dispose(System.Boolean)">
+      <summary>Releases all unmanaged resources used by this object and optionally release the managed resources.</summary>
+      <param name="disposing">
+        <see langword="True" /> if this was called from the Dispose method, <see langword="False" /> if called from the finalizer.</param>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSet.Finalize">
+      <summary>Frees resources before the object is reclaimed by garbage collection.</summary>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterSetInstance">
+      <summary>Creates an instance of the logical counters defined in the <see cref="T:System.Diagnostics.PerformanceData.CounterSet" /> class.</summary>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceData.CounterSetInstance.Counters">
+      <summary>Retrieves the collection of counter data for the counter set instance.</summary>
+      <returns>A collection of the counter data contained in the counter set instance.</returns>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSetInstance.Dispose">
+      <summary>Releases all unmanaged resources used by this object.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSetInstance.Finalize">
+      <summary>Releases unmanaged resources and performs other cleanup operations.</summary>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet">
+      <summary>Contains the collection of counter values.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet.Dispose">
+      <summary>Releases all unmanaged resources used by this object.</summary>
+    </member>
+    <member name="M:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet.Finalize">
+      <summary>Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.</summary>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet.Item(System.Int32)">
+      <summary>Accesses a counter value in the collection by using the specified counter identifier.</summary>
+      <param name="counterId">Identifier of the counter. This is the identifier you used when you added the counter to the counter set.</param>
+      <returns>The counter data.</returns>
+    </member>
+    <member name="P:System.Diagnostics.PerformanceData.CounterSetInstanceCounterDataSet.Item(System.String)">
+      <summary>Accesses a counter value in the collection by using the specified counter name.</summary>
+      <param name="counterName">Name of the counter. This is the name that you used when you added the counter to the counter set.</param>
+      <returns>The counter data.</returns>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterSetInstanceType">
+      <summary>Specifies whether the counter set allows multiple instances such as processes and physical disks, or a single instance such as memory.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.GlobalAggregate">
+      <summary>The counter set contains single instance counters whose aggregate value is obtained from one or more sources. For example, a counter in this type of counter set might obtain the number of reads from each of the three hard disks on the computer and sum their values.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.GlobalAggregateWithHistory">
+      <summary>This type is similar to <see cref="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.GlobalAggregate" /> except that this counter set type stores all counter values for the lifetime of the consumer application (the counter value is cached beyond the lifetime of the counter). For example, if one of the hard disks in the global aggregate example were to become unavailable, the total bytes read by that disk would still be available and used to calculate the aggregate value.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.InstanceAggregate">
+      <summary>This type is similar to <see cref="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.MultipleAggregate" />, except that instead of aggregating all instance data to one aggregated (_Total) instance, it will aggregate counter data from instances of the same name. For example, if multiple provider processes contained instances named IExplore, <see cref="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.Multiple" /> and <see cref="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.MultipleAggregate" /> CounterSet will show multiple IExplore instances (IExplore, IExplore#1, IExplore#2, and so on); however, a <see cref="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.InstanceAggregate" /> instance type will publish only one IExplore instance with aggregated counter data from all instances named IExplore.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.Multiple">
+      <summary>The counter set contains multiple instance counters, for example, a counter that measures the average disk I/O for a process.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.MultipleAggregate">
+      <summary>The counter set contains multiple instance counters whose aggregate value is obtained from all instances of the counter. For example, a counter in this type of counter set might obtain the total thread execution time for all threads in a multithreaded application and sum their values.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterSetInstanceType.Single">
+      <summary>The counter set contains single instance counters, for example, a counter that measures physical memory.</summary>
+    </member>
+    <member name="T:System.Diagnostics.PerformanceData.CounterType">
+      <summary>Defines the possible types of counters. Each counter is assigned a counter type. The counter type determines how the counter data is calculated, averaged, and displayed.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.AverageBase">
+      <summary>This counter is used as the base data (denominator) in the computation of time or count averages for the <see cref="F:System.Diagnostics.PerformanceData.CounterType.AverageCount64" /> and <see cref="F:System.Diagnostics.PerformanceData.CounterType.AverageTimer32" /> counter types. This counter type collects the last observed value only. (See the PERF_AVERAGE_BASE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.AverageCount64">
+      <summary>This counter type shows how many items are processed, on average, during an operation. Counters of this type display a ratio of the items processed (such as bytes sent) to the number of operations completed. The ratio is calculated by comparing the number of items processed during the last interval to the number of operations completed during the last interval. (See the PERF_AVERAGE_BULK counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.AverageTimer32">
+      <summary>This counter type measures the average time it takes to complete a process or operation. Counters of this type display a ratio of the total elapsed time of the sample interval to the number of processes or operations completed during that time. This counter type measures time in ticks of the system clock. (See the PERF_AVERAGE_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.Delta32">
+      <summary>This counter type shows the change in the measured attribute between the two most recent sample intervals. (See the PERF_COUNTER_DELTA counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.Delta64">
+      <summary>This counter type shows the change in the measured attribute between the two most recent sample intervals. It is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.Delta32" /> counter type, except that it uses larger fields to accommodate larger values. (See the PERF_COUNTER_LARGE_DELTA counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.ElapsedTime">
+      <summary>This counter type shows the total time between when the component or process started and the time when this value is calculated. (See the PERF_ELAPSED_TIME counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.LargeQueueLength">
+      <summary>This counter type monitors the average length of a queue to a resource over time. Counters of this type display the difference between the queue lengths observed during the last two sample intervals, divided by the duration of the interval. This counter type is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.QueueLength" /> counter type, except that it uses larger fields to accommodate larger values. (See the PERF_COUNTER_LARGE_QUEUELEN_TYPE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerBase">
+      <summary>Indicates the number of items sampled. It is used as the denominator in the calculations to get an average among the items sampled when taking timings of multiple, but similar, items. This type supports the following counter types: <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageActive" />, <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageNotActive" />, <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageActive100Ns" />, and <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageNotActive100Ns" />.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageActive">
+      <summary>This counter type is a multitimer. Multitimers collect data from more than one instance of a component, such as a processor or disk. Counters of this type display the active time of one or more components as a percentage of the total time of the sample interval. Because the numerator records the active time of components operating simultaneously, the resulting percentage can exceed 100 percent. This counter type differs from <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageActive100Ns" /> in that it measures time in units of ticks of the system performance timer, rather than in 100 nanosecond units. (See the PERF_COUNTER_MULTI_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageActive100Ns">
+      <summary>This counter type shows the active time of one or more components as a percentage of the total time of the sample interval. It measures time in 100 nanosecond units. This counter type is a multitimer. Multitimers are designed to monitor more than one instance of a component, such as a processor or disk. (See the PERF_100NSEC_MULTI_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageNotActive">
+      <summary>This counter type shows the active time of one or more components as a percentage of the total time of the sample interval. This counter type is an inverse multitimer. Multitimers monitor more than one instance of a component, such as a processor or disk. Inverse counters measure the time that a component is not active and derive the active time from that measurement. This counter differs from <see cref="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageNotActive100Ns" /> in that it measures time in units of ticks of the system performance timer, rather than in 100 nanosecond units. (See the PERF_COUNTER_MULTI_TIMER_INV counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.MultiTimerPercentageNotActive100Ns">
+      <summary>This counter type shows the active time of one or more components as a percentage of the total time of the sample interval. Counters of this type measure time in 100 nanosecond units. This counter type is an inverse multitimer. Multitimers are designed to monitor more than one instance of a component, such as a processor or disk. Inverse counters measure the time that a component is not active and derive its active time from the measurement of inactive time. (See the PERF_100NSEC_MULTI_TIMER_INV counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.ObjectSpecificTimer">
+      <summary>This 64-bit counter type is a timer that displays in object-specific units. (See the PERF_OBJ_TIME_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PercentageActive">
+      <summary>This counter type shows the average time that a component was active as a percentage of the total sample time. (See the PERF_COUNTER_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PercentageActive100Ns">
+      <summary>This counter type shows the active time of a component as a percentage of the total elapsed time of the sample interval. It measures time in units of 100 nanoseconds. Counters of this type are designed to measure the activity of one component at a time. (See the PERF_100NSEC_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PercentageNotActive">
+      <summary>This is an inverse counter type. Inverse counters measure the time that a component is not active and derive the active time from that measurement. Counters of this type display the average percentage of active time observed during sample interval. The value of these counters is calculated by monitoring the percentage of time that the service was inactive and then subtracting that value from 100 percent. This counter type is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.PercentageNotActive100Ns" /> counter type, except that it measures time in units of ticks of the system performance timer, rather than in 100 nanosecond units. (See the PERF_COUNTER_TIMER_INV counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PercentageNotActive100Ns">
+      <summary>This counter type shows the average percentage of active time observed during the sample interval. This is an inverse counter. Inverse counters are calculated by monitoring the percentage of time that the service was inactive and then subtracting that value from 100 percent. (See the PERF_100NSEC_TIMER_INV counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PrecisionObjectSpecificTimer">
+      <summary>This counter type shows a value that consists of two counter values: the count of the elapsed time of the event being monitored, and the frequency specified in the PerfFreq field of the object header. This counter type differs from other counter timers in that the clock tick value accompanies the counter value so as to eliminate any possible difference due to latency from the function call. Precision counter types are used when standard system timers are not precise enough for accurate readings. (See the PERF_PRECISION_OBJECT_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PrecisionSystemTimer">
+      <summary>This counter type shows a value that consists of two counter values: the count of the elapsed time of the event being monitored, and the frequency from the system performance timer. This counter type differs from other counter timers in that the clock tick value accompanies the counter value, eliminating any possible difference due to latency from the function call. Precision counter types are used when standard system timers are not precise enough for accurate readings. (See the PERF_PRECISION_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.PrecisionTimer100Ns">
+      <summary>This counter type shows a value that consists of two counter values: the count of the elapsed time of the event being monitored, and the "clock" time from a private timer in the same units. It measures time in 100 nanosecond units. This counter type differs from other counter timers in that the clock tick value accompanies the counter value eliminating any possible difference due to latency from the function call. Precision counter types are used when standard system timers are not precise enough for accurate readings. (See the PERF_PRECISION_100NS_TIMER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.QueueLength">
+      <summary>This counter type is designed to monitor the average length of a queue to a resource over time. It shows the difference between the queue lengths observed during the last two sample intervals divided by the duration of the interval. (See the PERF_COUNTER_QUEUELEN_TYPE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.QueueLength100Ns">
+      <summary>This counter type measures the queue-length space-time product using a 100-nanosecond time base. (See the PERF_COUNTER_100NS_QUEUELEN_TYPE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.QueueLengthObjectTime">
+      <summary>This counter type measures the queue-length space-time product using an object-specific time base. (See the PERF_COUNTER_OBJ_QUEUELEN_TYPE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RateOfCountPerSecond32">
+      <summary>This counter type shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock. (See the PERF_COUNTER_COUNTER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RateOfCountPerSecond64">
+      <summary>This counter type shows the average number of operations completed during each second of the sample interval. Counters of this type measure time in ticks of the system clock. This counter type is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RateOfCountPerSecond32" /> type, but it uses larger fields to accommodate larger values. (See the PERF_COUNTER_BULK_COUNT counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawBase32">
+      <summary>This counter type collects the last observed value only. The value is used as the denominator of a counter that presents a general arithmetic fraction. This type supports the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawFraction32" /> counter type. (See the PERF_RAW_BASE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawBase64">
+      <summary>This counter type collects the last observed value. It is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawBase32" /> counter type except that it uses larger fields to accommodate larger values. This type supports the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawFraction64" /> counter type. (See the PERF_LARGE_RAW_BASE counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawData32">
+      <summary>This counter type shows the last observed value only. It does not display an average. (See the PERF_COUNTER_RAWCOUNT counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawData64">
+      <summary>This counter type shows the last observed value only, not an average. It is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawData32" /> counter type, except that it uses larger fields to accommodate larger values. (See the PERF_COUNTER_LARGE_RAWCOUNT counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawDataHex32">
+      <summary>This counter type shows the most recently observed value, in hexadecimal format. It does not display an average. (See the PERF_COUNTER_RAWCOUNT_HEX counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawDataHex64">
+      <summary>This counter type shows the last observed value, in hexadecimal format. It is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawDataHex32" /> counter type, except that it uses larger fields to accommodate larger values. (See the PERF_COUNTER_LARGE_RAWCOUNT_HEX counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawFraction32">
+      <summary>This counter type shows the ratio of a subset to its set as a percentage. For example, it compares the number of bytes in use on a disk to the total number of bytes on the disk. Counters of this type display the current percentage only, not an average over time. (See the PERF_RAW_FRACTION counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.RawFraction64">
+      <summary>This counter type shows the ratio of a subset to its set as a percentage. For example, it compares the number of bytes in use on a disk to the total number of bytes on the disk. Counters of this type display the current percentage only, not an average over time. It is the same as the <see cref="F:System.Diagnostics.PerformanceData.CounterType.RawFraction32" /> counter type, except that it uses larger fields to accommodate larger values.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.SampleBase">
+      <summary>This counter stores the number of sampling interrupts taken and is used as a denominator in the sampling fraction. This type supports the <see cref="F:System.Diagnostics.PerformanceData.CounterType.SampleFraction" /> counter type.</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.SampleCounter">
+      <summary>This counter type shows the average number of operations completed in one second. It measures time in units of ticks of the system performance timer. The variable F represents the number of ticks that occur in one second. The value of F is factored into the equation so that the result is displayed in seconds. (See the PERF_SAMPLE_COUNTER counter type in the deployment kit.)</summary>
+    </member>
+    <member name="F:System.Diagnostics.PerformanceData.CounterType.SampleFraction">
+      <summary>This counter type shows the average ratio of hits to all operations during the last two sample intervals. (See the PERF_SAMPLE_FRACTION counter type in the deployment kit.)</summary>
     </member>
   </members>
 </doc>

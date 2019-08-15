@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Data.DataSetExtensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Data.DataRowComparer">
+      <summary>Returns a singleton instance of the <see cref="T:System.Data.DataRowComparer`1" /> class.</summary>
+    </member>
+    <member name="P:System.Data.DataRowComparer.Default">
+      <summary>Gets a singleton instance of <see cref="T:System.Data.DataRowComparer`1" />. This property is read-only.</summary>
+      <returns>An instance of a <see cref="T:System.Data.DataRowComparer`1" />.</returns>
+    </member>
+    <member name="T:System.Data.DataRowComparer`1">
+      <summary>Compares two <see cref="T:System.Data.DataRow" /> objects for equivalence by using value-based comparison.</summary>
+      <typeparam name="TRow">The type of objects to be compared, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+    </member>
+    <member name="P:System.Data.DataRowComparer`1.Default">
+      <summary>Gets a singleton instance of <see cref="T:System.Data.DataRowComparer`1" />. This property is read-only.</summary>
+      <returns>An instance of a <see cref="T:System.Data.DataRowComparer`1" />.</returns>
+    </member>
+    <member name="M:System.Data.DataRowComparer`1.Equals(`0,`0)">
+      <summary>Compares two <see cref="T:System.Data.DataRow" /> objects by using a column-by-column, value-based comparison.</summary>
+      <param name="leftRow">The first <see cref="T:System.Data.DataRow" /> object to compare.</param>
+      <param name="rightRow">The second <see cref="T:System.Data.DataRow" /> object to compare.</param>
+      <returns>
+        <see langword="true" /> if the two <see cref="T:System.Data.DataRow" /> objects have ordered sets of column values that are equal; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">One or both of the source <see cref="T:System.Data.DataRow" /> objects are <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Data.DataRowComparer`1.GetHashCode(`0)">
+      <summary>Returns a hash code for the specified <see cref="T:System.Data.DataRow" /> object.</summary>
+      <param name="row">The <see cref="T:System.Data.DataRow" /> to compute the hash code from.</param>
+      <returns>An <see cref="T:System.Int32" /> value representing the hash code of the row.</returns>
+      <exception cref="T:System.ArgumentException">The source <see cref="T:System.Data.DataRow" /> objects does not belong to a <see cref="T:System.Data.DataTable" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Data.DataRow" /> objects is <see langword="null" />.</exception>
+    </member>
+    <member name="T:System.Data.DataRowExtensions">
+      <summary>Defines the extension methods to the <see cref="T:System.Data.DataRow" /> class. This is a static class.</summary>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Data.DataColumn)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Data.DataColumn)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="column">The input <see cref="T:System.Data.DataColumn" /> object that specifies the column to return the value of.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="column" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="column" /> does not occur in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A null value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Data.DataColumn,System.Data.DataRowVersion)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Data.DataColumn,System.Data.DataRowVersion)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="column">The input <see cref="T:System.Data.DataColumn" /> object that specifies the column to return the value of.</param>
+      <param name="version">A <see cref="T:System.Data.DataRowVersion" /> enumeration that specifies the version of the column value to return, such as <see langword="Current" /> or <see langword="Original" /> version.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="column" /> and <paramref name="version" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="column" /> does not exist in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A null value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Int32)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Int32)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnIndex">The column index.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="columnIndex" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="ordinal" /> does not exist in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A null value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Int32,System.Data.DataRowVersion)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.Int32,System.Data.DataRowVersion)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnIndex">The zero-based ordinal of the column to return the value of.</param>
+      <param name="version">A <see cref="T:System.Data.DataRowVersion" /> enumeration that specifies the version of the column value to return, such as <see langword="Current" /> or <see langword="Original" /> version.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="ordinal" /> and <paramref name="version" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="ordinal" /> does not exist in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A null value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.String)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.String)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnName">The name of the column to return the value of.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="columnName" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="columnName" /> does not occur in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A <see langword="null" /> value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.String,System.Data.DataRowVersion)">
+      <summary>Provides strongly-typed access to each of the column values in the specified row. The <see cref="M:System.Data.DataRowExtensions.Field``1(System.Data.DataRow,System.String,System.Data.DataRowVersion)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnName">The name of the column to return the value of.</param>
+      <param name="version">A <see cref="T:System.Data.DataRowVersion" /> enumeration that specifies the version of the column value to return, such as <see langword="Current" /> or <see langword="Original" /> version.</param>
+      <typeparam name="T">A generic parameter that specifies the return type of the column.</typeparam>
+      <returns>The value, of type <paramref name="T" />, of the <see cref="T:System.Data.DataColumn" /> specified by <paramref name="columnName" /> and <paramref name="version" />.</returns>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The column specified by <paramref name="columnName" /> does not exist in the <see cref="T:System.Data.DataTable" /> that the <see cref="T:System.Data.DataRow" /> is a part of.</exception>
+      <exception cref="T:System.NullReferenceException">A null value was assigned to a non-nullable type.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.Data.DataColumn,``0)">
+      <summary>Sets a new value for the specified column in the <see cref="T:System.Data.DataRow" />. The <see cref="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.Data.DataColumn,``0)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="column">The input <see cref="T:System.Data.DataColumn" /> specifies which row value to retrieve.</param>
+      <param name="value">The new row value for the specified column, of type <paramref name="T" />.</param>
+      <typeparam name="T">A generic parameter that specifies the value type of the column.</typeparam>
+      <exception cref="T:System.ArgumentException">The column specified by <paramref name="column" /> cannot be found.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="column" /> is null.</exception>
+      <exception cref="T:System.Data.DeletedRowInaccessibleException">Occurs when attempting to set a value on a deleted row.</exception>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.Int32,``0)">
+      <summary>Sets a new value for the specified column in the <see cref="T:System.Data.DataRow" /> the method is called on. The <see cref="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.Int32,``0)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnIndex">The zero-based ordinal of the column to set the value of.</param>
+      <param name="value">The new row value for the specified column, of type <paramref name="T" />.</param>
+      <typeparam name="T">A generic parameter that specifies the value type of the column.</typeparam>
+      <exception cref="T:System.Data.DeletedRowInaccessibleException">Occurs when attempting to set a value on a deleted row.</exception>
+      <exception cref="T:System.IndexOutOfRangeException">The <paramref name="ordinal" /> argument is out of range.</exception>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could be not cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+    </member>
+    <member name="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.String,``0)">
+      <summary>Sets a new value for the specified column in the <see cref="T:System.Data.DataRow" />. The <see cref="M:System.Data.DataRowExtensions.SetField``1(System.Data.DataRow,System.String,``0)" /> method also supports nullable types.</summary>
+      <param name="row">The input <see cref="T:System.Data.DataRow" />, which acts as the <see langword="this" /> instance for the extension method.</param>
+      <param name="columnName">The name of the column to set the value of.</param>
+      <param name="value">The new row value for the specified column, of type <paramref name="T" />.</param>
+      <typeparam name="T">A generic parameter that specifies the value type of the column.</typeparam>
+      <exception cref="T:System.ArgumentException">The column specified by <paramref name="columnName" /> cannot be found.</exception>
+      <exception cref="T:System.Data.DeletedRowInaccessibleException">Occurs when attempting to set a value on a deleted row.</exception>
+      <exception cref="T:System.InvalidCastException">The value type of the underlying column could not be cast to the type specified by the generic parameter, <paramref name="T" />.</exception>
+    </member>
+    <member name="T:System.Data.DataTableExtensions">
+      <summary>Defines the extension methods to the <see cref="T:System.Data.DataTable" /> class. <see cref="T:System.Data.DataTableExtensions" /> is a static class.</summary>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.AsDataView(System.Data.DataTable)">
+      <summary>Creates and returns a LINQ-enabled <see cref="T:System.Data.DataView" /> object.</summary>
+      <param name="table">The source <see cref="T:System.Data.DataTable" /> from which the LINQ-enabled <see cref="T:System.Data.DataView" /> is created.</param>
+      <returns>A LINQ-enabled <see cref="T:System.Data.DataView" /> object.</returns>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.AsDataView``1(System.Data.EnumerableRowCollection{``0})">
+      <summary>Creates and returns a LINQ-enabled <see cref="T:System.Data.DataView" /> object representing the LINQ to DataSet query.</summary>
+      <param name="source">The source LINQ to DataSet query from which the LINQ-enabled <see cref="T:System.Data.DataView" /> is created.</param>
+      <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <returns>A LINQ-enabled <see cref="T:System.Data.DataView" /> object.</returns>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.AsEnumerable(System.Data.DataTable)">
+      <summary>Returns an <see cref="T:System.Collections.Generic.IEnumerable`1" /> object, where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />. This object can be used in a LINQ expression or method query.</summary>
+      <param name="source">The source <see cref="T:System.Data.DataTable" /> to make enumerable.</param>
+      <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1" /> object, where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Data.DataTable" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.CopyToDataTable``1(System.Collections.Generic.IEnumerable{``0})">
+      <summary>Returns a <see cref="T:System.Data.DataTable" /> that contains copies of the <see cref="T:System.Data.DataRow" /> objects, given an input <see cref="T:System.Collections.Generic.IEnumerable`1" /> object where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</summary>
+      <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence.</param>
+      <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <returns>A <see cref="T:System.Data.DataTable" /> that contains the input sequence as the type of <see cref="T:System.Data.DataRow" /> objects.</returns>
+      <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> and a new table cannot be created.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
+ The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
+ A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.CopyToDataTable``1(System.Collections.Generic.IEnumerable{``0},System.Data.DataTable,System.Data.LoadOption)">
+      <summary>Copies <see cref="T:System.Data.DataRow" /> objects to the specified <see cref="T:System.Data.DataTable" />, given an input <see cref="T:System.Collections.Generic.IEnumerable`1" /> object where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</summary>
+      <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence.</param>
+      <param name="table">The destination <see cref="T:System.Data.DataTable" />.</param>
+      <param name="options">A <see cref="T:System.Data.LoadOption" /> enumeration that specifies the <see cref="T:System.Data.DataTable" /> load options.</param>
+      <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <exception cref="T:System.ArgumentException">The copied <see cref="T:System.Data.DataRow" /> objects do not fit the schema of the destination <see cref="T:System.Data.DataTable" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> or the destination <see cref="T:System.Data.DataTable" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
+ The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
+ A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Data.DataTableExtensions.CopyToDataTable``1(System.Collections.Generic.IEnumerable{``0},System.Data.DataTable,System.Data.LoadOption,System.Data.FillErrorEventHandler)">
+      <summary>Copies <see cref="T:System.Data.DataRow" /> objects to the specified <see cref="T:System.Data.DataTable" />, given an input <see cref="T:System.Collections.Generic.IEnumerable`1" /> object where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</summary>
+      <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence.</param>
+      <param name="table">The destination <see cref="T:System.Data.DataTable" />.</param>
+      <param name="options">A <see cref="T:System.Data.LoadOption" /> enumeration that specifies the <see cref="T:System.Data.DataTable" /> load options.</param>
+      <param name="errorHandler">A <see cref="T:System.Data.FillErrorEventHandler" /> delegate that represents the method that will handle an error.</param>
+      <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <exception cref="T:System.ArgumentException">The copied <see cref="T:System.Data.DataRow" /> objects do not fit the schema of the destination <see cref="T:System.Data.DataTable" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> or the destination <see cref="T:System.Data.DataTable" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
+ -or-  
+ The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
+ -or-  
+ A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+    </member>
+    <member name="T:System.Data.EnumerableRowCollection">
+      <summary>Represents a collection of <see cref="T:System.Data.DataRow" /> objects returned from a LINQ to DataSet query. This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for the collection of <see cref="T:System.Data.DataRow" /> objects. This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> that can be used to traverse the collection of <see cref="T:System.Data.DataRow" /> objects.</returns>
+    </member>
+    <member name="T:System.Data.EnumerableRowCollection`1">
+      <summary>Represents a collection of <see cref="T:System.Data.DataRow" /> objects returned from a query.</summary>
+      <typeparam name="TRow">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollection`1.GetEnumerator">
+      <summary>Returns an enumerator for the collection of contained row objects.</summary>
+      <returns>A strongly-typed <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to traverse the collection of <paramref name="TRow" /> objects.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollection`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for the collection of <see cref="T:System.Data.DataRow" /> objects.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> that can be used to traverse the collection of <see cref="T:System.Data.DataRow" /> objects.</returns>
+    </member>
+    <member name="T:System.Data.EnumerableRowCollectionExtensions">
+      <summary>Contains the extension methods for the data row collection classes.</summary>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.Cast``1(System.Data.EnumerableRowCollection)">
+      <summary>Converts the elements of an <see cref="T:System.Data.EnumerableRowCollection" /> to the specified type.</summary>
+      <param name="source">The <see cref="T:System.Data.EnumerableRowCollection" /> that contains the elements to be converted.</param>
+      <typeparam name="TResult">The type to convert the elements of source to.</typeparam>
+      <returns>An <see cref="T:System.Data.EnumerableRowCollection" /> that contains each element of the source sequence converted to the specified type.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="source" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidCastException">An element in the sequence cannot be cast to type <paramref name="TResult" />.</exception>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.OrderBy``2(System.Data.EnumerableRowCollection{``0},System.Func{``0,``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in ascending order according to the specified key.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.OrderBy``2(System.Data.EnumerableRowCollection{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in ascending order according to the specified key and comparer.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.OrderByDescending``2(System.Data.EnumerableRowCollection{``0},System.Func{``0,``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in descending order according to the specified key.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.OrderByDescending``2(System.Data.EnumerableRowCollection{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in descending order according to the specified key and comparer.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.Select``2(System.Data.EnumerableRowCollection{``0},System.Func{``0,``1})">
+      <summary>Projects each element of an <see cref="T:System.Data.EnumerableRowCollection`1" /> into a new form.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection`1" /> containing the <see cref="T:System.Data.DataRow" /> elements to invoke a transform function upon.</param>
+      <param name="selector">A transform function to apply to each element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="S">The type that <paramref name="TRow" /> will be transformed into.</typeparam>
+      <returns>An <see cref="T:System.Data.EnumerableRowCollection`1" /> whose elements are the result of invoking the transform function on each element of <paramref name="source" />.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.ThenBy``2(System.Data.OrderedEnumerableRowCollection{``0},System.Func{``0,``1})">
+      <summary>Performs a secondary ordering of the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in ascending order according to the specified key.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.ThenBy``2(System.Data.OrderedEnumerableRowCollection{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Performs a secondary ordering of the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in ascending order according to the specified key and comparer.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.ThenByDescending``2(System.Data.OrderedEnumerableRowCollection{``0},System.Func{``0,``1})">
+      <summary>Performs a secondary ordering of the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in descending order according to the specified key.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.ThenByDescending``2(System.Data.OrderedEnumerableRowCollection{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Performs a secondary ordering of the rows of a <see cref="T:System.Data.EnumerableRowCollection" /> in descending order according to the specified key and comparer.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.EnumerableRowCollectionExtensions.Where``1(System.Data.EnumerableRowCollection{``0},System.Func{``0,System.Boolean})">
+      <summary>Filters a sequence of rows based on the specified predicate.</summary>
+      <param name="source">An <see cref="T:System.Data.EnumerableRowCollection" /> containing the <see cref="T:System.Data.DataRow" /> elements to filter.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> that contains rows from the input sequence that satisfy the condition.</returns>
+    </member>
+    <member name="T:System.Data.OrderedEnumerableRowCollection`1">
+      <summary>Represents a collection of ordered <see cref="T:System.Data.DataRow" /> objects returned from a query.</summary>
+      <typeparam name="TRow">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+    </member>
+    <member name="T:System.Data.TypedTableBase`1">
+      <summary>This type is used as a base class for typed-<see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool, and is not intended to be used directly from your code.</summary>
+      <typeparam name="T">The type of objects in the source sequence represented by the table, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+    </member>
+    <member name="M:System.Data.TypedTableBase`1.#ctor">
+      <summary>Initializes a new <see cref="T:System.Data.TypedTableBase`1" />. This method supports typed-<see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool. This type is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Data.TypedTableBase`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new <see cref="T:System.Data.TypedTableBase`1" />. This method supports typed-<see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool. This method is not intended to be used directly from your code.</summary>
+      <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that contains data to construct the object.</param>
+      <param name="context">The streaming context for the object being deserialized.</param>
+    </member>
+    <member name="M:System.Data.TypedTableBase`1.Cast``1">
+      <summary>Converts the elements of an <see cref="T:System.Data.TypedTableBase`1" /> to the specified type. This method supports typed <see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool. This method is not intended to be used directly from your code.</summary>
+      <typeparam name="TResult" />
+      <returns>An <see cref="T:System.Data.EnumerableRowCollection" /> that contains each element of the source sequence converted to the specified type.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBase`1.GetEnumerator">
+      <summary>Returns an enumerator for the typed-<see cref="T:System.Data.DataRow" />. This method supports typed-<see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool. This method is not intended to be used directly from your code.</summary>
+      <returns>An object that implements the <see cref="T:System.Collections.Generic.IEnumerator`1" /> interface.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBase`1.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator for the typed-<see cref="T:System.Data.DataRow" />. This method supports typed-<see cref="T:System.Data.DataTable" /> object generation by Visual Studio and the XSD.exe .NET Framework tool. This method is not intended to be used directly from your code.</summary>
+      <returns>An object that implements the <see cref="T:System.Collections.Generic.IEnumerator`1" /> interface.</returns>
+    </member>
+    <member name="T:System.Data.TypedTableBaseExtensions">
+      <summary>Contains the extension methods for the <see cref="T:System.Data.TypedTableBase`1" /> class.</summary>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.AsEnumerable``1(System.Data.TypedTableBase{``0})">
+      <summary>Enumerates the data row elements of the <see cref="T:System.Data.TypedTableBase`1" /> and returns an <see cref="T:System.Data.EnumerableRowCollection`1" /> object, where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />. This object can be used in a LINQ expression or method query.</summary>
+      <param name="source">The source <see cref="T:System.Data.TypedTableBase`1" /> to make enumerable.</param>
+      <typeparam name="TRow">The type to convert the elements of the source to.</typeparam>
+      <returns>An <see cref="T:System.Data.EnumerableRowCollection`1" /> object, where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.ElementAtOrDefault``1(System.Data.TypedTableBase{``0},System.Int32)">
+      <summary>Returns the element at a specified row in a sequence or a default value if the row is out of range.</summary>
+      <param name="source">An enumerable object to return an element from.</param>
+      <param name="index">The zero-based index of the element to retrieve.</param>
+      <typeparam name="TRow">The type of the elements or the row.</typeparam>
+      <returns>The element at a specified row in a sequence.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.OrderBy``2(System.Data.TypedTableBase{``0},System.Func{``0,``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.TypedTableBase`1" /> in ascending order according to the specified key.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.OrderBy``2(System.Data.TypedTableBase{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.TypedTableBase`1" /> in ascending order according to the specified key and comparer.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.OrderByDescending``2(System.Data.TypedTableBase{``0},System.Func{``0,``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.TypedTableBase`1" /> in descending order according to the specified key.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.OrderByDescending``2(System.Data.TypedTableBase{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+      <summary>Sorts the rows of a <see cref="T:System.Data.TypedTableBase`1" /> in descending order according to the specified key and comparer.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to be ordered.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1" /> to compare keys.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, typically <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> whose elements are sorted by the specified key and comparer.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.Select``2(System.Data.TypedTableBase{``0},System.Func{``0,``1})">
+      <summary>Projects each element of a <see cref="T:System.Data.TypedTableBase`1" /> into a new form.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to invoke a transformation function upon.</param>
+      <param name="selector">A transformation function to apply to each element.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, <see cref="T:System.Data.DataRow" />.</typeparam>
+      <typeparam name="S" />
+      <returns>An <see cref="T:System.Data.EnumerableRowCollection`1" /> whose elements are the result of invoking the transformation function on each element of <paramref name="source" />.</returns>
+    </member>
+    <member name="M:System.Data.TypedTableBaseExtensions.Where``1(System.Data.TypedTableBase{``0},System.Func{``0,System.Boolean})">
+      <summary>Filters a sequence of rows based on the specified predicate.</summary>
+      <param name="source">A <see cref="T:System.Data.TypedTableBase`1" /> that contains the <see cref="T:System.Data.DataRow" /> elements to filter.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <typeparam name="TRow">The type of the row elements in <paramref name="source" />, <see cref="T:System.Data.DataRow" />.</typeparam>
+      <returns>An <see cref="T:System.Data.OrderedEnumerableRowCollection`1" /> that contains rows from the input sequence that satisfy the condition.</returns>
+    </member>
+  </members>
+</doc>

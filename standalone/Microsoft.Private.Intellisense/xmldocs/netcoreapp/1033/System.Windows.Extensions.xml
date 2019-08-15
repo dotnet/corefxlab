@@ -1,0 +1,485 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Windows.Extensions</name>
+  </assembly>
+  <members>
+    <member name="T:System.Drawing.FontConverter">
+      <summary>Converts <see cref="T:System.Drawing.Font" /> objects from one data type to another.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.#ctor">
+      <summary>Initializes a new <see cref="T:System.Drawing.FontConverter" /> object.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines whether this converter can convert an object in the specified source type to the native type of the converter.</summary>
+      <param name="context">A formatter context. This object can be used to get additional information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="sourceType">The type you want to convert from.</param>
+      <returns>This method returns <see langword="true" /> if this object can perform the conversion.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Gets a value indicating whether this converter can convert an object to the given destination type using the context.</summary>
+      <param name="context">An <see langword="ITypeDescriptorContext" /> object that provides a format context.</param>
+      <param name="destinationType">A <see cref="T:System.Type" /> object that represents the type you want to convert to.</param>
+      <returns>This method returns <see langword="true" /> if this converter can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts the specified object to the native type of the converter.</summary>
+      <param name="context">A formatter context. This object can be used to get additional information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="culture">A <see langword="CultureInfo" /> object that specifies the culture used to represent the font.</param>
+      <param name="value">The object to convert.</param>
+      <returns>The converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion could not be performed.</exception>
+    </member>
+    <member name="M:System.Drawing.FontConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <summary>Converts the specified object to another type.</summary>
+      <param name="context">A formatter context. This object can be used to get additional information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object that specifies the culture used to represent the object.</param>
+      <param name="value">The object to convert.</param>
+      <param name="destinationType">The data type to convert the object to.</param>
+      <returns>The converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion was not successful.</exception>
+    </member>
+    <member name="M:System.Drawing.FontConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)">
+      <summary>Creates an object of this type by using a specified set of property values for the object.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <param name="propertyValues">A dictionary of new property values. The dictionary contains a series of name-value pairs, one for each property returned from the <see cref="Overload:System.Drawing.FontConverter.GetProperties" /> method.</param>
+      <returns>The newly created object, or <see langword="null" /> if the object could not be created. The default implementation returns <see langword="null" />.  
+ <see cref="M:System.Drawing.FontConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)" /> useful for creating non-changeable objects that have changeable properties.</returns>
+    </member>
+    <member name="T:System.Drawing.FontConverter.FontNameConverter">
+      <summary>
+        <see cref="T:System.Drawing.FontConverter.FontNameConverter" /> is a type converter that is used to convert a font name to and from various other representations.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.FontConverter.FontNameConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines if this converter can convert an object in the given source type to the native type of the converter.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to extract additional information about the environment this converter is being invoked from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may return <see langword="null" />.</param>
+      <param name="sourceType">The type you wish to convert from.</param>
+      <returns>
+        <see langword="true" /> if the converter can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts the given object to the converter's native type.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to extract additional information about the environment this converter is being invoked from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may return <see langword="null" />.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> to use to perform the conversion</param>
+      <param name="value">The object to convert.</param>
+      <returns>The converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be completed.</exception>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.GetStandardValues(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Retrieves a collection containing a set of standard values for the data type this converter is designed for.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to extract additional information about the environment this converter is being invoked from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may return <see langword="null" />.</param>
+      <returns>A collection containing a standard set of valid values, or <see langword="null" />. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Determines if the list of standard values returned from the <see cref="Overload:System.Drawing.FontConverter.FontNameConverter.GetStandardValues" /> method is an exclusive list.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to extract additional information about the environment this converter is being invoked from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may return <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if the collection returned from <see cref="Overload:System.Drawing.FontConverter.FontNameConverter.GetStandardValues" /> is an exclusive list of possible values; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Determines if this object supports a standard set of values that can be picked from a list.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that can be used to extract additional information about the environment this converter is being invoked from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may return <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if <see cref="Overload:System.Drawing.FontConverter.FontNameConverter.GetStandardValues" /> should be called to find a common set of values the object supports; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontNameConverter.System#IDisposable#Dispose">
+      <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+    </member>
+    <member name="T:System.Drawing.FontConverter.FontUnitConverter">
+      <summary>Converts font units to and from other unit types.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontUnitConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.FontConverter.FontUnitConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.FontConverter.FontUnitConverter.GetStandardValues(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Returns a collection of standard values valid for the <see cref="T:System.Drawing.Font" /> type.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+    </member>
+    <member name="M:System.Drawing.FontConverter.GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Determines whether changing a value on this object should require a call to the <see cref="Overload:System.Drawing.FontConverter.CreateInstance" /> method to create a new value.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <returns>This method returns <see langword="true" /> if the <see langword="CreateInstance" /> object should be called when a change is made to one or more properties of this object; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.GetProperties(System.ComponentModel.ITypeDescriptorContext,System.Object,System.Attribute[])">
+      <summary>Retrieves the set of properties for this type. By default, a type does not have any properties to return.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <param name="value">The value of the object to get the properties for.</param>
+      <param name="attributes">An array of <see cref="T:System.Attribute" /> objects that describe the properties.</param>
+      <returns>The set of properties that should be exposed for this data type. If no properties should be exposed, this may return <see langword="null" />. The default implementation always returns <see langword="null" />.  
+ An easy implementation of this method can call the <see cref="Overload:System.ComponentModel.TypeConverter.GetProperties" /> method for the correct data type.</returns>
+    </member>
+    <member name="M:System.Drawing.FontConverter.GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Determines whether this object supports properties. The default is <see langword="false" />.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <returns>This method returns <see langword="true" /> if the <see cref="M:System.Drawing.FontConverter.GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext)" /> method should be called to find the properties of this object; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="T:System.Drawing.IconConverter">
+      <summary>Converts an <see cref="T:System.Drawing.Icon" /> object from one data type to another. Access this class through the <see cref="T:System.ComponentModel.TypeDescriptor" /> object.</summary>
+    </member>
+    <member name="M:System.Drawing.IconConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.IconConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.IconConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines whether this <see cref="T:System.Drawing.IconConverter" /> can convert an instance of a specified type to an <see cref="T:System.Drawing.Icon" />, using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="sourceType">A <see cref="T:System.Type" /> that specifies the type you want to convert from.</param>
+      <returns>This method returns <see langword="true" /> if this <see cref="T:System.Drawing.IconConverter" /> can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.IconConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines whether this <see cref="T:System.Drawing.IconConverter" /> can convert an <see cref="T:System.Drawing.Icon" /> to an instance of a specified type, using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="destinationType">A <see cref="T:System.Type" /> that specifies the type you want to convert to.</param>
+      <returns>This method returns <see langword="true" /> if this <see cref="T:System.Drawing.IconConverter" /> can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.IconConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts a specified object to an <see cref="T:System.Drawing.Icon" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> that holds information about a specific culture.</param>
+      <param name="value">The <see cref="T:System.Object" /> to be converted.</param>
+      <returns>If this method succeeds, it returns the <see cref="T:System.Drawing.Icon" /> that it created by converting the specified object. Otherwise, it throws an exception.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion could not be performed.</exception>
+    </member>
+    <member name="M:System.Drawing.IconConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <summary>Converts an <see cref="T:System.Drawing.Icon" /> (or an object that can be cast to an <see cref="T:System.Drawing.Icon" />) to a specified type.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object that specifies formatting conventions used by a particular culture.</param>
+      <param name="value">The object to convert. This object should be of type icon or some type that can be cast to <see cref="T:System.Drawing.Icon" />.</param>
+      <param name="destinationType">The type to convert the icon to.</param>
+      <returns>This method returns the converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion could not be performed.</exception>
+    </member>
+    <member name="T:System.Drawing.ImageConverter">
+      <summary>
+        <see cref="T:System.Drawing.ImageConverter" /> is a class that can be used to convert <see cref="T:System.Drawing.Image" /> objects from one data type to another. Access this class through the <see cref="T:System.ComponentModel.TypeDescriptor" /> object.</summary>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.ImageConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines whether this <see cref="T:System.Drawing.ImageConverter" /> can convert an instance of a specified type to an <see cref="T:System.Drawing.Image" />, using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="sourceType">A <see cref="T:System.Type" /> that specifies the type you want to convert from.</param>
+      <returns>This method returns <see langword="true" /> if this <see cref="T:System.Drawing.ImageConverter" /> can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Determines whether this <see cref="T:System.Drawing.ImageConverter" /> can convert an <see cref="T:System.Drawing.Image" /> to an instance of a specified type, using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="destinationType">A <see cref="T:System.Type" /> that specifies the type you want to convert to.</param>
+      <returns>This method returns <see langword="true" /> if this <see cref="T:System.Drawing.ImageConverter" /> can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts a specified object to an <see cref="T:System.Drawing.Image" />.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> that holds information about a specific culture.</param>
+      <param name="value">The <see cref="T:System.Object" /> to be converted.</param>
+      <returns>If this method succeeds, it returns the <see cref="T:System.Drawing.Image" /> that it created by converting the specified object. Otherwise, it throws an exception.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be completed.</exception>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <summary>Converts an <see cref="T:System.Drawing.Image" /> (or an object that can be cast to an <see cref="T:System.Drawing.Image" />) to the specified type.</summary>
+      <param name="context">A formatter context. This object can be used to get more information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object that specifies formatting conventions used by a particular culture.</param>
+      <param name="value">The <see cref="T:System.Drawing.Image" /> to convert.</param>
+      <param name="destinationType">The <see cref="T:System.Type" /> to convert the <see cref="T:System.Drawing.Image" /> to.</param>
+      <returns>This method returns the converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be completed.</exception>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.GetProperties(System.ComponentModel.ITypeDescriptorContext,System.Object,System.Attribute[])">
+      <summary>Gets the set of properties for this type.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <param name="value">The value of the object to get the properties for.</param>
+      <param name="attributes">An array of <see cref="T:System.Attribute" /> objects that describe the properties.</param>
+      <returns>The set of properties that should be exposed for this data type. If no properties should be exposed, this can return <see langword="null" />. The default implementation always returns <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageConverter.GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Indicates whether this object supports properties. By default, this is <see langword="false" />.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <returns>This method returns <see langword="true" /> if the <see cref="Overload:System.Drawing.ImageConverter.GetProperties" /> method should be called to find the properties of this object.</returns>
+    </member>
+    <member name="T:System.Drawing.ImageFormatConverter">
+      <summary>
+        <see cref="T:System.Drawing.ImageFormatConverter" /> is a class that can be used to convert <see cref="T:System.Drawing.Imaging.ImageFormat" /> objects from one data type to another. Access this class through the <see cref="T:System.ComponentModel.TypeDescriptor" /> object.</summary>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.ImageFormatConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Indicates whether this converter can convert an object in the specified source type to the native type of the converter.</summary>
+      <param name="context">A formatter context. This object can be used to get more information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="sourceType">The type you want to convert from.</param>
+      <returns>This method returns <see langword="true" /> if this object can perform the conversion.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Gets a value indicating whether this converter can convert an object to the specified destination type using the context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that specifies the context for this type conversion.</param>
+      <param name="destinationType">The <see cref="T:System.Type" /> that represents the type to which you want to convert this <see cref="T:System.Drawing.Imaging.ImageFormat" /> object.</param>
+      <returns>This method returns <see langword="true" /> if this object can perform the conversion.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts the specified object to an <see cref="T:System.Drawing.Imaging.ImageFormat" /> object.</summary>
+      <param name="context">A formatter context. This object can be used to get more information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object that specifies formatting conventions for a particular culture.</param>
+      <param name="value">The object to convert.</param>
+      <returns>The converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be completed.</exception>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <summary>Converts the specified object to the specified type.</summary>
+      <param name="context">A formatter context. This object can be used to get more information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object that specifies formatting conventions for a particular culture.</param>
+      <param name="value">The object to convert.</param>
+      <param name="destinationType">The type to convert the object to.</param>
+      <returns>The converted object.</returns>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be completed.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationType" /> is <see langword="null." /></exception>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.GetStandardValues(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Gets a collection that contains a set of standard values for the data type this validator is designed for. Returns <see langword="null" /> if the data type does not support a standard set of values.</summary>
+      <param name="context">A formatter context. This object can be used to get more information about the environment this converter is being called from. This may be <see langword="null" />, so you should always check. Also, properties on the context object may also return <see langword="null" />.</param>
+      <returns>A collection that contains a standard set of valid values, or <see langword="null" />. The default implementation always returns <see langword="null" />.</returns>
+    </member>
+    <member name="M:System.Drawing.ImageFormatConverter.GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Indicates whether this object supports a standard set of values that can be picked from a list.</summary>
+      <param name="context">A type descriptor through which additional context can be provided.</param>
+      <returns>This method returns <see langword="true" /> if the <see cref="Overload:System.Drawing.ImageFormatConverter.GetStandardValues" /> method should be called to find a common set of values the object supports.</returns>
+    </member>
+    <member name="T:System.Drawing.Printing.MarginsConverter">
+      <summary>Provides a <see cref="T:System.Drawing.Printing.MarginsConverter" /> for <see cref="T:System.Drawing.Printing.Margins" />.</summary>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Drawing.Printing.MarginsConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Returns whether this converter can convert an object of the specified source type to the native type of the converter using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="sourceType">A <see cref="T:System.Type" /> that represents the type from which you want to convert.</param>
+      <returns>
+        <see langword="true" /> if an object can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <summary>Returns whether this converter can convert an object to the given destination type using the context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="destinationType">A <see cref="T:System.Type" /> that represents the type to which you want to convert.</param>
+      <returns>
+        <see langword="true" /> if this converter can perform the conversion; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <summary>Converts the specified object to the converter's native type.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> that provides the language to convert to.</param>
+      <param name="value">The <see cref="T:System.Object" /> to convert.</param>
+      <returns>An <see cref="T:System.Object" /> that represents the converted value.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="value" /> does not contain values for all four margins. For example, "100,100,100,100" specifies 1 inch for the left, right, top, and bottom margins.</exception>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <summary>Converts the given value object to the specified destination type using the specified context and arguments.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> that provides the language to convert to.</param>
+      <param name="value">The <see cref="T:System.Object" /> to convert.</param>
+      <param name="destinationType">The <see cref="T:System.Type" /> to which to convert the value.</param>
+      <returns>An <see cref="T:System.Object" /> that represents the converted value.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destinationType" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)">
+      <summary>Creates an <see cref="T:System.Object" /> given a set of property values for the object.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <param name="propertyValues">An <see cref="T:System.Collections.IDictionary" /> of new property values.</param>
+      <returns>An <see cref="T:System.Object" /> representing the specified <see cref="T:System.Collections.IDictionary" />, or <see langword="null" /> if the object cannot be created.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="propertyValues" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="M:System.Drawing.Printing.MarginsConverter.GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext)">
+      <summary>Returns whether changing a value on this object requires a call to the <see cref="M:System.Drawing.Printing.MarginsConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)" /> method to create a new value, using the specified context.</summary>
+      <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+      <returns>
+        <see langword="true" /> if changing a property on this object requires a call to <see cref="M:System.Drawing.Printing.MarginsConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)" /> to create a new value; otherwise, <see langword="false" />. This method always returns <see langword="true" />.</returns>
+    </member>
+    <member name="T:System.Media.SoundPlayer">
+      <summary>Controls playback of a sound from a .wav file.</summary>
+    </member>
+    <member name="M:System.Media.SoundPlayer.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Media.SoundPlayer" /> class.</summary>
+    </member>
+    <member name="M:System.Media.SoundPlayer.#ctor(System.IO.Stream)">
+      <summary>Initializes a new instance of the <see cref="T:System.Media.SoundPlayer" /> class, and attaches the .wav file within the specified <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">A <see cref="T:System.IO.Stream" /> to a .wav file.</param>
+    </member>
+    <member name="M:System.Media.SoundPlayer.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Media.SoundPlayer" /> class.</summary>
+      <param name="serializationInfo">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> to be used for deserialization.</param>
+      <param name="context">The destination to be used for deserialization.</param>
+      <exception cref="T:System.UriFormatException">The <see cref="P:System.Media.SoundPlayer.SoundLocation" /> specified in <paramref name="serializationInfo" /> cannot be resolved.</exception>
+    </member>
+    <member name="M:System.Media.SoundPlayer.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Media.SoundPlayer" /> class, and attaches the specified .wav file.</summary>
+      <param name="soundLocation">The location of a .wav file to load.</param>
+      <exception cref="T:System.UriFormatException">The URL value specified by <paramref name="soundLocation" /> cannot be resolved.</exception>
+    </member>
+    <member name="P:System.Media.SoundPlayer.IsLoadCompleted">
+      <summary>Gets a value indicating whether loading of a .wav file has successfully completed.</summary>
+      <returns>
+        <see langword="true" /> if a .wav file is loaded; <see langword="false" /> if a .wav file has not yet been loaded.</returns>
+    </member>
+    <member name="M:System.Media.SoundPlayer.Load">
+      <summary>Loads a sound synchronously.</summary>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The elapsed time during loading exceeds the time, in milliseconds, specified by <see cref="P:System.Media.SoundPlayer.LoadTimeout" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> cannot be found.</exception>
+    </member>
+    <member name="M:System.Media.SoundPlayer.LoadAsync">
+      <summary>Loads a .wav file from a stream or a Web resource using a new thread.</summary>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The elapsed time during loading exceeds the time, in milliseconds, specified by <see cref="P:System.Media.SoundPlayer.LoadTimeout" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> cannot be found.</exception>
+    </member>
+    <member name="E:System.Media.SoundPlayer.LoadCompleted">
+      <summary>Occurs when a .wav file has been successfully or unsuccessfully loaded.</summary>
+    </member>
+    <member name="P:System.Media.SoundPlayer.LoadTimeout">
+      <summary>Gets or sets the time, in milliseconds, in which the .wav file must load.</summary>
+      <returns>The number of milliseconds to wait. The default is 10000 (10 seconds).</returns>
+    </member>
+    <member name="M:System.Media.SoundPlayer.OnLoadCompleted(System.ComponentModel.AsyncCompletedEventArgs)">
+      <summary>Raises the <see cref="E:System.Media.SoundPlayer.LoadCompleted" /> event.</summary>
+      <param name="e">An <see cref="T:System.ComponentModel.AsyncCompletedEventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="M:System.Media.SoundPlayer.OnSoundLocationChanged(System.EventArgs)">
+      <summary>Raises the <see cref="E:System.Media.SoundPlayer.SoundLocationChanged" /> event.</summary>
+      <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="M:System.Media.SoundPlayer.OnStreamChanged(System.EventArgs)">
+      <summary>Raises the <see cref="E:System.Media.SoundPlayer.StreamChanged" /> event.</summary>
+      <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+    </member>
+    <member name="M:System.Media.SoundPlayer.Play">
+      <summary>Plays the .wav file using a new thread, and loads the .wav file first if it has not been loaded.</summary>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The elapsed time during loading exceeds the time, in milliseconds, specified by <see cref="P:System.Media.SoundPlayer.LoadTimeout" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> cannot be found.</exception>
+      <exception cref="T:System.InvalidOperationException">The .wav header is corrupted; the file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> is not a PCM .wav file.</exception>
+    </member>
+    <member name="M:System.Media.SoundPlayer.PlayLooping">
+      <summary>Plays and loops the .wav file using a new thread, and loads the .wav file first if it has not been loaded.</summary>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The elapsed time during loading exceeds the time, in milliseconds, specified by <see cref="P:System.Media.SoundPlayer.LoadTimeout" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> cannot be found.</exception>
+      <exception cref="T:System.InvalidOperationException">The .wav header is corrupted; the file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> is not a PCM .wav file.</exception>
+    </member>
+    <member name="M:System.Media.SoundPlayer.PlaySync">
+      <summary>Plays the .wav file and loads the .wav file first if it has not been loaded.</summary>
+      <exception cref="T:System.ServiceProcess.TimeoutException">The elapsed time during loading exceeds the time, in milliseconds, specified by <see cref="P:System.Media.SoundPlayer.LoadTimeout" />.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> cannot be found.</exception>
+      <exception cref="T:System.InvalidOperationException">The .wav header is corrupted; the file specified by <see cref="P:System.Media.SoundPlayer.SoundLocation" /> is not a PCM .wav file.</exception>
+    </member>
+    <member name="P:System.Media.SoundPlayer.SoundLocation">
+      <summary>Gets or sets the file path or URL of the .wav file to load.</summary>
+      <returns>The file path or URL from which to load a .wav file, or <see cref="F:System.String.Empty" /> if no file path is present. The default is <see cref="F:System.String.Empty" />.</returns>
+    </member>
+    <member name="E:System.Media.SoundPlayer.SoundLocationChanged">
+      <summary>Occurs when a new audio source path for this <see cref="T:System.Media.SoundPlayer" /> has been set.</summary>
+    </member>
+    <member name="M:System.Media.SoundPlayer.Stop">
+      <summary>Stops playback of the sound if playback is occurring.</summary>
+    </member>
+    <member name="P:System.Media.SoundPlayer.Stream">
+      <summary>Gets or sets the <see cref="T:System.IO.Stream" /> from which to load the .wav file.</summary>
+      <returns>A <see cref="T:System.IO.Stream" /> from which to load the .wav file, or <see langword="null" /> if no stream is available. The default is <see langword="null" />.</returns>
+    </member>
+    <member name="E:System.Media.SoundPlayer.StreamChanged">
+      <summary>Occurs when a new <see cref="T:System.IO.Stream" /> audio source for this <see cref="T:System.Media.SoundPlayer" /> has been set.</summary>
+    </member>
+    <member name="M:System.Media.SoundPlayer.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>For a description of this member, see the <see cref="M:System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" /> method.</summary>
+      <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> to populate with data.</param>
+      <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext" />) for this serialization.</param>
+    </member>
+    <member name="P:System.Media.SoundPlayer.Tag">
+      <summary>Gets or sets the <see cref="T:System.Object" /> that contains data about the <see cref="T:System.Media.SoundPlayer" />.</summary>
+      <returns>An <see cref="T:System.Object" /> that contains data about the <see cref="T:System.Media.SoundPlayer" />.</returns>
+    </member>
+    <member name="T:System.Media.SystemSound">
+      <summary>Represents a system sound type.</summary>
+    </member>
+    <member name="M:System.Media.SystemSound.Play">
+      <summary>Plays the system sound type.</summary>
+    </member>
+    <member name="T:System.Media.SystemSounds">
+      <summary>Retrieves sounds associated with a set of Windows operating system sound-event types. This class cannot be inherited.</summary>
+    </member>
+    <member name="P:System.Media.SystemSounds.Asterisk">
+      <summary>Gets the sound associated with the <see langword="Asterisk" /> program event in the current Windows sound scheme.</summary>
+      <returns>A <see cref="T:System.Media.SystemSound" /> associated with the <see langword="Asterisk" /> program event in the current Windows sound scheme.</returns>
+    </member>
+    <member name="P:System.Media.SystemSounds.Beep">
+      <summary>Gets the sound associated with the <see langword="Beep" /> program event in the current Windows sound scheme.</summary>
+      <returns>A <see cref="T:System.Media.SystemSound" /> associated with the <see langword="Beep" /> program event in the current Windows sound scheme.</returns>
+    </member>
+    <member name="P:System.Media.SystemSounds.Exclamation">
+      <summary>Gets the sound associated with the <see langword="Exclamation" /> program event in the current Windows sound scheme.</summary>
+      <returns>A <see cref="T:System.Media.SystemSound" /> associated with the <see langword="Exclamation" /> program event in the current Windows sound scheme.</returns>
+    </member>
+    <member name="P:System.Media.SystemSounds.Hand">
+      <summary>Gets the sound associated with the <see langword="Hand" /> program event in the current Windows sound scheme.</summary>
+      <returns>A <see cref="T:System.Media.SystemSound" /> associated with the <see langword="Hand" /> program event in the current Windows sound scheme.</returns>
+    </member>
+    <member name="P:System.Media.SystemSounds.Question">
+      <summary>Gets the sound associated with the <see langword="Question" /> program event in the current Windows sound scheme.</summary>
+      <returns>A <see cref="T:System.Media.SystemSound" /> associated with the <see langword="Question" /> program event in the current Windows sound scheme.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Certificate2UI">
+      <summary>Displays user interface dialogs that allow you to select and view X.509 certificates. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2UI.#ctor">
+      <summary>Initializes an instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2UI" /> class.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2UI.DisplayCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Displays a dialog box that contains the properties of an X.509 certificate and its associated certificate chain.</summary>
+      <param name="certificate">The X.509 certificate to display.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="certificate" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="certificate" /> parameter is invalid.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2UI.DisplayCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2,System.IntPtr)">
+      <summary>Displays a dialog box that contains the properties of an X.509 certificate and its associated certificate chain using a handle to a parent window.</summary>
+      <param name="certificate">The X.509 certificate to display.</param>
+      <param name="hwndParent">A handle to the parent window to use for the display dialog.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="certificate" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="certificate" /> parameter is invalid.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(System.Security.Cryptography.X509Certificates.X509Certificate2Collection,System.String,System.String,System.Security.Cryptography.X509Certificates.X509SelectionFlag)">
+      <summary>Displays a dialog box for selecting an X.509 certificate from a certificate collection.</summary>
+      <param name="certificates">A collection of X.509 certificates to select from.</param>
+      <param name="title">The title of the dialog box.</param>
+      <param name="message">A descriptive message to guide the user.  The message is displayed in the dialog box.</param>
+      <param name="selectionFlag">One of the <see cref="T:System.Security.Cryptography.X509Certificates.X509SelectionFlag" /> values that specifies whether single or multiple selections are allowed.</param>
+      <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> object that contains the selected certificate or certificates.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="selectionFlag" /> parameter is not a valid flag.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="certificates" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="certificates" /> parameter is invalid.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(System.Security.Cryptography.X509Certificates.X509Certificate2Collection,System.String,System.String,System.Security.Cryptography.X509Certificates.X509SelectionFlag,System.IntPtr)">
+      <summary>Displays a dialog box for selecting an X.509 certificate from a certificate collection using a handle to a parent window.</summary>
+      <param name="certificates">A collection of X.509 certificates to select from.</param>
+      <param name="title">The title of the dialog box.</param>
+      <param name="message">A descriptive message to guide the user.  The message is displayed in the dialog box.</param>
+      <param name="selectionFlag">One of the <see cref="T:System.Security.Cryptography.X509Certificates.X509SelectionFlag" /> values that specifies whether single or multiple selections are allowed.</param>
+      <param name="hwndParent">A handle to the parent window to use for the display dialog box.</param>
+      <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> object that contains the selected certificate or certificates.</returns>
+      <exception cref="T:System.ArgumentException">The <paramref name="selectionFlag" /> parameter is not a valid flag.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="certificates" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="certificates" /> parameter is invalid.</exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509SelectionFlag">
+      <summary>Specifies the type of selection requested using the <see cref="Overload:System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection" /> method.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509SelectionFlag.MultiSelection">
+      <summary>A multiple selection. The user can use the SHIFT or CRTL keys to select more than one X.509 certificate.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509SelectionFlag.SingleSelection">
+      <summary>A single selection. The UI allows the user to select one X.509 certificate.</summary>
+    </member>
+  </members>
+</doc>
