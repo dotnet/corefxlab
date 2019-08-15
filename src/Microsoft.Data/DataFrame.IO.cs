@@ -82,23 +82,23 @@ namespace Microsoft.Data
         /// Follows pandas API.
         /// </summary>
         /// <param name="filename">filename</param>
-        /// <param name="sep">column separator</param>
+        /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
-        /// <param name="names">column names (can be empty)</param>
-        /// <param name="dTypes">column types (can be empty)</param>
-        /// <param name="nRows">number of rows to read</param>
+        /// <param name="columnNames">column names (can be empty)</param>
+        /// <param name="dataTypes">column types (can be empty)</param>
+        /// <param name="numRows">number of rows to read</param>
         /// <param name="guessRows">number of rows used to guess types</param>
-        /// <param name="index">add one column with the row index</param>
+        /// <param name="addIndexColumn">add one column with the row index</param>
         /// <returns>DataFrame</returns>
         public static DataFrame ReadCsv(string filename,
-                                char sep = ',', bool header = true,
-                                string[] names = null, Type[] dTypes = null,
-                                int nRows = -1, int guessRows = 10,
-                                bool index = false)
+                                char separator = ',', bool header = true,
+                                string[] columnNames = null, Type[] dataTypes = null,
+                                int numRows = -1, int guessRows = 10,
+                                bool addIndexColumn = false)
         {
             return ReadStream(() => new StreamReader(filename),
-                              sep: sep, header: header, names: names, dTypes: dTypes, nRows: nRows,
-                              guessRows: guessRows, index: index);
+                              separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numRows: numRows,
+                              guessRows: guessRows, addIndexColumn: addIndexColumn);
         }
 
         /// <summary>
@@ -106,18 +106,18 @@ namespace Microsoft.Data
         /// Follows pandas API.
         /// </summary>
         /// <param name="createStream">function which creates a stream</param>
-        /// <param name="sep">column separator</param>
+        /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
-        /// <param name="names">column names (can be empty)</param>
-        /// <param name="dTypes">column types (can be empty)</param>
-        /// <param name="nRows">number of rows to read</param>
+        /// <param name="columnNames">column names (can be empty)</param>
+        /// <param name="dataTypes">column types (can be empty)</param>
+        /// <param name="numRows">number of rows to read</param>
         /// <param name="guessRows">number of rows used to guess types</param>
-        /// <param name="index">add one column with the row index</param>
+        /// <param name="addIndexColumn">add one column with the row index</param>
         /// <returns>DataFrame</returns>
         public static DataFrame ReadStream(Func<StreamReader> createStream,
-                                char sep = ',', bool header = true,
-                                string[] names = null, Type[] dTypes = null,
-                                long nRows = -1, int guessRows = 10, bool index = false)
+                                char separator = ',', bool header = true,
+                                string[] columnNames = null, Type[] dataTypes = null,
+                                long numRows = -1, int guessRows = 10, bool addIndexColumn = false)
         {
             var linesForGuessType = new List<string[]>();
             long rowline = 0;
@@ -128,13 +128,13 @@ namespace Microsoft.Data
             {
                 string line = st.ReadLine();
                 int nbline = 0;
-                while (line != null && (nRows == -1 || rowline < nRows))
+                while (line != null && (numRows == -1 || rowline < numRows))
                 {
-                    var spl = line.Split(sep);
+                    var spl = line.Split(separator);
                     if (header && nbline == 0)
                     {
-                        if (names == null)
-                            names = spl;
+                        if (columnNames == null)
+                            columnNames = spl;
                     }
                     else
                     {
@@ -161,17 +161,17 @@ namespace Microsoft.Data
                 Type kind = GuessKind(i, linesForGuessType);
                 if (kind == typeof(bool))
                 {
-                    BaseColumn boolColumn = new PrimitiveColumn<bool>(names[i]);
+                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames[i]);
                     columns.Add(boolColumn);
                 }
                 else if (kind == typeof(float))
                 {
-                    BaseColumn floatColumn = new PrimitiveColumn<float>(names[i]);
+                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames[i]);
                     columns.Add(floatColumn);
                 }
                 else if (kind == typeof(string))
                 {
-                    BaseColumn stringColumn = new StringColumn(names[i], 0);
+                    BaseColumn stringColumn = new StringColumn(columnNames[i], 0);
                     columns.Add(stringColumn);
                 }
                 else
@@ -184,9 +184,9 @@ namespace Microsoft.Data
                 string line = st.ReadLine();
                 long nbline = 0;
                 rowline = 0;
-                while (line != null && (nRows == -1 || rowline < nRows))
+                while (line != null && (numRows == -1 || rowline < numRows))
                 {
-                    var spl = line.Split(sep);
+                    var spl = line.Split(separator);
                     if (header && nbline == 0)
                     {
                         // Skips.
@@ -201,7 +201,7 @@ namespace Microsoft.Data
                 }
             }
 
-            if (index)
+            if (addIndexColumn)
             {
                 PrimitiveColumn<int> indexColumn = new PrimitiveColumn<int>("IndexColumn", columns[0].Length);
                 for (int i = 0; i < columns[0].Length; i++)

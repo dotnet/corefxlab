@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1137,8 +1138,11 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameClip()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            IList<string> dfColumns = df.Columns;
             DataFrame clipped = df.Clip(3, 7);
+            IList<string> clippedColumns = clipped.Columns;
             Assert.Equal(df.ColumnCount, clipped.ColumnCount);
+            Assert.Equal(dfColumns, clippedColumns);
             for (int c = 0; c < df.ColumnCount; c++)
             {
                 BaseColumn column = clipped.Column(c);

@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Apache.Arrow;
 using Microsoft.ML;
 
@@ -144,8 +143,12 @@ namespace Microsoft.Data
         /// <summary>
         /// Determines if the column is of a numeric type
         /// </summary>
-        /// <remarks>Used by the Description method to filter out descriptons from non-numeric columns</remarks>
         public virtual bool IsNumericColumn() => false;
+
+        /// <summary>
+        /// Used to exclude columns from the Description method
+        /// </summary>
+        public virtual bool HasDescription() => false;
 
         /// <summary>
         /// Returns a DataFrame with statistics that describe the column

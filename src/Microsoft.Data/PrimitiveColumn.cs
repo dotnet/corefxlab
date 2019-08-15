@@ -250,6 +250,8 @@ namespace Microsoft.Data
             return new DataFrame(new List<BaseColumn> { keys, counts });
         }
 
+        public override bool HasDescription() => IsNumericColumn();
+
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";
