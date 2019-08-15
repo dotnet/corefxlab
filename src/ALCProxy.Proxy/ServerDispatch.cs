@@ -2,16 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license. 
 // See the LICENSE file in the project root for more information. 
 
+using ALCProxy.Communication;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace ALCProxy.Communication
+namespace ALCProxy.Proxy
 {
     public class ServerDispatch<I> : ALCServer<I>
     {
-        public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes) 
+        public ServerDispatch(Type instanceType, Type[] genericTypes, IList<object> constructorParams, IList<Type> constTypes)
             : base(instanceType, genericTypes, constructorParams, constTypes) { }
 
         /// <summary>
