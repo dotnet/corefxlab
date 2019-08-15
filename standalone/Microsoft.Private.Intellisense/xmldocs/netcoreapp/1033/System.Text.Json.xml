@@ -105,6 +105,9 @@
         <paramref name="reader" /> contains unsupported options.</exception>
       <exception cref="T:System.Text.Json.JsonException">A value could not be read from the reader.</exception>
     </member>
+    <member name="M:System.Text.Json.JsonDocument.WriteTo(System.Text.Json.Utf8JsonWriter)">
+      <param name="writer" />
+    </member>
     <member name="T:System.Text.Json.JsonDocumentOptions">
       <summary>Provides the ability for the user to define custom behavior when parsing JSON to create a <see cref="T:System.Text.Json.JsonDocument" />.</summary>
     </member>
@@ -383,7 +386,7 @@
       <param name="value">When the method returns, contains the byte equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
         <see langword="true" /> if the number can be represented as a <see cref="T:System.Byte" />;
-              <see langword="false" /> otherwise.</returns>
+    <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -392,7 +395,7 @@
       <param name="value">If the method succeeds, contains the decoded binary representation of the Base64 text.</param>
       <returns>
         <see langword="true" /> if the entire token value is encoded as valid Base64 text and can be successfully decoded to bytes.
-              <see langword="false" /> otherwise.</returns>
+    <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -441,7 +444,7 @@
       <param name="value">When the method returns, contains the 16-bit integer equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
         <see langword="true" /> if the number can be represented as an <see cref="T:System.Int16" />,
-              <see langword="false" /> otherwise.</returns>
+    <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -495,7 +498,7 @@
       <param name="value">When the method returns, contains the signed byte equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
         <see langword="true" /> if the number can be represented as an <see cref="T:System.SByte" />;
-              <see langword="false" /> otherwise.</returns>
+    <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -512,7 +515,7 @@
       <param name="value">When the method returns, contains the unsigned 16-bit integer equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
         <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt16" />;
-              <see langword="false" /> otherwise.</returns>
+    <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -537,7 +540,7 @@
       <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
       <returns>
         <see langword="true" /> if the string value of this element has the same UTF-8 encoding as
-              <paramref name="utf8Text" />; <see langword="false" /> otherwise.</returns>
+    <paramref name="utf8Text" />; <see langword="false" /> otherwise.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.ValueEquals(System.ReadOnlySpan{System.Char})">
@@ -559,65 +562,23 @@
       <returns>The type of the current JSON value.</returns>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
-    <member name="M:System.Text.Json.JsonElement.WriteProperty(System.ReadOnlySpan{System.Byte},System.Text.Json.Utf8JsonWriter)">
-      <summary>Writes the element to the specified writer as a named JSON object property, with its name specified by a UTF8-encoded byte span.</summary>
-      <param name="utf8PropertyName">The name for this value within the JSON object, as UTF-8 text.</param>
-      <param name="writer">The writer.</param>
-      <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is <see cref="F:System.Text.Json.JsonValueKind.Undefined" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
-    </member>
-    <member name="M:System.Text.Json.JsonElement.WriteProperty(System.ReadOnlySpan{System.Char},System.Text.Json.Utf8JsonWriter)">
-      <summary>Write the element into the provided writer as a named JSON object property, with its name specified by a read-only character span.</summary>
-      <param name="propertyName">The name for this value within the JSON object.</param>
-      <param name="writer">The writer.</param>
-      <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is <see cref="F:System.Text.Json.JsonValueKind.Undefined" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
-    </member>
-    <member name="M:System.Text.Json.JsonElement.WriteProperty(System.String,System.Text.Json.Utf8JsonWriter)">
-      <summary>Write the element into the provided writer as a named JSON object property, with its name specified by a string.</summary>
-      <param name="propertyName">The name for this value within the JSON object.</param>
-      <param name="writer">The writer.</param>
-      <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is <see cref="F:System.Text.Json.JsonValueKind.Undefined" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
-    </member>
-    <member name="M:System.Text.Json.JsonElement.WriteProperty(System.Text.Json.JsonEncodedText,System.Text.Json.Utf8JsonWriter)">
-      <summary>Write the element into the provided writer as a named JSON object property, with its name specified by JSON encoded text.</summary>
-      <param name="propertyName">The pre-encoded name for this value within the JSON object.</param>
-      <param name="writer">The writer.</param>
-      <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is <see cref="F:System.Text.Json.JsonValueKind.Undefined" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
-    </member>
-    <member name="M:System.Text.Json.JsonElement.WriteValue(System.Text.Json.Utf8JsonWriter)">
-      <summary>Writes the element into the provided writer as a JSON value.</summary>
-      <param name="writer">The writer.</param>
-      <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is <see cref="F:System.Text.Json.JsonValueKind.Undefined" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
+    <member name="M:System.Text.Json.JsonElement.WriteTo(System.Text.Json.Utf8JsonWriter)">
+      <param name="writer" />
     </member>
     <member name="T:System.Text.Json.JsonEncodedText">
       <summary>Provides methods to transform UTF-8 or UTF-16 encoded text into a form that is suitable for JSON.</summary>
     </member>
-    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.ReadOnlySpan{System.Byte})">
-      <summary>Encodes a UTF-8 encoded byte span as a JSON string.</summary>
-      <param name="utf8Value">The UTF-8 encoded value to be transformed as JSON encoded text.</param>
-      <returns>The JSON string.</returns>
-      <exception cref="T:System.ArgumentException">
-        <paramref name="utf8Value" /> is too large or contains invalid UTF-8 bytes.</exception>
+    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.ReadOnlySpan{System.Byte},System.Text.Encodings.Web.JavaScriptEncoder)">
+      <param name="utf8Value" />
+      <param name="encoder" />
     </member>
-    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.ReadOnlySpan{System.Char})">
-      <summary>Encodes a UTF-16 encoded character span as a JSON string.</summary>
-      <param name="value">The value to be transformed as JSON encoded text.</param>
-      <returns>The JSON string.</returns>
-      <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is too large or contains invalid UTF-16 characters.</exception>
+    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.ReadOnlySpan{System.Char},System.Text.Encodings.Web.JavaScriptEncoder)">
+      <param name="value" />
+      <param name="encoder" />
     </member>
-    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.String)">
-      <summary>Encodes the string text value as a JSON string.</summary>
-      <param name="value">The value to be transformed as JSON encoded text.</param>
-      <returns>The string encoded as a JSON string.</returns>
-      <exception cref="T:System.ArgumentNullException">
-        <paramref name="value" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is too large or contains invalid UTF-16 characters.</exception>
+    <member name="M:System.Text.Json.JsonEncodedText.Encode(System.String,System.Text.Encodings.Web.JavaScriptEncoder)">
+      <param name="value" />
+      <param name="encoder" />
     </member>
     <member name="P:System.Text.Json.JsonEncodedText.EncodedUtf8Bytes">
       <summary>Gets the UTF-8 encoded representation of the pre-encoded JSON text.</summary>
@@ -751,6 +712,9 @@
     <member name="P:System.Text.Json.JsonProperty.Value">
       <summary>Gets the value of this property.</summary>
       <returns>The value of this property.</returns>
+    </member>
+    <member name="M:System.Text.Json.JsonProperty.WriteTo(System.Text.Json.Utf8JsonWriter)">
+      <param name="writer" />
     </member>
     <member name="T:System.Text.Json.JsonReaderOptions">
       <summary>Provides the ability for the user to define custom behavior when reading JSON.</summary>
@@ -886,7 +850,7 @@ There is remaining data in the stream.</exception>
     <member name="M:System.Text.Json.JsonSerializer.Serialize(System.Object,System.Type,System.Text.Json.JsonSerializerOptions)">
       <summary>Converts the value of a specified type into a <see cref="T:System.String" />.</summary>
       <param name="value">The value to convert.</param>
-      <param name="inputType">The type of the <paramref name="value" /> to convert.</param>
+      <param name="type" />
       <param name="options">Options to control the conversion behavior.</param>
       <returns>The string representation of the value.</returns>
     </member>
@@ -894,7 +858,7 @@ There is remaining data in the stream.</exception>
       <summary>Writes one JSON value (including objects or arrays) of a specified type to the provided writer.</summary>
       <param name="writer">The JSON writer.</param>
       <param name="value">The value to convert and write.</param>
-      <param name="inputType">The type of <paramref name="value" />.</param>
+      <param name="type" />
       <param name="options">Options to control serialization behavior.</param>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Serialize``1(``0,System.Text.Json.JsonSerializerOptions)">
@@ -915,7 +879,7 @@ There is remaining data in the stream.</exception>
       <summary>Asynchronously converts the value of a specified type to UTF-8 encoded JSON text and writes it to the specified stream.</summary>
       <param name="utf8Json">The UTF-8 stream to write to.</param>
       <param name="value">The value to convert.</param>
-      <param name="inputType">The type of the value to convert.</param>
+      <param name="type" />
       <param name="options">Options to control serialization behavior.</param>
       <param name="cancellationToken">A token that may be used to cancel the write operation.</param>
       <returns>A task that represents the asynchronous write operation.</returns>
@@ -932,7 +896,7 @@ There is remaining data in the stream.</exception>
     <member name="M:System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(System.Object,System.Type,System.Text.Json.JsonSerializerOptions)">
       <summary>Converts a value of the specified type into a UTF8-encoded byte array.</summary>
       <param name="value">The value to convert.</param>
-      <param name="inputType">The type of the value to convert.</param>
+      <param name="type" />
       <param name="options">Options to control the conversion behavior.</param>
       <returns>A UTF-8 representation of the value.</returns>
     </member>
@@ -969,6 +933,7 @@ There is remaining data in the stream.</exception>
       <summary>Gets or sets the policy used to convert a <see cref="T:System.Collections.IDictionary" /> key's name to another format, such as camel-casing.</summary>
       <returns>The policy used to convert a <see cref="T:System.Collections.IDictionary" /> key's name to another format.</returns>
     </member>
+    <member name="P:System.Text.Json.JsonSerializerOptions.Encoder" />
     <member name="M:System.Text.Json.JsonSerializerOptions.GetConverter(System.Type)">
       <summary>Returns the converter for the specified type.</summary>
       <param name="typeToConvert">The type to return a converter for.</param>
@@ -1082,6 +1047,7 @@ There is remaining data in the stream.</exception>
     <member name="T:System.Text.Json.JsonWriterOptions">
       <summary>Allows the user to define custom behavior when writing JSON using the <see cref="T:System.Text.Json.Utf8JsonWriter" />.</summary>
     </member>
+    <member name="P:System.Text.Json.JsonWriterOptions.Encoder" />
     <member name="P:System.Text.Json.JsonWriterOptions.Indented">
       <summary>Gets or sets a value that indicates whether the <see cref="T:System.Text.Json.Utf8JsonWriter" /> should format the JSON output, which includes indenting nested JSON tokens, adding new lines, and adding white space between property names and values.</summary>
       <returns>
@@ -1158,10 +1124,9 @@ There is remaining data in the stream.</exception>
     <member name="M:System.Text.Json.Serialization.JsonConverterFactory.#ctor">
       <summary>When overidden in a derived class, initializes a new instance of the <see cref="T:System.Text.Json.Serialization.JsonConverterFactory" /> class.</summary>
     </member>
-    <member name="M:System.Text.Json.Serialization.JsonConverterFactory.CreateConverter(System.Type)">
-      <summary>Creates a converter for a specified type.</summary>
-      <param name="typeToConvert">The type to convert.</param>
-      <returns>An instance of a <see cref="T:System.Text.Json.Serialization.JsonConverter`1" /> where <typeparamref name="T" /> is compatible with <paramref name="typeToConvert" />.</returns>
+    <member name="M:System.Text.Json.Serialization.JsonConverterFactory.CreateConverter(System.Type,System.Text.Json.JsonSerializerOptions)">
+      <param name="typeToConvert" />
+      <param name="options" />
     </member>
     <member name="T:System.Text.Json.Serialization.JsonExtensionDataAttribute">
       <summary>When placed on a property of type <see cref="T:System.Collections.Generic.IDictionary`2" />, any properties that do not have a matching member are added to that dictionary during deserialization and written during serialization.</summary>
@@ -1203,6 +1168,10 @@ There is remaining data in the stream.</exception>
       <param name="typeToConvert">The type to be checked.</param>
       <returns>
         <see langword="true" /> if the type can be converted; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.Text.Json.Serialization.JsonStringEnumConverter.CreateConverter(System.Type,System.Text.Json.JsonSerializerOptions)">
+      <param name="typeToConvert" />
+      <param name="options" />
     </member>
     <member name="T:System.Text.Json.Utf8JsonReader">
       <summary>Provides a high-performance API for forward-only, read-only access to UTF-8 encoded JSON text.</summary>
