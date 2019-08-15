@@ -2,8 +2,6 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <AssemblyOriginatorKeyFile>C:\Users\t-gopho.REDMOND\source\repos\project\corefxlab\tools\Key.snk</AssemblyOriginatorKeyFile>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
