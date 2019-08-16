@@ -79,6 +79,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty file.
+        /// </summary>
+        public static string EmptyFile {
+            get {
+                return ResourceManager.GetString("EmptyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column is immutable.
         /// </summary>
         public static string ImmutableStringColumn {
@@ -93,6 +102,15 @@ namespace Microsoft.Data {
         public static string InvalidColumnName {
             get {
                 return ResourceManager.GetString("InvalidColumnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line {0} has less columns than expected.
+        /// </summary>
+        public static string LessColumnsThatExpected {
+            get {
+                return ResourceManager.GetString("LessColumnsThatExpected", resourceCulture);
             }
         }
         
@@ -124,11 +142,20 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected value to be of type.
+        ///   Looks up a localized string similar to Expected value to be of type .
         /// </summary>
         public static string MismatchedValueType {
             get {
                 return ResourceManager.GetString("MismatchedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected value to be of type {0} or {1}.
+        /// </summary>
+        public static string MultipleMismatchedValueType {
+            get {
+                return ResourceManager.GetString("MultipleMismatchedValueType", resourceCulture);
             }
         }
         

@@ -49,6 +49,17 @@ namespace Microsoft.Data
         private long _nullCount;
         public override long NullCount => _nullCount;
 
+        public override void Resize(long length) 
+        { 
+            if (length < Length) 
+                throw new ArgumentException(Strings.CannotResizeDown, nameof(length)); 
+
+            for (long i = Length; i < length; i++) 
+            { 
+                Append(null); 
+            } 
+        }
+
         public void Append(string value)
         {
             List<string> lastBuffer = _stringBuffers[_stringBuffers.Count - 1];
@@ -153,6 +164,8 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
+        public override BaseColumn Clip<U>(U lower, U upper) => throw new NotSupportedException();
+
         public override BaseColumn Sort(bool ascending = true)
         {
             PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
@@ -223,11 +236,15 @@ namespace Microsoft.Data
             StringColumn clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long))
-                    throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                if (mapIndices.DataType == typeof(long))
+                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else
+                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+
             }
             else
             {
@@ -238,6 +255,20 @@ namespace Microsoft.Data
                 clone.Append(null);
             }
             return clone;
+        }
+
+        private StringColumn Clone(PrimitiveColumn<bool> boolColumn)
+        {
+            if (boolColumn.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
+            StringColumn ret = new StringColumn(Name, 0);
+            for (long i = 0; i < boolColumn.Length; i++)
+            {
+                bool? value = boolColumn[i];
+                if (value.HasValue && value.Value == true)
+                    ret.Append(this[i]);
+            }
+            return ret;
         }
 
         private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)

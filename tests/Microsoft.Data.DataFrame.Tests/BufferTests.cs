@@ -159,5 +159,21 @@ namespace Microsoft.Data.Tests
             Assert.Equal("", ret[3]);
         }
 
+        [Fact]
+        public void TestArrowStringColumnClone()
+        {
+            StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
+            Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
+            Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
+            Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
+
+            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+
+            BaseColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
+            Assert.Equal(7, clone.Length);
+            Assert.Equal(stringColumn[0], clone[0]);
+            Assert.Equal(stringColumn[1], clone[1]);
+        }
+
     }
 }

@@ -118,7 +118,9 @@ namespace Microsoft.Data
         }
 
         // This is an immutable column, however this method exists to support Clone(). Keep this method private
-        private void Append(string value)
+        // Appending a default string is equivalent to appending null. It increases the NullCount and sets a null bitmap bit
+        // Appending an empty string is valid. It does NOT affect the NullCount. It instead adds a new offset entry
+        private void Append(ReadOnlySpan<byte> value)
         {
             if (_dataBuffers.Count == 0)
             {
@@ -126,35 +128,35 @@ namespace Microsoft.Data
                 _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
                 _offsetsBuffers.Add(new DataFrameBuffer<int>());
             }
-            DataFrameBuffer<int> mutableOffsetsBuffer = _offsetsBuffers[_offsetsBuffers.Count - 1] as DataFrameBuffer<int>;
+            DataFrameBuffer<int> mutableOffsetsBuffer = (DataFrameBuffer<int>)_offsetsBuffers[_offsetsBuffers.Count - 1];
             if (mutableOffsetsBuffer.Length == 0)
             {
                 mutableOffsetsBuffer.Append(0);
             }
             Length++;
-            if (value == null)
+            if (value == default)
             {
                 mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1]);
             }
             else
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(value);
-                DataFrameBuffer<byte> mutableDataBuffer = _dataBuffers[_dataBuffers.Count - 1] as DataFrameBuffer<byte>;
+                DataFrameBuffer<byte> mutableDataBuffer = (DataFrameBuffer<byte>)_dataBuffers[_dataBuffers.Count - 1];
                 if (mutableDataBuffer.Length == ReadOnlyDataFrameBuffer<byte>.MaxCapacity)
                 {
                     mutableDataBuffer = new DataFrameBuffer<byte>();
                     _dataBuffers.Add(mutableDataBuffer);
                     _nullBitMapBuffers.Add(new DataFrameBuffer<byte>());
-                    var offsetBuffer = new DataFrameBuffer<int>();
-                    _offsetsBuffers.Add(offsetBuffer);
-                    offsetBuffer.Append(0);
+                    mutableOffsetsBuffer = new DataFrameBuffer<int>();
+                    _offsetsBuffers.Add(mutableOffsetsBuffer);
+                    mutableOffsetsBuffer.Append(0);
                 }
-                mutableDataBuffer.EnsureCapacity(bytes.Length);
-                bytes.AsMemory().CopyTo(mutableDataBuffer.Memory.Slice(mutableDataBuffer.Length));
-                mutableDataBuffer.Length += bytes.Length;
-                mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + bytes.Length);
+                mutableDataBuffer.EnsureCapacity(value.Length);
+                value.CopyTo(mutableDataBuffer.Span.Slice(mutableDataBuffer.Length));
+                mutableDataBuffer.Length += value.Length;
+                mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + value.Length);
             }
             SetValidityBit(Length - 1, value == null ? true : false);
+
         }
 
         private int GetBufferIndexContainingRowIndex(long rowIndex, out int indexInBuffer)
@@ -286,11 +288,15 @@ namespace Microsoft.Data
             ArrowStringColumn clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long))
-                    throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                if (mapIndices.DataType == typeof(long))
+                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else
+                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+
             }
             else
             {
@@ -298,9 +304,23 @@ namespace Microsoft.Data
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
-                clone.Append(null);
+                clone.Append(default);
             }
             return clone;
+        }
+
+        private ArrowStringColumn Clone(PrimitiveColumn<bool> boolColumn)
+        {
+            if (boolColumn.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
+            ArrowStringColumn ret = new ArrowStringColumn(Name);
+            for (long i = 0; i < boolColumn.Length; i++)
+            {
+                bool? value = boolColumn[i];
+                if (value == true)
+                    ret.Append(GetBytes(i));
+            }
+            return ret;
         }
 
         private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices, bool invertMapIndex)
@@ -310,7 +330,7 @@ namespace Microsoft.Data
             {
                 for (long i = 0; i < Length; i++)
                 {
-                    ret.Append(this[i]);
+                    ret.Append(GetBytes(i));
                 }
             }
             else
@@ -321,7 +341,7 @@ namespace Microsoft.Data
                 {
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[mapIndices[i].Value]);
+                        ret.Append(GetBytes(mapIndices[i].Value));
                     }
                 }
                 else
@@ -329,7 +349,7 @@ namespace Microsoft.Data
                     long mapIndicesLengthIndex = mapIndices.Length - 1;
                     for (long i = 0; i < mapIndices.Length; i++)
                     {
-                        ret.Append(this[mapIndices[mapIndicesLengthIndex - i].Value]);
+                        ret.Append(GetBytes(mapIndices[mapIndicesLengthIndex - i].Value));
                     }
                 }
             }

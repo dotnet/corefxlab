@@ -214,6 +214,16 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
+        public override bool IsNumericColumn()
+        {
+            bool ret = true;
+            if (typeof(T) == typeof(char) || typeof(T) == typeof(bool))
+                ret = false;
+            return ret;
+        }
+
+        public override bool HasDescription() => IsNumericColumn();
+
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";
@@ -224,11 +234,14 @@ namespace Microsoft.Data
             PrimitiveColumn<T> clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long))
-                    throw new ArgumentException(Strings.MismatchedValueType + " PrimitiveColumn<long>", nameof(mapIndices));
+                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                if (mapIndices.DataType == typeof(long))
+                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else
+                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
             }
             else
             {
@@ -237,6 +250,20 @@ namespace Microsoft.Data
             Debug.Assert(!ReferenceEquals(clone, null));
             clone.AppendMany(null, numberOfNullsToAppend);
             return clone;
+        }
+
+        private PrimitiveColumn<T> Clone(PrimitiveColumn<bool> boolColumn)
+        {
+            if (boolColumn.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            for (long i = 0; i < boolColumn.Length; i++)
+            {
+                bool? value = boolColumn[i];
+                if (value.HasValue && value.Value == true)
+                    ret.Append(this[i]);
+            }
+            return ret;
         }
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
@@ -360,6 +387,60 @@ namespace Microsoft.Data
             }
         }
 
+        public override BaseColumn Clip<U>(U lower, U upper)
+        {
+            object convertedLower = Convert.ChangeType(lower, typeof(T));
+            if (typeof(T) == typeof(U) || convertedLower != null)
+            {
+                return _Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
+            }
+            else
+                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+        }
+
+        public override DataFrame Description()
+        {
+            DataFrame ret = new DataFrame();
+            StringColumn stringColumn = new StringColumn("Description", 0);
+            stringColumn.Append("Length");
+            stringColumn.Append("Max");
+            stringColumn.Append("Min");
+            stringColumn.Append("Mean");
+            float max = (float)Convert.ChangeType(Max(), typeof(float));
+            float min = (float)Convert.ChangeType(Min(), typeof(float));
+            float mean = (float)Convert.ChangeType(Sum(), typeof(float)) / Length;
+            PrimitiveColumn<float> column = new PrimitiveColumn<float>(Name);
+            column.Append(Length);
+            column.Append(max);
+            column.Append(min);
+            column.Append(mean);
+            ret.InsertColumn(0, stringColumn);
+            ret.InsertColumn(1, column);
+            return ret;
+        }
+
+        private PrimitiveColumn<T> _Clip(T lower, T upper)
+        {
+            PrimitiveColumn<T> ret = Clone() as PrimitiveColumn<T>;
+            Comparer<T> comparer = Comparer<T>.Default;
+            for (long i = 0; i < Length; i++)
+            {
+                T? value = ret[i];
+                if (value == null)
+                    continue;
+
+                if (comparer.Compare(value.Value, lower) < 0)
+                {
+                    ret[i] = lower;
+                }
+                if (comparer.Compare(value.Value, upper) > 0)
+                {
+                    ret[i] = upper;
+                }
+            }
+            return ret;
+        }
+
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {
             builder.AddColumn(Name, GetDataViewType());
@@ -407,7 +488,7 @@ namespace Microsoft.Data
             {
                 return NumberDataViewType.UInt64;
             }
-            else if (typeof(T) == typeof(ushort) )
+            else if (typeof(T) == typeof(ushort))
             {
                 return NumberDataViewType.UInt16;
             }
