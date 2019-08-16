@@ -19,6 +19,7 @@ namespace Benchmarks.ALCProxy
         int MethodWithUserTypeParameter(int a, Test2 t);
         Test2 ReturnUserType();
         int SimpleMethod();
+        string CallUsingMultipleParameters(int a, int b, string s, Test2 t, int c, int x, int y, int[] z, Test2 tt);
     }
 
     public interface IGeneric<T>
@@ -83,6 +84,11 @@ namespace Benchmarks.ALCProxy
 
     public class Test : ITest
     {
+        public string CallUsingMultipleParameters(int a, int b, string s, Test2 t, int c, int x, int y, int[] z, Test2 tt)
+        {
+            return (a + b + (c*x*y)).ToString() + s + t.ToString() + tt.ToString() + z.ToString(); 
+        }
+
         public string GetContextName()
         {
             var a = Assembly.GetExecutingAssembly();
@@ -208,6 +214,18 @@ namespace Benchmarks.ALCProxy
         public object UserTypeParametersControl2()
         {
             return controlObject.MethodWithUserTypeParameter(3, userInput);
+        }
+
+        [Benchmark]
+        public object SerializeManyParameters()
+        {
+            return testObject.CallUsingMultipleParameters(1,2,"3",new Test2(), 44, 1, 3, new int[] { 3,4,5}, new Test2());
+        }
+
+        [Benchmark]
+        public object SerializeManyParametersControl()
+        {
+            return controlObject.CallUsingMultipleParameters(1, 2, "3", new Test2(), 44, 1, 3, new int[] { 3, 4, 5 }, new Test2());
         }
     }
     class TestAssemblyLoadContext : AssemblyLoadContext
