@@ -9,24 +9,66 @@ using ALCProxy.Communication;
 
 namespace ALCProxy.Proxy
 {
+    /// <summary>
+    /// ProxyBuilder has static methods that function similarly to AppDomain.CreateInstanceAndUnwrap().
+    /// </summary>
+    /// <typeparam name="I">The interface the proxy is inheriting from</typeparam>
+    /// <typeparam name="T">The Client being used to cross the ALC boundary. For users, custom made Clients inheriting from ALCProxy.Communication.ALCCLient only need to implement serialization</typeparam>
     public static class ProxyBuilder<I, T> where T : IProxyClient//T is the specific serializer we want to use
     {
+
+        /// <summary>
+        /// Creates a proxy object in the given ALC
+        /// </summary>
+        /// <param name="alc">The AssemblyLoadContext to create the proxy in</param>
+        /// <param name="assemblyName">The AssemblyName of the assembly where the desired type to be proxied resides</param>
+        /// <param name="typeName">The name of the target type to be proxied from the assembly to load</param>
+        /// <returns>A DispatchProxy presented as the target object</returns>
         public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName)
         {
             //Create the object in the ALC
             return CreateInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { });
         }
+
+        /// <summary>
+        /// Creates a proxy object from a generic type in the given ALC
+        /// </summary>
+        /// <param name="alc">The AssemblyLoadContext to create the proxy in</param>
+        /// <param name="assemblyName">The AssemblyName of the assembly where the desired type to be proxied resides</param>
+        /// <param name="typeName">The name of the target type to be proxied from the assembly to load</param>
+        /// <param name="constructorParams">A list of arguments to pass to the object's constructor</param>
+        /// <returns>A DispatchProxy presented as the target object</returns>
         public static I CreateInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)
         {
             //Create the object in the ALC
             I obj = ALCDispatch<I,T>.Create(alc, assemblyName, typeName, constructorParams);
             return obj;
         }
+
+        /// <summary>
+        /// Creates a proxy object from a generic type in the given ALC
+        /// </summary>
+        /// <param name="alc">The AssemblyLoadContext to create the proxy in</param>
+        /// <param name="assemblyName">The AssemblyName of the assembly where the desired type to be proxied resides</param>
+        /// <param name="typeName">The name of the target type to be proxied from the assembly to load</param>
+        /// <param name="constructorParams">A list of arguments to pass to the object's constructor</param>
+        /// <param name="genericTypes">A list of types to be used to make the generic type</param>
+        /// <returns>A DispatchProxy presented as the target object</returns>
         public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams, Type[] genericTypes)
         {
             I obj = ALCDispatch<I,T>.CreateGeneric(alc, assemblyName, typeName, constructorParams, genericTypes);
             return obj;
         }
+
+        /// <summary>
+        /// Creates a proxy object from a generic type in the given ALC
+        /// </summary>
+        /// <param name="alc">The AssemblyLoadContext to create the proxy in</param>
+        /// <param name="assemblyName">The AssemblyName of the assembly where the desired type to be proxied resides</param>
+        /// <param name="typeName">The name of the target type to be proxied from the assembly to load</param>
+        /// <param name="constructorParams">A list of arguments to pass to the object's constructor</param>
+        /// <param name="genericTypes">A list of types to be used to make the generic type</param>
+        /// <returns>A DispatchProxy presented as the target object</returns>
         public static I CreateGenericInstanceAndUnwrap(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, Type[] genericTypes)
         {
             return CreateGenericInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { }, genericTypes);
