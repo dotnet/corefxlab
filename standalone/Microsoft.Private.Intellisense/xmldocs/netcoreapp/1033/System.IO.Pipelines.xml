@@ -112,6 +112,9 @@
       <summary>Signals to the producer that the consumer is done reading.</summary>
       <param name="exception">Optional <see cref="T:System.Exception" /> indicating a failure that's causing the pipeline to complete.</param>
     </member>
+    <member name="M:System.IO.Pipelines.PipeReader.CompleteAsync(System.Exception)">
+      <param name="exception" />
+    </member>
     <member name="M:System.IO.Pipelines.PipeReader.CopyToAsync(System.IO.Pipelines.PipeWriter,System.Threading.CancellationToken)">
       <summary>Asynchronously reads the bytes from the <see cref="T:System.IO.Pipelines.PipeReader" /> and writes them to the specified <see cref="T:System.IO.Pipelines.PipeWriter" />, using a specified buffer size and cancellation token.</summary>
       <param name="destination">The pipe writer to which the contents of the current stream will be copied.</param>
@@ -182,6 +185,9 @@
     <member name="M:System.IO.Pipelines.PipeWriter.Complete(System.Exception)">
       <summary>Marks the <see cref="T:System.IO.Pipelines.PipeWriter" /> as being complete, meaning no more items will be written to it.</summary>
       <param name="exception">Optional <see cref="T:System.Exception" /> indicating a failure that's causing the pipeline to complete.</param>
+    </member>
+    <member name="M:System.IO.Pipelines.PipeWriter.CompleteAsync(System.Exception)">
+      <param name="exception" />
     </member>
     <member name="M:System.IO.Pipelines.PipeWriter.CopyFromAsync(System.IO.Stream,System.Threading.CancellationToken)">
       <summary>Asynchronously reads the bytes from the specified stream and writes them to the <see cref="T:System.IO.Pipelines.PipeWriter" />.</summary>

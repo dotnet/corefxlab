@@ -52,6 +52,7 @@
       <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</summary>
       <returns>A built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</returns>
     </member>
+    <member name="P:System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping" />
     <member name="T:System.Text.Encodings.Web.TextEncoder">
       <summary>The base class of web encoders.</summary>
     </member>
@@ -103,11 +104,21 @@
         <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <see cref="M:System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)" /> method failed. The encoder does not implement <see cref="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter" /> correctly.</exception>
     </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.EncodeUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
+      <param name="utf8Source" />
+      <param name="utf8Destination" />
+      <param name="bytesConsumed" />
+      <param name="bytesWritten" />
+      <param name="isFinalBlock" />
+    </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncode(System.Char*,System.Int32)">
       <summary>Finds the index of the first character to encode.</summary>
       <param name="text">The text buffer to search.</param>
       <param name="textLength">The number of characters in <paramref name="text" />.</param>
       <returns>The index of the first character to encode.</returns>
+    </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncodeUtf8(System.ReadOnlySpan{System.Byte})">
+      <param name="utf8Text" />
     </member>
     <member name="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter">
       <summary>Gets the maximum number of characters that this encoder can generate for each input code point.</summary>
