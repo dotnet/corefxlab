@@ -5,5 +5,4 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-
 </Project>

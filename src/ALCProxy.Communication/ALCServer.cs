@@ -95,7 +95,7 @@ namespace ALCProxy.Communication
             MethodInfo m = FindMethod(methods, targetMethod, argTypes.ToArray());
             if (m.ContainsGenericParameters)
             {
-                //While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
+                // While this may work without the conversion, we want it to uphold the type-load boundary, don't let the passed in method use anything from outside the target ALC
                 m = m.MakeGenericMethod(targetMethod.GetGenericArguments());
             }
             return SerializeReturnObject(m.Invoke(instance, args), m.ReturnType);

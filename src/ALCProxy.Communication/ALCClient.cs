@@ -24,7 +24,7 @@ namespace ALCProxy.Communication
         internal ServerCall _serverDelegate;
         protected Type _serverType;
 #if DEBUG
-        private StackTrace _stackTrace; //holds information for debugging purposes
+        private StackTrace _stackTrace; // Holds information for debugging purposes
 #endif
         /// <summary>
         /// ALCClient gets the information that is needed to set up the ALCServer in the target ALC
@@ -75,25 +75,25 @@ namespace ALCProxy.Communication
                 constructorParams = new object[] { };
             Assembly a = alc.LoadFromAssemblyName(assemblyName);
             
-            //find the type we're going to proxy inside the loaded assembly
+            // Find the type we're going to proxy inside the loaded assembly
             Type objType = FindTypeInAssembly(typeName, a);
-            //Get the interface of the object so we can set it as the server's generic type
+            // Get the interface of the object so we can set it as the server's generic type
             Type interfaceType = FindInterfaceType(_intType.Name, objType);
             if (interfaceType.IsGenericType)
             {
                 interfaceType = interfaceType.MakeGenericType(genericTypes.Select(x => ConvertType(x, alc)).ToArray());
             }
-            //Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
+            // Load *this* (ALCProxy.Communication) assembly into the ALC so we can get the server into the ALC
             Assembly serverAssembly = alc.LoadFromAssemblyName(Assembly.GetAssembly(_serverType).GetName());
-            //Get the server type, then make it generic with the interface we're using
+            // Get the server type, then make it generic with the interface we're using
             Type serverType = FindTypeInAssembly(_serverTypeName, serverAssembly).MakeGenericType(interfaceType);
-            //Give the client its reference to the server
+            // Give the client its reference to the server
             SerializeParameters(constructorParams, out IList<object> serializedConstArgs, out IList<Type> argTypes);
             ConstructorInfo ci = serverType.GetConstructor(
                 new Type[] { typeof(Type), typeof(Type[]), typeof(IList<object>), typeof(IList<Type>) });
             _server = ci.Invoke(new object[] { objType, genericTypes, serializedConstArgs.ToList(), argTypes });
             _serverDelegate = (ServerCall)Delegate.CreateDelegate(typeof(ServerCall), _server, serverType.GetMethod("CallObject"));
-            //Attach to the unloading event
+            // Attach to the unloading event
             alc.Unloading += UnloadClient;
         }
 
@@ -114,7 +114,7 @@ namespace ALCProxy.Communication
             else
                 interfaces = objType.GetInterfaces();
 
-            //Type[] interfaces = objType.GetInterfaces();
+            // Type[] interfaces = objType.GetInterfaces();
             foreach(Type t in interfaces)
             {
                 if (t.Name.Equals(interfaceName))
@@ -135,7 +135,7 @@ namespace ALCProxy.Communication
 
         private void UnloadClient(object sender)
         {
-            _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
+            _server = null; // Unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
             _serverDelegate = null;
         }
 

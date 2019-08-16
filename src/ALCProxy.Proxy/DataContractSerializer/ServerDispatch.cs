@@ -26,7 +26,7 @@ namespace ALCProxy.Proxy
             }
             var s = (MemoryStream)serializedParam;
             s.Position = 0;
-            //Deserialize the Record object back into a new record object.  
+            // Deserialize the Record object back into a new record object.  
             var newSerializer = new DataContractSerializer(t);
             object obj = newSerializer.ReadObject(s);
             return obj;

@@ -74,9 +74,15 @@ namespace ALCProxy.Proxy
             return CreateGenericInstanceAndUnwrap(alc, assemblyName, typeName, new object[] { }, genericTypes);
         }
     }
-    public class ALCDispatch<I, T> : DispatchProxy where T : IProxyClient //I is the specific client you want to use.
+
+    /// <summary>
+    /// The DispatchProxy object that represents the proxied object created through the ProxyBuilder
+    /// </summary>
+    /// <typeparam name="I">The interface the DispatchProxy inherits from</typeparam>
+    /// <typeparam name="T">The IProxyClient type that the proxy will use to communicate with the proxied object</typeparam>
+    public class ALCDispatch<I, T> : DispatchProxy where T : IProxyClient // I is the specific client you want to use.
     {
-        private IProxyClient _client; //ClientObject
+        private IProxyClient _client; // IProxyClient
 
         internal static I Create(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)
         {
@@ -112,7 +118,7 @@ namespace ALCProxy.Proxy
         
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
-            return _client.SendMethod(targetMethod, args); //Whenever we call the method, instead we send the request to the client to make it to target
+            return _client.SendMethod(targetMethod, args); // Whenever we call the method, instead we send the request to the client to make it to target
         }
     }
 }

@@ -27,7 +27,7 @@ namespace ALCProxy.Proxy
         protected override object SerializeParameter(object param, Type paramType)
         {
             var stream = new MemoryStream();
-            //Serialize the Record object to a memory stream using DataContractSerializer.  
+            // Serialize the Record object to a memory stream using DataContractSerializer.  
             var serializer = new DataContractSerializer(paramType);
             serializer.WriteObject(stream, param);
             return stream;
@@ -47,7 +47,7 @@ namespace ALCProxy.Proxy
             }
             var stream = (MemoryStream)s;
             stream.Position = 0;
-            //Deserialize the Record object back into a new record object.  
+            // Deserialize the Record object back into a new record object.  
             var newSerializer = new DataContractSerializer(returnType);
             return newSerializer.ReadObject(stream);
         }
