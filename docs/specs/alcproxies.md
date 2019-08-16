@@ -70,8 +70,6 @@ Anything requiring a shared assembly could work for what we're trying to do, but
 
 With the creation of default interface methods, it's possible that everything will work if we have shared types between ALCs. Since we can implement similar versioning from shared interfaces, we have the power to share types across the ALC boundary, meaning if we can share assemblies, we should. This doesn't work well for cross-process communication (due to sharing dependencies not really working in that scenario), but in-process it can be a good solution.
 
-The one thing that total use of shared assemblies may have problems with is making sure that objects can be unloaded during the `AssemblyLoadContext.Unload` event, which would need a little more extra work to ensure that everything worked out.
-
 ## Proposed Solution
 
 ### Goals
@@ -162,6 +160,8 @@ Using `BinaryFormatter`, types and their information can be serialized and sent 
 
 While Binary Serialization in concept is a good idea, there are too many issues that make this an ineffective solution. `BinaryFormatter` is a depricated API, many types aren't serializable, limiting the use of types we could proxy. 
 
+As a side note: The current prototype that this design document is attached to won't allow for binary serialization to work easily, since the serialization process of `BinaryFormatter` doesn't seem to treat the deserialized objects as ALC types once passed to the ALC, leaving a similar type casting error we're trying to avoid with other serializers.
+
 #### XML/JSON Serialization using `DataContractSerializer`
 Instead of moving a specific type through a `BinaryFormatter`, using `DataContractSerializer` would allow us to move any public or private pieces of an object, and then recreate it on the other side.
 
@@ -233,7 +233,7 @@ For my planned implementation, I'll be trying to implement call-by-value, since 
 However, due to the design for extensibility, it's possible that anyone who wants to change the API can implement any of these options in their own way, by changing the interactions of `ClientObject` and `ServerObject`. If someone wants to limit interactions between plugins and the main context to primitives only, they're welcome to do so with this design.
 
 #### Generic Types
-For generics, the API should probably be able to allow users to pass in a list of types "in order" that are being used for the particular instance of an object they are creating. 
+For generics, the API should probably allows users to pass in a list of types "in order" that are being used for the particular instance of an object they are creating. 
 
 `DispatchProxy` should be OK to use generic types, but it may be an issue funneling these types through whatever server structure is created. 
 
@@ -243,8 +243,74 @@ For constraints on certain generics, the compiler should pick up any issues with
 No matter the performance of this API, by design it won't have the broader performance issues that AppDomains had in .Net Framework, since they work very similarly to normal classes. However, there may be some overhead and performance issues on any objects being contacted by the proxies, which should be investigated if they come up.
 
 Some hard points of performance that probably will need to be looked at:
+* Methods of serialization (specifically the prototype's use of `DataContractSerializer`)
 * Client/server calls on in-process ALCs
 * Multiple uses of `Reflection.Invoke` possibly being called
+
+These are some of the highlights after running the proxy system through the visual studio profiler (vs2019, 16.3 preview 1) with a sample application. The object doesn't take any arguments in its constructor, and the tested method doesn't load any additional assemblies into the target ALC, and does little basic operations. The method itself takes in one string parameter, performs an `ArrayList.Add(DateTime.Now)` operation with an existing array, and returns a new string. While testing the method took ~1% of CPU samples.:
+
+
+##### Performance Metrics: ALCProxy vs AppDomains
+Here are the tables of small samples being run through .NET Benchmark. The "Control" times are representing normal object calls/creation in .NET Core/Framework respectively, to get a better comparison of both proxy systems to a similar standard.
+
+All the tests for .NET Core are found under tests/Benchmarks/ALCProxy/ALCBenchmark.cs. I made the AppDomain comparison running the same methods, though it's not in the benchmarks project since it's running on .NET Framework 4.7.2
+
+###### ALCProxy on .NET Core 3.0
+|                            Method |           Mean |         Error |        StdDev |
+|---------------------------------- |---------------:|--------------:|--------------:|
+|                 CreateProxyObject |  34,812.116 ns |   691.7122 ns | 1,881.8541 ns |
+| CreateExternalAssemblyProxyObject |  58,329.507 ns | 1,154.3688 ns | 2,720.9830 ns |
+|               CreateControlObject |       3.640 ns |     0.1853 ns |     0.1642 ns |
+|      CallSimpleMethodThroughProxy |   6,887.738 ns |   137.4717 ns |   188.1728 ns |
+|           CallSimpleMethodControl |       5.987 ns |     0.1937 ns |     0.3127 ns |
+|                CreateGenericProxy |  65,674.175 ns | 1,264.7584 ns | 1,121.1754 ns |
+|              CreateGenericControl |       9.438 ns |     0.3232 ns |     0.3969 ns |
+|           CallSimpleMethodGeneric |  10,667.163 ns |   230.1083 ns |   551.3248 ns |
+|    CallSimpleMethodGenericControl |   1,277.827 ns |    25.6223 ns |    58.8715 ns |
+|                UserTypeParameters |  45,244.586 ns |   873.6857 ns | 1,166.3453 ns |
+|         UserTypeParametersControl |      14.059 ns |     0.4585 ns |     0.6428 ns |
+|               UserTypeParameters2 |  45,047.991 ns |   899.6754 ns | 1,318.7326 ns |
+|        UserTypeParametersControl2 |       8.368 ns |     0.2960 ns |     0.4520 ns |
+|           SerializeManyParameters | 118,357.982 ns | 2,336.1915 ns | 4,212.6353 ns |
+|    SerializeManyParametersControl |     208.124 ns |     4.3287 ns |     7.4669 ns |
+
+
+
+###### AppDomain on .NET Framework
+|                         Method |             Mean |          Error |          StdDev |           Median |
+|------------------------------- |-----------------:|---------------:|----------------:|-----------------:|
+|              CreateProxyObject |   634,918.105 ns | 53,267.2756 ns | 155,383.1432 ns |   663,439.227 ns |
+|            CreateControlObject |        11.312 ns |      0.3381 ns |       0.3618 ns |        11.232 ns |
+|   CallSimpleMethodThroughProxy |     7,234.239 ns |    143.3793 ns |     147.2400 ns |     7,265.935 ns |
+|        CallSimpleMethodControl |         5.409 ns |      0.2206 ns |       0.6039 ns |         5.569 ns |
+|             CreateGenericProxy |   711,390.021 ns | 19,527.1192 ns |  56,340.2036 ns |   709,133.643 ns |
+|           CreateGenericControl |        17.029 ns |      0.4236 ns |       0.5203 ns |        17.168 ns |
+|        CallSimpleMethodGeneric |    16,964.157 ns |    362.9143 ns |     626.0093 ns |    16,924.974 ns |
+| CallSimpleMethodGenericControl |     4,708.843 ns |     92.8184 ns |     133.1174 ns |     4,740.609 ns |
+|             UserTypeParameters |   629,216.729 ns | 44,208.7335 ns | 126,843.1436 ns |   675,572.070 ns |
+|      UserTypeParametersControl |        23.061 ns |      1.0978 ns |       1.7092 ns |        22.592 ns |
+|            UserTypeParameters2 |    18,349.927 ns |    365.9962 ns |     435.6924 ns |    18,373.392 ns |
+|     UserTypeParametersControl2 |        10.098 ns |      0.3185 ns |       0.4669 ns |        10.189 ns |
+|        SerializeManyParameters | 1,416,806.691 ns | 27,672.9167 ns |  68,400.5938 ns | 1,415,770.142 ns |
+| SerializeManyParametersControl |       569.277 ns |     11.2945 ns |      12.5538 ns |       573.416 ns |
+
+
+The ALCProxy API currently does much better with creating new proxy objects. However, calling methods from proxy objects has similar performance times compared to `TransparentProxy` from AppDomains. 
+
+Specifics of performance below were measured by looking at the numbers from the VS2019 performance profiler. These aren't the best measurements, but they give a general idea of what's specifically taking up time when running the API.
+
+##### Object creation (with updated use of AssemblyDependencyResolver in the ALC)
+* ~10-20% of CPU samples were to create the DispatchProxy object
+* ~50% of samples is loading the server into the new ALC and calling the constructor using `Reflection.Invoke()`
+* ~10% of CPU samples is to create the delegate to use whenever the Client needs to call the Server during a normal method call.
+
+##### Calling methods on the proxied object
+* ~2% of CPU samples were for calling the delegate from the `ClientObject` to call `ServerObject.CallObject`
+* Searching for the method in the assembly takes around 2-3% of CPU samples.
+* Serialization of parameters took around 50-65% of CPU samples. It increases drastically if we add additional parameters.
+* Invoking of the method itself from the `ProxyObject` took around 10-20% of CPU samples.
+* Server-side deseralization took around 10% of samples.
+
 
 #### Special Language Features
 Language features such as `in`, `ref`, and `out` should be investigated further, but we probably won't be able to implement them in this design since everything will be kept call-by-value, and they're also a bit out of scope for this project.
@@ -256,6 +322,11 @@ When a proxy is created using the API, a new instance of the object type request
 
 When an ALC is unloaded, technically the `ProxyObject` will still exist in the user ALC, but any attempt to use methods in the proxy should throw an error to the user, as there is nothing to actually call the methods on.
 
+#### Excess types and their loading policies: Do we want shared assemblies?
+A big question that comes up is how do we want to handle any of the extra types that get loaded with the proxied object? If we keep full isolation between the user's starting ALC and the target ALC to load the proxy, then for user-defined types we'd have to load the assembly a second time, which is a very costly process.
+
+The biggest case is the loading of the `Client` and `Server` themselves, since this always happens when a proxy is generated. We could enforce that the plugin assembly has a reference to its host program. This would allow for the proxy API to be used as a shared assembly, which would prevent the costly second load. Do we want to enforce that reference requirement?
+
 ## Validation
 This project is a bit harder to test past integration tests, as the most important thing to test is to ensure that the communication between `ClientObject` and `ServerObject` is correct, which can't be unit tested easily. Integration tests should attempt to run methods from proxied targets both in and out of process, passing in a mix of primitive and non-primitive objects as arguments and return types. Separate from that, we should be able to Moq "serialization and deserialization" (the decoding steps from the client and server, not neccesarily with normal serializers) by taking sample messages sent through other tests, making changes, and ensuring that messages are still decoded and encoded correctly.
 
@@ -266,7 +337,14 @@ Performance considerations are also fairly important, and need to be tested as w
 * How should the API deal with generic types when creating our different proxy classes?
 * Is there anything special that we need to do to deal with other language features, such as lambdas?
 * Do we have a way to deal with the user ALC being destroyed before the target ALC? How do we react to that problem?
-* Do we want to use strong or weak references for the proxies? Do we want to give options so users can use both?
+* What happens when we try to send large objects through a proxy as parameters/return types?
+* Are there any better ways to perform our serialization to improve performance without losing security?
 
 ## Extra Goals
 * Can we get out-of-process proxies to specify an ALC to be added to in the receiving process?
+
+
+## Discovered Limitations
+* As stated before, call-by-value is the only way to do anything with our current implementation, which causes problems if we want proxies to change values of passed-in objects.
+* A good chunk of our performance hits come from multiple uses of `MethodInfo.Invoke`. We could improve performance by swapping most of our method calls to invoking through a `Delegate`, but for our types where we only get our type information during runtime, it may be difficult/impossible to make delegates for every method of a proxied object when we call for the `ProxyBuilder` to create them.
+* For `DataContractSerialization`, larger projects need to ensure that all classes and members being used by the proxies are able to be serialized across the boundary. This requires manual placement of the `[DataContractAttribute]` and `[DataMember]` attributes across any classes needing to be proxied. For more complex classes like Tasks in MSBuild, this is close to impossible to do with our current setup.
