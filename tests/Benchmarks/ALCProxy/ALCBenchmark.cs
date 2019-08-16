@@ -120,12 +120,12 @@ namespace Benchmarks.ALCProxy
         private static TestAssemblyLoadContext alc = new TestAssemblyLoadContext("BenchmarkContext", isCollectible: true);
         private static TestAssemblyLoadContext alc2;
         private AssemblyName assemblyName = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().Location).GetName();
-        private ITest testObject;//  = ProxyBuilder<ITest>.CreateInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().Location, "Test");
+        private ITest testObject;
         private ITest controlObject = new Test();
-        private IGeneric<Test2> genericObject;// = ProxyBuilder<IGeneric<Test2>>.CreateGenericInstanceAndUnwrap(alc, Assembly.GetExecutingAssembly().Location, "GenericClass`1", new Type[] { typeof(Test2) });
+        private IGeneric<Test2> genericObject;
         private IGeneric<Test2> genericControl = new GenericClass<Test2>();
         private Test2 userInput;
-        private AssemblyName name;// = alc.LoadFromAssemblyPath(Assembly.GetExecutingAssembly().CodeBase.Substring(8)).CodeBase.Substring(8).Split("Benchmarks")[0] + "ALCProxy.TestAssembly\\bin\\Release\\netcoreapp3.0\\ALCProxy.TestAssembly.dll";
+        private AssemblyName name;
 
         [GlobalSetup]
         public void Setup()

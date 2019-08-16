@@ -17,8 +17,7 @@ namespace ALCProxy.Communication
     /// </summary>
     public abstract class ALCClient : IProxyClient
     {
-        //Can't make this an IServerObject directly due to the type-loading barrier
-        protected object _server;
+        protected object _server; // Can't make this an IServerObject directly due to the type-loading barrier
         protected string _serverTypeName;
         protected Type _intType;
         internal ServerCall _serverDelegate;

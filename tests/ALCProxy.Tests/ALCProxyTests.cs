@@ -176,7 +176,7 @@ namespace ALCProxy.Tests
 #if DEBUG
             _dbgString = "Debug";
 #else
-            dbgString = "Release";
+            _dbgString = "Release";
 #endif
 
         }
