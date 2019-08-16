@@ -77,6 +77,7 @@ namespace ALCProxy.Proxy
     public class ALCDispatch<I, T> : DispatchProxy where T : IProxyClient //I is the specific client you want to use.
     {
         private IProxyClient _client; //ClientObject
+
         internal static I Create(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams)
         {
             if (alc == null || assemblyName == null || typeName == null)
@@ -88,6 +89,7 @@ namespace ALCProxy.Proxy
             ((ALCDispatch<I,T>)proxy).SetParameters(alc, typeName, assemblyName, constructorParams, null);
             return (I)proxy;
         }
+
         internal static I CreateGeneric(AssemblyLoadContext alc, AssemblyName assemblyName, string typeName, object[] constructorParams, Type[] genericTypes)
         {
             if (alc == null || assemblyName == null || typeName == null || genericTypes == null)
@@ -101,11 +103,13 @@ namespace ALCProxy.Proxy
             ((ALCDispatch<I,T>)proxy).SetParameters(alc, typeName, assemblyName, constructorParams,  genericTypes);
             return (I)proxy;
         }
+
         private void SetParameters(AssemblyLoadContext alc, string typeName, AssemblyName assemblyName, object[] constructorParams, Type[] genericTypes)
         {
             _client = (IProxyClient)typeof(T).GetConstructor(new Type[] { typeof(Type) }).Invoke(new object[] { typeof(I) });
             _client.SetUpServer(alc, typeName, assemblyName,constructorParams,  genericTypes);
         }
+        
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
             return _client.SendMethod(targetMethod, args); //Whenever we call the method, instead we send the request to the client to make it to target

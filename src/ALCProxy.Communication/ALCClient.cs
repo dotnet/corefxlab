@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Reflection.Emit;
-using System.IO;
 
 namespace ALCProxy.Communication
 {
@@ -17,7 +15,6 @@ namespace ALCProxy.Communication
     /// <summary>
     /// This currently is designed to only work in-process
     /// </summary>
-    //TODO: set up to allow for construction of out-of-proc proxies
     public abstract class ALCClient : IProxyClient
     {
         //Can't make this an IServerObject directly due to the type-loading barrier
@@ -27,20 +24,21 @@ namespace ALCProxy.Communication
         internal ServerCall _serverDelegate;
         protected Type _serverType;
 #if DEBUG
-        private StackTrace _stackTrace;
+        private StackTrace _stackTrace; //holds information for debugging purposes
 #endif
         /// <summary>
         /// ALCClient gets the information that is needed to set up the ALCServer in the target ALC
         /// </summary>
+        /// <exception cref="ArgumentNullException">Throws if missing an interface type/server type to work with or a server name</exception>
         public ALCClient(Type interfaceType, string serverName, Type serverType)
         {
-            if (interfaceType == null || serverName == null)
+            if ((interfaceType ?? serverType) == null || serverName == null)
                 throw new ArgumentNullException();
             _serverType = serverType;
             _intType = interfaceType;
             _serverTypeName = serverName;
 #if DEBUG
-            _stackTrace = new StackTrace(true); //holds information for debugging purposes
+            _stackTrace = new StackTrace(true);
 #endif
         }
 
@@ -66,6 +64,7 @@ namespace ALCProxy.Communication
         /// <param name="typeName">Name of the proxied type</param>
         /// <param name="assemblyName">path of the assembly to the type</param>
         /// <param name="genericTypes">any generics that we need the proxy to work with</param>
+        /// <exception cref="ArgumentNullException">Throws if we're missing either the given ALC, the AssemblyName to load, or the type to load from the assembly</exception>
         public void SetUpServer(AssemblyLoadContext alc, string typeName, AssemblyName assemblyName, object[] constructorParams, Type[] genericTypes)
         {
             if (alc == null || typeName == null || assemblyName == null)
@@ -137,7 +136,7 @@ namespace ALCProxy.Communication
         private void UnloadClient(object sender)
         {
             _server = null; //unload only removes the reference to the proxy, doesn't do anything else, since the ALCs need to be cleaned up by the users before the GC can collect.
-            _serverDelegate = null; //TODO: to Delegates to a specific object hold a strong or weak reference to said object?
+            _serverDelegate = null;
         }
 
         /// <summary>
@@ -145,7 +144,9 @@ namespace ALCProxy.Communication
         /// </summary>
         /// <param name="method">the methodInfo of the target method</param>
         /// <param name="args">the current objects assigned as arguments to send</param>
-        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Throws if we're missing a method to call</exception>
+        /// <exception cref="InvalidOperationException">Throws if the client doesn't have a link to a server, usually due to the ALC being unloaded</exception>
+        /// <returns>the Deserialized return object to give back to the proxy</returns>
         public object SendMethod(MethodInfo method, object[] args)
         {
             if (method == null)

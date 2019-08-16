@@ -19,6 +19,12 @@ namespace ALCProxy.Communication
         /// <summary>
         /// ALCServer, contacted by the client to take methods and serialized parameters and run them on a created proxy object.
         /// </summary>
+        /// <param name="instanceType">The type of the object that is to be loaded in the ALC</param>
+        /// <param name="genericTypes">Any generic types that are used within the instance type if instance is generic</param>
+        /// <param name="serializedConstParams">Serialized versions of objects that need to be passed to the constructor</param>
+        /// <param name="constArgTypes">The given types of the serialized constructor parameters</param>
+        /// <exception cref="ArgumentNullException">Throws if there is no instanceType that is given ie. there is no object type defined to be proxied</exception>
+        /// <exception cref="ArgumentException">Throws if there are a different number of serialized constructor parameters to listed types for them</exception>
         public ALCServer(Type instanceType, Type[] genericTypes, IList<object> serializedConstParams, IList<Type> constArgTypes)
         {
             if (instanceType == null)
@@ -52,6 +58,7 @@ namespace ALCProxy.Communication
         /// <summary>
         /// Takes a Type that's been passed from the user ALC, and loads it into the current ALC for use. 
         /// </summary>
+        /// <exception cref="ArgumentNullException">Throws if there is no type given to convert</exception>
         protected Type ConvertType(Type toConvert)
         {
             if (toConvert == null)
@@ -71,11 +78,15 @@ namespace ALCProxy.Communication
         /// <param name="targetMethod">The method from the Proxy to be called</param>
         /// <param name="serializedObjects">Parameter arguments for the target method, serialized in some way</param>
         /// <param name="argTypes">In the same order as the serialized objects, the respective type for each serialized object</param>
+        /// <exception cref="ArgumentNullException">Throws if there is no given method to call</exception>
+        /// <exception cref="ArgumentException">Throws if there are a different number of serialized parameters to given types for said parameters</exception>
         /// <returns>A serialized version of the returned object from the method</returns>
         public object CallObject(MethodInfo targetMethod, IList<object> serializedObjects, IList<Type> argTypes)
         {
-            if (targetMethod == null || serializedObjects.Count != argTypes.Count)
+            if (targetMethod == null)
                 throw new ArgumentNullException();
+            if (serializedObjects.Count != argTypes.Count)
+                throw new ArgumentException("Different number of serialized arguments to types");
 
             //Turn the serialized objects into their respective objects
             argTypes = argTypes.Select(x => ConvertType(x)).ToList();
@@ -94,7 +105,9 @@ namespace ALCProxy.Communication
         /// Searches for methods within the type to find the one that matches our passed in type. Since the types are technically different,
         /// using a .Equals() on the methods doesn't have the comparison work correctly, so the first if statement does that manually for us.
         /// </summary>
-        protected MethodInfo FindMethod(MethodInfo[] methods, MethodInfo targetMethod, Type[] parameterTypes/*These have already been converted so no issues with compatibility*/)
+        /// <exception cref="MissingMethodException">Throws if we can't find the given method from the parameters</exception>
+        /// <returns>The MethodInfo object representing the method we want to call</returns>
+        private MethodInfo FindMethod(MethodInfo[] methods, MethodInfo targetMethod, Type[] parameterTypes/*These have already been converted so no issues with compatibility*/)
         {
             string methodName = targetMethod.Name;
             foreach (MethodInfo m in methods)
@@ -152,9 +165,10 @@ namespace ALCProxy.Communication
         /// <summary>
         /// Takes the serialized objects passed into the server and turns them into the specific objects we want, in the desired types we want
         /// </summary>
-        /// <param name="streams"></param>
-        /// <param name="argTypes"></param>
-        /// <returns></returns>
+        /// <param name="streams">A list of serialized objects</param>
+        /// <param name="argTypes">The types for each serialized object</param>
+        /// <exception cref="ArgumentException">Throws if there are a different number of serialized objects to the given list of types that are to deserialize them</exception>
+        /// <returns>the list of deserialized objects to be sent to the targetObject</returns>
         protected object[] DeserializeParameters(IList<object> streams, IList<Type> argTypes)
         {
             if (streams.Count != argTypes.Count)
