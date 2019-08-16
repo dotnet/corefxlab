@@ -118,6 +118,8 @@ namespace Microsoft.Data
         }
 
         // This is an immutable column, however this method exists to support Clone(). Keep this method private
+        // Appending a default string is equivalent to appending null. It increases the NullCount and sets a null bitmap bit
+        // Appending an empty string is valid. It does NOT affect the NullCount. It instead adds a new offset entry
         private void Append(ReadOnlySpan<byte> value)
         {
             if (_dataBuffers.Count == 0)
@@ -132,7 +134,7 @@ namespace Microsoft.Data
                 mutableOffsetsBuffer.Append(0);
             }
             Length++;
-            if (value == null)
+            if (value == default)
             {
                 mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1]);
             }
@@ -302,7 +304,7 @@ namespace Microsoft.Data
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
-                clone.Append(null);
+                clone.Append(default);
             }
             return clone;
         }
