@@ -169,15 +169,6 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to or.
-        /// </summary>
-        public static string Or {
-            get {
-                return ResourceManager.GetString("Or", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot span multiple buffers.
         /// </summary>
         public static string SpansMultipleBuffers {
