@@ -153,9 +153,6 @@
   <data name="NumericColumnType" xml:space="preserve">
     <value>numeric column</value>
   </data>
-  <data name="Or" xml:space="preserve">
-    <value>or</value>
-  </data>
   <data name="SpansMultipleBuffers" xml:space="preserve">
     <value>Cannot span multiple buffers</value>
   </data>
