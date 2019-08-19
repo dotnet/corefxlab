@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="$(xunitversion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0"> <!--! xunit version 2.2.0 doesn't currently work due to some error with Microsoft.TestPlatform.ObjectModel, so we're using 2.4.0 here for now-->
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ALCProxy.Proxy\ALCProxy.Proxy.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestInterfaceUpdated\ALCProxy.TestInterfaceUpdated.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
+  </ItemGroup>
+</Project>
