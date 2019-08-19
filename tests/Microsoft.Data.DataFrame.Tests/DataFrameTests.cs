@@ -1312,7 +1312,7 @@ namespace Microsoft.Data.Tests
             {
                 BaseColumn column = description.Column(i);
                 Assert.Equal(4, column.Length);
-                Assert.Equal((float)10, column[0]);
+                Assert.Equal((float)9, column[0]);
                 Assert.Equal((float)9, column[1]);
                 Assert.Equal((float)0, column[2]);
                 Assert.Equal((float)4, column[3]);
