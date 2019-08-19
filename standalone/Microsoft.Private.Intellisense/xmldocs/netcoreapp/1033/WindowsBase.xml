@@ -6069,10 +6069,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
     </member>
     <member name="M:System.Windows.Point.Offset(System.Double,System.Double)">
       <summary>Offsets a point's <see cref="P:System.Windows.Point.X" /> and <see cref="P:System.Windows.Point.Y" /> coordinates by the specified amounts.</summary>
-      <param name="offsetX">The amount to offset the point's  
- <see cref="P:System.Windows.Point.X" /> coordinate.</param>
-      <param name="offsetY">The amount to offset the  
- point's <see cref="P:System.Windows.Point.Y" /> coordinate.</param>
+      <param name="offsetX">The amount to offset the point's <see cref="P:System.Windows.Point.X" /> coordinate.</param>
+      <param name="offsetY">The amount to offset the point's <see cref="P:System.Windows.Point.Y" /> coordinate.</param>
     </member>
     <member name="M:System.Windows.Point.op_Addition(System.Windows.Point,System.Windows.Vector)">
       <summary>Translates the specified <see cref="T:System.Windows.Point" /> by the specified <see cref="T:System.Windows.Vector" /> and returns the result.</summary>
