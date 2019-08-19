@@ -151,11 +151,20 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected value to be of type {0} or {1}.
+        ///   Looks up a localized string similar to Expected value to be of type {0}, {1} or {2}.
         /// </summary>
         public static string MultipleMismatchedValueType {
             get {
                 return ResourceManager.GetString("MultipleMismatchedValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numeric column.
+        /// </summary>
+        public static string NumericColumnType {
+            get {
+                return ResourceManager.GetString("NumericColumnType", resourceCulture);
             }
         }
         

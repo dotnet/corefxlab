@@ -241,10 +241,20 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Return a new DataFrame with rows filtered by true values in boolColumn 
+        /// Returns a new DataFrame using the rows or true values in filterColumn
         /// </summary>
-        /// <param name="boolColumn">A column of bools where true implies a selection</param>
-        public DataFrame this[BaseColumn boolColumn] => Clone(boolColumn);
+        /// <param name="filterColumn">A column of rows/bools</param>
+        /// <remarks>filterColumn must be of type long, int or bool</remarks>
+        public DataFrame this[BaseColumn filterColumn] => Clone(filterColumn);
+
+        public DataFrame this[IEnumerable<int> filter]
+        {
+            get
+            {
+                PrimitiveColumn<int> filterColumn = new PrimitiveColumn<int>("Filter", filter);
+                return Clone(filterColumn);
+            }
+        }
 
         public BaseColumn this[string columnName]
         {

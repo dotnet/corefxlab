@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
@@ -146,10 +147,9 @@ namespace Microsoft.Data
             return _columnContainer[startIndex, length];
         }
 
-        protected override object GetValue(long rowIndex)
-        {
-            return _columnContainer[rowIndex];
-        }
+        internal T? GetTypedValue(long rowIndex) => _columnContainer[rowIndex];
+
+        protected override object GetValue(long rowIndex) => GetTypedValue(rowIndex);
 
         protected override void SetValue(long rowIndex, object value)
         {
@@ -180,6 +180,32 @@ namespace Microsoft.Data
                     throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
                 }
             }
+        }
+
+        public override double Median()
+        {
+            // Not the most efficient implementation. Using a selection algorithm here would be O(n) instead of O(nLogn)
+            if (Length == 0)
+                return 0;
+            PrimitiveColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
+            long middle = sortIndices.Length / 2;
+            double middleValue = (double)Convert.ChangeType(this[sortIndices[middle].Value].Value, typeof(double));
+            if (Length % 2 == 0)
+            {
+                double otherMiddleValue = (double)Convert.ChangeType(this[sortIndices[middle - 1].Value].Value, typeof(double));
+                return (middleValue + otherMiddleValue) / 2;
+            }
+            else
+            {
+                return middleValue;
+            }
+        }
+
+        public override double Mean()
+        {
+            if (Length == 0)
+                return 0;
+            return (double)Convert.ChangeType((T)Sum(), typeof(double)) / Length;
         }
 
         public override void Resize(long length)
@@ -223,10 +249,14 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn FillNulls(object value)
+        public override BaseColumn FillNulls(object value, bool inPlace = false)
         {
             T TValue = (T)Convert.ChangeType(value, typeof(T));
-            PrimitiveColumn<T> column = Clone();
+            PrimitiveColumn<T> column;
+            if (inPlace)
+                column = this;
+            else
+                column = Clone();
             column.ApplyElementwise((T? columnValue, long index) =>
             {
                 if (columnValue.HasValue == false)
@@ -262,12 +292,15 @@ namespace Microsoft.Data
             PrimitiveColumn<T> clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
+                Type dataType = mapIndices.DataType;
+                if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                if (mapIndices.DataType == typeof(long))
+                if (dataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else if (dataType == typeof(int))
+                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
                 else
                     clone = Clone(mapIndices as PrimitiveColumn<bool>);
             }
@@ -294,6 +327,41 @@ namespace Microsoft.Data
             return ret;
         }
 
+        private PrimitiveColumn<T> CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
+        {
+            if (!mapIndices.IsNumericColumn())
+                throw new ArgumentException(String.Format(Strings.MismatchedValueType, Strings.NumericColumnType), nameof(mapIndices));
+
+            if (mapIndices.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
+
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
+            ret._columnContainer._modifyNullCountWhileIndexing = false;
+            if (invertMapIndices == false)
+            {
+                for (long i = 0; i < mapIndices.Length; i++)
+                {
+                    T? value = _columnContainer[getIndex(i).Value];
+                    ret[i] = value;
+                    if (!value.HasValue)
+                        ret._columnContainer.NullCount++;
+                }
+            }
+            else
+            {
+                long mapIndicesIndex = mapIndices.Length - 1;
+                for (long i = 0; i < mapIndices.Length; i++)
+                {
+                    T? value = _columnContainer[getIndex(mapIndicesIndex - i).Value];
+                    ret[i] = value;
+                    if (!value.HasValue)
+                        ret._columnContainer.NullCount++;
+                }
+            }
+            ret._columnContainer._modifyNullCountWhileIndexing = true;
+            return ret;
+        }
+
         public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
         {
             if (mapIndices is null)
@@ -303,35 +371,17 @@ namespace Microsoft.Data
             }
             else
             {
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-
-                PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
-                ret._columnContainer._modifyNullCountWhileIndexing = false;
-                if (invertMapIndices == false)
-                {
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        T? value = _columnContainer[mapIndices._columnContainer[i].Value];
-                        ret[i] = value;
-                        if (!value.HasValue)
-                            ret._columnContainer.NullCount++;
-                    }
-                }
-                else
-                {
-                    long mapIndicesIndex = mapIndices.Length - 1;
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        T? value = _columnContainer[mapIndices._columnContainer[mapIndicesIndex - i].Value];
-                        ret[i] = value;
-                        if (!value.HasValue)
-                            ret._columnContainer.NullCount++;
-                    }
-                }
-                ret._columnContainer._modifyNullCountWhileIndexing = true;
-                return ret;
+                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndices);
             }
+        }
+
+        public PrimitiveColumn<T> Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndices = false)
+        {
+            long? ConvertInt(long index)
+            {
+                return mapIndices[index];
+            }
+            return CloneImplementation(mapIndices, ConvertInt, invertMapIndices);
         }
 
         public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
@@ -421,6 +471,17 @@ namespace Microsoft.Data
                 throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
         }
 
+        public override BaseColumn Filter<U>(U lower, U upper)
+        {
+            object convertedLower = Convert.ChangeType(lower, typeof(T));
+            if (typeof(T) == typeof(U) || convertedLower != null)
+            {
+                return _Filter((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
+            }
+            else
+                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+        }
+
         public override DataFrame Description()
         {
             DataFrame ret = new DataFrame();
@@ -433,12 +494,30 @@ namespace Microsoft.Data
             float min = (float)Convert.ChangeType(Min(), typeof(float));
             float mean = (float)Convert.ChangeType(Sum(), typeof(float)) / Length;
             PrimitiveColumn<float> column = new PrimitiveColumn<float>(Name);
-            column.Append(Length);
+            column.Append(Length - NullCount);
             column.Append(max);
             column.Append(min);
             column.Append(mean);
             ret.InsertColumn(0, stringColumn);
             ret.InsertColumn(1, column);
+            return ret;
+        }
+
+        private PrimitiveColumn<T> _Filter(T lower, T upper)
+        {
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            Comparer<T> comparer = Comparer<T>.Default;
+            for (long i = 0; i < Length; i++)
+            {
+                T? value = this[i];
+                if (value == null)
+                    continue;
+
+                if (comparer.Compare(value.Value, lower) >= 0 && comparer.Compare(value.Value, upper) <= 0)
+                {
+                    ret.Append(value);
+                }
+            }
             return ret;
         }
 

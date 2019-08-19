@@ -236,15 +236,17 @@ namespace Microsoft.Data
             StringColumn clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
+                Type dataType = mapIndices.DataType;
+                if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else if (dataType == typeof(int))
+                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
                 else
                     clone = Clone(mapIndices as PrimitiveColumn<bool>);
-
             }
             else
             {
@@ -271,37 +273,53 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private StringColumn CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
         {
             StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
-            if (mapIndices is null)
+            if (mapIndices.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
+            if (invertMapIndices == false)
             {
-                for (long i = 0; i < Length; i++)
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    ret[i] = this[i];
+                    ret[i] = this[getIndex(i).Value];
                 }
             }
             else
             {
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                if (invertMapIndex == false)
+                long mapIndicesLengthIndex = mapIndices.Length - 1;
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret[i] = this[(long)mapIndices[i]];
-                    }
-                }
-                else
-                {
-                    long mapIndicesLengthIndex = mapIndices.Length - 1;
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret[i] = this[(long)mapIndices[mapIndicesLengthIndex - i]];
-                    }
+                    ret[i] = this[getIndex(mapIndicesLengthIndex - i).Value];
                 }
             }
             return ret;
+        }
+
+        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        {
+            if (mapIndices is null)
+            {
+                StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = this[i];
+                }
+                return ret;
+            }
+            else
+            {
+                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndex);
+            }
+        }
+
+        private StringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        {
+            long? ConvertInt(long index)
+            {
+                return mapIndices[index];
+            }
+            return CloneImplementation(mapIndices, ConvertInt, invertMapIndex);
         }
 
         internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)

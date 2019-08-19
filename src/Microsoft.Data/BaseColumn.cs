@@ -105,7 +105,7 @@ namespace Microsoft.Data
         /// </summary>
         /// <remarks>Tries to convert value to the column's DataType</remarks>
         /// <param name="value"></param>
-        public virtual BaseColumn FillNulls(object value) => throw new NotImplementedException();
+        public virtual BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotImplementedException();
 
         // Arrow related APIs
         protected internal virtual Field Field() => throw new NotImplementedException();
@@ -141,9 +141,21 @@ namespace Microsoft.Data
         public virtual BaseColumn Clip<U>(U lower, U upper) => throw new NotImplementedException();
 
         /// <summary>
+        /// Returns a new column filtered by the lower and upper bounds
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
+        public virtual BaseColumn Filter<U>(U lower, U upper) => throw new NotImplementedException();
+
+        /// <summary>
         /// Determines if the column is of a numeric type
         /// </summary>
         public virtual bool IsNumericColumn() => false;
+
+        public virtual double Mean() => throw new NotImplementedException();
+
+        public virtual double Median() => throw new NotImplementedException();
 
         /// <summary>
         /// Used to exclude columns from the Description method
