@@ -775,26 +775,26 @@
       <summary>Constructs an instance of the <see cref="T:System.Data.Common.DbCommand" /> object.</summary>
     </member>
     <member name="M:System.Data.Common.DbCommand.Cancel">
-      <summary>Attempts to cancels the execution of a <see cref="T:System.Data.Common.DbCommand" />.</summary>
+      <summary>When overridden in a derived class, attempts to cancel the execution of a <see cref="T:System.Data.Common.DbCommand" />.</summary>
     </member>
     <member name="P:System.Data.Common.DbCommand.CommandText">
-      <summary>Gets or sets the text command to run against the data source.</summary>
+      <summary>When overridden in a derived class, gets or sets the text command to run against the data source.</summary>
       <returns>The text command to execute. The default value is an empty string ("").</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.CommandTimeout">
-      <summary>Gets or sets the wait time before terminating the attempt to execute a command and generating an error.</summary>
+      <summary>When overridden in a derived class, gets or sets the wait time before terminating the attempt to execute a command and generating an error.</summary>
       <returns>The time in seconds to wait for the command to execute.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.CommandType">
-      <summary>Indicates or specifies how the <see cref="P:System.Data.Common.DbCommand.CommandText" /> property is interpreted.</summary>
-      <returns>One of the <see cref="T:System.Data.CommandType" /> values. The default is <see langword="Text" />.</returns>
+      <summary>When overridden in a derived class, gets or sets how the <see cref="P:System.Data.Common.DbCommand.CommandText" /> property is interpreted.</summary>
+      <returns>One of the enumeration values that specifies how a command string is interpreted. The default is <see langword="Text" />.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.Connection">
       <summary>Gets or sets the <see cref="T:System.Data.Common.DbConnection" /> used by this <see cref="T:System.Data.Common.DbCommand" />.</summary>
       <returns>The connection to the data source.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.CreateDbParameter">
-      <summary>Creates a new instance of a <see cref="T:System.Data.Common.DbParameter" /> object.</summary>
+      <summary>When overridden in a derived class, creates a new instance of a <see cref="T:System.Data.Common.DbParameter" /> object.</summary>
       <returns>A <see cref="T:System.Data.Common.DbParameter" /> object.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.CreateParameter">
@@ -802,25 +802,28 @@
       <returns>A <see cref="T:System.Data.Common.DbParameter" /> object.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.DbConnection">
-      <summary>Gets or sets the <see cref="T:System.Data.Common.DbConnection" /> used by this <see cref="T:System.Data.Common.DbCommand" />.</summary>
+      <summary>When overridden in a derived class, gets or sets the <see cref="T:System.Data.Common.DbConnection" /> used by this <see cref="T:System.Data.Common.DbCommand" />.</summary>
       <returns>The connection to the data source.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.DbParameterCollection">
-      <summary>Gets the collection of <see cref="T:System.Data.Common.DbParameter" /> objects.</summary>
+      <summary>When overridden in a derived class, gets the collection of <see cref="T:System.Data.Common.DbParameter" /> objects.</summary>
       <returns>The parameters of the SQL statement or stored procedure.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.DbTransaction">
-      <summary>Gets or sets the <see cref="P:System.Data.Common.DbCommand.DbTransaction" /> within which this <see cref="T:System.Data.Common.DbCommand" /> object executes.</summary>
-      <returns>The transaction within which a Command object of a .NET Framework data provider executes. The default value is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
+      <summary>When overridden in a derived class, gets or sets the <see cref="P:System.Data.Common.DbCommand.DbTransaction" /> within which this <see cref="T:System.Data.Common.DbCommand" /> object executes.</summary>
+      <returns>The transaction within which a command object of a .NET data provider executes. The default value is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.DesignTimeVisible">
-      <summary>Gets or sets a value indicating whether the command object should be visible in a customized interface control.</summary>
+      <summary>When overridden in a derived class, gets or sets a value indicating whether the command object should be visible in a customized interface control.</summary>
       <returns>
         <see langword="true" />, if the command object should be visible in a control; otherwise <see langword="false" />. The default is <see langword="true" />.</returns>
     </member>
-    <member name="M:System.Data.Common.DbCommand.DisposeAsync" />
+    <member name="M:System.Data.Common.DbCommand.DisposeAsync">
+      <summary>Asynchronously diposes the command object.</summary>
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask" /> representing the asynchronous operation.</returns>
+    </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteDbDataReader(System.Data.CommandBehavior)">
-      <summary>Executes the command text against the connection.</summary>
+      <summary>When overridden in a derived class, executes the command text against the connection.</summary>
       <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
       <returns>A task representing the operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -837,7 +840,7 @@
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteNonQuery">
-      <summary>Executes a SQL statement against a connection object.</summary>
+      <summary>When overridden in a derived class, executes a SQL statement against a connection object.</summary>
       <returns>The number of rows affected.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteNonQueryAsync">
@@ -860,7 +863,7 @@
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReader(System.Data.CommandBehavior)">
       <summary>Executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" />, and returns an <see cref="T:System.Data.Common.DbDataReader" /> using one of the <see cref="T:System.Data.CommandBehavior" /> values.</summary>
-      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <param name="behavior">One of the enumeration values that specifies the command behavior.</param>
       <returns>An <see cref="T:System.Data.Common.DbDataReader" /> object.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync">
@@ -873,14 +876,14 @@
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Data.CommandBehavior)">
       <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />.  
  Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
-      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <param name="behavior">One of the enumeration values that specified the command behavior.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)">
       <summary>Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
-      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <param name="behavior">One of the enumeration values that specifies the command behavior.</param>
       <param name="cancellationToken">The token to monitor for cancellation requests.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -895,7 +898,7 @@
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteScalar">
-      <summary>Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.</summary>
+      <summary>When overridden in a derived class, executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.</summary>
       <returns>The first column of the first row in the result set.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteScalarAsync">
@@ -917,10 +920,12 @@
       <returns>The parameters of the SQL statement or stored procedure.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.Prepare">
-      <summary>Creates a prepared (or compiled) version of the command on the data source.</summary>
+      <summary>When overridden in a derived class, creates a prepared (or compiled) version of the command on the data source.</summary>
     </member>
     <member name="M:System.Data.Common.DbCommand.PrepareAsync(System.Threading.CancellationToken)">
+      <summary>Asynchronously creates a prepared (or compiled) version of the command on the data source.</summary>
       <param name="cancellationToken" />
+      <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.System#Data#IDbCommand#Connection">
       <summary>Gets or sets the <see cref="T:System.Data.IDbConnection" /> used by this instance of the <see cref="T:System.Data.IDbCommand" />.</summary>
@@ -936,7 +941,7 @@
     </member>
     <member name="M:System.Data.Common.DbCommand.System#Data#IDbCommand#ExecuteReader(System.Data.CommandBehavior)">
       <summary>Executes the <see cref="P:System.Data.IDbCommand.CommandText" /> against the <see cref="P:System.Data.IDbCommand.Connection" />, and builds an <see cref="T:System.Data.IDataReader" /> using one of the <see cref="T:System.Data.CommandBehavior" /> values.</summary>
-      <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
+      <param name="behavior">One of the enumeration values that specifies the command behavior.</param>
       <returns>An <see cref="T:System.Data.IDataReader" /> object.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.System#Data#IDbCommand#Parameters">
@@ -952,8 +957,8 @@
       <returns>The transaction within which a <see langword="Command" /> object of a .NET Framework data provider executes. The default value is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.UpdatedRowSource">
-      <summary>Gets or sets how command results are applied to the <see cref="T:System.Data.DataRow" /> when used by the Update method of a <see cref="T:System.Data.Common.DbDataAdapter" />.</summary>
-      <returns>One of the <see cref="T:System.Data.UpdateRowSource" /> values. The default is <see langword="Both" /> unless the command is automatically generated. Then the default is <see langword="None" />.</returns>
+      <summary>When overridden in a derived class, gets or sets how command results are applied to the <see cref="T:System.Data.DataRow" /> when used by the Update method of a <see cref="T:System.Data.Common.DbDataAdapter" />.</summary>
+      <returns>One of the enumeration values that indicates how command results are applied. The default is <see langword="Both" /> unless the command is automatically generated. Then the default is <see langword="None" />.</returns>
     </member>
     <member name="T:System.Data.Common.DbCommandBuilder">
       <summary>Automatically generates single-table commands used to reconcile changes made to a <see cref="T:System.Data.DataSet" /> with the associated database. This is an abstract class that can only be inherited.</summary>
@@ -1082,19 +1087,21 @@
       <returns>The unquoted identifier, with embedded quotes properly un-escaped.</returns>
     </member>
     <member name="T:System.Data.Common.DbConnection">
-      <summary>Represents a connection to a database.</summary>
+      <summary>Defines the core behavior of database connections and provides a base class for database-specific connections.</summary>
     </member>
     <member name="M:System.Data.Common.DbConnection.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.Data.Common.DbConnection" /> class.</summary>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginDbTransaction(System.Data.IsolationLevel)">
-      <summary>Starts a database transaction.</summary>
-      <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+      <summary>When overridden in a derived class, starts a database transaction.</summary>
+      <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
       <returns>An object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginDbTransactionAsync(System.Data.IsolationLevel,System.Threading.CancellationToken)">
-      <param name="isolationLevel" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously starts a database transaction.</summary>
+      <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is an object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginTransaction">
       <summary>Starts a database transaction.</summary>
@@ -1102,30 +1109,39 @@
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginTransaction(System.Data.IsolationLevel)">
       <summary>Starts a database transaction with the specified isolation level.</summary>
-      <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+      <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
       <returns>An object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginTransactionAsync(System.Data.IsolationLevel,System.Threading.CancellationToken)">
-      <param name="isolationLevel" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously begins a database transaction.</summary>
+      <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is an object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginTransactionAsync(System.Threading.CancellationToken)">
-      <param name="cancellationToken" />
+      <summary>Asynchronously begins a database transaction.</summary>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is an object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.ChangeDatabase(System.String)">
-      <summary>Changes the current database for an open connection.</summary>
-      <param name="databaseName">Specifies the name of the database for the connection to use.</param>
+      <summary>When overridden in a derived class, changes the current database for an open connection.</summary>
+      <param name="databaseName">The name of the database for the connection to use.</param>
     </member>
     <member name="M:System.Data.Common.DbConnection.ChangeDatabaseAsync(System.String,System.Threading.CancellationToken)">
-      <param name="databaseName" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously changes the current database for an open connection.</summary>
+      <param name="databaseName">The name of the database for the connection to use.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.Close">
-      <summary>Closes the connection to the database. This is the preferred method of closing any open connection.</summary>
+      <summary>When overridden in a derived class, closes the connection to the database.</summary>
     </member>
-    <member name="M:System.Data.Common.DbConnection.CloseAsync" />
+    <member name="M:System.Data.Common.DbConnection.CloseAsync">
+      <summary>Asynchronously closes the connection to the database.</summary>
+      <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.</returns>
+    </member>
     <member name="P:System.Data.Common.DbConnection.ConnectionString">
-      <summary>Gets or sets the string used to open the connection.</summary>
+      <summary>When overridden in a derived class, gets or sets the string used to open the connection.</summary>
       <returns>The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.ConnectionTimeout">
@@ -1137,22 +1153,25 @@
       <returns>A <see cref="T:System.Data.Common.DbCommand" /> object.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.CreateDbCommand">
-      <summary>Creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object associated with the current connection.</summary>
+      <summary>When overridden in a derived class, creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object associated with the current connection.</summary>
       <returns>A <see cref="T:System.Data.Common.DbCommand" /> object.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.Database">
-      <summary>Gets the name of the current database after a connection is opened, or the database name specified in the connection string before the connection is opened.</summary>
+      <summary>When overridden in a derived class, gets the name of the current database after a connection is opened, or the database name specified in the connection string before the connection is opened.</summary>
       <returns>The name of the current database or the name of the database to be used after a connection is opened. The default value is an empty string.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.DataSource">
-      <summary>Gets the name of the database server to which to connect.</summary>
+      <summary>When overridden in a derived class, gets the name of the database server to which to connect.</summary>
       <returns>The name of the database server to which to connect. The default value is an empty string.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.DbProviderFactory">
       <summary>Gets the <see cref="T:System.Data.Common.DbProviderFactory" /> for this <see cref="T:System.Data.Common.DbConnection" />.</summary>
       <returns>A set of methods for creating instances of a provider's implementation of the data source classes.</returns>
     </member>
-    <member name="M:System.Data.Common.DbConnection.DisposeAsync" />
+    <member name="M:System.Data.Common.DbConnection.DisposeAsync">
+      <summary>Asynchronously diposes the connection object.</summary>
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask" /> representing the asynchronous operation.</returns>
+    </member>
     <member name="M:System.Data.Common.DbConnection.EnlistTransaction(System.Transactions.Transaction)">
       <summary>Enlists in the specified transaction.</summary>
       <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction" /> in which to enlist.</param>
@@ -1181,7 +1200,7 @@
       <param name="stateChange">A <see cref="T:System.Data.StateChangeEventArgs" /> that contains the event data.</param>
     </member>
     <member name="M:System.Data.Common.DbConnection.Open">
-      <summary>Opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.</summary>
+      <summary>When overridden in a derived class, opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.</summary>
     </member>
     <member name="M:System.Data.Common.DbConnection.OpenAsync">
       <summary>An asynchronous version of <see cref="M:System.Data.Common.DbConnection.Open" />, which opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />. This method invokes the virtual method <see cref="M:System.Data.Common.DbConnection.OpenAsync(System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
@@ -1195,7 +1214,7 @@
       <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.ServerVersion">
-      <summary>Gets a string that represents the version of the server to which the object is connected.</summary>
+      <summary>When overridden in a derived class, gets a string that represents the version of the server to which the object is connected.</summary>
       <returns>The version of the database. The format of the string returned depends on the specific type of connection you are using.</returns>
       <exception cref="T:System.InvalidOperationException">
         <see cref="P:System.Data.Common.DbConnection.ServerVersion" /> was called while the returned Task was not completed and the connection was not opened after a call to <see cref="Overload:System.Data.Common.DbConnection.OpenAsync" />.</exception>
@@ -1212,8 +1231,8 @@
       <returns>An object that represents the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.System#Data#IDbConnection#BeginTransaction(System.Data.IsolationLevel)">
-      <summary>Begins a database transaction with the specified <see cref="T:System.Data.IsolationLevel" /> value.</summary>
-      <param name="isolationLevel">One of the <see cref="T:System.Data.IsolationLevel" /> values.</param>
+      <summary>Begins a database transaction with the specified isolation level.</summary>
+      <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
       <returns>An object that represents the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.System#Data#IDbConnection#CreateCommand">
@@ -1771,7 +1790,10 @@
     <member name="M:System.Data.Common.DbDataReader.Close">
       <summary>Closes the <see cref="T:System.Data.Common.DbDataReader" /> object.</summary>
     </member>
-    <member name="M:System.Data.Common.DbDataReader.CloseAsync" />
+    <member name="M:System.Data.Common.DbDataReader.CloseAsync">
+      <summary>Asynchronously closes the <see cref="T:System.Data.Common.DbDataReader" /> object.</summary>
+      <returns>A task representing the asynchronous operation.</returns>
+    </member>
     <member name="P:System.Data.Common.DbDataReader.Depth">
       <summary>Gets a value indicating the depth of nesting for the current row.</summary>
       <returns>The depth of nesting for the current row.</returns>
@@ -1784,28 +1806,31 @@
       <param name="disposing">
         <see langword="true" /> to release managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
     </member>
-    <member name="M:System.Data.Common.DbDataReader.DisposeAsync" />
+    <member name="M:System.Data.Common.DbDataReader.DisposeAsync">
+      <summary>Asynchronously releases all resources used by the current instance of the <see cref="T:System.Data.Common.DbDataReader" /> class.</summary>
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask" /> representing the asynchronous operation.</returns>
+    </member>
     <member name="P:System.Data.Common.DbDataReader.FieldCount">
-      <summary>Gets the number of columns in the current row.</summary>
+      <summary>When overridden in a derived class, gets the number of columns in the current row.</summary>
       <returns>The number of columns in the current row.</returns>
       <exception cref="T:System.NotSupportedException">There is no current connection to an instance of SQL Server.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetBoolean(System.Int32)">
-      <summary>Gets the value of the specified column as a Boolean.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a Boolean.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetByte(System.Int32)">
-      <summary>Gets the value of the specified column as a byte.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a byte.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetBytes(System.Int32,System.Int64,System.Byte[],System.Int32,System.Int32)">
-      <summary>Reads a specified number of bytes from the specified column starting at a specified index and writes them to a buffer starting at a specified position in the buffer.</summary>
+      <summary>When overridden in a derived class, reads a specified number of bytes from the specified column starting at a specified index and writes them to a buffer starting at a specified position in the buffer.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <param name="dataOffset">The index within the row from which to begin the read operation.</param>
       <param name="buffer">The buffer into which to copy the data.</param>
@@ -1816,14 +1841,14 @@
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetChar(System.Int32)">
-      <summary>Gets the value of the specified column as a single character.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a single character.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetChars(System.Int32,System.Int64,System.Char[],System.Int32,System.Int32)">
-      <summary>Reads a specified number of characters from a specified column starting at a specified index, and writes them to a buffer starting at a specified position.</summary>
+      <summary>When overridden in a derived class, reads a specified number of characters from a specified column starting at a specified index, and writes them to a buffer starting at a specified position.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <param name="dataOffset">The index within the row from which to begin the read operation.</param>
       <param name="buffer">The buffer into which to copy the data.</param>
@@ -1838,13 +1863,13 @@
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetDataTypeName(System.Int32)">
-      <summary>Gets name of the data type of the specified column.</summary>
+      <summary>When overridden in a derived class, gets name of the data type of the specified column.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The name of the data type.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetDateTime(System.Int32)">
-      <summary>Gets the value of the specified column as a <see cref="T:System.DateTime" /> object.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a <see cref="T:System.DateTime" /> object.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
@@ -1856,24 +1881,24 @@
       <returns>A <see cref="T:System.Data.Common.DbDataReader" /> object.</returns>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetDecimal(System.Int32)">
-      <summary>Gets the value of the specified column as a <see cref="T:System.Decimal" />.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a <see cref="T:System.Decimal" />.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetDouble(System.Int32)">
-      <summary>Gets the value of the specified column as a double-precision floating point number.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a double-precision floating point number.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetEnumerator">
-      <summary>Returns an <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</summary>
-      <returns>An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</returns>
+      <summary>When overridden in a derived class, returns an enumerator that can be used to iterate through the rows in the data reader.</summary>
+      <returns>An enumerator that can be used to iterate through the rows in the data reader.</returns>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetFieldType(System.Int32)">
-      <summary>Gets the data type of the specified column.</summary>
+      <summary>When overridden in a derived class, gets the data type of the specified column.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The data type of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
@@ -1932,47 +1957,47 @@
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetFloat(System.Int32)">
-      <summary>Gets the value of the specified column as a single-precision floating point number.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a single-precision floating point number.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetGuid(System.Int32)">
-      <summary>Gets the value of the specified column as a globally unique identifier (GUID).</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a globally unique identifier (GUID).</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetInt16(System.Int32)">
-      <summary>Gets the value of the specified column as a 16-bit signed integer.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a 16-bit signed integer.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetInt32(System.Int32)">
-      <summary>Gets the value of the specified column as a 32-bit signed integer.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a 32-bit signed integer.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetInt64(System.Int32)">
-      <summary>Gets the value of the specified column as a 64-bit signed integer.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as a 64-bit signed integer.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetName(System.Int32)">
-      <summary>Gets the name of the column, given the zero-based column ordinal.</summary>
+      <summary>When overridden in a derived class, gets the name of the column, given the zero-based column ordinal.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The name of the specified column.</returns>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetOrdinal(System.String)">
-      <summary>Gets the column ordinal given the name of the column.</summary>
+      <summary>When overridden in a derived class, gets the column ordinal given the name of the column.</summary>
       <param name="name">The name of the column.</param>
       <returns>The zero-based column ordinal.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
@@ -1998,6 +2023,7 @@
       <returns>A <see cref="T:System.Data.DataTable" /> that describes the column metadata.</returns>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.Common.DbDataReader" /> is closed.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
+      <exception cref="T:System.NotSupportedException">.NET Core only: all cases.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetStream(System.Int32)">
       <summary>Gets a stream to retrieve data from the specified column.</summary>
@@ -2016,7 +2042,7 @@
       <exception cref="T:System.InvalidCastException">The specified column isn't a binary type that supports reading with a <see cref="T:System.IO.Stream" />.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetString(System.Int32)">
-      <summary>Gets the value of the specified column as an instance of <see cref="T:System.String" />.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as an instance of <see cref="T:System.String" />.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
@@ -2039,29 +2065,29 @@
       <exception cref="T:System.InvalidCastException">The specified column isn't a text type that supports reading with a <see cref="T:System.IO.TextReader" />.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetValue(System.Int32)">
-      <summary>Gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetValues(System.Object[])">
-      <summary>Populates an array of objects with the column values of the current row.</summary>
+      <summary>When overridden in a derived class, populates an array of objects with the column values of the current row.</summary>
       <param name="values">An array of <see cref="T:System.Object" /> into which to copy the attribute columns.</param>
       <returns>The number of instances of <see cref="T:System.Object" /> in the array.</returns>
     </member>
     <member name="P:System.Data.Common.DbDataReader.HasRows">
-      <summary>Gets a value that indicates whether this <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows.</summary>
+      <summary>When overridden in a derived class, gets a value that indicates whether this <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows.</summary>
       <returns>
         <see langword="true" /> if the <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Data.Common.DbDataReader.IsClosed">
-      <summary>Gets a value indicating whether the <see cref="T:System.Data.Common.DbDataReader" /> is closed.</summary>
+      <summary>When overridden in a derived class, gets a value indicating whether the <see cref="T:System.Data.Common.DbDataReader" /> is closed.</summary>
       <returns>
         <see langword="true" /> if the <see cref="T:System.Data.Common.DbDataReader" /> is closed; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.Common.DbDataReader" /> is closed.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.IsDBNull(System.Int32)">
-      <summary>Gets a value that indicates whether the column contains nonexistent or missing values.</summary>
+      <summary>When overridden in a derived class, gets a value that indicates whether the column contains nonexistent or missing values.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>
         <see langword="true" /> if the specified column is equivalent to <see cref="T:System.DBNull" />; otherwise, <see langword="false" />.</returns>
@@ -2099,25 +2125,25 @@
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="P:System.Data.Common.DbDataReader.Item(System.Int32)">
-      <summary>Gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="P:System.Data.Common.DbDataReader.Item(System.String)">
-      <summary>Gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
+      <summary>When overridden in a derived class, gets the value of the specified column as an instance of <see cref="T:System.Object" />.</summary>
       <param name="name">The name of the column.</param>
       <returns>The value of the specified column.</returns>
       <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.NextResult">
-      <summary>Advances the reader to the next result when reading the results of a batch of statements.</summary>
+      <summary>When overridden in a derived class, advances the reader to the next result when reading the results of a batch of statements.</summary>
       <returns>
         <see langword="true" /> if there are more result sets; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Data.Common.DbDataReader.NextResultAsync">
       <summary>Asynchronously advances the reader to the next result when reading the results of a batch of statements.</summary>
-      <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is <see langword="true" /> if there are more result sets or <see langword="false" /> if there aren't.</returns>
+      <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is <see langword="true" /> if there are more result sets or <see langword="false" /> if there aren't.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.NextResultAsync(System.Threading.CancellationToken)">
@@ -2127,7 +2153,7 @@
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.Read">
-      <summary>Advances the reader to the next record in a result set.</summary>
+      <summary>When overridden in a derived class, advances the reader to the next record in a result set.</summary>
       <returns>
         <see langword="true" /> if there are more rows; otherwise, <see langword="false" />.</returns>
     </member>
@@ -2143,7 +2169,7 @@
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
     <member name="P:System.Data.Common.DbDataReader.RecordsAffected">
-      <summary>Gets the number of rows changed, inserted, or deleted by execution of the SQL statement.</summary>
+      <summary>When overridden in a derived class, gets the number of rows changed, inserted, or deleted by execution of the SQL statement.</summary>
       <returns>The number of rows changed, inserted, or deleted. -1 for SELECT statements; 0 if no rows were affected or the statement failed.</returns>
     </member>
     <member name="M:System.Data.Common.DbDataReader.System#Data#IDataRecord#GetData(System.Int32)">
@@ -2914,23 +2940,25 @@
         <see langword="true" /> if the property that this attribute is applied to is a provider-specific type property; otherwise <see langword="false" />.</returns>
     </member>
     <member name="T:System.Data.Common.DbTransaction">
-      <summary>The base class for a transaction.</summary>
+      <summary>Defines the core behavior of database transactions and provides a base class for database-specific transactions.</summary>
     </member>
     <member name="M:System.Data.Common.DbTransaction.#ctor">
       <summary>Initializes a new <see cref="T:System.Data.Common.DbTransaction" /> object.</summary>
     </member>
     <member name="M:System.Data.Common.DbTransaction.Commit">
-      <summary>Commits the database transaction.</summary>
+      <summary>When overridden in a derived class, commits the database transaction.</summary>
     </member>
     <member name="M:System.Data.Common.DbTransaction.CommitAsync(System.Threading.CancellationToken)">
-      <param name="cancellationToken" />
+      <summary>Asynchronously commits the database transaction.</summary>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbTransaction.Connection">
       <summary>Specifies the <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.</summary>
       <returns>The <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.</returns>
     </member>
     <member name="P:System.Data.Common.DbTransaction.DbConnection">
-      <summary>Specifies the <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.</summary>
+      <summary>When overridden in a derived class, gets the <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.</summary>
       <returns>The <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbTransaction.Dispose">
@@ -2940,16 +2968,21 @@
       <summary>Releases the unmanaged resources used by the <see cref="T:System.Data.Common.DbTransaction" /> and optionally releases the managed resources.</summary>
       <param name="disposing">If <see langword="true" />, this method releases all resources held by any managed objects that this <see cref="T:System.Data.Common.DbTransaction" /> references.</param>
     </member>
-    <member name="M:System.Data.Common.DbTransaction.DisposeAsync" />
+    <member name="M:System.Data.Common.DbTransaction.DisposeAsync">
+      <summary>Asynchronously diposes the transaction object.</summary>
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask" /> representing the asynchronous operation.</returns>
+    </member>
     <member name="P:System.Data.Common.DbTransaction.IsolationLevel">
-      <summary>Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.</summary>
-      <returns>The <see cref="T:System.Data.IsolationLevel" /> for this transaction.</returns>
+      <summary>When overridden in a derived class, gets the isolation level for this transaction.</summary>
+      <returns>The isolation level for this transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbTransaction.Rollback">
-      <summary>Rolls back a transaction from a pending state.</summary>
+      <summary>When overridden in a derived class, rolls back a transaction from a pending state.</summary>
     </member>
     <member name="M:System.Data.Common.DbTransaction.RollbackAsync(System.Threading.CancellationToken)">
-      <param name="cancellationToken" />
+      <summary>Asynchronously rolls back a transaction from a pending state.</summary>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbTransaction.System#Data#IDbTransaction#Connection">
       <summary>Gets the <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction, or a null reference if the transaction is no longer valid.</summary>

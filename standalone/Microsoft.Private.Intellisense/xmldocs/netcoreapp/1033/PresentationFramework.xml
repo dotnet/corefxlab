@@ -9955,7 +9955,7 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="M:System.Windows.Controls.Grid.GetRowSpan(System.Windows.UIElement)">
       <summary>Gets the value of the <see cref="P:System.Windows.Controls.Grid.RowSpan" /> attached property from a given <see cref="T:System.Windows.UIElement" />.</summary>
-      <param name="element">The element from which to read the  property value.</param>
+      <param name="element">The element from which to read the property value.</param>
       <returns>The value of the <see cref="P:System.Windows.Controls.Grid.RowSpan" /> attached property.</returns>
     </member>
     <member name="M:System.Windows.Controls.Grid.GetVisualChild(System.Int32)">

@@ -52,7 +52,10 @@
       <summary>Gets a built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</summary>
       <returns>A built-in instance of the <see cref="T:System.Text.Encodings.Web.JavaScriptEncoder" /> class.</returns>
     </member>
-    <member name="P:System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping" />
+    <member name="P:System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping">
+      <summary>Gets a built-in JavaScript encoder instance that is less strict about what is encoded.</summary>
+      <returns>A JavaScript encoder instance.</returns>
+    </member>
     <member name="T:System.Text.Encodings.Web.TextEncoder">
       <summary>The base class of web encoders.</summary>
     </member>
@@ -105,11 +108,14 @@
       <exception cref="T:System.ArgumentException">The <see cref="M:System.Text.Encodings.Web.TextEncoder.TryEncodeUnicodeScalar(System.Int32,System.Char*,System.Int32,System.Int32@)" /> method failed. The encoder does not implement <see cref="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter" /> correctly.</exception>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.EncodeUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
-      <param name="utf8Source" />
-      <param name="utf8Destination" />
-      <param name="bytesConsumed" />
-      <param name="bytesWritten" />
-      <param name="isFinalBlock" />
+      <summary>Encodes the supplied UTF-8 text.</summary>
+      <param name="utf8Source">A source buffer containing the UTF-8 text to encode.</param>
+      <param name="utf8Destination">The destination buffer to which the encoded form of <paramref name="utf8Source" /> will be written.</param>
+      <param name="bytesConsumed">The number of bytes consumed from the <paramref name="utf8Source" /> buffer.</param>
+      <param name="bytesWritten">The number of bytes written to the <paramref name="utf8Destination" /> buffer.</param>
+      <param name="isFinalBlock">
+        <see langword="true" /> if there is further source data that needs to be encoded; otherwise, <see langword="false" />.</param>
+      <returns>A status code that describes the result of the encoding operation.</returns>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncode(System.Char*,System.Int32)">
       <summary>Finds the index of the first character to encode.</summary>
@@ -118,7 +124,9 @@
       <returns>The index of the first character to encode.</returns>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncodeUtf8(System.ReadOnlySpan{System.Byte})">
-      <param name="utf8Text" />
+      <summary>Finds the first element in a UTF-8 text input buffer that would be escaped by the current encoder instance.</summary>
+      <param name="utf8Text">The UTF-8 text input buffer to search.</param>
+      <returns>The index of the first element in <paramref name="utf8Text" /> that would be escaped by the current encoder instance, or -1 if no data in <paramref name="utf8Text" /> requires escaping.</returns>
     </member>
     <member name="P:System.Text.Encodings.Web.TextEncoder.MaxOutputCharactersPerInputCharacter">
       <summary>Gets the maximum number of characters that this encoder can generate for each input code point.</summary>

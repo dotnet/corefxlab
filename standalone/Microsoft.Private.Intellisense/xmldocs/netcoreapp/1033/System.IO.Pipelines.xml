@@ -113,7 +113,9 @@
       <param name="exception">Optional <see cref="T:System.Exception" /> indicating a failure that's causing the pipeline to complete.</param>
     </member>
     <member name="M:System.IO.Pipelines.PipeReader.CompleteAsync(System.Exception)">
-      <param name="exception" />
+      <summary>Marks the current pipe reader instance as being complete, meaning no more data will be read from it.</summary>
+      <param name="exception">An optional exception that indicates the failure that caused the reader to complete.</param>
+      <returns>A value task that represents the asynchronous complete operation.</returns>
     </member>
     <member name="M:System.IO.Pipelines.PipeReader.CopyToAsync(System.IO.Pipelines.PipeWriter,System.Threading.CancellationToken)">
       <summary>Asynchronously reads the bytes from the <see cref="T:System.IO.Pipelines.PipeReader" /> and writes them to the specified <see cref="T:System.IO.Pipelines.PipeWriter" />, using a specified buffer size and cancellation token.</summary>
@@ -187,7 +189,9 @@
       <param name="exception">Optional <see cref="T:System.Exception" /> indicating a failure that's causing the pipeline to complete.</param>
     </member>
     <member name="M:System.IO.Pipelines.PipeWriter.CompleteAsync(System.Exception)">
-      <param name="exception" />
+      <summary>Marks the current pipe writer instance as being complete, meaning no more data will be written to it.</summary>
+      <param name="exception">An optional exception that indicates the failure that caused the pipeline to complete.</param>
+      <returns>A value task that represents the asynchronous complete operation.</returns>
     </member>
     <member name="M:System.IO.Pipelines.PipeWriter.CopyFromAsync(System.IO.Stream,System.Threading.CancellationToken)">
       <summary>Asynchronously reads the bytes from the specified stream and writes them to the <see cref="T:System.IO.Pipelines.PipeWriter" />.</summary>

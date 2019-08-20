@@ -13,6 +13,7 @@
     </member>
     <member name="M:System.Windows.Automation.AndCondition.GetConditions">
       <summary>Retrieves an array of the subconditions for this condition.</summary>
+      <returns>An array of the subconditions for this condition.</returns>
     </member>
     <member name="T:System.Windows.Automation.Automation">
       <summary>Contains methods and fields for UI Automation client applications.</summary>

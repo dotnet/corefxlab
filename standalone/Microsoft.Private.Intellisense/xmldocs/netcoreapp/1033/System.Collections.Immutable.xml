@@ -2464,7 +2464,7 @@ NuGet package: System.Collections.Immutable (about immutable collections and how
       <param name="transformer">A function that mutates the value. This function should be side-effect free,              as it may run multiple times when races occur with other threads.</param>
       <typeparam name="T">The type of data.</typeparam>
       <returns>
-        <c>true</c> if the location's value is changed by applying the result of the              <paramref name="transformer" /> function;             <c>false</c> if the location's value remained the same because the last              invocation of <paramref name="transformer" /> returned the existing value.</returns>
+        <see langword="true" /> if the location's value is changed by applying the result of the <paramref name="transformer" /> function; <see langword="false" /> if the location's value remained the same because the last invocation of <paramref name="transformer" /> returned the existing value.</returns>
     </member>
     <member name="M:System.Collections.Immutable.ImmutableInterlocked.Update``2(``0@,System.Func{``0,``1,``0},``1)">
       <summary>Mutates a value in-place with optimistic locking transaction semantics             via a specified transformation function.             The transformation is retried as many times as necessary to win the optimistic locking race.</summary>
@@ -2474,7 +2474,7 @@ NuGet package: System.Collections.Immutable (about immutable collections and how
       <typeparam name="T">The type of data.</typeparam>
       <typeparam name="TArg">The type of argument passed to the <paramref name="transformer" />.</typeparam>
       <returns>
-        <c>true</c> if the location's value is changed by applying the result of the              <paramref name="transformer" /> function;             <c>false</c> if the location's value remained the same because the last              invocation of <paramref name="transformer" /> returned the existing value.</returns>
+        <see langword="true" /> if the location's value is changed by applying the result of the <paramref name="transformer" /> function; <see langword="false" /> if the location's value remained the same because the last invocation of <paramref name="transformer" /> returned the existing value.</returns>
     </member>
     <member name="T:System.Collections.Immutable.ImmutableList">
       <summary>Provides a set of initialization methods for instances of the <see cref="T:System.Collections.Immutable.ImmutableList`1" /> class.  
