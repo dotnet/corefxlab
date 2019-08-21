@@ -978,6 +978,9 @@ namespace Microsoft.Data.Tests
 
             DataFrame sum = df.GroupBy("Bool").Sum();
             Assert.Equal(2, sum.RowCount);
+
+            DataFrame mean = df.GroupBy("Bool").Mean();
+            Assert.Equal(2, mean.RowCount);
             for (int r = 0; r < 2; r++)
             {
                 for (int c = 0; c < count.ColumnCount; c++)
@@ -995,6 +998,15 @@ namespace Microsoft.Data.Tests
                     Assert.Equal("20", sumColumn[r].ToString());
                 }
             }
+
+            DataFrame columnSum = df.GroupBy("Bool").Sum("Int");
+            Assert.Equal(2, columnSum.ColumnCount);
+            DataFrame columnMax = df.GroupBy("Bool").Max("Int");
+            Assert.Equal(2, columnMax.ColumnCount);
+            DataFrame columnProduct = df.GroupBy("Bool").Product("Int");
+            Assert.Equal(2, columnProduct.ColumnCount);
+            DataFrame columnMin = df.GroupBy("Bool").Min("Int");
+            Assert.Equal(2, columnMin.ColumnCount);
         }
 
         [Fact]

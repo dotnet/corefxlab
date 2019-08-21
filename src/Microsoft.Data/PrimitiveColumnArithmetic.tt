@@ -55,21 +55,25 @@ namespace Microsoft.Data
 <# if ((method.IsNumeric && !type.SupportsNumeric) || (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
 <# } else if (method.Operator != null) { #>
-            for (int bb = 0 ; bb < <#= method.Op1Name #>.Buffers.Count; bb++)
+            for (int b = 0 ; b < <#= method.Op1Name #>.Buffers.Count; b++)
             {
-                var buffer = <#= method.Op1Name #>.Buffers[bb];
+                var buffer = <#= method.Op1Name #>.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
-                <#= method.Op1Name #>.Buffers[bb] = mutableBuffer;
-                for (int i = 0; i < buffer.Length; i++)
+                <#= method.Op1Name #>.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+<# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) { #>
+                var otherSpan = <#=method.Op2Name#>.Buffers[b].ReadOnlySpan;
+<# } #>
+                for (int i = 0; i < mutableBuffer.Length; i++)
                 {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
-                    mutableBuffer.Span[i] = (<#=type.TypeName#>)(mutableBuffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>);
+                    span[i] = (<#=type.TypeName#>)(span[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else if (method.MethodType == MethodType.Binary) { #>
-                    mutableBuffer.Span[i] = (<#=type.TypeName#>)(mutableBuffer.Span[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].ReadOnlySpan[i]);
+                    span[i] = (<#=type.TypeName#>)(span[i] <#= method.Operator #> otherSpan[i]);
 <# } else if (method.MethodType == MethodType.Comparison) { #>
-                    ret[i] = (buffer.ReadOnlySpan[i] <#= method.Operator #> <#= method.Op2Name #>.Buffers[bb].ReadOnlySpan[i]);
+                    ret[i] = (span[i] <#= method.Operator #> otherSpan[i]);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
-                    ret[i] = (buffer.ReadOnlySpan[i] <#= method.Operator #> <#= method.Op2Name #>);
+                    ret[i] = (span[i] <#= method.Operator #> <#= method.Op2Name #>);
 <# } else {#>
                     throw new NotImplementedException();
 <# } #>

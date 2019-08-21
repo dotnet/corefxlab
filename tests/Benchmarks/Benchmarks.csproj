@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ALCProxy.Proxy\ALCProxy.Proxy.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Data\Microsoft.Data.DataFrame.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
     <ProjectReference Include="..\..\src\System.Azure.Experimental\System.Azure.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
