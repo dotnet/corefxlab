@@ -16,8 +16,8 @@ namespace Microsoft.Data
 
     /// <summary>
     /// Options for DropNull(). 
-    /// "Any" drops rows where at least 1 value is null. 
-    /// "All" drops rows where all the values are null.
+    /// "Any" drops a row if any of the row values are null. 
+    /// "All" drops a row when all of the row values are null.
     /// </summary>
     public enum DropNullOptions
     {
