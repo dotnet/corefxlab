@@ -153,8 +153,14 @@ namespace Microsoft.Data
         /// </summary>
         public virtual bool IsNumericColumn() => false;
 
+        /// <summary>
+        /// Returns the mean of the values in the column. Throws if this is not a numeric column
+        /// </summary>
         public virtual double Mean() => throw new NotImplementedException();
 
+        /// <summary>
+        /// Returns the median of the values in the column. Throws if this is not a numeric column
+        /// </summary>
         public virtual double Median() => throw new NotImplementedException();
 
         /// <summary>

@@ -182,6 +182,22 @@ namespace Microsoft.Data
             }
         }
 
+        public void ApplyElementwise(Func<T?, long, T?> func)
+        {
+            for (int b = 0; b < Buffers.Count; b++)
+            {
+                ReadOnlyDataFrameBuffer<T> buffer = Buffers[b];
+                long prevLength = Buffers[0].Length * b;
+                DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer); 
+                Span<T> span = mutableBuffer.Span; 
+                for (int i = 0; i < buffer.Length; i++) 
+                {
+                    long curIndex = i + prevLength;
+                    this[curIndex] = func(IsValid(curIndex) ? span[i] : default(T?), curIndex);
+                } 
+            }
+        }
+
         public bool IsValid(long index) => NullCount == 0 || GetValidityBit(index);
 
         /// <summary>

@@ -165,10 +165,7 @@ namespace Microsoft.Data
 
         public new T? this[long rowIndex]
         {
-            get
-            {
-                return _columnContainer[rowIndex];
-            }
+            get => GetTypedValue(rowIndex);
             set
             {
                 if (value == null || value.GetType() == typeof(T))
@@ -251,7 +248,7 @@ namespace Microsoft.Data
 
         public override BaseColumn FillNulls(object value, bool inPlace = false)
         {
-            T TValue = (T)Convert.ChangeType(value, typeof(T));
+            T Tvalue = (T)Convert.ChangeType(value, typeof(T));
             PrimitiveColumn<T> column;
             if (inPlace)
                 column = this;
@@ -260,7 +257,7 @@ namespace Microsoft.Data
             column.ApplyElementwise((T? columnValue, long index) =>
             {
                 if (columnValue.HasValue == false)
-                    return TValue;
+                    return Tvalue;
                 else
                     return columnValue.Value;
             });
@@ -452,13 +449,7 @@ namespace Microsoft.Data
             }
         }
 
-        public void ApplyElementwise(Func<T?, long, T?> func)
-        {
-            Parallel.For(0, Length, index =>
-            {
-                this[index] = func(this[index], index);
-            });
-        }
+        public void ApplyElementwise(Func<T?, long, T?> func) => _columnContainer.ApplyElementwise(func);
 
         public override BaseColumn Clip<U>(U lower, U upper)
         {

@@ -14,6 +14,11 @@ using Apache.Arrow.Types;
 namespace Microsoft.Data
 {
 
+    /// <summary>
+    /// Options for DropNull(). 
+    /// "Any" drops rows where at least 1 value is null. 
+    /// "All" drops rows where all the values are null.
+    /// </summary>
     public enum DropNullOptions
     {
         Any,
