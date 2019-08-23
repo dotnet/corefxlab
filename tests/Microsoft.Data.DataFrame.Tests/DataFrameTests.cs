@@ -6,6 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using Xunit;
 
@@ -1337,6 +1339,17 @@ namespace Microsoft.Data.Tests
             Assert.Null(df[10, 0]);
             DataFrame fillNulls = df.FillNulls(1000);
             Assert.Equal(1000, (int)fillNulls[10, 1]);
+
+            StringColumn strColumn = new StringColumn("String", 0);
+            strColumn.Append(null);
+            strColumn.Append(null);
+            Assert.Equal(2, strColumn.Length);
+            Assert.Equal(2, strColumn.NullCount);
+            strColumn.FillNulls("foo", true);
+            Assert.Equal(2, strColumn.Length);
+            Assert.Equal(0, strColumn.NullCount);
+            Assert.Equal("foo", strColumn[0]);
+            Assert.Equal("foo", strColumn[1]);
         }
 
         [Fact]

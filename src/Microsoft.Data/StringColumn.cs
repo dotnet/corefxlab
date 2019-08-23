@@ -371,6 +371,25 @@ namespace Microsoft.Data
             }
         }
 
+        public override BaseColumn FillNulls(object value, bool inPlace = false)
+        {
+            if (value.GetType() != typeof(string) || value == null)
+                throw new ArgumentException(nameof(value));
+            string stringValue = (string)value;
+            StringColumn column;
+            if (inPlace)
+                column = this;
+            else
+                column = Clone();
+            
+            for (long i = 0; i < Length; i++)
+            {
+                if (this[i] == null)
+                    this[i] = stringValue;
+            }
+            return column;
+        }
+
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {
             builder.AddColumn(Name, TextDataViewType.Instance);

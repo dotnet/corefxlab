@@ -410,6 +410,8 @@ namespace Microsoft.Data
             }
         }
 
+        public override BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
+
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {
             builder.AddColumn(Name, TextDataViewType.Instance);

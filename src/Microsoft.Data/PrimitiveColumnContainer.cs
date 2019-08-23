@@ -187,7 +187,7 @@ namespace Microsoft.Data
             for (int b = 0; b < Buffers.Count; b++)
             {
                 ReadOnlyDataFrameBuffer<T> buffer = Buffers[b];
-                long prevLength = Buffers[0].Length * b;
+                long prevLength = checked(Buffers[0].Length * b);
                 DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer); 
                 Span<T> span = mutableBuffer.Span; 
                 for (int i = 0; i < buffer.Length; i++) 
