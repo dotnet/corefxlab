@@ -288,19 +288,21 @@ namespace Microsoft.Data
             ArrowStringColumn clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
+                Type dataType = mapIndices.DataType;
+                if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else if (dataType == typeof(int))
+                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
                 else
                     clone = Clone(mapIndices as PrimitiveColumn<bool>);
-
             }
             else
             {
-                clone = Clone(null, false);
+                clone = Clone();
             }
             for (long i = 0; i < numberOfNullsToAppend; i++)
             {
@@ -323,37 +325,57 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices, bool invertMapIndex)
+        private ArrowStringColumn CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
         {
             ArrowStringColumn ret = new ArrowStringColumn(Name);
-            if (mapIndices is null)
+            if (mapIndices.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
+            if (invertMapIndices == false)
             {
-                for (long i = 0; i < Length; i++)
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    ret.Append(GetBytes(i));
+                    ret.Append(GetBytes(getIndex(i).Value));
                 }
             }
             else
             {
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                if (invertMapIndex == false)
+                long mapIndicesLengthIndex = mapIndices.Length - 1;
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret.Append(GetBytes(mapIndices[i].Value));
-                    }
-                }
-                else
-                {
-                    long mapIndicesLengthIndex = mapIndices.Length - 1;
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret.Append(GetBytes(mapIndices[mapIndicesLengthIndex - i].Value));
-                    }
+                    ret.Append(GetBytes(getIndex(mapIndicesLengthIndex - i).Value));
                 }
             }
             return ret;
+        }
+
+        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        {
+            if (mapIndices is null)
+            {
+                ArrowStringColumn ret = new ArrowStringColumn(Name);
+                for (long i = 0; i < Length; i++)
+                {
+                    ret.Append(GetBytes(i));
+                }
+                return ret;
+            }
+            else
+                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndex);
+        }
+
+        private ArrowStringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        {
+            long? ConvertInt(long index)
+            {
+                return mapIndices[index];
+            }
+            return CloneImplementation(mapIndices, ConvertInt, invertMapIndex);
+        }
+
+        public override DataFrame ValueCounts()
+        {
+            Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
+            return StringColumn.ValueCountsImplementation(groupedValues);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
@@ -387,6 +409,8 @@ namespace Microsoft.Data
                 throw new NotSupportedException(nameof(TKey));
             }
         }
+
+        public override BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {

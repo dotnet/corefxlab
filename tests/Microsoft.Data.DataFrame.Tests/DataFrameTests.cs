@@ -6,6 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using Xunit;
 
@@ -13,12 +15,15 @@ namespace Microsoft.Data.Tests
 {
     public partial class DataFrameTests
     {
-        public static DataFrame MakeDataFrameWithTwoColumns(int length)
+        public static DataFrame MakeDataFrameWithTwoColumns(int length, bool withNulls = true)
         {
             BaseColumn dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
             BaseColumn dataFrameColumn2 = new PrimitiveColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
-            dataFrameColumn1[length / 2] = null;
-            dataFrameColumn2[length / 2] = null;
+            if (withNulls)
+            {
+                dataFrameColumn1[length / 2] = null;
+                dataFrameColumn2[length / 2] = null;
+            }
             Data.DataFrame dataFrame = new Data.DataFrame();
             dataFrame.InsertColumn(0, dataFrameColumn1);
             dataFrame.InsertColumn(1, dataFrameColumn2);
@@ -1135,6 +1140,18 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void TestColumnFilter()
+        {
+            DataFrame df = MakeDataFrameWithNumericColumns(10);
+            BaseColumn filtered = df["Int"].Filter(3, 7);
+            Assert.Equal(4, filtered.Length);
+            Assert.Equal(3, filtered[0]);
+            Assert.Equal(4, filtered[1]);
+            Assert.Equal(6, filtered[2]);
+            Assert.Equal(7, filtered[3]);
+        }
+
+        [Fact]
         public void TestDataFrameClip()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
@@ -1297,11 +1314,73 @@ namespace Microsoft.Data.Tests
             {
                 BaseColumn column = description.Column(i);
                 Assert.Equal(4, column.Length);
-                Assert.Equal((float)10, column[0]);
+                Assert.Equal((float)9, column[0]);
                 Assert.Equal((float)9, column[1]);
                 Assert.Equal((float)0, column[2]);
                 Assert.Equal((float)4, column[3]);
             }
         }
+
+        [Fact]
+        public void TestDropNulls()
+        {
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(20);
+            DataFrame anyNulls = df.DropNulls();
+            Assert.Equal(19, anyNulls.RowCount);
+
+            DataFrame allNulls = df.DropNulls(DropNullOptions.All);
+            Assert.Equal(19, allNulls.RowCount);
+        }
+
+        [Fact]
+        public void TestFillNulls()
+        {
+            DataFrame df = MakeDataFrameWithTwoColumns(20);
+            Assert.Null(df[10, 0]);
+            DataFrame fillNulls = df.FillNulls(1000);
+            Assert.Equal(1000, (int)fillNulls[10, 1]);
+
+            StringColumn strColumn = new StringColumn("String", 0);
+            strColumn.Append(null);
+            strColumn.Append(null);
+            Assert.Equal(2, strColumn.Length);
+            Assert.Equal(2, strColumn.NullCount);
+            strColumn.FillNulls("foo", true);
+            Assert.Equal(2, strColumn.Length);
+            Assert.Equal(0, strColumn.NullCount);
+            Assert.Equal("foo", strColumn[0]);
+            Assert.Equal("foo", strColumn[1]);
+        }
+
+        [Fact]
+        public void TestValueCounts()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            DataFrame valueCounts = df["Bool"].ValueCounts();
+            Assert.Equal(2, valueCounts.RowCount);
+            Assert.Equal((long)5, valueCounts["Counts"][0]);
+            Assert.Equal((long)5, valueCounts["Counts"][1]);
+        }
+
+        [Fact]
+        public void TestClone()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            DataFrame intDf = MakeDataFrameWithTwoColumns(5, false);
+            BaseColumn intColumn = intDf["Int1"];
+            DataFrame clone = df[intColumn];
+            Assert.Equal(5, clone.RowCount);
+            Assert.Equal(df.ColumnCount, clone.ColumnCount);
+            for (int i = 0; i < df.ColumnCount; i++)
+            {
+                BaseColumn dfColumn = df.Column(i);
+                BaseColumn cloneColumn = clone.Column(i);
+                for (long r = 0; r < clone.RowCount; r++)
+                {
+                    Assert.Equal(dfColumn[r], cloneColumn[r]);
+                }
+            }
+        }
+
     }
 }

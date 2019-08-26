@@ -49,15 +49,15 @@ namespace Microsoft.Data
         private long _nullCount;
         public override long NullCount => _nullCount;
 
-        public override void Resize(long length) 
-        { 
-            if (length < Length) 
-                throw new ArgumentException(Strings.CannotResizeDown, nameof(length)); 
+        public override void Resize(long length)
+        {
+            if (length < Length)
+                throw new ArgumentException(Strings.CannotResizeDown, nameof(length));
 
-            for (long i = Length; i < length; i++) 
-            { 
-                Append(null); 
-            } 
+            for (long i = Length; i < length; i++)
+            {
+                Append(null);
+            }
         }
 
         public void Append(string value)
@@ -236,15 +236,17 @@ namespace Microsoft.Data
             StringColumn clone;
             if (!(mapIndices is null))
             {
-                if (mapIndices.DataType != typeof(long) && mapIndices.DataType != typeof(bool))
-                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(bool)), nameof(mapIndices));
+                Type dataType = mapIndices.DataType;
+                if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
+                    throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.Length > Length)
                     throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                else if (dataType == typeof(int))
+                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
                 else
                     clone = Clone(mapIndices as PrimitiveColumn<bool>);
-
             }
             else
             {
@@ -271,37 +273,71 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private StringColumn CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
         {
             StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
-            if (mapIndices is null)
+            if (mapIndices.Length > Length)
+                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
+            if (invertMapIndices == false)
             {
-                for (long i = 0; i < Length; i++)
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    ret[i] = this[i];
+                    ret[i] = this[getIndex(i).Value];
                 }
             }
             else
             {
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-                if (invertMapIndex == false)
+                long mapIndicesLengthIndex = mapIndices.Length - 1;
+                for (long i = 0; i < mapIndices.Length; i++)
                 {
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret[i] = this[(long)mapIndices[i]];
-                    }
-                }
-                else
-                {
-                    long mapIndicesLengthIndex = mapIndices.Length - 1;
-                    for (long i = 0; i < mapIndices.Length; i++)
-                    {
-                        ret[i] = this[(long)mapIndices[mapIndicesLengthIndex - i]];
-                    }
+                    ret[i] = this[getIndex(mapIndicesLengthIndex - i).Value];
                 }
             }
             return ret;
+        }
+
+        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        {
+            if (mapIndices is null)
+            {
+                StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = this[i];
+                }
+                return ret;
+            }
+            else
+            {
+                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndex);
+            }
+        }
+
+        private StringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        {
+            long? ConvertInt(long index)
+            {
+                return mapIndices[index];
+            }
+            return CloneImplementation(mapIndices, ConvertInt, invertMapIndex);
+        }
+
+        internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)
+        {
+            StringColumn keys = new StringColumn("Values", 0);
+            PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+            foreach (KeyValuePair<string, ICollection<long>> keyValuePair in groupedValues)
+            {
+                keys.Append(keyValuePair.Key);
+                counts.Append(keyValuePair.Value.Count);
+            }
+            return new DataFrame(new List<BaseColumn> { keys, counts });
+        }
+
+        public override DataFrame ValueCounts()
+        {
+            Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
+            return ValueCountsImplementation(groupedValues);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
@@ -333,6 +369,25 @@ namespace Microsoft.Data
             {
                 throw new NotImplementedException(nameof(TKey));
             }
+        }
+
+        public override BaseColumn FillNulls(object value, bool inPlace = false)
+        {
+            if (value.GetType() != typeof(string) || value == null)
+                throw new ArgumentException(nameof(value));
+            string stringValue = (string)value;
+            StringColumn column;
+            if (inPlace)
+                column = this;
+            else
+                column = Clone();
+            
+            for (long i = 0; i < Length; i++)
+            {
+                if (this[i] == null)
+                    this[i] = stringValue;
+            }
+            return column;
         }
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)

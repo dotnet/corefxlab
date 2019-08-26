@@ -148,7 +148,10 @@
     <value>Expected value to be of type </value>
   </data>
   <data name="MultipleMismatchedValueType" xml:space="preserve">
-    <value>Expected value to be of type {0} or {1}</value>
+    <value>Expected value to be of type {0}, {1} or {2}</value>
+  </data>
+  <data name="NumericColumnType" xml:space="preserve">
+    <value>numeric column</value>
   </data>
   <data name="SpansMultipleBuffers" xml:space="preserve">
     <value>Cannot span multiple buffers</value>
