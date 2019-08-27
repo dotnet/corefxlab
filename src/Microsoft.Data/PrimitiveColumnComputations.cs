@@ -296,8 +296,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -311,8 +311,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -355,8 +355,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -370,8 +370,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -414,8 +414,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -429,8 +429,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -473,8 +473,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -488,8 +488,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -526,8 +526,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -563,8 +563,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -600,8 +600,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -637,8 +637,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (byte)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -723,8 +723,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -738,8 +738,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -782,8 +782,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -797,8 +797,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -841,8 +841,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -856,8 +856,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -900,8 +900,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -915,8 +915,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -953,8 +953,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -990,8 +990,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -1027,8 +1027,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -1064,8 +1064,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (char)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -1150,8 +1150,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1165,8 +1165,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -1209,8 +1209,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1224,8 +1224,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -1268,8 +1268,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1283,8 +1283,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -1327,8 +1327,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1342,8 +1342,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -1380,8 +1380,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -1417,8 +1417,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -1454,8 +1454,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -1491,8 +1491,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (decimal)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -1577,8 +1577,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1592,8 +1592,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -1636,8 +1636,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1651,8 +1651,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -1695,8 +1695,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1710,8 +1710,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -1754,8 +1754,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -1769,8 +1769,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -1807,8 +1807,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -1844,8 +1844,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -1881,8 +1881,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -1918,8 +1918,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (double)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -2004,8 +2004,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2019,8 +2019,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2063,8 +2063,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2078,8 +2078,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2122,8 +2122,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2137,8 +2137,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -2181,8 +2181,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2196,8 +2196,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -2234,8 +2234,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -2271,8 +2271,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -2308,8 +2308,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -2345,8 +2345,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (float)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -2431,8 +2431,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2446,8 +2446,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2490,8 +2490,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2505,8 +2505,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2549,8 +2549,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2564,8 +2564,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -2608,8 +2608,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2623,8 +2623,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -2661,8 +2661,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -2698,8 +2698,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -2735,8 +2735,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -2772,8 +2772,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (int)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -2858,8 +2858,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2873,8 +2873,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2917,8 +2917,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2932,8 +2932,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -2976,8 +2976,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -2991,8 +2991,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -3035,8 +3035,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3050,8 +3050,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -3088,8 +3088,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -3125,8 +3125,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -3162,8 +3162,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -3199,8 +3199,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (long)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -3285,8 +3285,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3300,8 +3300,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -3344,8 +3344,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3359,8 +3359,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -3403,8 +3403,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3418,8 +3418,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -3462,8 +3462,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3477,8 +3477,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -3515,8 +3515,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -3552,8 +3552,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -3589,8 +3589,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -3626,8 +3626,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (sbyte)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -3712,8 +3712,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3727,8 +3727,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -3771,8 +3771,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3786,8 +3786,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -3830,8 +3830,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3845,8 +3845,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -3889,8 +3889,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -3904,8 +3904,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -3942,8 +3942,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -3979,8 +3979,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -4016,8 +4016,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -4053,8 +4053,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (short)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -4139,8 +4139,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4154,8 +4154,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -4198,8 +4198,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4213,8 +4213,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -4257,8 +4257,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4272,8 +4272,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -4316,8 +4316,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4331,8 +4331,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -4369,8 +4369,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -4406,8 +4406,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -4443,8 +4443,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -4480,8 +4480,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (uint)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -4566,8 +4566,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4581,8 +4581,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -4625,8 +4625,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4640,8 +4640,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -4684,8 +4684,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4699,8 +4699,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -4743,8 +4743,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -4758,8 +4758,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -4796,8 +4796,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -4833,8 +4833,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -4870,8 +4870,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -4907,8 +4907,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ulong)(readOnlySpan[(int)row] + ret);
             }
         }
@@ -4993,8 +4993,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -5008,8 +5008,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -5052,8 +5052,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -5067,8 +5067,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
             }
@@ -5111,8 +5111,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -5126,8 +5126,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)((span[(int)row]) * ret);
                 span[(int)row] = ret;
             }
@@ -5170,8 +5170,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -5185,8 +5185,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)((span[(int)row]) + ret);
                 span[(int)row] = ret;
             }
@@ -5223,8 +5223,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
@@ -5260,8 +5260,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
@@ -5297,8 +5297,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)(readOnlySpan[(int)row] * ret);
             }
         }
@@ -5334,8 +5334,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = (ushort)(readOnlySpan[(int)row] + ret);
             }
         }

@@ -96,8 +96,8 @@ namespace Microsoft.Data
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
 <# if (method.MethodName == "Max") { #>
                 ret = (<#=type.TypeName#>)(Math.Max(readOnlySpan[(int)row], ret));
 <# } #>
@@ -129,8 +129,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
                 ret = span[(int)row];
             }
 
@@ -144,8 +144,8 @@ namespace Microsoft.Data
                     span = mutableBuffer.Span;
                     minRange = bufferIndex * maxCapacity;
                     maxRange = (bufferIndex + 1) * maxCapacity;
-                    row -= minRange;
                 }
+                row -= minRange;
 <# if (method.MethodName == "CumulativeMax") { #>
                 ret = (<#=type.TypeName#>)Math.Max(span[(int)row], ret);
                 span[(int)row] = ret;
