@@ -435,6 +435,7 @@ namespace Microsoft.Data
 
             return ret;
         }
+
         public override DataFrame Mean(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
