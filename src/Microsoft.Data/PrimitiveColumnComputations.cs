@@ -116,9 +116,10 @@ namespace Microsoft.Data
             for (int b = 0; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var span = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    if (buffer.ReadOnlySpan[i] == false)
+                    if (span[i] == false)
                     {
                         ret = false;
                         return;
@@ -133,9 +134,10 @@ namespace Microsoft.Data
             for (int b = 0; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var span = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    if (buffer.ReadOnlySpan[i] == true)
+                    if (span[i] == true)
                     {
                         ret = true;
                         return;
@@ -238,9 +240,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (byte)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (byte)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -263,10 +266,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (byte)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -275,17 +280,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
         {
             var ret = default(byte);
+            var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -296,10 +325,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (byte)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -308,17 +339,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
         {
             var ret = default(byte);
+            var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -329,10 +384,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (byte)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -341,17 +398,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
         {
             var ret = default(byte);
+            var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -362,10 +443,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (byte)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -374,17 +457,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows)
         {
             var ret = default(byte);
+            var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -394,9 +501,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (byte)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -404,11 +512,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -418,9 +538,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (byte)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -428,11 +549,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -442,9 +575,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (byte)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -452,11 +586,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -466,9 +612,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (byte)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (byte)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -476,11 +623,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<byte> column, IEnumerable<long> rows, out byte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<byte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (byte)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (byte)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -490,9 +649,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (byte)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (byte)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -507,9 +667,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (char)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (char)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -532,10 +693,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (char)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -544,17 +707,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
         {
             var ret = default(char);
+            var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -565,10 +752,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (char)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -577,17 +766,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
         {
             var ret = default(char);
+            var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -598,10 +811,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (char)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -610,17 +825,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
         {
             var ret = default(char);
+            var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -631,10 +870,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (char)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -643,17 +884,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<char> column, IEnumerable<long> rows)
         {
             var ret = default(char);
+            var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -663,9 +928,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (char)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -673,11 +939,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -687,9 +965,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (char)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -697,11 +976,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -711,9 +1002,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (char)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -721,11 +1013,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -735,9 +1039,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (char)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (char)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -745,11 +1050,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<char> column, IEnumerable<long> rows, out char ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<char>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (char)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (char)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -759,9 +1076,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (char)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (char)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -776,9 +1094,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (decimal)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (decimal)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -801,10 +1120,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (decimal)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -813,17 +1134,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
         {
             var ret = default(decimal);
+            var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -834,10 +1179,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (decimal)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -846,17 +1193,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
         {
             var ret = default(decimal);
+            var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -867,10 +1238,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (decimal)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -879,17 +1252,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
         {
             var ret = default(decimal);
+            var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -900,10 +1297,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (decimal)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -912,17 +1311,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows)
         {
             var ret = default(decimal);
+            var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -932,9 +1355,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (decimal)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -942,11 +1366,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -956,9 +1392,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (decimal)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -966,11 +1403,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -980,9 +1429,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (decimal)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -990,11 +1440,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -1004,9 +1466,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (decimal)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (decimal)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -1014,11 +1477,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<decimal> column, IEnumerable<long> rows, out decimal ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<decimal>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (decimal)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (decimal)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -1028,9 +1503,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (decimal)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (decimal)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1045,9 +1521,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (double)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (double)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1070,10 +1547,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (double)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1082,17 +1561,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
         {
             var ret = default(double);
+            var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1103,10 +1606,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (double)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1115,17 +1620,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
         {
             var ret = default(double);
+            var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1136,10 +1665,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (double)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1148,17 +1679,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
         {
             var ret = default(double);
+            var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1169,10 +1724,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (double)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1181,17 +1738,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<double> column, IEnumerable<long> rows)
         {
             var ret = default(double);
+            var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1201,9 +1782,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (double)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1211,11 +1793,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1225,9 +1819,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (double)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1235,11 +1830,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1249,9 +1856,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (double)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -1259,11 +1867,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -1273,9 +1893,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (double)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (double)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -1283,11 +1904,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<double> column, IEnumerable<long> rows, out double ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<double>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (double)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (double)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -1297,9 +1930,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (double)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (double)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1314,9 +1948,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (float)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (float)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1339,10 +1974,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (float)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1351,17 +1988,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
         {
             var ret = default(float);
+            var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1372,10 +2033,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (float)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1384,17 +2047,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
         {
             var ret = default(float);
+            var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1405,10 +2092,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (float)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1417,17 +2106,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
         {
             var ret = default(float);
+            var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1438,10 +2151,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (float)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1450,17 +2165,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<float> column, IEnumerable<long> rows)
         {
             var ret = default(float);
+            var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1470,9 +2209,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (float)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1480,11 +2220,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1494,9 +2246,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (float)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1504,11 +2257,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1518,9 +2283,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (float)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -1528,11 +2294,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -1542,9 +2320,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (float)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (float)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -1552,11 +2331,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<float> column, IEnumerable<long> rows, out float ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<float>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (float)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (float)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -1566,9 +2357,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (float)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (float)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1583,9 +2375,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (int)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (int)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1608,10 +2401,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (int)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1620,17 +2415,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
         {
             var ret = default(int);
+            var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1641,10 +2460,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (int)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1653,17 +2474,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
         {
             var ret = default(int);
+            var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1674,10 +2519,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (int)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1686,17 +2533,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
         {
             var ret = default(int);
+            var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1707,10 +2578,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (int)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1719,17 +2592,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<int> column, IEnumerable<long> rows)
         {
             var ret = default(int);
+            var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1739,9 +2636,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (int)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1749,11 +2647,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1763,9 +2673,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (int)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -1773,11 +2684,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -1787,9 +2710,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (int)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -1797,11 +2721,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -1811,9 +2747,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (int)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (int)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -1821,11 +2758,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<int> column, IEnumerable<long> rows, out int ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<int>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (int)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (int)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -1835,9 +2784,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (int)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (int)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1852,9 +2802,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (long)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (long)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1877,10 +2828,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (long)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1889,17 +2842,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
         {
             var ret = default(long);
+            var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1910,10 +2887,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (long)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1922,17 +2901,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
         {
             var ret = default(long);
+            var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1943,10 +2946,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (long)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1955,17 +2960,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
         {
             var ret = default(long);
+            var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -1976,10 +3005,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (long)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -1988,17 +3019,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<long> column, IEnumerable<long> rows)
         {
             var ret = default(long);
+            var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2008,9 +3063,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (long)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2018,11 +3074,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2032,9 +3100,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (long)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2042,11 +3111,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2056,9 +3137,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (long)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -2066,11 +3148,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -2080,9 +3174,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (long)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (long)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -2090,11 +3185,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<long> column, IEnumerable<long> rows, out long ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<long>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (long)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (long)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -2104,9 +3211,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (long)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (long)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2121,9 +3229,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (sbyte)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (sbyte)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2146,10 +3255,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (sbyte)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2158,17 +3269,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
         {
             var ret = default(sbyte);
+            var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2179,10 +3314,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (sbyte)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2191,17 +3328,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
         {
             var ret = default(sbyte);
+            var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2212,10 +3373,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (sbyte)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2224,17 +3387,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
         {
             var ret = default(sbyte);
+            var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2245,10 +3432,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (sbyte)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2257,17 +3446,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows)
         {
             var ret = default(sbyte);
+            var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2277,9 +3490,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (sbyte)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2287,11 +3501,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2301,9 +3527,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (sbyte)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2311,11 +3538,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2325,9 +3564,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (sbyte)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -2335,11 +3575,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -2349,9 +3601,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (sbyte)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (sbyte)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -2359,11 +3612,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<sbyte> column, IEnumerable<long> rows, out sbyte ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<sbyte>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (sbyte)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (sbyte)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -2373,9 +3638,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (sbyte)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (sbyte)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2390,9 +3656,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (short)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (short)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2415,10 +3682,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (short)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2427,17 +3696,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
         {
             var ret = default(short);
+            var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2448,10 +3741,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (short)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2460,17 +3755,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
         {
             var ret = default(short);
+            var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2481,10 +3800,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (short)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2493,17 +3814,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
         {
             var ret = default(short);
+            var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2514,10 +3859,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (short)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2526,17 +3873,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<short> column, IEnumerable<long> rows)
         {
             var ret = default(short);
+            var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2546,9 +3917,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (short)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2556,11 +3928,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2570,9 +3954,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (short)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2580,11 +3965,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2594,9 +3991,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (short)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -2604,11 +4002,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -2618,9 +4028,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (short)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (short)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -2628,11 +4039,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<short> column, IEnumerable<long> rows, out short ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<short>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (short)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (short)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -2642,9 +4065,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (short)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (short)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2659,9 +4083,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (uint)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (uint)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2684,10 +4109,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (uint)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2696,17 +4123,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
         {
             var ret = default(uint);
+            var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2717,10 +4168,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (uint)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2729,17 +4182,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
         {
             var ret = default(uint);
+            var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2750,10 +4227,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (uint)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2762,17 +4241,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
         {
             var ret = default(uint);
+            var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2783,10 +4286,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (uint)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2795,17 +4300,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows)
         {
             var ret = default(uint);
+            var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2815,9 +4344,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (uint)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2825,11 +4355,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2839,9 +4381,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (uint)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -2849,11 +4392,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -2863,9 +4418,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (uint)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -2873,11 +4429,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -2887,9 +4455,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (uint)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (uint)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -2897,11 +4466,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<uint> column, IEnumerable<long> rows, out uint ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<uint>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (uint)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (uint)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -2911,9 +4492,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (uint)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (uint)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2928,9 +4510,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (ulong)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (ulong)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2953,10 +4536,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ulong)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2965,17 +4550,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
         {
             var ret = default(ulong);
+            var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -2986,10 +4595,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ulong)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -2998,17 +4609,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
         {
             var ret = default(ulong);
+            var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3019,10 +4654,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ulong)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3031,17 +4668,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
         {
             var ret = default(ulong);
+            var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3052,10 +4713,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ulong)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3064,17 +4727,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows)
         {
             var ret = default(ulong);
+            var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3084,9 +4771,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (ulong)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -3094,11 +4782,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -3108,9 +4808,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (ulong)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -3118,11 +4819,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -3132,9 +4845,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (ulong)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -3142,11 +4856,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -3156,9 +4882,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ulong)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (ulong)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -3166,11 +4893,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<ulong> column, IEnumerable<long> rows, out ulong ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ulong>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ulong)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ulong)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -3180,9 +4919,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (ulong)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (ulong)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3197,9 +4937,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (ushort)(Math.Abs((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (ushort)(Math.Abs((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3222,10 +4963,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(Math.Max(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ushort)(Math.Max(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3234,17 +4977,41 @@ namespace Microsoft.Data
         public void CumulativeMax(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
         {
             var ret = default(ushort);
+            var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)Math.Max(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)Math.Max(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3255,10 +5022,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(Math.Min(buffer.ReadOnlySpan[i], ret));
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ushort)(Math.Min(readOnlySpan[i], ret));
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3267,17 +5036,41 @@ namespace Microsoft.Data
         public void CumulativeMin(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
         {
             var ret = default(ushort);
+            var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)Math.Min(column[row] ?? default, ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)Math.Min(span[(int)row], ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3288,10 +5081,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(buffer.ReadOnlySpan[i] * ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ushort)(readOnlySpan[i] * ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3300,17 +5095,41 @@ namespace Microsoft.Data
         public void CumulativeProduct(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
         {
             var ret = default(ushort);
+            var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)((column[row] ?? default) * ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)((span[(int)row]) * ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3321,10 +5140,12 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(buffer.ReadOnlySpan[i] + ret);
-                    mutableBuffer.Span[i] = ret;
+                    ret = (ushort)(readOnlySpan[i] + ret);
+                    mutableSpan[i] = ret;
                 }
                 column.Buffers[b] = mutableBuffer;
             }
@@ -3333,17 +5154,41 @@ namespace Microsoft.Data
         public void CumulativeSum(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows)
         {
             var ret = default(ushort);
+            var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[0]);
+            var span = mutableBuffer.Span;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                ret = column[enumerator.Current] ?? default;
+                long row = enumerator.Current;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = span[(int)row];
             }
 
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)((column[row] ?? default) + ret);
-                column[row] = ret;
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
+                    span = mutableBuffer.Span;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)((span[(int)row]) + ret);
+                span[(int)row] = ret;
             }
         }
 
@@ -3353,9 +5198,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(Math.Max(buffer.ReadOnlySpan[i], ret));
+                    ret = (ushort)(Math.Max(readOnlySpan[i], ret));
                 }
             }
         }
@@ -3363,11 +5209,23 @@ namespace Microsoft.Data
         public void Max(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)(Math.Max(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)(Math.Max(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -3377,9 +5235,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(Math.Min(buffer.ReadOnlySpan[i], ret));
+                    ret = (ushort)(Math.Min(readOnlySpan[i], ret));
                 }
             }
         }
@@ -3387,11 +5246,23 @@ namespace Microsoft.Data
         public void Min(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)(Math.Min(column[row] ?? default, ret));
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)(Math.Min(readOnlySpan[(int)row], ret));
             }
         }
 
@@ -3401,9 +5272,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(buffer.ReadOnlySpan[i] * ret);
+                    ret = (ushort)(readOnlySpan[i] * ret);
                 }
             }
         }
@@ -3411,11 +5283,23 @@ namespace Microsoft.Data
         public void Product(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)((column[row] ?? default) * ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)(readOnlySpan[(int)row] * ret);
             }
         }
 
@@ -3425,9 +5309,10 @@ namespace Microsoft.Data
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
                 var buffer = column.Buffers[b];
+                var readOnlySpan = buffer.ReadOnlySpan;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    ret = (ushort)(buffer.ReadOnlySpan[i] + ret);
+                    ret = (ushort)(readOnlySpan[i] + ret);
                 }
             }
         }
@@ -3435,11 +5320,23 @@ namespace Microsoft.Data
         public void Sum(PrimitiveColumnContainer<ushort> column, IEnumerable<long> rows, out ushort ret)
         {
             ret = default;
+            var readOnlySpan = column.Buffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = ReadOnlyDataFrameBuffer<ushort>.MaxCapacity;
+            long maxCapacity = maxRange;
             IEnumerator<long> enumerator = rows.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 long row = enumerator.Current;
-                ret = (ushort)((column[row] ?? default) + ret);
+                if (row < minRange || row >= maxRange)
+                {
+                    int bufferIndex = (int)(row / maxCapacity);
+                    readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
+                    minRange = bufferIndex * maxCapacity;
+                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    row -= minRange;
+                }
+                ret = (ushort)(readOnlySpan[(int)row] + ret);
             }
         }
 
@@ -3449,9 +5346,10 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                var mutableSpan = mutableBuffer.Span;
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    mutableBuffer.Span[i] = (ushort)(Math.Round((decimal)mutableBuffer.Span[i]));
+                    mutableSpan[i] = (ushort)(Math.Round((decimal)mutableSpan[i]));
                 }
                 column.Buffers[b] = mutableBuffer;
             }
