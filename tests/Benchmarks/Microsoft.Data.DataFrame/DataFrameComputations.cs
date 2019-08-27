@@ -74,7 +74,5 @@ namespace Benchmarks.Microsoft.Data
         {
             _column0.CumulativeProduct();
         }
-
-
     }
 }

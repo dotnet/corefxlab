@@ -4,7 +4,6 @@
 
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using JsonBenchmarks;
 using Microsoft.Data;
 
 namespace Benchmarks.Microsoft.Data
