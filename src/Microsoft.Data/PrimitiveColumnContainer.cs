@@ -206,7 +206,7 @@ namespace Microsoft.Data
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        private void SetValidityBit(long index, bool value)
+        internal void SetValidityBit(long index, bool value)
         {
             if ((ulong)index > (ulong)Length)
             {
