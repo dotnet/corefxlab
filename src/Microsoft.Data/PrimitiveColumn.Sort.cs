@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.Data
 {
@@ -31,6 +33,7 @@ namespace Microsoft.Data
             for (int b = 0; b < _columnContainer.Buffers.Count; b++)
             {
                 ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
+                ReadOnlySpan<byte> nullBitMapSpan = _columnContainer.NullBitMapBuffers[b].ReadOnlySpan;
                 int[] sortIndices = new int[buffer.Length];
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;
@@ -39,16 +42,34 @@ namespace Microsoft.Data
                 List<int> nonNullSortIndices = new List<int>();
                 for (int i = 0; i < sortIndices.Length; i++)
                 {
-                    if (IsValid(sortIndices[i] + b * ReadOnlyDataFrameBuffer<T>.MaxCapacity))
+                    if (_columnContainer.IsValid(ref nullBitMapSpan, sortIndices[i]))
                         nonNullSortIndices.Add(sortIndices[i]);
+
                 }
                 bufferSortIndices.Add(nonNullSortIndices);
             }
             // Simple merge sort to build the full column's sort indices
             ValueTuple<T, int> GetFirstNonNullValueAndBufferIndexStartingAtIndex(int bufferIndex, int startIndex)
             {
-                T value = _columnContainer.Buffers[bufferIndex][bufferSortIndices[bufferIndex][startIndex]];
-                long rowIndex = bufferSortIndices[bufferIndex][startIndex] + bufferIndex * ReadOnlyDataFrameBuffer<T>.MaxCapacity;
+                int index = bufferSortIndices[bufferIndex][startIndex];
+                T value;
+                ReadOnlyMemory<byte> buffer = _columnContainer.Buffers[bufferIndex].ReadOnlyMemory;
+                ReadOnlyMemory<T> typedBuffer = Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref buffer);
+                if (!typedBuffer.IsEmpty)
+                {
+                    bool isArray = MemoryMarshal.TryGetArray(typedBuffer, out ArraySegment<T> array);
+                    if (isArray)
+                    {
+                        value = array.Array[index];
+                    }
+                    else
+                        value = _columnContainer.Buffers[bufferIndex][index];
+
+                }
+                else
+                {
+                    value = _columnContainer.Buffers[bufferIndex][index];
+                }
                 return (value, startIndex);
             }
             SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex = new SortedDictionary<T, List<ValueTuple<int, int>>>(comparer);

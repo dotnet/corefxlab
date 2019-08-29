@@ -133,36 +133,6 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private void AppendForMerge(DataFrame dataFrame, long dataFrameRow, DataFrame left, DataFrame right, long leftRow, long rightRow)
-        {
-            for (int i = 0; i < left.ColumnCount; i++)
-            {
-                BaseColumn leftColumn = left.Column(i);
-                BaseColumn column = dataFrame.Column(i);
-                if (leftRow == -1)
-                {
-                    column[dataFrameRow] = null;
-                }
-                else
-                {
-                    column[dataFrameRow] = leftColumn[leftRow];
-                }
-            }
-            for (int i = 0; i < right.ColumnCount; i++)
-            {
-                BaseColumn rightColumn = right.Column(i);
-                BaseColumn column = dataFrame.Column(i + left.ColumnCount);
-                if (rightRow == -1)
-                {
-                    column[dataFrameRow] = null;
-                }
-                else
-                {
-                    column[dataFrameRow] = rightColumn[rightRow];
-                }
-            }
-        }
-
         // TODO: Merge API with an "On" parameter that merges on a column common to 2 dataframes 
 
         /// <summary> 
@@ -179,24 +149,11 @@ namespace Microsoft.Data
         {
             // A simple hash join 
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> emptyMap = new PrimitiveColumn<long>("Empty");
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                // Create empty columns 
-                BaseColumn column = Column(i).Clone(emptyMap);
-                ret.InsertColumn(ret.ColumnCount, column);
-            }
-
-            for (int i = 0; i < other.ColumnCount; i++)
-            {
-                // Create empty columns 
-                BaseColumn column = other.Column(i).Clone(emptyMap);
-                SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                ret.InsertColumn(ret.ColumnCount, column);
-            }
 
             // The final table size is not known until runtime 
             long rowNumber = 0;
+            PrimitiveColumn<long> leftRowIndices = new PrimitiveColumn<long>("LeftIndices");
+            PrimitiveColumn<long> rightRowIndices = new PrimitiveColumn<long>("RightIndices");
             if (joinAlgorithm == JoinAlgorithm.Left)
             {
                 // First hash other dataframe on the rightJoinColumn 
@@ -205,31 +162,22 @@ namespace Microsoft.Data
 
                 // Go over the records in this dataframe and match with the dictionary 
                 BaseColumn thisColumn = this[leftJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(thisColumn.Length);
-                }
 
                 for (long i = 0; i < thisColumn.Length; i++)
                 {
-                    if (rowNumber >= thisColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(thisColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out ICollection<long> rowNumbers))
+                    var thisColumnValue = thisColumn[i];
+                    TKey thisColumnValueOrDefault = (TKey)(thisColumnValue == null ? default(TKey) : thisColumnValue);
+                    if (multimap.TryGetValue(thisColumnValueOrDefault, out ICollection<long> rowNumbers))
                     {
                         foreach (long row in rowNumbers)
                         {
-                            if (thisColumn[i] == null)
+                            if (thisColumnValue == null)
                             {
                                 // Match only with nulls in otherColumn 
                                 if (otherColumn[row] == null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
+                                    leftRowIndices.Append(i);
+                                    rightRowIndices.Append(row);
                                 }
                             }
                             else
@@ -237,17 +185,28 @@ namespace Microsoft.Data
                                 // Cannot match nulls in otherColumn 
                                 if (otherColumn[row] != null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
+                                    leftRowIndices.Append(i);
+                                    rightRowIndices.Append(row);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        AppendForMerge(ret, rowNumber++, this, other, i, -1);
+                        leftRowIndices.Append(i);
+                        rightRowIndices.Append(null);
                     }
                 }
-                ret._table.RowCount = rowNumber;
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
+                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, column);
+                }
             }
             else if (joinAlgorithm == JoinAlgorithm.Right)
             {
@@ -255,47 +214,48 @@ namespace Microsoft.Data
                 Dictionary<TKey, ICollection<long>> multimap = thisColumn.GroupColumnValues<TKey>();
 
                 BaseColumn otherColumn = other[rightJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(otherColumn.Length);
-                }
-
                 for (long i = 0; i < otherColumn.Length; i++)
                 {
-                    if (rowNumber >= otherColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(otherColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out ICollection<long> rowNumbers))
+                    var otherColumnValue = otherColumn[i];
+                    TKey otherColumnValueOrDefault = (TKey)(otherColumnValue == null ? default(TKey) : otherColumnValue);
+                    if (multimap.TryGetValue(otherColumnValueOrDefault, out ICollection<long> rowNumbers))
                     {
                         foreach (long row in rowNumbers)
                         {
-                            if (otherColumn[i] == null)
+                            if (otherColumnValue == null)
                             {
                                 if (thisColumn[row] == null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, row, i);
+                                    leftRowIndices.Append(row);
+                                    rightRowIndices.Append(i);
                                 }
                             }
                             else
                             {
                                 if (thisColumn[row] != null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, row, i);
+                                    leftRowIndices.Append(row);
+                                    rightRowIndices.Append(i);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        AppendForMerge(ret, rowNumber++, this, other, -1, i);
+                        leftRowIndices.Append(null);
+                        rightRowIndices.Append(i);
                     }
                 }
-                ret._table.RowCount = rowNumber;
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
+                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, column);
+                }
             }
             else if (joinAlgorithm == JoinAlgorithm.Inner)
             {
@@ -308,43 +268,43 @@ namespace Microsoft.Data
                 BaseColumn otherColumn = ReferenceEquals(hashColumn, this[leftJoinColumn]) ? other[rightJoinColumn] : this[leftJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = hashColumn.GroupColumnValues<TKey>();
 
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(1);
-                }
-
                 for (long i = 0; i < otherColumn.Length; i++)
                 {
-                    if (rowNumber >= ret.Column(0).Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(otherColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out ICollection<long> rowNumbers))
+                    var otherColumnValue = otherColumn[i];
+                    TKey otherColumnValueOrDefault = (TKey)(otherColumnValue == null ? default(TKey) : otherColumnValue);
+                    if (multimap.TryGetValue(otherColumnValueOrDefault, out ICollection<long> rowNumbers))
                     {
                         foreach (long row in rowNumbers)
                         {
-                            if (otherColumn[i] == null)
+                            if (otherColumnValue == null)
                             {
                                 if (hashColumn[row] == null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, ReferenceEquals(this, shorterDataFrame) ? row : i, ReferenceEquals(this, shorterDataFrame) ? i : row);
+                                    leftRowIndices.Append(row);
+                                    rightRowIndices.Append(i);
                                 }
                             }
                             else
                             {
                                 if (hashColumn[row] != null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, ReferenceEquals(this, shorterDataFrame) ? row : i, ReferenceEquals(this, shorterDataFrame) ? i : row);
+                                    leftRowIndices.Append(row);
+                                    rightRowIndices.Append(i);
                                 }
                             }
                         }
                     }
                 }
-                ret._table.RowCount = rowNumber;
+                for (int i = 0; i < shorterDataFrame.ColumnCount; i++)
+                {
+                    ret.InsertColumn(i, shorterDataFrame.Column(i).Clone(leftRowIndices));
+                }
+                for (int i = 0; i < longerDataFrame.ColumnCount; i++)
+                {
+                    BaseColumn column = longerDataFrame.Column(i).Clone(rightRowIndices);
+                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, column);
+                }
             }
             else if (joinAlgorithm == JoinAlgorithm.FullOuter)
             {
@@ -354,34 +314,25 @@ namespace Microsoft.Data
 
                 // Go over the records in this dataframe and match with the dictionary 
                 BaseColumn thisColumn = this[leftJoinColumn];
-                for (int c = 0; c < ret.ColumnCount; c++)
-                {
-                    ret.Column(c).Resize(thisColumn.Length + 1);
-                }
 
                 for (long i = 0; i < thisColumn.Length; i++)
                 {
-                    if (rowNumber >= thisColumn.Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
-                    TKey value = (TKey)(thisColumn[i] ?? default(TKey));
-                    if (multimap.TryGetValue(value, out ICollection<long> rowNumbers))
+                    var thisColumnValue = thisColumn[i];
+                    TKey thisColumnValueOrDefault = (TKey)(thisColumnValue == null ? default(TKey) : thisColumnValue);
+                    if (multimap.TryGetValue(thisColumnValueOrDefault, out ICollection<long> rowNumbers))
                     {
                         foreach (long row in rowNumbers)
                         {
-                            if (thisColumn[i] == null)
+                            if (thisColumnValue == null)
                             {
                                 // Has to match only with nulls in otherColumn 
                                 if (otherColumn[row] == null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                    if (!intersection.ContainsKey(value))
+                                    leftRowIndices.Append(i);
+                                    rightRowIndices.Append(row);
+                                    if (!intersection.ContainsKey(thisColumnValueOrDefault))
                                     {
-                                        intersection.Add(value, rowNumber);
+                                        intersection.Add(thisColumnValueOrDefault, rowNumber);
                                     }
                                 }
                             }
@@ -390,10 +341,11 @@ namespace Microsoft.Data
                                 // Cannot match to nulls in otherColumn 
                                 if (otherColumn[row] != null)
                                 {
-                                    AppendForMerge(ret, rowNumber++, this, other, i, row);
-                                    if (!intersection.ContainsKey(value))
+                                    leftRowIndices.Append(i);
+                                    rightRowIndices.Append(row);
+                                    if (!intersection.ContainsKey(thisColumnValueOrDefault))
                                     {
-                                        intersection.Add(value, rowNumber);
+                                        intersection.Add(thisColumnValueOrDefault, rowNumber);
                                     }
                                 }
                             }
@@ -401,32 +353,29 @@ namespace Microsoft.Data
                     }
                     else
                     {
-                        AppendForMerge(ret, rowNumber++, this, other, i, -1);
+                        leftRowIndices.Append(i);
+                        rightRowIndices.Append(null);
                     }
                 }
                 for (long i = 0; i < otherColumn.Length; i++)
                 {
-                    if (rowNumber >= ret.Column(0).Length)
-                    {
-                        for (int c = 0; c < ret.ColumnCount; c++)
-                        {
-                            ret.Column(c).Resize(rowNumber + 1);
-                        }
-                    }
                     TKey value = (TKey)(otherColumn[i] ?? default(TKey));
                     if (!intersection.ContainsKey(value))
                     {
-                        if (rowNumber >= otherColumn.Length)
-                        {
-                            for (int c = 0; c < ret.ColumnCount; c++)
-                            {
-                                ret.Column(c).Resize(rowNumber + 1);
-                            }
-                        }
-                        AppendForMerge(ret, rowNumber++, this, other, -1, i);
+                        leftRowIndices.Append(null);
+                        rightRowIndices.Append(i);
                     }
                 }
-                ret._table.RowCount = rowNumber;
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
+                }
+                for (int i = 0; i < other.ColumnCount; i++)
+                {
+                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
+                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
+                    ret.InsertColumn(ret.ColumnCount, column);
+                }
             }
             return ret;
         }

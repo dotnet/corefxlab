@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Microsoft.Data
@@ -188,17 +189,77 @@ namespace Microsoft.Data
             {
                 ReadOnlyDataFrameBuffer<T> buffer = Buffers[b];
                 long prevLength = checked(Buffers[0].Length * b);
-                DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer); 
-                Span<T> span = mutableBuffer.Span; 
-                for (int i = 0; i < buffer.Length; i++) 
+                DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer);
+                Span<T> span = mutableBuffer.Span;
+                Span<byte> nullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[b]).Span;
+                for (int i = 0; i < buffer.Length; i++)
                 {
                     long curIndex = i + prevLength;
-                    this[curIndex] = func(IsValid(curIndex) ? span[i] : default(T?), curIndex);
-                } 
+                    //this[curIndex] = func(IsValid(curIndex) ? span[i] : default(T?), curIndex);
+                    bool isValid = IsValid(ref nullBitMapSpan, i);
+                    T? value = func(isValid ? span[i] : default(T?), curIndex);
+                    span[i] = value.GetValueOrDefault();
+                    SetValidityBit(nullBitMapSpan, i, value != null);
+                }
             }
         }
 
+        // Faster to use when we already have a span since it avoids indexing
+        public bool IsValid(ref Span<byte> bitMapBufferSpan, int index)
+        {
+            int nullBitMapSpanIndex = index / 8;
+            byte thisBitMap = bitMapBufferSpan[nullBitMapSpanIndex];
+            return IsBitSet(thisBitMap, index);
+        }
+
+        // Faster to use when we already have a span since it avoids indexing
+        public bool IsValid(ref ReadOnlySpan<byte> bitMapBufferSpan, int index)
+        {
+            int nullBitMapSpanIndex = index / 8;
+            byte thisBitMap = bitMapBufferSpan[nullBitMapSpanIndex];
+            return IsBitSet(thisBitMap, index);
+        }
+
         public bool IsValid(long index) => NullCount == 0 || GetValidityBit(index);
+
+        private byte SetBit(byte curBitMap, int index, bool value)
+        {
+            byte newBitMap;
+            if (value)
+            {
+                newBitMap = (byte)(curBitMap | (byte)(1 << (index & 7))); //bit hack for index % 8
+                if (_modifyNullCountWhileIndexing && ((curBitMap >> (index & 7)) & 1) == 0 && index < Length && NullCount > 0)
+                {
+                    // Old value was null.
+                    NullCount--;
+                }
+            }
+            else
+            {
+                if (_modifyNullCountWhileIndexing && ((curBitMap >> (index & 7)) & 1) == 1 && index < Length)
+                {
+                    // old value was NOT null and new value is null
+                    NullCount++;
+                }
+                else if (_modifyNullCountWhileIndexing && index == Length)
+                {
+                    // New entry from an append
+                    NullCount++;
+                }
+                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index & 7)));
+            }
+            return newBitMap;
+        }
+
+        // private function. Faster to use when we already have a span since it avoids indexing
+        private void SetValidityBit(Span<byte> bitMapBufferSpan, int index, bool value)
+        {
+            int bitMapBufferIndex = (int)((uint)index / 8);
+            Debug.Assert(bitMapBufferSpan.Length >= bitMapBufferIndex);
+            byte curBitMap = bitMapBufferSpan[bitMapBufferIndex];
+            byte newBitMap = SetBit(curBitMap, index, value);
+            bitMapBufferSpan[bitMapBufferIndex] = newBitMap;
+        }
 
         /// <summary>
         /// A null value has an unset bit
@@ -223,32 +284,12 @@ namespace Microsoft.Data
             Debug.Assert(bitMapBuffer.Length >= bitMapBufferIndex);
             if (bitMapBuffer.Length == bitMapBufferIndex)
                 bitMapBuffer.Append(0);
-            byte curBitMap = bitMapBuffer[bitMapBufferIndex];
-            byte newBitMap;
-            if (value)
-            {
-                newBitMap = (byte)(curBitMap | (byte)(1 << (int)(index & 7))); //bit hack for index % 8
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 0 && index < Length && NullCount > 0)
-                {
-                    // Old value was null.
-                    NullCount--;
-                }
-            }
-            else
-            {
-                if (_modifyNullCountWhileIndexing && (curBitMap >> ((int)(index & 7)) & 1) == 1 && index < Length)
-                {
-                    // old value was NOT null and new value is null
-                    NullCount++;
-                }
-                else if (_modifyNullCountWhileIndexing && index == Length)
-                {
-                    // New entry from an append
-                    NullCount++;
-                }
-                newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)index & 7)));
-            }
-            bitMapBuffer[bitMapBufferIndex] = newBitMap;
+            SetValidityBit(bitMapBuffer.Span, (int)index, value);
+        }
+
+        private bool IsBitSet(byte curBitMap, int index)
+        {
+            return ((curBitMap >> (index & 7)) & 1) != 0;
         }
 
         private bool GetValidityBit(long index)
@@ -267,7 +308,7 @@ namespace Microsoft.Data
             int bitMapBufferIndex = (int)((uint)index / 8);
             Debug.Assert(bitMapBuffer.Length > bitMapBufferIndex);
             byte curBitMap = bitMapBuffer[bitMapBufferIndex];
-            return ((curBitMap >> ((int)index & 7)) & 1) != 0;
+            return IsBitSet(curBitMap, (int)index);
         }
 
         public long Length;
@@ -396,6 +437,72 @@ namespace Microsoft.Data
                     newBuffer.Append(span[i]);
                 }
             }
+            return ret;
+        }
+
+        public PrimitiveColumnContainer<T> Clone<U>(PrimitiveColumnContainer<U> mapIndices, Type type, bool invertMapIndices = false)
+            where U : unmanaged
+        {
+            ReadOnlySpan<T> thisSpan = Buffers[0].ReadOnlySpan;
+            ReadOnlySpan<byte> thisNullBitMapSpan = NullBitMapBuffers[0].ReadOnlySpan;
+            long minRange = 0;
+            long maxRange = DataFrameBuffer<T>.MaxCapacity;
+            long maxCapacity = maxRange;
+            PrimitiveColumnContainer<T> ret = new PrimitiveColumnContainer<T>(mapIndices.Length);
+            ret._modifyNullCountWhileIndexing = false;
+            for (int b = 0; b < mapIndices.Buffers.Count; b++)
+            {
+                int index = b;
+                if (invertMapIndices)
+                    index = mapIndices.Buffers.Count - 1 - b;
+
+                ReadOnlyDataFrameBuffer<U> buffer = mapIndices.Buffers[index];
+                ReadOnlySpan<byte> mapIndicesNullBitMapSpan = mapIndices.NullBitMapBuffers[index].ReadOnlySpan;
+                ReadOnlySpan<U> mapIndicesSpan = buffer.ReadOnlySpan;
+                ReadOnlySpan<long> mapIndicesLongSpan = default;
+                ReadOnlySpan<int> mapIndicesIntSpan = default;
+                Span<T> retSpan = DataFrameBuffer<T>.GetMutableBuffer(ret.Buffers[index]).Span;
+                Span<byte> retNullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(ret.NullBitMapBuffers[index]).Span;
+                if (type == typeof(long))
+                {
+                    mapIndicesLongSpan = MemoryMarshal.Cast<U, long>(mapIndicesSpan);
+                }
+                if (type == typeof(int))
+                {
+                    mapIndicesIntSpan = MemoryMarshal.Cast<U, int>(mapIndicesSpan);
+                }
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    int spanIndex = i;
+                    if (invertMapIndices)
+                        spanIndex = buffer.Length - 1 - i;
+
+                    long mapRowIndex = mapIndicesIntSpan.IsEmpty ? mapIndicesLongSpan[spanIndex] : mapIndicesIntSpan[spanIndex];
+                    bool mapRowIndexIsValid = mapIndices.IsValid(ref mapIndicesNullBitMapSpan, spanIndex);
+                    if (mapRowIndexIsValid && (mapRowIndex < minRange || mapRowIndex >= maxRange))
+                    {
+                        int bufferIndex = (int)(mapRowIndex / maxCapacity);
+                        thisSpan = Buffers[bufferIndex].ReadOnlySpan;
+                        thisNullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[bufferIndex]).Span;
+                        minRange = bufferIndex * maxCapacity;
+                        maxRange = (bufferIndex + 1) * maxCapacity;
+                    }
+                    T value = default;
+                    bool isValid = false;
+                    if (mapRowIndexIsValid)
+                    {
+                        mapRowIndex -= minRange;
+                        value = thisSpan[(int)mapRowIndex];
+                        isValid = IsValid(ref thisNullBitMapSpan, (int)mapRowIndex);
+                    }
+
+                    retSpan[i] = isValid ? value : default;
+                    ret.SetValidityBit(retNullBitMapSpan, i, isValid);
+                    if (!isValid)
+                        ret.NullCount++;
+                }
+            }
+            ret._modifyNullCountWhileIndexing = true;
             return ret;
         }
 

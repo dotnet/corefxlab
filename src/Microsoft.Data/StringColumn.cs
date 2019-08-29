@@ -239,8 +239,6 @@ namespace Microsoft.Data
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
@@ -273,26 +271,76 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
+        private StringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+            where U : unmanaged
         {
-            StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
-            if (mapIndices.Length > Length)
-                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-            if (invertMapIndices == false)
+            mapIndices = mapIndices ?? throw new ArgumentNullException(nameof(mapIndices));
+            StringColumn ret = new StringColumn(Name, mapIndices.Length);
+
+            List<string> setBuffer = ret._stringBuffers[0];
+            long setBufferMinRange = 0;
+            long setBufferMaxRange = int.MaxValue;
+            List<string> getBuffer = _stringBuffers[0];
+            long getBufferMinRange = 0;
+            long getBufferMaxRange = int.MaxValue;
+            long maxCapacity = int.MaxValue;
+            if (mapIndices.DataType == typeof(long))
             {
-                for (long i = 0; i < mapIndices.Length; i++)
+                PrimitiveColumn<long> longMapIndices = mapIndices as PrimitiveColumn<long>;
+                longMapIndices.ApplyElementwise((long? mapIndex, long rowIndex) =>
                 {
-                    ret[i] = this[getIndex(i).Value];
-                }
+                    long index = rowIndex;
+                    if (invertMapIndices)
+                        index = longMapIndices.Length - 1 - index;
+                    if (index < setBufferMinRange || index >= setBufferMaxRange)
+                    {
+                        int bufferIndex = (int)(index / maxCapacity);
+                        setBuffer = ret._stringBuffers[bufferIndex];
+                        setBufferMinRange = bufferIndex * maxCapacity;
+                        setBufferMaxRange = (bufferIndex + 1) * maxCapacity;
+                    }
+                    index -= setBufferMinRange;
+                    if (mapIndex == null)
+                    {
+                        setBuffer[(int)index] = null;
+                        ret._nullCount++;
+                        return mapIndex;
+                    }
+
+                    if (mapIndex.Value < getBufferMinRange || mapIndex.Value >= getBufferMaxRange)
+                    {
+                        int bufferIndex = (int)(mapIndex.Value / maxCapacity);
+                        getBuffer = _stringBuffers[bufferIndex];
+                        getBufferMinRange = bufferIndex * maxCapacity;
+                        getBufferMaxRange = (bufferIndex + 1) * maxCapacity;
+                    }
+                    int bufferLocalMapIndex = (int)(mapIndex - getBufferMinRange);
+                    setBuffer[(int)index] = getBuffer[bufferLocalMapIndex];
+                    return mapIndex;
+                });
+            }
+            else if (mapIndices.DataType == typeof(int))
+            {
+                PrimitiveColumn<int> intMapIndices = mapIndices as PrimitiveColumn<int>;
+                intMapIndices.ApplyElementwise((int? mapIndex, long rowIndex) =>
+                {
+                    long index = rowIndex;
+                    if (invertMapIndices)
+                        index = intMapIndices.Length - 1 - index;
+
+                    if (mapIndex == null)
+                    {
+                        setBuffer[(int)index] = null;
+                        ret._nullCount++;
+                        return mapIndex;
+                    }
+                    setBuffer[(int)index] = getBuffer[mapIndex.Value];
+                    return mapIndex;
+                });
             }
             else
-            {
-                long mapIndicesLengthIndex = mapIndices.Length - 1;
-                for (long i = 0; i < mapIndices.Length; i++)
-                {
-                    ret[i] = this[getIndex(mapIndicesLengthIndex - i).Value];
-                }
-            }
+                throw new NotImplementedException(nameof(mapIndices.DataType));
+
             return ret;
         }
 
@@ -309,7 +357,7 @@ namespace Microsoft.Data
             }
             else
             {
-                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndex);
+                return CloneImplementation(mapIndices, invertMapIndex);
             }
         }
 
@@ -319,7 +367,7 @@ namespace Microsoft.Data
             {
                 return mapIndices[index];
             }
-            return CloneImplementation(mapIndices, ConvertInt, invertMapIndex);
+            return CloneImplementation(mapIndices, invertMapIndex);
         }
 
         internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)
@@ -381,7 +429,7 @@ namespace Microsoft.Data
                 column = this;
             else
                 column = Clone();
-            
+
             for (long i = 0; i < Length; i++)
             {
                 if (this[i] == null)

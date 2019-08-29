@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
@@ -292,8 +293,6 @@ namespace Microsoft.Data
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (dataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
@@ -324,92 +323,24 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> CloneImplementation<U>(PrimitiveColumn<U> mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
+        private PrimitiveColumn<T> CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
             if (!mapIndices.IsNumericColumn())
                 throw new ArgumentException(String.Format(Strings.MismatchedValueType, Strings.NumericColumnType), nameof(mapIndices));
 
-            if (mapIndices.Length > Length)
-                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-
-            ReadOnlySpan<T> thisSpan = _columnContainer.Buffers[0].ReadOnlySpan;
-            long minRange = 0;
-            long maxRange = DataFrameBuffer<T>.MaxCapacity;
-            long maxCapacity = maxRange;
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
-            ret._columnContainer._modifyNullCountWhileIndexing = false;
-            for (int b = 0; b < mapIndices._columnContainer.Buffers.Count; b++)
+            PrimitiveColumnContainer<T> retContainer;
+            if (mapIndices.DataType == typeof(long))
             {
-                int index = b;
-                if (invertMapIndices)
-                    index = mapIndices._columnContainer.Buffers.Count - 1 - b;
-
-                ReadOnlyDataFrameBuffer<U> buffer = mapIndices._columnContainer.Buffers[index];
-                ReadOnlySpan<U> mapIndicesSpan = buffer.ReadOnlySpan;
-                ReadOnlySpan<long> mapIndicesLongSpan = default;
-                ReadOnlySpan<int> mapIndicesIntSpan = default;
-                Span<T> retSpan = DataFrameBuffer<T>.GetMutableBuffer(ret._columnContainer.Buffers[index]).Span;
-                if (mapIndices.DataType == typeof(long))
-                {
-                    mapIndicesLongSpan = MemoryMarshal.Cast<U, long>(mapIndicesSpan);
-                }
-                if (mapIndices.DataType == typeof(int))
-                {
-                    mapIndicesIntSpan = MemoryMarshal.Cast<U, int>(mapIndicesSpan);
-                }
-                for (int i = 0; i < buffer.Length; i++)
-                {
-                    int spanIndex = i;
-                    if (invertMapIndices)
-                        spanIndex = buffer.Length - 1 - i;
-
-                    long rowIndex = mapIndicesIntSpan.IsEmpty ? mapIndicesLongSpan[spanIndex] : mapIndicesIntSpan[spanIndex];
-                    if (rowIndex < minRange || rowIndex >= maxRange)
-                    {
-                        int bufferIndex = (int)(rowIndex / maxCapacity);
-                        thisSpan = _columnContainer.Buffers[bufferIndex].ReadOnlySpan;
-                        minRange = bufferIndex * maxCapacity;
-                        maxRange = (bufferIndex + 1) * maxCapacity;
-                    }
-                    rowIndex -= minRange;
-                    T value = thisSpan[(int)rowIndex];
-                    bool isValid = IsValid(rowIndex);
-                    retSpan[i] = isValid ? value : default;
-                    if (!isValid)
-                    {
-                        ret._columnContainer.NullCount++;
-                        ret._columnContainer.SetValidityBit(rowIndex, false);
-                    }
-                    else
-                    {
-                        ret._columnContainer.SetValidityBit(rowIndex, true);
-                    }
-                }
+                retContainer = _columnContainer.Clone(mapIndices._columnContainer, typeof(long), invertMapIndices);
             }
-            //if (invertMapIndices == false)
-            //{
-            //    for (long i = 0; i < mapIndices.Length; i++)
-            //    {
-            //        T? value = _columnContainer[getIndex(i).Value];
-            //        ret[i] = value;
-            //        if (!value.HasValue)
-            //            ret._columnContainer.NullCount++;
-            //    }
-
-            //}
-            //else
-            //{
-            //    long mapIndicesIndex = mapIndices.Length - 1;
-            //    for (long i = 0; i < mapIndices.Length; i++)
-            //    {
-            //        T? value = _columnContainer[getIndex(mapIndicesIndex - i).Value];
-            //        ret[i] = value;
-            //        if (!value.HasValue)
-            //            ret._columnContainer.NullCount++;
-            //    }
-            //}
-            ret._columnContainer._modifyNullCountWhileIndexing = true;
+            else if (mapIndices.DataType == typeof(int))
+            {
+                retContainer = _columnContainer.Clone(mapIndices._columnContainer, typeof(int), invertMapIndices);
+            }
+            else
+                throw new NotImplementedException();
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, retContainer);
             return ret;
         }
 
@@ -422,7 +353,7 @@ namespace Microsoft.Data
             }
             else
             {
-                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndices);
+                return CloneImplementation(mapIndices, invertMapIndices);
             }
         }
 
@@ -432,7 +363,7 @@ namespace Microsoft.Data
             {
                 return mapIndices[index];
             }
-            return CloneImplementation(mapIndices, ConvertInt, invertMapIndices);
+            return CloneImplementation(mapIndices, invertMapIndices);
         }
 
         public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
