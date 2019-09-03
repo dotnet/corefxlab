@@ -94,8 +94,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
 <# if (method.MethodName == "Max") { #>
@@ -105,10 +105,10 @@ namespace Microsoft.Data
                 ret = (<#=type.TypeName#>)(Math.Min(readOnlySpan[(int)row], ret));
 <# } #>
 <# if (method.MethodName == "Product") { #>
-                ret = (<#=type.TypeName#>)(readOnlySpan[(int)row] * ret);
+                ret = checked((<#=type.TypeName#>)(readOnlySpan[(int)row] * ret));
 <# } #>
 <# if (method.MethodName == "Sum") { #>
-                ret = (<#=type.TypeName#>)(readOnlySpan[(int)row] + ret);
+                ret = checked((<#=type.TypeName#>)(readOnlySpan[(int)row] + ret));
 <# } #>
             }
 <# } else if ((method.MethodName == "CumulativeMax" || method.MethodName == "CumulativeMin" || method.MethodName == "CumulativeProduct" || method.MethodName == "CumulativeSum") && method.SupportsRowSubsets == true) { #>
@@ -127,8 +127,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -142,8 +142,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
 <# if (method.MethodName == "CumulativeMax") { #>
@@ -153,10 +153,10 @@ namespace Microsoft.Data
                 ret = (<#=type.TypeName#>)Math.Min(span[(int)row], ret);
                 span[(int)row] = ret;
 <# } else if (method.MethodName == "CumulativeProduct") { #>
-                ret = (<#=type.TypeName#>)((span[(int)row]) * ret);
+                ret = checked((<#=type.TypeName#>)((span[(int)row]) * ret));
                 span[(int)row] = ret;
 <# } else if (method.MethodName =="CumulativeSum") { #>
-                ret = (<#=type.TypeName#>)((span[(int)row]) + ret);
+                ret = checked((<#=type.TypeName#>)((span[(int)row]) + ret));
                 span[(int)row] = ret;
 <# } #>
             }
@@ -182,7 +182,7 @@ namespace Microsoft.Data
                 var mutableSpan = mutableBuffer.Span;
 <# } #>
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
 <# if (method.MethodName == "CumulativeMax") { #>
                     ret = (<#=type.TypeName#>)(Math.Max(readOnlySpan[i], ret));
@@ -223,7 +223,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (<#=type.TypeName#>)(<#=method.Operator#>((decimal)mutableSpan[i]));
                 }
@@ -239,7 +239,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var span = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length && i < buffer.Length; i++)
                 {
 <# if (method.MethodName == "All") { #>
                     if (span[i] == false)

@@ -303,8 +303,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private delegate BaseColumn GetColumn(string name);
-        private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty, GetColumn getColumn = null)
+        private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty, Func<string, BaseColumn> getColumn = null)
         {
             if (columnIndex == _groupByColumnIndex)
                 return null;
@@ -448,11 +447,10 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            GetColumn getColumn = new GetColumn((string name) => new PrimitiveColumn<double>(name));
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty, getColumn);
+                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty, (name) => new PrimitiveColumn<double>(name));
 
                 if (!(retColumn is null))
                 {

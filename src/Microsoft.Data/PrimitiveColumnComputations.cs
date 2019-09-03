@@ -117,7 +117,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var span = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length && i < buffer.Length; i++)
                 {
                     if (span[i] == false)
                     {
@@ -135,7 +135,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var span = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length && i < buffer.Length; i++)
                 {
                     if (span[i] == true)
                     {
@@ -241,7 +241,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (byte)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -268,7 +268,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -294,8 +294,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -309,8 +309,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (byte)Math.Max(span[(int)row], ret);
@@ -327,7 +327,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -353,8 +353,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -368,8 +368,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (byte)Math.Min(span[(int)row], ret);
@@ -386,7 +386,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -412,8 +412,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -427,11 +427,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (byte)((span[(int)row]) * ret);
+                ret = checked((byte)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -445,7 +445,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -471,8 +471,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -486,11 +486,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (byte)((span[(int)row]) + ret);
+                ret = checked((byte)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -502,7 +502,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -524,8 +524,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (byte)(Math.Max(readOnlySpan[(int)row], ret));
@@ -539,7 +539,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -561,8 +561,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (byte)(Math.Min(readOnlySpan[(int)row], ret));
@@ -576,7 +576,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(readOnlySpan[i] * ret);
                 }
@@ -598,11 +598,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (byte)(readOnlySpan[(int)row] * ret);
+                ret = checked((byte)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -613,7 +613,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (byte)(readOnlySpan[i] + ret);
                 }
@@ -635,11 +635,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (byte)(readOnlySpan[(int)row] + ret);
+                ret = checked((byte)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -650,7 +650,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (byte)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -668,7 +668,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (char)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -695,7 +695,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -721,8 +721,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -736,8 +736,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (char)Math.Max(span[(int)row], ret);
@@ -754,7 +754,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -780,8 +780,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -795,8 +795,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (char)Math.Min(span[(int)row], ret);
@@ -813,7 +813,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -839,8 +839,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -854,11 +854,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (char)((span[(int)row]) * ret);
+                ret = checked((char)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -872,7 +872,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -898,8 +898,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -913,11 +913,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (char)((span[(int)row]) + ret);
+                ret = checked((char)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -929,7 +929,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -951,8 +951,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (char)(Math.Max(readOnlySpan[(int)row], ret));
@@ -966,7 +966,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -988,8 +988,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (char)(Math.Min(readOnlySpan[(int)row], ret));
@@ -1003,7 +1003,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(readOnlySpan[i] * ret);
                 }
@@ -1025,11 +1025,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (char)(readOnlySpan[(int)row] * ret);
+                ret = checked((char)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -1040,7 +1040,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (char)(readOnlySpan[i] + ret);
                 }
@@ -1062,11 +1062,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (char)(readOnlySpan[(int)row] + ret);
+                ret = checked((char)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -1077,7 +1077,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (char)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -1095,7 +1095,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (decimal)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -1122,7 +1122,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -1148,8 +1148,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1163,8 +1163,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (decimal)Math.Max(span[(int)row], ret);
@@ -1181,7 +1181,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -1207,8 +1207,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1222,8 +1222,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (decimal)Math.Min(span[(int)row], ret);
@@ -1240,7 +1240,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -1266,8 +1266,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1281,11 +1281,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (decimal)((span[(int)row]) * ret);
+                ret = checked((decimal)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -1299,7 +1299,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -1325,8 +1325,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1340,11 +1340,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (decimal)((span[(int)row]) + ret);
+                ret = checked((decimal)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -1356,7 +1356,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -1378,8 +1378,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (decimal)(Math.Max(readOnlySpan[(int)row], ret));
@@ -1393,7 +1393,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -1415,8 +1415,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (decimal)(Math.Min(readOnlySpan[(int)row], ret));
@@ -1430,7 +1430,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(readOnlySpan[i] * ret);
                 }
@@ -1452,11 +1452,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (decimal)(readOnlySpan[(int)row] * ret);
+                ret = checked((decimal)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -1467,7 +1467,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (decimal)(readOnlySpan[i] + ret);
                 }
@@ -1489,11 +1489,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (decimal)(readOnlySpan[(int)row] + ret);
+                ret = checked((decimal)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -1504,7 +1504,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (decimal)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -1522,7 +1522,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (double)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -1549,7 +1549,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -1575,8 +1575,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1590,8 +1590,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (double)Math.Max(span[(int)row], ret);
@@ -1608,7 +1608,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -1634,8 +1634,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1649,8 +1649,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (double)Math.Min(span[(int)row], ret);
@@ -1667,7 +1667,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -1693,8 +1693,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1708,11 +1708,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (double)((span[(int)row]) * ret);
+                ret = checked((double)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -1726,7 +1726,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -1752,8 +1752,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -1767,11 +1767,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (double)((span[(int)row]) + ret);
+                ret = checked((double)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -1783,7 +1783,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -1805,8 +1805,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (double)(Math.Max(readOnlySpan[(int)row], ret));
@@ -1820,7 +1820,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -1842,8 +1842,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (double)(Math.Min(readOnlySpan[(int)row], ret));
@@ -1857,7 +1857,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(readOnlySpan[i] * ret);
                 }
@@ -1879,11 +1879,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (double)(readOnlySpan[(int)row] * ret);
+                ret = checked((double)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -1894,7 +1894,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (double)(readOnlySpan[i] + ret);
                 }
@@ -1916,11 +1916,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (double)(readOnlySpan[(int)row] + ret);
+                ret = checked((double)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -1931,7 +1931,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (double)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -1949,7 +1949,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (float)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -1976,7 +1976,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2002,8 +2002,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2017,8 +2017,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (float)Math.Max(span[(int)row], ret);
@@ -2035,7 +2035,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2061,8 +2061,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2076,8 +2076,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (float)Math.Min(span[(int)row], ret);
@@ -2094,7 +2094,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -2120,8 +2120,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2135,11 +2135,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (float)((span[(int)row]) * ret);
+                ret = checked((float)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -2153,7 +2153,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -2179,8 +2179,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2194,11 +2194,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (float)((span[(int)row]) + ret);
+                ret = checked((float)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -2210,7 +2210,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -2232,8 +2232,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (float)(Math.Max(readOnlySpan[(int)row], ret));
@@ -2247,7 +2247,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -2269,8 +2269,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (float)(Math.Min(readOnlySpan[(int)row], ret));
@@ -2284,7 +2284,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(readOnlySpan[i] * ret);
                 }
@@ -2306,11 +2306,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (float)(readOnlySpan[(int)row] * ret);
+                ret = checked((float)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -2321,7 +2321,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (float)(readOnlySpan[i] + ret);
                 }
@@ -2343,11 +2343,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (float)(readOnlySpan[(int)row] + ret);
+                ret = checked((float)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -2358,7 +2358,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (float)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -2376,7 +2376,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (int)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -2403,7 +2403,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2429,8 +2429,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2444,8 +2444,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (int)Math.Max(span[(int)row], ret);
@@ -2462,7 +2462,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2488,8 +2488,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2503,8 +2503,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (int)Math.Min(span[(int)row], ret);
@@ -2521,7 +2521,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -2547,8 +2547,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2562,11 +2562,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (int)((span[(int)row]) * ret);
+                ret = checked((int)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -2580,7 +2580,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -2606,8 +2606,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2621,11 +2621,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (int)((span[(int)row]) + ret);
+                ret = checked((int)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -2637,7 +2637,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -2659,8 +2659,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (int)(Math.Max(readOnlySpan[(int)row], ret));
@@ -2674,7 +2674,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -2696,8 +2696,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (int)(Math.Min(readOnlySpan[(int)row], ret));
@@ -2711,7 +2711,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(readOnlySpan[i] * ret);
                 }
@@ -2733,11 +2733,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (int)(readOnlySpan[(int)row] * ret);
+                ret = checked((int)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -2748,7 +2748,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (int)(readOnlySpan[i] + ret);
                 }
@@ -2770,11 +2770,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (int)(readOnlySpan[(int)row] + ret);
+                ret = checked((int)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -2785,7 +2785,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (int)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -2803,7 +2803,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (long)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -2830,7 +2830,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2856,8 +2856,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2871,8 +2871,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (long)Math.Max(span[(int)row], ret);
@@ -2889,7 +2889,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -2915,8 +2915,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2930,8 +2930,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (long)Math.Min(span[(int)row], ret);
@@ -2948,7 +2948,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -2974,8 +2974,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -2989,11 +2989,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (long)((span[(int)row]) * ret);
+                ret = checked((long)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -3007,7 +3007,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -3033,8 +3033,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3048,11 +3048,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (long)((span[(int)row]) + ret);
+                ret = checked((long)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -3064,7 +3064,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -3086,8 +3086,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (long)(Math.Max(readOnlySpan[(int)row], ret));
@@ -3101,7 +3101,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -3123,8 +3123,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (long)(Math.Min(readOnlySpan[(int)row], ret));
@@ -3138,7 +3138,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(readOnlySpan[i] * ret);
                 }
@@ -3160,11 +3160,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (long)(readOnlySpan[(int)row] * ret);
+                ret = checked((long)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -3175,7 +3175,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (long)(readOnlySpan[i] + ret);
                 }
@@ -3197,11 +3197,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (long)(readOnlySpan[(int)row] + ret);
+                ret = checked((long)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -3212,7 +3212,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (long)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -3230,7 +3230,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (sbyte)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -3257,7 +3257,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -3283,8 +3283,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3298,8 +3298,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (sbyte)Math.Max(span[(int)row], ret);
@@ -3316,7 +3316,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -3342,8 +3342,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3357,8 +3357,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (sbyte)Math.Min(span[(int)row], ret);
@@ -3375,7 +3375,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -3401,8 +3401,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3416,11 +3416,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (sbyte)((span[(int)row]) * ret);
+                ret = checked((sbyte)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -3434,7 +3434,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -3460,8 +3460,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3475,11 +3475,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (sbyte)((span[(int)row]) + ret);
+                ret = checked((sbyte)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -3491,7 +3491,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -3513,8 +3513,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (sbyte)(Math.Max(readOnlySpan[(int)row], ret));
@@ -3528,7 +3528,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -3550,8 +3550,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (sbyte)(Math.Min(readOnlySpan[(int)row], ret));
@@ -3565,7 +3565,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(readOnlySpan[i] * ret);
                 }
@@ -3587,11 +3587,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (sbyte)(readOnlySpan[(int)row] * ret);
+                ret = checked((sbyte)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -3602,7 +3602,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (sbyte)(readOnlySpan[i] + ret);
                 }
@@ -3624,11 +3624,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (sbyte)(readOnlySpan[(int)row] + ret);
+                ret = checked((sbyte)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -3639,7 +3639,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (sbyte)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -3657,7 +3657,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (short)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -3684,7 +3684,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -3710,8 +3710,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3725,8 +3725,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (short)Math.Max(span[(int)row], ret);
@@ -3743,7 +3743,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -3769,8 +3769,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3784,8 +3784,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (short)Math.Min(span[(int)row], ret);
@@ -3802,7 +3802,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -3828,8 +3828,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3843,11 +3843,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (short)((span[(int)row]) * ret);
+                ret = checked((short)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -3861,7 +3861,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -3887,8 +3887,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -3902,11 +3902,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (short)((span[(int)row]) + ret);
+                ret = checked((short)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -3918,7 +3918,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -3940,8 +3940,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (short)(Math.Max(readOnlySpan[(int)row], ret));
@@ -3955,7 +3955,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -3977,8 +3977,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (short)(Math.Min(readOnlySpan[(int)row], ret));
@@ -3992,7 +3992,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(readOnlySpan[i] * ret);
                 }
@@ -4014,11 +4014,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (short)(readOnlySpan[(int)row] * ret);
+                ret = checked((short)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -4029,7 +4029,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (short)(readOnlySpan[i] + ret);
                 }
@@ -4051,11 +4051,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (short)(readOnlySpan[(int)row] + ret);
+                ret = checked((short)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -4066,7 +4066,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (short)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -4084,7 +4084,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (uint)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -4111,7 +4111,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -4137,8 +4137,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4152,8 +4152,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (uint)Math.Max(span[(int)row], ret);
@@ -4170,7 +4170,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -4196,8 +4196,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4211,8 +4211,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (uint)Math.Min(span[(int)row], ret);
@@ -4229,7 +4229,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -4255,8 +4255,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4270,11 +4270,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (uint)((span[(int)row]) * ret);
+                ret = checked((uint)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -4288,7 +4288,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -4314,8 +4314,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4329,11 +4329,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (uint)((span[(int)row]) + ret);
+                ret = checked((uint)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -4345,7 +4345,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -4367,8 +4367,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (uint)(Math.Max(readOnlySpan[(int)row], ret));
@@ -4382,7 +4382,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -4404,8 +4404,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (uint)(Math.Min(readOnlySpan[(int)row], ret));
@@ -4419,7 +4419,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(readOnlySpan[i] * ret);
                 }
@@ -4441,11 +4441,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (uint)(readOnlySpan[(int)row] * ret);
+                ret = checked((uint)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -4456,7 +4456,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (uint)(readOnlySpan[i] + ret);
                 }
@@ -4478,11 +4478,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (uint)(readOnlySpan[(int)row] + ret);
+                ret = checked((uint)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -4493,7 +4493,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (uint)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -4511,7 +4511,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (ulong)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -4538,7 +4538,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -4564,8 +4564,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4579,8 +4579,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ulong)Math.Max(span[(int)row], ret);
@@ -4597,7 +4597,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -4623,8 +4623,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4638,8 +4638,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ulong)Math.Min(span[(int)row], ret);
@@ -4656,7 +4656,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -4682,8 +4682,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4697,11 +4697,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ulong)((span[(int)row]) * ret);
+                ret = checked((ulong)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -4715,7 +4715,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -4741,8 +4741,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -4756,11 +4756,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ulong)((span[(int)row]) + ret);
+                ret = checked((ulong)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -4772,7 +4772,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -4794,8 +4794,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ulong)(Math.Max(readOnlySpan[(int)row], ret));
@@ -4809,7 +4809,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -4831,8 +4831,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ulong)(Math.Min(readOnlySpan[(int)row], ret));
@@ -4846,7 +4846,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(readOnlySpan[i] * ret);
                 }
@@ -4868,11 +4868,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ulong)(readOnlySpan[(int)row] * ret);
+                ret = checked((ulong)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -4883,7 +4883,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ulong)(readOnlySpan[i] + ret);
                 }
@@ -4905,11 +4905,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ulong)(readOnlySpan[(int)row] + ret);
+                ret = checked((ulong)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -4920,7 +4920,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (ulong)(Math.Round((decimal)mutableSpan[i]));
                 }
@@ -4938,7 +4938,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (ushort)(Math.Abs((decimal)mutableSpan[i]));
                 }
@@ -4965,7 +4965,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(Math.Max(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -4991,8 +4991,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -5006,8 +5006,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ushort)Math.Max(span[(int)row], ret);
@@ -5024,7 +5024,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(Math.Min(readOnlySpan[i], ret));
                     mutableSpan[i] = ret;
@@ -5050,8 +5050,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -5065,8 +5065,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ushort)Math.Min(span[(int)row], ret);
@@ -5083,7 +5083,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(readOnlySpan[i] * ret);
                     mutableSpan[i] = ret;
@@ -5109,8 +5109,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -5124,11 +5124,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ushort)((span[(int)row]) * ret);
+                ret = checked((ushort)((span[(int)row]) * ret));
                 span[(int)row] = ret;
             }
         }
@@ -5142,7 +5142,7 @@ namespace Microsoft.Data
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(readOnlySpan[i] + ret);
                     mutableSpan[i] = ret;
@@ -5168,8 +5168,8 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = span[(int)row];
@@ -5183,11 +5183,11 @@ namespace Microsoft.Data
                     int bufferIndex = (int)(row / maxCapacity);
                     mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(column.Buffers[bufferIndex]);
                     span = mutableBuffer.Span;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ushort)((span[(int)row]) + ret);
+                ret = checked((ushort)((span[(int)row]) + ret));
                 span[(int)row] = ret;
             }
         }
@@ -5199,7 +5199,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(Math.Max(readOnlySpan[i], ret));
                 }
@@ -5221,8 +5221,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ushort)(Math.Max(readOnlySpan[(int)row], ret));
@@ -5236,7 +5236,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(Math.Min(readOnlySpan[i], ret));
                 }
@@ -5258,8 +5258,8 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
                 ret = (ushort)(Math.Min(readOnlySpan[(int)row], ret));
@@ -5273,7 +5273,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(readOnlySpan[i] * ret);
                 }
@@ -5295,11 +5295,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ushort)(readOnlySpan[(int)row] * ret);
+                ret = checked((ushort)(readOnlySpan[(int)row] * ret));
             }
         }
 
@@ -5310,7 +5310,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
                 {
                     ret = (ushort)(readOnlySpan[i] + ret);
                 }
@@ -5332,11 +5332,11 @@ namespace Microsoft.Data
                 {
                     int bufferIndex = (int)(row / maxCapacity);
                     readOnlySpan = column.Buffers[bufferIndex].ReadOnlySpan;
-                    minRange = bufferIndex * maxCapacity;
-                    maxRange = (bufferIndex + 1) * maxCapacity;
+                    minRange = checked(bufferIndex * maxCapacity);
+                    maxRange = checked((bufferIndex + 1) * maxCapacity);
                 }
                 row -= minRange;
-                ret = (ushort)(readOnlySpan[(int)row] + ret);
+                ret = checked((ushort)(readOnlySpan[(int)row] + ret));
             }
         }
 
@@ -5347,7 +5347,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
                 {
                     mutableSpan[i] = (ushort)(Math.Round((decimal)mutableSpan[i]));
                 }

@@ -28,21 +28,9 @@ namespace Benchmarks.Microsoft.Data
         }
 
         [Benchmark]
-        public object Product()
-        {
-            return _column0.Product();
-        }
-
-        [Benchmark]
         public object Max()
         {
             return _column0.Max();
-        }
-
-        [Benchmark]
-        public object Min()
-        {
-            return _column0.Min();
         }
 
         [Benchmark]
@@ -58,21 +46,9 @@ namespace Benchmarks.Microsoft.Data
         }
 
         [Benchmark]
-        public void CumulativeMin()
-        {
-            _column0.CumulativeMin();
-        }
-
-        [Benchmark]
         public void CumulativeSum()
         {
             _column0.CumulativeSum();
-        }
-
-        [Benchmark]
-        public void CumulativeProduct()
-        {
-            _column0.CumulativeProduct();
         }
     }
 }
