@@ -64,7 +64,7 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) { #>
                 var otherSpan = <#=method.Op2Name#>.Buffers[b].ReadOnlySpan;
 <# } #>
-                for (int i = 0; i < mutableBuffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) { #>
                     span[i] = (<#=type.TypeName#>)(span[i] <#= method.Operator #> <#= method.Op2Name #>);
