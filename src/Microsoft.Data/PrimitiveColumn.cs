@@ -434,7 +434,7 @@ namespace Microsoft.Data
                     ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
                     ReadOnlySpan<T> readOnlySpan = buffer.ReadOnlySpan;
                     long previousLength = b * ReadOnlyDataFrameBuffer<T>.MaxCapacity;
-                    for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
+                    for (int i = 0; i < readOnlySpan.Length; i++)
                     {
                         long currentLength = i + previousLength;
                         bool containsKey = multimap.TryGetValue(readOnlySpan[i], out ICollection<long> values);

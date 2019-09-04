@@ -31,6 +31,12 @@ namespace Microsoft.Data
         public ReadOnlySpan<T> ReadOnlySpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (MemoryMarshal.Cast<byte, T>(ReadOnlyMemory.Span)).Slice(0, Length);
+        }
+
+        public ReadOnlySpan<T> RawReadOnlySpan
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => MemoryMarshal.Cast<byte, T>(ReadOnlyMemory.Span);
         }
 
@@ -57,7 +63,7 @@ namespace Microsoft.Data
             {
                 if (index > Length)
                     throw new ArgumentOutOfRangeException(nameof(index));
-                return ReadOnlySpan[index];
+                return RawReadOnlySpan[index];
             }
             set => throw new NotSupportedException();
         }

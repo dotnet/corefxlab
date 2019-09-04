@@ -182,7 +182,7 @@ namespace Microsoft.Data
                 var mutableSpan = mutableBuffer.Span;
 <# } #>
                 var readOnlySpan = buffer.ReadOnlySpan;
-                for (int i = 0; i < readOnlySpan.Length && i < buffer.Length; i++)
+                for (int i = 0; i < readOnlySpan.Length; i++)
                 {
 <# if (method.MethodName == "CumulativeMax") { #>
                     ret = (<#=type.TypeName#>)(Math.Max(readOnlySpan[i], ret));
@@ -223,7 +223,7 @@ namespace Microsoft.Data
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<<#=type.TypeName#>>.GetMutableBuffer(buffer);
                 var mutableSpan = mutableBuffer.Span;
-                for (int i = 0; i < mutableSpan.Length && i < mutableBuffer.Length; i++)
+                for (int i = 0; i < mutableSpan.Length; i++)
                 {
                     mutableSpan[i] = (<#=type.TypeName#>)(<#=method.Operator#>((decimal)mutableSpan[i]));
                 }
@@ -239,7 +239,7 @@ namespace Microsoft.Data
             {
                 var buffer = column.Buffers[b];
                 var span = buffer.ReadOnlySpan;
-                for (int i = 0; i < span.Length && i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
 <# if (method.MethodName == "All") { #>
                     if (span[i] == false)
