@@ -127,23 +127,28 @@ namespace Microsoft.Data
             using (var st = createStream())
             {
                 string line = st.ReadLine();
-                int nbline = 0;
-                while (line != null && (numRows == -1 || rowline < numRows))
+                long nbline = 0;
+                while (line != null)
                 {
-                    var spl = line.Split(separator);
-                    if (header && nbline == 0)
+                    if ((numRows == -1) || rowline < numRows)
                     {
-                        if (columnNames == null)
-                            columnNames = spl;
-                    }
-                    else
-                    {
-                        ++rowline;
                         if (linesForGuessType.Count < guessRows)
                         {
-                            linesForGuessType.Add(spl);
-                            numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            var spl = line.Split(separator);
+                            if (header && nbline == 0)
+                            {
+                                if (columnNames == null)
+                                    columnNames = spl;
+                            }
+                            else
+                            {
+                                ++rowline;
+                                linesForGuessType.Add(spl);
+                                numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            }
                         }
+                        else
+                            ++rowline;
                     }
                     ++nbline;
                     line = st.ReadLine();
@@ -161,17 +166,17 @@ namespace Microsoft.Data
                 Type kind = GuessKind(i, linesForGuessType);
                 if (kind == typeof(bool))
                 {
-                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames[i]);
+                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames[i], rowline);
                     columns.Add(boolColumn);
                 }
                 else if (kind == typeof(float))
                 {
-                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames[i]);
+                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames[i], rowline);
                     columns.Add(floatColumn);
                 }
                 else if (kind == typeof(string))
                 {
-                    BaseColumn stringColumn = new StringColumn(columnNames[i], 0);
+                    BaseColumn stringColumn = new StringColumn(columnNames[i], rowline);
                     columns.Add(stringColumn);
                 }
                 else
@@ -218,7 +223,6 @@ namespace Microsoft.Data
             for (int i = 0; i < columns.Count; i++)
             {
                 BaseColumn column = columns[i];
-                column.Resize(rowIndex + 1);
                 string val = values[i];
                 Type dType = column.DataType;
                 if (dType == typeof(bool))
