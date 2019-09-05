@@ -19,7 +19,7 @@ namespace Microsoft.Data
     /// A column to hold primitive types such as int, float etc.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class PrimitiveColumn<T> : BaseColumn, IEnumerable<T?>
+    public partial class PrimitiveColumn<T> : BaseColumn, IEnumerable<ReadOnlyMemory<T>>
         where T : unmanaged
     {
         private PrimitiveColumnContainer<T> _columnContainer;
@@ -234,7 +234,7 @@ namespace Microsoft.Data
 
         public bool IsValid(long index) => _columnContainer.IsValid(index);
 
-        public IEnumerator<T?> GetEnumerator() => _columnContainer.GetEnumerator();
+        public IEnumerator<ReadOnlyMemory<T>> GetEnumerator() => _columnContainer.GetEnumerator();
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 

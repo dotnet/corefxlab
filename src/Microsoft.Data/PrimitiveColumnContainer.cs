@@ -6,6 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Microsoft.Data
@@ -14,7 +16,7 @@ namespace Microsoft.Data
     /// PrimitiveDataFrameColumnContainer is just a store for the column data. APIs that want to change the data must be defined in PrimitiveDataFrameColumn
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal partial class PrimitiveColumnContainer<T> : IEnumerable<T?>
+    internal partial class PrimitiveColumnContainer<T> : IEnumerable<ReadOnlyMemory<T>>
         where T : struct
     {
         public IList<ReadOnlyDataFrameBuffer<T>> Buffers = new List<ReadOnlyDataFrameBuffer<T>>();
@@ -349,11 +351,13 @@ namespace Microsoft.Data
             }
         }
 
-        public IEnumerator<T?> GetEnumerator()
+        public IEnumerator<ReadOnlyMemory<T>> GetEnumerator()
         {
-            for (long i = 0; i < Length; i++)
+            for (int i = 0; i < Buffers.Count; i++)
             {
-                yield return this[i];
+                ReadOnlyDataFrameBuffer<T> buffer = Buffers[i];
+                ReadOnlyMemory<byte> readOnlyMemory = buffer.ReadOnlyMemory;
+                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref readOnlyMemory);
             }
         }
 
