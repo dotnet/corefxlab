@@ -96,7 +96,7 @@ namespace Microsoft.Data
                 groupByColumnDelegate(rowNumber, pairs.Key);
                 ICollection<long> rows = pairs.Value;
                 IEnumerable<string> columns = columnNames;
-                if (columnNames.Length == 0)
+                if (columnNames == null || columnNames.Length == 0)
                     columns = _dataFrame.Columns;
                 // Assuming that the dataframe has not been modified after the groupby call
                 foreach (string columnName in columns)
