@@ -429,16 +429,23 @@ namespace Microsoft.Data
             if (typeof(TKey) == typeof(T))
             {
                 Dictionary<T, ICollection<long>> multimap = new Dictionary<T, ICollection<long>>(EqualityComparer<T>.Default);
-                for (long i = 0; i < Length; i++)
+                for (int b = 0; b < _columnContainer.Buffers.Count; b++)
                 {
-                    bool containsKey = multimap.TryGetValue(this[i] ?? default, out ICollection<long> values);
-                    if (containsKey)
+                    ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
+                    ReadOnlySpan<T> readOnlySpan = buffer.ReadOnlySpan;
+                    long previousLength = b * ReadOnlyDataFrameBuffer<T>.MaxCapacity;
+                    for (int i = 0; i < readOnlySpan.Length; i++)
                     {
-                        values.Add(i);
-                    }
-                    else
-                    {
-                        multimap.Add(this[i] ?? default, new List<long>() { i });
+                        long currentLength = i + previousLength;
+                        bool containsKey = multimap.TryGetValue(readOnlySpan[i], out ICollection<long> values);
+                        if (containsKey)
+                        {
+                            values.Add(currentLength);
+                        }
+                        else
+                        {
+                            multimap.Add(readOnlySpan[i], new List<long>() { currentLength });
+                        }
                     }
                 }
                 return multimap as Dictionary<TKey, ICollection<long>>;

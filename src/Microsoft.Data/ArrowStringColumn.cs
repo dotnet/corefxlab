@@ -151,7 +151,7 @@ namespace Microsoft.Data
                     mutableOffsetsBuffer.Append(0);
                 }
                 mutableDataBuffer.EnsureCapacity(value.Length);
-                value.CopyTo(mutableDataBuffer.Span.Slice(mutableDataBuffer.Length));
+                value.CopyTo(mutableDataBuffer.RawSpan.Slice(mutableDataBuffer.Length));
                 mutableDataBuffer.Length += value.Length;
                 mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + value.Length);
             }

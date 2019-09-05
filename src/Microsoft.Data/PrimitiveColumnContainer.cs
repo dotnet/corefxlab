@@ -164,7 +164,7 @@ namespace Microsoft.Data
                 DataFrameBuffer<T> mutableLastBuffer = DataFrameBuffer<T>.GetMutableBuffer(lastBuffer);
                 int allocatable = (int)Math.Min(count, ReadOnlyDataFrameBuffer<T>.MaxCapacity);
                 mutableLastBuffer.EnsureCapacity(allocatable);
-                mutableLastBuffer.Span.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
+                mutableLastBuffer.RawSpan.Slice(lastBuffer.Length, allocatable).Fill(value ?? default);
                 mutableLastBuffer.Length += allocatable;
                 Length += allocatable;
 
@@ -390,7 +390,7 @@ namespace Microsoft.Data
             {
                 DataFrameBuffer<byte> newBuffer = new DataFrameBuffer<byte>();
                 ret.Add(newBuffer);
-                ReadOnlySpan<byte> span = buffer.ReadOnlySpan;
+                ReadOnlySpan<byte> span = buffer.RawReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(span[i]);

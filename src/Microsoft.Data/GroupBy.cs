@@ -42,11 +42,32 @@ namespace Microsoft.Data
         /// <summary>
         /// Compute the max of group values
         /// </summary>
-        /// <returns></returns>
-        public abstract DataFrame Max();
-        public abstract DataFrame Min();
-        public abstract DataFrame Product();
-        public abstract DataFrame Sum();
+        /// <param name="columnNames">The columns to find the max of. A default value finds the max of all columns</param>
+        public abstract DataFrame Max(params string[] columnNames);
+
+        /// <summary>
+        /// Compute the min of group values
+        /// </summary>
+        /// <param name="columnNames">The columns to find the min of. A default value finds the min of all columns</param>
+        public abstract DataFrame Min(params string[] columnNames);
+
+        /// <summary>
+        /// Compute the product of group values
+        /// </summary>
+        /// <param name="columnNames">The columns to find the product of. A default value finds the product of all columns</param>
+        public abstract DataFrame Product(params string[] columnNames);
+
+        /// <summary>
+        /// Compute the sum of group values
+        /// </summary>
+        /// <param name="columnNames">The columns to sum. A Default value sums up all columns</param>
+        public abstract DataFrame Sum(params string[] columnNames);
+
+        /// <summary>
+        /// Compute the mean of group values
+        /// </summary>
+        /// <param name="columnNames">The columns to find the mean of. A Default value finds the mean of all columns</param>
+        public abstract DataFrame Mean(params string[] columnNames);
     }
 
     public class GroupBy<TKey> : GroupBy
@@ -64,9 +85,9 @@ namespace Microsoft.Data
             _dataFrame = dataFrame ?? throw new ArgumentException(nameof(dataFrame));
         }
 
-        private delegate void ColumnDelegate(int columnIndex, long rowIndex, IEnumerable<long> rows, TKey key, bool firstGroup);
+        private delegate void ColumnDelegate(int columnIndex, long rowIndex, ICollection<long> rows, TKey key, bool firstGroup);
         private delegate void GroupByColumnDelegate(long rowNumber, TKey key);
-        private void EnumerateColumnsWithRows(GroupByColumnDelegate groupByColumnDelegate, ColumnDelegate columnDelegate)
+        private void EnumerateColumnsWithRows(GroupByColumnDelegate groupByColumnDelegate, ColumnDelegate columnDelegate, params string[] columnNames)
         {
             long rowNumber = 0;
             bool firstGroup = true;
@@ -74,11 +95,14 @@ namespace Microsoft.Data
             {
                 groupByColumnDelegate(rowNumber, pairs.Key);
                 ICollection<long> rows = pairs.Value;
+                IEnumerable<string> columns = columnNames;
+                if (columnNames == null || columnNames.Length == 0)
+                    columns = _dataFrame.Columns;
                 // Assuming that the dataframe has not been modified after the groupby call
-                int numberOfColumns = _dataFrame.ColumnCount;
-                for (int i = 0; i < numberOfColumns; i++)
+                foreach (string columnName in columns)
                 {
-                    columnDelegate(i, rowNumber, rows, pairs.Key, firstGroup);
+                    int columnIndex = _dataFrame.GetColumnIndex(columnName);
+                    columnDelegate(columnIndex, rowNumber, rows, pairs.Key, firstGroup);
                 }
                 firstGroup = false;
                 rowNumber++;
@@ -97,7 +121,7 @@ namespace Microsoft.Data
                 firstColumn.Resize(rowIndex + 1);
                 firstColumn[rowIndex] = key;
             });
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
@@ -142,31 +166,27 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
                 BaseColumn column = _dataFrame.Column(columnIndex);
-                long count = 0;
                 foreach (long row in rowEnumerable)
                 {
-                    if (count < 1)
+                    BaseColumn retColumn;
+                    if (firstGroup)
                     {
-                        count++;
-                        BaseColumn retColumn;
-                        if (firstGroup)
-                        {
-                            retColumn = column.Clone(empty);
-                            ret.InsertColumn(ret.ColumnCount, retColumn);
-                        }
-                        else
-                        {
-                            // Assuming non duplicate column names
-                            retColumn = ret[column.Name];
-                        }
-                        retColumn.Resize(rowIndex + 1);
-                        retColumn[rowIndex] = column[row];
+                        retColumn = column.Clone(empty);
+                        ret.InsertColumn(ret.ColumnCount, retColumn);
                     }
+                    else
+                    {
+                        // Assuming non duplicate column names
+                        retColumn = ret[column.Name];
+                    }
+                    retColumn.Resize(rowIndex + 1);
+                    retColumn[rowIndex] = column[row];
+                    break;
                 }
             });
 
@@ -186,7 +206,7 @@ namespace Microsoft.Data
             {
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
@@ -219,6 +239,8 @@ namespace Microsoft.Data
                         firstColumn[retColumnLength] = key;
                         count++;
                     }
+                    if (count == numberOfRows)
+                        break;
                 }
             });
 
@@ -238,7 +260,7 @@ namespace Microsoft.Data
             {
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
@@ -281,7 +303,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty)
+        private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty, Func<string, BaseColumn> getColumn = null)
         {
             if (columnIndex == _groupByColumnIndex)
                 return null;
@@ -289,7 +311,7 @@ namespace Microsoft.Data
             BaseColumn retColumn;
             if (firstGroup)
             {
-                retColumn = column.Clone(empty);
+                retColumn = getColumn == null ? column.Clone(empty) : getColumn(column.Name);
                 ret.InsertColumn(ret.ColumnCount, retColumn);
             }
             else
@@ -301,7 +323,7 @@ namespace Microsoft.Data
             return retColumn;
         }
 
-        public override DataFrame Max()
+        public override DataFrame Max(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -313,7 +335,7 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
@@ -323,13 +345,13 @@ namespace Microsoft.Data
                 }
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
 
             return ret;
         }
 
-        public override DataFrame Min()
+        public override DataFrame Min(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -341,7 +363,7 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
@@ -351,13 +373,13 @@ namespace Microsoft.Data
                 }
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
 
             return ret;
         }
 
-        public override DataFrame Product()
+        public override DataFrame Product(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -369,7 +391,7 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
@@ -379,13 +401,13 @@ namespace Microsoft.Data
                 }
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
 
             return ret;
         }
 
-        public override DataFrame Sum()
+        public override DataFrame Sum(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -397,7 +419,7 @@ namespace Microsoft.Data
                 firstColumn[rowIndex] = key;
             });
 
-            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, IEnumerable<long> rowEnumerable, TKey key, bool firstGroup) =>
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
                 BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
@@ -407,7 +429,36 @@ namespace Microsoft.Data
                 }
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
+            ret.SetTableRowCount(firstColumn.Length);
+
+            return ret;
+        }
+
+        public override DataFrame Mean(params string[] columnNames)
+        {
+            DataFrame ret = new DataFrame();
+            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
+            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            ret.InsertColumn(ret.ColumnCount, firstColumn);
+            GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
+            {
+                firstColumn.Resize(rowIndex + 1);
+                firstColumn[rowIndex] = key;
+            });
+
+
+            ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
+            {
+                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty, (name) => new PrimitiveColumn<double>(name));
+
+                if (!(retColumn is null))
+                {
+                    retColumn[rowIndex] = (double)Convert.ChangeType(_dataFrame.Column(columnIndex).Sum(rowEnumerable), typeof(double)) / rowEnumerable.Count;
+                }
+            });
+
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
 
             return ret;

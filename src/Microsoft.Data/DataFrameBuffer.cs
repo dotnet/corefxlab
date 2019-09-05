@@ -27,6 +27,12 @@ namespace Microsoft.Data
         public Span<T> Span
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (MemoryMarshal.Cast<byte, T>(Memory.Span)).Slice(0, Length);
+        }
+
+        public Span<T> RawSpan
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => MemoryMarshal.Cast<byte, T>(Memory.Span);
         }
 
@@ -45,9 +51,9 @@ namespace Microsoft.Data
                 throw new ArgumentException("Current buffer is full", nameof(value));
             }
             EnsureCapacity(1);
-            Span[Length] = value;
             if (Length < MaxCapacity)
                 ++Length;
+            Span[Length - 1] = value;
         }
 
         public void EnsureCapacity(int numberOfValues)
@@ -73,7 +79,7 @@ namespace Microsoft.Data
             {
                 if (index > Length)
                     throw new ArgumentOutOfRangeException(nameof(index));
-                Span[index] = value;
+                RawSpan[index] = value;
             }
         }
 

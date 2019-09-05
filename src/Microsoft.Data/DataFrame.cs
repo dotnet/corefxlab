@@ -233,6 +233,8 @@ namespace Microsoft.Data
             OnColumnsChanged();
         }
 
+        internal int GetColumnIndex(string columnName) => _table.GetColumnIndex(columnName);
+
         #region Operators
         public object this[long rowIndex, int columnIndex]
         {
