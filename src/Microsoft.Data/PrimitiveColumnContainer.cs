@@ -191,7 +191,7 @@ namespace Microsoft.Data
                 long prevLength = checked(Buffers[0].Length * b);
                 DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer);
                 Span<T> span = mutableBuffer.Span;
-                Span<byte> nullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[b]).Span;
+                Span<byte> nullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[b]).RawSpan;
                 for (int i = 0; i < span.Length; i++)
                 {
                     long curIndex = i + prevLength;
@@ -283,7 +283,7 @@ namespace Microsoft.Data
             Debug.Assert(bitMapBuffer.Length >= bitMapBufferIndex);
             if (bitMapBuffer.Length == bitMapBufferIndex)
                 bitMapBuffer.Append(0);
-            SetValidityBit(bitMapBuffer.Span, (int)index, value);
+            SetValidityBit(bitMapBuffer.RawSpan, (int)index, value);
         }
 
         private bool IsBitSet(byte curBitMap, int index)
@@ -443,7 +443,7 @@ namespace Microsoft.Data
             where U : unmanaged
         {
             ReadOnlySpan<T> thisSpan = Buffers[0].ReadOnlySpan;
-            ReadOnlySpan<byte> thisNullBitMapSpan = NullBitMapBuffers[0].ReadOnlySpan;
+            ReadOnlySpan<byte> thisNullBitMapSpan = NullBitMapBuffers[0].RawReadOnlySpan;
             long minRange = 0;
             long maxRange = DataFrameBuffer<T>.MaxCapacity;
             long maxCapacity = maxRange;
@@ -456,12 +456,12 @@ namespace Microsoft.Data
                     index = mapIndices.Buffers.Count - 1 - b;
 
                 ReadOnlyDataFrameBuffer<U> buffer = mapIndices.Buffers[index];
-                ReadOnlySpan<byte> mapIndicesNullBitMapSpan = mapIndices.NullBitMapBuffers[index].ReadOnlySpan;
+                ReadOnlySpan<byte> mapIndicesNullBitMapSpan = mapIndices.NullBitMapBuffers[index].RawReadOnlySpan;
                 ReadOnlySpan<U> mapIndicesSpan = buffer.ReadOnlySpan;
                 ReadOnlySpan<long> mapIndicesLongSpan = default;
                 ReadOnlySpan<int> mapIndicesIntSpan = default;
                 Span<T> retSpan = DataFrameBuffer<T>.GetMutableBuffer(ret.Buffers[index]).Span;
-                Span<byte> retNullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(ret.NullBitMapBuffers[index]).Span;
+                Span<byte> retNullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(ret.NullBitMapBuffers[index]).RawSpan;
                 if (type == typeof(long))
                 {
                     mapIndicesLongSpan = MemoryMarshal.Cast<U, long>(mapIndicesSpan);
