@@ -192,10 +192,9 @@ namespace Microsoft.Data
                 DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer);
                 Span<T> span = mutableBuffer.Span;
                 Span<byte> nullBitMapSpan = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[b]).Span;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
                     long curIndex = i + prevLength;
-                    //this[curIndex] = func(IsValid(curIndex) ? span[i] : default(T?), curIndex);
                     bool isValid = IsValid(ref nullBitMapSpan, i);
                     T? value = func(isValid ? span[i] : default(T?), curIndex);
                     span[i] = value.GetValueOrDefault();
@@ -515,7 +514,7 @@ namespace Microsoft.Data
                 ret.Buffers.Add(newBuffer);
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 ret.Length += buffer.Length;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(span[i]);
                 }
@@ -552,7 +551,7 @@ namespace Microsoft.Data
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(DoubleConverter<T>.Instance.GetDouble(span[i]));
                 }
@@ -572,7 +571,7 @@ namespace Microsoft.Data
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(DecimalConverter<T>.Instance.GetDecimal(span[i]));
                 }

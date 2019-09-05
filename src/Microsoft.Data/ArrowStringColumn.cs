@@ -322,6 +322,7 @@ namespace Microsoft.Data
             }
             return ret;
         }
+
         private ArrowStringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
@@ -359,10 +360,6 @@ namespace Microsoft.Data
 
         private ArrowStringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
         {
-            long? ConvertInt(long index)
-            {
-                return mapIndices[index];
-            }
             return CloneImplementation(mapIndices, invertMapIndex);
         }
 

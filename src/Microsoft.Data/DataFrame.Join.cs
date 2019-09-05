@@ -149,6 +149,8 @@ namespace Microsoft.Data
         {
             // A simple hash join 
             DataFrame ret = new DataFrame();
+            DataFrame leftDataFrame = this;
+            DataFrame rightDataFrame = other;
 
             // The final table size is not known until runtime 
             long rowNumber = 0;
@@ -197,16 +199,6 @@ namespace Microsoft.Data
                         rightRowIndices.Append(null);
                     }
                 }
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
-                }
-                for (int i = 0; i < other.ColumnCount; i++)
-                {
-                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
-                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.ColumnCount, column);
-                }
             }
             else if (joinAlgorithm == JoinAlgorithm.Right)
             {
@@ -245,16 +237,6 @@ namespace Microsoft.Data
                         leftRowIndices.Append(null);
                         rightRowIndices.Append(i);
                     }
-                }
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
-                }
-                for (int i = 0; i < other.ColumnCount; i++)
-                {
-                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
-                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.ColumnCount, column);
                 }
             }
             else if (joinAlgorithm == JoinAlgorithm.Inner)
@@ -295,16 +277,8 @@ namespace Microsoft.Data
                         }
                     }
                 }
-                for (int i = 0; i < shorterDataFrame.ColumnCount; i++)
-                {
-                    ret.InsertColumn(i, shorterDataFrame.Column(i).Clone(leftRowIndices));
-                }
-                for (int i = 0; i < longerDataFrame.ColumnCount; i++)
-                {
-                    BaseColumn column = longerDataFrame.Column(i).Clone(rightRowIndices);
-                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.ColumnCount, column);
-                }
+                leftDataFrame = shorterDataFrame;
+                rightDataFrame = longerDataFrame;
             }
             else if (joinAlgorithm == JoinAlgorithm.FullOuter)
             {
@@ -366,16 +340,19 @@ namespace Microsoft.Data
                         rightRowIndices.Append(i);
                     }
                 }
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.InsertColumn(i, Column(i).Clone(leftRowIndices));
-                }
-                for (int i = 0; i < other.ColumnCount; i++)
-                {
-                    BaseColumn column = other.Column(i).Clone(rightRowIndices);
-                    SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.ColumnCount, column);
-                }
+            }
+            else
+                throw new NotImplementedException(nameof(joinAlgorithm));
+
+            for (int i = 0; i < leftDataFrame.ColumnCount; i++)
+            {
+                ret.InsertColumn(i, leftDataFrame.Column(i).Clone(leftRowIndices));
+            }
+            for (int i = 0; i < rightDataFrame.ColumnCount; i++)
+            {
+                BaseColumn column = rightDataFrame.Column(i).Clone(rightRowIndices);
+                SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
+                ret.InsertColumn(ret.ColumnCount, column);
             }
             return ret;
         }

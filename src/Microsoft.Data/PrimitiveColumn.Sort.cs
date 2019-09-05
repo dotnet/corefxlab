@@ -64,7 +64,6 @@ namespace Microsoft.Data
                     }
                     else
                         value = _columnContainer.Buffers[bufferIndex][index];
-
                 }
                 else
                 {
