@@ -47,6 +47,16 @@ namespace Microsoft.Data
             }
         }
 
+        public IEnumerable<IReadOnlyList<string>> GetReadOnlyBuffers()
+        {
+            foreach (List<string> buffer in _stringBuffers)
+            {
+                yield return buffer;
+            }
+        }
+
+        // Not providing a mutable GetBuffers(), since that would mean strings can be deleted from the middle of a buffer and would break internal book-keeping. 
+
         private long _nullCount;
         public override long NullCount => _nullCount;
 

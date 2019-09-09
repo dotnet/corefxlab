@@ -7,8 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -44,6 +42,36 @@ namespace Microsoft.Data
         public PrimitiveColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(buffer, nullBitMap, length, nullCount);
+        }
+
+        /// <summary>
+        /// Returns a mutable memory buffer representing the underlying values
+        /// </summary>
+        /// <remarks>Null values are represented as default(T)</remarks>
+        /// <returns>IEnumerable<Memory<typeparamref name="T"/>></returns>
+        public IEnumerable<Memory<T>> GetBuffers()
+        {
+            for (int i = 0; i < _columnContainer.Buffers.Count; i++)
+            {
+                DataFrameBuffer<T> buffer = DataFrameBuffer<T>.GetMutableBuffer(_columnContainer.Buffers[i]);
+                Memory<byte> memory = buffer.Memory;
+                yield return Unsafe.As<Memory<byte>, Memory<T>>(ref memory).Slice(0, buffer.Length);
+            }
+        }
+
+        /// <summary>
+        /// Returns an immutable memory buffer representing the underlying values
+        /// </summary>
+        /// <remarks>Null values are represented as default(T)</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<typeparamref name="T"/>></returns>
+        public IEnumerable<ReadOnlyMemory<T>> GetReadOnlyBuffers()
+        {
+            for (int i = 0; i < _columnContainer.Buffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[i];
+                ReadOnlyMemory<byte> readOnlyMemory = buffer.ReadOnlyMemory;
+                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref readOnlyMemory).Slice(0, buffer.Length);
+            }
         }
 
         private IArrowType GetArrowType()

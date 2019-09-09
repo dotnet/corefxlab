@@ -175,5 +175,39 @@ namespace Microsoft.Data.Tests
             Assert.Equal(stringColumn[1], clone[1]);
         }
 
+        [Fact]
+        public void TestGetBuffers()
+        {
+            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
+            intColumn[9] = null;
+            Assert.Equal(1, intColumn.NullCount);
+            IEnumerable<Memory<int>> intBuffers = intColumn.GetBuffers();
+            foreach (var buffer in intBuffers)
+            {
+                Span<int> ints = buffer.Span;
+                ints.Fill(5);
+            }
+            Assert.Equal(1, intColumn.NullCount);
+            for (int i = 0; i < intColumn.Length - 1; i++)
+            {
+                int value = intColumn[i].Value;
+                Assert.Equal(5, value);
+            }
+            Assert.Null(intColumn[9]);
+
+            StringColumn strCol = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            strCol[9] = null;
+            Assert.Equal(1, strCol.NullCount);
+            IEnumerable<IReadOnlyList<string>> buffers = strCol.GetReadOnlyBuffers();
+            foreach (var buffer in buffers)
+            {
+                for (int i = 0; i < buffer.Count - 1; i++)
+                {
+                    var str = buffer[i];
+                    Assert.Equal(str, strCol[i]);
+                }
+                Assert.Null(buffer[buffer.Count - 1]);
+            }
+        }
     }
 }
