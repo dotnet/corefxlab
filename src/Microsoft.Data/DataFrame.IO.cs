@@ -97,7 +97,7 @@ namespace Microsoft.Data
                                 bool addIndexColumn = false)
         {
             return ReadStream(() => new StreamReader(filename),
-                              separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numRows: numRows,
+                              separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
                               guessRows: guessRows, addIndexColumn: addIndexColumn);
         }
 
@@ -110,42 +110,48 @@ namespace Microsoft.Data
         /// <param name="header">has a header or not</param>
         /// <param name="columnNames">column names (can be empty)</param>
         /// <param name="dataTypes">column types (can be empty)</param>
-        /// <param name="numRows">number of rows to read</param>
+        /// <param name="numberOfRowsToRead">number of rows to read not including the header(if present)</param>
         /// <param name="guessRows">number of rows used to guess types</param>
         /// <param name="addIndexColumn">add one column with the row index</param>
         /// <returns>DataFrame</returns>
         public static DataFrame ReadStream(Func<StreamReader> createStream,
                                 char separator = ',', bool header = true,
                                 string[] columnNames = null, Type[] dataTypes = null,
-                                long numRows = -1, int guessRows = 10, bool addIndexColumn = false)
+                                long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false)
         {
             var linesForGuessType = new List<string[]>();
             long rowline = 0;
             int numberOfColumns = 0;
 
+            if (header == true && numberOfRowsToRead != -1)
+                numberOfRowsToRead++;
+
             // First pass: schema and number of rows.
             using (var st = createStream())
             {
                 string line = st.ReadLine();
-                int nbline = 0;
-                while (line != null && (numRows == -1 || rowline < numRows))
+                while (line != null)
                 {
-                    var spl = line.Split(separator);
-                    if (header && nbline == 0)
+                    if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
                     {
-                        if (columnNames == null)
-                            columnNames = spl;
-                    }
-                    else
-                    {
-                        ++rowline;
                         if (linesForGuessType.Count < guessRows)
                         {
-                            linesForGuessType.Add(spl);
-                            numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            var spl = line.Split(separator);
+                            if (header && rowline == 0)
+                            {
+                                if (columnNames == null)
+                                    columnNames = spl;
+                            }
+                            else
+                            {
+                                linesForGuessType.Add(spl);
+                                numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            }
                         }
                     }
-                    ++nbline;
+                    ++rowline;
+                    if (rowline == numberOfRowsToRead)
+                        break;
                     line = st.ReadLine();
                 }
             }
@@ -161,17 +167,17 @@ namespace Microsoft.Data
                 Type kind = GuessKind(i, linesForGuessType);
                 if (kind == typeof(bool))
                 {
-                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames[i]);
+                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(boolColumn);
                 }
                 else if (kind == typeof(float))
                 {
-                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames[i]);
+                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(floatColumn);
                 }
                 else if (kind == typeof(string))
                 {
-                    BaseColumn stringColumn = new StringColumn(columnNames[i], 0);
+                    BaseColumn stringColumn = new StringColumn(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(stringColumn);
                 }
                 else
@@ -182,21 +188,19 @@ namespace Microsoft.Data
             using (StreamReader st = createStream())
             {
                 string line = st.ReadLine();
-                long nbline = 0;
                 rowline = 0;
-                while (line != null && (numRows == -1 || rowline < numRows))
+                while (line != null && (numberOfRowsToRead == -1 || rowline < numberOfRowsToRead))
                 {
                     var spl = line.Split(separator);
-                    if (header && nbline == 0)
+                    if (header && rowline == 0)
                     {
                         // Skips.
                     }
                     else
                     {
-                        AppendRow(columns, rowline, spl);
-                        ++rowline;
+                        AppendRow(columns, header == true ? rowline - 1 : rowline, spl);
                     }
-                    ++nbline;
+                    ++rowline;
                     line = st.ReadLine();
                 }
             }
@@ -218,7 +222,6 @@ namespace Microsoft.Data
             for (int i = 0; i < columns.Count; i++)
             {
                 BaseColumn column = columns[i];
-                column.Resize(rowIndex + 1);
                 string val = values[i];
                 Type dType = column.DataType;
                 if (dType == typeof(bool))

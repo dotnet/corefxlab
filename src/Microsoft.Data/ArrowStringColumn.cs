@@ -291,8 +291,6 @@ namespace Microsoft.Data
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
@@ -325,26 +323,23 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
+        private ArrowStringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+            where U : unmanaged
         {
             ArrowStringColumn ret = new ArrowStringColumn(Name);
-            if (mapIndices.Length > Length)
-                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-            if (invertMapIndices == false)
+            mapIndices.ApplyElementwise((U? mapIndex, long rowIndex) =>
             {
-                for (long i = 0; i < mapIndices.Length; i++)
+                if (mapIndex == null)
                 {
-                    ret.Append(GetBytes(getIndex(i).Value));
+                    ret.Append(default);
+                    return mapIndex;
                 }
-            }
-            else
-            {
-                long mapIndicesLengthIndex = mapIndices.Length - 1;
-                for (long i = 0; i < mapIndices.Length; i++)
-                {
-                    ret.Append(GetBytes(getIndex(mapIndicesLengthIndex - i).Value));
-                }
-            }
+                if (invertMapIndices)
+                    ret.Append(GetBytes(mapIndices.Length - 1 - rowIndex));
+                else
+                    ret.Append(GetBytes(rowIndex));
+                return mapIndex;
+            });
             return ret;
         }
 
@@ -360,16 +355,12 @@ namespace Microsoft.Data
                 return ret;
             }
             else
-                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndex);
+                return CloneImplementation(mapIndices, invertMapIndex);
         }
 
         private ArrowStringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
         {
-            long? ConvertInt(long index)
-            {
-                return mapIndices[index];
-            }
-            return CloneImplementation(mapIndices, ConvertInt, invertMapIndex);
+            return CloneImplementation(mapIndices, invertMapIndex);
         }
 
         public override DataFrame ValueCounts()

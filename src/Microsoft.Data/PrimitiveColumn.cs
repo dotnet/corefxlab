@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
@@ -292,8 +293,6 @@ namespace Microsoft.Data
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
-                if (mapIndices.Length > Length)
-                    throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
                 if (dataType == typeof(long))
                     clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
@@ -324,38 +323,24 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> CloneImplementation(BaseColumn mapIndices, Func<long, long?> getIndex, bool invertMapIndices = false)
+        private PrimitiveColumn<T> CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+            where U : unmanaged
         {
             if (!mapIndices.IsNumericColumn())
                 throw new ArgumentException(String.Format(Strings.MismatchedValueType, Strings.NumericColumnType), nameof(mapIndices));
 
-            if (mapIndices.Length > Length)
-                throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(mapIndices));
-
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, mapIndices.Length);
-            ret._columnContainer._modifyNullCountWhileIndexing = false;
-            if (invertMapIndices == false)
+            PrimitiveColumnContainer<T> retContainer;
+            if (mapIndices.DataType == typeof(long))
             {
-                for (long i = 0; i < mapIndices.Length; i++)
-                {
-                    T? value = _columnContainer[getIndex(i).Value];
-                    ret[i] = value;
-                    if (!value.HasValue)
-                        ret._columnContainer.NullCount++;
-                }
+                retContainer = _columnContainer.Clone(mapIndices._columnContainer, typeof(long), invertMapIndices);
+            }
+            else if (mapIndices.DataType == typeof(int))
+            {
+                retContainer = _columnContainer.Clone(mapIndices._columnContainer, typeof(int), invertMapIndices);
             }
             else
-            {
-                long mapIndicesIndex = mapIndices.Length - 1;
-                for (long i = 0; i < mapIndices.Length; i++)
-                {
-                    T? value = _columnContainer[getIndex(mapIndicesIndex - i).Value];
-                    ret[i] = value;
-                    if (!value.HasValue)
-                        ret._columnContainer.NullCount++;
-                }
-            }
-            ret._columnContainer._modifyNullCountWhileIndexing = true;
+                throw new NotImplementedException();
+            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, retContainer);
             return ret;
         }
 
@@ -368,7 +353,7 @@ namespace Microsoft.Data
             }
             else
             {
-                return CloneImplementation(mapIndices, mapIndices.GetTypedValue, invertMapIndices);
+                return CloneImplementation(mapIndices, invertMapIndices);
             }
         }
 
@@ -378,7 +363,7 @@ namespace Microsoft.Data
             {
                 return mapIndices[index];
             }
-            return CloneImplementation(mapIndices, ConvertInt, invertMapIndices);
+            return CloneImplementation(mapIndices, invertMapIndices);
         }
 
         public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)

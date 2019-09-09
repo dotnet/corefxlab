@@ -1383,6 +1383,45 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void TestApplyElementwiseNullCount()
+        {
+            DataFrame df = MakeDataFrameWithTwoColumns(10);
+            PrimitiveColumn<int> column = df["Int1"] as PrimitiveColumn<int>;
+            Assert.Equal(1, column.NullCount);
+
+            // Change all existing values to null
+            column.ApplyElementwise((int? value, long rowIndex) =>
+            {
+                if (!(value is null))
+                    return null;
+                return value;
+            });
+            Assert.Equal(column.Length, column.NullCount);
+
+            // Don't change null values
+            column.ApplyElementwise((int? value, long rowIndex) =>
+            {
+                return value;
+            });
+            Assert.Equal(column.Length, column.NullCount);
+
+            // Change all null values to real values
+            column.ApplyElementwise((int? value, long rowIndex) =>
+            {
+                return 5;
+            });
+            Assert.Equal(0, column.NullCount);
+
+            // Don't change real values
+            column.ApplyElementwise((int? value, long rowIndex) =>
+            {
+                return value;
+            });
+            Assert.Equal(0, column.NullCount);
+
+        }
+
+        [Fact]
         public void TestClone()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
