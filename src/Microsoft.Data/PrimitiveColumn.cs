@@ -45,7 +45,7 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Returns a mutable memory buffer representing the underlying values
+        /// Returns an enumerable of mutable memory buffers representing the underlying values
         /// </summary>
         /// <remarks>Null values are represented as default(T)</remarks>
         /// <returns>IEnumerable<Memory<typeparamref name="T"/>></returns>
@@ -60,7 +60,7 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Returns an immutable memory buffer representing the underlying values
+        /// Returns an enumerable of immutable memory buffers representing the underlying values
         /// </summary>
         /// <remarks>Null values are represented as default(T)</remarks>
         /// <returns>IEnumerable<ReadOnlyMemory<typeparamref name="T"/>></returns>
