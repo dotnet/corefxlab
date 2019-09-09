@@ -195,7 +195,7 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     long curIndex = i + prevLength;
-                    bool isValid = IsValid(ref nullBitMapSpan, i);
+                    bool isValid = IsValid(nullBitMapSpan, i);
                     T? value = func(isValid ? span[i] : default(T?), curIndex);
                     span[i] = value.GetValueOrDefault();
                     SetValidityBit(nullBitMapSpan, i, value != null);
@@ -204,15 +204,7 @@ namespace Microsoft.Data
         }
 
         // Faster to use when we already have a span since it avoids indexing
-        public bool IsValid(ref Span<byte> bitMapBufferSpan, int index)
-        {
-            int nullBitMapSpanIndex = index / 8;
-            byte thisBitMap = bitMapBufferSpan[nullBitMapSpanIndex];
-            return IsBitSet(thisBitMap, index);
-        }
-
-        // Faster to use when we already have a span since it avoids indexing
-        public bool IsValid(ref ReadOnlySpan<byte> bitMapBufferSpan, int index)
+        public bool IsValid(ReadOnlySpan<byte> bitMapBufferSpan, int index)
         {
             int nullBitMapSpanIndex = index / 8;
             byte thisBitMap = bitMapBufferSpan[nullBitMapSpanIndex];
@@ -477,7 +469,7 @@ namespace Microsoft.Data
                         spanIndex = buffer.Length - 1 - i;
 
                     long mapRowIndex = mapIndicesIntSpan.IsEmpty ? mapIndicesLongSpan[spanIndex] : mapIndicesIntSpan[spanIndex];
-                    bool mapRowIndexIsValid = mapIndices.IsValid(ref mapIndicesNullBitMapSpan, spanIndex);
+                    bool mapRowIndexIsValid = mapIndices.IsValid(mapIndicesNullBitMapSpan, spanIndex);
                     if (mapRowIndexIsValid && (mapRowIndex < minRange || mapRowIndex >= maxRange))
                     {
                         int bufferIndex = (int)(mapRowIndex / maxCapacity);
@@ -492,7 +484,7 @@ namespace Microsoft.Data
                     {
                         mapRowIndex -= minRange;
                         value = thisSpan[(int)mapRowIndex];
-                        isValid = IsValid(ref thisNullBitMapSpan, (int)mapRowIndex);
+                        isValid = IsValid(thisNullBitMapSpan, (int)mapRowIndex);
                     }
 
                     retSpan[i] = isValid ? value : default;

@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -339,7 +340,9 @@ namespace Microsoft.Data
                 });
             }
             else
-                throw new NotImplementedException(nameof(mapIndices.DataType));
+            {
+                Debug.Assert(false, nameof(mapIndices.DataType));
+            }
 
             return ret;
         }

@@ -42,7 +42,7 @@ namespace Microsoft.Data
                 List<int> nonNullSortIndices = new List<int>();
                 for (int i = 0; i < sortIndices.Length; i++)
                 {
-                    if (_columnContainer.IsValid(ref nullBitMapSpan, sortIndices[i]))
+                    if (_columnContainer.IsValid(nullBitMapSpan, sortIndices[i]))
                         nonNullSortIndices.Add(sortIndices[i]);
 
                 }
@@ -57,10 +57,10 @@ namespace Microsoft.Data
                 ReadOnlyMemory<T> typedBuffer = Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref buffer);
                 if (!typedBuffer.IsEmpty)
                 {
-                    bool isArray = MemoryMarshal.TryGetArray(typedBuffer, out ArraySegment<T> array);
+                    bool isArray = MemoryMarshal.TryGetArray(typedBuffer, out ArraySegment<T> arraySegment);
                     if (isArray)
                     {
-                        value = array.Array[index];
+                        value = arraySegment.Array[index + arraySegment.Offset];
                     }
                     else
                         value = _columnContainer.Buffers[bufferIndex][index];
