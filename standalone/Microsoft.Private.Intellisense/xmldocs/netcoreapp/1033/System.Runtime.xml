@@ -20093,6 +20093,8 @@ The <see cref="P:System.Nullable`1.HasValue" /> property for the current <see cr
     <member name="M:System.Range.GetOffsetAndLength(System.Int32)">
       <summary>Calculates the start offset and length of the range object using a collection length.</summary>
       <param name="length">The length of the collection that the range will be used with. <paramref name="length" /> has to be a positive value.</param>
+      <returns>The starting offset and length of the range.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="length" /> is outside the bounds of the current range.</exception>
     </member>
     <member name="P:System.Range.Start">
       <summary>Gets the inclusive start index of the <see cref="T:System.Range" />.</summary>
