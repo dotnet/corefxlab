@@ -834,7 +834,7 @@
  The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteReader" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteReader will be communicated via the returned Task Exception property.  
  This method accepts a cancellation token that can be used to request the operation to be cancelled early. Implementations may ignore this request.</summary>
       <param name="behavior">Options for statement execution and data retrieval.</param>
-      <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
@@ -853,7 +853,7 @@
       <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.  
  The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token.  Exceptions thrown by <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> will be communicated via the returned Task Exception property.  
  Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
-      <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
@@ -884,7 +884,7 @@
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)">
       <summary>Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
       <param name="behavior">One of the enumeration values that specifies the command behavior.</param>
-      <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
@@ -892,7 +892,7 @@
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Threading.CancellationToken)">
       <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />. This method propagates a notification that operations should be canceled.  
  Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
-      <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
@@ -911,7 +911,7 @@
       <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.  
  The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteScalar will be communicated via the returned Task Exception property.  
  Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
-      <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
@@ -924,7 +924,7 @@
     </member>
     <member name="M:System.Data.Common.DbCommand.PrepareAsync(System.Threading.CancellationToken)">
       <summary>Asynchronously creates a prepared (or compiled) version of the command on the data source.</summary>
-      <param name="cancellationToken" />
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.System#Data#IDbCommand#Connection">
@@ -1115,12 +1115,12 @@
     <member name="M:System.Data.Common.DbConnection.BeginTransactionAsync(System.Data.IsolationLevel,System.Threading.CancellationToken)">
       <summary>Asynchronously begins a database transaction.</summary>
       <param name="isolationLevel">One of the enumeration values that specifies the isolation level for the transaction to use.</param>
-      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is an object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.BeginTransactionAsync(System.Threading.CancellationToken)">
       <summary>Asynchronously begins a database transaction.</summary>
-      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is an object representing the new transaction.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.ChangeDatabase(System.String)">
@@ -1130,7 +1130,7 @@
     <member name="M:System.Data.Common.DbConnection.ChangeDatabaseAsync(System.String,System.Threading.CancellationToken)">
       <summary>Asynchronously changes the current database for an open connection.</summary>
       <param name="databaseName">The name of the database for the connection to use.</param>
-      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.Close">
@@ -2023,7 +2023,7 @@
       <returns>A <see cref="T:System.Data.DataTable" /> that describes the column metadata.</returns>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.Common.DbDataReader" /> is closed.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
-      <exception cref="T:System.NotSupportedException">.NET Core only: all cases.</exception>
+      <exception cref="T:System.NotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.GetStream(System.Int32)">
       <summary>Gets a stream to retrieve data from the specified column.</summary>
@@ -2892,12 +2892,20 @@
     <member name="M:System.Data.Common.DbProviderFactory.#ctor">
       <summary>Initializes a new instance of a <see cref="T:System.Data.Common.DbProviderFactory" /> class.</summary>
     </member>
-    <member name="P:System.Data.Common.DbProviderFactory.CanCreateCommandBuilder" />
-    <member name="P:System.Data.Common.DbProviderFactory.CanCreateDataAdapter" />
-    <member name="P:System.Data.Common.DbProviderFactory.CanCreateDataSourceEnumerator">
-      <summary>Specifies whether the specific <see cref="T:System.Data.Common.DbProviderFactory" /> supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class.</summary>
+    <member name="P:System.Data.Common.DbProviderFactory.CanCreateCommandBuilder">
+      <summary>Gets a value that indicates whether this <see cref="T:System.Data.Common.DbProviderFactory" /> instance supports the <see cref="T:System.Data.Common.DbCommandBuilder" /> class.</summary>
       <returns>
-        <see langword="true" /> if the instance of the <see cref="T:System.Data.Common.DbProviderFactory" /> supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class; otherwise <see langword="false" />.</returns>
+        <see langword="true" /> if this instance supports the <see cref="T:System.Data.Common.DbCommandBuilder" /> class; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.Common.DbProviderFactory.CanCreateDataAdapter">
+      <summary>Gets a value that indicates whether this <see cref="T:System.Data.Common.DbProviderFactory" /> instance supports the <see cref="T:System.Data.Common.DbDataAdapter" /> class.</summary>
+      <returns>
+        <see langword="true" /> if the instance supports the <see cref="T:System.Data.Common.DbDataAdapter" /> class; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Data.Common.DbProviderFactory.CanCreateDataSourceEnumerator">
+      <summary>Gets a value that indicates whether this <see cref="T:System.Data.Common.DbProviderFactory" /> instance supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class.</summary>
+      <returns>
+        <see langword="true" /> if the instance supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Data.Common.DbProviderFactory.CreateCommand">
       <summary>Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbCommand" /> class.</summary>
@@ -2950,7 +2958,7 @@
     </member>
     <member name="M:System.Data.Common.DbTransaction.CommitAsync(System.Threading.CancellationToken)">
       <summary>Asynchronously commits the database transaction.</summary>
-      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbTransaction.Connection">
@@ -2981,7 +2989,7 @@
     </member>
     <member name="M:System.Data.Common.DbTransaction.RollbackAsync(System.Threading.CancellationToken)">
       <summary>Asynchronously rolls back a transaction from a pending state.</summary>
-      <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+      <param name="cancellationToken">An optional token to cancel the asynchronous operation. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
       <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Data.Common.DbTransaction.System#Data#IDbTransaction#Connection">

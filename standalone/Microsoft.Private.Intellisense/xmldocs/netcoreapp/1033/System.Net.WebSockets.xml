@@ -101,7 +101,7 @@
       <summary>Receives data from the <see cref="T:System.Net.WebSockets.WebSocket" /> connection asynchronously.</summary>
       <param name="buffer">References the application buffer that is the storage location for the received data.</param>
       <param name="cancellationToken">Propagates the notification that operations should be canceled.</param>
-      <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns a <see cref="T:System.Byte" /> array containing the received data.</returns>
+      <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns a <see cref="T:System.Net.WebSockets.WebSocketReceiveResult" /> object that represents the received data.</returns>
     </member>
     <member name="M:System.Net.WebSockets.WebSocket.ReceiveAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
       <param name="buffer" />

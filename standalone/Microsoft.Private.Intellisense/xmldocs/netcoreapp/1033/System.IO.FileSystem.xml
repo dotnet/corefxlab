@@ -983,7 +983,7 @@ A network error has occurred.</exception>
     </member>
     <member name="P:System.IO.DirectoryInfo.Parent">
       <summary>Gets the parent directory of a specified subdirectory.</summary>
-      <returns>The parent directory, or <see langword="null" /> if the path is null or if the file path denotes a root (such as "\", "C:", or * "\\server\share").</returns>
+      <returns>The parent directory, or <see langword="null" /> if the path is null or if the file path denotes a root (such as \, C:\, or \\server\share).</returns>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
     <member name="P:System.IO.DirectoryInfo.Root">
@@ -992,7 +992,7 @@ A network error has occurred.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.DirectoryInfo.ToString">
-      <summary>Returns the original path that was passed by the user.</summary>
+      <summary>Returns the original path that was passed to the <see cref="T:System.IO.DirectoryInfo" /> constructor. Use the <see cref="P:System.IO.DirectoryInfo.FullName" /> or <see cref="P:System.IO.DirectoryInfo.Name" /> properties for the full path or file/directory name instead of this method.</summary>
       <returns>The original path that was passed by the user.</returns>
     </member>
     <member name="T:System.IO.Enumeration.FileSystemEntry">
@@ -1427,8 +1427,8 @@ An I/O error has occurred.</exception>
         <paramref name="path" /> is in an invalid format.</exception>
     </member>
     <member name="M:System.IO.File.Create(System.String,System.Int32)">
-      <summary>Creates or overwrites the specified file.</summary>
-      <param name="path">The name of the file.</param>
+      <summary>Creates or overwrites a file in the specified path, specifying a buffer size.</summary>
+      <param name="path">The path and name of the file to create.</param>
       <param name="bufferSize">The number of bytes buffered for reads and writes to the file.</param>
       <returns>A <see cref="T:System.IO.FileStream" /> with the specified buffer size that provides read/write access to the file specified in <paramref name="path" />.</returns>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
@@ -1447,8 +1447,8 @@ An I/O error has occurred.</exception>
         <paramref name="path" /> is in an invalid format.</exception>
     </member>
     <member name="M:System.IO.File.Create(System.String,System.Int32,System.IO.FileOptions)">
-      <summary>Creates or overwrites the specified file, specifying a buffer size and a <see cref="T:System.IO.FileOptions" /> value that describes how to create or overwrite the file.</summary>
-      <param name="path">The name of the file.</param>
+      <summary>Creates or overwrites a file in the specified path, specifying a buffer size and options that describe how to create or overwrite the file.</summary>
+      <param name="path">The path and name of the file to create.</param>
       <param name="bufferSize">The number of bytes buffered for reads and writes to the file.</param>
       <param name="options">One of the <see cref="T:System.IO.FileOptions" /> values that describes how to create or overwrite the file.</param>
       <returns>A new file with the specified buffer size.</returns>
@@ -2679,7 +2679,7 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Microsoft Windows NT or later.</exception>
     </member>
     <member name="M:System.IO.FileInfo.ToString">
-      <summary>Returns the path as a string.</summary>
+      <summary>Returns the path as a string. Use the <see cref="P:System.IO.FileInfo.Name" /> property for the full path.</summary>
       <returns>A string representing the path.</returns>
     </member>
     <member name="T:System.IO.FileSystemInfo">

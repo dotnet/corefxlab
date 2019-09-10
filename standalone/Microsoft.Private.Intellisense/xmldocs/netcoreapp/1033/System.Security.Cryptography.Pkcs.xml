@@ -307,7 +307,7 @@ The <paramref name="recipientIdentifierType" /> value is not supported.</excepti
     <member name="M:System.Security.Cryptography.Pkcs.CmsSigner.#ctor(System.Security.Cryptography.CspParameters)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsSigner" /> class from a persisted key.</summary>
       <param name="parameters">The CSP parameters to describe which signing key to use.</param>
-      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: all cases.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.CmsSigner.#ctor(System.Security.Cryptography.Pkcs.SubjectIdentifierType)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.CmsSigner" /> class with a specified subject identifier type.</summary>

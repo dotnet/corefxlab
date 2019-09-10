@@ -1392,9 +1392,6 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.Sockets.AddressFamily.NetBios">
       <summary>NetBios address.</summary>
     </member>
-    <member name="F:System.Net.Sockets.AddressFamily.Netlink">
-      <summary>Netlink address.</summary>
-    </member>
     <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
       <summary>Address for Network Designers OSI gateway-enabled protocols.</summary>
     </member>

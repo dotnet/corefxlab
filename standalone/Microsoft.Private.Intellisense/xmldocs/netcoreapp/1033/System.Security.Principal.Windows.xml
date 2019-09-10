@@ -238,8 +238,8 @@
  A Win32 error code was returned.</exception>
     </member>
     <member name="P:System.Security.Principal.NTAccount.Value">
-      <summary>Returns an uppercase string representation of this <see cref="T:System.Security.Principal.NTAccount" /> object.</summary>
-      <returns>The uppercase string representation of this <see cref="T:System.Security.Principal.NTAccount" /> object.</returns>
+      <summary>Returns a string representation of this <see cref="T:System.Security.Principal.NTAccount" /> object.</summary>
+      <returns>The string representation of this <see cref="T:System.Security.Principal.NTAccount" /> object.</returns>
     </member>
     <member name="T:System.Security.Principal.SecurityIdentifier">
       <summary>Represents a security identifier (SID) and provides marshaling and comparison operations for SIDs.</summary>

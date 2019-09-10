@@ -658,9 +658,6 @@ There was a failure while writing to the network.</exception>
     <member name="F:System.Net.Sockets.ProtocolFamily.NetBios">
       <summary>NetBIOS protocol.</summary>
     </member>
-    <member name="F:System.Net.Sockets.ProtocolFamily.Netlink">
-      <summary>Netlink protocol.</summary>
-    </member>
     <member name="F:System.Net.Sockets.ProtocolFamily.NetworkDesigners">
       <summary>Network Designers OSI gateway enabled protocol.</summary>
     </member>

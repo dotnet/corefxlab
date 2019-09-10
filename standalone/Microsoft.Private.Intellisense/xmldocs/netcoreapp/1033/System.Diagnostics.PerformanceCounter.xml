@@ -362,7 +362,6 @@
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor">
       <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class, without associating the instance with any system or custom performance counter.</summary>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String)">
       <summary>Initializes a new, read-only instance of the <see cref="T:System.Diagnostics.PerformanceCounter" /> class and associates it with the specified system or custom performance counter on the local computer. This constructor requires that the category have a single instance.</summary>
@@ -381,7 +380,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.Boolean)">
@@ -404,7 +402,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String)">
@@ -427,7 +424,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String,System.Boolean)">
@@ -456,7 +452,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.#ctor(System.String,System.String,System.String,System.String)">
@@ -483,7 +478,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.BeginInit">
@@ -493,7 +487,6 @@ The category specified is marked as multi-instance and requires the performance 
       <summary>Gets or sets the name of the performance counter category for this performance counter.</summary>
       <returns>The name of the performance counter category (performance object) with which this performance counter is associated.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Diagnostics.PerformanceCounter.CategoryName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.Close">
       <summary>Closes the performance counter and frees all the resources allocated by this performance counter instance.</summary>
@@ -507,14 +500,12 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is not associated with a performance counter.  
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CounterName">
       <summary>Gets or sets the name of the performance counter that is associated with this <see cref="T:System.Diagnostics.PerformanceCounter" /> instance.</summary>
       <returns>The name of the counter, which generally describes the quantity being counted. This name is displayed in the list of counters of the Performance Counter Manager MMC snap in's Add Counters dialog box.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Diagnostics.PerformanceCounter.CounterName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CounterType">
       <summary>Gets the counter type of the associated performance counter.</summary>
@@ -522,7 +513,6 @@ The category specified is marked as multi-instance and requires the performance 
       <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.  
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.Decrement">
@@ -534,7 +524,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounter.DefaultFileMappingSize">
       <summary>Specifies the size, in bytes, of the global memory shared by performance counters. The default size is 524,288 bytes.</summary>
@@ -551,7 +540,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.IncrementBy(System.Int64)">
       <summary>Increments or decrements the value of the associated performance counter by a specified amount through an efficient atomic operation.</summary>
@@ -563,7 +551,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.InstanceLifetime">
       <summary>Gets or sets the lifetime of a process.</summary>
@@ -580,7 +567,6 @@ The category specified is marked as multi-instance and requires the performance 
       <summary>Gets or sets the computer name for this performance counter</summary>
       <returns>The server on which the performance counter and its associated category reside.</returns>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.PerformanceCounter.MachineName" /> format is invalid.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.NextSample">
       <summary>Obtains a counter sample, and returns the raw, or uncalculated, value for it.</summary>
@@ -589,7 +575,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.NextValue">
@@ -597,7 +582,6 @@ The category specified is marked as multi-instance and requires the performance 
       <returns>The next calculated value that the system obtains for this counter.</returns>
       <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.RawValue">
@@ -609,7 +593,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.ReadOnly">
@@ -625,7 +608,6 @@ The category specified is marked as multi-instance and requires the performance 
  -or-  
  The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Me), which does not support performance counters.</exception>
     </member>
     <member name="T:System.Diagnostics.PerformanceCounterCategory">
       <summary>Represents a performance object, which defines a category of performance counters.</summary>

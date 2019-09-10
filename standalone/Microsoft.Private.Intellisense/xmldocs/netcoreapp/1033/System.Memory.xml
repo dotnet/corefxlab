@@ -953,7 +953,7 @@
     </member>
     <member name="M:System.Buffers.StandardFormat.Equals(System.Buffers.StandardFormat)">
       <summary>Returns a value that indicates whether the specified <see cref="T:System.Buffers.StandardFormat" /> is equal to the current instance.</summary>
-      <param name="other" />
+      <param name="other">The format to compare to the current instance.</param>
       <returns>
         <see langword="true" /> if the two instances are equal; otherwise, <see langword="false" />.</returns>
     </member>
@@ -1070,14 +1070,16 @@
       <returns>One of the enumeration values that indicates the status of the encoding operation.</returns>
     </member>
     <member name="M:System.Buffers.Text.Base64.GetMaxDecodedFromUtf8Length(System.Int32)">
-      <summary>Returns the maximum length (in bytes) of the result if you were to decode base-64 encoded text within a byte span of size <paramref name="length" />.</summary>
-      <param name="length" />
+      <summary>Returns the maximum length (in bytes) of the result if you were to decode base-64 encoded text within a byte span with the specified length.</summary>
+      <param name="length">The size of the byte span.</param>
+      <returns>The maximum length (in bytes) of the result.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="length" /> is less than 0.</exception>
     </member>
     <member name="M:System.Buffers.Text.Base64.GetMaxEncodedToUtf8Length(System.Int32)">
-      <summary>Returns the maximum length (in bytes) of the result if you were to encode binary data within a byte span of size <paramref name="length" />.</summary>
-      <param name="length" />
+      <summary>Returns the maximum length (in bytes) of the result if you were to encode binary data within a byte span with the specified length.</summary>
+      <param name="length">The size of the byte span.</param>
+      <returns>The maximum length (in bytes) of the result.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="length" /> is less than 0 or larger than 1610612733 (since encode inflates the data by 4/3).</exception>
     </member>
