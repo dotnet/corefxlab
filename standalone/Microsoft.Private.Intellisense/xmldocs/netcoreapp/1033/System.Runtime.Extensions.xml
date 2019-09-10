@@ -8978,7 +8978,7 @@ If y is 0 and x is 0, θ = 0.
     <member name="M:System.MathF.Log(System.Single,System.Single)">
       <summary>Returns the logarithm of a specified number in a specified base.</summary>
       <param name="x">The number whose logarithm is to be found.</param>
-      <param name="y" />
+      <param name="y">The base.</param>
       <returns>One of the values in the following table. (+Infinity denotes <see cref="F:System.Single.PositiveInfinity" />, -Infinity denotes <see cref="F:System.Single.NegativeInfinity" />, and NaN denotes <see cref="F:System.Single.NaN" />.)  
  <paramref name="x" /><paramref name="newBase" /> Return value  
 

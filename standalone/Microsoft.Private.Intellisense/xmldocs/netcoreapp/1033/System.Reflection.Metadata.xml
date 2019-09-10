@@ -3597,7 +3597,7 @@
     <member name="T:System.Reflection.Metadata.ManifestResource" />
     <member name="P:System.Reflection.Metadata.ManifestResource.Attributes">
       <summary>Gets the manifest resource attributes.</summary>
-      <returns>A bitwise combination of the enumeration values that specify the manifest resource atttributes.</returns>
+      <returns>A bitwise combination of the enumeration values that specify the manifest resource attributes.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.ManifestResource.GetCustomAttributes" />
     <member name="P:System.Reflection.Metadata.ManifestResource.Implementation">
@@ -4637,16 +4637,16 @@
       <summary>A <see cref="T:System.Double" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.Int16">
-      <summary>A <see cref="T:System.Int16" /> type.</summary>
+      <summary>An <see cref="T:System.Int16" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.Int32">
-      <summary>A <see cref="T:System.Int32" /> type.</summary>
+      <summary>An <see cref="T:System.Int32" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.Int64">
-      <summary>A <see cref="T:System.Int64" /> type.</summary>
+      <summary>An <see cref="T:System.Int64" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.IntPtr">
-      <summary>A <see cref="T:System.IntPtr" /> type.</summary>
+      <summary>An <see cref="T:System.IntPtr" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.Object">
       <summary>An <see cref="T:System.Object" /> type.</summary>
@@ -4658,7 +4658,7 @@
       <summary>A <see cref="T:System.Single" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.String">
-      <summary>An <see cref="T:System.Single" /> type.</summary>
+      <summary>A <see cref="T:System.String" /> type.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.PrimitiveTypeCode.TypedReference">
       <summary>A typed reference.</summary>

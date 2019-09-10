@@ -154,9 +154,9 @@
         <see langword="true" /> if an item was read; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Threading.Channels.ChannelReader`1.WaitToReadAsync(System.Threading.CancellationToken)">
-      <summary>Returns a <see cref="T:System.Threading.Tasks.Task`1" /> that will complete when data is available to read.</summary>
+      <summary>Returns a <see cref="T:System.Threading.Tasks.ValueTask`1" /> that will complete when data is available to read.</summary>
       <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> used to cancel the wait operation.</param>
-      <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will complete with a <see langword="true" /> result when data is available to read
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask`1" /> that will complete with a <see langword="true" /> result when data is available to read
             or with a <see langword="false" /> result when no further data will ever be available to be read.</returns>
     </member>
     <member name="T:System.Threading.Channels.ChannelWriter`1">
@@ -183,16 +183,16 @@
         <see langword="true" /> if the item was written; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Threading.Channels.ChannelWriter`1.WaitToWriteAsync(System.Threading.CancellationToken)">
-      <summary>Returns a <see cref="T:System.Threading.Tasks.Task`1" /> that will complete when space is available to write an item.</summary>
+      <summary>Returns a <see cref="T:System.Threading.Tasks.ValueTask`1" /> that will complete when space is available to write an item.</summary>
       <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> used to cancel the wait operation.</param>
-      <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will complete with a <see langword="true" /> result when space is available to write an item
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask`1" /> that will complete with a <see langword="true" /> result when space is available to write an item
             or with a <see langword="false" /> result when no further writing will be permitted.</returns>
     </member>
     <member name="M:System.Threading.Channels.ChannelWriter`1.WriteAsync(`0,System.Threading.CancellationToken)">
       <summary>Asynchronously writes an item to the channel.</summary>
       <param name="item">The value to write to the channel.</param>
       <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> used to cancel the write operation.</param>
-      <returns>A <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous write operation.</returns>
+      <returns>A <see cref="T:System.Threading.Tasks.ValueTask" /> that represents the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Threading.Channels.UnboundedChannelOptions">
       <summary>Provides options that control the behavior of unbounded <see cref="T:System.Threading.Channels.Channel`1" /> instances.</summary>

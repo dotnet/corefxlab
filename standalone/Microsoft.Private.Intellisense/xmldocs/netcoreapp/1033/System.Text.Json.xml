@@ -88,7 +88,9 @@
       <param name="reader">The reader to read.</param>
       <returns>A JsonDocument representing the value (and nested values) read from the reader.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="reader" /> contains unsupported options.</exception>
+        <paramref name="reader" /> contains unsupported options.
+-or-
+The current <paramref name="reader" /> token does not start or represent a value.</exception>
       <exception cref="T:System.Text.Json.JsonException">A value could not be read from the reader.</exception>
     </member>
     <member name="P:System.Text.Json.JsonDocument.RootElement">
@@ -102,7 +104,9 @@
       <returns>
         <see langword="true" /> if a value was read and parsed into a JsonDocument; <see langword="false" /> if the reader ran out of data while parsing. All other situations result in an exception being thrown.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="reader" /> contains unsupported options.</exception>
+        <paramref name="reader" /> contains unsupported options.
+-or-
+The current <paramref name="reader" /> token does not start or represent a value.</exception>
       <exception cref="T:System.Text.Json.JsonException">A value could not be read from the reader.</exception>
     </member>
     <member name="M:System.Text.Json.JsonDocument.WriteTo(System.Text.Json.Utf8JsonWriter)">
@@ -213,14 +217,14 @@
       <summary>Gets the value of the element as a <see cref="T:System.DateTime" />.</summary>
       <returns>The value of the element as a <see cref="T:System.DateTime" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
-      <exception cref="T:System.FormatException">The value cannot be represented as a <see cref="T:System.DateTime" />.</exception>
+      <exception cref="T:System.FormatException">The value cannot be read as a <see cref="T:System.DateTime" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.GetDateTimeOffset">
       <summary>Gets the value of the element as a <see cref="T:System.DateTimeOffset" />.</summary>
       <returns>The value of the element as a <see cref="T:System.DateTimeOffset" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
-      <exception cref="T:System.FormatException">The value cannot be represented as a <see cref="T:System.DateTimeOffset" />.</exception>
+      <exception cref="T:System.FormatException">The value cannot be read as a <see cref="T:System.DateTimeOffset" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.GetDecimal">
@@ -389,8 +393,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.Byte" />.</summary>
       <param name="value">When the method returns, contains the byte equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.Byte" />;
-    <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.Byte" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -398,8 +401,7 @@
       <summary>Attempts to represent the current JSON string as a byte array, assuming that it is Base64 encoded.</summary>
       <param name="value">If the method succeeds, contains the decoded binary representation of the Base64 text.</param>
       <returns>
-        <see langword="true" /> if the entire token value is encoded as valid Base64 text and can be successfully decoded to bytes.
-    <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the entire token value is encoded as valid Base64 text and can be successfully decoded to bytes; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -407,7 +409,7 @@
       <summary>Attempts to represent the current JSON string as a <see cref="T:System.DateTime" />.</summary>
       <param name="value">When this method returns, contains the date and time value equivalent to the current JSON string.</param>
       <returns>
-        <see langword="true" /> if the string can be represented as a <see cref="T:System.DateTime" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the string can be represented as a <see cref="T:System.DateTime" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -415,7 +417,7 @@
       <summary>Attempts to represent the current JSON string as a <see cref="T:System.DateTimeOffset" />.</summary>
       <param name="value">When this method returns, contains the date and time equivalent to the current JSON string.</param>
       <returns>
-        <see langword="true" /> if the string can be represented as a <see cref="T:System.DateTimeOffset" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the string can be represented as a <see cref="T:System.DateTimeOffset" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -423,7 +425,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.Decimal" />.</summary>
       <param name="value">When this method returns, contains the decimal equivalent of the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.Decimal" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.Decimal" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -431,7 +433,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.Double" />.</summary>
       <param name="value">When this method returns, contains a double-precision floating point value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.Double" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.Double" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -439,7 +441,7 @@
       <summary>Attempts to represent the current JSON string as a <see cref="T:System.Guid" />.</summary>
       <param name="value">When this method returns, contains the GUID equivalent to the current JSON string.</param>
       <returns>
-        <see langword="true" /> if the string can be represented as a <see cref="T:System.Guid" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the string can be represented as a <see cref="T:System.Guid" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -447,8 +449,7 @@
       <summary>Attempts to represent the current JSON number as an <see cref="T:System.Int16" />.</summary>
       <param name="value">When the method returns, contains the 16-bit integer equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as an <see cref="T:System.Int16" />,
-    <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as an <see cref="T:System.Int16" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -456,7 +457,7 @@
       <summary>Attempts to represent the current JSON number as an <see cref="T:System.Int32" />.</summary>
       <param name="value">When this method returns, contains the 32-biut integer value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as an <see cref="T:System.Int32" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as an <see cref="T:System.Int32" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -464,7 +465,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.Int64" />.</summary>
       <param name="value">When this method returns, contains the 64-bit integer value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.Int64" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.Int64" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -473,7 +474,7 @@
       <param name="utf8PropertyName">The UTF-8 (with no Byte-Order-Mark (BOM)) representation of the name of the property to return.</param>
       <param name="value">Receives the value of the located property.</param>
       <returns>
-        <see langword="true" /> if the property was found, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the property was found; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Object" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -482,7 +483,7 @@
       <param name="propertyName">The name of the property to find.</param>
       <param name="value">When this method returns, contains the value of the specified property.</param>
       <returns>
-        <see langword="true" /> if the property was found, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the property was found; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Object" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -491,7 +492,7 @@
       <param name="propertyName">The name of the property to find.</param>
       <param name="value">When this method returns, contains the value of the specified property.</param>
       <returns>
-        <see langword="true" /> if the property was found, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the property was found; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Object" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="propertyName" /> is <see langword="null" />.</exception>
@@ -501,8 +502,7 @@
       <summary>Attempts to represent the current JSON number as an <see cref="T:System.SByte" />.</summary>
       <param name="value">When the method returns, contains the signed byte equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as an <see cref="T:System.SByte" />;
-    <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as an <see cref="T:System.SByte" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -510,7 +510,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.Single" />.</summary>
       <param name="value">When this method returns, contains the single-precision floating point value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.Single" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.Single" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -518,8 +518,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.UInt16" />.</summary>
       <param name="value">When the method returns, contains the unsigned 16-bit integer equivalent of the current JSON number if the conversion succeeded.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt16" />;
-    <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt16" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -527,7 +526,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.UInt32" />.</summary>
       <param name="value">When this method returns, contains unsigned 32-bit integer value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt32" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt32" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -535,7 +534,7 @@
       <summary>Attempts to represent the current JSON number as a <see cref="T:System.UInt64" />.</summary>
       <param name="value">When this method returns, contains unsigned 64-bit integer value equivalent to the current JSON number.</param>
       <returns>
-        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt64" />, <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the number can be represented as a <see cref="T:System.UInt64" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.Number" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The parent <see cref="T:System.Text.Json.JsonDocument" /> has been disposed.</exception>
     </member>
@@ -544,21 +543,21 @@
       <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
       <returns>
         <see langword="true" /> if the string value of this element has the same UTF-8 encoding as
-    <paramref name="utf8Text" />; <see langword="false" /> otherwise.</returns>
+    <paramref name="utf8Text" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.ValueEquals(System.ReadOnlySpan{System.Char})">
       <summary>Compares a specified read-only character span to the string value of this element.</summary>
       <param name="text">The text to compare against.</param>
       <returns>
-        <see langword="true" /> if the string value of this element matches <paramref name="text" />; <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the string value of this element matches <paramref name="text" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.ValueEquals(System.String)">
       <summary>Compares a specified string to the string value of this element.</summary>
       <param name="text">The text to compare against.</param>
       <returns>
-        <see langword="true" /> if the string value of this element matches <paramref name="text" />; <see langword="false" /> otherwise.</returns>
+        <see langword="true" /> if the string value of this element matches <paramref name="text" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
     </member>
     <member name="P:System.Text.Json.JsonElement.ValueKind">
@@ -792,7 +791,11 @@
       <returns>A <paramref name="returnType" /> representation of the JSON value.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="returnType" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid, <paramref name="returnType" /> is not compatible with the JSON, or when there is remaining data in the Stream.</exception>
+      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid.
+-or-
+<typeparamref name="returnType" /> is not compatible with the JSON.
+-or-
+There is remaining data in the span beyond a single JSON value.</exception>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Deserialize(System.String,System.Type,System.Text.Json.JsonSerializerOptions)">
       <summary>Parses the text representing a single JSON value into an instance of a specified type.</summary>
@@ -802,17 +805,25 @@
       <returns>A <paramref name="returnType" /> representation of the JSON value.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="json" /> or <paramref name="returnType" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid, the <paramref name="returnType" /> is not compatible with the JSON, or when there is remaining data in the Stream.</exception>
+      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid.
+-or-
+<typeparamref name="TValue" /> is not compatible with the JSON.
+-or-
+There is remaining data in the string beyond a single JSON value.</exception>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Deserialize(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
       <summary>Reads one JSON value (including objects or arrays) from the provided reader and converts it into an instance of  a specified type.</summary>
-      <param name="reader">The reader to read.</param>
+      <param name="reader">The reader to read the JSON from.</param>
       <param name="returnType">The type of the object to convert to and return.</param>
       <param name="options">Options to control the serializer behavior during reading.</param>
       <returns>A <paramref name="returnType" /> representation of the JSON value.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="returnType" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid, <paramref name="returnType" /> is not compatible with the JSON, or a value could not be read from the reader.</exception>
+      <exception cref="T:System.Text.Json.JsonException">The JSON is invalid.
+-or-
+<typeparamref name="returnType" /> is not compatible with the JSON.
+-or-
+A value could not be read from the reader.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="reader" /> is using unsupported options.</exception>
     </member>
@@ -826,7 +837,7 @@
 -or-
 <typeparamref name="TValue" /> is not compatible with the JSON.
 -or-
-There is remaining data in the stream.</exception>
+There is remaining data in the span beyond a single JSON value.</exception>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Deserialize``1(System.String,System.Text.Json.JsonSerializerOptions)">
       <summary>Parses the text representing a single JSON value into an instance of the type specified by a generic type parameter.</summary>
@@ -840,11 +851,11 @@ There is remaining data in the stream.</exception>
 -or-
 <typeparamref name="TValue" /> is not compatible with the JSON.
 -or-
-There is remaining data in the stream.</exception>
+There is remaining data in the string beyond a single JSON value.</exception>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Deserialize``1(System.Text.Json.Utf8JsonReader@,System.Text.Json.JsonSerializerOptions)">
       <summary>Reads one JSON value (including objects or arrays) from the provided reader into an instance of the type specified by a generic type parameter.</summary>
-      <param name="reader">The reader to read.</param>
+      <param name="reader">The reader to read the JSON from.</param>
       <param name="options">Options to control serializer behavior during reading.</param>
       <typeparam name="TValue">The target type of the JSON value.</typeparam>
       <returns>A <typeparamref name="TValue" /> representation of the JSON value.</returns>
@@ -852,7 +863,7 @@ There is remaining data in the stream.</exception>
 -or-
 <typeparamref name="TValue" /> is not compatible with the JSON.
 -or-
-There is remaining data in the stream.</exception>
+A value could not be read from the reader.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="reader" /> uses unsupported options.</exception>
     </member>
@@ -885,29 +896,29 @@ There is remaining data in the stream.</exception>
 There is remaining data in the stream.</exception>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Serialize(System.Object,System.Type,System.Text.Json.JsonSerializerOptions)">
-      <summary>Converts the value of a specified type into a <see cref="T:System.String" />.</summary>
+      <summary>Converts the value of a specified type into a JSON string.</summary>
       <param name="value">The value to convert.</param>
-      <param name="type">The type of the <paramref name="value" /> to convert.</param>
+      <param name="inputType">The type of the <paramref name="value" /> to convert.</param>
       <param name="options">Options to control the conversion behavior.</param>
-      <returns>The string representation of the value.</returns>
+      <returns>The JSON string representation of the value.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Serialize(System.Text.Json.Utf8JsonWriter,System.Object,System.Type,System.Text.Json.JsonSerializerOptions)">
-      <summary>Writes one JSON value (including objects or arrays) of a specified type to the provided writer.</summary>
-      <param name="writer">The JSON writer.</param>
+      <summary>Writes the JSON representation of the specified type to the provided writer.</summary>
+      <param name="writer">The JSON writer to write to.</param>
       <param name="value">The value to convert and write.</param>
-      <param name="type">The type of the <paramref name="value" /> to convert.</param>
+      <param name="inputType">The type of the <paramref name="value" /> to convert.</param>
       <param name="options">Options to control serialization behavior.</param>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Serialize``1(``0,System.Text.Json.JsonSerializerOptions)">
-      <summary>Converts the value of a type specified by a generic type parameter into a <see cref="T:System.String" />.</summary>
+      <summary>Converts the value of a type specified by a generic type parameter into a JSON string.</summary>
       <param name="value">The value to convert.</param>
       <param name="options">Options to control serialization behavior.</param>
       <typeparam name="TValue">The type of the value to serialize.</typeparam>
-      <returns>A string representation of the value.</returns>
+      <returns>A JSON string representation of the value.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.Serialize``1(System.Text.Json.Utf8JsonWriter,``0,System.Text.Json.JsonSerializerOptions)">
-      <summary>Writes one JSON value (including objects or arrays) of a type specified by a generic type parameter to the provided writer.</summary>
-      <param name="writer">A JSON writer.</param>
+      <summary>Writes the JSON representation of a type specified by a generic type parameter to the provided writer.</summary>
+      <param name="writer">A JSON writer to write to.</param>
       <param name="value">The value to convert and write.</param>
       <param name="options">Options to control serialization behavior.</param>
       <typeparam name="TValue">The type of the value to serialize.</typeparam>
@@ -916,7 +927,7 @@ There is remaining data in the stream.</exception>
       <summary>Asynchronously converts the value of a specified type to UTF-8 encoded JSON text and writes it to the specified stream.</summary>
       <param name="utf8Json">The UTF-8 stream to write to.</param>
       <param name="value">The value to convert.</param>
-      <param name="type">The type of the <paramref name="value" /> to convert.</param>
+      <param name="inputType">The type of the <paramref name="value" /> to convert.</param>
       <param name="options">Options to control serialization behavior.</param>
       <param name="cancellationToken">A token that may be used to cancel the write operation.</param>
       <returns>A task that represents the asynchronous write operation.</returns>
@@ -931,18 +942,18 @@ There is remaining data in the stream.</exception>
       <returns>A task that represents the asynchronous write operation.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(System.Object,System.Type,System.Text.Json.JsonSerializerOptions)">
-      <summary>Converts a value of the specified type into a UTF8-encoded byte array.</summary>
+      <summary>Converts a value of the specified type into a JSON string, encoded as UTF-8 bytes.</summary>
       <param name="value">The value to convert.</param>
-      <param name="type">The type of the <paramref name="value" /> to convert.</param>
+      <param name="inputType">The type of the <paramref name="value" /> to convert.</param>
       <param name="options">Options to control the conversion behavior.</param>
-      <returns>A UTF-8 representation of the value.</returns>
+      <returns>A JSON string representation of the value, encoded as UTF-8 bytes.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.SerializeToUtf8Bytes``1(``0,System.Text.Json.JsonSerializerOptions)">
-      <summary>Converts the value of a type specifed by a generic type parameter into a UTF8-encoded byte array.</summary>
+      <summary>Converts the value of a type specifed by a generic type parameter into a JSON string, encoded as UTF-8 bytes.</summary>
       <param name="value">The value to convert.</param>
       <param name="options">Options to control the conversion behavior.</param>
       <typeparam name="TValue">The type of the value.</typeparam>
-      <returns>A UTF-8 representation of the value.</returns>
+      <returns>A JSON string representation of the value, encoded as UTF-8 bytes.</returns>
     </member>
     <member name="T:System.Text.Json.JsonSerializerOptions">
       <summary>Provides options to be used with <see cref="T:System.Text.Json.JsonSerializer" />.</summary>
@@ -1064,10 +1075,10 @@ There is remaining data in the stream.</exception>
       <summary>A JSON array.</summary>
     </member>
     <member name="F:System.Text.Json.JsonValueKind.False">
-      <summary>Indicates that a value is the JSON value <see langword="false" />.</summary>
+      <summary>The JSON value false.</summary>
     </member>
     <member name="F:System.Text.Json.JsonValueKind.Null">
-      <summary>The JSON value <see langword="null" />.</summary>
+      <summary>The JSON value null.</summary>
     </member>
     <member name="F:System.Text.Json.JsonValueKind.Number">
       <summary>A JSON number.</summary>
@@ -1079,7 +1090,7 @@ There is remaining data in the stream.</exception>
       <summary>A JSON string.</summary>
     </member>
     <member name="F:System.Text.Json.JsonValueKind.True">
-      <summary>The JSON value <see langword="true" />.</summary>
+      <summary>The JSON value true.</summary>
     </member>
     <member name="F:System.Text.Json.JsonValueKind.Undefined">
       <summary>There is no value (as distinct from <see cref="F:System.Text.Json.JsonValueKind.Null" />).</summary>
@@ -1089,7 +1100,7 @@ There is remaining data in the stream.</exception>
     </member>
     <member name="P:System.Text.Json.JsonWriterOptions.Encoder">
       <summary>Gets or sets the encoder to use when escaping strings, or <see langword="null" /> to use the default encoder.</summary>
-      <returns>The JavaScript character encoding.</returns>
+      <returns>The JavaScript character encoder used to override the escaping behavior.</returns>
     </member>
     <member name="P:System.Text.Json.JsonWriterOptions.Indented">
       <summary>Gets or sets a value that indicates whether the <see cref="T:System.Text.Json.Utf8JsonWriter" /> should format the JSON output, which includes indenting nested JSON tokens, adding new lines, and adding white space between property names and values.</summary>
@@ -1215,8 +1226,10 @@ There is remaining data in the stream.</exception>
         <see langword="true" /> if the type can be converted; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Text.Json.Serialization.JsonStringEnumConverter.CreateConverter(System.Type,System.Text.Json.JsonSerializerOptions)">
-      <param name="typeToConvert" />
-      <param name="options" />
+      <summary>Creates a converter for the specified type.</summary>
+      <param name="typeToConvert">The type handled by the converter.</param>
+      <param name="options">The serialization options to use.</param>
+      <returns>A converter for which <typeparamref name="T" /> is compatible with <paramref name="typeToConvert" />.</returns>
     </member>
     <member name="T:System.Text.Json.Utf8JsonReader">
       <summary>Provides a high-performance API for forward-only, read-only access to UTF-8 encoded JSON text.</summary>
@@ -1225,25 +1238,25 @@ There is remaining data in the stream.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only sequence of UTF-8 encoded text and indicates whether the input contains all the text to process.</summary>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
       <param name="isFinalBlock">
-        <see langword="true" /> if the input sequence contains the entire data to process; <see langword="false" /> only the input span contains partial data with more data to follow.</param>
-      <param name="state">An object that contains the reader state. If this is the first call to the constructor, pass in a default state. Otherwise, capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> and pass that back.</param>
+        <see langword="true" /> to indicate that the input sequence contains the entire data to process; <see langword="false" /> to indicate that the input span contains partial data with more data to follow.</param>
+      <param name="state">An object that contains the reader state. If this is the first call to the constructor, pass in a default state. Otherwise, capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> by getting the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property and pass that back.</param>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte},System.Text.Json.JsonReaderOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only sequence of UTF-8 encoded text using the specified options.</summary>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
-      <param name="options">An object that defines customized behavior of the <see cref="T:System.Text.Json.Utf8JsonReader" /> that differs from the JSON RFC (for example how to handle comments or maximum depth allowed when reading). By default, the <see cref="T:System.Text.Json.Utf8JsonReader" /> follows the JSON RFC strictly; comments within the JSON are invalid, and the maximum depth is 64.</param>
+      <param name="options">Defines customized behavior of the <see cref="T:System.Text.Json.Utf8JsonReader" /> that differs from the JSON RFC (for example how to handle comments or maximum depth allowed when reading). By default, the <see cref="T:System.Text.Json.Utf8JsonReader" /> follows the JSON RFC strictly; comments within the JSON are invalid, and the maximum depth is 64.</param>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,System.Text.Json.JsonReaderState)">
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only span of UTF-8 encoded text and indicates whether the input contains all the text to process.</summary>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
       <param name="isFinalBlock">
-        <see langword="true" /> if the input sequence contains the entire data to process; <see langword="false" /> if the input span contains partial data with more data to follow.</param>
-      <param name="state">An object that contains the reader state. If it's the first call to the constructor, it should reflect a default state; otherwise, it should capture the state from the previous instance instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> and pass that back.</param>
+        <see langword="true" /> to indicate that the input sequence contains the entire data to process; <see langword="false" /> to indicate that the input span contains partial data with more data to follow.</param>
+      <param name="state">An object that contains the reader state. If it's the first call to the constructor, pass in the default state. Otherwise, capture the state from the previous instance instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> by getting the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property and pass that back.</param>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.ReadOnlySpan{System.Byte},System.Text.Json.JsonReaderOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only span of UTF-8 encoded text using the specified options.</summary>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
-      <param name="options">An object that defines customized behavior of the <see cref="T:System.Text.Json.Utf8JsonReader" /> that differs from the JSON RFC (for example how to handle comments or maximum depth allowed when reading). By default, the <see cref="T:System.Text.Json.Utf8JsonReader" /> follows the JSON RFC strictly; comments within the JSON are invalid, and the maximum depth is 64.</param>
+      <param name="options">Defines customized behavior of the <see cref="T:System.Text.Json.Utf8JsonReader" /> that differs from the JSON RFC (for example how to handle comments or maximum depth allowed when reading). By default, the <see cref="T:System.Text.Json.Utf8JsonReader" /> follows the JSON RFC strictly; comments within the JSON are invalid, and the maximum depth is 64.</param>
     </member>
     <member name="P:System.Text.Json.Utf8JsonReader.BytesConsumed">
       <summary>Gets the total number of bytes consumed so far by this instance of the <see cref="T:System.Text.Json.Utf8JsonReader" />.</summary>
@@ -1284,15 +1297,19 @@ The JSON token value represents a number less than <see cref="F:System.Byte.MinV
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.GetDateTime">
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.DateTime" />.</summary>
-      <returns>The date and time, if the entire UTF-8 encoded token value can be successfully parsed.</returns>
+      <returns>The date and time value, if the entire UTF-8 encoded token value can be successfully parsed.</returns>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token isn't a <see cref="F:System.Text.Json.JsonTokenType.String" />.</exception>
-      <exception cref="T:System.FormatException">The JSON token value is in an unsupported format. Only a subset of ISO 8601 formats are supported.</exception>
+      <exception cref="T:System.FormatException">The JSON token value cannot be read as a <see cref="T:System.DateTime" />.
+-or-
+The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.DateTime" /> value.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.GetDateTimeOffset">
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.DateTimeOffset" />.</summary>
-      <returns>The date and time value, if the entire UTF-8 encoded token value can be successfully parsed.</returns>
+      <returns>The date and time offset, if the entire UTF-8 encoded token value can be successfully parsed.</returns>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token isn't a <see cref="F:System.Text.Json.JsonTokenType.String" />.</exception>
-      <exception cref="T:System.FormatException">The JSON token value is in an unsupported format. Only a subset of ISO 8601 formats are supported.</exception>
+      <exception cref="T:System.FormatException">The JSON token value cannot be read as a <see cref="T:System.DateTimeOffset" />.
+-or-
+The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.DateTimeOffset" /> value.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.GetDecimal">
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.Decimal" />.</summary>
@@ -1310,7 +1327,9 @@ The JSON token value represents a number less than <see cref="F:System.Byte.MinV
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.Guid" />.</summary>
       <returns>The GUID value, if the entire UTF-8 encoded token value can be successfully parsed.</returns>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token isn't a <see cref="F:System.Text.Json.JsonTokenType.String" />.</exception>
-      <exception cref="T:System.FormatException">The JSON token value is in an unsupported format for a Guid.</exception>
+      <exception cref="T:System.FormatException">The JSON token value is in an unsupported format for a Guid.
+-or-
+The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.Guid" /> value.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.GetInt16">
       <summary>Parses the current JSON token value from the source as a <see cref="T:System.Int16" />.</summary>
@@ -1353,7 +1372,7 @@ The JSON token value represents a number less than <see cref="F:System.SByte.Min
     <member name="M:System.Text.Json.Utf8JsonReader.GetString">
       <summary>Reads the next JSON token value from the source, unescaped, and transcoded as a string.</summary>
       <returns>The token value parsed to a string, or <see langword="null" /> if <see cref="P:System.Text.Json.Utf8JsonReader.TokenType" /> is <see cref="F:System.Text.Json.JsonTokenType.Null" />.</returns>
-      <exception cref="T:System.InvalidOperationException">The JSON token value isn't a string (that is, not a <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).
+      <exception cref="T:System.InvalidOperationException">The JSON token value isn't a string (that is, not a <see cref="F:System.Text.Json.JsonTokenType.String" />, <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />, or <see cref="F:System.Text.Json.JsonTokenType.Null" />).
 -or-
 The JSON string contains invalid UTF-8 bytes or invalid UTF-16 surrogates.</exception>
     </member>
@@ -1532,11 +1551,11 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
 The current depth exceeds the recursive limit set by the maximum depth.</exception>
     </member>
     <member name="P:System.Text.Json.Utf8JsonReader.ValueSequence">
-      <summary>Gets the value of the last processed token as a <see cref="T:System.ReadOnlySpan`1" /> slice of the input payload. If the JSON is provided within a <see cref="T:System.Buffers.ReadOnlySequence`1" /> and the slice that represents the token value fits in a single segment, then <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan" /> contains the sliced value since it can be represented as a span. Otherwise, <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence" /> contains the token value.</summary>
+      <summary>Gets the raw value of the last processed token as a ReadOnlySequence&lt;byte&gt; slice of the input payload, only if the token is contained within multiple segments.</summary>
       <returns>A byte read-only sequence.</returns>
     </member>
     <member name="P:System.Text.Json.Utf8JsonReader.ValueSpan">
-      <summary>Gets the value of the last processed token as a ReadOnlySpan&lt;byte&gt; slice of the input payload. If the JSON is provided within a ReadOnlySequence&lt;byte&gt; and the slice that represents the token value fits in a single segment, then <see cref="P:System.Text.Json.Utf8JsonReader.ValueSpan" /> contains the sliced value since it can be represented as a span. Otherwise, the <see cref="P:System.Text.Json.Utf8JsonReader.ValueSequence" /> contains the token value.</summary>
+      <summary>Gets the raw value of the last processed token as a ReadOnlySpan&lt;byte&gt; slice of the input payload, if the token fits in a single segment or if the reader was constructed with a JSON payload contained in a ReadOnlySpan&lt;byte&gt;.</summary>
       <returns>A read-only span of bytes.</returns>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
@@ -1544,36 +1563,36 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
       <returns>
         <see langword="true" /> if the JSON token value in the source matches the UTF-8 encoded lookup text; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.InvalidOperationException">The JSON token that is not a string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
+      <exception cref="T:System.InvalidOperationException">The JSON token is not a JSON string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.ValueTextEquals(System.ReadOnlySpan{System.Char})">
-      <summary>Compares the UTF-8 encoded text in a read-only character span to the unescaped JSON token value in the source and returns a value that indicates whether they match.</summary>
-      <param name="text">The UTF-8 encoded text to compare against.</param>
-      <returns>
-        <see langword="true" /> if the JSON token value in the source matches the UTF-8 encoded lookup text; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.InvalidOperationException">The JSON token that is not a string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
-    </member>
-    <member name="M:System.Text.Json.Utf8JsonReader.ValueTextEquals(System.String)">
-      <summary>Compares the text in a character span to the unescaped JSON token value in the source and returns a value that indicates whether they match.</summary>
+      <summary>Compares the text in a read-only character span to the unescaped JSON token value in the source and returns a value that indicates whether they match.</summary>
       <param name="text">The text to compare against.</param>
       <returns>
         <see langword="true" /> if the JSON token value in the source matches the lookup text; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.InvalidOperationException">The JSON token that is not a string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
+      <exception cref="T:System.InvalidOperationException">The JSON token is not a JSON string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
+    </member>
+    <member name="M:System.Text.Json.Utf8JsonReader.ValueTextEquals(System.String)">
+      <summary>Compares the string text to the unescaped JSON token value in the source and returns a value that indicates whether they match.</summary>
+      <param name="text">The text to compare against.</param>
+      <returns>
+        <see langword="true" /> if the JSON token value in the source matches the lookup text; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.InvalidOperationException">The JSON token is not a JSON string (that is, it is not <see cref="F:System.Text.Json.JsonTokenType.String" /> or <see cref="F:System.Text.Json.JsonTokenType.PropertyName" />).</exception>
     </member>
     <member name="T:System.Text.Json.Utf8JsonWriter">
       <summary>Provides a high-performance API for forward-only, non-cached writing of UTF-8 encoded JSON text.</summary>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},System.Text.Json.JsonWriterOptions)">
-      <summary>Constructs a new <see cref="T:System.Text.Json.Utf8JsonWriter" /> instance with a specified <see langword="System.Buffers.IBufferWriter&lt;System.Byte&gt;" />.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonWriter" /> class using the specified <see cref="T:System.Buffers.IBufferWriter`1" /> to write the output to and customization options.</summary>
       <param name="bufferWriter">The destination for writing JSON text.</param>
-      <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonWriter" /> By default, it writes minimized JSON (with no extra whitespace) and validates that the JSON being written is structurally valid according to the JSON RFC.</param>
+      <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonWriter" />. By default, it writes minimized JSON (with no extra white space) and validates that the JSON being written is structurally valid according to the JSON RFC.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="bufferWriter" />  is <see langword="null" />.</exception>
+        <paramref name="bufferWriter" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.#ctor(System.IO.Stream,System.Text.Json.JsonWriterOptions)">
-      <summary>Constructs a new <see cref="T:System.Text.Json.Utf8JsonWriter" /> instance with a specified <paramref name="utf8Json" />.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonWriter" /> class using the specified stream to write the output to and customization options.</summary>
       <param name="utf8Json">The destination for writing JSON text.</param>
-      <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonWriter" /> By default, it writes minimized JSON (with no extra whitespace) and validates that the JSON being written is structurally valid according to the JSON RFC.</param>
+      <param name="options">Defines the customized behavior of the <see cref="T:System.Text.Json.Utf8JsonWriter" />. By default, it writes minimized JSON (with no extra white space) and validates that the JSON being written is structurally valid according to the JSON RFC.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="utf8Json" /> is <see langword="null" />.</exception>
     </member>
@@ -1607,8 +1626,8 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <exception cref="T:System.ObjectDisposedException">This instance has been disposed.</exception>
     </member>
     <member name="P:System.Text.Json.Utf8JsonWriter.Options">
-      <summary>Gets the custom behavior when writing JSON using this instance, which indicates whether to format the output while writing and whether to skip structural JSON validation.</summary>
-      <returns>An object that defines the behavior of this instance for formatting and validation.</returns>
+      <summary>Gets the custom behavior when writing JSON using this instance, which indicates whether to format the output while writing, whether to skip structural JSON validation, and which characters to escape.</summary>
+      <returns>The custom behavior of this instance of the writer for formatting, validating, and escaping.</returns>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.Reset">
       <summary>Resets the internal state of this instance so that it can be reused.</summary>
@@ -1632,21 +1651,21 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <summary>Writes the property name and raw bytes value (as a Base64 encoded JSON string) as part of a name/value pair of a JSON object.</summary>
       <param name="utf8PropertyName">The UTF-8 encoded name of the property to write.</param>
       <param name="bytes">The binary data to write as Base64 encoded text.</param>
-      <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
+      <exception cref="T:System.ArgumentException">The specified property name or value is too large.</exception>
       <exception cref="T:System.InvalidOperationException">Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteBase64String(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Byte})">
       <summary>Writes the property name and raw bytes value (as a Base64 encoded JSON string) as part of a name/value pair of a JSON object.</summary>
       <param name="propertyName">The property name of the JSON object to be transcoded and written as UTF-8.</param>
       <param name="bytes">The binary data to write as Base64 encoded text.</param>
-      <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
+      <exception cref="T:System.ArgumentException">The specified property name or value is too large.</exception>
       <exception cref="T:System.InvalidOperationException">Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteBase64String(System.String,System.ReadOnlySpan{System.Byte})">
       <summary>Writes the property name and raw bytes value (as a Base64 encoded JSON string) as part of a name/value pair of a JSON object.</summary>
       <param name="propertyName">The property name of the JSON object to be transcoded and written as UTF-8.</param>
       <param name="bytes">The binary data to write as Base64 encoded text.</param>
-      <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
+      <exception cref="T:System.ArgumentException">The specified property name or value is too large.</exception>
       <exception cref="T:System.InvalidOperationException">Validation is enabled, and this method would result in writing invalid JSON.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="propertyName" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -1654,6 +1673,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <summary>Writes the pre-encoded property name and raw bytes value (as a Base64 encoded JSON string) as part of a name/value pair of a JSON object.</summary>
       <param name="propertyName">The JSON-encoded name of the property to write.</param>
       <param name="bytes">The binary data to write as Base64 encoded text.</param>
+      <exception cref="T:System.ArgumentException">The specified value is too large.</exception>
       <exception cref="T:System.InvalidOperationException">Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteBase64StringValue(System.ReadOnlySpan{System.Byte})">
@@ -1697,21 +1717,21 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.ReadOnlySpan{System.Byte})">
       <summary>Writes a UTF-8 text value as a JSON comment.</summary>
-      <param name="utf8Value">The UTF-8 encoded value to be written as a JSON comment within /../.</param>
+      <param name="utf8Value">The UTF-8 encoded value to be written as a JSON comment within /*..*/.</param>
       <exception cref="T:System.ArgumentException">The specified value is too large.
 -or-
 <paramref name="utf8Value" /> contains a comment delimiter (that is, */).</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.ReadOnlySpan{System.Char})">
       <summary>Writes a UTF-16 text value as a JSON comment.</summary>
-      <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /../.</param>
-      <exception cref="T:System.ArgumentException">The specified value is too large OR.
+      <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /*..*/.</param>
+      <exception cref="T:System.ArgumentException">The specified value is too large.
 -or-
 <paramref name="value" /> contains a comment delimiter (that is, */).</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteCommentValue(System.String)">
       <summary>Writes a string text value as a JSON comment.</summary>
-      <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /../.</param>
+      <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within /*..*/.</param>
       <exception cref="T:System.ArgumentException">The specified value is too large.
 -or-
 <paramref name="value" /> contains a comment delimiter (that is, */).</exception>
@@ -2044,9 +2064,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON array with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1000.
-
-or -
-
+-or-
 Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject">
@@ -2084,9 +2102,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON object with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1000.
-
-or -
-
+-or-
 Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteString(System.ReadOnlySpan{System.Byte},System.DateTime)">

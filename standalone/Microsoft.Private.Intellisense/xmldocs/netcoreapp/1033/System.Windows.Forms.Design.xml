@@ -1338,11 +1338,6 @@ The number of elements in the current collection is greater than the available s
       <exception cref="T:System.ArgumentNullException">
         <paramref name="Manager" /> is <see langword="null" />.</exception>
     </member>
-    <member name="M:System.ComponentModel.Design.Serialization.CodeDomSerializerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.Serialization.CodeDomSerializerException" /> class using the specified serialization data and context.</summary>
-      <param name="info">Stores the data that was being used to serialize or deserialize the object that the <see cref="T:System.ComponentModel.Design.Serialization.CodeDomSerializer" /> was serializing or deserializing.</param>
-      <param name="context">Describes the source and destination of the stream that generated the exception, as well as a means for serialization to retain that context and an additional caller-defined context.</param>
-    </member>
     <member name="M:System.ComponentModel.Design.Serialization.CodeDomSerializerException.#ctor(System.String,System.CodeDom.CodeLinePragma)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Design.Serialization.CodeDomSerializerException" /> class using the specified message and line information.</summary>
       <param name="message">A message describing the exception.</param>

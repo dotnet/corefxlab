@@ -30924,7 +30924,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>The values of this dependency property should be saved or restored by journaling processes, or when navigating by Uniform resource identifiers (URIs).</summary>
     </member>
     <member name="F:System.Windows.FrameworkPropertyMetadataOptions.None">
-      <summary>No options are specified; the dependency property uses the default behavior of the Windows Presentation Foundation (WPF) property system.</summary>
+      <summary>No options are specified; the dependency property uses the default behavior of the WPF property system.</summary>
     </member>
     <member name="F:System.Windows.FrameworkPropertyMetadataOptions.NotDataBindable">
       <summary>Data binding to this dependency property is not allowed.</summary>

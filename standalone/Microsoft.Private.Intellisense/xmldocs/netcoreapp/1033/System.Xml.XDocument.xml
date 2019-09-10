@@ -385,8 +385,10 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XCData.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XCData" /> to the given <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XCData" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XComment">
       <summary>Represents an XML comment.</summary>
@@ -415,8 +417,9 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XComment.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XComment" /> to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XComment" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
     </member>
     <member name="T:System.Xml.Linq.XContainer">
       <summary>Represents a node that can contain other nodes.</summary>
@@ -593,19 +596,25 @@
       <returns>An <see cref="T:System.Xml.Linq.XDocument" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="stream" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously creates a new <see cref="T:System.Xml.Linq.XDocument" /> and initializes its underlying XML tree from the specified stream, optionally preserving white space.</summary>
+      <param name="stream">A stream containing the raw XML to read into the newly created <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">A set of load options.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A new XDocument containing the contents of the specified <see cref="T:System.IO.Stream" />.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="textReader" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Creates a new <see cref="T:System.Xml.Linq.XDocument" /> and initializes its underlying XML tree using the specified <see cref="T:System.IO.TextReader" /> parameter, optionally preserving white space.</summary>
+      <param name="textReader">A reader that contains the raw XML to read into the newly created <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">A set of load options.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A new XDocument containing the contents of the specified <see cref="T:System.IO.TextReader" />.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="reader" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Creates a new <see cref="T:System.Xml.Linq.XDocument" /> containing the contents of the specified <see cref="T:System.Xml.XmlReader" />.</summary>
+      <param name="reader">A reader containing the XML to be read into the new <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="options">A set of load options.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A new XDocument containing the contents of the specified <see cref="T:System.Xml.XmlReader" />.</returns>
     </member>
     <member name="P:System.Xml.Linq.XDocument.NodeType">
       <summary>Gets the node type for this node.</summary>
@@ -658,26 +667,34 @@
       <param name="writer">A <see cref="T:System.Xml.XmlWriter" /> that the <see cref="T:System.Xml.Linq.XDocument" /> will be written to.</param>
     </member>
     <member name="M:System.Xml.Linq.XDocument.SaveAsync(System.IO.Stream,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
-      <param name="stream" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Output this <see cref="T:System.Xml.Linq.XDocument" /> to a <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">The stream to write the XML to.</param>
+      <param name="options">A set of load options.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.SaveAsync(System.IO.TextWriter,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
-      <param name="textWriter" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XDocument" /> to a <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="textWriter">The text writer to output the XML to.</param>
+      <param name="options">A set of load options.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.SaveAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XDocument" /> to an <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to output the XML to.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XDocument.WriteTo(System.Xml.XmlWriter)">
       <summary>Write this document to an <see cref="T:System.Xml.XmlWriter" />.</summary>
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XDocument.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this XDocument's underlying XML tree to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to output the content of this <see cref="T:System.Xml.Linq.XDocument" />.</param>
+      <param name="cancellationToken">A cancellation token.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XDocumentType">
       <summary>Represents an XML Document Type Definition (DTD).</summary>
@@ -718,8 +735,9 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XDocumentType.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XDocumentType" /> to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XDocumentType" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
     </member>
     <member name="T:System.Xml.Linq.XElement">
       <summary>Represents an XML element.  See XElement Class Overview and the Remarks section on this page for usage information and examples.</summary>
@@ -1425,8 +1443,11 @@
       <exception cref="T:System.Xml.XmlException">The underlying <see cref="T:System.Xml.XmlReader" /> throws an exception.</exception>
     </member>
     <member name="M:System.Xml.Linq.XNode.ReadFromAsync(System.Xml.XmlReader,System.Threading.CancellationToken)">
-      <param name="reader" />
-      <param name="cancellationToken" />
+      <summary>Creates an <see cref="T:System.Xml.Linq.XNode" /> from an <see cref="T:System.Xml.XmlReader" />. The runtime type of the node is determined by the <see cref="P:System.Xml.Linq.XObject.NodeType" /> of the first node encountered in the reader.</summary>
+      <param name="reader">A reader positioned at the node to read into this <see cref="T:System.Xml.Linq.XNode" />.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>An XNode that contains the nodes read from the reader.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Xml.XmlReader" /> is not positioned on a recognized node type.</exception>
     </member>
     <member name="M:System.Xml.Linq.XNode.Remove">
       <summary>Removes this node from its parent.</summary>
@@ -1454,8 +1475,10 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XNode.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes the current node to an <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write the current node into.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XNodeDocumentOrderComparer">
       <summary>Contains functionality to compare nodes for their document order. This class cannot be inherited.</summary>
@@ -1649,8 +1672,10 @@
       <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> to write this processing instruction to.</param>
     </member>
     <member name="M:System.Xml.Linq.XProcessingInstruction.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Writes this <see cref="T:System.Xml.Linq.XProcessingInstruction" /> to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XProcessingInstruction" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XStreamingElement">
       <summary>Represents elements in an XML tree that supports deferred streaming output.</summary>
@@ -1749,8 +1774,10 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XText.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously writes this <see cref="T:System.Xml.Linq.XText" /> to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XText" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Schema.Extensions">
       <summary>This class contains the LINQ to XML extension methods for XSD validation.</summary>

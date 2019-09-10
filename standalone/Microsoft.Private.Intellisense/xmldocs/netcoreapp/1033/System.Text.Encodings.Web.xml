@@ -99,6 +99,16 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="characterCount" /> is out of range.</exception>
     </member>
+    <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)">
+      <summary>Encodes the supplied characters.</summary>
+      <param name="source">A source buffer containing the characters to encode.</param>
+      <param name="destination">The destination buffer to which the encoded form of <paramref name="source" /> will be written.</param>
+      <param name="charsConsumed">The number of characters consumed from the <paramref name="source" /> buffer.</param>
+      <param name="charsWritten">The number of characters written to the <paramref name="destination" /> buffer.</param>
+      <param name="isFinalBlock">
+        <see langword="true" /> to indicate there is no further source data that needs to be encoded; otherwise, <see langword="false" />.</param>
+      <returns>An enumeration value that describes the result of the encoding operation.</returns>
+    </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.Encode(System.String)">
       <summary>Encodes the supplied string and returns the encoded text as a new string.</summary>
       <param name="value">The string to encode.</param>
@@ -114,7 +124,7 @@
       <param name="bytesConsumed">The number of bytes consumed from the <paramref name="utf8Source" /> buffer.</param>
       <param name="bytesWritten">The number of bytes written to the <paramref name="utf8Destination" /> buffer.</param>
       <param name="isFinalBlock">
-        <see langword="true" /> if there is further source data that needs to be encoded; otherwise, <see langword="false" />.</param>
+        <see langword="true" /> to indicate there is no further source data that needs to be encoded; otherwise, <see langword="false" />.</param>
       <returns>A status code that describes the result of the encoding operation.</returns>
     </member>
     <member name="M:System.Text.Encodings.Web.TextEncoder.FindFirstCharacterToEncode(System.Char*,System.Int32)">

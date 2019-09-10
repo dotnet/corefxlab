@@ -959,6 +959,7 @@
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.IV" />
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Key" />
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.KeySize" />
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalBlockSizes" />
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalKeySizes" />
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Mode" />
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Padding" />

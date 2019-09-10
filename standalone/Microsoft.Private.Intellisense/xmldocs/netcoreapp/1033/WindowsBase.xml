@@ -7288,40 +7288,40 @@ Dispatcher processing has been disabled.</exception>
       <summary>Describes the priorities at which operations can be invoked by way of the <see cref="T:System.Windows.Threading.Dispatcher" />.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.ApplicationIdle">
-      <summary>The enumeration value is 2.  Operations are processed when the application is idle.</summary>
+      <summary>The enumeration value is 2. Operations are processed when the application is idle.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Background">
-      <summary>The enumeration value is 4.  Operations are processed after all other non-idle operations are completed.</summary>
+      <summary>The enumeration value is 4. Operations are processed after all other non-idle operations are completed.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.ContextIdle">
-      <summary>The enumeration value is 3.  Operations are processed after background operations have completed.</summary>
+      <summary>The enumeration value is 3. Operations are processed after background operations have completed.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.DataBind">
-      <summary>The enumeration value is 8.  Operations are processed at the same priority as data binding.</summary>
+      <summary>The enumeration value is 8. Operations are processed at the same priority as data binding.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Inactive">
-      <summary>The enumeration value is 0.  Operations are not processed.</summary>
+      <summary>The enumeration value is 0. Operations are not processed.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Input">
-      <summary>The enumeration value is 5.  Operations are processed at the same priority as input.</summary>
+      <summary>The enumeration value is 5. Operations are processed at the same priority as input.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Invalid">
-      <summary>The enumeration value is -1.  This is an invalid priority.</summary>
+      <summary>The enumeration value is -1. This is an invalid priority.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Loaded">
-      <summary>The enumeration value is 6.  Operations are processed when layout and render has finished but just before items at input priority are serviced. Specifically this is used when raising the Loaded event.</summary>
+      <summary>The enumeration value is 6. Operations are processed when layout and render has finished but just before items at input priority are serviced. Specifically this is used when raising the Loaded event.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Normal">
-      <summary>The enumeration value is 9.  Operations are processed at normal priority.  This is the typical application priority.</summary>
+      <summary>The enumeration value is 9. Operations are processed at normal priority. This is the typical application priority.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Render">
-      <summary>The enumeration value is 7.  Operations processed at the same priority as rendering.</summary>
+      <summary>The enumeration value is 7. Operations processed at the same priority as rendering.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.Send">
-      <summary>The enumeration value is 10.  Operations are processed before other asynchronous operations.  This is the highest priority.</summary>
+      <summary>The enumeration value is 10. Operations are processed before other asynchronous operations. This is the highest priority.</summary>
     </member>
     <member name="F:System.Windows.Threading.DispatcherPriority.SystemIdle">
-      <summary>The enumeration value is 1.  Operations are processed when the system is idle.</summary>
+      <summary>The enumeration value is 1. Operations are processed when the system is idle.</summary>
     </member>
     <member name="T:System.Windows.Threading.DispatcherPriorityAwaitable">
       <summary>Represents an awaitable object that asynchronously yields control back to the current dispatcher and provides an opportunity for the dispatcher to process other events</summary>

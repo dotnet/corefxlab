@@ -20091,11 +20091,8 @@ The <see cref="P:System.Nullable`1.HasValue" /> property for the current <see cr
       <returns>The hash code.</returns>
     </member>
     <member name="M:System.Range.GetOffsetAndLength(System.Int32)">
-      <summary>Returns a <see cref="T:System.Range.OffsetAndLength" /> instance with the starting offset and length of a range.</summary>
-      <param name="length">A positive integer that represents the length of the collection that the range will be used with.</param>
-      <returns>The starting offset and length of the range.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="length" /> is outside the bounds of the current range.</exception>
+      <summary>Calculates the start offset and length of the range object using a collection length.</summary>
+      <param name="length">The length of the collection that the range will be used with. <paramref name="length" /> has to be a positive value.</param>
     </member>
     <member name="P:System.Range.Start">
       <summary>Gets the inclusive start index of the <see cref="T:System.Range" />.</summary>
@@ -20300,6 +20297,7 @@ The <see cref="P:System.Nullable`1.HasValue" /> property for the current <see cr
       <returns>Not supported.</returns>
       <exception cref="T:System.NotSupportedException">Always thrown by this method.</exception>
     </member>
+    <member name="M:System.ReadOnlySpan`1.GetPinnableReference" />
     <member name="P:System.ReadOnlySpan`1.IsEmpty">
       <summary>Returns a value that indicates the current read-only span is empty.</summary>
       <returns>
@@ -21017,6 +21015,7 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="rawAssembly" /> was compiled with a later version.</exception>
       <exception cref="T:System.IO.FileLoadException">
         <paramref name="rawAssembly" /> cannot be loaded.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="M:System.Reflection.Assembly.ReflectionOnlyLoad(System.String)">
       <summary>Loads an assembly into the reflection-only context, given its display name.</summary>
@@ -21034,6 +21033,7 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
         <paramref name="assemblyString" /> is not a valid assembly.  
 -or-  
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="assemblyString" /> was compiled with a later version.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="M:System.Reflection.Assembly.ReflectionOnlyLoadFrom(System.String)">
       <summary>Loads an assembly into the reflection-only context, given its path.</summary>
@@ -21053,6 +21053,7 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <exception cref="T:System.IO.PathTooLongException">The assembly name exceeds the system-defined maximum length.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="assemblyFile" /> is an empty string ("").</exception>
+      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="P:System.Reflection.Assembly.SecurityRuleSet">
       <summary>Gets a value that indicates which set of security rules the common language runtime (CLR) enforces for this assembly.</summary>
@@ -42201,6 +42202,7 @@ Any element of <paramref name="typeArguments" /> is <see langword="null" />.</ex
       <exception cref="T:System.BadImageFormatException">The assembly or one of its dependencies is not valid.  
  -or-  
  The assembly was compiled with a later version of the common language runtime than the version that is currently loaded.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">.NET Core only: This member is not supported.</exception>
     </member>
     <member name="P:System.Type.StructLayoutAttribute">
       <summary>Gets a <see cref="T:System.Runtime.InteropServices.StructLayoutAttribute" /> that describes the layout of the current type.</summary>

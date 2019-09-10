@@ -5,7 +5,7 @@
   </assembly>
   <members>
     <member name="T:System.Xml.Serialization.CodeGenerationOptions">
-      <summary>Specifies various options to use when generating .NET Framework types for use with an XML Web Service.</summary>
+      <summary>Specifies various options to use when generating .NET types for use with an XML Web Service.</summary>
     </member>
     <member name="F:System.Xml.Serialization.CodeGenerationOptions.EnableDataBinding">
       <summary>Enables data binding.</summary>

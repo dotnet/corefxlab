@@ -716,7 +716,7 @@ NuGet package: System.Collections.Immutable (about immutable collections and how
       <returns>An immutable array that contains the current contents of this <see cref="T:System.Collections.Immutable.ImmutableArray`1.Builder" />.</returns>
     </member>
     <member name="M:System.Collections.Immutable.ImmutableArray`1.CastArray``1">
-      <summary>Initializes a new instance of the <see cref="T:System.Collections.Immutable.ImmutableArray`1" /> struct by casting the underlying             array to an array of type <paramref name="TOther" />.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Collections.Immutable.ImmutableArray`1" /> struct by casting the underlying array to an array of type .</summary>
       <typeparam name="TOther" />
       <exception cref="T:System.InvalidCastException">Thrown if the cast is illegal.</exception>
     </member>

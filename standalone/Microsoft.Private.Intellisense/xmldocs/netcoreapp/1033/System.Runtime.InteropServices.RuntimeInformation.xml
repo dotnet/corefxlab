@@ -46,7 +46,7 @@
     </member>
     <member name="P:System.Runtime.InteropServices.OSPlatform.FreeBSD">
       <summary>Gets an object that represents the FreeBSD operating system.</summary>
-      <returns>An object that represents the Linux operating system.</returns>
+      <returns>An object that represents the FreeBSD operating system.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.OSPlatform.GetHashCode">
       <summary>Returns the hash code for this instance.</summary>
