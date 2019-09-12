@@ -214,12 +214,12 @@ namespace Microsoft.Data
             return ret;
         }
 
-        protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableStringColumn);
+        protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableColumn);
 
         public new string this[long rowIndex]
         {
             get => GetValueImplementation(rowIndex);
-            set => throw new NotSupportedException(Strings.ImmutableStringColumn);
+            set => throw new NotSupportedException(Strings.ImmutableColumn);
         }
 
         public new List<string> this[long startIndex, int length]

@@ -90,9 +90,9 @@ namespace Microsoft.Data {
         /// <summary>
         ///   Looks up a localized string similar to Column is immutable.
         /// </summary>
-        public static string ImmutableStringColumn {
+        public static string ImmutableColumn {
             get {
-                return ResourceManager.GetString("ImmutableStringColumn", resourceCulture);
+                return ResourceManager.GetString("ImmutableColumn", resourceCulture);
             }
         }
         

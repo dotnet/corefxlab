@@ -209,5 +209,30 @@ namespace Microsoft.Data.Tests
                 Assert.Null(buffer[buffer.Count - 1]);
             }
         }
+
+        [Fact]
+        public void TestGetReadOnlyBuffers()
+        {
+            RecordBatch recordBatch = new RecordBatch.Builder()
+                .Append("Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10)))).Build();
+            DataFrame df = new DataFrame(recordBatch);
+
+            PrimitiveColumn<int> column = df["Column1"] as PrimitiveColumn<int>;
+
+            Assert.Throws<ArgumentException>(() => column.GetBuffers().First());
+
+            IEnumerable<ReadOnlyMemory<int>> buffers = column.GetReadOnlyBuffers();
+            long i = 0;
+            foreach (ReadOnlyMemory<int> buffer in buffers)
+            {
+                ReadOnlySpan<int> span = buffer.Span;
+                for (int j = 0; j < span.Length; j++)
+                {
+                    // Each buffer has a max length of int.MaxValue
+                    Assert.Equal(span[j], column[j + i * int.MaxValue]);
+                }
+                i++;
+            }
+        }
     }
 }

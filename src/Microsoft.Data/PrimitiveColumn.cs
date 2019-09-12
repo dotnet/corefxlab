@@ -53,9 +53,12 @@ namespace Microsoft.Data
         {
             for (int i = 0; i < _columnContainer.Buffers.Count; i++)
             {
-                DataFrameBuffer<T> buffer = DataFrameBuffer<T>.GetMutableBuffer(_columnContainer.Buffers[i]);
-                Memory<byte> memory = buffer.Memory;
-                yield return Unsafe.As<Memory<byte>, Memory<T>>(ref memory).Slice(0, buffer.Length);
+                ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[i];
+                DataFrameBuffer<T> mutableBuffer = buffer as DataFrameBuffer<T>;
+                if (mutableBuffer is null)
+                    throw new ArgumentException(Strings.ImmutableColumn);
+                Memory<byte> memory = mutableBuffer.Memory;
+                yield return Unsafe.As<Memory<byte>, Memory<T>>(ref memory).Slice(0, mutableBuffer.Length);
             }
         }
 
