@@ -176,41 +176,6 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
-        public void TestGetBuffers()
-        {
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
-            intColumn[9] = null;
-            Assert.Equal(1, intColumn.NullCount);
-            IEnumerable<Tuple<Memory<int>, ReadOnlyMemory<byte>>> intBuffers = intColumn.GetBuffers();
-            foreach (Tuple<Memory<int>, ReadOnlyMemory<byte>> buffers in intBuffers)
-            {
-                Span<int> ints = buffers.Item1.Span;
-                ints.Fill(5);
-            }
-            Assert.Equal(1, intColumn.NullCount);
-            for (int i = 0; i < intColumn.Length - 1; i++)
-            {
-                int value = intColumn[i].Value;
-                Assert.Equal(5, value);
-            }
-            Assert.Null(intColumn[9]);
-
-            StringColumn strCol = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
-            strCol[9] = null;
-            Assert.Equal(1, strCol.NullCount);
-            IEnumerable<IReadOnlyList<string>> stringBuffers = strCol.GetReadOnlyBuffers();
-            foreach (var buffer in stringBuffers)
-            {
-                for (int i = 0; i < buffer.Count - 1; i++)
-                {
-                    var str = buffer[i];
-                    Assert.Equal(str, strCol[i]);
-                }
-                Assert.Null(buffer[buffer.Count - 1]);
-            }
-        }
-
-        [Fact]
         public void TestGetReadOnlyBuffers()
         {
             RecordBatch recordBatch = new RecordBatch.Builder()
@@ -218,8 +183,6 @@ namespace Microsoft.Data.Tests
             DataFrame df = new DataFrame(recordBatch);
 
             PrimitiveColumn<int> column = df["Column1"] as PrimitiveColumn<int>;
-
-            Assert.Throws<ArgumentException>(() => column.GetBuffers().First());
 
             IEnumerable<Tuple<ReadOnlyMemory<int>, ReadOnlyMemory<byte>>> buffers = column.GetReadOnlyBuffers();
             long i = 0;
