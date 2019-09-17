@@ -181,10 +181,10 @@ namespace Microsoft.Data.Tests
             PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             intColumn[9] = null;
             Assert.Equal(1, intColumn.NullCount);
-            IEnumerable<Memory<int>> intBuffers = intColumn.GetBuffers();
-            foreach (var buffer in intBuffers)
+            IEnumerable<Tuple<Memory<int>, ReadOnlyMemory<byte>>> intBuffers = intColumn.GetBuffers();
+            foreach (Tuple<Memory<int>, ReadOnlyMemory<byte>> buffers in intBuffers)
             {
-                Span<int> ints = buffer.Span;
+                Span<int> ints = buffers.Item1.Span;
                 ints.Fill(5);
             }
             Assert.Equal(1, intColumn.NullCount);
@@ -198,8 +198,8 @@ namespace Microsoft.Data.Tests
             StringColumn strCol = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             strCol[9] = null;
             Assert.Equal(1, strCol.NullCount);
-            IEnumerable<IReadOnlyList<string>> buffers = strCol.GetReadOnlyBuffers();
-            foreach (var buffer in buffers)
+            IEnumerable<IReadOnlyList<string>> stringBuffers = strCol.GetReadOnlyBuffers();
+            foreach (var buffer in stringBuffers)
             {
                 for (int i = 0; i < buffer.Count - 1; i++)
                 {
@@ -221,11 +221,11 @@ namespace Microsoft.Data.Tests
 
             Assert.Throws<ArgumentException>(() => column.GetBuffers().First());
 
-            IEnumerable<ReadOnlyMemory<int>> buffers = column.GetReadOnlyBuffers();
+            IEnumerable<Tuple<ReadOnlyMemory<int>, ReadOnlyMemory<byte>>> buffers = column.GetReadOnlyBuffers();
             long i = 0;
-            foreach (ReadOnlyMemory<int> buffer in buffers)
+            foreach (Tuple<ReadOnlyMemory<int>, ReadOnlyMemory<byte>> buffer in buffers)
             {
-                ReadOnlySpan<int> span = buffer.Span;
+                ReadOnlySpan<int> span = buffer.Item1.Span;
                 for (int j = 0; j < span.Length; j++)
                 {
                     // Each buffer has a max length of int.MaxValue
