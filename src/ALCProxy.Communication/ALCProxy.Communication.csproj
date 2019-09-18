@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Communication layer of ALCProxy API, use this directly if making different versions of the Client/Server setup for ALCProxy.Proxy</Description>
     <TargetFramework>netcoreapp3.0</TargetFramework>

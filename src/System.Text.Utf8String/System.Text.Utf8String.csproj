@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Efficient UTF-8 String Manipulation and Storage.</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>

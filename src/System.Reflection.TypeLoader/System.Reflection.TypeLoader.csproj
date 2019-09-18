@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>.NET Core Type Loader</Description>
     <!-- System.Reflection.TypeLoader.dll has two build configurations: NetCore and NetStandard. The functional difference is that the NetCore

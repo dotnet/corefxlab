@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Date and Time helper classes</Description>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>

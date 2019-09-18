@@ -21,9 +21,9 @@ CMT,1,1,474,1.5,CRD,8
 CMT,1,1,637,1.4,CRD,8.5
 CMT,1,1,181,0.6,CSH,4.5";
 
-            Stream GetStream(string data)
+            Stream GetStream(string streamData)
             {
-                return new MemoryStream(Encoding.Default.GetBytes(data));
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
             DataFrame df = DataFrame.ReadStream(() => new StreamReader(GetStream(data)));
             Assert.Equal(4, df.RowCount);
@@ -44,9 +44,9 @@ CMT,1,1,474,1.5,CRD,8
 CMT,1,1,637,1.4,CRD,8.5
 CMT,1,1,181,0.6,CSH,4.5";
 
-            Stream GetStream(string data)
+            Stream GetStream(string streamData)
             {
-                return new MemoryStream(Encoding.Default.GetBytes(data));
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
             DataFrame df = DataFrame.ReadStream(() => new StreamReader(GetStream(data)), header: false);
             Assert.Equal(4, df.RowCount);

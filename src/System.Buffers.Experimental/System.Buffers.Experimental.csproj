@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Pool of unmanaged Span&lt;byte&gt; values</Description>
     <TargetFramework>netstandard1.3</TargetFramework>

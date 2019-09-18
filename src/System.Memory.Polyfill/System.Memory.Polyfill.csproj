@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Adapters for Span APIs</Description>
     <TargetFrameworks>netstandard1.3;netcoreapp2.1</TargetFrameworks>

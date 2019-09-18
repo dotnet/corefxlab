@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Unicode Case Folding.</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
