@@ -45,21 +45,34 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable memory buffers(and its bit maps) representing the underlying values
+        /// Returns an enumerable of immutable memory buffers representing the underlying values
         /// </summary>
-        /// <remarks>Null values are encoded in the returned ReadOnlyMemory<byte> in the Apache Arrow format</remarks>
-        /// <returns>IEnumerable<Tuple<ReadOnlyMemory<typeparamref name="T"/>, ReadOnlyMemory<byte>>></returns>
-        public IEnumerable<Tuple<ReadOnlyMemory<T>, ReadOnlyMemory<byte>>> GetReadOnlyBuffers()
+        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<typeparamref name="T"/>></returns>
+        public IEnumerable<ReadOnlyMemory<T>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _columnContainer.Buffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[i];
                 ReadOnlyMemory<byte> readOnlyMemory = buffer.ReadOnlyMemory;
 
-                ReadOnlyDataFrameBuffer<byte> nullBitMapBuffer = _columnContainer.NullBitMapBuffers[i];
-                ReadOnlyMemory<byte> nullMemory = nullBitMapBuffer.ReadOnlyMemory;
+                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref readOnlyMemory).Slice(0, buffer.Length);
+            }
+        }
 
-                yield return Tuple.Create(Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref readOnlyMemory).Slice(0, buffer.Length), nullMemory);
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Each ReadOnlyMemory<byte> encodes the null values for its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
+        {
+            for (int i = 0; i < _columnContainer.NullBitMapBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _columnContainer.NullBitMapBuffers[i];
+                ReadOnlyMemory<byte> nullBitMap = buffer.ReadOnlyMemory;
+
+                yield return nullBitMap;
             }
         }
 

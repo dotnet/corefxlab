@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Apache.Arrow;
@@ -115,6 +116,55 @@ namespace Microsoft.Data
                 newBitMap = (byte)(curBitMap & (byte)~(1 << (int)((uint)indexInBuffer & 7)));
             }
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable buffers representing the underlying values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
+        {
+            for (int i = 0; i < _dataBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _dataBuffers[i];
+                ReadOnlyMemory<byte> data = buffer.ReadOnlyMemory;
+
+                yield return data;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Each ReadOnlyMemory<byte> encodes the null values for its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
+        {
+            for (int i = 0; i < _nullBitMapBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _nullBitMapBuffers[i];
+                ReadOnlyMemory<byte> nullBitMap = buffer.ReadOnlyMemory;
+
+                yield return nullBitMap;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<int> representing offsets into its corresponding Data buffer.
+        /// The Apache Arrow format specifies how the offset buffer encodes the length of each string in the Data buffer
+        /// </summary>
+        /// <returns>IEnumerable<ReadOnlyMemory<int>></returns>
+        public IEnumerable<ReadOnlyMemory<int>> GetReadOnlyOffsetsBuffers()
+        {
+            for (int i = 0; i < _offsetsBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<int> buffer = _offsetsBuffers[i];
+                ReadOnlyMemory<byte> offsetBuffer = buffer.ReadOnlyMemory;
+
+                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<int>>(ref offsetBuffer).Slice(0, buffer.Length);
+            }
         }
 
         // This is an immutable column, however this method exists to support Clone(). Keep this method private

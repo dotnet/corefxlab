@@ -176,7 +176,7 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
-        public void TestGetReadOnlyBuffers()
+        public void TestPrimitiveColumnGetReadOnlyBuffers()
         {
             RecordBatch recordBatch = new RecordBatch.Builder()
                 .Append("Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10)))).Build();
@@ -184,17 +184,83 @@ namespace Microsoft.Data.Tests
 
             PrimitiveColumn<int> column = df["Column1"] as PrimitiveColumn<int>;
 
-            IEnumerable<Tuple<ReadOnlyMemory<int>, ReadOnlyMemory<byte>>> buffers = column.GetReadOnlyBuffers();
+            IEnumerable<ReadOnlyMemory<int>> buffers = column.GetReadOnlyDataBuffers();
+            IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();
+
             long i = 0;
-            foreach (Tuple<ReadOnlyMemory<int>, ReadOnlyMemory<byte>> buffer in buffers)
+            using (IEnumerator<ReadOnlyMemory<int>> bufferEnumerator = buffers.GetEnumerator())
+            using (IEnumerator<ReadOnlyMemory<byte>> nullBitMapsEnumerator = nullBitMaps.GetEnumerator())
             {
-                ReadOnlySpan<int> span = buffer.Item1.Span;
-                for (int j = 0; j < span.Length; j++)
+                while (bufferEnumerator.MoveNext() && nullBitMapsEnumerator.MoveNext())
                 {
-                    // Each buffer has a max length of int.MaxValue
-                    Assert.Equal(span[j], column[j + i * int.MaxValue]);
+                    ReadOnlyMemory<int> dataBuffer = bufferEnumerator.Current;
+                    ReadOnlyMemory<byte> nullBitMap = nullBitMapsEnumerator.Current;
+
+                    ReadOnlySpan<int> span = dataBuffer.Span;
+                    for (int j = 0; j < span.Length; j++)
+                    {
+                        // Each buffer has a max length of int.MaxValue
+                        Assert.Equal(span[j], column[j + i * int.MaxValue]);
+                    }
+
+                    bool GetBit(byte curBitMap, int index)
+                    {
+                        return ((curBitMap >> (index & 7)) & 1) != 0;
+                    }
+                    ReadOnlySpan<byte> bitMapSpan = nullBitMap.Span;
+                    // No nulls in this column, so each bit must be set
+                    for (int j = 0; j < bitMapSpan.Length; j++)
+                    {
+                        for (int k = 0; k < 8; k++)
+                        {
+                            Assert.True(GetBit(bitMapSpan[j], k));
+                        }
+                    }
                 }
                 i++;
+            }
+        }
+        
+        [Fact]
+        public void TestArrowStringColumnGetReadOnlyBuffers()
+        {
+
+            // Test ArrowStringColumn.
+            StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
+            Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
+            Memory<byte> nullMemory = new byte[] { 1 };
+            Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
+
+            ArrowStringColumn column = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+
+            IEnumerable<ReadOnlyMemory<byte>> dataBuffers = column.GetReadOnlyDataBuffers();
+            IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();
+            IEnumerable<ReadOnlyMemory<int>> offsetsBuffers = column.GetReadOnlyOffsetsBuffers();
+
+            using (IEnumerator<ReadOnlyMemory<byte>> bufferEnumerator = dataBuffers.GetEnumerator())
+            using (IEnumerator<ReadOnlyMemory<int>> offsetsEnumerator = offsetsBuffers.GetEnumerator())
+            using (IEnumerator<ReadOnlyMemory<byte>> nullBitMapsEnumerator = nullBitMaps.GetEnumerator())
+            {
+                while (bufferEnumerator.MoveNext() && nullBitMapsEnumerator.MoveNext() && offsetsEnumerator.MoveNext())
+                {
+                    ReadOnlyMemory<byte> dataBuffer = bufferEnumerator.Current;
+                    ReadOnlyMemory<byte> nullBitMap = nullBitMapsEnumerator.Current;
+                    ReadOnlyMemory<int> offsets = offsetsEnumerator.Current;
+
+                    ReadOnlySpan<byte> dataSpan = dataBuffer.Span;
+                    ReadOnlySpan<int> offsetsSpan = offsets.Span;
+                    int dataStart = 0;
+                    for (int j = 1; j < offsetsSpan.Length; j++)
+                    {
+                        int length = offsetsSpan[j] - offsetsSpan[j - 1];
+                        ReadOnlySpan<byte> str = dataSpan.Slice(dataStart, length);
+                        ReadOnlySpan<byte> columnStr = dataMemory.Span.Slice(dataStart, length);
+                        Assert.Equal(str.Length, columnStr.Length);
+                        for (int s = 0; s < str.Length; s++)
+                            Assert.Equal(str[s], columnStr[s]);
+                        dataStart = length;
+                    }
+                }
             }
         }
     }
