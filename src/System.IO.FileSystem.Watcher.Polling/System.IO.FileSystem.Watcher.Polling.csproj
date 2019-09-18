@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Polling file system watcher</Description>
     <TargetFramework>netcoreapp2.1</TargetFramework>

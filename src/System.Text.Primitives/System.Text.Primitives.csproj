@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Efficient parsing, formatting, and encoding APIs</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>

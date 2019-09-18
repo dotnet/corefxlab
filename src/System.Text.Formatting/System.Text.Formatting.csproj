@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Non-allocating formatting library</Description>
     <TargetFramework>netstandard1.3</TargetFramework>

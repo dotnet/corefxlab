@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
     <TargetFramework>netstandard1.3</TargetFramework>

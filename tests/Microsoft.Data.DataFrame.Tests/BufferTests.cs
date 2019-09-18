@@ -74,9 +74,9 @@ namespace Microsoft.Data.Tests
             intColumn.Append(3);
             Assert.Equal(0, intColumn[0]);
             Assert.Equal(1, intColumn[1]);
-            Assert.Equal(null, intColumn[2]);
+            Assert.Null(intColumn[2]);
             Assert.Equal(2, intColumn[3]);
-            Assert.Equal(null, intColumn[4]);
+            Assert.Null(intColumn[4]);
             Assert.Equal(3, intColumn[5]);
 
         }

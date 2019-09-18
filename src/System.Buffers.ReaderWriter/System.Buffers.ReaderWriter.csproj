@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Buffer Readers, Writers, and Transformations</Description>
     <TargetFramework>netstandard1.1</TargetFramework>

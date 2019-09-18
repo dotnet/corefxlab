@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Main surface area of ALCProxy API, use this to create proxies across AssemblyLoadContexts</Description>
     <TargetFramework>netcoreapp3.0</TargetFramework>

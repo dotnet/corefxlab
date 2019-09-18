@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>.NET Core Metadata Reader</Description>
     <TargetFramework>netstandard2.0</TargetFramework>

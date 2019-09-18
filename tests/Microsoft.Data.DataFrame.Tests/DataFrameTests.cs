@@ -1020,9 +1020,9 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestGoupByDifferentColumnTypes()
         {
-            void GroupCountAndAssert(DataFrame df)
+            void GroupCountAndAssert(DataFrame frame)
             {
-                DataFrame grouped = df.GroupBy("Column1").Count();
+                DataFrame grouped = frame.GroupBy("Column1").Count();
                 Assert.Equal(2, grouped.RowCount);
             }
 
