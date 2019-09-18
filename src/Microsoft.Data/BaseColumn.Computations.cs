@@ -15,7 +15,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each numeric element with its absolute numeric value
         /// </summary>
-        public virtual void Abs()
+        public virtual BaseColumn Abs(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative maximum
         /// </summary>
-        public virtual void CumulativeMax()
+        public virtual BaseColumn CumulativeMax(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -47,7 +47,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices maximum
         /// </summary>
-        public virtual void CumulativeMax(IEnumerable<long> rowIndices)
+        public virtual BaseColumn CumulativeMax(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative minimum
         /// </summary>
-        public virtual void CumulativeMin()
+        public virtual BaseColumn CumulativeMin(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +63,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices minimum
         /// </summary>
-        public virtual void CumulativeMin(IEnumerable<long> rowIndices)
+        public virtual BaseColumn CumulativeMin(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -71,7 +71,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative product
         /// </summary>
-        public virtual void CumulativeProduct()
+        public virtual BaseColumn CumulativeProduct(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -79,7 +79,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices product
         /// </summary>
-        public virtual void CumulativeProduct(IEnumerable<long> rowIndices)
+        public virtual BaseColumn CumulativeProduct(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -87,7 +87,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative sum
         /// </summary>
-        public virtual void CumulativeSum()
+        public virtual BaseColumn CumulativeSum(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -95,7 +95,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices sum
         /// </summary>
-        public virtual void CumulativeSum(IEnumerable<long> rowIndices)
+        public virtual BaseColumn CumulativeSum(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -167,7 +167,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Calls Math.Round on each value in a column
         /// </summary>
-        public virtual void Round()
+        public virtual BaseColumn Round(bool inPlace = false)
         {
             throw new NotImplementedException();
         }

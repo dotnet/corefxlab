@@ -506,7 +506,10 @@ namespace Microsoft.Data.Tests
             df["Int"][0] = -10;
             Assert.Equal(-10, df["Int"][0]);
 
-            df["Int"].Abs();
+            BaseColumn absColumn = df["Int"].Abs();
+            Assert.Equal(10, absColumn[0]);
+            Assert.Equal(-10, df["Int"][0]);
+            df["Int"].Abs(true);
             Assert.Equal(10, df["Int"][0]);
 
             Assert.Throws<NotSupportedException>(() => df["Byte"].All());
@@ -541,17 +544,29 @@ namespace Microsoft.Data.Tests
 
             // Test the computation results
             df["Double"][0] = 100.0;
-            df["Double"].CumulativeMax();
+            BaseColumn doubleColumn = df["Double"].CumulativeMax();
+            Assert.Equal(100.0, doubleColumn[9]);
+            Assert.Equal(1.0, df["Double"][1]);
+            df["Double"].CumulativeMax(true);
             Assert.Equal(100.0, df["Double"][9]);
 
             df["Float"][0] = -10.0f;
-            df["Float"].CumulativeMin();
+            BaseColumn floatColumn = df["Float"].CumulativeMin();
+            Assert.Equal(-10.0f, floatColumn[9]);
+            Assert.Equal(9.0f, df["Float"][9]);
+            df["Float"].CumulativeMin(true);
             Assert.Equal(-10.0f, df["Float"][9]);
 
-            df["Uint"].CumulativeProduct();
+            BaseColumn uintColumn = df["Uint"].CumulativeProduct();
+            Assert.Equal((uint)0, uintColumn[8]);
+            Assert.Equal((uint)8, df["Uint"][8]);
+            df["Uint"].CumulativeProduct(true);
             Assert.Equal((uint)0, df["Uint"][9]);
 
-            df["Ushort"].CumulativeSum();
+            BaseColumn ushortColumn = df["Ushort"].CumulativeSum();
+            Assert.Equal((ushort)40, ushortColumn[9]);
+            Assert.Equal((ushort)9, df["Ushort"][9]);
+            df["Ushort"].CumulativeSum(true);
             Assert.Equal((ushort)40, df["Ushort"][9]);
 
             Assert.Equal(100.0, df["Double"].Max());
@@ -561,7 +576,10 @@ namespace Microsoft.Data.Tests
 
             df["Double"][0] = 100.1;
             Assert.Equal(100.1, df["Double"][0]);
-            df["Double"].Round();
+            BaseColumn roundColumn = df["Double"].Round();
+            Assert.Equal(100.0, roundColumn[0]);
+            Assert.Equal(100.1, df["Double"][0]);
+            df["Double"].Round(true);
             Assert.Equal(100.0, df["Double"][0]);
 
             // Test that none of the numeric column types throw
@@ -1015,6 +1033,18 @@ namespace Microsoft.Data.Tests
             Assert.Equal(2, columnMin.ColumnCount);
             Assert.Equal(0, columnMin["Int"][0]);
             Assert.Equal(0, columnMin["Int"][1]);
+
+            DataFrame countIntColumn = df.GroupBy("Bool").Count("Int");
+            Assert.Equal(2, countIntColumn.ColumnCount);
+            Assert.Equal(2, countIntColumn.RowCount);
+            Assert.Equal((long)5, countIntColumn["Int"][0]);
+            Assert.Equal((long)4, countIntColumn["Int"][1]);
+
+            DataFrame firstDecimalColumn = df.GroupBy("Bool").First("Decimal");
+            Assert.Equal(2, firstDecimalColumn.ColumnCount);
+            Assert.Equal(2, firstDecimalColumn.RowCount);
+            Assert.Equal((decimal)0, firstDecimalColumn["Decimal"][0]);
+            Assert.Equal((decimal)1, firstDecimalColumn["Decimal"][1]);
         }
 
         [Fact]

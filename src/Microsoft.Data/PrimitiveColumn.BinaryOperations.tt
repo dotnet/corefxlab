@@ -21,13 +21,21 @@ namespace Microsoft.Data
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
+<# if (method.MethodType == MethodType.Binary) {#>
+        public override BaseColumn <#=method.MethodName#>(BaseColumn column, bool inPlace = false)
+<# } else { #>
         public override BaseColumn <#=method.MethodName#>(BaseColumn column)
+<# } #>
         {
             switch (column)
             {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
                 case PrimitiveColumn<<#=type.TypeName#>> <#=type.TypeName#>Column:
+<# if (method.MethodType == MethodType.Binary) {#>
+                    return <#=method.MethodName#>Implementation(column as PrimitiveColumn<<#=type.TypeName#>>, inPlace);
+<# } else { #>
                     return <#=method.MethodName#>Implementation(column as PrimitiveColumn<<#=type.TypeName#>>);
+<# } #>
 <# } #>
                 default:
                     throw new NotSupportedException();
@@ -35,30 +43,46 @@ namespace Microsoft.Data
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
+<# if (method.MethodType == MethodType.BinaryScalar) {#>
+        public override BaseColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
+<# } else {#>
         public override BaseColumn <#=method.MethodName#><U>(U value)
+<# } #>
         {
+<# if (method.MethodType == MethodType.BinaryScalar) {#>
+            return <#=method.MethodName#>Implementation(value, inPlace);
+<# } else {#>
             return <#=method.MethodName#>Implementation(value);
+<# } #>
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        public override BaseColumn <#=method.MethodName#>(int value)
+        public override BaseColumn <#=method.MethodName#>(int value, bool inPlace = false)
         {
-            return <#=method.MethodName#>Implementation(value);
+            return <#=method.MethodName#>Implementation(value, inPlace);
         }
 <# } #>
 <# } #>
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
+<# if (method.MethodType == MethodType.BinaryScalar) {#>
+        internal BaseColumn <#=method.MethodName#>Implementation<U>(U value, bool inPlace)
+<# } else {#>
         internal BaseColumn <#=method.MethodName#>Implementation<U>(U value)
+<# } #>
             where U : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
+<# if (method.MethodType == MethodType.Binary) {#>
+        internal BaseColumn <#=method.MethodName#>Implementation<U>(PrimitiveColumn<U> column, bool inPlace)
+<# } else { #>
         internal BaseColumn <#=method.MethodName#>Implementation<U>(PrimitiveColumn<U> column)
+<# } #>
             where U : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        internal BaseColumn <#=method.MethodName#>Implementation(int value)
+        internal BaseColumn <#=method.MethodName#>Implementation(int value, bool inPlace)
 <# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
@@ -77,7 +101,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
 <# } else { #>
                     PrimitiveColumn<<#=type.TypeName#>> <#=type.TypeName#>Column = this as PrimitiveColumn<<#=type.TypeName#>>;
-                    var new<#=type.TypeName#>Column = <#=type.TypeName#>Column.Clone();
+                    PrimitiveColumn<<#=type.TypeName#>> new<#=type.TypeName#>Column;
+                    if (inPlace)
+                        new<#=type.TypeName#>Column = <#=type.TypeName#>Column;
+                    else
+                        new<#=type.TypeName#>Column = <#=type.TypeName#>Column.Clone();
                     new<#=type.TypeName#>Column._columnContainer.<#=method.MethodName#>(value);
                     return new<#=type.TypeName#>Column;
 <# } #>
@@ -94,11 +122,21 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
+                    PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
+                    PrimitiveColumn<U> retColumn;
+                    if (inPlace)
+                        retColumn = typedColumn;
+                    else
+                        retColumn = typedColumn.Clone();
                     retColumn._columnContainer.<#=method.MethodName#>(value);
                     return retColumn;
 <# } else { #>
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
+                    PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
+                    PrimitiveColumn<U> retColumn;
+                    if (inPlace)
+                        retColumn = typedColumn;
+                    else
+                        retColumn = typedColumn.Clone();
                     retColumn._columnContainer.<#=method.MethodName#>(column._columnContainer);
                     return retColumn;
 <# } #>
@@ -132,10 +170,21 @@ namespace Microsoft.Data
                     (this as PrimitiveColumn<U>)._columnContainer.<#=method.MethodName#>(column._columnContainer, retColumn._columnContainer);
 <# } #>
 <# } else if (method.MethodType == MethodType.BinaryScalar) {#>
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
+                    PrimitiveColumn<U> column = this as PrimitiveColumn<U>;
+                    PrimitiveColumn<U> retColumn;
+                    if (inPlace)
+                        retColumn = column;
+                    else
+                        retColumn = column.Clone();
+            
                     retColumn._columnContainer.<#=method.MethodName#>(value);
 <# } else { #>
-                    PrimitiveColumn<U> retColumn = (this as PrimitiveColumn<U>).Clone();
+                    PrimitiveColumn<U> column = this as PrimitiveColumn<U>;
+                    PrimitiveColumn<U> retColumn;
+                    if (inPlace)
+                        retColumn = column;
+                    else
+                        retColumn = column.Clone();
                     retColumn._columnContainer.<#=method.MethodName#>(column._columnContainer);
 <# } #>
                     return retColumn;
@@ -162,11 +211,19 @@ namespace Microsoft.Data
 <# } else if (method.IsBitwise == true ) { #>
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
-                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn;
+                        if (inPlace)
+                            newColumn = primitiveColumn;
+                        else
+                            newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.<#=method.MethodName#>(value);
                         return newColumn;
 <# } else { #>
-                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn;
+                        if (inPlace)
+                            newColumn = primitiveColumn;
+                        else
+                            newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.<#=method.MethodName#>(column._columnContainer);
                         return newColumn;
 <# } #>
@@ -230,11 +287,19 @@ namespace Microsoft.Data
 <# } else if (method.IsBitwise == true ) { #>
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
-                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn;
+                        if (inPlace)
+                            newColumn = primitiveColumn;
+                        else
+                            newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.<#=method.MethodName#>(value);
                         return newColumn;
 <# } else { #>
-                        PrimitiveColumn<U> newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn;
+                        if (inPlace)
+                            newColumn = primitiveColumn;
+                        else
+                            newColumn = primitiveColumn.Clone();
                         newColumn._columnContainer.<#=method.MethodName#>(column._columnContainer);
                         return newColumn;
 <# } #>

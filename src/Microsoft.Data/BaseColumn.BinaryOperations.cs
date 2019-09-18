@@ -12,100 +12,100 @@ namespace Microsoft.Data
 {
     public abstract partial class BaseColumn
     {
-        public virtual BaseColumn Add(BaseColumn column)
+        public virtual BaseColumn Add(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Add<T>(T value)
+        public virtual BaseColumn Add<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Subtract(BaseColumn column)
+        public virtual BaseColumn Subtract(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Subtract<T>(T value)
+        public virtual BaseColumn Subtract<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Multiply(BaseColumn column)
+        public virtual BaseColumn Multiply(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Multiply<T>(T value)
+        public virtual BaseColumn Multiply<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Divide(BaseColumn column)
+        public virtual BaseColumn Divide(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Divide<T>(T value)
+        public virtual BaseColumn Divide<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Modulo(BaseColumn column)
+        public virtual BaseColumn Modulo(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Modulo<T>(T value)
+        public virtual BaseColumn Modulo<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn And(BaseColumn column)
+        public virtual BaseColumn And(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn And<T>(T value)
+        public virtual BaseColumn And<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Or(BaseColumn column)
+        public virtual BaseColumn Or(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Or<T>(T value)
+        public virtual BaseColumn Or<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Xor(BaseColumn column)
+        public virtual BaseColumn Xor(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Xor<T>(T value)
+        public virtual BaseColumn Xor<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn LeftShift(int value)
+        public virtual BaseColumn LeftShift(int value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn RightShift(int value)
+        public virtual BaseColumn RightShift(int value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }

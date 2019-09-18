@@ -23,9 +23,9 @@ namespace Microsoft.Data
     {
 <# foreach (MethodConfiguration compMethod in computationMethodConfiguration) { #>
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-        public override void <#=compMethod.MethodName#>(IEnumerable<long> rowIndices)
+        public override BaseColumn <#=compMethod.MethodName#>(IEnumerable<long> rowIndices, bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-        public override void <#=compMethod.MethodName#>()
+        public override BaseColumn <#=compMethod.MethodName#>(bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         public override object <#=compMethod.MethodName#>()
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
@@ -37,9 +37,21 @@ namespace Microsoft.Data
 <# } #>
         {
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, rowIndices);
+            PrimitiveColumn<T> ret;
+            if (inPlace)
+                ret = this;
+            else
+                ret = Clone();
+            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer, rowIndices);
+            return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer);
+            PrimitiveColumn<T> ret;
+            if (inPlace)
+                ret = this;
+            else
+                ret = Clone();
+            PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer);
+            return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(_columnContainer, out T ret);
             return ret;

@@ -23,9 +23,9 @@ namespace Microsoft.Data
         /// <#=compMethod.MethodComments#>
         /// </summary>
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-        public virtual void <#=compMethod.MethodName#>(IEnumerable<long> rowIndices)
+        public virtual BaseColumn <#=compMethod.MethodName#>(IEnumerable<long> rowIndices, bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-        public virtual void <#=compMethod.MethodName#>()
+        public virtual BaseColumn <#=compMethod.MethodName#>(bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         public virtual object <#=compMethod.MethodName#>()
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
