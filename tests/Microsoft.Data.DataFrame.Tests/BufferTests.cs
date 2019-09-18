@@ -224,7 +224,6 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestArrowStringColumnGetReadOnlyBuffers()
         {
-
             // Test ArrowStringColumn.
             StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
             Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };

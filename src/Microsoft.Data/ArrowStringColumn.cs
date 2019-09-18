@@ -138,7 +138,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Each ReadOnlyMemory<byte> encodes the null values for its corresponding Data buffer</remarks>
+        /// <remarks>Each ReadOnlyMemory<byte> encodes the indices of null values in its corresponding Data buffer</remarks>
         /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {
@@ -153,7 +153,7 @@ namespace Microsoft.Data
 
         /// <summary>
         /// Returns an enumerable of immutable ReadOnlyMemory<int> representing offsets into its corresponding Data buffer.
-        /// The Apache Arrow format specifies how the offset buffer encodes the length of each string in the Data buffer
+        /// The Apache Arrow format specifies how the offset buffer encodes the length of each value in the Data buffer
         /// </summary>
         /// <returns>IEnumerable<ReadOnlyMemory<int>></returns>
         public IEnumerable<ReadOnlyMemory<int>> GetReadOnlyOffsetsBuffers()
