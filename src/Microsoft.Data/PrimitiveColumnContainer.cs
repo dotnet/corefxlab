@@ -326,13 +326,13 @@ namespace Microsoft.Data
         internal ReadOnlyMemory<byte> GetValueBuffer(long startIndex)
         {
             int arrayIndex = GetArrayContainingRowIndex(startIndex);
-            return Buffers[arrayIndex].ReadOnlyMemory;
+            return Buffers[arrayIndex].ReadOnlyBuffer;
         }
 
         internal ReadOnlyMemory<byte> GetNullBuffer(long startIndex)
         {
             int arrayIndex = GetArrayContainingRowIndex(startIndex);
-            return NullBitMapBuffers[arrayIndex].ReadOnlyMemory;
+            return NullBitMapBuffers[arrayIndex].ReadOnlyBuffer;
         }
 
         public IList<T?> this[long startIndex, int length]

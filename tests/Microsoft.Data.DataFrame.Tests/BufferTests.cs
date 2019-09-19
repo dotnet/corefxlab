@@ -188,39 +188,37 @@ namespace Microsoft.Data.Tests
             IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();
 
             long i = 0;
-            using (IEnumerator<ReadOnlyMemory<int>> bufferEnumerator = buffers.GetEnumerator())
-            using (IEnumerator<ReadOnlyMemory<byte>> nullBitMapsEnumerator = nullBitMaps.GetEnumerator())
+            IEnumerator<ReadOnlyMemory<int>> bufferEnumerator = buffers.GetEnumerator();
+            IEnumerator<ReadOnlyMemory<byte>> nullBitMapsEnumerator = nullBitMaps.GetEnumerator();
+            while (bufferEnumerator.MoveNext() && nullBitMapsEnumerator.MoveNext())
             {
-                while (bufferEnumerator.MoveNext() && nullBitMapsEnumerator.MoveNext())
+                ReadOnlyMemory<int> dataBuffer = bufferEnumerator.Current;
+                ReadOnlyMemory<byte> nullBitMap = nullBitMapsEnumerator.Current;
+
+                ReadOnlySpan<int> span = dataBuffer.Span;
+                for (int j = 0; j < span.Length; j++)
                 {
-                    ReadOnlyMemory<int> dataBuffer = bufferEnumerator.Current;
-                    ReadOnlyMemory<byte> nullBitMap = nullBitMapsEnumerator.Current;
+                    // Each buffer has a max length of int.MaxValue
+                    Assert.Equal(span[j], column[j + i * int.MaxValue]);
+                }
 
-                    ReadOnlySpan<int> span = dataBuffer.Span;
-                    for (int j = 0; j < span.Length; j++)
+                bool GetBit(byte curBitMap, int index)
+                {
+                    return ((curBitMap >> (index & 7)) & 1) != 0;
+                }
+                ReadOnlySpan<byte> bitMapSpan = nullBitMap.Span;
+                // No nulls in this column, so each bit must be set
+                for (int j = 0; j < bitMapSpan.Length; j++)
+                {
+                    for (int k = 0; k < 8; k++)
                     {
-                        // Each buffer has a max length of int.MaxValue
-                        Assert.Equal(span[j], column[j + i * int.MaxValue]);
-                    }
-
-                    bool GetBit(byte curBitMap, int index)
-                    {
-                        return ((curBitMap >> (index & 7)) & 1) != 0;
-                    }
-                    ReadOnlySpan<byte> bitMapSpan = nullBitMap.Span;
-                    // No nulls in this column, so each bit must be set
-                    for (int j = 0; j < bitMapSpan.Length; j++)
-                    {
-                        for (int k = 0; k < 8; k++)
-                        {
-                            Assert.True(GetBit(bitMapSpan[j], k));
-                        }
+                        Assert.True(GetBit(bitMapSpan[j], k));
                     }
                 }
                 i++;
             }
         }
-        
+
         [Fact]
         public void TestArrowStringColumnGetReadOnlyBuffers()
         {

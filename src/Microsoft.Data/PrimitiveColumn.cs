@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -54,9 +53,7 @@ namespace Microsoft.Data
             for (int i = 0; i < _columnContainer.Buffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[i];
-                ReadOnlyMemory<byte> readOnlyMemory = buffer.ReadOnlyMemory;
-
-                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref readOnlyMemory).Slice(0, buffer.Length);
+                yield return buffer.ReadOnlyMemory;
             }
         }
 
@@ -70,9 +67,7 @@ namespace Microsoft.Data
             for (int i = 0; i < _columnContainer.NullBitMapBuffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<byte> buffer = _columnContainer.NullBitMapBuffers[i];
-                ReadOnlyMemory<byte> nullBitMap = buffer.ReadOnlyMemory;
-
-                yield return nullBitMap;
+                yield return buffer.RawReadOnlyMemory;
             }
         }
 
@@ -389,10 +384,6 @@ namespace Microsoft.Data
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndices = false)
         {
-            long? ConvertInt(long index)
-            {
-                return mapIndices[index];
-            }
             return CloneImplementation(mapIndices, invertMapIndices);
         }
 

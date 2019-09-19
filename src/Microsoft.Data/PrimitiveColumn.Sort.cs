@@ -53,7 +53,7 @@ namespace Microsoft.Data
             {
                 int index = bufferSortIndices[bufferIndex][startIndex];
                 T value;
-                ReadOnlyMemory<byte> buffer = _columnContainer.Buffers[bufferIndex].ReadOnlyMemory;
+                ReadOnlyMemory<byte> buffer = _columnContainer.Buffers[bufferIndex].ReadOnlyBuffer;
                 ReadOnlyMemory<T> typedBuffer = Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref buffer);
                 if (!typedBuffer.IsEmpty)
                 {

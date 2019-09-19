@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Apache.Arrow;
@@ -129,9 +128,7 @@ namespace Microsoft.Data
             for (int i = 0; i < _dataBuffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<byte> buffer = _dataBuffers[i];
-                ReadOnlyMemory<byte> data = buffer.ReadOnlyMemory;
-
-                yield return data;
+                yield return buffer.RawReadOnlyMemory;
             }
         }
 
@@ -145,9 +142,7 @@ namespace Microsoft.Data
             for (int i = 0; i < _nullBitMapBuffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<byte> buffer = _nullBitMapBuffers[i];
-                ReadOnlyMemory<byte> nullBitMap = buffer.ReadOnlyMemory;
-
-                yield return nullBitMap;
+                yield return buffer.RawReadOnlyMemory;
             }
         }
 
@@ -161,9 +156,7 @@ namespace Microsoft.Data
             for (int i = 0; i < _offsetsBuffers.Count; i++)
             {
                 ReadOnlyDataFrameBuffer<int> buffer = _offsetsBuffers[i];
-                ReadOnlyMemory<byte> offsetBuffer = buffer.ReadOnlyMemory;
-
-                yield return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<int>>(ref offsetBuffer).Slice(0, buffer.Length);
+                yield return buffer.ReadOnlyMemory;
             }
         }
 
@@ -324,9 +317,9 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.SpansMultipleBuffers, nameof(numberOfRows));
             }
-            ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyMemory);
-            ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyMemory);
-            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyMemory);
+            ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyBuffer);
             int nullCount = GetNullCount(indexInBuffer, numberOfRows);
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }

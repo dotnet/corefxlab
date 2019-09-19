@@ -17,13 +17,24 @@ namespace Microsoft.Data
     internal class ReadOnlyDataFrameBuffer<T>
         where T : struct
     {
-        private readonly ReadOnlyMemory<byte> _readOnlyMemory;
+        private readonly ReadOnlyMemory<byte> _readOnlyBuffer;
 
-        public virtual ReadOnlyMemory<byte> ReadOnlyMemory => _readOnlyMemory;
+        public virtual ReadOnlyMemory<byte> ReadOnlyBuffer => _readOnlyBuffer;
+
+        public ReadOnlyMemory<T> ReadOnlyMemory => RawReadOnlyMemory.Slice(0, Length);
+
+        public ReadOnlyMemory<T> RawReadOnlyMemory
+        {
+            get
+            {
+                ReadOnlyMemory<byte> memory = ReadOnlyBuffer;
+                return Unsafe.As<ReadOnlyMemory<byte>, ReadOnlyMemory<T>>(ref memory);
+            }
+        }
 
         protected static int Size = Unsafe.SizeOf<T>();
 
-        protected int Capacity => ReadOnlyMemory.Length / Size;
+        protected int Capacity => ReadOnlyBuffer.Length / Size;
 
 
         public static int MaxCapacity => Int32.MaxValue / Size;
@@ -31,13 +42,13 @@ namespace Microsoft.Data
         public ReadOnlySpan<T> ReadOnlySpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (MemoryMarshal.Cast<byte, T>(ReadOnlyMemory.Span)).Slice(0, Length);
+            get => (MemoryMarshal.Cast<byte, T>(ReadOnlyBuffer.Span)).Slice(0, Length);
         }
 
         public ReadOnlySpan<T> RawReadOnlySpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => MemoryMarshal.Cast<byte, T>(ReadOnlyMemory.Span);
+            get => MemoryMarshal.Cast<byte, T>(ReadOnlyBuffer.Span);
         }
 
         public int Length { get; internal set; }
@@ -48,12 +59,12 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException($"{numberOfValues} exceeds buffer capacity", nameof(numberOfValues));
             }
-            _readOnlyMemory = new byte[numberOfValues * Size];
+            _readOnlyBuffer = new byte[numberOfValues * Size];
         }
 
         public ReadOnlyDataFrameBuffer(ReadOnlyMemory<byte> buffer, int length)
         {
-            _readOnlyMemory = buffer;
+            _readOnlyBuffer = buffer;
             Length = length;
         }
 
