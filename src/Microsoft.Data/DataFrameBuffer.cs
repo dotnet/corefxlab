@@ -17,9 +17,9 @@ namespace Microsoft.Data
     {
         private Memory<byte> _memory;
 
-        public override ReadOnlyMemory<byte> ReadOnlyMemory => _memory;
+        public override ReadOnlyMemory<byte> ReadOnlyBuffer => _memory;
 
-        public Memory<byte> Memory
+        public Memory<byte> Buffer
         {
             get => _memory;
         }
@@ -27,13 +27,13 @@ namespace Microsoft.Data
         public Span<T> Span
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (MemoryMarshal.Cast<byte, T>(Memory.Span)).Slice(0, Length);
+            get => (MemoryMarshal.Cast<byte, T>(Buffer.Span)).Slice(0, Length);
         }
 
         public Span<T> RawSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => MemoryMarshal.Cast<byte, T>(Memory.Span);
+            get => MemoryMarshal.Cast<byte, T>(Buffer.Span);
         }
 
         public DataFrameBuffer(int numberOfValues = 8) : base(numberOfValues) { }
@@ -66,7 +66,7 @@ namespace Microsoft.Data
 
             if (newLength > Capacity)
             {
-                var newCapacity = Math.Max(newLength * Size, ReadOnlyMemory.Length * 2);
+                var newCapacity = Math.Max(newLength * Size, ReadOnlyBuffer.Length * 2);
                 var memory = new Memory<byte>(new byte[newCapacity]);
                 _memory.CopyTo(memory);
                 _memory = memory;
@@ -88,7 +88,7 @@ namespace Microsoft.Data
             DataFrameBuffer<T> mutableBuffer = buffer as DataFrameBuffer<T>;
             if (mutableBuffer == null)
             {
-                mutableBuffer = new DataFrameBuffer<T>(buffer.ReadOnlyMemory, buffer.Length);
+                mutableBuffer = new DataFrameBuffer<T>(buffer.ReadOnlyBuffer, buffer.Length);
                 mutableBuffer.Length = buffer.Length;
             }
             return mutableBuffer;

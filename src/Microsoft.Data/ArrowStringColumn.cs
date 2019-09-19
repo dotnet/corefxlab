@@ -117,6 +117,49 @@ namespace Microsoft.Data
             bitMapBuffer[bitMapBufferIndex] = newBitMap;
         }
 
+        /// <summary>
+        /// Returns an enumerable of immutable buffers representing the underlying values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
+        {
+            for (int i = 0; i < _dataBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _dataBuffers[i];
+                yield return buffer.RawReadOnlyMemory;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Each ReadOnlyMemory<byte> encodes the indices of null values in its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
+        {
+            for (int i = 0; i < _nullBitMapBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _nullBitMapBuffers[i];
+                yield return buffer.RawReadOnlyMemory;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<int> representing offsets into its corresponding Data buffer.
+        /// The Apache Arrow format specifies how the offset buffer encodes the length of each value in the Data buffer
+        /// </summary>
+        /// <returns>IEnumerable<ReadOnlyMemory<int>></returns>
+        public IEnumerable<ReadOnlyMemory<int>> GetReadOnlyOffsetsBuffers()
+        {
+            for (int i = 0; i < _offsetsBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<int> buffer = _offsetsBuffers[i];
+                yield return buffer.ReadOnlyMemory;
+            }
+        }
+
         // This is an immutable column, however this method exists to support Clone(). Keep this method private
         // Appending a default string is equivalent to appending null. It increases the NullCount and sets a null bitmap bit
         // Appending an empty string is valid. It does NOT affect the NullCount. It instead adds a new offset entry
@@ -214,12 +257,12 @@ namespace Microsoft.Data
             return ret;
         }
 
-        protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableStringColumn);
+        protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableColumn);
 
         public new string this[long rowIndex]
         {
             get => GetValueImplementation(rowIndex);
-            set => throw new NotSupportedException(Strings.ImmutableStringColumn);
+            set => throw new NotSupportedException(Strings.ImmutableColumn);
         }
 
         public new List<string> this[long startIndex, int length]
@@ -274,9 +317,9 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.SpansMultipleBuffers, nameof(numberOfRows));
             }
-            ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyMemory);
-            ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyMemory);
-            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyMemory);
+            ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyBuffer);
             int nullCount = GetNullCount(indexInBuffer, numberOfRows);
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }

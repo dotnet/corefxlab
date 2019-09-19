@@ -126,7 +126,7 @@
   <data name="EmptyFile" xml:space="preserve">
     <value>Empty file</value>
   </data>
-  <data name="ImmutableStringColumn" xml:space="preserve">
+  <data name="ImmutableColumn" xml:space="preserve">
     <value>Column is immutable</value>
   </data>
   <data name="InvalidColumnName" xml:space="preserve">

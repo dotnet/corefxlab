@@ -6,9 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -44,6 +41,34 @@ namespace Microsoft.Data
         public PrimitiveColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(buffer, nullBitMap, length, nullCount);
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable memory buffers representing the underlying values
+        /// </summary>
+        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<typeparamref name="T"/>></returns>
+        public IEnumerable<ReadOnlyMemory<T>> GetReadOnlyDataBuffers()
+        {
+            for (int i = 0; i < _columnContainer.Buffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[i];
+                yield return buffer.ReadOnlyMemory;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// </summary>
+        /// <remarks>Each ReadOnlyMemory<byte> encodes the null values for its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
+        {
+            for (int i = 0; i < _columnContainer.NullBitMapBuffers.Count; i++)
+            {
+                ReadOnlyDataFrameBuffer<byte> buffer = _columnContainer.NullBitMapBuffers[i];
+                yield return buffer.RawReadOnlyMemory;
+            }
         }
 
         private IArrowType GetArrowType()
@@ -359,10 +384,6 @@ namespace Microsoft.Data
 
         public PrimitiveColumn<T> Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndices = false)
         {
-            long? ConvertInt(long index)
-            {
-                return mapIndices[index];
-            }
             return CloneImplementation(mapIndices, invertMapIndices);
         }
 
