@@ -123,6 +123,9 @@
   <data name="ColumnIndexOutOfRange" xml:space="preserve">
     <value>Index cannot be greater than the Column's Length</value>
   </data>
+  <data name="DuplicateColumnName" xml:space="preserve">
+    <value>Table already contains a column called {0}</value>
+  </data>
   <data name="EmptyFile" xml:space="preserve">
     <value>Empty file</value>
   </data>
@@ -145,7 +148,7 @@
     <value>rowCount differs from Column length for Column </value>
   </data>
   <data name="MismatchedValueType" xml:space="preserve">
-    <value>Expected value to be of type </value>
+    <value>Expected value to be of type {0}</value>
   </data>
   <data name="MultipleMismatchedValueType" xml:space="preserve">
     <value>Expected value to be of type {0}, {1} or {2}</value>

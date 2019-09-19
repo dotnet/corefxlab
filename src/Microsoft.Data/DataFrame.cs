@@ -207,6 +207,19 @@ namespace Microsoft.Data
             }
         }
 
+        public IList<string> ColumnTypes
+        {
+            get
+            {
+                var ret = new List<string>(ColumnCount);
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    ret.Add(_table.Column(i).DataType.ToString());
+                }
+                return ret;
+            }
+        }
+
         public BaseColumn Column(int index) => _table.Column(index);
 
         public void InsertColumn(int columnIndex, BaseColumn column)
@@ -327,6 +340,41 @@ namespace Microsoft.Data
         public void SetColumnName(BaseColumn column, string newName) => _table.SetColumnName(column, newName);
 
         /// <summary>
+        /// Generates a concise summary of each column
+        /// </summary>
+        public DataFrame Info()
+        {
+            DataFrame ret = new DataFrame();
+            if (ColumnCount == 0)
+                return ret;
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn column = Column(i);
+                DataFrame columnInfo = column.Info();
+                if (i == 0)
+                    ret = columnInfo;
+                else
+                    ret = ret.Merge<string>(columnInfo, "Info", "Info", "_left", "_right", joinAlgorithm: JoinAlgorithm.Inner);
+                RemoveRightAndRenameLeftColumn(ret, "Info", "_left", "_right");
+            }
+            return ret;
+        }
+
+        private void RemoveRightAndRenameLeftColumn(DataFrame dataFrame, string columnName, string left, string right)
+        {
+            string leftColumnName = columnName + left;
+            string rightColumnName = columnName + right;
+            int leftMergeColumn = dataFrame._table.GetColumnIndex(leftColumnName);
+            int rightMergeColumn = dataFrame._table.GetColumnIndex(rightColumnName);
+            if (leftMergeColumn != -1 && rightMergeColumn != -1)
+            {
+                dataFrame.RemoveColumn(rightColumnName);
+                dataFrame._table.SetColumnName(dataFrame[leftColumnName], columnName);
+            }
+        }
+
+        /// <summary>
         /// Generates descriptive statistics that summarize each numeric column
         /// </summary>
         public DataFrame Description()
@@ -350,13 +398,7 @@ namespace Microsoft.Data
                 }
                 DataFrame columnDescription = column.Description();
                 ret = ret.Merge<string>(columnDescription, "Description", "Description", "_left", "_right", JoinAlgorithm.Inner);
-                int leftMergeColumn = ret._table.GetColumnIndex("Description" + "_left");
-                int rightMergeColumn = ret._table.GetColumnIndex("Description" + "_right");
-                if (leftMergeColumn != -1 && rightMergeColumn != -1)
-                {
-                    ret.RemoveColumn("Description" + "_right");
-                    ret._table.SetColumnName(ret["Description_left"], "Description");
-                }
+                RemoveRightAndRenameLeftColumn(ret, "Description", "_left", "_right");
             }
             return ret;
         }
@@ -522,6 +564,13 @@ namespace Microsoft.Data
             return ret;
 
         }
+
+        /// <summary>
+        /// Appends a row inplace to the DataFrame
+        /// </summary>
+        /// <remarks>If a row value doesn't match its column's data type, a conversion will be attempted</remarks>
+        /// <param name="row"></param>
+        public void Append(IEnumerable<object> row) => _table.Append(row);
 
         /// <summary>
         /// Invalidates any cached data after a column has changed.

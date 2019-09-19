@@ -79,6 +79,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Table already contains a column called {0}.
+        /// </summary>
+        public static string DuplicateColumnName {
+            get {
+                return ResourceManager.GetString("DuplicateColumnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty file.
         /// </summary>
         public static string EmptyFile {
@@ -142,7 +151,7 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected value to be of type .
+        ///   Looks up a localized string similar to Expected value to be of type {0}.
         /// </summary>
         public static string MismatchedValueType {
             get {

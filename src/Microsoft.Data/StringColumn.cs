@@ -50,7 +50,7 @@ namespace Microsoft.Data
         private long _nullCount;
         public override long NullCount => _nullCount;
 
-        public override void Resize(long length)
+        protected internal override void Resize(long length)
         {
             if (length < Length)
                 throw new ArgumentException(Strings.CannotResizeDown, nameof(length));
@@ -123,7 +123,7 @@ namespace Microsoft.Data
             }
             else
             {
-                throw new ArgumentException(Strings.MismatchedValueType + " string", nameof(value));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(string)), nameof(value));
             }
         }
 
@@ -366,10 +366,6 @@ namespace Microsoft.Data
 
         private StringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
         {
-            long? ConvertInt(long index)
-            {
-                return mapIndices[index];
-            }
             return CloneImplementation(mapIndices, invertMapIndex);
         }
 

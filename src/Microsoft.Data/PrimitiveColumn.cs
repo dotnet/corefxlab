@@ -185,7 +185,7 @@ namespace Microsoft.Data
             }
             else
             {
-                throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, DataType), nameof(value));
             }
         }
 
@@ -200,7 +200,7 @@ namespace Microsoft.Data
                 }
                 else
                 {
-                    throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
+                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, DataType), nameof(value));
                 }
             }
         }
@@ -231,7 +231,7 @@ namespace Microsoft.Data
             return (double)Convert.ChangeType((T)Sum(), typeof(double)) / Length;
         }
 
-        public override void Resize(long length)
+        protected internal override void Resize(long length)
         {
             _columnContainer.Resize(length);
             Length = _columnContainer.Length;
@@ -383,25 +383,6 @@ namespace Microsoft.Data
             return CloneImplementation(mapIndices, invertMapIndices);
         }
 
-        public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
-        {
-            IEnumerator<long> rows = mapIndices.GetEnumerator();
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
-            ret._columnContainer._modifyNullCountWhileIndexing = false;
-            long numberOfRows = 0;
-            while (rows.MoveNext() && numberOfRows < Length)
-            {
-                numberOfRows++;
-                long curRow = rows.Current;
-                T? value = _columnContainer[curRow];
-                ret[curRow] = value;
-                if (!value.HasValue)
-                    ret._columnContainer.NullCount++;
-            }
-            ret._columnContainer._modifyNullCountWhileIndexing = true;
-            return ret;
-        }
-
         internal PrimitiveColumn<bool> CloneAsBoolColumn()
         {
             PrimitiveColumnContainer<bool> newColumnContainer = _columnContainer.CloneAsBoolContainer();
@@ -468,7 +449,7 @@ namespace Microsoft.Data
                 return _Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
             }
             else
-                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), typeof(U).ToString());
         }
 
         public override BaseColumn Filter<U>(U lower, U upper)
@@ -479,14 +460,14 @@ namespace Microsoft.Data
                 return _Filter((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
             }
             else
-                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), typeof(U).ToString());
         }
 
         public override DataFrame Description()
         {
             DataFrame ret = new DataFrame();
             StringColumn stringColumn = new StringColumn("Description", 0);
-            stringColumn.Append("Length");
+            stringColumn.Append("Length(non null values)");
             stringColumn.Append("Max");
             stringColumn.Append("Min");
             stringColumn.Append("Mean");

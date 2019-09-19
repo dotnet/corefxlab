@@ -83,7 +83,7 @@ namespace Microsoft.Data
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {
-                throw new ArgumentException($"Table already contains a column called {column.Name}");
+                throw new ArgumentException(string.Format(Strings.DuplicateColumnName, column.Name));
             }
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
@@ -109,7 +109,7 @@ namespace Microsoft.Data
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {
-                throw new ArgumentException($"Table already contains a column called {column.Name}");
+                throw new ArgumentException(string.Format(Strings.DuplicateColumnName, column.Name));
             }
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
             _columnNames[columnIndex] = column.Name;
@@ -136,6 +136,41 @@ namespace Microsoft.Data
             {
                 RemoveColumn(columnIndex);
             }
+        }
+
+        public void Append(IEnumerable<object> row)
+        {
+            IEnumerator<BaseColumn> columnEnumerator = _columns.GetEnumerator();
+            IEnumerator<object> rowEnumerator = row.GetEnumerator();
+            bool columnMoveNext = columnEnumerator.MoveNext();
+            bool rowMoveNext = rowEnumerator.MoveNext();
+            while (columnMoveNext && rowMoveNext)
+            {
+                BaseColumn column = columnEnumerator.Current;
+                object value = rowEnumerator.Current ?? null;
+                if (value != null)
+                {
+                    value = Convert.ChangeType(value, column.DataType);
+                    if (value is null)
+                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
+                }
+                long length = column.Length;
+                column.Resize(length + 1);
+                column[length] = value;
+                columnMoveNext = columnEnumerator.MoveNext();
+                rowMoveNext = rowEnumerator.MoveNext();
+            }
+            while (columnMoveNext)
+            {
+                // Fill the remaining columns with null
+                BaseColumn column = columnEnumerator.Current;
+                long length = column.Length;
+                column.Resize(length + 1);
+                column[length] = null;
+                columnMoveNext = columnEnumerator.MoveNext();
+            }
+            RowCount++;
+
         }
 
         public int GetColumnIndex(string columnName)

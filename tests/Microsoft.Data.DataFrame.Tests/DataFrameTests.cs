@@ -1505,5 +1505,26 @@ namespace Microsoft.Data.Tests
             }
         }
 
+        [Fact]
+        public void TestAppendRow()
+        {
+            DataFrame df = MakeDataFrame<int, bool>(10);
+            df.Append(new List<object> { 5, true });
+            Assert.Equal(11, df.RowCount);
+            Assert.Equal(1, df.Column(0).NullCount);
+            Assert.Equal(1, df.Column(1).NullCount);
+
+            df.Append(new List<object> { 100 });
+            Assert.Equal(12, df.RowCount);
+            Assert.Equal(1, df.Column(0).NullCount);
+            Assert.Equal(2, df.Column(1).NullCount);
+
+            df.Append(new List<object> { null, null });
+            Assert.Equal(13, df.RowCount);
+            Assert.Equal(2, df.Column(0).NullCount);
+            Assert.Equal(3, df.Column(1).NullCount);
+
+        }
+
     }
 }

@@ -79,7 +79,7 @@ namespace Microsoft.Data
         /// Called internally from Merge and GroupBy. Resizes the column to the specified length to allow setting values by indexing
         /// </summary>
         /// <param name="length"></param>
-        public virtual void Resize(long length) => throw new NotImplementedException();
+        protected internal virtual void Resize(long length) => throw new NotImplementedException();
 
         /// <summary>
         /// Clone column to produce a copy potentially changing the order by supplying mapIndices and an invert flag
@@ -164,6 +164,23 @@ namespace Microsoft.Data
         public virtual double Median() => throw new NotImplementedException();
 
         /// <summary>
+        /// Returns a DataFrame with a concise summary of this column
+        /// </summary>
+        public virtual DataFrame Info()
+        {
+            DataFrame ret = new DataFrame();
+            StringColumn infoColumn = new StringColumn("Info", 0);
+            infoColumn.Append("DataType");
+            infoColumn.Append("Length");
+            StringColumn dataColumn = new StringColumn(Name, 0);
+            dataColumn.Append(DataType.ToString());
+            dataColumn.Append((Length - NullCount).ToString() + " non-null values");
+            ret.InsertColumn(0, infoColumn);
+            ret.InsertColumn(1, dataColumn);
+            return ret;
+        }
+
+        /// <summary>
         /// Used to exclude columns from the Description method
         /// </summary>
         public virtual bool HasDescription() => false;
@@ -172,6 +189,10 @@ namespace Microsoft.Data
         /// Returns a DataFrame with statistics that describe the column
         /// </summary>
         public virtual DataFrame Description() => throw new NotImplementedException();
+
+        public override bool Equals(object obj) => ReferenceEquals(this, obj);
+
+        public override int GetHashCode() => base.GetHashCode();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

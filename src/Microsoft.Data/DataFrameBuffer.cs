@@ -77,9 +77,10 @@ namespace Microsoft.Data
         {
             set
             {
-                if (index > Length)
+                var rawSpan = RawSpan;
+                if (index > rawSpan.Length)
                     throw new ArgumentOutOfRangeException(nameof(index));
-                RawSpan[index] = value;
+                rawSpan[index] = value;
             }
         }
 
