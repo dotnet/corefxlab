@@ -15,7 +15,6 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestIDataView()
         {
-            // IDataView doesn't support null values
             IDataView dataView = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
 
             DataDebuggerPreview preview = dataView.Preview();
@@ -108,6 +107,122 @@ namespace Microsoft.Data.Tests
             df.SetColumn(1, boolClone);
             schema = dataView.Schema;
             Assert.Equal("BoolClone", schema[1].Name);
+        }
+
+        [Fact]
+        public void TestIDataViewWithNulls()
+        {
+            int length = 10;
+            IDataView dataView = MakeDataFrameWithAllColumnTypes(length, withNulls: true);
+
+            DataDebuggerPreview preview = dataView.Preview();
+            Assert.Equal(length, preview.RowView.Length);
+            Assert.Equal(15, preview.ColumnView.Length);
+
+            Assert.Equal("Byte", preview.ColumnView[0].Column.Name);
+            Assert.Equal((byte)0, preview.ColumnView[0].Values[0]);
+            Assert.Equal((byte)1, preview.ColumnView[0].Values[1]);
+            Assert.Equal((byte)4, preview.ColumnView[0].Values[4]);
+            Assert.Equal((byte)0, preview.ColumnView[0].Values[5]); // null row
+            Assert.Equal((byte)6, preview.ColumnView[0].Values[6]);
+
+            Assert.Equal("Decimal", preview.ColumnView[1].Column.Name);
+            Assert.Equal((double)0, preview.ColumnView[1].Values[0]);
+            Assert.Equal((double)1, preview.ColumnView[1].Values[1]);
+            Assert.Equal((double)4, preview.ColumnView[1].Values[4]);
+            Assert.Equal(double.NaN, preview.ColumnView[1].Values[5]); // null row
+            Assert.Equal((double)6, preview.ColumnView[1].Values[6]);
+
+            Assert.Equal("Double", preview.ColumnView[2].Column.Name);
+            Assert.Equal((double)0, preview.ColumnView[2].Values[0]);
+            Assert.Equal((double)1, preview.ColumnView[2].Values[1]);
+            Assert.Equal((double)4, preview.ColumnView[2].Values[4]);
+            Assert.Equal(double.NaN, preview.ColumnView[2].Values[5]); // null row
+            Assert.Equal((double)6, preview.ColumnView[2].Values[6]);
+
+            Assert.Equal("Float", preview.ColumnView[3].Column.Name);
+            Assert.Equal((float)0, preview.ColumnView[3].Values[0]);
+            Assert.Equal((float)1, preview.ColumnView[3].Values[1]);
+            Assert.Equal((float)4, preview.ColumnView[3].Values[4]);
+            Assert.Equal(float.NaN, preview.ColumnView[3].Values[5]); // null row
+            Assert.Equal((float)6, preview.ColumnView[3].Values[6]);
+
+            Assert.Equal("Int", preview.ColumnView[4].Column.Name);
+            Assert.Equal((int)0, preview.ColumnView[4].Values[0]);
+            Assert.Equal((int)1, preview.ColumnView[4].Values[1]);
+            Assert.Equal((int)4, preview.ColumnView[4].Values[4]);
+            Assert.Equal((int)0, preview.ColumnView[4].Values[5]); // null row
+            Assert.Equal((int)6, preview.ColumnView[4].Values[6]);
+
+            Assert.Equal("Long", preview.ColumnView[5].Column.Name);
+            Assert.Equal((long)0, preview.ColumnView[5].Values[0]);
+            Assert.Equal((long)1, preview.ColumnView[5].Values[1]);
+            Assert.Equal((long)4, preview.ColumnView[5].Values[4]);
+            Assert.Equal((long)0, preview.ColumnView[5].Values[5]); // null row
+            Assert.Equal((long)6, preview.ColumnView[5].Values[6]);
+
+            Assert.Equal("Sbyte", preview.ColumnView[6].Column.Name);
+            Assert.Equal((sbyte)0, preview.ColumnView[6].Values[0]);
+            Assert.Equal((sbyte)1, preview.ColumnView[6].Values[1]);
+            Assert.Equal((sbyte)4, preview.ColumnView[6].Values[4]);
+            Assert.Equal((sbyte)0, preview.ColumnView[6].Values[5]); // null row
+            Assert.Equal((sbyte)6, preview.ColumnView[6].Values[6]);
+
+            Assert.Equal("Short", preview.ColumnView[7].Column.Name);
+            Assert.Equal((short)0, preview.ColumnView[7].Values[0]);
+            Assert.Equal((short)1, preview.ColumnView[7].Values[1]);
+            Assert.Equal((short)4, preview.ColumnView[7].Values[4]);
+            Assert.Equal((short)0, preview.ColumnView[7].Values[5]); // null row
+            Assert.Equal((short)6, preview.ColumnView[7].Values[6]);
+
+            Assert.Equal("Uint", preview.ColumnView[8].Column.Name);
+            Assert.Equal((uint)0, preview.ColumnView[8].Values[0]);
+            Assert.Equal((uint)1, preview.ColumnView[8].Values[1]);
+            Assert.Equal((uint)4, preview.ColumnView[8].Values[4]);
+            Assert.Equal((uint)0, preview.ColumnView[8].Values[5]); // null row
+            Assert.Equal((uint)6, preview.ColumnView[8].Values[6]);
+
+            Assert.Equal("Ulong", preview.ColumnView[9].Column.Name);
+            Assert.Equal((ulong)0, preview.ColumnView[9].Values[0]);
+            Assert.Equal((ulong)1, preview.ColumnView[9].Values[1]);
+            Assert.Equal((ulong)4, preview.ColumnView[9].Values[4]);
+            Assert.Equal((ulong)0, preview.ColumnView[9].Values[5]); // null row
+            Assert.Equal((ulong)6, preview.ColumnView[9].Values[6]);
+
+            Assert.Equal("Ushort", preview.ColumnView[10].Column.Name);
+            Assert.Equal((ushort)0, preview.ColumnView[10].Values[0]);
+            Assert.Equal((ushort)1, preview.ColumnView[10].Values[1]);
+            Assert.Equal((ushort)4, preview.ColumnView[10].Values[4]);
+            Assert.Equal((ushort)0, preview.ColumnView[10].Values[5]); // null row
+            Assert.Equal((ushort)6, preview.ColumnView[10].Values[6]);
+
+            Assert.Equal("String", preview.ColumnView[11].Column.Name);
+            Assert.Equal("0", preview.ColumnView[11].Values[0].ToString());
+            Assert.Equal("1", preview.ColumnView[11].Values[1].ToString());
+            Assert.Equal("4", preview.ColumnView[11].Values[4].ToString());
+            Assert.Equal("", preview.ColumnView[11].Values[5].ToString()); // null row
+            Assert.Equal("6", preview.ColumnView[11].Values[6].ToString());
+
+            Assert.Equal("Char", preview.ColumnView[12].Column.Name);
+            Assert.Equal((ushort)65, preview.ColumnView[12].Values[0]);
+            Assert.Equal((ushort)66, preview.ColumnView[12].Values[1]);
+            Assert.Equal((ushort)69, preview.ColumnView[12].Values[4]);
+            Assert.Equal((ushort)0, preview.ColumnView[12].Values[5]); // null row
+            Assert.Equal((ushort)71, preview.ColumnView[12].Values[6]);
+
+            Assert.Equal("Bool", preview.ColumnView[13].Column.Name);
+            Assert.Equal(true, preview.ColumnView[13].Values[0]);
+            Assert.Equal(false, preview.ColumnView[13].Values[1]);
+            Assert.Equal(true, preview.ColumnView[13].Values[4]);
+            Assert.Equal(false, preview.ColumnView[13].Values[5]); // null row
+            Assert.Equal(true, preview.ColumnView[13].Values[6]);
+
+            Assert.Equal("ArrowString", preview.ColumnView[14].Column.Name);
+            Assert.Equal("foo", preview.ColumnView[14].Values[0].ToString());
+            Assert.Equal("foo", preview.ColumnView[14].Values[1].ToString());
+            Assert.Equal("foo", preview.ColumnView[14].Values[4].ToString());
+            Assert.Equal("", preview.ColumnView[14].Values[5].ToString()); // null row
+            Assert.Equal("foo", preview.ColumnView[14].Values[6].ToString());
         }
     }
 }
