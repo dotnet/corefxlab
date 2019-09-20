@@ -3,12 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
+using Apache.Arrow;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -30,12 +28,10 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
-        public static BaseColumn CreateArrowStringColumn(int length)
+        public static BaseColumn CreateArrowStringColumn(int length, bool withNulls = true)
         {
-            byte[] foo = new byte[] { 102, 111, 111 }; // bytes for the string "foo"
-
             byte[] dataMemory = new byte[length * 3];
-            byte[] nullMemory = new byte[length];
+            byte[] nullMemory = new byte[BitUtility.ByteCount(length)];
             byte[] offsetMemory = new byte[(length + 1) * 4];
 
             // Initialize offset with 0 as the first value
@@ -44,27 +40,41 @@ namespace Microsoft.Data.Tests
             offsetMemory[2] = 0;
             offsetMemory[3] = 0;
 
-            // Append "foo" length times
+            // Append "foo" length times, with a possible `null` in the middle
+            int validStringsIndex = 0;
             for (int i = 0; i < length; i++)
             {
-                int dataMemoryIndex = i * 3;
-                dataMemory[dataMemoryIndex++] = 102;
-                dataMemory[dataMemoryIndex++] = 111;
-                dataMemory[dataMemoryIndex++] = 111;
-                nullMemory[i] = 0;
+                if (withNulls && i == length / 2)
+                {
+                    BitUtility.SetBit(nullMemory, i, false);
+                }
+                else
+                {
+                    int dataMemoryIndex = validStringsIndex * 3;
+                    dataMemory[dataMemoryIndex++] = 102;
+                    dataMemory[dataMemoryIndex++] = 111;
+                    dataMemory[dataMemoryIndex++] = 111;
+                    BitUtility.SetBit(nullMemory, i, true);
+
+                    validStringsIndex++;
+                }
+
+                // write the current length to (index + 1)
                 int offsetIndex = (i + 1) * 4;
-                offsetMemory[offsetIndex++] = (byte)(3 * (i + 1));
+                offsetMemory[offsetIndex++] = (byte)(3 * validStringsIndex);
                 offsetMemory[offsetIndex++] = 0;
                 offsetMemory[offsetIndex++] = 0;
                 offsetMemory[offsetIndex++] = 0;
             }
-            return new ArrowStringColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, 0);
+
+            int nullCount = withNulls ? 1 : 0;
+            return new ArrowStringColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, nullCount);
         }
 
         public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(length, withNulls);
-            BaseColumn arrowStringColumn = CreateArrowStringColumn(length);
+            BaseColumn arrowStringColumn = CreateArrowStringColumn(length, withNulls);
             df.InsertColumn(df.ColumnCount, arrowStringColumn);
             return df;
         }
@@ -1109,7 +1119,7 @@ namespace Microsoft.Data.Tests
                     actualStrings.Append(value);
                 }
             }
-            Assert.Equal("foofoofoofoofoofoofoofoofoofoo", actualStrings.ToString());
+            Assert.Equal("foofoofoofoofoo<null>foofoofoofoo", actualStrings.ToString());
 
             PrimitiveColumn<float> floatColumn = (PrimitiveColumn<float>)df["Float"];
             actualStrings.Clear();

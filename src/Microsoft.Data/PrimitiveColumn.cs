@@ -614,25 +614,40 @@ namespace Microsoft.Data
 
         protected internal override Delegate GetDataViewGetter(DataViewRowCursor cursor)
         {
-            // special cases for types not supported
-            if (typeof(T) == typeof(char))
+            // special cases for types that have NA values
+            if (typeof(T) == typeof(float))
             {
-                return CreateCharValueGetterDelegate(cursor);
+                return CreateSingleValueGetterDelegate(cursor, (PrimitiveColumn<float>)(object)this);
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                return CreateDoubleValueGetterDelegate(cursor, (PrimitiveColumn<double>)(object)this);
+            }
+            // special cases for types not supported
+            else if (typeof(T) == typeof(char))
+            {
+                return CreateCharValueGetterDelegate(cursor, (PrimitiveColumn<char>)(object)this);
             }
             else if (typeof(T) == typeof(decimal))
             {
-                return CreateDecimalValueGetterDelegate(cursor);
+                return CreateDecimalValueGetterDelegate(cursor, (PrimitiveColumn<decimal>)(object)this);
             }
             return CreateValueGetterDelegate(cursor);
         }
 
         private ValueGetter<T> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
-            (ref T value) => value = this[cursor.Position].Value;
+            (ref T value) => value = this[cursor.Position].GetValueOrDefault();
 
-        private ValueGetter<ushort> CreateCharValueGetterDelegate(DataViewRowCursor cursor) =>
-            (ref ushort value) => value = (ushort)Convert.ChangeType(this[cursor.Position].Value, typeof(ushort));
+        private static ValueGetter<float> CreateSingleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<float> column) =>
+            (ref float value) => value = column[cursor.Position] ?? float.NaN;
 
-        private ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor) =>
-            (ref double value) => value = (double)Convert.ChangeType(this[cursor.Position].Value, typeof(double));
+        private static ValueGetter<double> CreateDoubleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<double> column) =>
+            (ref double value) => value = column[cursor.Position] ?? double.NaN;
+
+        private static ValueGetter<ushort> CreateCharValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<char> column) =>
+            (ref ushort value) => value = column[cursor.Position].GetValueOrDefault();
+
+        private static ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<decimal> column) =>
+            (ref double value) => value = (double?)column[cursor.Position] ?? double.NaN;
     }
 }
