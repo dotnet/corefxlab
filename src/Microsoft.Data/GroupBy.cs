@@ -17,13 +17,13 @@ namespace Microsoft.Data
         /// Compute the number of non-null values in each group 
         /// </summary>
         /// <returns></returns>
-        public abstract DataFrame Count();
+        public abstract DataFrame Count(params string[] columnNames);
 
         /// <summary>
         /// Return the first value in each group
         /// </summary>
         /// <returns></returns>
-        public abstract DataFrame First();
+        public abstract DataFrame First(params string[] columnNames);
 
         /// <summary>
         /// Returns the first numberOfRows rows of each group
@@ -110,7 +110,7 @@ namespace Microsoft.Data
 
         }
 
-        public override DataFrame Count()
+        public override DataFrame Count(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -147,13 +147,13 @@ namespace Microsoft.Data
                 retColumn[rowIndex] = count;
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
 
             return ret;
         }
 
-        public override DataFrame First()
+        public override DataFrame First(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
             PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
@@ -190,7 +190,7 @@ namespace Microsoft.Data
                 }
             });
 
-            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate);
+            EnumerateColumnsWithRows(groupByColumnDelegate, columnDelegate, columnNames);
             ret.SetTableRowCount(firstColumn.Length);
             return ret;
         }

@@ -12,14 +12,13 @@ namespace Microsoft.Data
 {
     public partial class StringColumn : BaseColumn
     {
-        public override BaseColumn Add(BaseColumn column)
+        public override BaseColumn Add(BaseColumn column, bool inPlace = false)
         {
-            // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            StringColumn ret = Clone();
+            StringColumn ret = inPlace ? this : Clone();
             for (long i = 0; i < Length; i++)
             {
                 ret[i] += column[i].ToString();
@@ -27,9 +26,9 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn Add<T>(T value)
+        public override BaseColumn Add<T>(T value, bool inPlace = false)
         {
-            StringColumn ret = Clone();
+            StringColumn ret = inPlace ? this : Clone();
             string valString = value.ToString();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {

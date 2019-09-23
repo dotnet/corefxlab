@@ -19,15 +19,22 @@ namespace Microsoft.Data
     public abstract partial class BaseColumn
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) { #>
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+        public virtual BaseColumn <#=method.MethodName#><T>(T value, bool inPlace = false)
+            where T : unmanaged
+<# } #>
+<# if (method.MethodType == MethodType.ComparisonScalar) { #>
         public virtual BaseColumn <#=method.MethodName#><T>(T value)
             where T : unmanaged
 <# } #>
-<# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
+<# if (method.MethodType == MethodType.Binary) {#>
+        public virtual BaseColumn <#=method.MethodName#>(BaseColumn column, bool inPlace = false)
+<# } #>
+<# if (method.MethodType == MethodType.Comparison) {#>
         public virtual BaseColumn <#=method.MethodName#>(BaseColumn column)
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        public virtual BaseColumn <#=method.MethodName#>(int value)
+        public virtual BaseColumn <#=method.MethodName#>(int value, bool inPlace = false)
 <# } #>
         {
             throw new NotImplementedException();
