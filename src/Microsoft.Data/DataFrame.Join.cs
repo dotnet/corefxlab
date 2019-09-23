@@ -244,9 +244,9 @@ namespace Microsoft.Data
                 // Hash the column with the smaller RowCount 
                 long leftRowCount = RowCount;
                 long rightRowCount = other.RowCount;
-                DataFrame longerDataFrame = leftRowCount < rightRowCount ? other : this;
+                DataFrame longerDataFrame = leftRowCount <= rightRowCount ? other : this;
                 DataFrame shorterDataFrame = ReferenceEquals(longerDataFrame, this) ? other : this;
-                BaseColumn hashColumn = (leftRowCount < rightRowCount) ? this[leftJoinColumn] : other[rightJoinColumn];
+                BaseColumn hashColumn = (leftRowCount <= rightRowCount) ? this[leftJoinColumn] : other[rightJoinColumn];
                 BaseColumn otherColumn = ReferenceEquals(hashColumn, this[leftJoinColumn]) ? other[rightJoinColumn] : this[leftJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = hashColumn.GroupColumnValues<TKey>();
 
