@@ -104,7 +104,6 @@ namespace Microsoft.Data
                     var bitMap = new byte[bitMapBufferLength];
                     for (int i = 0; i < bitMapBufferLength - 1; i++)
                         bitMap[i] = 255;
-                    byte lastBitMap = bitMap[bitMapBufferLength - 1];
                     for (int i = 0; i < length - (bitMapBufferLength - 1) * 8; i++)
                     {
                         bitMap[bitMapBufferLength - 1] = SetBit(bitMap[bitMapBufferLength - 1], i, true);
