@@ -547,26 +547,38 @@ namespace Microsoft.Data.Tests
             BaseColumn doubleColumn = df["Double"].CumulativeMax();
             for (int i = 0; i < doubleColumn.Length; i++)
             {
-                Assert.Equal(100.0, doubleColumn[i]);
+                if (i == 5)
+                    Assert.Null(doubleColumn[i]);
+                else
+                    Assert.Equal(100.0, (double)doubleColumn[i]);
             }
             Assert.Equal(1.0, df["Double"][1]);
             df["Double"].CumulativeMax(true);
             for (int i = 0; i < df["Double"].Length; i++)
             {
-                Assert.Equal(100.0, df["Double"][i]);
+                if (i == 5)
+                    Assert.Null(df["Double"][i]);
+                else
+                    Assert.Equal(100.0, (double)df["Double"][i]);
             }
 
             df["Float"][0] = -10.0f;
             BaseColumn floatColumn = df["Float"].CumulativeMin();
             for (int i = 0; i < floatColumn.Length; i++)
             {
-                Assert.Equal(-10.0f, floatColumn[i]);
+                if (i == 5)
+                    Assert.Null(floatColumn[i]);
+                else
+                    Assert.Equal(-10.0f, (float)floatColumn[i]);
             }
             Assert.Equal(9.0f, df["Float"][9]);
             df["Float"].CumulativeMin(true);
             for (int i = 0; i < df["Float"].Length; i++)
             {
-                Assert.Equal(-10.0f, df["Float"][i]);
+                if (i == 5)
+                    Assert.Null(df["Float"][i]);
+                else
+                    Assert.Equal(-10.0f, (float)df["Float"][i]);
             }
 
             BaseColumn uintColumn = df["Uint"].CumulativeProduct();
