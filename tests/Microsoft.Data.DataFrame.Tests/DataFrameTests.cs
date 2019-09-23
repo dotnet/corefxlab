@@ -1524,6 +1524,38 @@ namespace Microsoft.Data.Tests
             Assert.Equal(2, df.Column(0).NullCount);
             Assert.Equal(3, df.Column(1).NullCount);
 
+            df.Append(new List<KeyValuePair<string, object>> { KeyValuePair.Create("Column1", (object)5), KeyValuePair.Create("Column2", (object)false) });
+            Assert.Equal(14, df.RowCount);
+            Assert.Equal(2, df.Column(0).NullCount);
+            Assert.Equal(3, df.Column(1).NullCount);
+
+            df.Append(new List<KeyValuePair<string, object>> { KeyValuePair.Create("Column1", (object)5)});
+            Assert.Equal(15, df.RowCount);
+            Assert.Equal(15, df["Column1"].Length);
+            Assert.Equal(15, df["Column2"].Length);
+            Assert.Equal(2, df.Column(0).NullCount);
+            Assert.Equal(4, df.Column(1).NullCount);
+
+            df.Append(new List<KeyValuePair<string, object>> { KeyValuePair.Create("Column2", (object)false) });
+            Assert.Equal(16, df.RowCount);
+            Assert.Equal(16, df["Column1"].Length);
+            Assert.Equal(16, df["Column2"].Length);
+            Assert.Equal(3, df.Column(0).NullCount);
+            Assert.Equal(4, df.Column(1).NullCount);
+
+            df.Append((IEnumerable<object>)null);
+            Assert.Equal(17, df.RowCount);
+            Assert.Equal(17, df["Column1"].Length);
+            Assert.Equal(17, df["Column2"].Length);
+            Assert.Equal(4, df.Column(0).NullCount);
+            Assert.Equal(5, df.Column(1).NullCount);
+
+            df.Append((IEnumerable<KeyValuePair<string, object>>)null);
+            Assert.Equal(18, df.RowCount);
+            Assert.Equal(18, df["Column1"].Length);
+            Assert.Equal(18, df["Column2"].Length);
+            Assert.Equal(5, df.Column(0).NullCount);
+            Assert.Equal(6, df.Column(1).NullCount);
         }
 
     }

@@ -568,9 +568,16 @@ namespace Microsoft.Data
         /// <summary>
         /// Appends a row inplace to the DataFrame
         /// </summary>
-        /// <remarks>If a row value doesn't match its column's data type, a conversion will be attempted</remarks>
+        /// <remarks>If a column value doesn't match its column's data type, a conversion will be attempted</remarks>
         /// <param name="row"></param>
         public void Append(IEnumerable<object> row) => _table.Append(row);
+
+        /// <summary>
+        /// Appends a row inplace by enumerating column names and values from <paramref name="row"/>
+        /// </summary>
+        /// <remarks>If a column value doesn't match its column's data type, a conversion will be attempted</remarks>
+        /// <param name="row"></param>
+        public void Append(IEnumerable<KeyValuePair<string, object>> row) => _table.Append(row);
 
         /// <summary>
         /// Invalidates any cached data after a column has changed.
