@@ -1397,6 +1397,7 @@ namespace Microsoft.Data.Tests
             for (int i = 1; i < description.ColumnCount; i++)
             {
                 BaseColumn column = description.Column(i);
+                Assert.Equal(df.Column(i - 1).Name, column.Name);
                 Assert.Equal(4, column.Length);
                 Assert.Equal((float)9, column[0]);
                 Assert.Equal((float)9, column[1]);
