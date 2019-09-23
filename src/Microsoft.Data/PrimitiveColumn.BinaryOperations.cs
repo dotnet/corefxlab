@@ -574,11 +574,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
@@ -607,11 +603,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
@@ -650,11 +642,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Add(value);
                         return newColumn;
                     }
@@ -683,11 +671,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Add(value);
                         return newColumn;
                     }
@@ -730,11 +714,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
@@ -763,11 +743,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
@@ -806,11 +782,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(value);
                         return newColumn;
                     }
@@ -839,11 +811,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Subtract(value);
                         return newColumn;
                     }
@@ -886,11 +854,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
@@ -919,11 +883,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
@@ -962,11 +922,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(value);
                         return newColumn;
                     }
@@ -995,11 +951,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Multiply(value);
                         return newColumn;
                     }
@@ -1042,11 +994,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
@@ -1075,11 +1023,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
@@ -1118,11 +1062,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(value);
                         return newColumn;
                     }
@@ -1151,11 +1091,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Divide(value);
                         return newColumn;
                     }
@@ -1198,11 +1134,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
@@ -1231,11 +1163,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
@@ -1274,11 +1202,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(value);
                         return newColumn;
                     }
@@ -1307,11 +1231,7 @@ namespace Microsoft.Data
                     {
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<U> newColumn;
-                        if (inPlace)
-                            newColumn = primitiveColumn;
-                        else
-                            newColumn = primitiveColumn.Clone();
+                        PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
                         newColumn._columnContainer.Modulo(value);
                         return newColumn;
                     }
@@ -1349,11 +1269,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.And(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1383,11 +1299,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.And(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1421,11 +1333,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Or(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1455,11 +1363,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Or(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1493,11 +1397,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Xor(column._columnContainer);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1527,11 +1427,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn;
-                    if (inPlace)
-                        retColumn = typedColumn;
-                    else
-                        retColumn = typedColumn.Clone();
+                    PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Xor(value);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
@@ -1558,20 +1454,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type byteType when byteType == typeof(byte):
                     PrimitiveColumn<byte> byteColumn = this as PrimitiveColumn<byte>;
-                    PrimitiveColumn<byte> newbyteColumn;
-                    if (inPlace)
-                        newbyteColumn = byteColumn;
-                    else
-                        newbyteColumn = byteColumn.Clone();
+                    PrimitiveColumn<byte> newbyteColumn = inPlace ? byteColumn : byteColumn.Clone();
                     newbyteColumn._columnContainer.LeftShift(value);
                     return newbyteColumn;
                 case Type charType when charType == typeof(char):
                     PrimitiveColumn<char> charColumn = this as PrimitiveColumn<char>;
-                    PrimitiveColumn<char> newcharColumn;
-                    if (inPlace)
-                        newcharColumn = charColumn;
-                    else
-                        newcharColumn = charColumn.Clone();
+                    PrimitiveColumn<char> newcharColumn = inPlace ? charColumn : charColumn.Clone();
                     newcharColumn._columnContainer.LeftShift(value);
                     return newcharColumn;
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1582,65 +1470,37 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveColumn<int> intColumn = this as PrimitiveColumn<int>;
-                    PrimitiveColumn<int> newintColumn;
-                    if (inPlace)
-                        newintColumn = intColumn;
-                    else
-                        newintColumn = intColumn.Clone();
+                    PrimitiveColumn<int> newintColumn = inPlace ? intColumn : intColumn.Clone();
                     newintColumn._columnContainer.LeftShift(value);
                     return newintColumn;
                 case Type longType when longType == typeof(long):
                     PrimitiveColumn<long> longColumn = this as PrimitiveColumn<long>;
-                    PrimitiveColumn<long> newlongColumn;
-                    if (inPlace)
-                        newlongColumn = longColumn;
-                    else
-                        newlongColumn = longColumn.Clone();
+                    PrimitiveColumn<long> newlongColumn = inPlace ? longColumn : longColumn.Clone();
                     newlongColumn._columnContainer.LeftShift(value);
                     return newlongColumn;
                 case Type sbyteType when sbyteType == typeof(sbyte):
                     PrimitiveColumn<sbyte> sbyteColumn = this as PrimitiveColumn<sbyte>;
-                    PrimitiveColumn<sbyte> newsbyteColumn;
-                    if (inPlace)
-                        newsbyteColumn = sbyteColumn;
-                    else
-                        newsbyteColumn = sbyteColumn.Clone();
+                    PrimitiveColumn<sbyte> newsbyteColumn = inPlace ? sbyteColumn : sbyteColumn.Clone();
                     newsbyteColumn._columnContainer.LeftShift(value);
                     return newsbyteColumn;
                 case Type shortType when shortType == typeof(short):
                     PrimitiveColumn<short> shortColumn = this as PrimitiveColumn<short>;
-                    PrimitiveColumn<short> newshortColumn;
-                    if (inPlace)
-                        newshortColumn = shortColumn;
-                    else
-                        newshortColumn = shortColumn.Clone();
+                    PrimitiveColumn<short> newshortColumn = inPlace ? shortColumn : shortColumn.Clone();
                     newshortColumn._columnContainer.LeftShift(value);
                     return newshortColumn;
                 case Type uintType when uintType == typeof(uint):
                     PrimitiveColumn<uint> uintColumn = this as PrimitiveColumn<uint>;
-                    PrimitiveColumn<uint> newuintColumn;
-                    if (inPlace)
-                        newuintColumn = uintColumn;
-                    else
-                        newuintColumn = uintColumn.Clone();
+                    PrimitiveColumn<uint> newuintColumn = inPlace ? uintColumn : uintColumn.Clone();
                     newuintColumn._columnContainer.LeftShift(value);
                     return newuintColumn;
                 case Type ulongType when ulongType == typeof(ulong):
                     PrimitiveColumn<ulong> ulongColumn = this as PrimitiveColumn<ulong>;
-                    PrimitiveColumn<ulong> newulongColumn;
-                    if (inPlace)
-                        newulongColumn = ulongColumn;
-                    else
-                        newulongColumn = ulongColumn.Clone();
+                    PrimitiveColumn<ulong> newulongColumn = inPlace ? ulongColumn : ulongColumn.Clone();
                     newulongColumn._columnContainer.LeftShift(value);
                     return newulongColumn;
                 case Type ushortType when ushortType == typeof(ushort):
                     PrimitiveColumn<ushort> ushortColumn = this as PrimitiveColumn<ushort>;
-                    PrimitiveColumn<ushort> newushortColumn;
-                    if (inPlace)
-                        newushortColumn = ushortColumn;
-                    else
-                        newushortColumn = ushortColumn.Clone();
+                    PrimitiveColumn<ushort> newushortColumn = inPlace ? ushortColumn : ushortColumn.Clone();
                     newushortColumn._columnContainer.LeftShift(value);
                     return newushortColumn;
                 default:
@@ -1655,20 +1515,12 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type byteType when byteType == typeof(byte):
                     PrimitiveColumn<byte> byteColumn = this as PrimitiveColumn<byte>;
-                    PrimitiveColumn<byte> newbyteColumn;
-                    if (inPlace)
-                        newbyteColumn = byteColumn;
-                    else
-                        newbyteColumn = byteColumn.Clone();
+                    PrimitiveColumn<byte> newbyteColumn = inPlace ? byteColumn : byteColumn.Clone();
                     newbyteColumn._columnContainer.RightShift(value);
                     return newbyteColumn;
                 case Type charType when charType == typeof(char):
                     PrimitiveColumn<char> charColumn = this as PrimitiveColumn<char>;
-                    PrimitiveColumn<char> newcharColumn;
-                    if (inPlace)
-                        newcharColumn = charColumn;
-                    else
-                        newcharColumn = charColumn.Clone();
+                    PrimitiveColumn<char> newcharColumn = inPlace ? charColumn : charColumn.Clone();
                     newcharColumn._columnContainer.RightShift(value);
                     return newcharColumn;
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1679,65 +1531,37 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveColumn<int> intColumn = this as PrimitiveColumn<int>;
-                    PrimitiveColumn<int> newintColumn;
-                    if (inPlace)
-                        newintColumn = intColumn;
-                    else
-                        newintColumn = intColumn.Clone();
+                    PrimitiveColumn<int> newintColumn = inPlace ? intColumn : intColumn.Clone();
                     newintColumn._columnContainer.RightShift(value);
                     return newintColumn;
                 case Type longType when longType == typeof(long):
                     PrimitiveColumn<long> longColumn = this as PrimitiveColumn<long>;
-                    PrimitiveColumn<long> newlongColumn;
-                    if (inPlace)
-                        newlongColumn = longColumn;
-                    else
-                        newlongColumn = longColumn.Clone();
+                    PrimitiveColumn<long> newlongColumn = inPlace ? longColumn : longColumn.Clone();
                     newlongColumn._columnContainer.RightShift(value);
                     return newlongColumn;
                 case Type sbyteType when sbyteType == typeof(sbyte):
                     PrimitiveColumn<sbyte> sbyteColumn = this as PrimitiveColumn<sbyte>;
-                    PrimitiveColumn<sbyte> newsbyteColumn;
-                    if (inPlace)
-                        newsbyteColumn = sbyteColumn;
-                    else
-                        newsbyteColumn = sbyteColumn.Clone();
+                    PrimitiveColumn<sbyte> newsbyteColumn = inPlace ? sbyteColumn : sbyteColumn.Clone();
                     newsbyteColumn._columnContainer.RightShift(value);
                     return newsbyteColumn;
                 case Type shortType when shortType == typeof(short):
                     PrimitiveColumn<short> shortColumn = this as PrimitiveColumn<short>;
-                    PrimitiveColumn<short> newshortColumn;
-                    if (inPlace)
-                        newshortColumn = shortColumn;
-                    else
-                        newshortColumn = shortColumn.Clone();
+                    PrimitiveColumn<short> newshortColumn = inPlace ? shortColumn : shortColumn.Clone();
                     newshortColumn._columnContainer.RightShift(value);
                     return newshortColumn;
                 case Type uintType when uintType == typeof(uint):
                     PrimitiveColumn<uint> uintColumn = this as PrimitiveColumn<uint>;
-                    PrimitiveColumn<uint> newuintColumn;
-                    if (inPlace)
-                        newuintColumn = uintColumn;
-                    else
-                        newuintColumn = uintColumn.Clone();
+                    PrimitiveColumn<uint> newuintColumn = inPlace ? uintColumn : uintColumn.Clone();
                     newuintColumn._columnContainer.RightShift(value);
                     return newuintColumn;
                 case Type ulongType when ulongType == typeof(ulong):
                     PrimitiveColumn<ulong> ulongColumn = this as PrimitiveColumn<ulong>;
-                    PrimitiveColumn<ulong> newulongColumn;
-                    if (inPlace)
-                        newulongColumn = ulongColumn;
-                    else
-                        newulongColumn = ulongColumn.Clone();
+                    PrimitiveColumn<ulong> newulongColumn = inPlace ? ulongColumn : ulongColumn.Clone();
                     newulongColumn._columnContainer.RightShift(value);
                     return newulongColumn;
                 case Type ushortType when ushortType == typeof(ushort):
                     PrimitiveColumn<ushort> ushortColumn = this as PrimitiveColumn<ushort>;
-                    PrimitiveColumn<ushort> newushortColumn;
-                    if (inPlace)
-                        newushortColumn = ushortColumn;
-                    else
-                        newushortColumn = ushortColumn.Clone();
+                    PrimitiveColumn<ushort> newushortColumn = inPlace ? ushortColumn : ushortColumn.Clone();
                     newushortColumn._columnContainer.RightShift(value);
                     return newushortColumn;
                 default:

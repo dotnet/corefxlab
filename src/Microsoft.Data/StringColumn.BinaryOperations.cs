@@ -18,11 +18,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            StringColumn ret;
-            if (inPlace)
-                ret = this;
-            else
-                ret = Clone();
+            StringColumn ret = inPlace ? this : Clone();
             for (long i = 0; i < Length; i++)
             {
                 ret[i] += column[i].ToString();
@@ -32,11 +28,7 @@ namespace Microsoft.Data
 
         public override BaseColumn Add<T>(T value, bool inPlace = false)
         {
-            StringColumn ret;
-            if (inPlace)
-                ret = this;
-            else
-                ret = Clone();
+            StringColumn ret = inPlace ? this : Clone();
             string valString = value.ToString();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {

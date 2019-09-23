@@ -275,11 +275,7 @@ namespace Microsoft.Data
         public override BaseColumn FillNulls(object value, bool inPlace = false)
         {
             T Tvalue = (T)Convert.ChangeType(value, typeof(T));
-            PrimitiveColumn<T> column;
-            if (inPlace)
-                column = this;
-            else
-                column = Clone();
+            PrimitiveColumn<T> column = inPlace ? this : Clone();
             column.ApplyElementwise((T? columnValue, long index) =>
             {
                 if (columnValue.HasValue == false)

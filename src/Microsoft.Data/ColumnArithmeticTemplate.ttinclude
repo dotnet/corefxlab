@@ -27,6 +27,11 @@
         public ISet<string> UnsupportedMethods { get; }
     }
 
+    public string GenerateInPlaceStatement(string trueCondition, string falseCondition)
+    {
+        return $"inPlace ? {trueCondition} : {falseCondition}";
+    }
+
     public string GenerateIfStatementHeader(TypeConfiguration type)
     {
         string keyword = (type == typeConfiguration[0]) ? "if" : "else if";

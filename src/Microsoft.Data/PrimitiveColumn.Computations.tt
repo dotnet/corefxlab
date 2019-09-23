@@ -37,19 +37,11 @@ namespace Microsoft.Data
 <# } #>
         {
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-            PrimitiveColumn<T> ret;
-            if (inPlace)
-                ret = this;
-            else
-                ret = Clone();
+            PrimitiveColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer, rowIndices);
             return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-            PrimitiveColumn<T> ret;
-            if (inPlace)
-                ret = this;
-            else
-                ret = Clone();
+            PrimitiveColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer);
             return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>

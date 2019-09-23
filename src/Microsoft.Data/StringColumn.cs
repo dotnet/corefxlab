@@ -427,11 +427,7 @@ namespace Microsoft.Data
             if (value.GetType() != typeof(string) || value == null)
                 throw new ArgumentException(nameof(value));
             string stringValue = (string)value;
-            StringColumn column;
-            if (inPlace)
-                column = this;
-            else
-                column = Clone();
+            StringColumn column = inPlace ? this : Clone();
 
             for (long i = 0; i < Length; i++)
             {
