@@ -42,7 +42,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn Equals(BaseColumn column)
+        public override PrimitiveColumn<bool> Equals(BaseColumn column)
         {
             // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
@@ -57,7 +57,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn Equals<T>(T value)
+        public override PrimitiveColumn<bool> Equals<T>(T value)
         {
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             string valString = value.ToString();
@@ -68,7 +68,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn NotEquals(BaseColumn column)
+        public override PrimitiveColumn<bool> NotEquals(BaseColumn column)
         {
             // TODO: Using indexing is VERY inefficient here. Each indexer call will find the "right" buffer and then return the value
             if (Length != column.Length)
@@ -83,7 +83,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn NotEquals<T>(T value)
+        public override PrimitiveColumn<bool> NotEquals<T>(T value)
         {
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             string valString = value.ToString();

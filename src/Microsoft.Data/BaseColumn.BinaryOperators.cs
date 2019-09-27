@@ -582,422 +582,422 @@ namespace Microsoft.Data
             return column.RightShift(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn left, BaseColumn right)
         {
             return left.Equals(right);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, bool value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, byte value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, char value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, decimal value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, double value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, float value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, int value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, long value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, sbyte value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, short value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, uint value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, ulong value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator ==(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator ==(BaseColumn column, ushort value)
         {
             return column.Equals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn left, BaseColumn right)
         {
             return left.NotEquals(right);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, bool value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, byte value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, char value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, decimal value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, double value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, float value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, int value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, long value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, sbyte value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, short value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, uint value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, ulong value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator !=(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator !=(BaseColumn column, ushort value)
         {
             return column.NotEquals(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn left, BaseColumn right)
         {
             return left.GreaterThanOrEqual(right);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, bool value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, byte value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, char value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, decimal value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, double value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, float value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, int value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, long value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, sbyte value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, short value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, uint value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, ulong value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator >=(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator >=(BaseColumn column, ushort value)
         {
             return column.GreaterThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn left, BaseColumn right)
         {
             return left.LessThanOrEqual(right);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, bool value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, byte value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, char value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, decimal value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, double value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, float value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, int value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, long value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, sbyte value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, short value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, uint value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, ulong value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator <=(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator <=(BaseColumn column, ushort value)
         {
             return column.LessThanOrEqual(value);
         }
 
-        public static BaseColumn operator >(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator >(BaseColumn left, BaseColumn right)
         {
             return left.GreaterThan(right);
         }
 
-        public static BaseColumn operator >(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, bool value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, byte value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, char value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, decimal value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, double value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, float value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, int value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, long value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, sbyte value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, short value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, uint value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, ulong value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator >(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator >(BaseColumn column, ushort value)
         {
             return column.GreaterThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn left, BaseColumn right)
+        public static PrimitiveColumn<bool> operator <(BaseColumn left, BaseColumn right)
         {
             return left.LessThan(right);
         }
 
-        public static BaseColumn operator <(BaseColumn column, bool value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, bool value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, byte value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, byte value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, char value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, char value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, decimal value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, decimal value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, double value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, double value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, float value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, float value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, int value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, int value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, long value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, long value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, sbyte value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, sbyte value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, short value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, short value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, uint value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, uint value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, ulong value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, ulong value)
         {
             return column.LessThan(value);
         }
 
-        public static BaseColumn operator <(BaseColumn column, ushort value)
+        public static PrimitiveColumn<bool> operator <(BaseColumn column, ushort value)
         {
             return column.LessThan(value);
         }
