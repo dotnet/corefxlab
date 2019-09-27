@@ -59,23 +59,17 @@ namespace Microsoft.Data
         public PrimitiveColumnContainer(IEnumerable<T> values)
         {
             values = values ?? throw new ArgumentNullException(nameof(values));
-            if (Buffers.Count == 0)
-            {
-                Buffers.Add(new DataFrameBuffer<T>());
-                NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
-            }
-            DataFrameBuffer<T> curBuffer = (DataFrameBuffer<T>)Buffers[Buffers.Count - 1];
             foreach (T value in values)
             {
-                if (curBuffer.Length == ReadOnlyDataFrameBuffer<T>.MaxCapacity)
-                {
-                    curBuffer = new DataFrameBuffer<T>();
-                    Buffers.Add(curBuffer);
-                    NullBitMapBuffers.Add(new DataFrameBuffer<byte>());
-                }
-                curBuffer.Append(value);
-                SetValidityBit(Length, true);
-                Length++;
+                Append(value);
+            }
+        }
+        public PrimitiveColumnContainer(IEnumerable<T?> values)
+        {
+            values = values ?? throw new ArgumentNullException(nameof(values));
+            foreach (T? value in values)
+            {
+                Append(value);
             }
         }
 
@@ -137,7 +131,7 @@ namespace Microsoft.Data
             }
             DataFrameBuffer<T> mutableLastBuffer = DataFrameBuffer<T>.GetMutableBuffer(lastBuffer);
             mutableLastBuffer.Append(value ?? default);
-            SetValidityBit(Length, value.HasValue ? true : false);
+            SetValidityBit(Length, value.HasValue);
             Length++;
         }
 

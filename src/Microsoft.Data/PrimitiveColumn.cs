@@ -27,6 +27,12 @@ namespace Microsoft.Data
             _columnContainer = column;
         }
 
+        public PrimitiveColumn(string name, IEnumerable<T?> values) : base(name, 0, typeof(T))
+        {
+            _columnContainer = new PrimitiveColumnContainer<T>(values);
+            Length = _columnContainer.Length;
+        }
+
         public PrimitiveColumn(string name, IEnumerable<T> values) : base(name, 0, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(values);

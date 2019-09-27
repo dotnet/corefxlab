@@ -110,67 +110,67 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Equals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> Equals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Equals<T>(T value)
+        public virtual PrimitiveColumn<bool> Equals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn NotEquals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> NotEquals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn NotEquals<T>(T value)
+        public virtual PrimitiveColumn<bool> NotEquals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn GreaterThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> GreaterThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn GreaterThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> GreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn LessThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> LessThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn LessThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> LessThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn GreaterThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> GreaterThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn GreaterThan<T>(T value)
+        public virtual PrimitiveColumn<bool> GreaterThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn LessThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> LessThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn LessThan<T>(T value)
+        public virtual PrimitiveColumn<bool> LessThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
