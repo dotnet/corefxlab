@@ -1516,7 +1516,7 @@ namespace Microsoft.Data.Tests
         public void TestColumnCreationFromExisitingColumn()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BugInts", df["Int"] > 5);
+            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BigInts", df["Int"] > 5);
             for (int i = 0; i < 10; i++)
             {
                 if (i <= 5)
