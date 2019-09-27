@@ -207,19 +207,6 @@ namespace Microsoft.Data
             }
         }
 
-        public IList<string> ColumnTypes
-        {
-            get
-            {
-                var ret = new List<string>(ColumnCount);
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.Add(_table.Column(i).DataType.ToString());
-                }
-                return ret;
-            }
-        }
-
         public BaseColumn Column(int index) => _table.Column(index);
 
         public void InsertColumn(int columnIndex, BaseColumn column)
@@ -345,18 +332,18 @@ namespace Microsoft.Data
         public DataFrame Info()
         {
             DataFrame ret = new DataFrame();
-            if (ColumnCount == 0)
-                return ret;
 
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn column = Column(i);
-                DataFrame columnInfo = column.Info();
                 if (i == 0)
-                    ret = columnInfo;
-                else
-                    ret = ret.Merge<string>(columnInfo, "Info", "Info", "_left", "_right", joinAlgorithm: JoinAlgorithm.Inner);
-                RemoveRightAndRenameLeftColumn(ret, "Info", "_left", "_right");
+                {
+                    StringColumn strColumn = new StringColumn("Info", 2);
+                    strColumn[0] = "DataType";
+                    strColumn[1] = "Length";
+                    ret.InsertColumn(0, strColumn);
+                }
+                column.Info(ret);
             }
             return ret;
         }

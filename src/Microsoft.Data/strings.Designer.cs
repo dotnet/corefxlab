@@ -106,6 +106,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inconsistent Null bitmaps and NullCounts.
+        /// </summary>
+        public static string InconsistentNullBitMapAndNullCount {
+            get {
+                return ResourceManager.GetString("InconsistentNullBitMapAndNullCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column does not exist.
         /// </summary>
         public static string InvalidColumnName {

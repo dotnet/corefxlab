@@ -90,24 +90,24 @@ namespace Microsoft.Data
                 dataBuffer = mutableBuffer;
             }
             else
+            {
                 dataBuffer = new ReadOnlyDataFrameBuffer<T>(buffer, length);
+            }
             Buffers.Add(dataBuffer);
             int bitMapBufferLength = (int)Math.Ceiling(length / 8.0);
             ReadOnlyDataFrameBuffer<byte> nullDataFrameBuffer;
             if (nullBitMap.IsEmpty)
             {
                 if (nullCount != 0)
-                    throw new ArgumentNullException(nameof(nullBitMap));
+                    throw new ArgumentNullException(Strings.InconsistentNullBitMapAndNullCount, nameof(nullBitMap));
                 if (!buffer.IsEmpty)
                 {
                     // Create a new bitMap with all the bits set
                     var bitMap = new byte[bitMapBufferLength];
-                    for (int i = 0; i < bitMapBufferLength - 1; i++)
-                        bitMap[i] = 255;
-                    for (int i = 0; i < length - (bitMapBufferLength - 1) * 8; i++)
-                    {
-                        bitMap[bitMapBufferLength - 1] = SetBit(bitMap[bitMapBufferLength - 1], i, true);
-                    }
+                    bitMap.AsSpan().Slice(0, bitMapBufferLength - 1).Fill(255);
+                    int lastByte = 1 << (length - (bitMapBufferLength - 1) * 8);
+                    bitMap[bitMapBufferLength - 1] = (byte)(lastByte - 1);
+
                     nullDataFrameBuffer = new ReadOnlyDataFrameBuffer<byte>(bitMap, bitMapBufferLength);
                 }
                 else

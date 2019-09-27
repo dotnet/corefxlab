@@ -166,18 +166,12 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns a DataFrame with a concise summary of this column
         /// </summary>
-        public virtual DataFrame Info()
+        public virtual void Info(DataFrame dataFrame)
         {
-            DataFrame ret = new DataFrame();
-            StringColumn infoColumn = new StringColumn("Info", 0);
-            infoColumn.Append("DataType");
-            infoColumn.Append("Length");
-            StringColumn dataColumn = new StringColumn(Name, 0);
-            dataColumn.Append(DataType.ToString());
-            dataColumn.Append((Length - NullCount).ToString() + " non-null values");
-            ret.InsertColumn(0, infoColumn);
-            ret.InsertColumn(1, dataColumn);
-            return ret;
+            StringColumn dataColumn = new StringColumn(Name, 2);
+            dataColumn[0] = DataType.ToString();
+            dataColumn[1] = (Length - NullCount).ToString() + " non-null values";
+            dataFrame.InsertColumn(dataFrame.ColumnCount, dataColumn);
         }
 
         /// <summary>
@@ -189,10 +183,6 @@ namespace Microsoft.Data
         /// Returns a DataFrame with statistics that describe the column
         /// </summary>
         public virtual DataFrame Description() => throw new NotImplementedException();
-
-        public override bool Equals(object obj) => ReferenceEquals(this, obj);
-
-        public override int GetHashCode() => base.GetHashCode();
 
         internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
 

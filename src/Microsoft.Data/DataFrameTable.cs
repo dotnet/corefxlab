@@ -156,7 +156,7 @@ namespace Microsoft.Data
                 while (columnMoveNext && rowMoveNext)
                 {
                     BaseColumn column = columnEnumerator.Current;
-                    object value = rowEnumerator.Current ?? null;
+                    object value = rowEnumerator.Current;
                     if (value != null)
                     {
                         value = Convert.ChangeType(value, column.DataType);
