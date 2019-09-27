@@ -1394,6 +1394,12 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
             DataFrame description = df.Description();
+            BaseColumn descriptionColumn = description.Column(0);
+            Assert.Equal("Description", descriptionColumn.Name);
+            Assert.Equal("Length", descriptionColumn[0]);
+            Assert.Equal("Max", descriptionColumn[1]);
+            Assert.Equal("Min", descriptionColumn[2]);
+            Assert.Equal("Mean", descriptionColumn[3]);
             for (int i = 1; i < description.ColumnCount; i++)
             {
                 BaseColumn column = description.Column(i);
