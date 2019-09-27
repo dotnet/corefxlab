@@ -366,6 +366,10 @@ namespace Microsoft.Data
 
         private StringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
         {
+            long? ConvertInt(long index)
+            {
+                return mapIndices[index];
+            }
             return CloneImplementation(mapIndices, invertMapIndex);
         }
 

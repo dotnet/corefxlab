@@ -19,7 +19,7 @@ namespace Microsoft.Data
     public abstract partial class BaseColumn
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-<# if (method.MethodType == MethodType.BinaryScalar) { #>
+<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) { #>
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
         public static BaseColumn operator <#=method.Operator#>(BaseColumn column, <#=type.TypeName#> value)
         {
@@ -27,20 +27,6 @@ namespace Microsoft.Data
         }
 
 <# } #>
-<# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
-<# foreach (TypeConfiguration type in typeConfiguration) { #>
-        public static PrimitiveColumn<bool> operator <#=method.Operator#>(BaseColumn column, <#=type.TypeName#> value)
-        {
-            return column.<#=method.MethodName#>(value);
-        }
-
-<# } #>
-<# } else if (method.MethodType == MethodType.Comparison) { #>
-        public static PrimitiveColumn<bool> operator <#=method.Operator#>(BaseColumn left, BaseColumn right)
-        {
-            return left.<#=method.MethodName#>(right);
-        }
-
 <# } else if (method.MethodType == MethodType.BinaryInt) {#>
         public static BaseColumn operator <#=method.Operator#>(BaseColumn column, int value)
         {

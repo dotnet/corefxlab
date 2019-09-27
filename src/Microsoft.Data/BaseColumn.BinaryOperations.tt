@@ -24,14 +24,14 @@ namespace Microsoft.Data
             where T : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
-        public virtual PrimitiveColumn<bool> <#=method.MethodName#><T>(T value)
+        public virtual BaseColumn <#=method.MethodName#><T>(T value)
             where T : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary) {#>
         public virtual BaseColumn <#=method.MethodName#>(BaseColumn column, bool inPlace = false)
 <# } #>
 <# if (method.MethodType == MethodType.Comparison) {#>
-        public virtual PrimitiveColumn<bool> <#=method.MethodName#>(BaseColumn column)
+        public virtual BaseColumn <#=method.MethodName#>(BaseColumn column)
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
         public virtual BaseColumn <#=method.MethodName#>(int value, bool inPlace = false)

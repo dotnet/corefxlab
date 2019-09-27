@@ -1512,19 +1512,5 @@ namespace Microsoft.Data.Tests
             }
         }
 
-        [Fact]
-        public void TestColumnCreationFromExisitingColumn()
-        {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BugInts", df["Int"] > 5);
-            for (int i = 0; i < 10; i++)
-            {
-                if (i <= 5)
-                    Assert.False(bigInts[i]);
-                else
-                    Assert.True(bigInts[i]);
-            }
-        }
-
     }
 }
