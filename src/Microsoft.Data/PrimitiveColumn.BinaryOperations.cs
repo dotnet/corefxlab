@@ -325,7 +325,7 @@ namespace Microsoft.Data
         {
             return RightShiftImplementation(value, inPlace);
         }
-        public override BaseColumn Equals(BaseColumn column)
+        public override PrimitiveColumn<bool> Equals(BaseColumn column)
         {
             switch (column)
             {
@@ -359,11 +359,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn Equals<U>(U value)
+        public override PrimitiveColumn<bool> Equals<U>(U value)
         {
             return EqualsImplementation(value);
         }
-        public override BaseColumn NotEquals(BaseColumn column)
+        public override PrimitiveColumn<bool> NotEquals(BaseColumn column)
         {
             switch (column)
             {
@@ -397,11 +397,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn NotEquals<U>(U value)
+        public override PrimitiveColumn<bool> NotEquals<U>(U value)
         {
             return NotEqualsImplementation(value);
         }
-        public override BaseColumn GreaterThanOrEqual(BaseColumn column)
+        public override PrimitiveColumn<bool> GreaterThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
@@ -435,11 +435,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn GreaterThanOrEqual<U>(U value)
+        public override PrimitiveColumn<bool> GreaterThanOrEqual<U>(U value)
         {
             return GreaterThanOrEqualImplementation(value);
         }
-        public override BaseColumn LessThanOrEqual(BaseColumn column)
+        public override PrimitiveColumn<bool> LessThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
@@ -473,11 +473,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn LessThanOrEqual<U>(U value)
+        public override PrimitiveColumn<bool> LessThanOrEqual<U>(U value)
         {
             return LessThanOrEqualImplementation(value);
         }
-        public override BaseColumn GreaterThan(BaseColumn column)
+        public override PrimitiveColumn<bool> GreaterThan(BaseColumn column)
         {
             switch (column)
             {
@@ -511,11 +511,11 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn GreaterThan<U>(U value)
+        public override PrimitiveColumn<bool> GreaterThan<U>(U value)
         {
             return GreaterThanImplementation(value);
         }
-        public override BaseColumn LessThan(BaseColumn column)
+        public override PrimitiveColumn<bool> LessThan(BaseColumn column)
         {
             switch (column)
             {
@@ -549,7 +549,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn LessThan<U>(U value)
+        public override PrimitiveColumn<bool> LessThan<U>(U value)
         {
             return LessThanImplementation(value);
         }
@@ -1568,7 +1568,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn EqualsImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> EqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1649,7 +1649,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn EqualsImplementation<U>(U value)
+        internal PrimitiveColumn<bool> EqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1726,7 +1726,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn NotEqualsImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> NotEqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1807,7 +1807,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn NotEqualsImplementation<U>(U value)
+        internal PrimitiveColumn<bool> NotEqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1884,7 +1884,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn GreaterThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> GreaterThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1959,7 +1959,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn GreaterThanOrEqualImplementation<U>(U value)
+        internal PrimitiveColumn<bool> GreaterThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2030,7 +2030,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn LessThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> LessThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -2105,7 +2105,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn LessThanOrEqualImplementation<U>(U value)
+        internal PrimitiveColumn<bool> LessThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2176,7 +2176,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn GreaterThanImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> GreaterThanImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -2251,7 +2251,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn GreaterThanImplementation<U>(U value)
+        internal PrimitiveColumn<bool> GreaterThanImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2322,7 +2322,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn LessThanImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> LessThanImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -2397,7 +2397,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn LessThanImplementation<U>(U value)
+        internal PrimitiveColumn<bool> LessThanImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
