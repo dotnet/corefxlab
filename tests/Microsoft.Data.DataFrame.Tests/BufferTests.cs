@@ -173,6 +173,8 @@ namespace Microsoft.Data.Tests
             Assert.Equal(7, clone.Length);
             Assert.Equal(stringColumn[0], clone[0]);
             Assert.Equal(stringColumn[1], clone[1]);
+            for (int i = 2; i < 7; i++)
+                Assert.Null(clone[i]);
         }
 
         [Fact]

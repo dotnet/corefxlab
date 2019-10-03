@@ -245,25 +245,39 @@ namespace Microsoft.Data.Tests
         public void TestBinaryOperations()
         {
             DataFrame df = MakeDataFrameWithTwoColumns(12);
-            // Binary ops always return a copy
-            Assert.Equal(5, df.Add(5)[0, 0]);
             IReadOnlyList<int> listOfInts = new List<int>() { 5, 5 };
-            Assert.Equal(5, df.Add(listOfInts)[0, 0]);
-            Assert.Equal(-5, df.Subtract(5)[0, 0]);
-            Assert.Equal(-5, df.Subtract(listOfInts)[0, 0]);
-            Assert.Equal(5, df.Multiply(5)[1, 0]);
-            Assert.Equal(5, df.Multiply(listOfInts)[1, 0]);
-            Assert.Equal(1, df.Divide(5)[5, 0]);
-            Assert.Equal(1, df.Divide(listOfInts)[5, 0]);
-            Assert.Equal(0, df.Modulo(5)[5, 0]);
-            Assert.Equal(0, df.Modulo(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.And(5)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.And(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Or(5)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Or(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Xor(5)[5, 0]);
-            Assert.Equal(2, df.LeftShift(1)[1, 0]);
-            Assert.Equal(1, df.RightShift(1)[2, 0]);
+
+            var ret = df.Add(5);
+            Assert.Equal(0, df[0, 0]);
+            Assert.Equal(5, ret[0, 0]);
+            ret = df.Add(listOfInts);
+            Assert.Equal(0, df[0, 0]);
+            Assert.Equal(5, ret[0, 0]);
+            ret = df.Subtract(5);
+            Assert.Equal(0, df[0, 0]);
+            Assert.Equal(-5, ret[0, 0]);
+            ret = df.Subtract(listOfInts);
+            Assert.Equal(0, df[0, 0]);
+            Assert.Equal(-5, ret[0, 0]);
+            ret = df.Multiply(5);
+            Assert.Equal(1, df[1, 0]);
+            Assert.Equal(5, ret[1, 0]);
+            ret = df.Multiply(listOfInts);
+            Assert.Equal(1, df[1, 0]);
+            Assert.Equal(5, ret[1, 0]);
+            ret = df.Divide(5);
+            Assert.Equal(5, df[5, 0]);
+            Assert.Equal(1, ret[5, 0]);
+            ret = df.Divide(listOfInts);
+            Assert.Equal(5, df[5, 0]);
+            Assert.Equal(1, ret[5, 0]);
+            ret = df.Modulo(5);
+            Assert.Equal(5, df[5, 0]);
+            Assert.Equal(0, ret[5, 0]);
+            ret = df.Modulo(listOfInts);
+            Assert.Equal(5, df[5, 0]);
+            Assert.Equal(0, ret[5, 0]);
+
             Assert.Equal(true, df.Equals(5)[5, 0]);
             Assert.Equal(true, df.Equals(listOfInts)[5, 0]);
             Assert.Equal(true, df.NotEquals(5)[4, 0]);
@@ -276,9 +290,24 @@ namespace Microsoft.Data.Tests
             Assert.Equal(false, df.GreaterThan(listOfInts)[5, 0]);
             Assert.Equal(false, df.LessThan(5)[5, 0]);
             Assert.Equal(false, df.LessThan(listOfInts)[5, 0]);
-
-            // The original DF is untouched
-            Assert.Equal(0, df[0, 0]);
+            // The following binary ops are in place
+            Assert.Equal(5, df.Add(5, true)[0, 0]);
+            Assert.Equal(10, df.Add(listOfInts, true)[0, 0]);
+            Assert.Equal(5, df.Subtract(5, true)[0, 0]);
+            Assert.Equal(0, df.Subtract(listOfInts, true)[0, 0]);
+            Assert.Equal(5, df.Multiply(5, true)[1, 0]);
+            Assert.Equal(25, df.Multiply(listOfInts, true)[1, 0]);
+            Assert.Equal(5, df.Divide(5, true)[1, 0]);
+            Assert.Equal(1, df.Divide(listOfInts, true)[1, 0]);
+            Assert.Equal(1, df.Modulo(5, true)[1, 0]);
+            Assert.Equal(1, df.Modulo(listOfInts, true)[1, 0]);
+            Assert.Throws<NotSupportedException>(() => df.And(5, true)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.And(listOfInts)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.Or(5, true)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.Or(listOfInts)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.Xor(5, true)[5, 0]);
+            Assert.Equal(2, df.LeftShift(1)[1, 0]);
+            Assert.Equal(1, df.RightShift(1)[2, 0]);
         }
 
         [Fact]
@@ -1210,17 +1239,41 @@ namespace Microsoft.Data.Tests
         public void TestColumnClip()
         {
             DataFrame df = MakeDataFrameWithNumericColumns(10);
+            // Out of place
             BaseColumn clipped = df["Int"].Clip(3, 7);
             Assert.Equal(3, clipped[0]);
+            Assert.Equal(0, df["Int"][0]);
             Assert.Equal(3, clipped[1]);
+            Assert.Equal(1, df["Int"][1]);
             Assert.Equal(3, clipped[2]);
+            Assert.Equal(2, df["Int"][2]);
             Assert.Equal(3, clipped[3]);
+            Assert.Equal(3, df["Int"][3]);
             Assert.Equal(4, clipped[4]);
+            Assert.Equal(4, df["Int"][4]);
             Assert.Null(clipped[5]);
+            Assert.Null(df["Int"][5]);
             Assert.Equal(6, clipped[6]);
+            Assert.Equal(6, df["Int"][6]);
             Assert.Equal(7, clipped[7]);
+            Assert.Equal(7, df["Int"][7]);
             Assert.Equal(7, clipped[8]);
+            Assert.Equal(8, df["Int"][8]);
             Assert.Equal(7, clipped[9]);
+            Assert.Equal(9, df["Int"][9]);
+
+            // In place
+            df["Int"].Clip(3, 7, true);
+            Assert.Equal(3, df["Int"][0]);
+            Assert.Equal(3, df["Int"][1]);
+            Assert.Equal(3, df["Int"][2]);
+            Assert.Equal(3, df["Int"][3]);
+            Assert.Equal(4, df["Int"][4]);
+            Assert.Null(df["Int"][5]);
+            Assert.Equal(6, df["Int"][6]);
+            Assert.Equal(7, df["Int"][7]);
+            Assert.Equal(7, df["Int"][8]);
+            Assert.Equal(7, df["Int"][9]);
         }
 
         [Fact]
@@ -1240,35 +1293,57 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             IList<string> dfColumns = df.Columns;
-            DataFrame clipped = df.Clip(3, 7);
-            IList<string> clippedColumns = clipped.Columns;
-            Assert.Equal(df.ColumnCount, clipped.ColumnCount);
-            Assert.Equal(dfColumns, clippedColumns);
-            for (int c = 0; c < df.ColumnCount; c++)
+
+            void VerifyDataFrameClip(DataFrame clipped)
             {
-                BaseColumn column = clipped.Column(c);
-                if (column.IsNumericColumn())
+
+                IList<string> clippedColumns = clipped.Columns;
+                Assert.Equal(df.ColumnCount, clipped.ColumnCount);
+                Assert.Equal(dfColumns, clippedColumns);
+                for (int c = 0; c < df.ColumnCount; c++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    BaseColumn column = clipped.Column(c);
+                    if (column.IsNumericColumn())
                     {
-                        Assert.Equal("3", column[i].ToString());
+                        for (int i = 0; i < 4; i++)
+                        {
+                            Assert.Equal("3", column[i].ToString());
+                        }
+                        Assert.Equal(4.ToString(), column[4].ToString());
+                        Assert.Null(column[5]);
+                        Assert.Equal(6.ToString(), column[6].ToString());
+                        for (int i = 7; i < 10; i++)
+                        {
+                            Assert.Equal("7", column[i].ToString());
+                        }
                     }
-                    Assert.Equal(4.ToString(), column[4].ToString());
-                    Assert.Null(column[5]);
-                    Assert.Equal(6.ToString(), column[6].ToString());
-                    for (int i = 7; i < 10; i++)
+                    else
                     {
-                        Assert.Equal("7", column[i].ToString());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < column.Length; i++)
-                    {
-                        Assert.Equal(df.Column(c)[i], column[i]);
+                        for (int i = 0; i < column.Length; i++)
+                        {
+                            var colD = df.Column(c)[i];
+                            var ocD = column[i];
+                            Assert.Equal(df.Column(c)[i], column[i]);
+                        }
                     }
                 }
             }
+
+            // Out of place
+            DataFrame clipped = df.Clip(3, 7);
+            VerifyDataFrameClip(clipped);
+            for (int i = 0; i < 10; i++)
+            {
+                if (i != 5)
+                    Assert.Equal(i, df["Int"][i]);
+                else
+                    Assert.Null(df["Int"][5]);
+            }
+
+            // Inplace
+            df.Clip(3, 7, true);
+            VerifyDataFrameClip(df);
+
         }
 
         [Fact]
@@ -1295,14 +1370,32 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             IList<string> columnNames = df.Columns;
-            df.AddPrefix("Prefix_");
-            IList<string> prefixNames = df.Columns;
+
+            DataFrame prefix = df.AddPrefix("Prefix_");
+            IList<string> prefixNames = prefix.Columns;
+            for (int i = 0; i < prefixNames.Count; i++)
+            {
+                Assert.Equal(df.Columns[i], columnNames[i]);
+                Assert.Equal(prefixNames[i], "Prefix_" + columnNames[i]);
+            }
+            // Inplace
+            df.AddPrefix("Prefix_", true);
+            prefixNames = df.Columns;
             for (int i = 0; i < prefixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i], prefixNames[i]);
             }
-            df.AddSuffix("_Suffix");
-            IList<string> suffixNames = df.Columns;
+
+            DataFrame suffix = df.AddSuffix("_Suffix");
+            IList<string> suffixNames = suffix.Columns;
+            for (int i = 0; i < suffixNames.Count; i++)
+            {
+                Assert.Equal(df.Columns[i], "Prefix_" + columnNames[i]);
+                Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
+            }
+            // InPlace
+            df.AddSuffix("_Suffix", true);
+            suffixNames = df.Columns;
             for (int i = 0; i < suffixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
@@ -1430,12 +1523,26 @@ namespace Microsoft.Data.Tests
             Assert.Null(df[10, 0]);
             DataFrame fillNulls = df.FillNulls(1000);
             Assert.Equal(1000, (int)fillNulls[10, 1]);
+            Assert.Null(df[10, 0]);
+            df.FillNulls(1000, true);
+            Assert.Equal(1000, df[10, 1]);
 
             StringColumn strColumn = new StringColumn("String", 0);
             strColumn.Append(null);
             strColumn.Append(null);
             Assert.Equal(2, strColumn.Length);
             Assert.Equal(2, strColumn.NullCount);
+            BaseColumn filled = strColumn.FillNulls("foo");
+            Assert.Equal(2, strColumn.Length);
+            Assert.Equal(2, strColumn.NullCount);
+            Assert.Equal(2, filled.Length);
+            Assert.Equal(0, filled.NullCount);
+            Assert.Equal("foo", filled[0]);
+            Assert.Equal("foo", filled[1]);
+            Assert.Null(strColumn[0]);
+            Assert.Null(strColumn[1]);
+
+            // In place
             strColumn.FillNulls("foo", true);
             Assert.Equal(2, strColumn.Length);
             Assert.Equal(0, strColumn.NullCount);

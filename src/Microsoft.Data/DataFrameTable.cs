@@ -83,7 +83,7 @@ namespace Microsoft.Data
             }
             if (_columnNameToIndexDictionary.ContainsKey(column.Name))
             {
-                throw new ArgumentException($"Table already contains a column called {column.Name}");
+                throw new ArgumentException(string.Format(Strings.DuplicateColumnName, column.Name), nameof(column));
             }
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
@@ -107,9 +107,10 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            if (_columnNameToIndexDictionary.ContainsKey(column.Name))
+            bool existingColumn = _columnNameToIndexDictionary.TryGetValue(column.Name, out int existingColumnIndex);
+            if (existingColumn && existingColumnIndex != columnIndex)
             {
-                throw new ArgumentException($"Table already contains a column called {column.Name}");
+                throw new ArgumentException(string.Format(Strings.DuplicateColumnName, column.Name), nameof(column));
             }
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
             _columnNames[columnIndex] = column.Name;

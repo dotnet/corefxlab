@@ -165,7 +165,7 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
-        public override BaseColumn Clip<U>(U lower, U upper) => throw new NotSupportedException();
+        public override BaseColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
 
         public override BaseColumn Sort(bool ascending = true)
         {
@@ -425,10 +425,10 @@ namespace Microsoft.Data
             string stringValue = (string)value;
             StringColumn column = inPlace ? this : Clone();
 
-            for (long i = 0; i < Length; i++)
+            for (long i = 0; i < column.Length; i++)
             {
-                if (this[i] == null)
-                    this[i] = stringValue;
+                if (column[i] == null)
+                    column[i] = stringValue;
             }
             return column;
         }
