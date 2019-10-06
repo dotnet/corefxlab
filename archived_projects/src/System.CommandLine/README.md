@@ -1,7 +1,7 @@
 # System.CommandLine
 
 The purpose of this library is to make command line tools first class by
-providing a command line parser. We've already made an attempt in 2009 but
+providing a command line parser. We've already made an attempt in 2009, but
 that wasn't a design we (or the community) was
 [happy with](http://tirania.org/blog/archive/2009/Feb-21.html).
 
@@ -31,22 +31,22 @@ So the question is: why a new one? There are a couple of reasons:
 1. We want to support a syntax that feels natural when used across platforms. In
    particular, we want to be very close to the Unix- and GNU style.
 
-2. We need something that is quite low level. In particular we don't want to
+2. We need something that is quite low level. In particular, we don't want to
    have a library that requires reflection for attribute discovery or for
    setting properties.
 
 3. We want an experience that achieves an extremely minimal setup in terms of
    lines of code required for parsing.
 
-While some of the libraries solve some of these aspects none of them solve the
+While some of the libraries solve some of these aspects, none of them solve the
 combination.
 
 Of course, providing a command line parser isn't just providing a parsing
 mechanism: in order to be usable, the library has to be opinionated in both the
-supported syntax as well as in the shape of the APIs. In the BCL, we've always
+supported syntax, as well as in the shape of the APIs. In the BCL, we've always
 taken the stance that we want to provide a layered experience that allows
 getting the 80% scenario done, while allowing to be extensible for a potential
-long tail of additional scenarios. If that means we've to make policy decisions
+long tail of additional scenarios. If that means we've had to make policy decisions,
 so be it because not making those forces all of our consumers to come up with
 their own policy.
 
