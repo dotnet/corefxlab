@@ -313,7 +313,7 @@ namespace Microsoft.Data
         protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {
             if (numberOfRows == 0)
-                return new StringArray.Builder().Build();
+                return new StringArray(numberOfRows, ArrowBuffer.Empty, ArrowBuffer.Empty, ArrowBuffer.Empty);
             int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
             if (numberOfRows != 0 && numberOfRows > _offsetsBuffers[offsetsBufferIndex].Length - 1 - indexInBuffer)
             {
