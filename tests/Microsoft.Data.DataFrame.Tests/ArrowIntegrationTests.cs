@@ -64,7 +64,8 @@ namespace Microsoft.Data.Tests
         {
             PrimitiveColumn<int> ageColumn = new PrimitiveColumn<int>("Age");
             PrimitiveColumn<int> lengthColumn = new PrimitiveColumn<int>("CharCount");
-            DataFrame df = new DataFrame(new List<BaseColumn>() { ageColumn, lengthColumn });
+            ArrowStringColumn stringColumn = new ArrowStringColumn("Empty");
+            DataFrame df = new DataFrame(new List<BaseColumn>() { ageColumn, lengthColumn, stringColumn });
 
             IEnumerable<RecordBatch> recordBatches = df.AsArrowRecordBatches();
             bool foundARecordBatch = false;

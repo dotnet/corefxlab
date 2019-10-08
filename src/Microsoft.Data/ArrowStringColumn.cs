@@ -312,14 +312,16 @@ namespace Microsoft.Data
 
         protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
         {
+            if (numberOfRows == 0)
+                return new StringArray.Builder().Build();
             int offsetsBufferIndex = GetBufferIndexContainingRowIndex(startIndex, out int indexInBuffer);
             if (numberOfRows != 0 && numberOfRows > _offsetsBuffers[offsetsBufferIndex].Length - 1 - indexInBuffer)
             {
                 throw new ArgumentException(Strings.SpansMultipleBuffers, nameof(numberOfRows));
             }
-            ArrowBuffer dataBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyBuffer);
-            ArrowBuffer offsetsBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyBuffer);
-            ArrowBuffer nullBuffer = numberOfRows == 0 ? ArrowBuffer.Empty : new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer dataBuffer = new ArrowBuffer(_dataBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer offsetsBuffer = new ArrowBuffer(_offsetsBuffers[offsetsBufferIndex].ReadOnlyBuffer);
+            ArrowBuffer nullBuffer = new ArrowBuffer(_nullBitMapBuffers[offsetsBufferIndex].ReadOnlyBuffer);
             int nullCount = GetNullCount(indexInBuffer, numberOfRows);
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
