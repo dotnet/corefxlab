@@ -18,15 +18,21 @@ namespace Microsoft.Data
 {
     public partial class DataFrame
     {
-        #region Binary Operations
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) { #>
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+<# if (method.IsBitwise == true) { #>
+        public static DataFrame operator <#=method.Operator#>(DataFrame df, bool value)
+        {
+            return df.<#=method.MethodName#>(value);
+        }
+<# } else { #>
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
         public static DataFrame operator <#=method.Operator#>(DataFrame df, <#=type.TypeName#> value)
         {
             return df.<#=method.MethodName#>(value);
         }
 
+<# } #>
 <# } #>
 <# } else if (method.MethodType == MethodType.BinaryInt) {#>
         public static DataFrame operator <#=method.Operator#>(DataFrame df, int value)
@@ -36,6 +42,5 @@ namespace Microsoft.Data
 
 <# } #>
 <# } #>
-        #endregion
     }
 }

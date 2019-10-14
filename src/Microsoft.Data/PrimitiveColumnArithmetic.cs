@@ -31,18 +31,18 @@ namespace Microsoft.Data
        void Xor(PrimitiveColumnContainer<T> column, T scalar);
        void LeftShift(PrimitiveColumnContainer<T> column, int value);
        void RightShift(PrimitiveColumnContainer<T> column, int value);
-       void Equals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void Equals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
-       void NotEquals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void NotEquals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
-       void GreaterThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void GreaterThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
-       void LessThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void LessThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
-       void GreaterThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void GreaterThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
-       void LessThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
-       void LessThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseEquals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseEquals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseNotEquals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseNotEquals(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseLessThanOrEqual(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseLessThanOrEqual(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseGreaterThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseGreaterThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
+       void PairwiseLessThan(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
+       void PairwiseLessThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
     }
 
     internal static class PrimitiveColumnArithmetic<T>
@@ -249,7 +249,7 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -264,7 +264,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -278,7 +278,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -293,7 +293,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -307,35 +307,35 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void GreaterThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
-        public void LessThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<bool> column, bool scalar, PrimitiveColumnContainer<bool> ret)
         {
             throw new NotSupportedException();
         }
@@ -602,7 +602,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -617,7 +617,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -631,7 +631,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -646,7 +646,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -660,7 +660,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -675,7 +675,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -689,7 +689,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -704,7 +704,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -718,7 +718,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -733,7 +733,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -747,7 +747,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -762,7 +762,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<byte> column, byte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1039,7 +1039,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1054,7 +1054,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1068,7 +1068,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1083,7 +1083,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1097,7 +1097,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1112,7 +1112,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1126,7 +1126,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1141,7 +1141,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1155,7 +1155,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1170,7 +1170,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1184,7 +1184,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1199,7 +1199,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<char> column, char scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1393,7 +1393,7 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1408,7 +1408,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1422,7 +1422,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1437,7 +1437,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1451,7 +1451,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1466,7 +1466,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1480,7 +1480,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1495,7 +1495,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1509,7 +1509,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1524,7 +1524,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1538,7 +1538,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1553,7 +1553,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<decimal> column, decimal scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1747,7 +1747,7 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1762,7 +1762,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1776,7 +1776,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1791,7 +1791,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1805,7 +1805,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1820,7 +1820,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1834,7 +1834,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1849,7 +1849,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1863,7 +1863,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1878,7 +1878,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -1892,7 +1892,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -1907,7 +1907,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<double> column, double scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2101,7 +2101,7 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
-        public void Equals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2116,7 +2116,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2130,7 +2130,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2145,7 +2145,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2159,7 +2159,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2174,7 +2174,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2188,7 +2188,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2203,7 +2203,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2217,7 +2217,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2232,7 +2232,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2246,7 +2246,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2261,7 +2261,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<float> column, float scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2538,7 +2538,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2553,7 +2553,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2567,7 +2567,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2582,7 +2582,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2596,7 +2596,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2611,7 +2611,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2625,7 +2625,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2640,7 +2640,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2654,7 +2654,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2669,7 +2669,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2683,7 +2683,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2698,7 +2698,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<int> column, int scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -2975,7 +2975,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -2990,7 +2990,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3004,7 +3004,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3019,7 +3019,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3033,7 +3033,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3048,7 +3048,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3062,7 +3062,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3077,7 +3077,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3091,7 +3091,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3106,7 +3106,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3120,7 +3120,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3135,7 +3135,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<long> column, long scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3412,7 +3412,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3427,7 +3427,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3441,7 +3441,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3456,7 +3456,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3470,7 +3470,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3485,7 +3485,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3499,7 +3499,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3514,7 +3514,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3528,7 +3528,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3543,7 +3543,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3557,7 +3557,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3572,7 +3572,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<sbyte> column, sbyte scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3849,7 +3849,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3864,7 +3864,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3878,7 +3878,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3893,7 +3893,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3907,7 +3907,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3922,7 +3922,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3936,7 +3936,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3951,7 +3951,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3965,7 +3965,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -3980,7 +3980,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -3994,7 +3994,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4009,7 +4009,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<short> column, short scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4286,7 +4286,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4301,7 +4301,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4315,7 +4315,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4330,7 +4330,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4344,7 +4344,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4359,7 +4359,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4373,7 +4373,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4388,7 +4388,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4402,7 +4402,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4417,7 +4417,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4431,7 +4431,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4446,7 +4446,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<uint> column, uint scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4723,7 +4723,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4738,7 +4738,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4752,7 +4752,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4767,7 +4767,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4781,7 +4781,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4796,7 +4796,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4810,7 +4810,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4825,7 +4825,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4839,7 +4839,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4854,7 +4854,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -4868,7 +4868,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -4883,7 +4883,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<ulong> column, ulong scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5160,7 +5160,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5175,7 +5175,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void Equals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseEquals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5189,7 +5189,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5204,7 +5204,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void NotEquals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseNotEquals(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5218,7 +5218,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5233,7 +5233,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5247,7 +5247,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5262,7 +5262,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThanOrEqual(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5276,7 +5276,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5291,7 +5291,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void GreaterThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseGreaterThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {
@@ -5305,7 +5305,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
             {
@@ -5320,7 +5320,7 @@ namespace Microsoft.Data
                 }
             }
         }
-        public void LessThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
+        public void PairwiseLessThan(PrimitiveColumnContainer<ushort> column, ushort scalar, PrimitiveColumnContainer<bool> ret)
         {
             for (int b = 0 ; b < column.Buffers.Count; b++)
             {

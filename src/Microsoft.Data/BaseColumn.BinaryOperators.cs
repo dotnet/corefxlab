@@ -21,62 +21,50 @@ namespace Microsoft.Data
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, byte value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, char value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, decimal value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, double value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, float value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, int value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, long value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, sbyte value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, short value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, uint value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, ulong value)
         {
             return column.Add(value);
         }
-
         public static BaseColumn operator +(BaseColumn column, ushort value)
         {
             return column.Add(value);
@@ -91,62 +79,50 @@ namespace Microsoft.Data
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, byte value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, char value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, decimal value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, double value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, float value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, int value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, long value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, sbyte value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, short value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, uint value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, ulong value)
         {
             return column.Subtract(value);
         }
-
         public static BaseColumn operator -(BaseColumn column, ushort value)
         {
             return column.Subtract(value);
@@ -161,62 +137,50 @@ namespace Microsoft.Data
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, byte value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, char value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, decimal value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, double value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, float value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, int value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, long value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, sbyte value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, short value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, uint value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, ulong value)
         {
             return column.Multiply(value);
         }
-
         public static BaseColumn operator *(BaseColumn column, ushort value)
         {
             return column.Multiply(value);
@@ -231,62 +195,50 @@ namespace Microsoft.Data
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, byte value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, char value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, decimal value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, double value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, float value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, int value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, long value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, sbyte value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, short value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, uint value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, ulong value)
         {
             return column.Divide(value);
         }
-
         public static BaseColumn operator /(BaseColumn column, ushort value)
         {
             return column.Divide(value);
@@ -301,62 +253,50 @@ namespace Microsoft.Data
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, byte value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, char value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, decimal value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, double value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, float value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, int value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, long value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, sbyte value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, short value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, uint value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, ulong value)
         {
             return column.Modulo(value);
         }
-
         public static BaseColumn operator %(BaseColumn column, ushort value)
         {
             return column.Modulo(value);
@@ -371,67 +311,6 @@ namespace Microsoft.Data
         {
             return column.And(value);
         }
-
-        public static BaseColumn operator &(BaseColumn column, byte value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, char value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, decimal value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, double value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, float value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, int value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, long value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, sbyte value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, short value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, uint value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, ulong value)
-        {
-            return column.And(value);
-        }
-
-        public static BaseColumn operator &(BaseColumn column, ushort value)
-        {
-            return column.And(value);
-        }
-
         public static BaseColumn operator |(BaseColumn left, BaseColumn right)
         {
             return left.Or(right);
@@ -441,67 +320,6 @@ namespace Microsoft.Data
         {
             return column.Or(value);
         }
-
-        public static BaseColumn operator |(BaseColumn column, byte value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, char value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, decimal value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, double value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, float value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, int value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, long value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, sbyte value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, short value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, uint value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, ulong value)
-        {
-            return column.Or(value);
-        }
-
-        public static BaseColumn operator |(BaseColumn column, ushort value)
-        {
-            return column.Or(value);
-        }
-
         public static BaseColumn operator ^(BaseColumn left, BaseColumn right)
         {
             return left.Xor(right);
@@ -511,67 +329,6 @@ namespace Microsoft.Data
         {
             return column.Xor(value);
         }
-
-        public static BaseColumn operator ^(BaseColumn column, byte value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, char value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, decimal value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, double value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, float value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, int value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, long value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, sbyte value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, short value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, uint value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, ulong value)
-        {
-            return column.Xor(value);
-        }
-
-        public static BaseColumn operator ^(BaseColumn column, ushort value)
-        {
-            return column.Xor(value);
-        }
-
         public static BaseColumn operator <<(BaseColumn column, int value)
         {
             return column.LeftShift(value);
@@ -580,426 +337,6 @@ namespace Microsoft.Data
         public static BaseColumn operator >>(BaseColumn column, int value)
         {
             return column.RightShift(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn left, BaseColumn right)
-        {
-            return left.Equals(right);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, bool value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, byte value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, char value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, decimal value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, double value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, float value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, int value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, long value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, sbyte value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, short value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, uint value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, ulong value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator ==(BaseColumn column, ushort value)
-        {
-            return column.Equals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn left, BaseColumn right)
-        {
-            return left.NotEquals(right);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, bool value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, byte value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, char value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, decimal value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, double value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, float value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, int value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, long value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, sbyte value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, short value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, uint value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, ulong value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator !=(BaseColumn column, ushort value)
-        {
-            return column.NotEquals(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn left, BaseColumn right)
-        {
-            return left.GreaterThanOrEqual(right);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, bool value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, byte value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, char value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, decimal value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, double value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, float value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, int value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, long value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, sbyte value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, short value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, uint value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, ulong value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >=(BaseColumn column, ushort value)
-        {
-            return column.GreaterThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn left, BaseColumn right)
-        {
-            return left.LessThanOrEqual(right);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, bool value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, byte value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, char value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, decimal value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, double value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, float value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, int value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, long value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, sbyte value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, short value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, uint value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, ulong value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <=(BaseColumn column, ushort value)
-        {
-            return column.LessThanOrEqual(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn left, BaseColumn right)
-        {
-            return left.GreaterThan(right);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, bool value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, byte value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, char value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, decimal value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, double value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, float value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, int value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, long value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, sbyte value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, short value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, uint value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, ulong value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator >(BaseColumn column, ushort value)
-        {
-            return column.GreaterThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn left, BaseColumn right)
-        {
-            return left.LessThan(right);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, bool value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, byte value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, char value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, decimal value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, double value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, float value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, int value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, long value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, sbyte value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, short value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, uint value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, ulong value)
-        {
-            return column.LessThan(value);
-        }
-
-        public static PrimitiveColumn<bool> operator <(BaseColumn column, ushort value)
-        {
-            return column.LessThan(value);
         }
 
     }

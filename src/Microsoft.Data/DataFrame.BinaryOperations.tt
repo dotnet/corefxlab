@@ -22,16 +22,24 @@ namespace Microsoft.Data
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
+<# if (method.IsBitwise == true) { #>
+        public DataFrame <#=method.MethodName#>(bool value, bool inPlace = false)
+<# } else { #>
         public DataFrame <#=method.MethodName#><T>(T value, bool inPlace = false)
             where T : unmanaged
+<# } #>
 <# } #>
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
         public DataFrame <#=method.MethodName#><T>(T value)
             where T : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary) {#>
+<# if (method.IsBitwise == true) { #>
+        public DataFrame <#=method.MethodName#>(IReadOnlyList<bool> values, bool inPlace = false)
+<# } else { #>
         public DataFrame <#=method.MethodName#><T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
+<# } #>
 <# } #>
 <# if (method.MethodType == MethodType.Comparison) {#>
         public DataFrame <#=method.MethodName#><T>(IReadOnlyList<T> values)

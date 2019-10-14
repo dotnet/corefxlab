@@ -194,8 +194,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame And<T>(IReadOnlyList<T> values, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame And(IReadOnlyList<bool> values, bool inPlace = false)
         {
             if (values.Count != ColumnCount)
             {
@@ -214,8 +213,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame And<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame And(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
@@ -230,8 +228,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame Or<T>(IReadOnlyList<T> values, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame Or(IReadOnlyList<bool> values, bool inPlace = false)
         {
             if (values.Count != ColumnCount)
             {
@@ -250,8 +247,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame Or<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame Or(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
@@ -266,8 +262,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame Xor<T>(IReadOnlyList<T> values, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame Xor(IReadOnlyList<bool> values, bool inPlace = false)
         {
             if (values.Count != ColumnCount)
             {
@@ -286,8 +281,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame Xor<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public DataFrame Xor(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
@@ -332,7 +326,7 @@ namespace Microsoft.Data
             }
             return retDataFrame;
         }
-        public DataFrame Equals<T>(IReadOnlyList<T> values)
+        public DataFrame PairwiseEquals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
@@ -344,12 +338,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Equals(values[i]);
+                BaseColumn newColumn = baseColumn.PairwiseEquals(values[i]);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame Equals<T>(T value)
+        public DataFrame PairwiseEquals<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -357,42 +351,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Equals(value);
+                BaseColumn newColumn = baseColumn.PairwiseEquals(value);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame NotEquals<T>(IReadOnlyList<T> values)
-            where T : unmanaged
-        {
-            if (values.Count != ColumnCount)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
-            }
-            DataFrame retDataFrame = new DataFrame();
-
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.NotEquals(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
-            }
-            return retDataFrame;
-        }
-        public DataFrame NotEquals<T>(T value)
-            where T : unmanaged
-        {
-            DataFrame retDataFrame = new DataFrame();
-
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.NotEquals(value);
-                retDataFrame.InsertColumn(i, newColumn);
-            }
-            return retDataFrame;
-        }
-        public DataFrame GreaterThanOrEqual<T>(IReadOnlyList<T> values)
+        public DataFrame PairwiseNotEquals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
@@ -404,12 +368,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.GreaterThanOrEqual(values[i]);
+                BaseColumn newColumn = baseColumn.PairwiseNotEquals(values[i]);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame GreaterThanOrEqual<T>(T value)
+        public DataFrame PairwiseNotEquals<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -417,42 +381,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.GreaterThanOrEqual(value);
+                BaseColumn newColumn = baseColumn.PairwiseNotEquals(value);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame LessThanOrEqual<T>(IReadOnlyList<T> values)
-            where T : unmanaged
-        {
-            if (values.Count != ColumnCount)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
-            }
-            DataFrame retDataFrame = new DataFrame();
-
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.LessThanOrEqual(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
-            }
-            return retDataFrame;
-        }
-        public DataFrame LessThanOrEqual<T>(T value)
-            where T : unmanaged
-        {
-            DataFrame retDataFrame = new DataFrame();
-
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.LessThanOrEqual(value);
-                retDataFrame.InsertColumn(i, newColumn);
-            }
-            return retDataFrame;
-        }
-        public DataFrame GreaterThan<T>(IReadOnlyList<T> values)
+        public DataFrame PairwiseGreaterThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
@@ -464,12 +398,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.GreaterThan(values[i]);
+                BaseColumn newColumn = baseColumn.PairwiseGreaterThanOrEqual(values[i]);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame GreaterThan<T>(T value)
+        public DataFrame PairwiseGreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -477,12 +411,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.GreaterThan(value);
+                BaseColumn newColumn = baseColumn.PairwiseGreaterThanOrEqual(value);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame LessThan<T>(IReadOnlyList<T> values)
+        public DataFrame PairwiseLessThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
@@ -494,12 +428,12 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.LessThan(values[i]);
+                BaseColumn newColumn = baseColumn.PairwiseLessThanOrEqual(values[i]);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;
         }
-        public DataFrame LessThan<T>(T value)
+        public DataFrame PairwiseLessThanOrEqual<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -507,7 +441,67 @@ namespace Microsoft.Data
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.LessThan(value);
+                BaseColumn newColumn = baseColumn.PairwiseLessThanOrEqual(value);
+                retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame PairwiseGreaterThan<T>(IReadOnlyList<T> values)
+            where T : unmanaged
+        {
+            if (values.Count != ColumnCount)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+            }
+            DataFrame retDataFrame = new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.PairwiseGreaterThan(values[i]);
+                retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame PairwiseGreaterThan<T>(T value)
+            where T : unmanaged
+        {
+            DataFrame retDataFrame = new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.PairwiseGreaterThan(value);
+                retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame PairwiseLessThan<T>(IReadOnlyList<T> values)
+            where T : unmanaged
+        {
+            if (values.Count != ColumnCount)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+            }
+            DataFrame retDataFrame = new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.PairwiseLessThan(values[i]);
+                retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame PairwiseLessThan<T>(T value)
+            where T : unmanaged
+        {
+            DataFrame retDataFrame = new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.PairwiseLessThan(value);
                 retDataFrame.InsertColumn(i, newColumn);
             }
             return retDataFrame;

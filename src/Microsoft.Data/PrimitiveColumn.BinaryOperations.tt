@@ -44,7 +44,11 @@ namespace Microsoft.Data
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
+<# if (method.IsBitwise == true) { #>
+        public override BaseColumn <#=method.MethodName#>(bool value, bool inPlace = false)
+<# } else { #>
         public override BaseColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
+<# } #>
 <# } else {#>
         public override PrimitiveColumn<bool> <#=method.MethodName#><U>(U value)
 <# } #>

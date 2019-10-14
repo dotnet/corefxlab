@@ -237,7 +237,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn And<U>(U value, bool inPlace = false)
+        public override BaseColumn And(bool value, bool inPlace = false)
         {
             return AndImplementation(value, inPlace);
         }
@@ -275,7 +275,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn Or<U>(U value, bool inPlace = false)
+        public override BaseColumn Or(bool value, bool inPlace = false)
         {
             return OrImplementation(value, inPlace);
         }
@@ -313,7 +313,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn Xor<U>(U value, bool inPlace = false)
+        public override BaseColumn Xor(bool value, bool inPlace = false)
         {
             return XorImplementation(value, inPlace);
         }
@@ -325,233 +325,233 @@ namespace Microsoft.Data
         {
             return RightShiftImplementation(value, inPlace);
         }
-        public override PrimitiveColumn<bool> Equals(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseEquals(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return EqualsImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseEqualsImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> Equals<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseEquals<U>(U value)
         {
-            return EqualsImplementation(value);
+            return PairwiseEqualsImplementation(value);
         }
-        public override PrimitiveColumn<bool> NotEquals(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseNotEquals(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return NotEqualsImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseNotEqualsImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> NotEquals<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseNotEquals<U>(U value)
         {
-            return NotEqualsImplementation(value);
+            return PairwiseNotEqualsImplementation(value);
         }
-        public override PrimitiveColumn<bool> GreaterThanOrEqual(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseGreaterThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return GreaterThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseGreaterThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> GreaterThanOrEqual<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseGreaterThanOrEqual<U>(U value)
         {
-            return GreaterThanOrEqualImplementation(value);
+            return PairwiseGreaterThanOrEqualImplementation(value);
         }
-        public override PrimitiveColumn<bool> LessThanOrEqual(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseLessThanOrEqual(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return LessThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseLessThanOrEqualImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> LessThanOrEqual<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseLessThanOrEqual<U>(U value)
         {
-            return LessThanOrEqualImplementation(value);
+            return PairwiseLessThanOrEqualImplementation(value);
         }
-        public override PrimitiveColumn<bool> GreaterThan(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseGreaterThan(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return GreaterThanImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseGreaterThanImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> GreaterThan<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseGreaterThan<U>(U value)
         {
-            return GreaterThanImplementation(value);
+            return PairwiseGreaterThanImplementation(value);
         }
-        public override PrimitiveColumn<bool> LessThan(BaseColumn column)
+        public override PrimitiveColumn<bool> PairwiseLessThan(BaseColumn column)
         {
             switch (column)
             {
                 case PrimitiveColumn<bool> boolColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<bool>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<bool>);
                 case PrimitiveColumn<byte> byteColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<byte>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<byte>);
                 case PrimitiveColumn<char> charColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<char>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<char>);
                 case PrimitiveColumn<decimal> decimalColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<decimal>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<decimal>);
                 case PrimitiveColumn<double> doubleColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<double>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<double>);
                 case PrimitiveColumn<float> floatColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<float>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<float>);
                 case PrimitiveColumn<int> intColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<int>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<int>);
                 case PrimitiveColumn<long> longColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<long>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<long>);
                 case PrimitiveColumn<sbyte> sbyteColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<sbyte>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<sbyte>);
                 case PrimitiveColumn<short> shortColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<short>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<short>);
                 case PrimitiveColumn<uint> uintColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<uint>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<uint>);
                 case PrimitiveColumn<ulong> ulongColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<ulong>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<ulong>);
                 case PrimitiveColumn<ushort> ushortColumn:
-                    return LessThanImplementation(column as PrimitiveColumn<ushort>);
+                    return PairwiseLessThanImplementation(column as PrimitiveColumn<ushort>);
                 default:
                     throw new NotSupportedException();
             }
         }
-        public override PrimitiveColumn<bool> LessThan<U>(U value)
+        public override PrimitiveColumn<bool> PairwiseLessThan<U>(U value)
         {
-            return LessThanImplementation(value);
+            return PairwiseLessThanImplementation(value);
         }
 
         internal BaseColumn AddImplementation<U>(PrimitiveColumn<U> column, bool inPlace)
@@ -1568,7 +1568,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> EqualsImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> PairwiseEqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1583,7 +1583,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveColumn<U>)._columnContainer.Equals(column._columnContainer, retColumn._columnContainer);
+                    (this as PrimitiveColumn<U>)._columnContainer.PairwiseEquals(column._columnContainer, retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1595,14 +1595,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.Equals(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Equals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1625,7 +1625,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.Equals(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1634,14 +1634,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Equals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseEquals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Equals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -1649,7 +1649,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> EqualsImplementation<U>(U value)
+        internal PrimitiveColumn<bool> PairwiseEqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1660,7 +1660,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveColumn<U>)._columnContainer.Equals(value, retColumn._columnContainer);
+                    (this as PrimitiveColumn<U>)._columnContainer.PairwiseEquals(value, retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1672,14 +1672,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.Equals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseEquals(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Equals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1702,7 +1702,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.Equals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseEquals(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1711,14 +1711,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Equals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Equals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -1726,7 +1726,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> NotEqualsImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> PairwiseNotEqualsImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1741,7 +1741,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveColumn<U>)._columnContainer.NotEquals(column._columnContainer, retColumn._columnContainer);
+                    (this as PrimitiveColumn<U>)._columnContainer.PairwiseNotEquals(column._columnContainer, retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1753,14 +1753,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.NotEquals(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseNotEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.NotEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseNotEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1783,7 +1783,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.NotEquals(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseNotEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1792,14 +1792,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.NotEquals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseNotEquals((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.NotEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseNotEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -1807,7 +1807,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> NotEqualsImplementation<U>(U value)
+        internal PrimitiveColumn<bool> PairwiseNotEqualsImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1818,7 +1818,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
                     }
                     PrimitiveColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveColumn<U>)._columnContainer.NotEquals(value, retColumn._columnContainer);
+                    (this as PrimitiveColumn<U>)._columnContainer.PairwiseNotEquals(value, retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1830,14 +1830,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.NotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseNotEquals(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.NotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseNotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1860,7 +1860,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.NotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseNotEquals(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1869,14 +1869,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.NotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseNotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.NotEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseNotEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -1884,7 +1884,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> GreaterThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> PairwiseGreaterThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -1905,14 +1905,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.GreaterThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseGreaterThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1935,7 +1935,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1944,14 +1944,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.GreaterThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseGreaterThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.GreaterThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseGreaterThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -1959,7 +1959,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> GreaterThanOrEqualImplementation<U>(U value)
+        internal PrimitiveColumn<bool> PairwiseGreaterThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1976,14 +1976,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThanOrEqual(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.GreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseGreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -2006,7 +2006,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThanOrEqual(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2015,14 +2015,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.GreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseGreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.GreaterThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseGreaterThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -2030,153 +2030,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> LessThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
-            where U : unmanaged
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            switch (typeof(T))
-            {
-                case Type boolType when boolType == typeof(bool):
-                    throw new NotSupportedException();
-                case Type decimalType when decimalType == typeof(decimal):
-                    if (typeof(U) == typeof(bool))
-                    {
-                        throw new NotSupportedException();
-                    }
-                    if (typeof(U) == typeof(T))
-                    {
-                        // No conversions
-                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThanOrEqual(column._columnContainer, newColumn._columnContainer);
-                        return newColumn;
-                    }
-                    else 
-                    {
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.LessThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
-                        return newColumn;
-                    }
-                case Type byteType when byteType == typeof(byte):
-                case Type charType when charType == typeof(char):
-                case Type doubleType when doubleType == typeof(double):
-                case Type floatType when floatType == typeof(float):
-                case Type intType when intType == typeof(int):
-                case Type longType when longType == typeof(long):
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                case Type shortType when shortType == typeof(short):
-                case Type uintType when uintType == typeof(uint):
-                case Type ulongType when ulongType == typeof(ulong):
-                case Type ushortType when ushortType == typeof(ushort):
-                    if (typeof(U) == typeof(bool))
-                    {
-                        throw new NotSupportedException();
-                    }
-                    if (typeof(U) == typeof(T))
-                    {
-                        // No conversions
-                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThanOrEqual(column._columnContainer, newColumn._columnContainer);
-                        return newColumn;
-                    }
-                    else 
-                    {
-                        if (typeof(U) == typeof(decimal))
-                        {
-                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.LessThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
-                            return newColumn;
-                        }
-                        else
-                        {
-                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.LessThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
-                            return newColumn;
-                        }
-                    }
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-        internal PrimitiveColumn<bool> LessThanOrEqualImplementation<U>(U value)
-            where U : unmanaged
-        {
-            switch (typeof(T))
-            {
-                case Type boolType when boolType == typeof(bool):
-                    throw new NotSupportedException();
-                case Type decimalType when decimalType == typeof(decimal):
-                    if (typeof(U) == typeof(bool))
-                    {
-                        throw new NotSupportedException();
-                    }
-                    if (typeof(U) == typeof(T))
-                    {
-                        // No conversions
-                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThanOrEqual(value, newColumn._columnContainer);
-                        return newColumn;
-                    }
-                    else 
-                    {
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.LessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
-                        return newColumn;
-                    }
-                case Type byteType when byteType == typeof(byte):
-                case Type charType when charType == typeof(char):
-                case Type doubleType when doubleType == typeof(double):
-                case Type floatType when floatType == typeof(float):
-                case Type intType when intType == typeof(int):
-                case Type longType when longType == typeof(long):
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                case Type shortType when shortType == typeof(short):
-                case Type uintType when uintType == typeof(uint):
-                case Type ulongType when ulongType == typeof(ulong):
-                case Type ushortType when ushortType == typeof(ushort):
-                    if (typeof(U) == typeof(bool))
-                    {
-                        throw new NotSupportedException();
-                    }
-                    if (typeof(U) == typeof(T))
-                    {
-                        // No conversions
-                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
-                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThanOrEqual(value, newColumn._columnContainer);
-                        return newColumn;
-                    }
-                    else 
-                    {
-                        if (typeof(U) == typeof(decimal))
-                        {
-                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.LessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
-                            return newColumn;
-                        }
-                        else
-                        {
-                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.LessThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
-                            return newColumn;
-                        }
-                    }
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-        internal PrimitiveColumn<bool> GreaterThanImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> PairwiseLessThanOrEqualImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -2197,14 +2051,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThan(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.GreaterThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseLessThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -2227,7 +2081,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThan(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2236,14 +2090,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.GreaterThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseLessThanOrEqual((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.GreaterThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseLessThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -2251,7 +2105,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> GreaterThanImplementation<U>(U value)
+        internal PrimitiveColumn<bool> PairwiseLessThanOrEqualImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2268,14 +2122,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseLessThanOrEqual(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.GreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseLessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -2298,7 +2152,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.GreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseLessThanOrEqual(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2307,14 +2161,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.GreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseLessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.GreaterThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseLessThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -2322,7 +2176,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> LessThanImplementation<U>(PrimitiveColumn<U> column)
+        internal PrimitiveColumn<bool> PairwiseGreaterThanImplementation<U>(PrimitiveColumn<U> column)
             where U : unmanaged
         {
             if (column.Length != Length)
@@ -2343,14 +2197,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThan(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.LessThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseGreaterThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -2373,7 +2227,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThan(column._columnContainer, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2382,14 +2236,14 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.LessThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseGreaterThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.LessThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseGreaterThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
                             return newColumn;
                         }
                     }
@@ -2397,7 +2251,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal PrimitiveColumn<bool> LessThanImplementation<U>(U value)
+        internal PrimitiveColumn<bool> PairwiseGreaterThanImplementation<U>(U value)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -2414,14 +2268,14 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThan(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.LessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        decimalColumn._columnContainer.PairwiseGreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                         return newColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -2444,7 +2298,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.LessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.PairwiseGreaterThan(value, newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2453,14 +2307,160 @@ namespace Microsoft.Data
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.LessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            decimalColumn._columnContainer.PairwiseGreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
                             return newColumn;
                         }
                         else
                         {
                             PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.LessThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            doubleColumn._columnContainer.PairwiseGreaterThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+        internal PrimitiveColumn<bool> PairwiseLessThanImplementation<U>(PrimitiveColumn<U> column)
+            where U : unmanaged
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            switch (typeof(T))
+            {
+                case Type boolType when boolType == typeof(bool):
+                    throw new NotSupportedException();
+                case Type decimalType when decimalType == typeof(decimal):
+                    if (typeof(U) == typeof(bool))
+                    {
+                        throw new NotSupportedException();
+                    }
+                    if (typeof(U) == typeof(T))
+                    {
+                        // No conversions
+                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        primitiveColumn._columnContainer.PairwiseLessThan(column._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
+                    else 
+                    {
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.PairwiseLessThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
+                case Type byteType when byteType == typeof(byte):
+                case Type charType when charType == typeof(char):
+                case Type doubleType when doubleType == typeof(double):
+                case Type floatType when floatType == typeof(float):
+                case Type intType when intType == typeof(int):
+                case Type longType when longType == typeof(long):
+                case Type sbyteType when sbyteType == typeof(sbyte):
+                case Type shortType when shortType == typeof(short):
+                case Type uintType when uintType == typeof(uint):
+                case Type ulongType when ulongType == typeof(ulong):
+                case Type ushortType when ushortType == typeof(ushort):
+                    if (typeof(U) == typeof(bool))
+                    {
+                        throw new NotSupportedException();
+                    }
+                    if (typeof(U) == typeof(T))
+                    {
+                        // No conversions
+                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        primitiveColumn._columnContainer.PairwiseLessThan(column._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.PairwiseLessThan((column as PrimitiveColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.PairwiseLessThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+        internal PrimitiveColumn<bool> PairwiseLessThanImplementation<U>(U value)
+            where U : unmanaged
+        {
+            switch (typeof(T))
+            {
+                case Type boolType when boolType == typeof(bool):
+                    throw new NotSupportedException();
+                case Type decimalType when decimalType == typeof(decimal):
+                    if (typeof(U) == typeof(bool))
+                    {
+                        throw new NotSupportedException();
+                    }
+                    if (typeof(U) == typeof(T))
+                    {
+                        // No conversions
+                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        primitiveColumn._columnContainer.PairwiseLessThan(value, newColumn._columnContainer);
+                        return newColumn;
+                    }
+                    else 
+                    {
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.PairwiseLessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
+                case Type byteType when byteType == typeof(byte):
+                case Type charType when charType == typeof(char):
+                case Type doubleType when doubleType == typeof(double):
+                case Type floatType when floatType == typeof(float):
+                case Type intType when intType == typeof(int):
+                case Type longType when longType == typeof(long):
+                case Type sbyteType when sbyteType == typeof(sbyte):
+                case Type shortType when shortType == typeof(short):
+                case Type uintType when uintType == typeof(uint):
+                case Type ulongType when ulongType == typeof(ulong):
+                case Type ushortType when ushortType == typeof(ushort):
+                    if (typeof(U) == typeof(bool))
+                    {
+                        throw new NotSupportedException();
+                    }
+                    if (typeof(U) == typeof(T))
+                    {
+                        // No conversions
+                        PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
+                        PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                        primitiveColumn._columnContainer.PairwiseLessThan(value, newColumn._columnContainer);
+                        return newColumn;
+                    }
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.PairwiseLessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.PairwiseLessThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
                             return newColumn;
                         }
                     }

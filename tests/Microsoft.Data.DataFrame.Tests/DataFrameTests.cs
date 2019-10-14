@@ -279,18 +279,14 @@ namespace Microsoft.Data.Tests
             Assert.Equal(5, df[5, 0]);
             Assert.Equal(0, ret[5, 0]);
 
-            Assert.Equal(true, df.Equals(5)[5, 0]);
-            Assert.Equal(true, df.Equals(listOfInts)[5, 0]);
-            Assert.Equal(true, df.NotEquals(5)[4, 0]);
-            Assert.Equal(true, df.NotEquals(listOfInts)[4, 0]);
-            Assert.Equal(true, df.GreaterThanOrEqual(5)[7, 0]);
-            Assert.Equal(true, df.GreaterThanOrEqual(listOfInts)[7, 0]);
-            Assert.Equal(true, df.LessThanOrEqual(5)[4, 0]);
-            Assert.Equal(true, df.LessThanOrEqual(listOfInts)[4, 0]);
-            Assert.Equal(false, df.GreaterThan(5)[5, 0]);
-            Assert.Equal(false, df.GreaterThan(listOfInts)[5, 0]);
-            Assert.Equal(false, df.LessThan(5)[5, 0]);
-            Assert.Equal(false, df.LessThan(listOfInts)[5, 0]);
+            Assert.Equal(true, df.PairwiseGreaterThanOrEqual(5)[7, 0]);
+            Assert.Equal(true, df.PairwiseGreaterThanOrEqual(listOfInts)[7, 0]);
+            Assert.Equal(true, df.PairwiseLessThanOrEqual(5)[4, 0]);
+            Assert.Equal(true, df.PairwiseLessThanOrEqual(listOfInts)[4, 0]);
+            Assert.Equal(false, df.PairwiseGreaterThan(5)[5, 0]);
+            Assert.Equal(false, df.PairwiseGreaterThan(listOfInts)[5, 0]);
+            Assert.Equal(false, df.PairwiseLessThan(5)[5, 0]);
+            Assert.Equal(false, df.PairwiseLessThan(listOfInts)[5, 0]);
             // The following binary ops are in place
             Assert.Equal(5, df.Add(5, inPlace: true)[0, 0]);
             Assert.Equal(10, df.Add(listOfInts, inPlace: true)[0, 0]);
@@ -302,11 +298,6 @@ namespace Microsoft.Data.Tests
             Assert.Equal(1, df.Divide(listOfInts, inPlace: true)[1, 0]);
             Assert.Equal(1, df.Modulo(5, inPlace: true)[1, 0]);
             Assert.Equal(1, df.Modulo(listOfInts, inPlace: true)[1, 0]);
-            Assert.Throws<NotSupportedException>(() => df.And(5, inPlace: true)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.And(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Or(5, inPlace: true)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Or(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Xor(5, inPlace: true)[5, 0]);
             Assert.Equal(2, df.LeftShift(1)[1, 0]);
             Assert.Equal(1, df.RightShift(1)[2, 0]);
         }
@@ -323,50 +314,44 @@ namespace Microsoft.Data.Tests
             for (int i = 0; i < df1.ColumnCount; i++)
             {
                 newColumn = df1[df1.Column(i).Name] + df2[df2.Column(i).Name];
-                verify = newColumn.Equals(df1.Column(i) * 2);
+                verify = newColumn.PairwiseEquals(df1.Column(i) * 2);
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1[df1.Column(i).Name] - df2[df2.Column(i).Name];
-                verify = newColumn.Equals(0);
+                verify = newColumn.PairwiseEquals(0);
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1[df1.Column(i).Name] * df2[df2.Column(i).Name];
-                verify = newColumn.Equals(df1.Column(i) * df1.Column(i));
+                verify = newColumn.PairwiseEquals(df1.Column(i) * df1.Column(i));
                 Assert.Equal(true, verify[0]);
 
                 var df1Column = df1.Column(i) + 1;
                 var df2Column = df2.Column(i) + 1;
                 newColumn = df1Column / df2Column;
-                verify = newColumn.Equals(1);
+                verify = newColumn.PairwiseEquals(1);
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1Column % df2Column;
-                verify = newColumn.Equals(0);
+                verify = newColumn.PairwiseEquals(0);
                 Assert.Equal(true, verify[0]);
 
-                newColumn = df1[df1.Column(i).Name] == df2[df2.Column(i).Name];
-                verify = newColumn.Equals(true);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseEquals(df2[df2.Column(i).Name]);
+                Assert.True(verify.All());
 
-                newColumn = df1[df1.Column(i).Name] != df2[df2.Column(i).Name];
-                verify = newColumn.Equals(false);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseNotEquals(df2[df2.Column(i).Name]);
+                Assert.False(verify.Any());
 
-                newColumn = df1[df1.Column(i).Name] >= df2[df2.Column(i).Name];
-                verify = newColumn.Equals(true);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseGreaterThanOrEqual(df2[df2.Column(i).Name]);
+                Assert.True(verify.All());
 
-                newColumn = df1[df1.Column(i).Name] <= df2[df2.Column(i).Name];
-                verify = newColumn.Equals(true);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseLessThanOrEqual(df2[df2.Column(i).Name]);
+                Assert.True(verify.All());
 
-                newColumn = df1[df1.Column(i).Name] > df2[df2.Column(i).Name];
-                verify = newColumn.Equals(false);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseGreaterThan(df2[df2.Column(i).Name]);
+                Assert.False(verify.Any());
 
-                newColumn = df1[df1.Column(i).Name] < df2[df2.Column(i).Name];
-                verify = newColumn.Equals(false);
-                Assert.Equal(true, verify[0]);
+                verify = df1[df1.Column(i).Name].PairwiseLessThan(df2[df2.Column(i).Name]);
+                Assert.False(verify.Any());
             }
         }
 
@@ -409,15 +394,10 @@ namespace Microsoft.Data.Tests
             Assert.Throws<NotSupportedException>(() => df.LeftShift(5));
 
             IReadOnlyList<bool> listOfBools = new List<bool>() { true, false };
-            // bool equals and And should work
-            var newdf = df.Equals(true);
+            // boolean and And should work
+            var newdf = df.And(true);
             Assert.Equal(true, newdf[4, 0]);
-            var newdf1 = df.Equals(listOfBools);
-            Assert.Equal(false, newdf1[4, 1]);
-
-            newdf = df.And(true);
-            Assert.Equal(true, newdf[4, 0]);
-            newdf1 = df.And(listOfBools);
+            var newdf1 = df.And(listOfBools);
             Assert.Equal(false, newdf1[4, 1]);
 
             newdf = df.Or(true);
@@ -438,20 +418,20 @@ namespace Microsoft.Data.Tests
             BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             df.InsertColumn(0, stringColumn);
 
-            BaseColumn newCol = stringColumn.Equals(5);
+            BaseColumn newCol = stringColumn.PairwiseEquals(5);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(false, newCol[0]);
 
             BaseColumn stringColumnCopy = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
-            newCol = stringColumn.Equals(stringColumnCopy);
+            newCol = stringColumn.PairwiseEquals(stringColumnCopy);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
-            newCol = stringColumn.NotEquals(5);
+            newCol = stringColumn.PairwiseNotEquals(5);
             Assert.Equal(false, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
-            newCol = stringColumn.NotEquals(stringColumnCopy);
+            newCol = stringColumn.PairwiseNotEquals(stringColumnCopy);
             Assert.Equal(false, newCol[5]);
             Assert.Equal(false, newCol[0]);
         }
@@ -470,7 +450,6 @@ namespace Microsoft.Data.Tests
             Assert.True(typeof(decimal) == tempDf["Int"].DataType);
 
             Assert.Throws<NotSupportedException>(() => df + true);
-            Assert.Throws<NotSupportedException>(() => df & 5);
 
             tempDf = df - 1.1;
             Assert.Equal(tempDf[0, 0], (byte)df[0, 0] - 1.1);
@@ -495,37 +474,6 @@ namespace Microsoft.Data.Tests
             tempDf = df % 1.1m;
             Assert.Equal(tempDf[0, 0], (byte)df[0, 0] % 1.1m);
             Assert.True(typeof(decimal) == tempDf["Int"].DataType);
-
-            tempDf = df == 1.1;
-            Assert.Equal(false, tempDf[0, 0]);
-            tempDf = df == 1.1m;
-            Assert.Equal(false, tempDf[0, 0]);
-            Assert.True(typeof(bool) == tempDf["Int"].DataType);
-
-            tempDf = df != 1.1;
-            Assert.Equal(true, tempDf[0, 0]);
-            tempDf = df != 1.1m;
-            Assert.Equal(true, tempDf[0, 0]);
-
-            tempDf = df >= 1.1;
-            Assert.Equal(false, tempDf[0, 0]);
-            tempDf = df >= 1.1m;
-            Assert.Equal(false, tempDf[0, 0]);
-
-            tempDf = df <= 1.1;
-            Assert.Equal(true, tempDf[0, 0]);
-            tempDf = df <= 1.1m;
-            Assert.Equal(true, tempDf[0, 0]);
-
-            tempDf = df > 1.1;
-            Assert.Equal(false, tempDf[0, 0]);
-            tempDf = df > 1.1m;
-            Assert.Equal(false, tempDf[0, 0]);
-
-            tempDf = df < 1.1;
-            Assert.Equal(true, tempDf[0, 0]);
-            tempDf = df < 1.1m;
-            Assert.Equal(true, tempDf[0, 0]);
 
             Assert.Equal((byte)0, df[0, 0]);
         }
@@ -805,14 +753,14 @@ namespace Microsoft.Data.Tests
                     if (i < left.ColumnCount)
                     {
                         BaseColumn leftColumn = left.Column(i);
-                        isEqual = joinColumn == leftColumn;
+                        isEqual = joinColumn.PairwiseEquals(leftColumn);
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
                         BaseColumn rightColumn = right.Column(columnIndex);
                         BaseColumn compareColumn = rightColumn.Length <= join.RowCount ? rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length) : rightColumn.Clone(mapIndices);
-                        isEqual = joinColumn == compareColumn;
+                        isEqual = joinColumn.PairwiseEquals(compareColumn);
                     }
                 }
                 else if (joinAlgorithm == JoinAlgorithm.Right)
@@ -821,13 +769,13 @@ namespace Microsoft.Data.Tests
                     {
                         BaseColumn leftColumn = left.Column(i);
                         BaseColumn compareColumn = leftColumn.Length <= join.RowCount ? leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length) : leftColumn.Clone(mapIndices);
-                        isEqual = joinColumn == compareColumn;
+                        isEqual = joinColumn.PairwiseEquals(compareColumn);
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
                         BaseColumn rightColumn = right.Column(columnIndex);
-                        isEqual = joinColumn == rightColumn;
+                        isEqual = joinColumn.PairwiseEquals(rightColumn);
                     }
                 }
                 else if (joinAlgorithm == JoinAlgorithm.Inner)
@@ -835,13 +783,13 @@ namespace Microsoft.Data.Tests
                     if (i < left.ColumnCount)
                     {
                         BaseColumn leftColumn = left.Column(i);
-                        isEqual = joinColumn == leftColumn.Clone(mapIndices);
+                        isEqual = joinColumn.PairwiseEquals(leftColumn.Clone(mapIndices));
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
                         BaseColumn rightColumn = right.Column(columnIndex);
-                        isEqual = joinColumn == rightColumn.Clone(mapIndices);
+                        isEqual = joinColumn.PairwiseEquals(rightColumn.Clone(mapIndices));
                     }
                 }
                 else
@@ -849,13 +797,13 @@ namespace Microsoft.Data.Tests
                     if (i < left.ColumnCount)
                     {
                         BaseColumn leftColumn = left.Column(i);
-                        isEqual = joinColumn == leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length);
+                        isEqual = joinColumn.PairwiseEquals(leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length));
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
                         BaseColumn rightColumn = right.Column(columnIndex);
-                        isEqual = joinColumn == rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length);
+                        isEqual = joinColumn.PairwiseEquals(rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length));
                     }
                 }
                 for (int j = 0; j < join.RowCount; j++)
@@ -1351,7 +1299,7 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameFilter()
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
-            DataFrame filtered = df[df["Bool"] == true];
+            DataFrame filtered = df[df["Bool"].PairwiseEquals(true)];
             List<int> verify = new List<int> { 0, 2, 4, 6, 8 };
             Assert.Equal(5, filtered.RowCount);
             for (int i = 0; i < filtered.ColumnCount; i++)
@@ -1624,7 +1572,7 @@ namespace Microsoft.Data.Tests
         public void TestColumnCreationFromExisitingColumn()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BigInts", df["Int"] > 5);
+            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BigInts", df["Int"].PairwiseGreaterThan(5));
             for (int i = 0; i < 10; i++)
             {
                 if (i <= 5)
