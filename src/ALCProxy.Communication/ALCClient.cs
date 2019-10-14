@@ -150,13 +150,21 @@ namespace ALCProxy.Communication
         {
             if (method == null)
                 throw new ArgumentNullException();
-            if (_serverDelegate == null) //We've called the ALC unload, so the proxy has been cut off
+            if (_server == null) //We've called the ALC unload, so the proxy has been cut off
                 throw new InvalidOperationException("Error in ALCClient: Proxy has been unloaded, or communication server was never set up correctly");
             if (args == null)
                 args = new object[] { };
 
             SerializeParameters(args, out IList<object> streams, out IList<Type> argTypes);
-            object encryptedReturn = _serverDelegate( method, streams, argTypes );
+            object encryptedReturn;
+            try
+            {
+                encryptedReturn = _serverDelegate(method, streams, argTypes);
+            }
+            catch (Exception) //Some minor failures with OSX release builds using the serverDelegate, if it fails, the backup is to call the method using Invoke directly
+            {
+                encryptedReturn = _server.GetType().GetMethod("CallObject").Invoke(_server, new object[] { method, streams, argTypes });
+            }
             return DeserializeReturnType(encryptedReturn, method.ReturnType);
         }
 
