@@ -161,7 +161,7 @@ namespace ALCProxy.Communication
             {
                 encryptedReturn = _serverDelegate(method, streams, argTypes);
             }
-            catch (Exception) //Some minor failures with OSX release builds using the serverDelegate, if it fails, the backup is to call the method using Invoke directly
+            catch (NullReferenceException) //Some minor failures with OSX release builds using the serverDelegate, if it fails, the backup is to call the method using Invoke directly
             {
                 encryptedReturn = _server.GetType().GetMethod("CallObject").Invoke(_server, new object[] { method, streams, argTypes });
             }
