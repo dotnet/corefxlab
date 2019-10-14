@@ -198,7 +198,7 @@ namespace Microsoft.Data
                 mutableDataBuffer.Length += value.Length;
                 mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + value.Length);
             }
-            SetValidityBit(Length - 1, value == default ? false : true);
+            SetValidityBit(Length - 1, value != default);
 
         }
 

@@ -529,9 +529,7 @@ namespace Microsoft.Data
 
         private PrimitiveColumn<T> _Clip(T lower, T upper, bool inPlace)
         {
-            PrimitiveColumn<T> ret = this;
-            if (!inPlace)
-                ret = Clone();
+            PrimitiveColumn<T> ret = inPlace ? this : Clone();
 
             Comparer<T> comparer = Comparer<T>.Default;
             for (long i = 0; i < ret.Length; i++)

@@ -385,15 +385,13 @@ namespace Microsoft.Data
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
         public DataFrame Clip<U>(U lower, U upper, bool inPlace = false)
         {
-            DataFrame ret = this;
-            if (!inPlace)
-                ret = Clone();
+            DataFrame ret = inPlace ? this : Clone();
 
             for (int i = 0; i < ret.ColumnCount; i++)
             {
                 BaseColumn column = ret.Column(i);
                 if (column.IsNumericColumn())
-                    column.Clip(lower, upper, true);
+                    column.Clip(lower, upper, inPlace: true);
             }
             return ret;
         }
@@ -403,11 +401,7 @@ namespace Microsoft.Data
         /// </summary>
         public DataFrame AddPrefix(string prefix, bool inPlace = false)
         {
-            DataFrame df = this;
-            if (!inPlace)
-            {
-                df = Clone();
-            }
+            DataFrame df = inPlace ? this : Clone();
             for (int i = 0; i < df.ColumnCount; i++)
             {
                 BaseColumn column = df.Column(i);
@@ -422,11 +416,7 @@ namespace Microsoft.Data
         /// </summary>
         public DataFrame AddSuffix(string suffix, bool inPlace = false)
         {
-            DataFrame df = this;
-            if (!inPlace)
-            {
-                df = Clone();
-            }
+            DataFrame df = inPlace ? this : Clone();
             for (int i = 0; i < df.ColumnCount; i++)
             {
                 BaseColumn column = df.Column(i);
@@ -513,13 +503,10 @@ namespace Microsoft.Data
 
         public DataFrame FillNulls(object value, bool inPlace = false)
         {
-            DataFrame ret = this;
-            if (!inPlace)
-                ret = Clone();
-
+            DataFrame ret = inPlace ? this : Clone();
             for (int i = 0; i < ret.ColumnCount; i++)
             {
-                ret.Column(i).FillNulls(value, true);
+                ret.Column(i).FillNulls(value, inPlace: true);
             }
             return ret;
         }
@@ -529,13 +516,10 @@ namespace Microsoft.Data
             if (values.Count != ColumnCount)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
 
-            DataFrame ret = this;
-            if (inPlace)
-                ret = Clone();
-
+            DataFrame ret = inPlace ? this : Clone();
             for (int i = 0; i < ret.ColumnCount; i++)
             {
-                Column(i).FillNulls(values[i], true);
+                Column(i).FillNulls(values[i], inPlace: true);
             }
             return ret;
         }

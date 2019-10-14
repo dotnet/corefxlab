@@ -21,9 +21,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -39,9 +37,7 @@ namespace Microsoft.Data
         public DataFrame Add<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -61,9 +57,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -79,9 +73,7 @@ namespace Microsoft.Data
         public DataFrame Subtract<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -101,9 +93,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -119,9 +109,7 @@ namespace Microsoft.Data
         public DataFrame Multiply<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -141,9 +129,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -159,9 +145,7 @@ namespace Microsoft.Data
         public DataFrame Divide<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -181,9 +165,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -199,9 +181,7 @@ namespace Microsoft.Data
         public DataFrame Modulo<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -221,9 +201,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -239,9 +217,7 @@ namespace Microsoft.Data
         public DataFrame And<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -261,9 +237,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -279,9 +253,7 @@ namespace Microsoft.Data
         public DataFrame Or<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -301,9 +273,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -319,9 +289,7 @@ namespace Microsoft.Data
         public DataFrame Xor<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -336,9 +304,7 @@ namespace Microsoft.Data
         }
         public DataFrame LeftShift(int value, bool inPlace = false)
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {
@@ -353,9 +319,7 @@ namespace Microsoft.Data
         }
         public DataFrame RightShift(int value, bool inPlace = false)
         {
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < ColumnCount; i++)
             {

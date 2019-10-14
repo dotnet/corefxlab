@@ -49,9 +49,7 @@ namespace Microsoft.Data
             }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
-            DataFrame retDataFrame = this;
-            if (!inPlace)
-                retDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
 <# } else { #>
             DataFrame retDataFrame = new DataFrame();
 <# } #>

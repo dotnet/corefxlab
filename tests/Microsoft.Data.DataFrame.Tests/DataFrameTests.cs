@@ -247,6 +247,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithTwoColumns(12);
             IReadOnlyList<int> listOfInts = new List<int>() { 5, 5 };
 
+            // The following binary ops return a copy
             var ret = df.Add(5);
             Assert.Equal(0, df[0, 0]);
             Assert.Equal(5, ret[0, 0]);
@@ -291,21 +292,21 @@ namespace Microsoft.Data.Tests
             Assert.Equal(false, df.LessThan(5)[5, 0]);
             Assert.Equal(false, df.LessThan(listOfInts)[5, 0]);
             // The following binary ops are in place
-            Assert.Equal(5, df.Add(5, true)[0, 0]);
-            Assert.Equal(10, df.Add(listOfInts, true)[0, 0]);
-            Assert.Equal(5, df.Subtract(5, true)[0, 0]);
-            Assert.Equal(0, df.Subtract(listOfInts, true)[0, 0]);
-            Assert.Equal(5, df.Multiply(5, true)[1, 0]);
-            Assert.Equal(25, df.Multiply(listOfInts, true)[1, 0]);
-            Assert.Equal(5, df.Divide(5, true)[1, 0]);
-            Assert.Equal(1, df.Divide(listOfInts, true)[1, 0]);
-            Assert.Equal(1, df.Modulo(5, true)[1, 0]);
-            Assert.Equal(1, df.Modulo(listOfInts, true)[1, 0]);
-            Assert.Throws<NotSupportedException>(() => df.And(5, true)[5, 0]);
+            Assert.Equal(5, df.Add(5, inPlace: true)[0, 0]);
+            Assert.Equal(10, df.Add(listOfInts, inPlace: true)[0, 0]);
+            Assert.Equal(5, df.Subtract(5, inPlace: true)[0, 0]);
+            Assert.Equal(0, df.Subtract(listOfInts, inPlace: true)[0, 0]);
+            Assert.Equal(5, df.Multiply(5, inPlace: true)[1, 0]);
+            Assert.Equal(25, df.Multiply(listOfInts, inPlace: true)[1, 0]);
+            Assert.Equal(5, df.Divide(5, inPlace: true)[1, 0]);
+            Assert.Equal(1, df.Divide(listOfInts, inPlace: true)[1, 0]);
+            Assert.Equal(1, df.Modulo(5, inPlace: true)[1, 0]);
+            Assert.Equal(1, df.Modulo(listOfInts, inPlace: true)[1, 0]);
+            Assert.Throws<NotSupportedException>(() => df.And(5, inPlace: true)[5, 0]);
             Assert.Throws<NotSupportedException>(() => df.And(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Or(5, true)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.Or(5, inPlace: true)[5, 0]);
             Assert.Throws<NotSupportedException>(() => df.Or(listOfInts)[5, 0]);
-            Assert.Throws<NotSupportedException>(() => df.Xor(5, true)[5, 0]);
+            Assert.Throws<NotSupportedException>(() => df.Xor(5, inPlace: true)[5, 0]);
             Assert.Equal(2, df.LeftShift(1)[1, 0]);
             Assert.Equal(1, df.RightShift(1)[2, 0]);
         }
