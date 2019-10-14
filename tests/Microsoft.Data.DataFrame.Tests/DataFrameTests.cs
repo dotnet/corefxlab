@@ -1295,15 +1295,15 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             IList<string> dfColumns = df.Columns;
 
-            void VerifyDataFrameClip(DataFrame clipped)
+            void VerifyDataFrameClip(DataFrame clippedColumn)
             {
 
-                IList<string> clippedColumns = clipped.Columns;
-                Assert.Equal(df.ColumnCount, clipped.ColumnCount);
+                IList<string> clippedColumns = clippedColumn.Columns;
+                Assert.Equal(df.ColumnCount, clippedColumn.ColumnCount);
                 Assert.Equal(dfColumns, clippedColumns);
                 for (int c = 0; c < df.ColumnCount; c++)
                 {
-                    BaseColumn column = clipped.Column(c);
+                    BaseColumn column = clippedColumn.Column(c);
                     if (column.IsNumericColumn())
                     {
                         for (int i = 0; i < 4; i++)
