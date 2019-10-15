@@ -466,12 +466,12 @@ namespace Microsoft.Data
 
         public void ApplyElementwise(Func<T?, long, T?> func) => _columnContainer.ApplyElementwise(func);
 
-        public override BaseColumn Clip<U>(U lower, U upper)
+        public override BaseColumn Clip<U>(U lower, U upper, bool inPlace = false)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)
             {
-                return _Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
+                return _Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)), inPlace);
             }
             else
                 throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
@@ -527,11 +527,12 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> _Clip(T lower, T upper)
+        private PrimitiveColumn<T> _Clip(T lower, T upper, bool inPlace)
         {
-            PrimitiveColumn<T> ret = Clone() as PrimitiveColumn<T>;
+            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+
             Comparer<T> comparer = Comparer<T>.Default;
-            for (long i = 0; i < Length; i++)
+            for (long i = 0; i < ret.Length; i++)
             {
                 T? value = ret[i];
                 if (value == null)

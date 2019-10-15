@@ -14,419 +14,503 @@ namespace Microsoft.Data
     {
         #region Binary Operations
 
-        public DataFrame Add<T>(IReadOnlyList<T> values)
+        public DataFrame Add<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Add(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Add(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Add<T>(T value)
+        public DataFrame Add<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Add(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Add(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Subtract<T>(IReadOnlyList<T> values)
-            where T : unmanaged
-        {
-            if (values.Count != ColumnCount)
-            {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
-            }
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Subtract(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame Subtract<T>(T value)
-            where T : unmanaged
-        {
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Subtract(value);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame Multiply<T>(IReadOnlyList<T> values)
+        public DataFrame Subtract<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Multiply(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Subtract(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Multiply<T>(T value)
+        public DataFrame Subtract<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Multiply(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Subtract(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Divide<T>(IReadOnlyList<T> values)
-            where T : unmanaged
-        {
-            if (values.Count != ColumnCount)
-            {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
-            }
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Divide(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame Divide<T>(T value)
-            where T : unmanaged
-        {
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Divide(value);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame Modulo<T>(IReadOnlyList<T> values)
+        public DataFrame Multiply<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Modulo(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Multiply(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Modulo<T>(T value)
+        public DataFrame Multiply<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Modulo(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Multiply(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame And<T>(IReadOnlyList<T> values)
-            where T : unmanaged
-        {
-            if (values.Count != ColumnCount)
-            {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
-            }
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.And(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame And<T>(T value)
-            where T : unmanaged
-        {
-            var newDataFrame = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
-            {
-                BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.And(value);
-                newDataFrame.InsertColumn(i, newColumn);
-            }
-            return newDataFrame;
-        }
-        public DataFrame Or<T>(IReadOnlyList<T> values)
+        public DataFrame Divide<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Or(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Divide(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Or<T>(T value)
+        public DataFrame Divide<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Or(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Divide(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Xor<T>(IReadOnlyList<T> values)
+        public DataFrame Modulo<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Xor(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Modulo(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame Xor<T>(T value)
+        public DataFrame Modulo<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Xor(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.Modulo(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame LeftShift(int value)
+        public DataFrame And<T>(IReadOnlyList<T> values, bool inPlace = false)
+            where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            if (values.Count != ColumnCount)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+            }
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.LeftShift(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.And(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
-        public DataFrame RightShift(int value)
+        public DataFrame And<T>(T value, bool inPlace = false)
+            where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.RightShift(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                BaseColumn newColumn = baseColumn.And(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
+        }
+        public DataFrame Or<T>(IReadOnlyList<T> values, bool inPlace = false)
+            where T : unmanaged
+        {
+            if (values.Count != ColumnCount)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+            }
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.Or(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame Or<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.Or(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame Xor<T>(IReadOnlyList<T> values, bool inPlace = false)
+            where T : unmanaged
+        {
+            if (values.Count != ColumnCount)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+            }
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.Xor(values[i], inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame Xor<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.Xor(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame LeftShift(int value, bool inPlace = false)
+        {
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.LeftShift(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+        public DataFrame RightShift(int value, bool inPlace = false)
+        {
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.RightShift(value, inPlace);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
         }
         public DataFrame Equals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.Equals(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame Equals<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.Equals(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame NotEquals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.NotEquals(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame NotEquals<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.NotEquals(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame GreaterThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.GreaterThanOrEqual(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame GreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.GreaterThanOrEqual(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame LessThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.LessThanOrEqual(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame LessThanOrEqual<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.LessThanOrEqual(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame GreaterThan<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.GreaterThan(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame GreaterThan<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.GreaterThan(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame LessThan<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
             if (values.Count != ColumnCount)
             {
-                throw new ArgumentException($"values.Count {values.Count} must match the number of columns in the table", nameof(values));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.LessThan(values[i]);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         public DataFrame LessThan<T>(T value)
             where T : unmanaged
         {
-            var newDataFrame = new DataFrame();
+            DataFrame retDataFrame = new DataFrame();
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
                 BaseColumn newColumn = baseColumn.LessThan(value);
-                newDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.InsertColumn(i, newColumn);
             }
-            return newDataFrame;
+            return retDataFrame;
         }
         #endregion
     }

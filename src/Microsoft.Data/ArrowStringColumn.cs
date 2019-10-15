@@ -94,7 +94,7 @@ namespace Microsoft.Data
             if (value)
             {
                 newBitMap = (byte)(curBitMap | (byte)(1 << (indexInBuffer & 7))); //bit hack for index % 8
-                if ((curBitMap >> (indexInBuffer & 7) & 1) == 0 && indexInBuffer < Length && NullCount > 0)
+                if (((curBitMap >> (indexInBuffer & 7)) & 1) == 0 && indexInBuffer < Length - 1 && NullCount > 0)
                 {
                     // Old value was null.
                     _nullCount--;
@@ -102,12 +102,12 @@ namespace Microsoft.Data
             }
             else
             {
-                if ((curBitMap >> (indexInBuffer & 7) & 1) == 1 && indexInBuffer < Length)
+                if (((curBitMap >> (indexInBuffer & 7)) & 1) == 1 && indexInBuffer < Length)
                 {
                     // old value was NOT null and new value is null
                     _nullCount++;
                 }
-                else if (indexInBuffer == Length)
+                else if (indexInBuffer == Length - 1)
                 {
                     // New entry from an append
                     _nullCount++;
@@ -198,7 +198,7 @@ namespace Microsoft.Data
                 mutableDataBuffer.Length += value.Length;
                 mutableOffsetsBuffer.Append(mutableOffsetsBuffer[mutableOffsetsBuffer.Length - 1] + value.Length);
             }
-            SetValidityBit(Length - 1, value == null ? true : false);
+            SetValidityBit(Length - 1, value != default);
 
         }
 
@@ -395,7 +395,7 @@ namespace Microsoft.Data
                 ArrowStringColumn ret = new ArrowStringColumn(Name);
                 for (long i = 0; i < Length; i++)
                 {
-                    ret.Append(GetBytes(i));
+                    ret.Append(IsValid(i) ? GetBytes(i) : default(ReadOnlySpan<byte>));
                 }
                 return ret;
             }

@@ -138,7 +138,7 @@ namespace Microsoft.Data
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public virtual BaseColumn Clip<U>(U lower, U upper) => throw new NotImplementedException();
+        public virtual BaseColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotImplementedException();
 
         /// <summary>
         /// Returns a new column filtered by the lower and upper bounds

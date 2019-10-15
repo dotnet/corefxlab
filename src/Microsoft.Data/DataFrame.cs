@@ -378,21 +378,20 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Clips values beyond the specified thresholds
+        /// Clips values beyond the specified thresholds on numeric columns
         /// </summary>
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public DataFrame Clip<U>(U lower, U upper)
+        public DataFrame Clip<U>(U lower, U upper, bool inPlace = false)
         {
-            DataFrame ret = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
+            DataFrame ret = inPlace ? this : Clone();
+
+            for (int i = 0; i < ret.ColumnCount; i++)
             {
-                BaseColumn column = Column(i);
-                BaseColumn insert = column;
+                BaseColumn column = ret.Column(i);
                 if (column.IsNumericColumn())
-                    insert = column.Clip(lower, upper);
-                ret.InsertColumn(i, insert);
+                    column.Clip(lower, upper, inPlace: true);
             }
             return ret;
         }
@@ -400,29 +399,31 @@ namespace Microsoft.Data
         /// <summary>
         /// Adds a prefix to the column names
         /// </summary>
-        public DataFrame AddPrefix(string prefix)
+        public DataFrame AddPrefix(string prefix, bool inPlace = false)
         {
-            for (int i = 0; i < ColumnCount; i++)
+            DataFrame df = inPlace ? this : Clone();
+            for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn column = Column(i);
-                _table.SetColumnName(column, prefix + column.Name);
-                OnColumnsChanged();
+                BaseColumn column = df.Column(i);
+                df._table.SetColumnName(column, prefix + column.Name);
+                df.OnColumnsChanged();
             }
-            return this;
+            return df;
         }
 
         /// <summary>
         /// Adds a suffix to the column names
         /// </summary>
-        public DataFrame AddSuffix(string suffix)
+        public DataFrame AddSuffix(string suffix, bool inPlace = false)
         {
-            for (int i = 0; i < ColumnCount; i++)
+            DataFrame df = inPlace ? this : Clone();
+            for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn column = Column(i);
-                _table.SetColumnName(column, column.Name + suffix);
-                OnColumnsChanged();
+                BaseColumn column = df.Column(i);
+                df._table.SetColumnName(column, column.Name + suffix);
+                df.OnColumnsChanged();
             }
-            return this;
+            return df;
         }
 
         /// <summary>
@@ -500,27 +501,27 @@ namespace Microsoft.Data
             return this[filter];
         }
 
-        public DataFrame FillNulls(object value)
+        public DataFrame FillNulls(object value, bool inPlace = false)
         {
-            DataFrame ret = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
+            DataFrame ret = inPlace ? this : Clone();
+            for (int i = 0; i < ret.ColumnCount; i++)
             {
-                ret.InsertColumn(i, Column(i).FillNulls(value));
+                ret.Column(i).FillNulls(value, inPlace: true);
             }
             return ret;
         }
 
-        public DataFrame FillNulls(IList<object> values)
+        public DataFrame FillNulls(IList<object> values, bool inPlace = false)
         {
             if (values.Count != ColumnCount)
-                throw new ArgumentException(nameof(values));
-            DataFrame ret = new DataFrame();
-            for (int i = 0; i < ColumnCount; i++)
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
+
+            DataFrame ret = inPlace ? this : Clone();
+            for (int i = 0; i < ret.ColumnCount; i++)
             {
-                ret.InsertColumn(i, Column(i).FillNulls(values[i]));
+                Column(i).FillNulls(values[i], inPlace: true);
             }
             return ret;
-
         }
 
         /// <summary>
