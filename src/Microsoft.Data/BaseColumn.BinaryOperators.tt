@@ -26,6 +26,11 @@ namespace Microsoft.Data
             return column.<#=method.MethodName#>(value);
         }
 
+        public static BaseColumn operator <#=method.Operator#>(<#=type.TypeName#> value, BaseColumn column)
+        {
+            return column.<#=method.MethodName#>(value);
+        }
+
 <# } #>
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
 <# foreach (TypeConfiguration type in typeConfiguration) { #>

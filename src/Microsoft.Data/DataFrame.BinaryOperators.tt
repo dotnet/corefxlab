@@ -27,6 +27,11 @@ namespace Microsoft.Data
             return df.<#=method.MethodName#>(value);
         }
 
+        public static DataFrame operator <#=method.Operator#>(<#=type.TypeName#> value, DataFrame df)
+        {
+            return df.<#=method.MethodName#>(value);
+        }
+
 <# } #>
 <# } else if (method.MethodType == MethodType.BinaryInt) {#>
         public static DataFrame operator <#=method.Operator#>(DataFrame df, int value)

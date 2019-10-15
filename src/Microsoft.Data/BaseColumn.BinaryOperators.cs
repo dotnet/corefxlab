@@ -22,7 +22,17 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(bool value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, byte value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(byte value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -32,7 +42,17 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(char value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, decimal value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(decimal value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -42,7 +62,17 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(double value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, float value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(float value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -52,7 +82,17 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(int value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, long value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(long value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -62,7 +102,17 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(sbyte value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, short value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(short value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -72,12 +122,27 @@ namespace Microsoft.Data
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(uint value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, ulong value)
         {
             return column.Add(value);
         }
 
+        public static BaseColumn operator +(ulong value, BaseColumn column)
+        {
+            return column.Add(value);
+        }
+
         public static BaseColumn operator +(BaseColumn column, ushort value)
+        {
+            return column.Add(value);
+        }
+
+        public static BaseColumn operator +(ushort value, BaseColumn column)
         {
             return column.Add(value);
         }
@@ -92,7 +157,17 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(bool value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, byte value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(byte value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -102,7 +177,17 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(char value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, decimal value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(decimal value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -112,7 +197,17 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(double value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, float value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(float value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -122,7 +217,17 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(int value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, long value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(long value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -132,7 +237,17 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(sbyte value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, short value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(short value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -142,12 +257,27 @@ namespace Microsoft.Data
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(uint value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, ulong value)
         {
             return column.Subtract(value);
         }
 
+        public static BaseColumn operator -(ulong value, BaseColumn column)
+        {
+            return column.Subtract(value);
+        }
+
         public static BaseColumn operator -(BaseColumn column, ushort value)
+        {
+            return column.Subtract(value);
+        }
+
+        public static BaseColumn operator -(ushort value, BaseColumn column)
         {
             return column.Subtract(value);
         }
@@ -162,7 +292,17 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(bool value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, byte value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(byte value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -172,7 +312,17 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(char value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, decimal value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(decimal value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -182,7 +332,17 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(double value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, float value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(float value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -192,7 +352,17 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(int value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, long value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(long value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -202,7 +372,17 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(sbyte value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, short value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(short value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -212,12 +392,27 @@ namespace Microsoft.Data
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(uint value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, ulong value)
         {
             return column.Multiply(value);
         }
 
+        public static BaseColumn operator *(ulong value, BaseColumn column)
+        {
+            return column.Multiply(value);
+        }
+
         public static BaseColumn operator *(BaseColumn column, ushort value)
+        {
+            return column.Multiply(value);
+        }
+
+        public static BaseColumn operator *(ushort value, BaseColumn column)
         {
             return column.Multiply(value);
         }
@@ -232,7 +427,17 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(bool value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, byte value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(byte value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -242,7 +447,17 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(char value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, decimal value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(decimal value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -252,7 +467,17 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(double value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, float value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(float value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -262,7 +487,17 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(int value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, long value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(long value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -272,7 +507,17 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(sbyte value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, short value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(short value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -282,12 +527,27 @@ namespace Microsoft.Data
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(uint value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, ulong value)
         {
             return column.Divide(value);
         }
 
+        public static BaseColumn operator /(ulong value, BaseColumn column)
+        {
+            return column.Divide(value);
+        }
+
         public static BaseColumn operator /(BaseColumn column, ushort value)
+        {
+            return column.Divide(value);
+        }
+
+        public static BaseColumn operator /(ushort value, BaseColumn column)
         {
             return column.Divide(value);
         }
@@ -302,7 +562,17 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(bool value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, byte value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(byte value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -312,7 +582,17 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(char value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, decimal value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(decimal value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -322,7 +602,17 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(double value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, float value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(float value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -332,7 +622,17 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(int value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, long value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(long value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -342,7 +642,17 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(sbyte value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, short value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(short value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -352,12 +662,27 @@ namespace Microsoft.Data
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(uint value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, ulong value)
         {
             return column.Modulo(value);
         }
 
+        public static BaseColumn operator %(ulong value, BaseColumn column)
+        {
+            return column.Modulo(value);
+        }
+
         public static BaseColumn operator %(BaseColumn column, ushort value)
+        {
+            return column.Modulo(value);
+        }
+
+        public static BaseColumn operator %(ushort value, BaseColumn column)
         {
             return column.Modulo(value);
         }
@@ -372,7 +697,17 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(bool value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, byte value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(byte value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -382,7 +717,17 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(char value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, decimal value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(decimal value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -392,7 +737,17 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(double value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, float value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(float value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -402,7 +757,17 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(int value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, long value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(long value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -412,7 +777,17 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(sbyte value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, short value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(short value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -422,12 +797,27 @@ namespace Microsoft.Data
             return column.And(value);
         }
 
+        public static BaseColumn operator &(uint value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, ulong value)
         {
             return column.And(value);
         }
 
+        public static BaseColumn operator &(ulong value, BaseColumn column)
+        {
+            return column.And(value);
+        }
+
         public static BaseColumn operator &(BaseColumn column, ushort value)
+        {
+            return column.And(value);
+        }
+
+        public static BaseColumn operator &(ushort value, BaseColumn column)
         {
             return column.And(value);
         }
@@ -442,7 +832,17 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(bool value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, byte value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(byte value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -452,7 +852,17 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(char value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, decimal value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(decimal value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -462,7 +872,17 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(double value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, float value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(float value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -472,7 +892,17 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(int value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, long value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(long value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -482,7 +912,17 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(sbyte value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, short value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(short value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -492,12 +932,27 @@ namespace Microsoft.Data
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(uint value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, ulong value)
         {
             return column.Or(value);
         }
 
+        public static BaseColumn operator |(ulong value, BaseColumn column)
+        {
+            return column.Or(value);
+        }
+
         public static BaseColumn operator |(BaseColumn column, ushort value)
+        {
+            return column.Or(value);
+        }
+
+        public static BaseColumn operator |(ushort value, BaseColumn column)
         {
             return column.Or(value);
         }
@@ -512,7 +967,17 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(bool value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, byte value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(byte value, BaseColumn column)
         {
             return column.Xor(value);
         }
@@ -522,7 +987,17 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(char value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, decimal value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(decimal value, BaseColumn column)
         {
             return column.Xor(value);
         }
@@ -532,7 +1007,17 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(double value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, float value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(float value, BaseColumn column)
         {
             return column.Xor(value);
         }
@@ -542,7 +1027,17 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(int value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, long value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(long value, BaseColumn column)
         {
             return column.Xor(value);
         }
@@ -552,7 +1047,17 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(sbyte value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, short value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(short value, BaseColumn column)
         {
             return column.Xor(value);
         }
@@ -562,12 +1067,27 @@ namespace Microsoft.Data
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(uint value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, ulong value)
         {
             return column.Xor(value);
         }
 
+        public static BaseColumn operator ^(ulong value, BaseColumn column)
+        {
+            return column.Xor(value);
+        }
+
         public static BaseColumn operator ^(BaseColumn column, ushort value)
+        {
+            return column.Xor(value);
+        }
+
+        public static BaseColumn operator ^(ushort value, BaseColumn column)
         {
             return column.Xor(value);
         }
