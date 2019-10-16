@@ -37,12 +37,16 @@ namespace Microsoft.Data
         public DataFrame Add<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Add(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Add<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Add(value, inPlace);
+                BaseColumn newColumn = baseColumn.Add(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -73,12 +77,16 @@ namespace Microsoft.Data
         public DataFrame Subtract<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Subtract(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Subtract<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Subtract(value, inPlace);
+                BaseColumn newColumn = baseColumn.Subtract(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -109,12 +117,16 @@ namespace Microsoft.Data
         public DataFrame Multiply<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Multiply(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Multiply<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Multiply(value, inPlace);
+                BaseColumn newColumn = baseColumn.Multiply(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -145,12 +157,16 @@ namespace Microsoft.Data
         public DataFrame Divide<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Divide(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Divide<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Divide(value, inPlace);
+                BaseColumn newColumn = baseColumn.Divide(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -181,12 +197,16 @@ namespace Microsoft.Data
         public DataFrame Modulo<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Modulo(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Modulo<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Modulo(value, inPlace);
+                BaseColumn newColumn = baseColumn.Modulo(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -217,12 +237,16 @@ namespace Microsoft.Data
         public DataFrame And<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return And(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame And<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.And(value, inPlace);
+                BaseColumn newColumn = baseColumn.And(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -253,12 +277,16 @@ namespace Microsoft.Data
         public DataFrame Or<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Or(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Or<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Or(value, inPlace);
+                BaseColumn newColumn = baseColumn.Or(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
@@ -289,12 +317,16 @@ namespace Microsoft.Data
         public DataFrame Xor<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
+            return Xor(value, inPlace, reverseOrderOfOperations: false);
+        }
+        private DataFrame Xor<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-                BaseColumn newColumn = baseColumn.Xor(value, inPlace);
+                BaseColumn newColumn = baseColumn.Xor(value, inPlace, reverseOrderOfOperations);
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else

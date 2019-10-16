@@ -554,6 +554,39 @@ namespace Microsoft.Data
             return LessThanImplementation(value);
         }
 
+        internal override BaseColumn Add<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return AddImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Subtract<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return SubtractImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Multiply<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return MultiplyImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Divide<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return DivideImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Modulo<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return ModuloImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn And<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return AndImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Or<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return OrImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+        internal override BaseColumn Xor<U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return XorImplementation(value, inPlace, reverseOrderOfOperations);
+        }
+
         internal BaseColumn AddImplementation<U>(PrimitiveColumn<U> column, bool inPlace)
             where U : unmanaged
         {
@@ -626,7 +659,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn AddImplementation<U>(U value, bool inPlace)
+        internal BaseColumn AddImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -643,13 +676,13 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        newColumn._columnContainer.Add(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -672,7 +705,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        newColumn._columnContainer.Add(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
@@ -680,13 +713,13 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
                         }
                         else
                         {
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Add(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.Add(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
                         }
                     }
@@ -766,7 +799,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn SubtractImplementation<U>(U value, bool inPlace)
+        internal BaseColumn SubtractImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -783,13 +816,13 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        newColumn._columnContainer.Subtract(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -812,7 +845,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        newColumn._columnContainer.Subtract(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
@@ -820,13 +853,13 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
                         }
                         else
                         {
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Subtract(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.Subtract(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
                         }
                     }
@@ -906,7 +939,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn MultiplyImplementation<U>(U value, bool inPlace)
+        internal BaseColumn MultiplyImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -923,13 +956,13 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        newColumn._columnContainer.Multiply(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -952,7 +985,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        newColumn._columnContainer.Multiply(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
@@ -960,13 +993,13 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
                         }
                         else
                         {
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Multiply(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.Multiply(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
                         }
                     }
@@ -1046,7 +1079,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn DivideImplementation<U>(U value, bool inPlace)
+        internal BaseColumn DivideImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1063,13 +1096,13 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        newColumn._columnContainer.Divide(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1092,7 +1125,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        newColumn._columnContainer.Divide(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
@@ -1100,13 +1133,13 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
                         }
                         else
                         {
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Divide(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.Divide(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
                         }
                     }
@@ -1186,7 +1219,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn ModuloImplementation<U>(U value, bool inPlace)
+        internal BaseColumn ModuloImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1203,13 +1236,13 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        newColumn._columnContainer.Modulo(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
                     {
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
                     }
                 case Type byteType when byteType == typeof(byte):
@@ -1232,7 +1265,7 @@ namespace Microsoft.Data
                         // No conversions
                         PrimitiveColumn<U> primitiveColumn = this as PrimitiveColumn<U>;
                         PrimitiveColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        newColumn._columnContainer.Modulo(value, reverseOrderOfOperations);
                         return newColumn;
                     }
                     else 
@@ -1240,13 +1273,13 @@ namespace Microsoft.Data
                         if (typeof(U) == typeof(decimal))
                         {
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
                         }
                         else
                         {
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.Modulo(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.Modulo(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
                         }
                     }
@@ -1288,7 +1321,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn AndImplementation<U>(U value, bool inPlace)
+        internal BaseColumn AndImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1300,7 +1333,7 @@ namespace Microsoft.Data
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.And(value);
+                    retColumn._columnContainer.And(value, reverseOrderOfOperations);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -1352,7 +1385,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn OrImplementation<U>(U value, bool inPlace)
+        internal BaseColumn OrImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1364,7 +1397,7 @@ namespace Microsoft.Data
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Or(value);
+                    retColumn._columnContainer.Or(value, reverseOrderOfOperations);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -1416,7 +1449,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn XorImplementation<U>(U value, bool inPlace)
+        internal BaseColumn XorImplementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1428,7 +1461,7 @@ namespace Microsoft.Data
                     }
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Xor(value);
+                    retColumn._columnContainer.Xor(value, reverseOrderOfOperations);
                     return retColumn;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):

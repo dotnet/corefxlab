@@ -202,10 +202,22 @@
             return $"void {MethodName}({arguments})";
         }
 
+        public string GetInvertedMethodSignatureForBinaryScalarsOps(string columnType, string genericType)
+        {
+            var arguments = GetInvertedMethodArguments(columnType, genericType);
+            return $"void {MethodName}({arguments})";
+        }
+
         public string GetSingleArgumentMethodSignature(string columnType, string genericType)
         {
             var arguments = GetSingleParameterMethodArguments(columnType, genericType);
             return $"PrimitiveColumnContainer<T> {MethodName}({arguments})";
+        }
+
+        public string GetInvertedSingleArgumentMethodSignature(string columnType, string genericType)
+        {
+            var arguments = GetSingleParameterMethodArguments(columnType, genericType);
+            return $"PrimitiveColumnContainer<T> {MethodName}({arguments}, bool reverseOrderOfOperations = false)";
         }
 
         public string GetComputationOrReductionMethodSignature(string columnType, string genericType)
@@ -217,6 +229,17 @@
                     return $"{columnType}<{genericType}> {MethodName}({arguments})";
                 case MethodType.Reduction:
                     return $"{genericType} {MethodName}({arguments})";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        public string GetInvertedMethodArguments(string dataFrameType, string genericType)
+        {
+            switch (MethodType)
+            {
+                case MethodType.BinaryScalar:
+                    return $"{genericType} {Op2Name}, {dataFrameType}<{genericType}> {Op1Name}";
                 default:
                     throw new ArgumentException();
             }

@@ -40,6 +40,14 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+        internal virtual BaseColumn <#=method.MethodName#><T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
+<# } #>
 <# } #>
     }
 }

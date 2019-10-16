@@ -23,7 +23,12 @@ namespace Microsoft.Data
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
         public static BaseColumn operator <#=method.Operator#>(BaseColumn column, <#=type.TypeName#> value)
         {
-            return column.<#=method.MethodName#>(value);
+            return column.<#=method.MethodName#>(value, inPlace: false);
+        }
+
+        public static BaseColumn operator <#=method.Operator#>(<#=type.TypeName#> value, BaseColumn column)
+        {
+            return column.<#=method.MethodName#>(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
 <# } #>

@@ -65,9 +65,18 @@ namespace Microsoft.Data
 <# } #>
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
+<# if (method.MethodType == MethodType.BinaryScalar) {#>
+        internal override BaseColumn <#=method.MethodName#><U>(U value, bool inPlace = false, bool reverseOrderOfOperations = false)
+        {
+            return <#=method.MethodName#>Implementation(value, inPlace, reverseOrderOfOperations);
+        }
+<# } #>
+<# } #>
+
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
-        internal BaseColumn <#=method.MethodName#>Implementation<U>(U value, bool inPlace)
+        internal BaseColumn <#=method.MethodName#>Implementation<U>(U value, bool inPlace, bool reverseOrderOfOperations = false)
 <# } else {#>
         internal PrimitiveColumn<bool> <#=method.MethodName#>Implementation<U>(U value)
 <# } #>
@@ -120,7 +129,7 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = <#=GenerateInPlaceStatement("typedColumn", "typedColumn.Clone()")#>;
-                    retColumn._columnContainer.<#=method.MethodName#>(value);
+                    retColumn._columnContainer.<#=method.MethodName#>(value, reverseOrderOfOperations);
                     return retColumn;
 <# } else { #>
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
@@ -157,14 +166,6 @@ namespace Microsoft.Data
 <# } else { #>
                     (this as PrimitiveColumn<U>)._columnContainer.<#=method.MethodName#>(column._columnContainer, retColumn._columnContainer);
 <# } #>
-<# } else if (method.MethodType == MethodType.BinaryScalar) {#>
-                    PrimitiveColumn<U> column = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn = <#=GenerateInPlaceStatement("column", "column.Clone()")#>;
-                    retColumn._columnContainer.<#=method.MethodName#>(value);
-<# } else { #>
-                    PrimitiveColumn<U> column = this as PrimitiveColumn<U>;
-                    PrimitiveColumn<U> retColumn = <#=GenerateInPlaceStatement("column", "column.Clone()")#>;
-                    retColumn._columnContainer.<#=method.MethodName#>(column._columnContainer);
 <# } #>
                     return retColumn;
 <# } #>
@@ -191,7 +192,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
                         PrimitiveColumn<U> newColumn = <#=GenerateInPlaceStatement("primitiveColumn", "primitiveColumn.Clone()")#>;
-                        newColumn._columnContainer.<#=method.MethodName#>(value);
+                        newColumn._columnContainer.<#=method.MethodName#>(value, reverseOrderOfOperations);
                         return newColumn;
 <# } else { #>
                         PrimitiveColumn<U> newColumn = <#=GenerateInPlaceStatement("primitiveColumn", "primitiveColumn.Clone()")#>;
@@ -216,7 +217,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar) { #>
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                        decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
+                        decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                         return decimalColumn;
 <# } else { #>
                         PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
@@ -259,7 +260,7 @@ namespace Microsoft.Data
                         throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
                         PrimitiveColumn<U> newColumn = <#=GenerateInPlaceStatement("primitiveColumn", "primitiveColumn.Clone()")#>;
-                        newColumn._columnContainer.<#=method.MethodName#>(value);
+                        newColumn._columnContainer.<#=method.MethodName#>(value, reverseOrderOfOperations);
                         return newColumn;
 <# } else { #>
                         PrimitiveColumn<U> newColumn = <#=GenerateInPlaceStatement("primitiveColumn", "primitiveColumn.Clone()")#>;
@@ -286,7 +287,7 @@ namespace Microsoft.Data
                             throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar) { #>
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
-                            decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
+                            decimalColumn._columnContainer.<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value), reverseOrderOfOperations);
                             return decimalColumn;
 <# } else { #>
                             PrimitiveColumn<decimal> decimalColumn = CloneAsDecimalColumn();
@@ -311,7 +312,7 @@ namespace Microsoft.Data
                             throw new NotSupportedException();
 <# } else if (method.MethodType == MethodType.BinaryScalar ) { #>
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();
-                            doubleColumn._columnContainer.<#=method.MethodName#>(DoubleConverter<U>.Instance.GetDouble(value));
+                            doubleColumn._columnContainer.<#=method.MethodName#>(DoubleConverter<U>.Instance.GetDouble(value), reverseOrderOfOperations);
                             return doubleColumn;
 <# } else { #>
                             PrimitiveColumn<double> doubleColumn = CloneAsDoubleColumn();

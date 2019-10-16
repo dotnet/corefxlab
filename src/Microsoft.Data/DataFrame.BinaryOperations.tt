@@ -24,7 +24,10 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
         public DataFrame <#=method.MethodName#><T>(T value, bool inPlace = false)
             where T : unmanaged
-<# } #>
+        {
+            return <#=method.MethodName#>(value, inPlace, reverseOrderOfOperations: false);
+        }
+<# } else { #>
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
         public DataFrame <#=method.MethodName#><T>(T value)
             where T : unmanaged
@@ -41,48 +44,69 @@ namespace Microsoft.Data
         public DataFrame <#=method.MethodName#>(int value, bool inPlace = false)
 <# } #>
         {
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
-<# } else { #>
+<# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.BinaryInt) {#>
+<# } else if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) { #>
             if (values.Count != ColumnCount)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
 <# } #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
+<# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
-<# } else { #>
+<# } else if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
             DataFrame retDataFrame = new DataFrame();
 <# } #>
 
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
+<# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
-<# } else { #>
+<# } else if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
             for (int i = 0; i < ColumnCount; i++)
             {
                 BaseColumn baseColumn = _table.Column(i);
 <# } #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) {#>
+<# if (method.MethodType == MethodType.BinaryInt) {#>
                 BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace);
 <# } else if (method.MethodType == MethodType.Binary) { #>
                 BaseColumn newColumn = baseColumn.<#=method.MethodName#>(values[i], inPlace);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
                 BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value);
-<# } else { #>
+<# } else if (method.MethodType == MethodType.Comparison) { #>
                 BaseColumn newColumn = baseColumn.<#=method.MethodName#>(values[i]);
 <# } #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
+<# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
                 if (inPlace)
                     retDataFrame.SetColumn(i, newColumn);
                 else
                     retDataFrame.InsertColumn(i, newColumn);
-<# } else { #>
-                retDataFrame.InsertColumn(i, newColumn);
-<# } #>
             }
             return retDataFrame;
         }
+<# } else if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
+                retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+<# } #>
+<# } #>
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+        private DataFrame <#=method.MethodName#><T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            DataFrame retDataFrame = inPlace ? this : new DataFrame();
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                BaseColumn baseColumn = _table.Column(i);
+                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace, reverseOrderOfOperations);
+                if (inPlace)
+                    retDataFrame.SetColumn(i, newColumn);
+                else
+                    retDataFrame.InsertColumn(i, newColumn);
+            }
+            return retDataFrame;
+        }
+<# } #>
 <# } #>
         #endregion
     }

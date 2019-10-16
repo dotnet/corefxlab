@@ -20,13 +20,25 @@ namespace Microsoft.Data
     {
         #region Binary Operations
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-<# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) { #>
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+        public static DataFrame operator <#=method.Operator#>(DataFrame df, <#=type.TypeName#> value)
+        {
+            return df.<#=method.MethodName#>(value, inPlace: false);
+        }
+
+        public static DataFrame operator <#=method.Operator#>(<#=type.TypeName#> value, DataFrame df)
+        {
+            return df.<#=method.MethodName#>(value, inPlace: false, reverseOrderOfOperations: true);
+        }
+
+<# } #>
+<# } else if (method.MethodType == MethodType.ComparisonScalar) {#>
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
         public static DataFrame operator <#=method.Operator#>(DataFrame df, <#=type.TypeName#> value)
         {
             return df.<#=method.MethodName#>(value);
         }
-
 <# } #>
 <# } else if (method.MethodType == MethodType.BinaryInt) {#>
         public static DataFrame operator <#=method.Operator#>(DataFrame df, int value)

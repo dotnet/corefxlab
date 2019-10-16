@@ -23,12 +23,24 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        internal virtual BaseColumn Add<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual BaseColumn Subtract(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
         public virtual BaseColumn Subtract<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual BaseColumn Subtract<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
@@ -45,12 +57,24 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        internal virtual BaseColumn Multiply<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual BaseColumn Divide(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
         public virtual BaseColumn Divide<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual BaseColumn Divide<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
@@ -67,12 +91,24 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        internal virtual BaseColumn Modulo<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual BaseColumn And(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
         public virtual BaseColumn And<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual BaseColumn And<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
             where T : unmanaged
         {
             throw new NotImplementedException();
@@ -89,12 +125,24 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
+        internal virtual BaseColumn Or<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual BaseColumn Xor(BaseColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
 
         public virtual BaseColumn Xor<T>(T value, bool inPlace = false)
+            where T : unmanaged
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual BaseColumn Xor<T>(T value, bool inPlace = false, bool reverseOrderOfOperations = false)
             where T : unmanaged
         {
             throw new NotImplementedException();

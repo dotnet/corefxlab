@@ -29,10 +29,17 @@ namespace Microsoft.Data
        }
 
 <# } else { #>
+<# if (method.MethodType == MethodType.BinaryScalar) { #>
+       public <#= method.GetInvertedSingleArgumentMethodSignature("PrimitiveColumnContainer", "T")#>
+<# } else { #>
        public <#= method.GetSingleArgumentMethodSignature("PrimitiveColumnContainer", "T")#>
+<# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar);
 <# } else if (method.MethodType == MethodType.BinaryInt) { #>
             PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, value);
 <# } else { #>

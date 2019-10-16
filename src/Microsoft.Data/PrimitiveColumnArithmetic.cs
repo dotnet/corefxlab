@@ -15,20 +15,28 @@ namespace Microsoft.Data
     {
        void Add(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Add(PrimitiveColumnContainer<T> column, T scalar);
+       void Add(T scalar, PrimitiveColumnContainer<T> column);
        void Subtract(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Subtract(PrimitiveColumnContainer<T> column, T scalar);
+       void Subtract(T scalar, PrimitiveColumnContainer<T> column);
        void Multiply(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Multiply(PrimitiveColumnContainer<T> column, T scalar);
+       void Multiply(T scalar, PrimitiveColumnContainer<T> column);
        void Divide(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Divide(PrimitiveColumnContainer<T> column, T scalar);
+       void Divide(T scalar, PrimitiveColumnContainer<T> column);
        void Modulo(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Modulo(PrimitiveColumnContainer<T> column, T scalar);
+       void Modulo(T scalar, PrimitiveColumnContainer<T> column);
        void And(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void And(PrimitiveColumnContainer<T> column, T scalar);
+       void And(T scalar, PrimitiveColumnContainer<T> column);
        void Or(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Or(PrimitiveColumnContainer<T> column, T scalar);
+       void Or(T scalar, PrimitiveColumnContainer<T> column);
        void Xor(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
        void Xor(PrimitiveColumnContainer<T> column, T scalar);
+       void Xor(T scalar, PrimitiveColumnContainer<T> column);
        void LeftShift(PrimitiveColumnContainer<T> column, int value);
        void RightShift(PrimitiveColumnContainer<T> column, int value);
        void Equals(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret);
@@ -122,11 +130,19 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Add(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Subtract(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
         public void Subtract(PrimitiveColumnContainer<bool> column, bool scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void Subtract(bool scalar, PrimitiveColumnContainer<bool> column)
         {
             throw new NotSupportedException();
         }
@@ -138,6 +154,10 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Multiply(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Divide(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
@@ -146,11 +166,19 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Divide(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Modulo(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             throw new NotSupportedException();
         }
         public void Modulo(PrimitiveColumnContainer<bool> column, bool scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void Modulo(bool scalar, PrimitiveColumnContainer<bool> column)
         {
             throw new NotSupportedException();
         }
@@ -183,6 +211,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void And(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (bool)(scalar & span[i]);
+                }
+            }
+        }
         public void Or(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -212,6 +254,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (bool)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -238,6 +294,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (bool)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(bool scalar, PrimitiveColumnContainer<bool> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<bool>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (bool)(scalar ^ span[i]);
                 }
             }
         }
@@ -371,6 +441,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -397,6 +481,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (byte)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar - span[i]);
                 }
             }
         }
@@ -429,6 +527,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -455,6 +567,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (byte)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar / span[i]);
                 }
             }
         }
@@ -487,6 +613,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -513,6 +653,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (byte)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar & span[i]);
                 }
             }
         }
@@ -545,6 +699,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -571,6 +739,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (byte)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(byte scalar, PrimitiveColumnContainer<byte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<byte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (byte)(scalar ^ span[i]);
                 }
             }
         }
@@ -808,6 +990,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -834,6 +1030,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (char)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar - span[i]);
                 }
             }
         }
@@ -866,6 +1076,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -892,6 +1116,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (char)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar / span[i]);
                 }
             }
         }
@@ -924,6 +1162,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -950,6 +1202,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (char)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar & span[i]);
                 }
             }
         }
@@ -982,6 +1248,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1008,6 +1288,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (char)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(char scalar, PrimitiveColumnContainer<char> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<char>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)(scalar ^ span[i]);
                 }
             }
         }
@@ -1245,6 +1539,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (decimal)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1271,6 +1579,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (decimal)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (decimal)(scalar - span[i]);
                 }
             }
         }
@@ -1303,6 +1625,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (decimal)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1329,6 +1665,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (decimal)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (decimal)(scalar / span[i]);
                 }
             }
         }
@@ -1361,11 +1711,29 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<decimal>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (decimal)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             throw new NotSupportedException();
         }
         public void And(PrimitiveColumnContainer<decimal> column, decimal scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void And(decimal scalar, PrimitiveColumnContainer<decimal> column)
         {
             throw new NotSupportedException();
         }
@@ -1377,11 +1745,19 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Or(decimal scalar, PrimitiveColumnContainer<decimal> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Xor(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
             throw new NotSupportedException();
         }
         public void Xor(PrimitiveColumnContainer<decimal> column, decimal scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void Xor(decimal scalar, PrimitiveColumnContainer<decimal> column)
         {
             throw new NotSupportedException();
         }
@@ -1599,6 +1975,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (double)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1625,6 +2015,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (double)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (double)(scalar - span[i]);
                 }
             }
         }
@@ -1657,6 +2061,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (double)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1683,6 +2101,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (double)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (double)(scalar / span[i]);
                 }
             }
         }
@@ -1715,11 +2147,29 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<double>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (double)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             throw new NotSupportedException();
         }
         public void And(PrimitiveColumnContainer<double> column, double scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void And(double scalar, PrimitiveColumnContainer<double> column)
         {
             throw new NotSupportedException();
         }
@@ -1731,11 +2181,19 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Or(double scalar, PrimitiveColumnContainer<double> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Xor(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
             throw new NotSupportedException();
         }
         public void Xor(PrimitiveColumnContainer<double> column, double scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void Xor(double scalar, PrimitiveColumnContainer<double> column)
         {
             throw new NotSupportedException();
         }
@@ -1953,6 +2411,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (float)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -1979,6 +2451,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (float)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (float)(scalar - span[i]);
                 }
             }
         }
@@ -2011,6 +2497,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (float)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2037,6 +2537,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (float)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (float)(scalar / span[i]);
                 }
             }
         }
@@ -2069,11 +2583,29 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (float)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             throw new NotSupportedException();
         }
         public void And(PrimitiveColumnContainer<float> column, float scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void And(float scalar, PrimitiveColumnContainer<float> column)
         {
             throw new NotSupportedException();
         }
@@ -2085,11 +2617,19 @@ namespace Microsoft.Data
         {
             throw new NotSupportedException();
         }
+        public void Or(float scalar, PrimitiveColumnContainer<float> column)
+        {
+            throw new NotSupportedException();
+        }
         public void Xor(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
             throw new NotSupportedException();
         }
         public void Xor(PrimitiveColumnContainer<float> column, float scalar)
+        {
+            throw new NotSupportedException();
+        }
+        public void Xor(float scalar, PrimitiveColumnContainer<float> column)
         {
             throw new NotSupportedException();
         }
@@ -2307,6 +2847,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2333,6 +2887,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (int)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar - span[i]);
                 }
             }
         }
@@ -2365,6 +2933,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2391,6 +2973,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (int)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar / span[i]);
                 }
             }
         }
@@ -2423,6 +3019,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2449,6 +3059,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (int)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar & span[i]);
                 }
             }
         }
@@ -2481,6 +3105,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2507,6 +3145,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (int)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(int scalar, PrimitiveColumnContainer<int> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<int>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (int)(scalar ^ span[i]);
                 }
             }
         }
@@ -2744,6 +3396,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2770,6 +3436,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (long)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar - span[i]);
                 }
             }
         }
@@ -2802,6 +3482,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2828,6 +3522,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (long)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar / span[i]);
                 }
             }
         }
@@ -2860,6 +3568,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2886,6 +3608,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (long)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar & span[i]);
                 }
             }
         }
@@ -2918,6 +3654,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -2944,6 +3694,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (long)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(long scalar, PrimitiveColumnContainer<long> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<long>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (long)(scalar ^ span[i]);
                 }
             }
         }
@@ -3181,6 +3945,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3207,6 +3985,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (sbyte)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar - span[i]);
                 }
             }
         }
@@ -3239,6 +4031,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3265,6 +4071,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (sbyte)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar / span[i]);
                 }
             }
         }
@@ -3297,6 +4117,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3323,6 +4157,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (sbyte)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar & span[i]);
                 }
             }
         }
@@ -3355,6 +4203,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3381,6 +4243,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (sbyte)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(sbyte scalar, PrimitiveColumnContainer<sbyte> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<sbyte>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (sbyte)(scalar ^ span[i]);
                 }
             }
         }
@@ -3618,6 +4494,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3644,6 +4534,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (short)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar - span[i]);
                 }
             }
         }
@@ -3676,6 +4580,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3702,6 +4620,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (short)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar / span[i]);
                 }
             }
         }
@@ -3734,6 +4666,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3760,6 +4706,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (short)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar & span[i]);
                 }
             }
         }
@@ -3792,6 +4752,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -3818,6 +4792,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (short)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(short scalar, PrimitiveColumnContainer<short> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<short>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (short)(scalar ^ span[i]);
                 }
             }
         }
@@ -4055,6 +5043,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4081,6 +5083,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (uint)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar - span[i]);
                 }
             }
         }
@@ -4113,6 +5129,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4139,6 +5169,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (uint)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar / span[i]);
                 }
             }
         }
@@ -4171,6 +5215,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4197,6 +5255,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (uint)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar & span[i]);
                 }
             }
         }
@@ -4229,6 +5301,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4255,6 +5341,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (uint)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(uint scalar, PrimitiveColumnContainer<uint> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<uint>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (uint)(scalar ^ span[i]);
                 }
             }
         }
@@ -4492,6 +5592,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4518,6 +5632,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ulong)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar - span[i]);
                 }
             }
         }
@@ -4550,6 +5678,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4576,6 +5718,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ulong)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar / span[i]);
                 }
             }
         }
@@ -4608,6 +5764,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4634,6 +5804,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ulong)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar & span[i]);
                 }
             }
         }
@@ -4666,6 +5850,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4692,6 +5890,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ulong)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(ulong scalar, PrimitiveColumnContainer<ulong> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ulong>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ulong)(scalar ^ span[i]);
                 }
             }
         }
@@ -4929,6 +6141,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Add(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar + span[i]);
+                }
+            }
+        }
         public void Subtract(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -4955,6 +6181,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ushort)(span[i] - scalar);
+                }
+            }
+        }
+        public void Subtract(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar - span[i]);
                 }
             }
         }
@@ -4987,6 +6227,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Multiply(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar * span[i]);
+                }
+            }
+        }
         public void Divide(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -5013,6 +6267,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ushort)(span[i] / scalar);
+                }
+            }
+        }
+        public void Divide(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar / span[i]);
                 }
             }
         }
@@ -5045,6 +6313,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Modulo(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar % span[i]);
+                }
+            }
+        }
         public void And(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -5071,6 +6353,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ushort)(span[i] & scalar);
+                }
+            }
+        }
+        public void And(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar & span[i]);
                 }
             }
         }
@@ -5103,6 +6399,20 @@ namespace Microsoft.Data
                 }
             }
         }
+        public void Or(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar | span[i]);
+                }
+            }
+        }
         public void Xor(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {
             for (int b = 0 ; b < left.Buffers.Count; b++)
@@ -5129,6 +6439,20 @@ namespace Microsoft.Data
                 for (int i = 0; i < span.Length; i++)
                 {
                     span[i] = (ushort)(span[i] ^ scalar);
+                }
+            }
+        }
+        public void Xor(ushort scalar, PrimitiveColumnContainer<ushort> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<ushort>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (ushort)(scalar ^ span[i]);
                 }
             }
         }

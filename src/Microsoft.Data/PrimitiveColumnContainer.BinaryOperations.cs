@@ -16,9 +16,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Add(T scalar)
+       public PrimitiveColumnContainer<T> Add(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Add(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Add(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Add(this, scalar);
             return this;
         }
 
@@ -28,9 +31,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Subtract(T scalar)
+       public PrimitiveColumnContainer<T> Subtract(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Subtract(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Subtract(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Subtract(this, scalar);
             return this;
         }
 
@@ -40,9 +46,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Multiply(T scalar)
+       public PrimitiveColumnContainer<T> Multiply(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Multiply(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Multiply(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Multiply(this, scalar);
             return this;
         }
 
@@ -52,9 +61,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Divide(T scalar)
+       public PrimitiveColumnContainer<T> Divide(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Divide(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Divide(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Divide(this, scalar);
             return this;
         }
 
@@ -64,9 +76,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Modulo(T scalar)
+       public PrimitiveColumnContainer<T> Modulo(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Modulo(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Modulo(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Modulo(this, scalar);
             return this;
         }
 
@@ -76,9 +91,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> And(T scalar)
+       public PrimitiveColumnContainer<T> And(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.And(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.And(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.And(this, scalar);
             return this;
         }
 
@@ -88,9 +106,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Or(T scalar)
+       public PrimitiveColumnContainer<T> Or(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Or(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Or(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Or(this, scalar);
             return this;
         }
 
@@ -100,9 +121,12 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Xor(T scalar)
+       public PrimitiveColumnContainer<T> Xor(T scalar, bool reverseOrderOfOperations = false)
         {
-            PrimitiveColumnArithmetic<T>.Instance.Xor(this, scalar);
+            if (reverseOrderOfOperations)
+                PrimitiveColumnArithmetic<T>.Instance.Xor(scalar, this);
+            else 
+                PrimitiveColumnArithmetic<T>.Instance.Xor(this, scalar);
             return this;
         }
 

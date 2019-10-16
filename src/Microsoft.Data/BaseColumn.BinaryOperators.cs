@@ -19,67 +19,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator +(BaseColumn column, bool value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(bool value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, byte value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(byte value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, char value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(char value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, decimal value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(decimal value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, double value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(double value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, float value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(float value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, int value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(int value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, long value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(long value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, sbyte value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(sbyte value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, short value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(short value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, uint value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(uint value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, ulong value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(ulong value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator +(BaseColumn column, ushort value)
         {
-            return column.Add(value);
+            return column.Add(value, inPlace: false);
+        }
+
+        public static BaseColumn operator +(ushort value, BaseColumn column)
+        {
+            return column.Add(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn left, BaseColumn right)
@@ -89,67 +154,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator -(BaseColumn column, bool value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(bool value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, byte value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(byte value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, char value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(char value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, decimal value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(decimal value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, double value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(double value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, float value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(float value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, int value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(int value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, long value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(long value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, sbyte value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(sbyte value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, short value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(short value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, uint value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(uint value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, ulong value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(ulong value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator -(BaseColumn column, ushort value)
         {
-            return column.Subtract(value);
+            return column.Subtract(value, inPlace: false);
+        }
+
+        public static BaseColumn operator -(ushort value, BaseColumn column)
+        {
+            return column.Subtract(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn left, BaseColumn right)
@@ -159,67 +289,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator *(BaseColumn column, bool value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(bool value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, byte value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(byte value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, char value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(char value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, decimal value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(decimal value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, double value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(double value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, float value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(float value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, int value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(int value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, long value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(long value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, sbyte value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(sbyte value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, short value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(short value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, uint value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(uint value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, ulong value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(ulong value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator *(BaseColumn column, ushort value)
         {
-            return column.Multiply(value);
+            return column.Multiply(value, inPlace: false);
+        }
+
+        public static BaseColumn operator *(ushort value, BaseColumn column)
+        {
+            return column.Multiply(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn left, BaseColumn right)
@@ -229,67 +424,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator /(BaseColumn column, bool value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(bool value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, byte value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(byte value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, char value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(char value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, decimal value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(decimal value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, double value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(double value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, float value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(float value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, int value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(int value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, long value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(long value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, sbyte value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(sbyte value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, short value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(short value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, uint value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(uint value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, ulong value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(ulong value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator /(BaseColumn column, ushort value)
         {
-            return column.Divide(value);
+            return column.Divide(value, inPlace: false);
+        }
+
+        public static BaseColumn operator /(ushort value, BaseColumn column)
+        {
+            return column.Divide(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn left, BaseColumn right)
@@ -299,67 +559,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator %(BaseColumn column, bool value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(bool value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, byte value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(byte value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, char value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(char value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, decimal value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(decimal value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, double value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(double value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, float value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(float value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, int value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(int value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, long value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(long value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, sbyte value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(sbyte value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, short value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(short value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, uint value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(uint value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, ulong value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(ulong value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator %(BaseColumn column, ushort value)
         {
-            return column.Modulo(value);
+            return column.Modulo(value, inPlace: false);
+        }
+
+        public static BaseColumn operator %(ushort value, BaseColumn column)
+        {
+            return column.Modulo(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn left, BaseColumn right)
@@ -369,67 +694,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator &(BaseColumn column, bool value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(bool value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, byte value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(byte value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, char value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(char value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, decimal value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(decimal value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, double value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(double value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, float value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(float value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, int value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(int value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, long value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(long value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, sbyte value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(sbyte value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, short value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(short value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, uint value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(uint value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, ulong value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(ulong value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator &(BaseColumn column, ushort value)
         {
-            return column.And(value);
+            return column.And(value, inPlace: false);
+        }
+
+        public static BaseColumn operator &(ushort value, BaseColumn column)
+        {
+            return column.And(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn left, BaseColumn right)
@@ -439,67 +829,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator |(BaseColumn column, bool value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(bool value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, byte value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(byte value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, char value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(char value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, decimal value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(decimal value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, double value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(double value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, float value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(float value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, int value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(int value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, long value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(long value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, sbyte value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(sbyte value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, short value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(short value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, uint value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(uint value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, ulong value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(ulong value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator |(BaseColumn column, ushort value)
         {
-            return column.Or(value);
+            return column.Or(value, inPlace: false);
+        }
+
+        public static BaseColumn operator |(ushort value, BaseColumn column)
+        {
+            return column.Or(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn left, BaseColumn right)
@@ -509,67 +964,132 @@ namespace Microsoft.Data
 
         public static BaseColumn operator ^(BaseColumn column, bool value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(bool value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, byte value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(byte value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, char value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(char value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, decimal value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(decimal value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, double value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(double value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, float value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(float value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, int value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(int value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, long value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(long value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, sbyte value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(sbyte value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, short value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(short value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, uint value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(uint value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, ulong value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(ulong value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator ^(BaseColumn column, ushort value)
         {
-            return column.Xor(value);
+            return column.Xor(value, inPlace: false);
+        }
+
+        public static BaseColumn operator ^(ushort value, BaseColumn column)
+        {
+            return column.Xor(value, inPlace: false, reverseOrderOfOperations: true);
         }
 
         public static BaseColumn operator <<(BaseColumn column, int value)
