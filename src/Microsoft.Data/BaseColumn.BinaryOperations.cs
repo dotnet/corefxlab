@@ -72,7 +72,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn And(bool value, bool inPlace = false)
+        public virtual PrimitiveColumn<bool> And(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -82,7 +82,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Or(bool value, bool inPlace = false)
+        public virtual PrimitiveColumn<bool> Or(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -92,7 +92,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Xor(bool value, bool inPlace = false)
+        public virtual PrimitiveColumn<bool> Xor(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }

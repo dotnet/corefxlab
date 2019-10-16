@@ -237,7 +237,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn And(bool value, bool inPlace = false)
+        public override PrimitiveColumn<bool> And(bool value, bool inPlace = false)
         {
             return AndImplementation(value, inPlace);
         }
@@ -275,7 +275,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn Or(bool value, bool inPlace = false)
+        public override PrimitiveColumn<bool> Or(bool value, bool inPlace = false)
         {
             return OrImplementation(value, inPlace);
         }
@@ -313,7 +313,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        public override BaseColumn Xor(bool value, bool inPlace = false)
+        public override PrimitiveColumn<bool> Xor(bool value, bool inPlace = false)
         {
             return XorImplementation(value, inPlace);
         }
@@ -1288,7 +1288,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn AndImplementation<U>(U value, bool inPlace)
+        internal PrimitiveColumn<bool> AndImplementation<U>(U value, bool inPlace)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1301,7 +1301,7 @@ namespace Microsoft.Data
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.And(value);
-                    return retColumn;
+                    return retColumn as PrimitiveColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1352,7 +1352,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn OrImplementation<U>(U value, bool inPlace)
+        internal PrimitiveColumn<bool> OrImplementation<U>(U value, bool inPlace)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1365,7 +1365,7 @@ namespace Microsoft.Data
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Or(value);
-                    return retColumn;
+                    return retColumn as PrimitiveColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type decimalType when decimalType == typeof(decimal):
@@ -1416,7 +1416,7 @@ namespace Microsoft.Data
                     throw new NotSupportedException();
             }
         }
-        internal BaseColumn XorImplementation<U>(U value, bool inPlace)
+        internal PrimitiveColumn<bool> XorImplementation<U>(U value, bool inPlace)
             where U : unmanaged
         {
             switch (typeof(T))
@@ -1429,7 +1429,7 @@ namespace Microsoft.Data
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
                     retColumn._columnContainer.Xor(value);
-                    return retColumn;
+                    return retColumn as PrimitiveColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type decimalType when decimalType == typeof(decimal):

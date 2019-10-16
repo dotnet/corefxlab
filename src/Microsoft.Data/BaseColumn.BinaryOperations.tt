@@ -21,7 +21,7 @@ namespace Microsoft.Data
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
 <# if (method.IsBitwise == true) { #>
-        public virtual BaseColumn <#=method.MethodName#>(bool value, bool inPlace = false)
+        public virtual PrimitiveColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
 <# } else { #>
         public virtual BaseColumn <#=method.MethodName#><T>(T value, bool inPlace = false)
             where T : unmanaged
