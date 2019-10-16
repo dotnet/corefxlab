@@ -9,25 +9,25 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from BaseColumn.BinaryOperators.tt. Do not modify directly
+// Generated from DataFrameColumn.BinaryOperators.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
-    public abstract partial class BaseColumn
+    public abstract partial class DataFrameColumn
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
 <# if (method.IsBitwise == true) { #>
-        public static BaseColumn operator <#=method.Operator#>(BaseColumn column, bool value)
+        public static DataFrameColumn operator <#=method.Operator#>(DataFrameColumn column, bool value)
         {
             return column.<#=method.MethodName#>(value);
         }
 <# } else { #>
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
-        public static BaseColumn operator <#=method.Operator#>(BaseColumn column, <#=type.TypeName#> value)
+        public static DataFrameColumn operator <#=method.Operator#>(DataFrameColumn column, <#=type.TypeName#> value)
         {
             return column.<#=method.MethodName#>(value);
         }
@@ -35,13 +35,13 @@ namespace Microsoft.Data
 
 <# } #>
 <# } else if (method.MethodType == MethodType.BinaryInt) {#>
-        public static BaseColumn operator <#=method.Operator#>(BaseColumn column, int value)
+        public static DataFrameColumn operator <#=method.Operator#>(DataFrameColumn column, int value)
         {
             return column.<#=method.MethodName#>(value);
         }
 
 <# } else if (method.MethodType == MethodType.Binary) { #>
-        public static BaseColumn operator <#=method.Operator#>(BaseColumn left, BaseColumn right)
+        public static DataFrameColumn operator <#=method.Operator#>(DataFrameColumn left, DataFrameColumn right)
         {
             return left.<#=method.MethodName#>(right);
         }

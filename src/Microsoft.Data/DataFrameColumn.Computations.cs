@@ -3,19 +3,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from BaseColumn.Computations.tt. Do not modify directly
+// Generated from DataFrameColumn.Computations.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
-    public abstract partial class BaseColumn
+    public abstract partial class DataFrameColumn
     {
         /// <summary>
         /// Updates each numeric element with its absolute numeric value
         /// </summary>
-        public virtual BaseColumn Abs(bool inPlace = false)
+        public virtual DataFrameColumn Abs(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative maximum
         /// </summary>
-        public virtual BaseColumn CumulativeMax(bool inPlace = false)
+        public virtual DataFrameColumn CumulativeMax(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -47,7 +47,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices maximum
         /// </summary>
-        public virtual BaseColumn CumulativeMax(IEnumerable<long> rowIndices, bool inPlace = false)
+        public virtual DataFrameColumn CumulativeMax(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative minimum
         /// </summary>
-        public virtual BaseColumn CumulativeMin(bool inPlace = false)
+        public virtual DataFrameColumn CumulativeMin(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +63,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices minimum
         /// </summary>
-        public virtual BaseColumn CumulativeMin(IEnumerable<long> rowIndices, bool inPlace = false)
+        public virtual DataFrameColumn CumulativeMin(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -71,7 +71,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative product
         /// </summary>
-        public virtual BaseColumn CumulativeProduct(bool inPlace = false)
+        public virtual DataFrameColumn CumulativeProduct(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -79,7 +79,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices product
         /// </summary>
-        public virtual BaseColumn CumulativeProduct(IEnumerable<long> rowIndices, bool inPlace = false)
+        public virtual DataFrameColumn CumulativeProduct(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -87,7 +87,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates each element with its cumulative sum
         /// </summary>
-        public virtual BaseColumn CumulativeSum(bool inPlace = false)
+        public virtual DataFrameColumn CumulativeSum(bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -95,7 +95,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Updates column values at rowIndices with its cumulative rowIndices sum
         /// </summary>
-        public virtual BaseColumn CumulativeSum(IEnumerable<long> rowIndices, bool inPlace = false)
+        public virtual DataFrameColumn CumulativeSum(IEnumerable<long> rowIndices, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -167,7 +167,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Calls Math.Round on each value in a column
         /// </summary>
-        public virtual BaseColumn Round(bool inPlace = false)
+        public virtual DataFrameColumn Round(bool inPlace = false)
         {
             throw new NotImplementedException();
         }

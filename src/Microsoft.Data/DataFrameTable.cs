@@ -12,7 +12,7 @@ namespace Microsoft.Data
     /// </summary>
     internal class DataFrameTable
     {
-        private IList<BaseColumn> _columns;
+        private IList<DataFrameColumn> _columns;
 
         private List<string> _columnNames = new List<string>();
 
@@ -24,20 +24,20 @@ namespace Microsoft.Data
 
         public DataFrameTable()
         {
-            _columns = new List<BaseColumn>();
+            _columns = new List<DataFrameColumn>();
         }
 
-        public DataFrameTable(IList<BaseColumn> columns)
+        public DataFrameTable(IList<DataFrameColumn> columns)
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            _columns = new List<BaseColumn>();
+            _columns = new List<DataFrameColumn>();
             for (int i = 0; i < columns.Count; i++)
             {
                 InsertColumn(i, columns[i]);
             }
         }
 
-        public BaseColumn Column(int columnIndex) => _columns[columnIndex];
+        public DataFrameColumn Column(int columnIndex) => _columns[columnIndex];
 
         public IList<object> GetRow(long rowIndex)
         {
@@ -49,7 +49,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public void SetColumnName(BaseColumn column, string newName)
+        public void SetColumnName(DataFrameColumn column, string newName)
         {
             string currentName = column.Name;
             int currentIndex = _columnNameToIndexDictionary[currentName];
@@ -66,11 +66,11 @@ namespace Microsoft.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
-            BaseColumn newColumn = new PrimitiveColumn<T>(columnName, column);
+            DataFrameColumn newColumn = new PrimitiveDataFrameColumn<T>(columnName, column);
             InsertColumn(columnIndex, newColumn);
         }
 
-        public void InsertColumn(int columnIndex, BaseColumn column)
+        public void InsertColumn(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)
@@ -96,7 +96,7 @@ namespace Microsoft.Data
             ColumnCount++;
         }
 
-        public void SetColumn(int columnIndex, BaseColumn column)
+        public void SetColumn(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex >= ColumnCount)

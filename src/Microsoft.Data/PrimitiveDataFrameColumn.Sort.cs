@@ -10,23 +10,23 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Data
 {
-    public partial class PrimitiveColumn<T> : BaseColumn
+    public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
-        public override BaseColumn Sort(bool ascending = true)
+        public override DataFrameColumn Sort(bool ascending = true)
         {
-            PrimitiveColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveDataFrameColumn<long>;
             return Clone(sortIndices, !ascending, NullCount);
         }
 
-        internal override BaseColumn GetAscendingSortIndices()
+        internal override DataFrameColumn GetAscendingSortIndices()
         {
             // The return sortIndices contains only the non null indices. 
-            GetSortIndices(Comparer<T>.Default, out PrimitiveColumn<long> sortIndices);
+            GetSortIndices(Comparer<T>.Default, out PrimitiveDataFrameColumn<long> sortIndices);
             return sortIndices;
         }
 
-        private void GetSortIndices(IComparer<T> comparer, out PrimitiveColumn<long> columnSortIndices)
+        private void GetSortIndices(IComparer<T> comparer, out PrimitiveDataFrameColumn<long> columnSortIndices)
         {
             List<List<int>> bufferSortIndices = new List<List<int>>(_columnContainer.Buffers.Count);
             // Sort each buffer first
@@ -38,7 +38,7 @@ namespace Microsoft.Data
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;
                 IntrospectiveSort(buffer.ReadOnlySpan, buffer.Length, sortIndices, comparer);
-                // Bug fix: QuickSort is not stable. When PrimitiveColumn has null values and default values, they move around
+                // Bug fix: QuickSort is not stable. When PrimitiveDataFrameColumn has null values and default values, they move around
                 List<int> nonNullSortIndices = new List<int>();
                 for (int i = 0; i < sortIndices.Length; i++)
                 {
@@ -91,7 +91,7 @@ namespace Microsoft.Data
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferIndex.Item1, new List<ValueTuple<int, int>>() { (valueAndBufferIndex.Item2, i) });
                 }
             }
-            columnSortIndices = new PrimitiveColumn<long>("SortIndices");
+            columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
             GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Count);
             GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer = new GetValueAndBufferSortIndexAtBuffer<T>((int bufferIndex, int sortIndex) => GetFirstNonNullValueAndBufferIndexStartingAtIndex(bufferIndex, sortIndex));
             GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Count);

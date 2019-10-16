@@ -96,13 +96,13 @@ namespace Microsoft.Data.Tests
             schema = dataView.Schema;
             Assert.Equal(13, schema.Count);
 
-            BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, (int)df.RowCount).Select(x => x % 2 == 1));
+            DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, (int)df.RowCount).Select(x => x % 2 == 1));
             df.InsertColumn(0, boolColumn);
             schema = dataView.Schema;
             Assert.Equal(14, schema.Count);
             Assert.Equal("Bool", schema[0].Name);
 
-            BaseColumn boolClone = boolColumn.Clone();
+            DataFrameColumn boolClone = boolColumn.Clone();
             boolClone.SetName("BoolClone");
             df.SetColumn(1, boolClone);
             schema = dataView.Schema;

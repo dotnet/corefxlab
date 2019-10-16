@@ -10,7 +10,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from PrimitiveColumn.Computations.tt. Do not modify directly
+// Generated from PrimitiveDataFrameColumn.Computations.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
@@ -18,14 +18,14 @@ using System.Text;
 
 namespace Microsoft.Data
 {
-    public partial class PrimitiveColumn<T> : BaseColumn
+    public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
 <# foreach (MethodConfiguration compMethod in computationMethodConfiguration) { #>
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-        public override BaseColumn <#=compMethod.MethodName#>(IEnumerable<long> rowIndices, bool inPlace = false)
+        public override DataFrameColumn <#=compMethod.MethodName#>(IEnumerable<long> rowIndices, bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-        public override BaseColumn <#=compMethod.MethodName#>(bool inPlace = false)
+        public override DataFrameColumn <#=compMethod.MethodName#>(bool inPlace = false)
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>
         public override object <#=compMethod.MethodName#>()
 <# } else if (compMethod.MethodType == MethodType.Reduction && compMethod.IsNumeric == true && compMethod.SupportsRowSubsets == true) { #>
@@ -37,11 +37,11 @@ namespace Microsoft.Data
 <# } #>
         {
 <# if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false && compMethod.SupportsRowSubsets == true) {#>
-            PrimitiveColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
+            PrimitiveDataFrameColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer, rowIndices);
             return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == false) {#>
-            PrimitiveColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
+            PrimitiveDataFrameColumn<T> ret = <#=GenerateInPlaceStatement("this", "Clone()")#>;
             PrimitiveColumnComputation<T>.Instance.<#=compMethod.MethodName#>(ret._columnContainer);
             return ret;
 <# } else if (compMethod.MethodType == MethodType.ElementwiseComputation && compMethod.HasReturnValue == true) {#>

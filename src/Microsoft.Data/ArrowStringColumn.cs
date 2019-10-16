@@ -18,7 +18,7 @@ namespace Microsoft.Data
     /// <summary>
     /// An immutable to hold Arrow style strings
     /// </summary>
-    public partial class ArrowStringColumn : BaseColumn, IEnumerable<string>
+    public partial class ArrowStringColumn : DataFrameColumn, IEnumerable<string>
     {
         private IList<ReadOnlyDataFrameBuffer<byte>> _dataBuffers;
         private IList<ReadOnlyDataFrameBuffer<int>> _offsetsBuffers;
@@ -326,9 +326,9 @@ namespace Microsoft.Data
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
 
-        public override BaseColumn Sort(bool ascending = true) => throw new NotSupportedException();
+        public override DataFrameColumn Sort(bool ascending = true) => throw new NotSupportedException();
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             ArrowStringColumn clone;
             if (!(mapIndices is null))
@@ -337,11 +337,11 @@ namespace Microsoft.Data
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
-                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
-                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<int>, invertMapIndices);
                 else
-                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<bool>);
             }
             else
             {
@@ -354,7 +354,7 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<bool> boolColumn)
+        private ArrowStringColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
         {
             if (boolColumn.Length > Length)
                 throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
@@ -368,7 +368,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+        private ArrowStringColumn CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
             ArrowStringColumn ret = new ArrowStringColumn(Name);
@@ -388,7 +388,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private ArrowStringColumn Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
             if (mapIndices is null)
             {
@@ -403,7 +403,7 @@ namespace Microsoft.Data
                 return CloneImplementation(mapIndices, invertMapIndex);
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        private ArrowStringColumn Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndex = false)
         {
             return CloneImplementation(mapIndices, invertMapIndex);
         }
@@ -446,7 +446,7 @@ namespace Microsoft.Data
             }
         }
 
-        public override BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
+        public override DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {

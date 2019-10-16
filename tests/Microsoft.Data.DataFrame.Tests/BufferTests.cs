@@ -16,14 +16,14 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestNullCounts()
         {
-            PrimitiveColumn<int> dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
+            PrimitiveDataFrameColumn<int> dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             dataFrameColumn1.Append(null);
             Assert.Equal(1, dataFrameColumn1.NullCount);
 
-            PrimitiveColumn<int> df2 = new PrimitiveColumn<int>("Int2");
+            PrimitiveDataFrameColumn<int> df2 = new PrimitiveDataFrameColumn<int>("Int2");
             Assert.Equal(0, df2.NullCount);
 
-            PrimitiveColumn<int> df3 = new PrimitiveColumn<int>("Int3", 10);
+            PrimitiveDataFrameColumn<int> df3 = new PrimitiveDataFrameColumn<int>("Int3", 10);
             Assert.Equal(0, df3.NullCount);
 
             // Test null counts with assignments on Primitive Columns
@@ -65,7 +65,7 @@ namespace Microsoft.Data.Tests
             strCol[0] = null;
             Assert.Equal(1, strCol.NullCount);
 
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int");
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int");
             intColumn.Append(0);
             intColumn.Append(1);
             intColumn.Append(null);
@@ -84,7 +84,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestValidity()
         {
-            PrimitiveColumn<int> dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
+            PrimitiveDataFrameColumn<int> dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             dataFrameColumn1.Append(null);
             Assert.False(dataFrameColumn1.IsValid(10));
             for (long i = 0; i < dataFrameColumn1.Length - 1; i++)
@@ -96,7 +96,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestAppendMany()
         {
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1");
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int1");
             intColumn.AppendMany(null, 5);
             Assert.Equal(5, intColumn.NullCount);
             Assert.Equal(5, intColumn.Length);
@@ -169,7 +169,7 @@ namespace Microsoft.Data.Tests
 
             ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
 
-            BaseColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
+            DataFrameColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
             Assert.Equal(7, clone.Length);
             Assert.Equal(stringColumn[0], clone[0]);
             Assert.Equal(stringColumn[1], clone[1]);
@@ -184,7 +184,7 @@ namespace Microsoft.Data.Tests
                 .Append("Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10)))).Build();
             DataFrame df = new DataFrame(recordBatch);
 
-            PrimitiveColumn<int> column = df["Column1"] as PrimitiveColumn<int>;
+            PrimitiveDataFrameColumn<int> column = df["Column1"] as PrimitiveDataFrameColumn<int>;
 
             IEnumerable<ReadOnlyMemory<int>> buffers = column.GetReadOnlyDataBuffers();
             IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();

@@ -17,34 +17,34 @@ namespace Microsoft.Data
     /// A column to hold primitive types such as int, float etc.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class PrimitiveColumn<T> : BaseColumn, IEnumerable<T?>
+    public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn, IEnumerable<T?>
         where T : unmanaged
     {
         private PrimitiveColumnContainer<T> _columnContainer;
 
-        internal PrimitiveColumn(string name, PrimitiveColumnContainer<T> column) : base(name, column.Length, typeof(T))
+        internal PrimitiveDataFrameColumn(string name, PrimitiveColumnContainer<T> column) : base(name, column.Length, typeof(T))
         {
             _columnContainer = column;
         }
 
-        public PrimitiveColumn(string name, IEnumerable<T?> values) : base(name, 0, typeof(T))
+        public PrimitiveDataFrameColumn(string name, IEnumerable<T?> values) : base(name, 0, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(values);
             Length = _columnContainer.Length;
         }
 
-        public PrimitiveColumn(string name, IEnumerable<T> values) : base(name, 0, typeof(T))
+        public PrimitiveDataFrameColumn(string name, IEnumerable<T> values) : base(name, 0, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(values);
             Length = _columnContainer.Length;
         }
 
-        public PrimitiveColumn(string name, long length = 0) : base(name, length, typeof(T))
+        public PrimitiveDataFrameColumn(string name, long length = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(length);
         }
 
-        public PrimitiveColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, length, typeof(T))
+        public PrimitiveDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, length, typeof(T))
         {
             _columnContainer = new PrimitiveColumnContainer<T>(buffer, nullBitMap, length, nullCount);
         }
@@ -216,7 +216,7 @@ namespace Microsoft.Data
             // Not the most efficient implementation. Using a selection algorithm here would be O(n) instead of O(nLogn)
             if (Length == 0)
                 return 0;
-            PrimitiveColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveDataFrameColumn<long>;
             long middle = sortIndices.Length / 2;
             double middleValue = (double)Convert.ChangeType(this[sortIndices[middle].Value].Value, typeof(double));
             if (Length % 2 == 0)
@@ -278,10 +278,10 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override BaseColumn FillNulls(object value, bool inPlace = false)
+        public override DataFrameColumn FillNulls(object value, bool inPlace = false)
         {
             T Tvalue = (T)Convert.ChangeType(value, typeof(T));
-            PrimitiveColumn<T> column = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> column = inPlace ? this : Clone();
             column.ApplyElementwise((T? columnValue, long index) =>
             {
                 if (columnValue.HasValue == false)
@@ -295,14 +295,14 @@ namespace Microsoft.Data
         public override DataFrame ValueCounts()
         {
             Dictionary<T, ICollection<long>> groupedValues = GroupColumnValues<T>();
-            PrimitiveColumn<T> keys = new PrimitiveColumn<T>("Values");
-            PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+            PrimitiveDataFrameColumn<T> keys = new PrimitiveDataFrameColumn<T>("Values");
+            PrimitiveDataFrameColumn<long> counts = new PrimitiveDataFrameColumn<long>("Counts");
             foreach (KeyValuePair<T, ICollection<long>> keyValuePair in groupedValues)
             {
                 keys.Append(keyValuePair.Key);
                 counts.Append(keyValuePair.Value.Count);
             }
-            return new DataFrame(new List<BaseColumn> { keys, counts });
+            return new DataFrame(new List<DataFrameColumn> { keys, counts });
         }
 
         public override bool HasDescription() => IsNumericColumn();
@@ -312,20 +312,20 @@ namespace Microsoft.Data
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
-            PrimitiveColumn<T> clone;
+            PrimitiveDataFrameColumn<T> clone;
             if (!(mapIndices is null))
             {
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (dataType == typeof(long))
-                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
-                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<int>, invertMapIndices);
                 else
-                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<bool>);
             }
             else
             {
@@ -336,11 +336,11 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private PrimitiveColumn<T> Clone(PrimitiveColumn<bool> boolColumn)
+        private PrimitiveDataFrameColumn<T> Clone(PrimitiveDataFrameColumn<bool> boolColumn)
         {
             if (boolColumn.Length > Length)
                 throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name);
             for (long i = 0; i < boolColumn.Length; i++)
             {
                 bool? value = boolColumn[i];
@@ -350,7 +350,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+        private PrimitiveDataFrameColumn<T> CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
             if (!mapIndices.IsNumericColumn())
@@ -367,16 +367,16 @@ namespace Microsoft.Data
             }
             else
                 throw new NotImplementedException();
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name, retContainer);
+            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name, retContainer);
             return ret;
         }
 
-        public PrimitiveColumn<T> Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndices = false)
+        public PrimitiveDataFrameColumn<T> Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndices = false)
         {
             if (mapIndices is null)
             {
                 PrimitiveColumnContainer<T> newColumnContainer = _columnContainer.Clone();
-                return new PrimitiveColumn<T>(Name, newColumnContainer);
+                return new PrimitiveDataFrameColumn<T>(Name, newColumnContainer);
             }
             else
             {
@@ -384,15 +384,15 @@ namespace Microsoft.Data
             }
         }
 
-        public PrimitiveColumn<T> Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndices = false)
+        public PrimitiveDataFrameColumn<T> Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndices = false)
         {
             return CloneImplementation(mapIndices, invertMapIndices);
         }
 
-        public PrimitiveColumn<T> Clone(IEnumerable<long> mapIndices)
+        public PrimitiveDataFrameColumn<T> Clone(IEnumerable<long> mapIndices)
         {
             IEnumerator<long> rows = mapIndices.GetEnumerator();
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name);
             ret._columnContainer._modifyNullCountWhileIndexing = false;
             long numberOfRows = 0;
             while (rows.MoveNext() && numberOfRows < Length)
@@ -408,22 +408,22 @@ namespace Microsoft.Data
             return ret;
         }
 
-        internal PrimitiveColumn<bool> CloneAsBoolColumn()
+        internal PrimitiveDataFrameColumn<bool> CloneAsBoolColumn()
         {
             PrimitiveColumnContainer<bool> newColumnContainer = _columnContainer.CloneAsBoolContainer();
-            return new PrimitiveColumn<bool>(Name, newColumnContainer);
+            return new PrimitiveDataFrameColumn<bool>(Name, newColumnContainer);
         }
 
-        internal PrimitiveColumn<double> CloneAsDoubleColumn()
+        internal PrimitiveDataFrameColumn<double> CloneAsDoubleColumn()
         {
             PrimitiveColumnContainer<double> newColumnContainer = _columnContainer.CloneAsDoubleContainer();
-            return new PrimitiveColumn<double>(Name, newColumnContainer);
+            return new PrimitiveDataFrameColumn<double>(Name, newColumnContainer);
         }
 
-        internal PrimitiveColumn<decimal> CloneAsDecimalColumn()
+        internal PrimitiveDataFrameColumn<decimal> CloneAsDecimalColumn()
         {
             PrimitiveColumnContainer<decimal> newColumnContainer = _columnContainer.CloneAsDecimalContainer();
-            return new PrimitiveColumn<decimal>(Name, newColumnContainer);
+            return new PrimitiveDataFrameColumn<decimal>(Name, newColumnContainer);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
@@ -466,7 +466,7 @@ namespace Microsoft.Data
 
         public void ApplyElementwise(Func<T?, long, T?> func) => _columnContainer.ApplyElementwise(func);
 
-        public override BaseColumn Clip<U>(U lower, U upper, bool inPlace = false)
+        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)
@@ -477,7 +477,7 @@ namespace Microsoft.Data
                 throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
         }
 
-        public override BaseColumn Filter<U>(U lower, U upper)
+        public override DataFrameColumn Filter<U>(U lower, U upper)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)
@@ -499,7 +499,7 @@ namespace Microsoft.Data
             float max = (float)Convert.ChangeType(Max(), typeof(float));
             float min = (float)Convert.ChangeType(Min(), typeof(float));
             float mean = (float)Convert.ChangeType(Sum(), typeof(float)) / Length;
-            PrimitiveColumn<float> column = new PrimitiveColumn<float>(Name);
+            PrimitiveDataFrameColumn<float> column = new PrimitiveDataFrameColumn<float>(Name);
             column.Append(Length - NullCount);
             column.Append(max);
             column.Append(min);
@@ -509,9 +509,9 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> _Filter(T lower, T upper)
+        private PrimitiveDataFrameColumn<T> _Filter(T lower, T upper)
         {
-            PrimitiveColumn<T> ret = new PrimitiveColumn<T>(Name);
+            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name);
             Comparer<T> comparer = Comparer<T>.Default;
             for (long i = 0; i < Length; i++)
             {
@@ -527,9 +527,9 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private PrimitiveColumn<T> _Clip(T lower, T upper, bool inPlace)
+        private PrimitiveDataFrameColumn<T> _Clip(T lower, T upper, bool inPlace)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
 
             Comparer<T> comparer = Comparer<T>.Default;
             for (long i = 0; i < ret.Length; i++)
@@ -620,20 +620,20 @@ namespace Microsoft.Data
             // special cases for types that have NA values
             if (typeof(T) == typeof(float))
             {
-                return CreateSingleValueGetterDelegate(cursor, (PrimitiveColumn<float>)(object)this);
+                return CreateSingleValueGetterDelegate(cursor, (PrimitiveDataFrameColumn<float>)(object)this);
             }
             else if (typeof(T) == typeof(double))
             {
-                return CreateDoubleValueGetterDelegate(cursor, (PrimitiveColumn<double>)(object)this);
+                return CreateDoubleValueGetterDelegate(cursor, (PrimitiveDataFrameColumn<double>)(object)this);
             }
             // special cases for types not supported
             else if (typeof(T) == typeof(char))
             {
-                return CreateCharValueGetterDelegate(cursor, (PrimitiveColumn<char>)(object)this);
+                return CreateCharValueGetterDelegate(cursor, (PrimitiveDataFrameColumn<char>)(object)this);
             }
             else if (typeof(T) == typeof(decimal))
             {
-                return CreateDecimalValueGetterDelegate(cursor, (PrimitiveColumn<decimal>)(object)this);
+                return CreateDecimalValueGetterDelegate(cursor, (PrimitiveDataFrameColumn<decimal>)(object)this);
             }
             return CreateValueGetterDelegate(cursor);
         }
@@ -641,16 +641,16 @@ namespace Microsoft.Data
         private ValueGetter<T> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
             (ref T value) => value = this[cursor.Position].GetValueOrDefault();
 
-        private static ValueGetter<float> CreateSingleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<float> column) =>
+        private static ValueGetter<float> CreateSingleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveDataFrameColumn<float> column) =>
             (ref float value) => value = column[cursor.Position] ?? float.NaN;
 
-        private static ValueGetter<double> CreateDoubleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<double> column) =>
+        private static ValueGetter<double> CreateDoubleValueGetterDelegate(DataViewRowCursor cursor, PrimitiveDataFrameColumn<double> column) =>
             (ref double value) => value = column[cursor.Position] ?? double.NaN;
 
-        private static ValueGetter<ushort> CreateCharValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<char> column) =>
+        private static ValueGetter<ushort> CreateCharValueGetterDelegate(DataViewRowCursor cursor, PrimitiveDataFrameColumn<char> column) =>
             (ref ushort value) => value = column[cursor.Position].GetValueOrDefault();
 
-        private static ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor, PrimitiveColumn<decimal> column) =>
+        private static ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor, PrimitiveDataFrameColumn<decimal> column) =>
             (ref double value) => value = (double?)column[cursor.Position] ?? double.NaN;
     }
 }

@@ -15,9 +15,9 @@ namespace Microsoft.Data
     /// <summary>
     /// The base column type. All APIs should be defined here first
     /// </summary>
-    public abstract partial class BaseColumn : IEnumerable
+    public abstract partial class DataFrameColumn : IEnumerable
     {
-        public BaseColumn(string name, long length, Type type)
+        public DataFrameColumn(string name, long length, Type type)
         {
             Length = length;
             _name = name;
@@ -87,9 +87,9 @@ namespace Microsoft.Data
         /// <param name="mapIndices"></param>
         /// <param name="invertMapIndices"></param>
         /// <returns></returns>
-        public virtual BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
+        public virtual DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
 
-        public virtual BaseColumn Sort(bool ascending = true) => throw new NotImplementedException();
+        public virtual DataFrameColumn Sort(bool ascending = true) => throw new NotImplementedException();
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
 
@@ -105,7 +105,7 @@ namespace Microsoft.Data
         /// </summary>
         /// <remarks>Tries to convert value to the column's DataType</remarks>
         /// <param name="value"></param>
-        public virtual BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotImplementedException();
+        public virtual DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotImplementedException();
 
         // Arrow related APIs
         protected internal virtual Field Field() => throw new NotImplementedException();
@@ -138,7 +138,7 @@ namespace Microsoft.Data
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public virtual BaseColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotImplementedException();
+        public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotImplementedException();
 
         /// <summary>
         /// Returns a new column filtered by the lower and upper bounds
@@ -146,7 +146,7 @@ namespace Microsoft.Data
         /// <typeparam name="U"></typeparam>
         /// <param name="lower"></param>
         /// <param name="upper"></param>
-        public virtual BaseColumn Filter<U>(U lower, U upper) => throw new NotImplementedException();
+        public virtual DataFrameColumn Filter<U>(U lower, U upper) => throw new NotImplementedException();
 
         /// <summary>
         /// Determines if the column is of a numeric type
@@ -173,13 +173,13 @@ namespace Microsoft.Data
         /// </summary>
         public virtual DataFrame Description() => throw new NotImplementedException();
 
-        internal virtual BaseColumn GetAscendingSortIndices() => throw new NotImplementedException();
+        internal virtual DataFrameColumn GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
         internal delegate ValueTuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);
         internal delegate int GetBufferLengthAtIndex(int bufferIndex);
         internal void PopulateColumnSortIndicesWithHeap<T>(SortedDictionary<T, List<ValueTuple<int, int>>> heapOfValueAndListOfTupleOfSortAndBufferIndex,
-                                                            PrimitiveColumn<long> columnSortIndices,
+                                                            PrimitiveDataFrameColumn<long> columnSortIndices,
                                                             GetBufferSortIndex getBufferSortIndex,
                                                             GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer,
                                                             GetBufferLengthAtIndex getBufferLengthAtIndex)

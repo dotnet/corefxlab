@@ -15,7 +15,7 @@ namespace Microsoft.Data
     /// A mutable column to hold strings
     /// </summary>
     /// <remarks> Is NOT Arrow compatible </remarks>
-    public partial class StringColumn : BaseColumn, IEnumerable<string>
+    public partial class StringColumn : DataFrameColumn, IEnumerable<string>
     {
         private List<List<string>> _stringBuffers = new List<List<string>>(); // To store more than intMax number of strings
 
@@ -165,21 +165,21 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
-        public override BaseColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
+        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
 
-        public override BaseColumn Sort(bool ascending = true)
+        public override DataFrameColumn Sort(bool ascending = true)
         {
-            PrimitiveColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveColumn<long>;
+            PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveDataFrameColumn<long>;
             return Clone(columnSortIndices, !ascending, NullCount);
         }
 
-        internal override BaseColumn GetAscendingSortIndices()
+        internal override DataFrameColumn GetAscendingSortIndices()
         {
-            GetSortIndices(Comparer<string>.Default, out PrimitiveColumn<long> columnSortIndices);
+            GetSortIndices(Comparer<string>.Default, out PrimitiveDataFrameColumn<long> columnSortIndices);
             return columnSortIndices;
         }
 
-        private void GetSortIndices(Comparer<string> comparer, out PrimitiveColumn<long> columnSortIndices)
+        private void GetSortIndices(Comparer<string> comparer, out PrimitiveDataFrameColumn<long> columnSortIndices)
         {
             List<int[]> bufferSortIndices = new List<int[]>(_stringBuffers.Count);
             foreach (List<string> buffer in _stringBuffers)
@@ -225,14 +225,14 @@ namespace Microsoft.Data
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferSortIndex.Item1, new List<ValueTuple<int, int>>() { (valueAndBufferSortIndex.Item2, i) });
                 }
             }
-            columnSortIndices = new PrimitiveColumn<long>("SortIndices");
+            columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
             GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Length);
             GetValueAndBufferSortIndexAtBuffer<string> getValueAtBuffer = new GetValueAndBufferSortIndexAtBuffer<string>((int bufferIndex, int sortIndex) => GetFirstNonNullValueStartingAtIndex(bufferIndex, sortIndex));
             GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Length);
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAtBuffer, getBufferLengthAtIndex);
         }
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             StringColumn clone;
             if (!(mapIndices is null))
@@ -241,11 +241,11 @@ namespace Microsoft.Data
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
-                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
-                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<int>, invertMapIndices);
                 else
-                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<bool>);
             }
             else
             {
@@ -258,7 +258,7 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private StringColumn Clone(PrimitiveColumn<bool> boolColumn)
+        private StringColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
         {
             if (boolColumn.Length > Length)
                 throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
@@ -272,7 +272,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+        private StringColumn CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
             mapIndices = mapIndices ?? throw new ArgumentNullException(nameof(mapIndices));
@@ -287,7 +287,7 @@ namespace Microsoft.Data
             long maxCapacity = int.MaxValue;
             if (mapIndices.DataType == typeof(long))
             {
-                PrimitiveColumn<long> longMapIndices = mapIndices as PrimitiveColumn<long>;
+                PrimitiveDataFrameColumn<long> longMapIndices = mapIndices as PrimitiveDataFrameColumn<long>;
                 longMapIndices.ApplyElementwise((long? mapIndex, long rowIndex) =>
                 {
                     long index = rowIndex;
@@ -322,7 +322,7 @@ namespace Microsoft.Data
             }
             else if (mapIndices.DataType == typeof(int))
             {
-                PrimitiveColumn<int> intMapIndices = mapIndices as PrimitiveColumn<int>;
+                PrimitiveDataFrameColumn<int> intMapIndices = mapIndices as PrimitiveDataFrameColumn<int>;
                 intMapIndices.ApplyElementwise((int? mapIndex, long rowIndex) =>
                 {
                     long index = rowIndex;
@@ -347,7 +347,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private StringColumn Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
             if (mapIndices is null)
             {
@@ -364,7 +364,7 @@ namespace Microsoft.Data
             }
         }
 
-        private StringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        private StringColumn Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndex = false)
         {
             return CloneImplementation(mapIndices, invertMapIndex);
         }
@@ -372,13 +372,13 @@ namespace Microsoft.Data
         internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)
         {
             StringColumn keys = new StringColumn("Values", 0);
-            PrimitiveColumn<long> counts = new PrimitiveColumn<long>("Counts");
+            PrimitiveDataFrameColumn<long> counts = new PrimitiveDataFrameColumn<long>("Counts");
             foreach (KeyValuePair<string, ICollection<long>> keyValuePair in groupedValues)
             {
                 keys.Append(keyValuePair.Key);
                 counts.Append(keyValuePair.Value.Count);
             }
-            return new DataFrame(new List<BaseColumn> { keys, counts });
+            return new DataFrame(new List<DataFrameColumn> { keys, counts });
         }
 
         public override DataFrame ValueCounts()
@@ -418,7 +418,7 @@ namespace Microsoft.Data
             }
         }
 
-        public override BaseColumn FillNulls(object value, bool inPlace = false)
+        public override DataFrameColumn FillNulls(object value, bool inPlace = false)
         {
             if (value.GetType() != typeof(string) || value == null)
                 throw new ArgumentException(nameof(value));

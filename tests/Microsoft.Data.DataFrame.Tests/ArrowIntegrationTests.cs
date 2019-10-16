@@ -62,10 +62,10 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestEmptyDataFrameRecordBatch()
         {
-            PrimitiveColumn<int> ageColumn = new PrimitiveColumn<int>("Age");
-            PrimitiveColumn<int> lengthColumn = new PrimitiveColumn<int>("CharCount");
+            PrimitiveDataFrameColumn<int> ageColumn = new PrimitiveDataFrameColumn<int>("Age");
+            PrimitiveDataFrameColumn<int> lengthColumn = new PrimitiveDataFrameColumn<int>("CharCount");
             ArrowStringColumn stringColumn = new ArrowStringColumn("Empty");
-            DataFrame df = new DataFrame(new List<BaseColumn>() { ageColumn, lengthColumn, stringColumn });
+            DataFrame df = new DataFrame(new List<DataFrameColumn>() { ageColumn, lengthColumn, stringColumn });
 
             IEnumerable<RecordBatch> recordBatches = df.AsArrowRecordBatches();
             bool foundARecordBatch = false;
