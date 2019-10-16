@@ -107,67 +107,67 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseEquals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseEquals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseEquals<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseEquals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseNotEquals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseNotEquals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseNotEquals<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseNotEquals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseGreaterThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseGreaterThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseLessThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseLessThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseGreaterThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseGreaterThan<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseLessThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> PairwiseLessThan<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();

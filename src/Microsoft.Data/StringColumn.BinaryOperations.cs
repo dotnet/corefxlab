@@ -42,7 +42,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveColumn<bool> PairwiseEquals(BaseColumn column)
+        public override PrimitiveColumn<bool> ElementwiseEquals(BaseColumn column)
         {
             if (Length != column.Length)
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveColumn<bool> PairwiseEquals<T>(T value)
+        public override PrimitiveColumn<bool> ElementwiseEquals<T>(T value)
         {
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             string valString = value.ToString();
@@ -67,7 +67,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveColumn<bool> PairwiseNotEquals(BaseColumn column)
+        public override PrimitiveColumn<bool> ElementwiseNotEquals(BaseColumn column)
         {
             if (Length != column.Length)
             {
@@ -81,7 +81,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveColumn<bool> PairwiseNotEquals<T>(T value)
+        public override PrimitiveColumn<bool> ElementwiseNotEquals<T>(T value)
         {
             PrimitiveColumn<bool> ret = new PrimitiveColumn<bool>(Name, Length);
             string valString = value.ToString();
