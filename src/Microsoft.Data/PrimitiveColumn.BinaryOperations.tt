@@ -44,7 +44,11 @@ namespace Microsoft.Data
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
+<# if (method.IsBitwise == true) { #>
+        public override PrimitiveColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
+<# } else { #>
         public override BaseColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
+<# } #>
 <# } else {#>
         public override PrimitiveColumn<bool> <#=method.MethodName#><U>(U value)
 <# } #>
@@ -67,7 +71,11 @@ namespace Microsoft.Data
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
+<# if (method.IsBitwise == true) { #>
+        internal PrimitiveColumn<bool> <#=method.MethodName#>Implementation<U>(U value, bool inPlace)
+<# } else { #>
         internal BaseColumn <#=method.MethodName#>Implementation<U>(U value, bool inPlace)
+<# } #>
 <# } else {#>
         internal PrimitiveColumn<bool> <#=method.MethodName#>Implementation<U>(U value)
 <# } #>
@@ -121,7 +129,7 @@ namespace Microsoft.Data
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = <#=GenerateInPlaceStatement("typedColumn", "typedColumn.Clone()")#>;
                     retColumn._columnContainer.<#=method.MethodName#>(value);
-                    return retColumn;
+                    return retColumn as PrimitiveColumn<bool>;
 <# } else { #>
                     PrimitiveColumn<U> typedColumn = this as PrimitiveColumn<U>;
                     PrimitiveColumn<U> retColumn = <#=GenerateInPlaceStatement("typedColumn", "typedColumn.Clone()")#>;

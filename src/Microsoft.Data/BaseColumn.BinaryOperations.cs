@@ -72,8 +72,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn And<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public virtual PrimitiveColumn<bool> And(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -83,8 +82,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Or<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public virtual PrimitiveColumn<bool> Or(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -94,8 +92,7 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual BaseColumn Xor<T>(T value, bool inPlace = false)
-            where T : unmanaged
+        public virtual PrimitiveColumn<bool> Xor(bool value, bool inPlace = false)
         {
             throw new NotImplementedException();
         }
@@ -110,67 +107,67 @@ namespace Microsoft.Data
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> Equals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseEquals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> Equals<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseEquals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> NotEquals(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseNotEquals(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> NotEquals<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseNotEquals<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> GreaterThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> GreaterThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> LessThanOrEqual(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThanOrEqual(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> LessThanOrEqual<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThanOrEqual<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> GreaterThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> GreaterThan<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseGreaterThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> LessThan(BaseColumn column)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThan(BaseColumn column)
         {
             throw new NotImplementedException();
         }
 
-        public virtual PrimitiveColumn<bool> LessThan<T>(T value)
+        public virtual PrimitiveColumn<bool> ElementwiseLessThan<T>(T value)
             where T : unmanaged
         {
             throw new NotImplementedException();

@@ -118,75 +118,75 @@ namespace Microsoft.Data
             return this;
         }
 
-       public PrimitiveColumnContainer<T> Equals(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseEquals(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.Equals(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseEquals(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> Equals(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseEquals(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.Equals(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseEquals(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> NotEquals(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseNotEquals(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.NotEquals(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseNotEquals(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> NotEquals(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseNotEquals(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.NotEquals(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseNotEquals(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> GreaterThanOrEqual(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseGreaterThanOrEqual(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.GreaterThanOrEqual(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseGreaterThanOrEqual(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> GreaterThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseGreaterThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.GreaterThanOrEqual(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseGreaterThanOrEqual(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> LessThanOrEqual(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseLessThanOrEqual(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.LessThanOrEqual(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseLessThanOrEqual(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> LessThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseLessThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.LessThanOrEqual(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseLessThanOrEqual(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> GreaterThan(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseGreaterThan(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.GreaterThan(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseGreaterThan(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> GreaterThan(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseGreaterThan(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.GreaterThan(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseGreaterThan(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> LessThan(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseLessThan(PrimitiveColumnContainer<T> right, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.LessThan(this, right, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseLessThan(this, right, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> LessThan(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseLessThan(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveColumnArithmetic<T>.Instance.LessThan(this, scalar, ret);
+            PrimitiveColumnArithmetic<T>.Instance.ElementwiseLessThan(this, scalar, ret);
             return this;
        }
 
