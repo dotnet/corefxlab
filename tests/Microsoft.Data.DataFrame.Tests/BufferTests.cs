@@ -182,7 +182,7 @@ namespace Microsoft.Data.Tests
         {
             RecordBatch recordBatch = new RecordBatch.Builder()
                 .Append("Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10)))).Build();
-            DataFrame df = new DataFrame(recordBatch);
+            DataFrame df = DataFrame.FromArrowRecordBatch(recordBatch);
 
             PrimitiveDataFrameColumn<int> column = df["Column1"] as PrimitiveDataFrameColumn<int>;
 

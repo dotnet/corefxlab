@@ -288,9 +288,9 @@ namespace Microsoft.Data
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
-        protected internal override Field Field() => new Field(Name, StringType.Default, NullCount != 0);
+        protected internal override Field GetArrowField() => new Field(Name, StringType.Default, NullCount != 0);
 
-        protected internal override int MaxRecordBatchLength(long startIndex)
+        protected internal override int GetMaxArrowRecordBatchLength(long startIndex)
         {
             if (Length == 0)
                 return 0;
@@ -310,7 +310,7 @@ namespace Microsoft.Data
             return nullCount;
         }
 
-        protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
+        protected internal override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
         {
             if (numberOfRows == 0)
                 return new StringArray(numberOfRows, ArrowBuffer.Empty, ArrowBuffer.Empty, ArrowBuffer.Empty);

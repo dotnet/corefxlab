@@ -49,9 +49,9 @@ namespace Microsoft.Data.Tests
                 .Append("UByteColumn", false, new UInt8Array.Builder().AppendRange(Enumerable.Repeat((byte)1, 10)).Build())
                 .Build();
 
-            DataFrame df = new DataFrame(originalBatch);
+            DataFrame df = DataFrame.FromArrowRecordBatch(originalBatch);
 
-            IEnumerable<RecordBatch> recordBatches = df.AsArrowRecordBatches();
+            IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
 
             foreach (RecordBatch batch in recordBatches)
             {
@@ -67,7 +67,7 @@ namespace Microsoft.Data.Tests
             ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("Empty");
             DataFrame df = new DataFrame(new List<DataFrameColumn>() { ageColumn, lengthColumn, stringColumn });
 
-            IEnumerable<RecordBatch> recordBatches = df.AsArrowRecordBatches();
+            IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
             bool foundARecordBatch = false;
             foreach (RecordBatch recordBatch in recordBatches)
             {
