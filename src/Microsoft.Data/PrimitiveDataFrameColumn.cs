@@ -491,7 +491,7 @@ namespace Microsoft.Data
         public override DataFrame Description()
         {
             DataFrame ret = new DataFrame();
-            StringColumn stringColumn = new StringColumn("Description", 0);
+            StringDataFrameColumn stringColumn = new StringDataFrameColumn("Description", 0);
             stringColumn.Append("Length");
             stringColumn.Append("Max");
             stringColumn.Append("Min");

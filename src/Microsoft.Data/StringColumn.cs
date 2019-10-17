@@ -15,11 +15,11 @@ namespace Microsoft.Data
     /// A mutable column to hold strings
     /// </summary>
     /// <remarks> Is NOT Arrow compatible </remarks>
-    public partial class StringColumn : DataFrameColumn, IEnumerable<string>
+    public partial class StringDataFrameColumn : DataFrameColumn, IEnumerable<string>
     {
         private List<List<string>> _stringBuffers = new List<List<string>>(); // To store more than intMax number of strings
 
-        public StringColumn(string name, long length) : base(name, length, typeof(string))
+        public StringDataFrameColumn(string name, long length) : base(name, length, typeof(string))
         {
             int numberOfBuffersRequired = Math.Max((int)(length / int.MaxValue), 1);
             for (int i = 0; i < numberOfBuffersRequired; i++)
@@ -34,7 +34,7 @@ namespace Microsoft.Data
             }
         }
 
-        public StringColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string))
+        public StringDataFrameColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string))
         {
             values = values ?? throw new ArgumentNullException(nameof(values));
             if (_stringBuffers.Count == 0)
@@ -234,7 +234,7 @@ namespace Microsoft.Data
 
         public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
-            StringColumn clone;
+            StringDataFrameColumn clone;
             if (!(mapIndices is null))
             {
                 Type dataType = mapIndices.DataType;
@@ -258,11 +258,11 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private StringColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
+        private StringDataFrameColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
         {
             if (boolColumn.Length > Length)
                 throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
-            StringColumn ret = new StringColumn(Name, 0);
+            StringDataFrameColumn ret = new StringDataFrameColumn(Name, 0);
             for (long i = 0; i < boolColumn.Length; i++)
             {
                 bool? value = boolColumn[i];
@@ -272,11 +272,11 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
+        private StringDataFrameColumn CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
             mapIndices = mapIndices ?? throw new ArgumentNullException(nameof(mapIndices));
-            StringColumn ret = new StringColumn(Name, mapIndices.Length);
+            StringDataFrameColumn ret = new StringDataFrameColumn(Name, mapIndices.Length);
 
             List<string> setBuffer = ret._stringBuffers[0];
             long setBufferMinRange = 0;
@@ -347,11 +347,11 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private StringColumn Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private StringDataFrameColumn Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
             if (mapIndices is null)
             {
-                StringColumn ret = new StringColumn(Name, mapIndices is null ? Length : mapIndices.Length);
+                StringDataFrameColumn ret = new StringDataFrameColumn(Name, mapIndices is null ? Length : mapIndices.Length);
                 for (long i = 0; i < Length; i++)
                 {
                     ret[i] = this[i];
@@ -364,14 +364,14 @@ namespace Microsoft.Data
             }
         }
 
-        private StringColumn Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndex = false)
+        private StringDataFrameColumn Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndex = false)
         {
             return CloneImplementation(mapIndices, invertMapIndex);
         }
 
         internal static DataFrame ValueCountsImplementation(Dictionary<string, ICollection<long>> groupedValues)
         {
-            StringColumn keys = new StringColumn("Values", 0);
+            StringDataFrameColumn keys = new StringDataFrameColumn("Values", 0);
             PrimitiveDataFrameColumn<long> counts = new PrimitiveDataFrameColumn<long>("Counts");
             foreach (KeyValuePair<string, ICollection<long>> keyValuePair in groupedValues)
             {
@@ -423,7 +423,7 @@ namespace Microsoft.Data
             if (value.GetType() != typeof(string) || value == null)
                 throw new ArgumentException(nameof(value));
             string stringValue = (string)value;
-            StringColumn column = inPlace ? this : Clone();
+            StringDataFrameColumn column = inPlace ? this : Clone();
 
             for (long i = 0; i < column.Length; i++)
             {

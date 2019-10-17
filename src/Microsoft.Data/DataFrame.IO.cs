@@ -177,7 +177,7 @@ namespace Microsoft.Data
                 }
                 else if (kind == typeof(string))
                 {
-                    DataFrameColumn stringColumn = new StringColumn(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
+                    DataFrameColumn stringColumn = new StringDataFrameColumn(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(stringColumn);
                 }
                 else

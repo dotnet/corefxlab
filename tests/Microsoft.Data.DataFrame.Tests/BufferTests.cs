@@ -40,16 +40,16 @@ namespace Microsoft.Data.Tests
             Assert.Equal(1, df2.NullCount);
 
             // Test null counts with assignments on String Columns
-            StringColumn strCol = new StringColumn("String", 0);
+            StringDataFrameColumn strCol = new StringDataFrameColumn("String", 0);
             Assert.Equal(0, strCol.NullCount);
 
-            StringColumn strCol1 = new StringColumn("String1", 5);
+            StringDataFrameColumn strCol1 = new StringDataFrameColumn("String1", 5);
             Assert.Equal(0, strCol1.NullCount);
 
-            StringColumn strCol2 = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            StringDataFrameColumn strCol2 = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             Assert.Equal(0, strCol2.NullCount);
 
-            StringColumn strCol3 = new StringColumn("String", Enumerable.Range(0, 10).Select(x => (string)null));
+            StringDataFrameColumn strCol3 = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => (string)null));
             Assert.Equal(10, strCol3.NullCount);
 
             strCol.Append(null);

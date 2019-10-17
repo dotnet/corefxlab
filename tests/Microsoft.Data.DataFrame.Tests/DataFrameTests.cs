@@ -103,7 +103,7 @@ namespace Microsoft.Data.Tests
         public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length, withNulls);
-            DataFrameColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
+            DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             df.InsertColumn(df.ColumnCount, stringColumn);
             if (withNulls)
             {
@@ -415,14 +415,14 @@ namespace Microsoft.Data.Tests
         public void TestBinaryOperationsOnStringColumn()
         {
             var df = new DataFrame();
-            DataFrameColumn stringColumn = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             df.InsertColumn(0, stringColumn);
 
             DataFrameColumn newCol = stringColumn.ElementwiseEquals(5);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(false, newCol[0]);
 
-            DataFrameColumn stringColumnCopy = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            DataFrameColumn stringColumnCopy = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             newCol = stringColumn.ElementwiseEquals(stringColumnCopy);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(true, newCol[0]);
@@ -671,8 +671,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestStringColumnSort()
         {
-            // StringColumn specific sort tests
-            StringColumn strColumn = new StringColumn("String", 0);
+            // StringDataFrameColumn specific sort tests
+            StringDataFrameColumn strColumn = new StringDataFrameColumn("String", 0);
             Assert.Equal(0, strColumn.NullCount);
             for (int i = 0; i < 5; i++)
             {
@@ -680,7 +680,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal(5, strColumn.NullCount);
             // Should handle all nulls
-            StringColumn sortedStrColumn = strColumn.Sort() as StringColumn;
+            StringDataFrameColumn sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal(5, sortedStrColumn.NullCount);
             Assert.Null(sortedStrColumn[0]);
 
@@ -691,12 +691,12 @@ namespace Microsoft.Data.Tests
             Assert.Equal(5, strColumn.NullCount);
 
             // Ascending sort
-            sortedStrColumn = strColumn.Sort() as StringColumn;
+            sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal("0", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
 
             // Descending sort
-            sortedStrColumn = strColumn.Sort(false) as StringColumn;
+            sortedStrColumn = strColumn.Sort(false) as StringDataFrameColumn;
             Assert.Equal("4", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
         }
@@ -1123,7 +1123,7 @@ namespace Microsoft.Data.Tests
 
             // spot check a few column types:
 
-            StringColumn stringColumn = (StringColumn)df["String"];
+            StringDataFrameColumn stringColumn = (StringDataFrameColumn)df["String"];
             StringBuilder actualStrings = new StringBuilder();
             foreach (string value in stringColumn)
             {
@@ -1476,7 +1476,7 @@ namespace Microsoft.Data.Tests
             df.FillNulls(1000, true);
             Assert.Equal(1000, df[10, 1]);
 
-            StringColumn strColumn = new StringColumn("String", 0);
+            StringDataFrameColumn strColumn = new StringDataFrameColumn("String", 0);
             strColumn.Append(null);
             strColumn.Append(null);
             Assert.Equal(2, strColumn.Length);

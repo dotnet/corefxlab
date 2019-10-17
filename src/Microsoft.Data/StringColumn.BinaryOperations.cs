@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Microsoft.Data
 {
-    public partial class StringColumn : DataFrameColumn
+    public partial class StringDataFrameColumn : DataFrameColumn
     {
         public override DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
@@ -18,7 +18,7 @@ namespace Microsoft.Data
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            StringColumn ret = inPlace ? this : Clone();
+            StringDataFrameColumn ret = inPlace ? this : Clone();
             for (long i = 0; i < Length; i++)
             {
                 ret[i] += column[i].ToString();
@@ -28,7 +28,7 @@ namespace Microsoft.Data
 
         public override DataFrameColumn Add<T>(T value, bool inPlace = false)
         {
-            StringColumn ret = inPlace ? this : Clone();
+            StringDataFrameColumn ret = inPlace ? this : Clone();
             string valString = value.ToString();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {

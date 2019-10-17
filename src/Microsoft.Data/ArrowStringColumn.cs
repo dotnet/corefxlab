@@ -411,7 +411,7 @@ namespace Microsoft.Data
         public override DataFrame ValueCounts()
         {
             Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
-            return StringColumn.ValueCountsImplementation(groupedValues);
+            return StringDataFrameColumn.ValueCountsImplementation(groupedValues);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)

@@ -27,7 +27,7 @@ namespace Benchmarks.Microsoft.Data
             int length = 50000;
             _dataFrame = new DataFrame();
             _column = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, length));
-            _string = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
+            _string = new StringDataFrameColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             _bool = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0 ? true : false));
             _dataFrame.InsertColumn(0, _column);
             _dataFrame.InsertColumn(1, _string);
@@ -35,7 +35,7 @@ namespace Benchmarks.Microsoft.Data
 
             _otherDataFrame = new DataFrame();
             _otherColumn = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, length/2));
-            _otherString = new StringColumn("String", Enumerable.Range(0, length/2).Select(x => x.ToString()));
+            _otherString = new StringDataFrameColumn("String", Enumerable.Range(0, length/2).Select(x => x.ToString()));
             _otherBool = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length/2).Select(x => x % 2 == 0 ? true : false));
             _otherDataFrame.InsertColumn(0, _otherColumn);
             _otherDataFrame.InsertColumn(1, _otherString);
