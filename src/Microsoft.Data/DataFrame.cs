@@ -45,18 +45,9 @@ namespace Microsoft.Data
 
         public int ColumnCount => _table.ColumnCount;
 
-        public IList<string> Columns
-        {
-            get
-            {
-                var ret = new List<string>(ColumnCount);
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.Add(_table.Column(i).Name);
-                }
-                return ret;
-            }
-        }
+        public IReadOnlyList<DataFrameColumn> Columns => _table.Columns;
+
+        public IReadOnlyList<string> ColumnNames => _table.ColumnNames;
 
         public DataFrameColumn Column(int index) => _table.Column(index);
 

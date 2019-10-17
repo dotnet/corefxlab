@@ -171,8 +171,8 @@ namespace Microsoft.Data.Tests
             var foo = dataFrame[0, 0];
             Assert.Equal(0, dataFrame[0, 0]);
             Assert.Equal(11, dataFrame[1, 1]);
-            Assert.Equal(2, dataFrame.Columns.Count);
-            Assert.Equal("Int1", dataFrame.Columns[0]);
+            Assert.Equal(2, dataFrame.ColumnCount);
+            Assert.Equal("Int1", dataFrame.Columns[0].Name);
 
             var headList = dataFrame.Head(5);
             Assert.Equal(14, (int)headList[4][1]);
@@ -1241,12 +1241,12 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameClip()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IList<string> dfColumns = df.Columns;
+            IReadOnlyList<string> dfColumns = df.ColumnNames;
 
             void VerifyDataFrameClip(DataFrame clippedColumn)
             {
 
-                IList<string> clippedColumns = clippedColumn.Columns;
+                IReadOnlyList<string> clippedColumns = clippedColumn.ColumnNames;
                 Assert.Equal(df.ColumnCount, clippedColumn.ColumnCount);
                 Assert.Equal(dfColumns, clippedColumns);
                 for (int c = 0; c < df.ColumnCount; c++)
@@ -1318,33 +1318,33 @@ namespace Microsoft.Data.Tests
         public void TestPrefixAndSuffix()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IList<string> columnNames = df.Columns;
+            IReadOnlyList<string> columnNames = df.ColumnNames;
 
             DataFrame prefix = df.AddPrefix("Prefix_");
-            IList<string> prefixNames = prefix.Columns;
+            IReadOnlyList<string> prefixNames = prefix.ColumnNames;
             for (int i = 0; i < prefixNames.Count; i++)
             {
-                Assert.Equal(df.Columns[i], columnNames[i]);
+                Assert.Equal(df.ColumnNames[i], columnNames[i]);
                 Assert.Equal(prefixNames[i], "Prefix_" + columnNames[i]);
             }
             // Inplace
             df.AddPrefix("Prefix_", true);
-            prefixNames = df.Columns;
+            prefixNames = df.ColumnNames;
             for (int i = 0; i < prefixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i], prefixNames[i]);
             }
 
             DataFrame suffix = df.AddSuffix("_Suffix");
-            IList<string> suffixNames = suffix.Columns;
+            IReadOnlyList<string> suffixNames = suffix.ColumnNames;
             for (int i = 0; i < suffixNames.Count; i++)
             {
-                Assert.Equal(df.Columns[i], "Prefix_" + columnNames[i]);
+                Assert.Equal(df.ColumnNames[i], "Prefix_" + columnNames[i]);
                 Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
             }
             // InPlace
             df.AddSuffix("_Suffix", true);
-            suffixNames = df.Columns;
+            suffixNames = df.ColumnNames;
             for (int i = 0; i < suffixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
@@ -1582,5 +1582,18 @@ namespace Microsoft.Data.Tests
             }
         }
 
+        [Fact]
+        public void TestColumns()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            IReadOnlyList<DataFrameColumn> columns = df.Columns;
+            int i = 0;
+            Assert.Equal(columns.Count, df.ColumnCount);
+            foreach (DataFrameColumn dataFrameColumn in columns)
+            {
+                Assert.Equal(dataFrameColumn, df.Column(i++));
+            }
+
+        }
     }
 }

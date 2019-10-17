@@ -12,7 +12,7 @@ namespace Microsoft.Data
     /// </summary>
     internal class DataFrameTable
     {
-        private IList<DataFrameColumn> _columns;
+        private List<DataFrameColumn> _columns;
 
         private List<string> _columnNames = new List<string>();
 
@@ -36,6 +36,10 @@ namespace Microsoft.Data
                 InsertColumn(i, columns[i]);
             }
         }
+
+        public IReadOnlyList<DataFrameColumn> Columns => _columns;
+
+        public IReadOnlyList<string> ColumnNames => _columnNames;
 
         public DataFrameColumn Column(int columnIndex) => _columns[columnIndex];
 

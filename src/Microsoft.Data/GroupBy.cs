@@ -97,7 +97,7 @@ namespace Microsoft.Data
                 ICollection<long> rows = pairs.Value;
                 IEnumerable<string> columns = columnNames;
                 if (columnNames == null || columnNames.Length == 0)
-                    columns = _dataFrame.Columns;
+                    columns = _dataFrame.ColumnNames;
                 // Assuming that the dataframe has not been modified after the groupby call
                 foreach (string columnName in columns)
                 {
