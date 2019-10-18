@@ -16,7 +16,7 @@ using Microsoft.ML.Data;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// An immutable to hold Arrow style strings
+    /// An immutable column to hold Arrow style strings
     /// </summary>
     public partial class ArrowStringDataFrameColumn : DataFrameColumn, IEnumerable<string>
     {
