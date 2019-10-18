@@ -68,7 +68,7 @@ namespace Microsoft.Data.Tests
             }
 
             int nullCount = withNulls ? 1 : 0;
-            return new ArrowStringColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, nullCount);
+            return new ArrowStringDataFrameColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, nullCount);
         }
 
         public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool withNulls = true)
@@ -1138,7 +1138,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal("01234<null>6789", actualStrings.ToString());
 
-            ArrowStringColumn arrowStringColumn = (ArrowStringColumn)df["ArrowString"];
+            ArrowStringDataFrameColumn arrowStringColumn = (ArrowStringDataFrameColumn)df["ArrowString"];
             actualStrings.Clear();
             foreach (string value in arrowStringColumn)
             {

@@ -130,7 +130,7 @@ namespace Microsoft.Data.Tests
             Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
             Assert.Equal(2, stringColumn.Length);
             Assert.Equal("foo", stringColumn[0]);
             Assert.Equal("bar", stringColumn[1]);
@@ -144,7 +144,7 @@ namespace Microsoft.Data.Tests
             Memory<byte> dataMemory = new Memory<byte>(bytes);
             Memory<byte> nullMemory = new byte[] { 0b1101 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0 };
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, 4, 1);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, 4, 1);
 
             Assert.Equal(4, stringColumn.Length);
             Assert.Equal("joe", stringColumn[0]);
@@ -167,7 +167,7 @@ namespace Microsoft.Data.Tests
             Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
 
             DataFrameColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
             Assert.Equal(7, clone.Length);
@@ -224,13 +224,13 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestArrowStringColumnGetReadOnlyBuffers()
         {
-            // Test ArrowStringColumn.
+            // Test ArrowStringDataFrameColumn.
             StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
             Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
             Memory<byte> nullMemory = new byte[] { 1 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn column = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn column = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
 
             IEnumerable<ReadOnlyMemory<byte>> dataBuffers = column.GetReadOnlyDataBuffers();
             IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();

@@ -105,7 +105,7 @@ namespace Microsoft.Data
                         ReadOnlyMemory<byte> dataMemory = stringArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> offsetsMemory = stringArray.ValueOffsetsBuffer.Memory;
                         ReadOnlyMemory<byte> nullMemory = stringArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new ArrowStringColumn(field.Name, dataMemory, offsetsMemory, nullMemory, stringArray.Length, stringArray.NullCount);
+                        dataFrameColumn = new ArrowStringDataFrameColumn(field.Name, dataMemory, offsetsMemory, nullMemory, stringArray.Length, stringArray.NullCount);
                         break;
                     case ArrowTypeId.UInt8:
                         PrimitiveArray<byte> arrowbyteArray = (PrimitiveArray<byte>)arrowArray;
