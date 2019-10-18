@@ -15,8 +15,8 @@ namespace Microsoft.Data.Tests
     {
         public static DataFrame MakeDataFrameWithTwoColumns(int length, bool withNulls = true)
         {
-            BaseColumn dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
-            BaseColumn dataFrameColumn2 = new PrimitiveColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
+            DataFrameColumn dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, length).Select(x => x));
+            DataFrameColumn dataFrameColumn2 = new PrimitiveDataFrameColumn<int>("Int2", Enumerable.Range(10, length).Select(x => x));
             if (withNulls)
             {
                 dataFrameColumn1[length / 2] = null;
@@ -28,7 +28,7 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
-        public static BaseColumn CreateArrowStringColumn(int length, bool withNulls = true)
+        public static DataFrameColumn CreateArrowStringColumn(int length, bool withNulls = true)
         {
             byte[] dataMemory = new byte[length * 3];
             byte[] nullMemory = new byte[BitUtility.ByteCount(length)];
@@ -68,13 +68,13 @@ namespace Microsoft.Data.Tests
             }
 
             int nullCount = withNulls ? 1 : 0;
-            return new ArrowStringColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, nullCount);
+            return new ArrowStringDataFrameColumn("ArrowString", dataMemory, offsetMemory, nullMemory, length, nullCount);
         }
 
         public static DataFrame MakeDataFrameWithAllColumnTypes(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(length, withNulls);
-            BaseColumn arrowStringColumn = CreateArrowStringColumn(length, withNulls);
+            DataFrameColumn arrowStringColumn = CreateArrowStringColumn(length, withNulls);
             df.InsertColumn(df.ColumnCount, arrowStringColumn);
             return df;
         }
@@ -82,7 +82,7 @@ namespace Microsoft.Data.Tests
         public static DataFrame MakeDataFrameWithAllMutableColumnTypes(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, withNulls);
-            BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
+            DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
             if (withNulls)
             {
@@ -94,7 +94,7 @@ namespace Microsoft.Data.Tests
         public static DataFrame MakeDataFrameWithNumericAndBoolColumns(int length)
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length);
-            BaseColumn boolColumn = new PrimitiveColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
+            DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
             df.InsertColumn(df.ColumnCount, boolColumn);
             boolColumn[length / 2] = null;
             return df;
@@ -103,14 +103,14 @@ namespace Microsoft.Data.Tests
         public static DataFrame MakeDataFrameWithNumericAndStringColumns(int length, bool withNulls = true)
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length, withNulls);
-            BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
+            DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
             df.InsertColumn(df.ColumnCount, stringColumn);
             if (withNulls)
             {
                 stringColumn[length / 2] = null;
             }
 
-            BaseColumn charColumn = new PrimitiveColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
+            DataFrameColumn charColumn = new PrimitiveDataFrameColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
             df.InsertColumn(df.ColumnCount, charColumn);
             if (withNulls)
             {
@@ -121,19 +121,19 @@ namespace Microsoft.Data.Tests
 
         public static DataFrame MakeDataFrameWithNumericColumns(int length, bool withNulls = true)
         {
-            BaseColumn byteColumn = new PrimitiveColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
-            BaseColumn decimalColumn = new PrimitiveColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
-            BaseColumn doubleColumn = new PrimitiveColumn<double>("Double", Enumerable.Range(0, length).Select(x => (double)x));
-            BaseColumn floatColumn = new PrimitiveColumn<float>("Float", Enumerable.Range(0, length).Select(x => (float)x));
-            BaseColumn intColumn = new PrimitiveColumn<int>("Int", Enumerable.Range(0, length).Select(x => x));
-            BaseColumn longColumn = new PrimitiveColumn<long>("Long", Enumerable.Range(0, length).Select(x => (long)x));
-            BaseColumn sbyteColumn = new PrimitiveColumn<sbyte>("Sbyte", Enumerable.Range(0, length).Select(x => (sbyte)x));
-            BaseColumn shortColumn = new PrimitiveColumn<short>("Short", Enumerable.Range(0, length).Select(x => (short)x));
-            BaseColumn uintColumn = new PrimitiveColumn<uint>("Uint", Enumerable.Range(0, length).Select(x => (uint)x));
-            BaseColumn ulongColumn = new PrimitiveColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
-            BaseColumn ushortColumn = new PrimitiveColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
+            DataFrameColumn byteColumn = new PrimitiveDataFrameColumn<byte>("Byte", Enumerable.Range(0, length).Select(x => (byte)x));
+            DataFrameColumn decimalColumn = new PrimitiveDataFrameColumn<decimal>("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
+            DataFrameColumn doubleColumn = new PrimitiveDataFrameColumn<double>("Double", Enumerable.Range(0, length).Select(x => (double)x));
+            DataFrameColumn floatColumn = new PrimitiveDataFrameColumn<float>("Float", Enumerable.Range(0, length).Select(x => (float)x));
+            DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("Int", Enumerable.Range(0, length).Select(x => x));
+            DataFrameColumn longColumn = new PrimitiveDataFrameColumn<long>("Long", Enumerable.Range(0, length).Select(x => (long)x));
+            DataFrameColumn sbyteColumn = new PrimitiveDataFrameColumn<sbyte>("Sbyte", Enumerable.Range(0, length).Select(x => (sbyte)x));
+            DataFrameColumn shortColumn = new PrimitiveDataFrameColumn<short>("Short", Enumerable.Range(0, length).Select(x => (short)x));
+            DataFrameColumn uintColumn = new PrimitiveDataFrameColumn<uint>("Uint", Enumerable.Range(0, length).Select(x => (uint)x));
+            DataFrameColumn ulongColumn = new PrimitiveDataFrameColumn<ulong>("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
+            DataFrameColumn ushortColumn = new PrimitiveDataFrameColumn<ushort>("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
 
-            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { byteColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
+            DataFrame dataFrame = new DataFrame(new List<DataFrameColumn> { byteColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
             if (withNulls)
             {
@@ -149,9 +149,9 @@ namespace Microsoft.Data.Tests
             where T1 : unmanaged
             where T2 : unmanaged
         {
-            BaseColumn baseColumn1 = new PrimitiveColumn<T1>("Column1", Enumerable.Range(0, length).Select(x => (T1)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T1))));
-            BaseColumn baseColumn2 = new PrimitiveColumn<T2>("Column2", Enumerable.Range(0, length).Select(x => (T2)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T2))));
-            DataFrame dataFrame = new DataFrame(new List<BaseColumn> { baseColumn1, baseColumn2 });
+            DataFrameColumn baseColumn1 = new PrimitiveDataFrameColumn<T1>("Column1", Enumerable.Range(0, length).Select(x => (T1)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T1))));
+            DataFrameColumn baseColumn2 = new PrimitiveDataFrameColumn<T2>("Column2", Enumerable.Range(0, length).Select(x => (T2)Convert.ChangeType(x % 2 == 0 ? 0 : 1, typeof(T2))));
+            DataFrame dataFrame = new DataFrame(new List<DataFrameColumn> { baseColumn1, baseColumn2 });
 
             if (withNulls)
             {
@@ -186,7 +186,7 @@ namespace Microsoft.Data.Tests
             var row = dataFrame[4];
             Assert.Equal(14, (int)row[1]);
 
-            var column = dataFrame["Int2"] as PrimitiveColumn<int>;
+            var column = dataFrame["Int2"] as PrimitiveDataFrameColumn<int>;
             Assert.Equal(1000, (int)column[2]);
 
             Assert.Throws<ArgumentException>(() => dataFrame["Int5"]);
@@ -195,8 +195,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void ColumnAndTableCreationTest()
         {
-            BaseColumn intColumn = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
-            BaseColumn floatColumn = new PrimitiveColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
+            DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
+            DataFrameColumn floatColumn = new PrimitiveDataFrameColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
             DataFrame dataFrame = new DataFrame();
             dataFrame.InsertColumn(0, intColumn);
             dataFrame.InsertColumn(1, floatColumn);
@@ -207,17 +207,17 @@ namespace Microsoft.Data.Tests
             Assert.Equal(10, dataFrame.Column(1).Length);
             Assert.Equal("FloatColumn", dataFrame.Column(1).Name);
 
-            BaseColumn bigColumn = new PrimitiveColumn<float>("BigColumn", Enumerable.Range(0, 11).Select(x => (float)x));
-            BaseColumn repeatedName = new PrimitiveColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
+            DataFrameColumn bigColumn = new PrimitiveDataFrameColumn<float>("BigColumn", Enumerable.Range(0, 11).Select(x => (float)x));
+            DataFrameColumn repeatedName = new PrimitiveDataFrameColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
             Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, bigColumn));
             Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, repeatedName));
             Assert.Throws<ArgumentOutOfRangeException>(() => dataFrame.InsertColumn(10, repeatedName));
 
             Assert.Equal(2, dataFrame.ColumnCount);
-            BaseColumn intColumnCopy = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
+            DataFrameColumn intColumnCopy = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             Assert.Throws<ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
 
-            BaseColumn differentIntColumn = new PrimitiveColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
+            DataFrameColumn differentIntColumn = new PrimitiveDataFrameColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
             dataFrame.SetColumn(1, differentIntColumn);
             Assert.True(object.ReferenceEquals(differentIntColumn, dataFrame.Column(1)));
 
@@ -230,13 +230,13 @@ namespace Microsoft.Data.Tests
         public void InsertAndRemoveColumnTests()
         {
             DataFrame dataFrame = MakeDataFrameWithAllMutableColumnTypes(10);
-            BaseColumn intColumn = new PrimitiveColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
-            BaseColumn charColumn = dataFrame["Char"];
+            DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
+            DataFrameColumn charColumn = dataFrame["Char"];
             int insertedIndex = dataFrame.ColumnCount;
             dataFrame.InsertColumn(dataFrame.ColumnCount, intColumn);
             dataFrame.RemoveColumn(0);
-            BaseColumn intColumn_1 = dataFrame["IntColumn"];
-            BaseColumn charColumn_1 = dataFrame["Char"];
+            DataFrameColumn intColumn_1 = dataFrame["IntColumn"];
+            DataFrameColumn charColumn_1 = dataFrame["Char"];
             Assert.True(ReferenceEquals(intColumn, intColumn_1));
             Assert.True(ReferenceEquals(charColumn, charColumn_1));
         }
@@ -309,8 +309,8 @@ namespace Microsoft.Data.Tests
             var df1 = MakeDataFrameWithNumericColumns(length);
             var df2 = MakeDataFrameWithNumericColumns(length);
 
-            BaseColumn newColumn;
-            BaseColumn verify;
+            DataFrameColumn newColumn;
+            DataFrameColumn verify;
             for (int i = 0; i < df1.ColumnCount; i++)
             {
                 newColumn = df1[df1.Column(i).Name] + df2[df2.Column(i).Name];
@@ -373,7 +373,7 @@ namespace Microsoft.Data.Tests
             // int + bool should throw
             Assert.Throws<NotSupportedException>(() => df.Add(true));
 
-            var dataFrameColumn1 = new PrimitiveColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
+            var dataFrameColumn1 = new PrimitiveDataFrameColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
             df.SetColumn(0, dataFrameColumn1);
             // Double + comparison ops should throw
             Assert.Throws<NotSupportedException>(() => df.And(true));
@@ -383,8 +383,8 @@ namespace Microsoft.Data.Tests
         public void TestBinaryOperationsOnBoolColumn()
         {
             var df = new DataFrame();
-            var dataFrameColumn1 = new PrimitiveColumn<bool>("Bool1", Enumerable.Range(0, 10).Select(x => true));
-            var dataFrameColumn2 = new PrimitiveColumn<bool>("Bool2", Enumerable.Range(0, 10).Select(x => true));
+            var dataFrameColumn1 = new PrimitiveDataFrameColumn<bool>("Bool1", Enumerable.Range(0, 10).Select(x => true));
+            var dataFrameColumn2 = new PrimitiveDataFrameColumn<bool>("Bool2", Enumerable.Range(0, 10).Select(x => true));
             df.InsertColumn(0, dataFrameColumn1);
             df.InsertColumn(1, dataFrameColumn2);
 
@@ -415,14 +415,14 @@ namespace Microsoft.Data.Tests
         public void TestBinaryOperationsOnStringColumn()
         {
             var df = new DataFrame();
-            BaseColumn stringColumn = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             df.InsertColumn(0, stringColumn);
 
-            BaseColumn newCol = stringColumn.ElementwiseEquals(5);
+            DataFrameColumn newCol = stringColumn.ElementwiseEquals(5);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(false, newCol[0]);
 
-            BaseColumn stringColumnCopy = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            DataFrameColumn stringColumnCopy = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             newCol = stringColumn.ElementwiseEquals(stringColumnCopy);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(true, newCol[0]);
@@ -494,7 +494,7 @@ namespace Microsoft.Data.Tests
             df["Int"][0] = -10;
             Assert.Equal(-10, df["Int"][0]);
 
-            BaseColumn absColumn = df["Int"].Abs();
+            DataFrameColumn absColumn = df["Int"].Abs();
             Assert.Equal(10, absColumn[0]);
             Assert.Equal(-10, df["Int"][0]);
             df["Int"].Abs(true);
@@ -532,7 +532,7 @@ namespace Microsoft.Data.Tests
 
             // Test the computation results
             df["Double"][0] = 100.0;
-            BaseColumn doubleColumn = df["Double"].CumulativeMax();
+            DataFrameColumn doubleColumn = df["Double"].CumulativeMax();
             for (int i = 0; i < doubleColumn.Length; i++)
             {
                 if (i == 5)
@@ -551,7 +551,7 @@ namespace Microsoft.Data.Tests
             }
 
             df["Float"][0] = -10.0f;
-            BaseColumn floatColumn = df["Float"].CumulativeMin();
+            DataFrameColumn floatColumn = df["Float"].CumulativeMin();
             for (int i = 0; i < floatColumn.Length; i++)
             {
                 if (i == 5)
@@ -569,13 +569,13 @@ namespace Microsoft.Data.Tests
                     Assert.Equal(-10.0f, (float)df["Float"][i]);
             }
 
-            BaseColumn uintColumn = df["Uint"].CumulativeProduct();
+            DataFrameColumn uintColumn = df["Uint"].CumulativeProduct();
             Assert.Equal((uint)0, uintColumn[8]);
             Assert.Equal((uint)8, df["Uint"][8]);
             df["Uint"].CumulativeProduct(true);
             Assert.Equal((uint)0, df["Uint"][9]);
 
-            BaseColumn ushortColumn = df["Ushort"].CumulativeSum();
+            DataFrameColumn ushortColumn = df["Ushort"].CumulativeSum();
             Assert.Equal((ushort)40, ushortColumn[9]);
             Assert.Equal((ushort)9, df["Ushort"][9]);
             df["Ushort"].CumulativeSum(true);
@@ -588,7 +588,7 @@ namespace Microsoft.Data.Tests
 
             df["Double"][0] = 100.1;
             Assert.Equal(100.1, df["Double"][0]);
-            BaseColumn roundColumn = df["Double"].Round();
+            DataFrameColumn roundColumn = df["Double"].Round();
             Assert.Equal(100.0, roundColumn[0]);
             Assert.Equal(100.1, df["Double"][0]);
             df["Double"].Round(true);
@@ -597,7 +597,7 @@ namespace Microsoft.Data.Tests
             // Test that none of the numeric column types throw
             for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn column = df.Column(i);
+                DataFrameColumn column = df.Column(i);
                 if (column.DataType == typeof(bool))
                 {
                     Assert.Throws<NotSupportedException>(() => column.CumulativeMax());
@@ -671,8 +671,8 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestStringColumnSort()
         {
-            // StringColumn specific sort tests
-            StringColumn strColumn = new StringColumn("String", 0);
+            // StringDataFrameColumn specific sort tests
+            StringDataFrameColumn strColumn = new StringDataFrameColumn("String", 0);
             Assert.Equal(0, strColumn.NullCount);
             for (int i = 0; i < 5; i++)
             {
@@ -680,7 +680,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal(5, strColumn.NullCount);
             // Should handle all nulls
-            StringColumn sortedStrColumn = strColumn.Sort() as StringColumn;
+            StringDataFrameColumn sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal(5, sortedStrColumn.NullCount);
             Assert.Null(sortedStrColumn[0]);
 
@@ -691,12 +691,12 @@ namespace Microsoft.Data.Tests
             Assert.Equal(5, strColumn.NullCount);
 
             // Ascending sort
-            sortedStrColumn = strColumn.Sort() as StringColumn;
+            sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal("0", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
 
             // Descending sort
-            sortedStrColumn = strColumn.Sort(false) as StringColumn;
+            sortedStrColumn = strColumn.Sort(false) as StringDataFrameColumn;
             Assert.Equal("4", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
         }
@@ -709,13 +709,13 @@ namespace Microsoft.Data.Tests
         public void TestPrimitiveColumnSort(int numberOfNulls)
         {
             // Primitive Column Sort
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int", 0);
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int", 0);
             Assert.Equal(0, intColumn.NullCount);
             intColumn.AppendMany(null, numberOfNulls);
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Should handle all nulls
-            PrimitiveColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            PrimitiveDataFrameColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveDataFrameColumn<int>;
             Assert.Equal(numberOfNulls, sortedIntColumn.NullCount);
             Assert.Null(sortedIntColumn[0]);
 
@@ -726,40 +726,40 @@ namespace Microsoft.Data.Tests
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Ascending sort
-            sortedIntColumn = intColumn.Sort() as PrimitiveColumn<int>;
+            sortedIntColumn = intColumn.Sort() as PrimitiveDataFrameColumn<int>;
             Assert.Equal(0, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
 
             // Descending sort
-            sortedIntColumn = intColumn.Sort(false) as PrimitiveColumn<int>;
+            sortedIntColumn = intColumn.Sort(false) as PrimitiveDataFrameColumn<int>;
             Assert.Equal(4, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
         }
 
         private void VerifyJoin(DataFrame join, DataFrame left, DataFrame right, JoinAlgorithm joinAlgorithm)
         {
-            PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("map", join.RowCount);
+            PrimitiveDataFrameColumn<long> mapIndices = new PrimitiveDataFrameColumn<long>("map", join.RowCount);
             for (long i = 0; i < join.RowCount; i++)
             {
                 mapIndices[i] = i;
             }
             for (int i = 0; i < join.ColumnCount; i++)
             {
-                BaseColumn joinColumn = join.Column(i);
-                BaseColumn isEqual;
+                DataFrameColumn joinColumn = join.Column(i);
+                DataFrameColumn isEqual;
 
                 if (joinAlgorithm == JoinAlgorithm.Left)
                 {
                     if (i < left.ColumnCount)
                     {
-                        BaseColumn leftColumn = left.Column(i);
+                        DataFrameColumn leftColumn = left.Column(i);
                         isEqual = joinColumn.ElementwiseEquals(leftColumn);
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
-                        BaseColumn rightColumn = right.Column(columnIndex);
-                        BaseColumn compareColumn = rightColumn.Length <= join.RowCount ? rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length) : rightColumn.Clone(mapIndices);
+                        DataFrameColumn rightColumn = right.Column(columnIndex);
+                        DataFrameColumn compareColumn = rightColumn.Length <= join.RowCount ? rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length) : rightColumn.Clone(mapIndices);
                         isEqual = joinColumn.ElementwiseEquals(compareColumn);
                     }
                 }
@@ -767,14 +767,14 @@ namespace Microsoft.Data.Tests
                 {
                     if (i < left.ColumnCount)
                     {
-                        BaseColumn leftColumn = left.Column(i);
-                        BaseColumn compareColumn = leftColumn.Length <= join.RowCount ? leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length) : leftColumn.Clone(mapIndices);
+                        DataFrameColumn leftColumn = left.Column(i);
+                        DataFrameColumn compareColumn = leftColumn.Length <= join.RowCount ? leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length) : leftColumn.Clone(mapIndices);
                         isEqual = joinColumn.ElementwiseEquals(compareColumn);
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
-                        BaseColumn rightColumn = right.Column(columnIndex);
+                        DataFrameColumn rightColumn = right.Column(columnIndex);
                         isEqual = joinColumn.ElementwiseEquals(rightColumn);
                     }
                 }
@@ -782,13 +782,13 @@ namespace Microsoft.Data.Tests
                 {
                     if (i < left.ColumnCount)
                     {
-                        BaseColumn leftColumn = left.Column(i);
+                        DataFrameColumn leftColumn = left.Column(i);
                         isEqual = joinColumn.ElementwiseEquals(leftColumn.Clone(mapIndices));
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
-                        BaseColumn rightColumn = right.Column(columnIndex);
+                        DataFrameColumn rightColumn = right.Column(columnIndex);
                         isEqual = joinColumn.ElementwiseEquals(rightColumn.Clone(mapIndices));
                     }
                 }
@@ -796,13 +796,13 @@ namespace Microsoft.Data.Tests
                 {
                     if (i < left.ColumnCount)
                     {
-                        BaseColumn leftColumn = left.Column(i);
+                        DataFrameColumn leftColumn = left.Column(i);
                         isEqual = joinColumn.ElementwiseEquals(leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length));
                     }
                     else
                     {
                         int columnIndex = i - left.ColumnCount;
-                        BaseColumn rightColumn = right.Column(columnIndex);
+                        DataFrameColumn rightColumn = right.Column(columnIndex);
                         isEqual = joinColumn.ElementwiseEquals(rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length));
                     }
                 }
@@ -945,8 +945,8 @@ namespace Microsoft.Data.Tests
             {
                 for (int c = 0; c < count.ColumnCount; c++)
                 {
-                    BaseColumn originalColumn = df.Column(c);
-                    BaseColumn firstColumn = first[originalColumn.Name];
+                    DataFrameColumn originalColumn = df.Column(c);
+                    DataFrameColumn firstColumn = first[originalColumn.Name];
                     Assert.Equal(originalColumn[r], firstColumn[r]);
                 }
             }
@@ -957,17 +957,17 @@ namespace Microsoft.Data.Tests
             {
                 for (int c = 0; c < count.ColumnCount; c++)
                 {
-                    BaseColumn originalColumn = df.Column(c);
-                    BaseColumn headColumn = head[originalColumn.Name];
+                    DataFrameColumn originalColumn = df.Column(c);
+                    DataFrameColumn headColumn = head[originalColumn.Name];
                     Assert.Equal(originalColumn[r].ToString(), headColumn[verify[r]].ToString());
                 }
             }
             for (int c = 0; c < count.ColumnCount; c++)
             {
-                BaseColumn originalColumn = df.Column(c);
+                DataFrameColumn originalColumn = df.Column(c);
                 if (originalColumn.Name == "Bool")
                     continue;
-                BaseColumn headColumn = head[originalColumn.Name];
+                DataFrameColumn headColumn = head[originalColumn.Name];
                 Assert.Equal(originalColumn[5], headColumn[verify[5]]);
             }
             Assert.Equal(6, head.RowCount);
@@ -980,8 +980,8 @@ namespace Microsoft.Data.Tests
             {
                 for (int c = 0; c < count.ColumnCount; c++)
                 {
-                    BaseColumn originalColumn = df.Column(c);
-                    BaseColumn tailColumn = tail[originalColumn.Name];
+                    DataFrameColumn originalColumn = df.Column(c);
+                    DataFrameColumn tailColumn = tail[originalColumn.Name];
                     Assert.Equal(originalColumn[originalColumnVerify[r]].ToString(), tailColumn[tailColumnVerity[r]].ToString());
                 }
             }
@@ -992,10 +992,10 @@ namespace Microsoft.Data.Tests
             {
                 for (int c = 0; c < count.ColumnCount; c++)
                 {
-                    BaseColumn originalColumn = df.Column(c);
+                    DataFrameColumn originalColumn = df.Column(c);
                     if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
                         continue;
-                    BaseColumn maxColumn = max[originalColumn.Name];
+                    DataFrameColumn maxColumn = max[originalColumn.Name];
                     Assert.Equal(((long)(r == 0 ? 8 : 9)).ToString(), maxColumn[r].ToString());
                 }
             }
@@ -1015,16 +1015,16 @@ namespace Microsoft.Data.Tests
             {
                 for (int c = 0; c < count.ColumnCount; c++)
                 {
-                    BaseColumn originalColumn = df.Column(c);
+                    DataFrameColumn originalColumn = df.Column(c);
                     if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
                         continue;
-                    BaseColumn minColumn = min[originalColumn.Name];
+                    DataFrameColumn minColumn = min[originalColumn.Name];
                     Assert.Equal("0", minColumn[r].ToString());
 
-                    BaseColumn productColumn = product[originalColumn.Name];
+                    DataFrameColumn productColumn = product[originalColumn.Name];
                     Assert.Equal("0", productColumn[r].ToString());
 
-                    BaseColumn sumColumn = sum[originalColumn.Name];
+                    DataFrameColumn sumColumn = sum[originalColumn.Name];
                     Assert.Equal("20", sumColumn[r].ToString());
                 }
             }
@@ -1113,7 +1113,7 @@ namespace Microsoft.Data.Tests
             int totalValueCount = 0;
             for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn baseColumn = df.Column(i);
+                DataFrameColumn baseColumn = df.Column(i);
                 foreach (object value in baseColumn)
                 {
                     totalValueCount++;
@@ -1123,7 +1123,7 @@ namespace Microsoft.Data.Tests
 
             // spot check a few column types:
 
-            StringColumn stringColumn = (StringColumn)df["String"];
+            StringDataFrameColumn stringColumn = (StringDataFrameColumn)df["String"];
             StringBuilder actualStrings = new StringBuilder();
             foreach (string value in stringColumn)
             {
@@ -1138,7 +1138,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal("01234<null>6789", actualStrings.ToString());
 
-            ArrowStringColumn arrowStringColumn = (ArrowStringColumn)df["ArrowString"];
+            ArrowStringDataFrameColumn arrowStringColumn = (ArrowStringDataFrameColumn)df["ArrowString"];
             actualStrings.Clear();
             foreach (string value in arrowStringColumn)
             {
@@ -1153,7 +1153,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal("foofoofoofoofoo<null>foofoofoofoo", actualStrings.ToString());
 
-            PrimitiveColumn<float> floatColumn = (PrimitiveColumn<float>)df["Float"];
+            PrimitiveDataFrameColumn<float> floatColumn = (PrimitiveDataFrameColumn<float>)df["Float"];
             actualStrings.Clear();
             foreach (float? value in floatColumn)
             {
@@ -1168,7 +1168,7 @@ namespace Microsoft.Data.Tests
             }
             Assert.Equal("01234<null>6789", actualStrings.ToString());
 
-            PrimitiveColumn<int> intColumn = (PrimitiveColumn<int>)df["Int"];
+            PrimitiveDataFrameColumn<int> intColumn = (PrimitiveDataFrameColumn<int>)df["Int"];
             actualStrings.Clear();
             foreach (int? value in intColumn)
             {
@@ -1189,7 +1189,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericColumns(10);
             // Out of place
-            BaseColumn clipped = df["Int"].Clip(3, 7);
+            DataFrameColumn clipped = df["Int"].Clip(3, 7);
             Assert.Equal(3, clipped[0]);
             Assert.Equal(0, df["Int"][0]);
             Assert.Equal(3, clipped[1]);
@@ -1229,7 +1229,7 @@ namespace Microsoft.Data.Tests
         public void TestColumnFilter()
         {
             DataFrame df = MakeDataFrameWithNumericColumns(10);
-            BaseColumn filtered = df["Int"].Filter(3, 7);
+            DataFrameColumn filtered = df["Int"].Filter(3, 7);
             Assert.Equal(4, filtered.Length);
             Assert.Equal(3, filtered[0]);
             Assert.Equal(4, filtered[1]);
@@ -1251,7 +1251,7 @@ namespace Microsoft.Data.Tests
                 Assert.Equal(dfColumns, clippedColumns);
                 for (int c = 0; c < df.ColumnCount; c++)
                 {
-                    BaseColumn column = clippedColumn.Column(c);
+                    DataFrameColumn column = clippedColumn.Column(c);
                     if (column.IsNumericColumn())
                     {
                         for (int i = 0; i < 4; i++)
@@ -1304,7 +1304,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal(5, filtered.RowCount);
             for (int i = 0; i < filtered.ColumnCount; i++)
             {
-                BaseColumn column = filtered.Column(i);
+                DataFrameColumn column = filtered.Column(i);
                 if (column.Name == "Char" || column.Name == "Bool" || column.Name == "String")
                     continue;
                 for (int j = 0; j < column.Length; j++)
@@ -1436,7 +1436,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
             DataFrame description = df.Description();
-            BaseColumn descriptionColumn = description.Column(0);
+            DataFrameColumn descriptionColumn = description.Column(0);
             Assert.Equal("Description", descriptionColumn.Name);
             Assert.Equal("Length", descriptionColumn[0]);
             Assert.Equal("Max", descriptionColumn[1]);
@@ -1444,7 +1444,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal("Mean", descriptionColumn[3]);
             for (int i = 1; i < description.ColumnCount; i++)
             {
-                BaseColumn column = description.Column(i);
+                DataFrameColumn column = description.Column(i);
                 Assert.Equal(df.Column(i - 1).Name, column.Name);
                 Assert.Equal(4, column.Length);
                 Assert.Equal((float)9, column[0]);
@@ -1476,12 +1476,12 @@ namespace Microsoft.Data.Tests
             df.FillNulls(1000, true);
             Assert.Equal(1000, df[10, 1]);
 
-            StringColumn strColumn = new StringColumn("String", 0);
+            StringDataFrameColumn strColumn = new StringDataFrameColumn("String", 0);
             strColumn.Append(null);
             strColumn.Append(null);
             Assert.Equal(2, strColumn.Length);
             Assert.Equal(2, strColumn.NullCount);
-            BaseColumn filled = strColumn.FillNulls("foo");
+            DataFrameColumn filled = strColumn.FillNulls("foo");
             Assert.Equal(2, strColumn.Length);
             Assert.Equal(2, strColumn.NullCount);
             Assert.Equal(2, filled.Length);
@@ -1513,7 +1513,7 @@ namespace Microsoft.Data.Tests
         public void TestApplyElementwiseNullCount()
         {
             DataFrame df = MakeDataFrameWithTwoColumns(10);
-            PrimitiveColumn<int> column = df["Int1"] as PrimitiveColumn<int>;
+            PrimitiveDataFrameColumn<int> column = df["Int1"] as PrimitiveDataFrameColumn<int>;
             Assert.Equal(1, column.NullCount);
 
             // Change all existing values to null
@@ -1553,14 +1553,14 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
             DataFrame intDf = MakeDataFrameWithTwoColumns(5, false);
-            BaseColumn intColumn = intDf["Int1"];
+            DataFrameColumn intColumn = intDf["Int1"];
             DataFrame clone = df[intColumn];
             Assert.Equal(5, clone.RowCount);
             Assert.Equal(df.ColumnCount, clone.ColumnCount);
             for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn dfColumn = df.Column(i);
-                BaseColumn cloneColumn = clone.Column(i);
+                DataFrameColumn dfColumn = df.Column(i);
+                DataFrameColumn cloneColumn = clone.Column(i);
                 for (long r = 0; r < clone.RowCount; r++)
                 {
                     Assert.Equal(dfColumn[r], cloneColumn[r]);
@@ -1572,7 +1572,7 @@ namespace Microsoft.Data.Tests
         public void TestColumnCreationFromExisitingColumn()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            PrimitiveColumn<bool> bigInts = new PrimitiveColumn<bool>("BigInts", df["Int"].ElementwiseGreaterThan(5));
+            PrimitiveDataFrameColumn<bool> bigInts = new PrimitiveDataFrameColumn<bool>("BigInts", df["Int"].ElementwiseGreaterThan(5));
             for (int i = 0; i < 10; i++)
             {
                 if (i <= 5)

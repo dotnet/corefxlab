@@ -4,7 +4,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from PrimitiveColumn.Computations.tt. Do not modify directly
+// Generated from PrimitiveDataFrameColumn.Computations.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
@@ -12,12 +12,12 @@ using System.Text;
 
 namespace Microsoft.Data
 {
-    public partial class PrimitiveColumn<T> : BaseColumn
+    public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
-        public override BaseColumn Abs(bool inPlace = false)
+        public override DataFrameColumn Abs(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.Abs(ret._columnContainer);
             return ret;
         }
@@ -31,51 +31,51 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Any(_columnContainer, out bool ret);
             return ret;
         }
-        public override BaseColumn CumulativeMax(bool inPlace = false)
+        public override DataFrameColumn CumulativeMax(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeMax(ret._columnContainer);
             return ret;
         }
-        public override BaseColumn CumulativeMax(IEnumerable<long> rowIndices, bool inPlace = false)
+        public override DataFrameColumn CumulativeMax(IEnumerable<long> rowIndices, bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeMax(ret._columnContainer, rowIndices);
             return ret;
         }
-        public override BaseColumn CumulativeMin(bool inPlace = false)
+        public override DataFrameColumn CumulativeMin(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeMin(ret._columnContainer);
             return ret;
         }
-        public override BaseColumn CumulativeMin(IEnumerable<long> rowIndices, bool inPlace = false)
+        public override DataFrameColumn CumulativeMin(IEnumerable<long> rowIndices, bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeMin(ret._columnContainer, rowIndices);
             return ret;
         }
-        public override BaseColumn CumulativeProduct(bool inPlace = false)
+        public override DataFrameColumn CumulativeProduct(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeProduct(ret._columnContainer);
             return ret;
         }
-        public override BaseColumn CumulativeProduct(IEnumerable<long> rowIndices, bool inPlace = false)
+        public override DataFrameColumn CumulativeProduct(IEnumerable<long> rowIndices, bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeProduct(ret._columnContainer, rowIndices);
             return ret;
         }
-        public override BaseColumn CumulativeSum(bool inPlace = false)
+        public override DataFrameColumn CumulativeSum(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeSum(ret._columnContainer);
             return ret;
         }
-        public override BaseColumn CumulativeSum(IEnumerable<long> rowIndices, bool inPlace = false)
+        public override DataFrameColumn CumulativeSum(IEnumerable<long> rowIndices, bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.CumulativeSum(ret._columnContainer, rowIndices);
             return ret;
         }
@@ -119,9 +119,9 @@ namespace Microsoft.Data
             PrimitiveColumnComputation<T>.Instance.Sum(_columnContainer, rowIndices, out T ret);
             return ret;
         }
-        public override BaseColumn Round(bool inPlace = false)
+        public override DataFrameColumn Round(bool inPlace = false)
         {
-            PrimitiveColumn<T> ret = inPlace ? this : Clone();
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
             PrimitiveColumnComputation<T>.Instance.Round(ret._columnContainer);
             return ret;
         }

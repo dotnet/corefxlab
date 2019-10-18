@@ -9,36 +9,36 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from BaseColumn.BinaryOperations.tt. Do not modify directly
+// Generated from DataFrameColumn.BinaryOperations.tt. Do not modify directly
 
 using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Data
 {
-    public abstract partial class BaseColumn
+    public abstract partial class DataFrameColumn
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
 <# if (method.IsBitwise == true) { #>
-        public virtual PrimitiveColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
+        public virtual PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
 <# } else { #>
-        public virtual BaseColumn <#=method.MethodName#><T>(T value, bool inPlace = false)
+        public virtual DataFrameColumn <#=method.MethodName#><T>(T value, bool inPlace = false)
             where T : unmanaged
 <# } #>
 <# } #>
 <# if (method.MethodType == MethodType.ComparisonScalar) { #>
-        public virtual PrimitiveColumn<bool> <#=method.MethodName#><T>(T value)
+        public virtual PrimitiveDataFrameColumn<bool> <#=method.MethodName#><T>(T value)
             where T : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary) {#>
-        public virtual BaseColumn <#=method.MethodName#>(BaseColumn column, bool inPlace = false)
+        public virtual DataFrameColumn <#=method.MethodName#>(DataFrameColumn column, bool inPlace = false)
 <# } #>
 <# if (method.MethodType == MethodType.Comparison) {#>
-        public virtual PrimitiveColumn<bool> <#=method.MethodName#>(BaseColumn column)
+        public virtual PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        public virtual BaseColumn <#=method.MethodName#>(int value, bool inPlace = false)
+        public virtual DataFrameColumn <#=method.MethodName#>(int value, bool inPlace = false)
 <# } #>
         {
             throw new NotImplementedException();

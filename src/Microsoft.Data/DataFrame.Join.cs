@@ -21,13 +21,13 @@ namespace Microsoft.Data
     public partial class DataFrame
     {
 
-        private void SetSuffixForDuplicatedColumnNames(DataFrame dataFrame, BaseColumn column, string leftSuffix, string rightSuffix)
+        private void SetSuffixForDuplicatedColumnNames(DataFrame dataFrame, DataFrameColumn column, string leftSuffix, string rightSuffix)
         {
             int index = dataFrame._table.GetColumnIndex(column.Name);
             while (index != -1)
             {
                 // Pre-existing column. Change name
-                BaseColumn existingColumn = dataFrame.Column(index);
+                DataFrameColumn existingColumn = dataFrame.Column(index);
                 dataFrame._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
                 column.SetName(column.Name + rightSuffix);
                 index = dataFrame._table.GetColumnIndex(column.Name);
@@ -41,18 +41,18 @@ namespace Microsoft.Data
             {
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn newColumn = Column(i).Clone();
+                    DataFrameColumn newColumn = Column(i).Clone();
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 long minLength = Math.Min(RowCount, other.RowCount);
-                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", minLength);
+                PrimitiveDataFrameColumn<long> mapIndices = new PrimitiveDataFrameColumn<long>("mapIndices", minLength);
                 for (long i = 0; i < minLength; i++)
                 {
                     mapIndices[i] = i;
                 }
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    BaseColumn newColumn;
+                    DataFrameColumn newColumn;
                     if (other.RowCount < RowCount)
                     {
                         newColumn = other.Column(i).Clone(numberOfNullsToAppend: RowCount - other.RowCount);
@@ -68,14 +68,14 @@ namespace Microsoft.Data
             else if (joinAlgorithm == JoinAlgorithm.Right)
             {
                 long minLength = Math.Min(RowCount, other.RowCount);
-                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", minLength);
+                PrimitiveDataFrameColumn<long> mapIndices = new PrimitiveDataFrameColumn<long>("mapIndices", minLength);
                 for (long i = 0; i < minLength; i++)
                 {
                     mapIndices[i] = i;
                 }
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn newColumn;
+                    DataFrameColumn newColumn;
                     if (RowCount < other.RowCount)
                     {
                         newColumn = Column(i).Clone(numberOfNullsToAppend: other.RowCount - RowCount);
@@ -88,7 +88,7 @@ namespace Microsoft.Data
                 }
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    BaseColumn newColumn = other.Column(i).Clone();
+                    DataFrameColumn newColumn = other.Column(i).Clone();
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -99,13 +99,13 @@ namespace Microsoft.Data
                 long numberOfNulls = newRowCount - RowCount;
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn newColumn = Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    DataFrameColumn newColumn = Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 numberOfNulls = newRowCount - other.RowCount;
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    BaseColumn newColumn = other.Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    DataFrameColumn newColumn = other.Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -113,19 +113,19 @@ namespace Microsoft.Data
             else if (joinAlgorithm == JoinAlgorithm.Inner)
             {
                 long newRowCount = Math.Min(RowCount, other.RowCount);
-                PrimitiveColumn<long> mapIndices = new PrimitiveColumn<long>("mapIndices", newRowCount);
+                PrimitiveDataFrameColumn<long> mapIndices = new PrimitiveDataFrameColumn<long>("mapIndices", newRowCount);
                 for (long i = 0; i < newRowCount; i++)
                 {
                     mapIndices[i] = i;
                 }
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn newColumn = Column(i).Clone(mapIndices);
+                    DataFrameColumn newColumn = Column(i).Clone(mapIndices);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    BaseColumn newColumn = other.Column(i).Clone(mapIndices);
+                    DataFrameColumn newColumn = other.Column(i).Clone(mapIndices);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -154,16 +154,16 @@ namespace Microsoft.Data
 
             // The final table size is not known until runtime 
             long rowNumber = 0;
-            PrimitiveColumn<long> leftRowIndices = new PrimitiveColumn<long>("LeftIndices");
-            PrimitiveColumn<long> rightRowIndices = new PrimitiveColumn<long>("RightIndices");
+            PrimitiveDataFrameColumn<long> leftRowIndices = new PrimitiveDataFrameColumn<long>("LeftIndices");
+            PrimitiveDataFrameColumn<long> rightRowIndices = new PrimitiveDataFrameColumn<long>("RightIndices");
             if (joinAlgorithm == JoinAlgorithm.Left)
             {
                 // First hash other dataframe on the rightJoinColumn 
-                BaseColumn otherColumn = other[rightJoinColumn];
+                DataFrameColumn otherColumn = other[rightJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = otherColumn.GroupColumnValues<TKey>();
 
                 // Go over the records in this dataframe and match with the dictionary 
-                BaseColumn thisColumn = this[leftJoinColumn];
+                DataFrameColumn thisColumn = this[leftJoinColumn];
 
                 for (long i = 0; i < thisColumn.Length; i++)
                 {
@@ -202,10 +202,10 @@ namespace Microsoft.Data
             }
             else if (joinAlgorithm == JoinAlgorithm.Right)
             {
-                BaseColumn thisColumn = this[leftJoinColumn];
+                DataFrameColumn thisColumn = this[leftJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = thisColumn.GroupColumnValues<TKey>();
 
-                BaseColumn otherColumn = other[rightJoinColumn];
+                DataFrameColumn otherColumn = other[rightJoinColumn];
                 for (long i = 0; i < otherColumn.Length; i++)
                 {
                     var otherColumnValue = otherColumn[i];
@@ -246,8 +246,8 @@ namespace Microsoft.Data
                 long rightRowCount = other.RowCount;
                 DataFrame longerDataFrame = leftRowCount <= rightRowCount ? other : this;
                 DataFrame shorterDataFrame = ReferenceEquals(longerDataFrame, this) ? other : this;
-                BaseColumn hashColumn = (leftRowCount <= rightRowCount) ? this[leftJoinColumn] : other[rightJoinColumn];
-                BaseColumn otherColumn = ReferenceEquals(hashColumn, this[leftJoinColumn]) ? other[rightJoinColumn] : this[leftJoinColumn];
+                DataFrameColumn hashColumn = (leftRowCount <= rightRowCount) ? this[leftJoinColumn] : other[rightJoinColumn];
+                DataFrameColumn otherColumn = ReferenceEquals(hashColumn, this[leftJoinColumn]) ? other[rightJoinColumn] : this[leftJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = hashColumn.GroupColumnValues<TKey>();
 
                 for (long i = 0; i < otherColumn.Length; i++)
@@ -282,12 +282,12 @@ namespace Microsoft.Data
             }
             else if (joinAlgorithm == JoinAlgorithm.FullOuter)
             {
-                BaseColumn otherColumn = other[rightJoinColumn];
+                DataFrameColumn otherColumn = other[rightJoinColumn];
                 Dictionary<TKey, ICollection<long>> multimap = otherColumn.GroupColumnValues<TKey>();
                 Dictionary<TKey, long> intersection = new Dictionary<TKey, long>(EqualityComparer<TKey>.Default);
 
                 // Go over the records in this dataframe and match with the dictionary 
-                BaseColumn thisColumn = this[leftJoinColumn];
+                DataFrameColumn thisColumn = this[leftJoinColumn];
 
                 for (long i = 0; i < thisColumn.Length; i++)
                 {
@@ -350,7 +350,7 @@ namespace Microsoft.Data
             }
             for (int i = 0; i < rightDataFrame.ColumnCount; i++)
             {
-                BaseColumn column = rightDataFrame.Column(i).Clone(rightRowIndices);
+                DataFrameColumn column = rightDataFrame.Column(i).Clone(rightRowIndices);
                 SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
                 ret.InsertColumn(ret.ColumnCount, column);
             }

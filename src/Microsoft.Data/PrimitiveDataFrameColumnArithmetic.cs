@@ -4,13 +4,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from PrimitiveColumnArithmetic.tt. Do not modify directly
+// Generated from PrimitiveDataFrameColumnArithmetic.tt. Do not modify directly
 
 using System;
 
 namespace Microsoft.Data
 {
-    internal interface IPrimitiveColumnArithmetic<T>
+    internal interface IPrimitiveDataFrameColumnArithmetic<T>
         where T : struct
     {
        void Add(PrimitiveColumnContainer<T> left, PrimitiveColumnContainer<T> right);
@@ -45,74 +45,74 @@ namespace Microsoft.Data
        void ElementwiseLessThan(PrimitiveColumnContainer<T> column, T scalar, PrimitiveColumnContainer<bool> ret);
     }
 
-    internal static class PrimitiveColumnArithmetic<T>
+    internal static class PrimitiveDataFrameColumnArithmetic<T>
         where T : struct
     {
-        public static IPrimitiveColumnArithmetic<T> Instance { get; } = PrimitiveColumnArithmetic.GetArithmetic<T>();
+        public static IPrimitiveDataFrameColumnArithmetic<T> Instance { get; } = PrimitiveDataFrameColumnArithmetic.GetArithmetic<T>();
     }
 
-    internal static class PrimitiveColumnArithmetic
+    internal static class PrimitiveDataFrameColumnArithmetic
     {
-        public static IPrimitiveColumnArithmetic<T> GetArithmetic<T>()
+        public static IPrimitiveDataFrameColumnArithmetic<T> GetArithmetic<T>()
             where T : struct
         {
             if (typeof(T) == typeof(bool))
             {
-                return (IPrimitiveColumnArithmetic<T>)new BoolArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new BoolArithmetic();
             }
             else if (typeof(T) == typeof(byte))
             {
-                return (IPrimitiveColumnArithmetic<T>)new ByteArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new ByteArithmetic();
             }
             else if (typeof(T) == typeof(char))
             {
-                return (IPrimitiveColumnArithmetic<T>)new CharArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new CharArithmetic();
             }
             else if (typeof(T) == typeof(decimal))
             {
-                return (IPrimitiveColumnArithmetic<T>)new DecimalArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new DecimalArithmetic();
             }
             else if (typeof(T) == typeof(double))
             {
-                return (IPrimitiveColumnArithmetic<T>)new DoubleArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new DoubleArithmetic();
             }
             else if (typeof(T) == typeof(float))
             {
-                return (IPrimitiveColumnArithmetic<T>)new FloatArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new FloatArithmetic();
             }
             else if (typeof(T) == typeof(int))
             {
-                return (IPrimitiveColumnArithmetic<T>)new IntArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new IntArithmetic();
             }
             else if (typeof(T) == typeof(long))
             {
-                return (IPrimitiveColumnArithmetic<T>)new LongArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new LongArithmetic();
             }
             else if (typeof(T) == typeof(sbyte))
             {
-                return (IPrimitiveColumnArithmetic<T>)new SByteArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new SByteArithmetic();
             }
             else if (typeof(T) == typeof(short))
             {
-                return (IPrimitiveColumnArithmetic<T>)new ShortArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new ShortArithmetic();
             }
             else if (typeof(T) == typeof(uint))
             {
-                return (IPrimitiveColumnArithmetic<T>)new UIntArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new UIntArithmetic();
             }
             else if (typeof(T) == typeof(ulong))
             {
-                return (IPrimitiveColumnArithmetic<T>)new ULongArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new ULongArithmetic();
             }
             else if (typeof(T) == typeof(ushort))
             {
-                return (IPrimitiveColumnArithmetic<T>)new UShortArithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new UShortArithmetic();
             }
             throw new NotSupportedException();
         }
     }
 
-    internal class BoolArithmetic : IPrimitiveColumnArithmetic<bool>
+    internal class BoolArithmetic : IPrimitiveDataFrameColumnArithmetic<bool>
     {
         public void Add(PrimitiveColumnContainer<bool> left, PrimitiveColumnContainer<bool> right)
         {
@@ -340,7 +340,7 @@ namespace Microsoft.Data
             throw new NotSupportedException();
         }
     }
-    internal class ByteArithmetic : IPrimitiveColumnArithmetic<byte>
+    internal class ByteArithmetic : IPrimitiveDataFrameColumnArithmetic<byte>
     {
         public void Add(PrimitiveColumnContainer<byte> left, PrimitiveColumnContainer<byte> right)
         {
@@ -777,7 +777,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class CharArithmetic : IPrimitiveColumnArithmetic<char>
+    internal class CharArithmetic : IPrimitiveDataFrameColumnArithmetic<char>
     {
         public void Add(PrimitiveColumnContainer<char> left, PrimitiveColumnContainer<char> right)
         {
@@ -1214,7 +1214,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class DecimalArithmetic : IPrimitiveColumnArithmetic<decimal>
+    internal class DecimalArithmetic : IPrimitiveDataFrameColumnArithmetic<decimal>
     {
         public void Add(PrimitiveColumnContainer<decimal> left, PrimitiveColumnContainer<decimal> right)
         {
@@ -1568,7 +1568,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class DoubleArithmetic : IPrimitiveColumnArithmetic<double>
+    internal class DoubleArithmetic : IPrimitiveDataFrameColumnArithmetic<double>
     {
         public void Add(PrimitiveColumnContainer<double> left, PrimitiveColumnContainer<double> right)
         {
@@ -1922,7 +1922,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class FloatArithmetic : IPrimitiveColumnArithmetic<float>
+    internal class FloatArithmetic : IPrimitiveDataFrameColumnArithmetic<float>
     {
         public void Add(PrimitiveColumnContainer<float> left, PrimitiveColumnContainer<float> right)
         {
@@ -2276,7 +2276,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class IntArithmetic : IPrimitiveColumnArithmetic<int>
+    internal class IntArithmetic : IPrimitiveDataFrameColumnArithmetic<int>
     {
         public void Add(PrimitiveColumnContainer<int> left, PrimitiveColumnContainer<int> right)
         {
@@ -2713,7 +2713,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class LongArithmetic : IPrimitiveColumnArithmetic<long>
+    internal class LongArithmetic : IPrimitiveDataFrameColumnArithmetic<long>
     {
         public void Add(PrimitiveColumnContainer<long> left, PrimitiveColumnContainer<long> right)
         {
@@ -3150,7 +3150,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class SByteArithmetic : IPrimitiveColumnArithmetic<sbyte>
+    internal class SByteArithmetic : IPrimitiveDataFrameColumnArithmetic<sbyte>
     {
         public void Add(PrimitiveColumnContainer<sbyte> left, PrimitiveColumnContainer<sbyte> right)
         {
@@ -3587,7 +3587,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class ShortArithmetic : IPrimitiveColumnArithmetic<short>
+    internal class ShortArithmetic : IPrimitiveDataFrameColumnArithmetic<short>
     {
         public void Add(PrimitiveColumnContainer<short> left, PrimitiveColumnContainer<short> right)
         {
@@ -4024,7 +4024,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class UIntArithmetic : IPrimitiveColumnArithmetic<uint>
+    internal class UIntArithmetic : IPrimitiveDataFrameColumnArithmetic<uint>
     {
         public void Add(PrimitiveColumnContainer<uint> left, PrimitiveColumnContainer<uint> right)
         {
@@ -4461,7 +4461,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class ULongArithmetic : IPrimitiveColumnArithmetic<ulong>
+    internal class ULongArithmetic : IPrimitiveDataFrameColumnArithmetic<ulong>
     {
         public void Add(PrimitiveColumnContainer<ulong> left, PrimitiveColumnContainer<ulong> right)
         {
@@ -4898,7 +4898,7 @@ namespace Microsoft.Data
             }
         }
     }
-    internal class UShortArithmetic : IPrimitiveColumnArithmetic<ushort>
+    internal class UShortArithmetic : IPrimitiveDataFrameColumnArithmetic<ushort>
     {
         public void Add(PrimitiveColumnContainer<ushort> left, PrimitiveColumnContainer<ushort> right)
         {

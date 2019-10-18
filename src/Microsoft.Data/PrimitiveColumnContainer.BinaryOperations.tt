@@ -21,9 +21,9 @@ namespace Microsoft.Data
        public <#= method.GetSingleArgumentMethodSignature("PrimitiveColumnContainer", "T") #>
        {
 <# if (method.MethodType == MethodType.ComparisonScalar ) { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar, ret);
 <# } else { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, right, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, right, ret);
 <# } #>
             return this;
        }
@@ -32,11 +32,11 @@ namespace Microsoft.Data
        public <#= method.GetSingleArgumentMethodSignature("PrimitiveColumnContainer", "T")#>
         {
 <# if (method.MethodType == MethodType.BinaryScalar) { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, scalar);
 <# } else if (method.MethodType == MethodType.BinaryInt) { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, value);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, value);
 <# } else { #>
-            PrimitiveColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, right);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.<#=method.MethodName#>(this, right);
 <# } #>
             return this;
         }

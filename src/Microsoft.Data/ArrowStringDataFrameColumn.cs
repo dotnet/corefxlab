@@ -18,20 +18,20 @@ namespace Microsoft.Data
     /// <summary>
     /// An immutable to hold Arrow style strings
     /// </summary>
-    public partial class ArrowStringColumn : BaseColumn, IEnumerable<string>
+    public partial class ArrowStringDataFrameColumn : DataFrameColumn, IEnumerable<string>
     {
         private IList<ReadOnlyDataFrameBuffer<byte>> _dataBuffers;
         private IList<ReadOnlyDataFrameBuffer<int>> _offsetsBuffers;
         private IList<ReadOnlyDataFrameBuffer<byte>> _nullBitMapBuffers;
 
-        public ArrowStringColumn(string name) : base(name, 0, typeof(string))
+        public ArrowStringDataFrameColumn(string name) : base(name, 0, typeof(string))
         {
             _dataBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
             _offsetsBuffers = new List<ReadOnlyDataFrameBuffer<int>>();
             _nullBitMapBuffers = new List<ReadOnlyDataFrameBuffer<byte>>();
         }
 
-        public ArrowStringColumn(string name, ReadOnlyMemory<byte> values, ReadOnlyMemory<byte> offsets, ReadOnlyMemory<byte> nullBits, int length, int nullCount) : base(name, length, typeof(string))
+        public ArrowStringDataFrameColumn(string name, ReadOnlyMemory<byte> values, ReadOnlyMemory<byte> offsets, ReadOnlyMemory<byte> nullBits, int length, int nullCount) : base(name, length, typeof(string))
         {
             ReadOnlyDataFrameBuffer<byte> dataBuffer = new ReadOnlyDataFrameBuffer<byte>(values, values.Length);
             ReadOnlyDataFrameBuffer<int> offsetBuffer = new ReadOnlyDataFrameBuffer<int>(offsets, length + 1);
@@ -326,22 +326,22 @@ namespace Microsoft.Data
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
 
-        public override BaseColumn Sort(bool ascending = true) => throw new NotSupportedException();
+        public override DataFrameColumn Sort(bool ascending = true) => throw new NotSupportedException();
 
-        public override BaseColumn Clone(BaseColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
-            ArrowStringColumn clone;
+            ArrowStringDataFrameColumn clone;
             if (!(mapIndices is null))
             {
                 Type dataType = mapIndices.DataType;
                 if (dataType != typeof(long) && dataType != typeof(int) && dataType != typeof(bool))
                     throw new ArgumentException(String.Format(Strings.MultipleMismatchedValueType, typeof(long), typeof(int), typeof(bool)), nameof(mapIndices));
                 if (mapIndices.DataType == typeof(long))
-                    clone = Clone(mapIndices as PrimitiveColumn<long>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<long>, invertMapIndices);
                 else if (dataType == typeof(int))
-                    clone = Clone(mapIndices as PrimitiveColumn<int>, invertMapIndices);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<int>, invertMapIndices);
                 else
-                    clone = Clone(mapIndices as PrimitiveColumn<bool>);
+                    clone = Clone(mapIndices as PrimitiveDataFrameColumn<bool>);
             }
             else
             {
@@ -354,11 +354,11 @@ namespace Microsoft.Data
             return clone;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<bool> boolColumn)
+        private ArrowStringDataFrameColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
         {
             if (boolColumn.Length > Length)
                 throw new ArgumentException(Strings.MapIndicesExceedsColumnLenth, nameof(boolColumn));
-            ArrowStringColumn ret = new ArrowStringColumn(Name);
+            ArrowStringDataFrameColumn ret = new ArrowStringDataFrameColumn(Name);
             for (long i = 0; i < boolColumn.Length; i++)
             {
                 bool? value = boolColumn[i];
@@ -368,10 +368,10 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn CloneImplementation<U>(PrimitiveColumn<U> mapIndices, bool invertMapIndices = false)
+        private ArrowStringDataFrameColumn CloneImplementation<U>(PrimitiveDataFrameColumn<U> mapIndices, bool invertMapIndices = false)
             where U : unmanaged
         {
-            ArrowStringColumn ret = new ArrowStringColumn(Name);
+            ArrowStringDataFrameColumn ret = new ArrowStringDataFrameColumn(Name);
             mapIndices.ApplyElementwise((U? mapIndex, long rowIndex) =>
             {
                 if (mapIndex == null)
@@ -388,11 +388,11 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<long> mapIndices = null, bool invertMapIndex = false)
+        private ArrowStringDataFrameColumn Clone(PrimitiveDataFrameColumn<long> mapIndices = null, bool invertMapIndex = false)
         {
             if (mapIndices is null)
             {
-                ArrowStringColumn ret = new ArrowStringColumn(Name);
+                ArrowStringDataFrameColumn ret = new ArrowStringDataFrameColumn(Name);
                 for (long i = 0; i < Length; i++)
                 {
                     ret.Append(IsValid(i) ? GetBytes(i) : default(ReadOnlySpan<byte>));
@@ -403,7 +403,7 @@ namespace Microsoft.Data
                 return CloneImplementation(mapIndices, invertMapIndex);
         }
 
-        private ArrowStringColumn Clone(PrimitiveColumn<int> mapIndices, bool invertMapIndex = false)
+        private ArrowStringDataFrameColumn Clone(PrimitiveDataFrameColumn<int> mapIndices, bool invertMapIndex = false)
         {
             return CloneImplementation(mapIndices, invertMapIndex);
         }
@@ -411,7 +411,7 @@ namespace Microsoft.Data
         public override DataFrame ValueCounts()
         {
             Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
-            return StringColumn.ValueCountsImplementation(groupedValues);
+            return StringDataFrameColumn.ValueCountsImplementation(groupedValues);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
@@ -446,7 +446,7 @@ namespace Microsoft.Data
             }
         }
 
-        public override BaseColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
+        public override DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {

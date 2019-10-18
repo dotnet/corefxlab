@@ -65,20 +65,20 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
             for (int i = 0; i < ColumnCount; i++)
             {
-                BaseColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _table.Column(i);
 <# } else { #>
             for (int i = 0; i < ColumnCount; i++)
             {
-                BaseColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _table.Column(i);
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) {#>
-                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace);
 <# } else if (method.MethodType == MethodType.Binary) { #>
-                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(values[i], inPlace);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
-                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(value);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(value);
 <# } else { #>
-                BaseColumn newColumn = baseColumn.<#=method.MethodName#>(values[i]);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(values[i]);
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
                 if (inPlace)

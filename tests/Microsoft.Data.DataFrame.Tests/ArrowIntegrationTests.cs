@@ -37,7 +37,7 @@ namespace Microsoft.Data.Tests
                     length: 10,
                     nullCount: 2,
                     offset: 0))
-                .Append("StringColumn", false, new StringArray.Builder().AppendRange(Enumerable.Range(0, 10).Select(x => x.ToString())).Build())
+                .Append("StringDataFrameColumn", false, new StringArray.Builder().AppendRange(Enumerable.Range(0, 10).Select(x => x.ToString())).Build())
                 .Append("DoubleColumn", false, new DoubleArray.Builder().AppendRange(Enumerable.Repeat(1.0, 10)).Build())
                 .Append("FloatColumn", false, new FloatArray.Builder().AppendRange(Enumerable.Repeat(1.0f, 10)).Build())
                 .Append("ShortColumn", false, new Int16Array.Builder().AppendRange(Enumerable.Repeat((short)1, 10)).Build())
@@ -62,10 +62,10 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestEmptyDataFrameRecordBatch()
         {
-            PrimitiveColumn<int> ageColumn = new PrimitiveColumn<int>("Age");
-            PrimitiveColumn<int> lengthColumn = new PrimitiveColumn<int>("CharCount");
-            ArrowStringColumn stringColumn = new ArrowStringColumn("Empty");
-            DataFrame df = new DataFrame(new List<BaseColumn>() { ageColumn, lengthColumn, stringColumn });
+            PrimitiveDataFrameColumn<int> ageColumn = new PrimitiveDataFrameColumn<int>("Age");
+            PrimitiveDataFrameColumn<int> lengthColumn = new PrimitiveDataFrameColumn<int>("CharCount");
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("Empty");
+            DataFrame df = new DataFrame(new List<DataFrameColumn>() { ageColumn, lengthColumn, stringColumn });
 
             IEnumerable<RecordBatch> recordBatches = df.AsArrowRecordBatches();
             bool foundARecordBatch = false;

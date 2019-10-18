@@ -16,14 +16,14 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestNullCounts()
         {
-            PrimitiveColumn<int> dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
+            PrimitiveDataFrameColumn<int> dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             dataFrameColumn1.Append(null);
             Assert.Equal(1, dataFrameColumn1.NullCount);
 
-            PrimitiveColumn<int> df2 = new PrimitiveColumn<int>("Int2");
+            PrimitiveDataFrameColumn<int> df2 = new PrimitiveDataFrameColumn<int>("Int2");
             Assert.Equal(0, df2.NullCount);
 
-            PrimitiveColumn<int> df3 = new PrimitiveColumn<int>("Int3", 10);
+            PrimitiveDataFrameColumn<int> df3 = new PrimitiveDataFrameColumn<int>("Int3", 10);
             Assert.Equal(0, df3.NullCount);
 
             // Test null counts with assignments on Primitive Columns
@@ -40,16 +40,16 @@ namespace Microsoft.Data.Tests
             Assert.Equal(1, df2.NullCount);
 
             // Test null counts with assignments on String Columns
-            StringColumn strCol = new StringColumn("String", 0);
+            StringDataFrameColumn strCol = new StringDataFrameColumn("String", 0);
             Assert.Equal(0, strCol.NullCount);
 
-            StringColumn strCol1 = new StringColumn("String1", 5);
+            StringDataFrameColumn strCol1 = new StringDataFrameColumn("String1", 5);
             Assert.Equal(0, strCol1.NullCount);
 
-            StringColumn strCol2 = new StringColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
+            StringDataFrameColumn strCol2 = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             Assert.Equal(0, strCol2.NullCount);
 
-            StringColumn strCol3 = new StringColumn("String", Enumerable.Range(0, 10).Select(x => (string)null));
+            StringDataFrameColumn strCol3 = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => (string)null));
             Assert.Equal(10, strCol3.NullCount);
 
             strCol.Append(null);
@@ -65,7 +65,7 @@ namespace Microsoft.Data.Tests
             strCol[0] = null;
             Assert.Equal(1, strCol.NullCount);
 
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int");
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int");
             intColumn.Append(0);
             intColumn.Append(1);
             intColumn.Append(null);
@@ -84,7 +84,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestValidity()
         {
-            PrimitiveColumn<int> dataFrameColumn1 = new PrimitiveColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
+            PrimitiveDataFrameColumn<int> dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
             dataFrameColumn1.Append(null);
             Assert.False(dataFrameColumn1.IsValid(10));
             for (long i = 0; i < dataFrameColumn1.Length - 1; i++)
@@ -96,7 +96,7 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestAppendMany()
         {
-            PrimitiveColumn<int> intColumn = new PrimitiveColumn<int>("Int1");
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int1");
             intColumn.AppendMany(null, 5);
             Assert.Equal(5, intColumn.NullCount);
             Assert.Equal(5, intColumn.Length);
@@ -130,7 +130,7 @@ namespace Microsoft.Data.Tests
             Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
             Assert.Equal(2, stringColumn.Length);
             Assert.Equal("foo", stringColumn[0]);
             Assert.Equal("bar", stringColumn[1]);
@@ -144,7 +144,7 @@ namespace Microsoft.Data.Tests
             Memory<byte> dataMemory = new Memory<byte>(bytes);
             Memory<byte> nullMemory = new byte[] { 0b1101 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0 };
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, 4, 1);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, 4, 1);
 
             Assert.Equal(4, stringColumn.Length);
             Assert.Equal("joe", stringColumn[0]);
@@ -167,9 +167,9 @@ namespace Microsoft.Data.Tests
             Memory<byte> nullMemory = new byte[] { 0, 0, 0, 0 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn stringColumn = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
 
-            BaseColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
+            DataFrameColumn clone = stringColumn.Clone(numberOfNullsToAppend: 5);
             Assert.Equal(7, clone.Length);
             Assert.Equal(stringColumn[0], clone[0]);
             Assert.Equal(stringColumn[1], clone[1]);
@@ -184,7 +184,7 @@ namespace Microsoft.Data.Tests
                 .Append("Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10)))).Build();
             DataFrame df = new DataFrame(recordBatch);
 
-            PrimitiveColumn<int> column = df["Column1"] as PrimitiveColumn<int>;
+            PrimitiveDataFrameColumn<int> column = df["Column1"] as PrimitiveDataFrameColumn<int>;
 
             IEnumerable<ReadOnlyMemory<int>> buffers = column.GetReadOnlyDataBuffers();
             IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();
@@ -224,13 +224,13 @@ namespace Microsoft.Data.Tests
         [Fact]
         public void TestArrowStringColumnGetReadOnlyBuffers()
         {
-            // Test ArrowStringColumn.
+            // Test ArrowStringDataFrameColumn.
             StringArray strArray = new StringArray.Builder().Append("foo").Append("bar").Build();
             Memory<byte> dataMemory = new byte[] { 102, 111, 111, 98, 97, 114 };
             Memory<byte> nullMemory = new byte[] { 1 };
             Memory<byte> offsetMemory = new byte[] { 0, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0 };
 
-            ArrowStringColumn column = new ArrowStringColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
+            ArrowStringDataFrameColumn column = new ArrowStringDataFrameColumn("String", dataMemory, offsetMemory, nullMemory, strArray.Length, strArray.NullCount);
 
             IEnumerable<ReadOnlyMemory<byte>> dataBuffers = column.GetReadOnlyDataBuffers();
             IEnumerable<ReadOnlyMemory<byte>> nullBitMaps = column.GetReadOnlyNullBitMapBuffers();

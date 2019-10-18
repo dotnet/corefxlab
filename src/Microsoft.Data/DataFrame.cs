@@ -40,7 +40,7 @@ namespace Microsoft.Data
             _table = new DataFrameTable();
         }
 
-        public DataFrame(IList<BaseColumn> columns)
+        public DataFrame(IList<DataFrameColumn> columns)
         {
             _table = new DataFrameTable(columns);
         }
@@ -55,81 +55,81 @@ namespace Microsoft.Data
             {
                 Field field = arrowSchema.GetFieldByIndex(fieldIndex);
                 IArrowType fieldType = field.DataType;
-                BaseColumn dataFrameColumn = null;
+                DataFrameColumn dataFrameColumn = null;
                 switch (fieldType.TypeId)
                 {
                     case ArrowTypeId.Boolean:
                         BooleanArray arrowBooleanArray = (BooleanArray)arrowArray;
                         ReadOnlyMemory<byte> valueBuffer = arrowBooleanArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> nullBitMapBuffer = arrowBooleanArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<bool>(field.Name, valueBuffer, nullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<bool>(field.Name, valueBuffer, nullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Double:
                         PrimitiveArray<double> arrowDoubleArray = (PrimitiveArray<double>)arrowArray;
                         ReadOnlyMemory<byte> doubleValueBuffer = arrowDoubleArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> doubleNullBitMapBuffer = arrowDoubleArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<double>(field.Name, doubleValueBuffer, doubleNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<double>(field.Name, doubleValueBuffer, doubleNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Float:
                         PrimitiveArray<float> arrowFloatArray = (PrimitiveArray<float>)arrowArray;
                         ReadOnlyMemory<byte> floatValueBuffer = arrowFloatArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> floatNullBitMapBuffer = arrowFloatArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<float>(field.Name, floatValueBuffer, floatNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<float>(field.Name, floatValueBuffer, floatNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Int8:
                         PrimitiveArray<sbyte> arrowsbyteArray = (PrimitiveArray<sbyte>)arrowArray;
                         ReadOnlyMemory<byte> sbyteValueBuffer = arrowsbyteArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> sbyteNullBitMapBuffer = arrowsbyteArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<sbyte>(field.Name, sbyteValueBuffer, sbyteNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<sbyte>(field.Name, sbyteValueBuffer, sbyteNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Int16:
                         PrimitiveArray<short> arrowshortArray = (PrimitiveArray<short>)arrowArray;
                         ReadOnlyMemory<byte> shortValueBuffer = arrowshortArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> shortNullBitMapBuffer = arrowshortArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<short>(field.Name, shortValueBuffer, shortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<short>(field.Name, shortValueBuffer, shortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Int32:
                         PrimitiveArray<int> arrowIntArray = (PrimitiveArray<int>)arrowArray;
                         ReadOnlyMemory<byte> intValueBuffer = arrowIntArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> intNullBitMapBuffer = arrowIntArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<int>(field.Name, intValueBuffer, intNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<int>(field.Name, intValueBuffer, intNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Int64:
                         PrimitiveArray<long> arrowLongArray = (PrimitiveArray<long>)arrowArray;
                         ReadOnlyMemory<byte> longValueBuffer = arrowLongArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> longNullBitMapBuffer = arrowLongArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<long>(field.Name, longValueBuffer, longNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<long>(field.Name, longValueBuffer, longNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.String:
                         StringArray stringArray = (StringArray)arrowArray;
                         ReadOnlyMemory<byte> dataMemory = stringArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> offsetsMemory = stringArray.ValueOffsetsBuffer.Memory;
                         ReadOnlyMemory<byte> nullMemory = stringArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new ArrowStringColumn(field.Name, dataMemory, offsetsMemory, nullMemory, stringArray.Length, stringArray.NullCount);
+                        dataFrameColumn = new ArrowStringDataFrameColumn(field.Name, dataMemory, offsetsMemory, nullMemory, stringArray.Length, stringArray.NullCount);
                         break;
                     case ArrowTypeId.UInt8:
                         PrimitiveArray<byte> arrowbyteArray = (PrimitiveArray<byte>)arrowArray;
                         ReadOnlyMemory<byte> byteValueBuffer = arrowbyteArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> byteNullBitMapBuffer = arrowbyteArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<byte>(field.Name, byteValueBuffer, byteNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<byte>(field.Name, byteValueBuffer, byteNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt16:
                         PrimitiveArray<ushort> arrowUshortArray = (PrimitiveArray<ushort>)arrowArray;
                         ReadOnlyMemory<byte> ushortValueBuffer = arrowUshortArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> ushortNullBitMapBuffer = arrowUshortArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<ushort>(field.Name, ushortValueBuffer, ushortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<ushort>(field.Name, ushortValueBuffer, ushortNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt32:
                         PrimitiveArray<uint> arrowUintArray = (PrimitiveArray<uint>)arrowArray;
                         ReadOnlyMemory<byte> uintValueBuffer = arrowUintArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> uintNullBitMapBuffer = arrowUintArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<uint>(field.Name, uintValueBuffer, uintNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<uint>(field.Name, uintValueBuffer, uintNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.UInt64:
                         PrimitiveArray<ulong> arrowUlongArray = (PrimitiveArray<ulong>)arrowArray;
                         ReadOnlyMemory<byte> ulongValueBuffer = arrowUlongArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> ulongNullBitMapBuffer = arrowUlongArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new PrimitiveColumn<ulong>(field.Name, ulongValueBuffer, ulongNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        dataFrameColumn = new PrimitiveDataFrameColumn<ulong>(field.Name, ulongValueBuffer, ulongNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Decimal:
                     case ArrowTypeId.Binary:
@@ -160,7 +160,7 @@ namespace Microsoft.Data
             int columnCount = ColumnCount;
             for (int i = 0; i < columnCount; i++)
             {
-                BaseColumn column = Column(i);
+                DataFrameColumn column = Column(i);
                 Field field = column.Field();
                 schemaBuilder.Field(field);
             }
@@ -177,12 +177,12 @@ namespace Microsoft.Data
             {
                 for (int i = 0; i < columnCount; i++)
                 {
-                    BaseColumn column = Column(i);
+                    DataFrameColumn column = Column(i);
                     numberOfRowsInThisRecordBatch = (int)Math.Min(numberOfRowsInThisRecordBatch, column.MaxRecordBatchLength(numberOfRowsProcessed));
                 }
                 for (int i = 0; i < columnCount; i++)
                 {
-                    BaseColumn column = Column(i);
+                    DataFrameColumn column = Column(i);
                     arrays.Add(column.AsArrowArray(numberOfRowsProcessed, numberOfRowsInThisRecordBatch));
                 }
                 numberOfRowsProcessed += numberOfRowsInThisRecordBatch;
@@ -207,15 +207,15 @@ namespace Microsoft.Data
             }
         }
 
-        public BaseColumn Column(int index) => _table.Column(index);
+        public DataFrameColumn Column(int index) => _table.Column(index);
 
-        public void InsertColumn(int columnIndex, BaseColumn column)
+        public void InsertColumn(int columnIndex, DataFrameColumn column)
         {
             _table.InsertColumn(columnIndex, column);
             OnColumnsChanged();
         }
 
-        public void SetColumn(int columnIndex, BaseColumn column)
+        public void SetColumn(int columnIndex, DataFrameColumn column)
         {
             _table.SetColumn(columnIndex, column);
             OnColumnsChanged();
@@ -256,18 +256,18 @@ namespace Microsoft.Data
         /// </summary>
         /// <param name="filterColumn">A column of rows/bools</param>
         /// <remarks>filterColumn must be of type long, int or bool</remarks>
-        public DataFrame this[BaseColumn filterColumn] => Clone(filterColumn);
+        public DataFrame this[DataFrameColumn filterColumn] => Clone(filterColumn);
 
         public DataFrame this[IEnumerable<int> filter]
         {
             get
             {
-                PrimitiveColumn<int> filterColumn = new PrimitiveColumn<int>("Filter", filter);
+                PrimitiveDataFrameColumn<int> filterColumn = new PrimitiveDataFrameColumn<int>("Filter", filter);
                 return Clone(filterColumn);
             }
         }
 
-        public BaseColumn this[string columnName]
+        public DataFrameColumn this[string columnName]
         {
             get
             {
@@ -279,7 +279,7 @@ namespace Microsoft.Data
             set
             {
                 int columnIndex = _table.GetColumnIndex(columnName);
-                BaseColumn newColumn = value;
+                DataFrameColumn newColumn = value;
                 newColumn.SetName(columnName);
                 if (columnIndex == -1)
                 {
@@ -314,9 +314,9 @@ namespace Microsoft.Data
         // TODO: Add strongly typed versions of these APIs
         #endregion
 
-        private DataFrame Clone(BaseColumn mapIndices = null, bool invertMapIndices = false)
+        private DataFrame Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false)
         {
-            List<BaseColumn> newColumns = new List<BaseColumn>(ColumnCount);
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
                 newColumns.Add(Column(i).Clone(mapIndices, invertMapIndices));
@@ -324,7 +324,7 @@ namespace Microsoft.Data
             return new DataFrame(newColumns);
         }
 
-        public void SetColumnName(BaseColumn column, string newName) => _table.SetColumnName(column, newName);
+        public void SetColumnName(DataFrameColumn column, string newName) => _table.SetColumnName(column, newName);
 
         /// <summary>
         /// Generates descriptive statistics that summarize each numeric column
@@ -343,7 +343,7 @@ namespace Microsoft.Data
             i++;
             for (; i < ColumnCount; i++)
             {
-                BaseColumn column = Column(i);
+                DataFrameColumn column = Column(i);
                 if (!column.HasDescription())
                 {
                     continue;
@@ -364,13 +364,13 @@ namespace Microsoft.Data
 
         public DataFrame Sort(string columnName, bool ascending = true)
         {
-            BaseColumn column = this[columnName];
-            BaseColumn sortIndices = column.GetAscendingSortIndices();
-            List<BaseColumn> newColumns = new List<BaseColumn>(ColumnCount);
+            DataFrameColumn column = this[columnName];
+            DataFrameColumn sortIndices = column.GetAscendingSortIndices();
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
-                BaseColumn oldColumn = Column(i);
-                BaseColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
+                DataFrameColumn oldColumn = Column(i);
+                DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
                 Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
             }
@@ -389,7 +389,7 @@ namespace Microsoft.Data
 
             for (int i = 0; i < ret.ColumnCount; i++)
             {
-                BaseColumn column = ret.Column(i);
+                DataFrameColumn column = ret.Column(i);
                 if (column.IsNumericColumn())
                     column.Clip(lower, upper, inPlace: true);
             }
@@ -404,7 +404,7 @@ namespace Microsoft.Data
             DataFrame df = inPlace ? this : Clone();
             for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn column = df.Column(i);
+                DataFrameColumn column = df.Column(i);
                 df._table.SetColumnName(column, prefix + column.Name);
                 df.OnColumnsChanged();
             }
@@ -419,7 +419,7 @@ namespace Microsoft.Data
             DataFrame df = inPlace ? this : Clone();
             for (int i = 0; i < df.ColumnCount; i++)
             {
-                BaseColumn column = df.Column(i);
+                DataFrameColumn column = df.Column(i);
                 df._table.SetColumnName(column, column.Name + suffix);
                 df.OnColumnsChanged();
             }
@@ -433,7 +433,7 @@ namespace Microsoft.Data
         public DataFrame Sample(int numberOfRows)
         {
             Random rand = new Random();
-            PrimitiveColumn<long> indices = new PrimitiveColumn<long>("Indices", numberOfRows);
+            PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
             int randMaxValue = (int)Math.Min(Int32.MaxValue, RowCount);
             for (long i = 0; i < numberOfRows; i++)
             {
@@ -449,7 +449,7 @@ namespace Microsoft.Data
             if (columnIndex == -1)
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
-            BaseColumn column = _table.Column(columnIndex);
+            DataFrameColumn column = _table.Column(columnIndex);
             return column.GroupBy(columnIndex, this);
         }
 
@@ -472,14 +472,14 @@ namespace Microsoft.Data
         public DataFrame DropNulls(DropNullOptions options = DropNullOptions.Any)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<bool> filter = new PrimitiveColumn<bool>("Filter");
+            PrimitiveDataFrameColumn<bool> filter = new PrimitiveDataFrameColumn<bool>("Filter");
             if (options == DropNullOptions.Any)
             {
                 filter.AppendMany(true, RowCount);
 
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn column = Column(i);
+                    DataFrameColumn column = Column(i);
                     filter.ApplyElementwise((bool? value, long index) =>
                     {
                         return value.Value && (column[index] == null ? false : true);
@@ -491,7 +491,7 @@ namespace Microsoft.Data
                 filter.AppendMany(false, RowCount);
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    BaseColumn column = Column(i);
+                    DataFrameColumn column = Column(i);
                     filter.ApplyElementwise((bool? value, long index) =>
                     {
                         return value.Value || (column[index] == null ? false : true);

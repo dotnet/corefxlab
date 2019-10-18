@@ -159,7 +159,7 @@ namespace Microsoft.Data
             if (linesForGuessType.Count == 0)
                 throw new FormatException(Strings.EmptyFile);
 
-            List<BaseColumn> columns = new List<BaseColumn>(numberOfColumns);
+            List<DataFrameColumn> columns = new List<DataFrameColumn>(numberOfColumns);
 
             // Guesses types and adds columns.
             for (int i = 0; i < numberOfColumns; ++i)
@@ -167,17 +167,17 @@ namespace Microsoft.Data
                 Type kind = GuessKind(i, linesForGuessType);
                 if (kind == typeof(bool))
                 {
-                    BaseColumn boolColumn = new PrimitiveColumn<bool>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
+                    DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(boolColumn);
                 }
                 else if (kind == typeof(float))
                 {
-                    BaseColumn floatColumn = new PrimitiveColumn<float>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
+                    DataFrameColumn floatColumn = new PrimitiveDataFrameColumn<float>(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(floatColumn);
                 }
                 else if (kind == typeof(string))
                 {
-                    BaseColumn stringColumn = new StringColumn(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
+                    DataFrameColumn stringColumn = new StringDataFrameColumn(columnNames == null ? "Column" + i.ToString() : columnNames[i], header == true ? rowline - 1 : rowline);
                     columns.Add(stringColumn);
                 }
                 else
@@ -207,7 +207,7 @@ namespace Microsoft.Data
 
             if (addIndexColumn)
             {
-                PrimitiveColumn<int> indexColumn = new PrimitiveColumn<int>("IndexColumn", columns[0].Length);
+                PrimitiveDataFrameColumn<int> indexColumn = new PrimitiveDataFrameColumn<int>("IndexColumn", columns[0].Length);
                 for (int i = 0; i < columns[0].Length; i++)
                 {
                     indexColumn[i] = i;
@@ -217,11 +217,11 @@ namespace Microsoft.Data
             return new DataFrame(columns);
         }
 
-        private static void AppendRow(List<BaseColumn> columns, long rowIndex, string[] values)
+        private static void AppendRow(List<DataFrameColumn> columns, long rowIndex, string[] values)
         {
             for (int i = 0; i < columns.Count; i++)
             {
-                BaseColumn column = columns[i];
+                DataFrameColumn column = columns[i];
                 string val = values[i];
                 Type dType = column.DataType;
                 if (dType == typeof(bool))

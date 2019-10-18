@@ -11,26 +11,26 @@ namespace Benchmarks.Microsoft.Data
     public class DataFrameBinaryOps
     {
         private DataFrame _dataFrame;
-        private BaseColumn _column;
-        private BaseColumn _other;
+        private DataFrameColumn _column;
+        private DataFrameColumn _other;
 
         [GlobalSetup]
         public void Setup()
         {
             _dataFrame = new DataFrame();
-            _column = new PrimitiveColumn<int>("Int0", Enumerable.Range(0, 50000));
+            _column = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, 50000));
             _other = _column.Clone();
             _dataFrame.InsertColumn(0, _column);
         }
 
         [Benchmark]
-        public BaseColumn Add()
+        public DataFrameColumn Add()
         {
             return _column.Add(_other);
         }
 
         [Benchmark]
-        public BaseColumn AddValue()
+        public DataFrameColumn AddValue()
         {
             return _column.Add(10);
         }

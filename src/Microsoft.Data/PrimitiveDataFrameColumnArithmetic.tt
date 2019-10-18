@@ -11,13 +11,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// Generated from PrimitiveColumnArithmetic.tt. Do not modify directly
+// Generated from PrimitiveDataFrameColumnArithmetic.tt. Do not modify directly
 
 using System;
 
 namespace Microsoft.Data
 {
-    internal interface IPrimitiveColumnArithmetic<T>
+    internal interface IPrimitiveDataFrameColumnArithmetic<T>
         where T : struct
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
@@ -25,21 +25,21 @@ namespace Microsoft.Data
 <# } #>
     }
 
-    internal static class PrimitiveColumnArithmetic<T>
+    internal static class PrimitiveDataFrameColumnArithmetic<T>
         where T : struct
     {
-        public static IPrimitiveColumnArithmetic<T> Instance { get; } = PrimitiveColumnArithmetic.GetArithmetic<T>();
+        public static IPrimitiveDataFrameColumnArithmetic<T> Instance { get; } = PrimitiveDataFrameColumnArithmetic.GetArithmetic<T>();
     }
 
-    internal static class PrimitiveColumnArithmetic
+    internal static class PrimitiveDataFrameColumnArithmetic
     {
-        public static IPrimitiveColumnArithmetic<T> GetArithmetic<T>()
+        public static IPrimitiveDataFrameColumnArithmetic<T> GetArithmetic<T>()
             where T : struct
         {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
             <#=GenerateIfStatementHeader(type)#>
             {
-                return (IPrimitiveColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
             }
 <# } #>
             throw new NotSupportedException();
@@ -47,7 +47,7 @@ namespace Microsoft.Data
     }
 
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
-    internal class <#=type.ClassPrefix#>Arithmetic : IPrimitiveColumnArithmetic<<#=type.TypeName#>>
+    internal class <#=type.ClassPrefix#>Arithmetic : IPrimitiveDataFrameColumnArithmetic<<#=type.TypeName#>>
     {
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
         public <#= method.GetMethodSignature("PrimitiveColumnContainer", type.TypeName) #>

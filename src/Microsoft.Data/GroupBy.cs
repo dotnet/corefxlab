@@ -113,8 +113,8 @@ namespace Microsoft.Data
         public override DataFrame Count(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -125,17 +125,17 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                BaseColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 foreach (long row in rowEnumerable)
                 {
                     if (column[row] != null)
                         count++;
                 }
-                BaseColumn retColumn;
+                DataFrameColumn retColumn;
                 if (firstGroup)
                 {
-                    retColumn = new PrimitiveColumn<long>(column.Name);
+                    retColumn = new PrimitiveDataFrameColumn<long>(column.Name);
                     ret.InsertColumn(ret.ColumnCount, retColumn);
                 }
                 else
@@ -156,8 +156,8 @@ namespace Microsoft.Data
         public override DataFrame First(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -170,10 +170,10 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                BaseColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Column(columnIndex);
                 foreach (long row in rowEnumerable)
                 {
-                    BaseColumn retColumn;
+                    DataFrameColumn retColumn;
                     if (firstGroup)
                     {
                         retColumn = column.Clone(empty);
@@ -198,8 +198,8 @@ namespace Microsoft.Data
         public override DataFrame Head(int numberOfRows)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -210,14 +210,14 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                BaseColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 bool firstRow = true;
                 foreach (long row in rowEnumerable)
                 {
                     if (count < numberOfRows)
                     {
-                        BaseColumn retColumn;
+                        DataFrameColumn retColumn;
                         if (firstGroup && firstRow)
                         {
                             firstRow = false;
@@ -252,8 +252,8 @@ namespace Microsoft.Data
         public override DataFrame Tail(int numberOfRows)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -264,7 +264,7 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                BaseColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Column(columnIndex);
                 long count = 0;
                 bool firstRow = true;
                 ICollection<long> values = _keyToRowIndicesMap[key];
@@ -273,7 +273,7 @@ namespace Microsoft.Data
                 {
                     if (count >= numberOfValues - numberOfRows)
                     {
-                        BaseColumn retColumn;
+                        DataFrameColumn retColumn;
                         if (firstGroup && firstRow)
                         {
                             firstRow = false;
@@ -303,12 +303,12 @@ namespace Microsoft.Data
             return ret;
         }
 
-        private BaseColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveColumn<long> empty, Func<string, BaseColumn> getColumn = null)
+        private DataFrameColumn ResizeAndInsertColumn(int columnIndex, long rowIndex, bool firstGroup, DataFrame ret, PrimitiveDataFrameColumn<long> empty, Func<string, DataFrameColumn> getColumn = null)
         {
             if (columnIndex == _groupByColumnIndex)
                 return null;
-            BaseColumn column = _dataFrame.Column(columnIndex);
-            BaseColumn retColumn;
+            DataFrameColumn column = _dataFrame.Column(columnIndex);
+            DataFrameColumn retColumn;
             if (firstGroup)
             {
                 retColumn = getColumn == null ? column.Clone(empty) : getColumn(column.Name);
@@ -326,8 +326,8 @@ namespace Microsoft.Data
         public override DataFrame Max(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -337,7 +337,7 @@ namespace Microsoft.Data
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
+                DataFrameColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
                 if (!(retColumn is null))
                 {
@@ -354,8 +354,8 @@ namespace Microsoft.Data
         public override DataFrame Min(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -365,7 +365,7 @@ namespace Microsoft.Data
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
+                DataFrameColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
                 if (!(retColumn is null))
                 {
@@ -382,8 +382,8 @@ namespace Microsoft.Data
         public override DataFrame Product(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -393,7 +393,7 @@ namespace Microsoft.Data
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
+                DataFrameColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
                 if (!(retColumn is null))
                 {
@@ -410,8 +410,8 @@ namespace Microsoft.Data
         public override DataFrame Sum(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -421,7 +421,7 @@ namespace Microsoft.Data
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
+                DataFrameColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty);
 
                 if (!(retColumn is null))
                 {
@@ -438,8 +438,8 @@ namespace Microsoft.Data
         public override DataFrame Mean(params string[] columnNames)
         {
             DataFrame ret = new DataFrame();
-            PrimitiveColumn<long> empty = new PrimitiveColumn<long>("Empty");
-            BaseColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
+            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -450,7 +450,7 @@ namespace Microsoft.Data
 
             ColumnDelegate columnDelegate = new ColumnDelegate((int columnIndex, long rowIndex, ICollection<long> rowEnumerable, TKey key, bool firstGroup) =>
             {
-                BaseColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty, (name) => new PrimitiveColumn<double>(name));
+                DataFrameColumn retColumn = ResizeAndInsertColumn(columnIndex, rowIndex, firstGroup, ret, empty, (name) => new PrimitiveDataFrameColumn<double>(name));
 
                 if (!(retColumn is null))
                 {

@@ -11,13 +11,13 @@ namespace Benchmarks.Microsoft.Data
     public class DataFrameComputations
     {
         private DataFrame _dataFrame;
-        private BaseColumn _column0;
+        private DataFrameColumn _column0;
 
         [GlobalSetup]
         public void Setup()
         {
             _dataFrame = new DataFrame();
-            _column0 = new PrimitiveColumn<int>("Int0", Enumerable.Range(0, 50000));
+            _column0 = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, 50000));
             _dataFrame.InsertColumn(0, _column0);
         }
 
