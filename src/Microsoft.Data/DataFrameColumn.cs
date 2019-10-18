@@ -112,7 +112,7 @@ namespace Microsoft.Data
         /// <summary>
         /// Returns the max number of values that are contiguous in memory
         /// </summary>
-        protected internal virtual int GetMaxArrowRecordBatchLength(long startIndex) => 0;
+        protected internal virtual int GetMaxRecordBatchLength(long startIndex) => 0;
         protected internal virtual Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
 
         /// <summary>

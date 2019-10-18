@@ -15,6 +15,11 @@ namespace Microsoft.Data
 {
     public partial class DataFrame
     {
+        /// <summary>
+        /// Wraps a <see cref="DataFrame"/> around an Arrow <see cref="RecordBatch"/> without copying data
+        /// </summary>
+        /// <param name="recordBatch"></param>
+        /// <returns><see cref="DataFrame"/></returns>
         public static DataFrame FromArrowRecordBatch(RecordBatch recordBatch)
         {
             DataFrame ret = new DataFrame();
@@ -124,6 +129,9 @@ namespace Microsoft.Data
             return ret;
         }
 
+        /// <summary>
+        /// Returns an <see cref="IEnumerable{RecordBatch}"/> without copying data
+        /// </summary>
         public IEnumerable<RecordBatch> ToArrowRecordBatches()
         {
             Apache.Arrow.Schema.Builder schemaBuilder = new Apache.Arrow.Schema.Builder();
@@ -149,7 +157,7 @@ namespace Microsoft.Data
                 for (int i = 0; i < columnCount; i++)
                 {
                     DataFrameColumn column = Column(i);
-                    numberOfRowsInThisRecordBatch = (int)Math.Min(numberOfRowsInThisRecordBatch, column.GetMaxArrowRecordBatchLength(numberOfRowsProcessed));
+                    numberOfRowsInThisRecordBatch = (int)Math.Min(numberOfRowsInThisRecordBatch, column.GetMaxRecordBatchLength(numberOfRowsProcessed));
                 }
                 for (int i = 0; i < columnCount; i++)
                 {

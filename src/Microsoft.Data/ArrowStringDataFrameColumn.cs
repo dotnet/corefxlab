@@ -290,7 +290,7 @@ namespace Microsoft.Data
 
         protected internal override Field GetArrowField() => new Field(Name, StringType.Default, NullCount != 0);
 
-        protected internal override int GetMaxArrowRecordBatchLength(long startIndex)
+        protected internal override int GetMaxRecordBatchLength(long startIndex)
         {
             if (Length == 0)
                 return 0;

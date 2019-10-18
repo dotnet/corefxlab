@@ -107,7 +107,7 @@ namespace Microsoft.Data
 
         protected internal override Field GetArrowField() => new Field(Name, GetArrowType(), NullCount != 0);
 
-        protected internal override int GetMaxArrowRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
+        protected internal override int GetMaxRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
 
         private int GetNullCount(long startIndex, int numberOfRows)
         {
