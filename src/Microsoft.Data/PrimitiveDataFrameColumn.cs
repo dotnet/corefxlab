@@ -105,9 +105,9 @@ namespace Microsoft.Data
                 throw new NotImplementedException(nameof(T));
         }
 
-        protected internal override Field Field() => new Field(Name, GetArrowType(), NullCount != 0);
+        protected internal override Field GetArrowField() => new Field(Name, GetArrowType(), NullCount != 0);
 
-        protected internal override int MaxRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
+        protected internal override int GetMaxRecordBatchLength(long startIndex) => _columnContainer.MaxRecordBatchLength(startIndex);
 
         private int GetNullCount(long startIndex, int numberOfRows)
         {
@@ -120,7 +120,7 @@ namespace Microsoft.Data
             return nullCount;
         }
 
-        protected internal override Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows)
+        protected internal override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
         {
             int arrayIndex = numberOfRows == 0 ? 0 : _columnContainer.GetArrayContainingRowIndex(startIndex);
             int offset = (int)(startIndex - arrayIndex * ReadOnlyDataFrameBuffer<T>.MaxCapacity);

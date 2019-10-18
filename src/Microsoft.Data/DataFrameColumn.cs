@@ -108,12 +108,12 @@ namespace Microsoft.Data
         public virtual DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotImplementedException();
 
         // Arrow related APIs
-        protected internal virtual Field Field() => throw new NotImplementedException();
+        protected internal virtual Field GetArrowField() => throw new NotImplementedException();
         /// <summary>
         /// Returns the max number of values that are contiguous in memory
         /// </summary>
-        protected internal virtual int MaxRecordBatchLength(long startIndex) => 0;
-        protected internal virtual Apache.Arrow.Array AsArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
+        protected internal virtual int GetMaxRecordBatchLength(long startIndex) => 0;
+        protected internal virtual Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows) => throw new NotImplementedException();
 
         /// <summary>
         /// Creates a <see cref="ValueGetter{TValue}"/> that will return the value of the column for the row
